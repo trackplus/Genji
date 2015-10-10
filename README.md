@@ -1,4 +1,4 @@
-### Genji Scrum Tool and Issue Tracker
+### [Genji Scrum Tool and Issue Tracker](http://www.trackplus.com)
 Genji is a web-based Scrum project management tool and issue tracker. It runs on any computer with Java, an Apache Tomcat server, and a database. Features include:
 * Scrum and Kanban board with drag & drop
 * Flexible filter management
