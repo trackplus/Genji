@@ -17,7 +17,10 @@ Genji uses Gradle as a build tool. After installing Gradle on your build machine
 
     gradle
 
-The result will be a "war" file in the "target" directory. To install Genji, please follow the instructions in the installation manual at [http://www.trackplus.com/en/issue-tracking-documentation.html](http://www.trackplus.com/en/issue-tracking-documentation.html).
+The result will be a "war" file in the "target" directory. To install Genji, please follow the instructions in the [installation manual](http://www.trackplus.com/en/issue-tracking-documentation.html).
 
 ### Installation
-To install Genji on a Windows based system you can use the Windows installer. If you built Genji yourself or you want to install the system on a Unix based computer, please follow the instructions in the installation mannual at [http://www.trackplus.com/en/issue-tracking-documentation.html](http://www.trackplus.com/en/issue-tracking-documentation.html). 
+To install Genji on a Windows based system you can use the Windows installer. If you built Genji yourself or you want to install the system on a Unix based computer, please follow the instructions in the [installation manual](http://www.trackplus.com/en/issue-tracking-documentation.html). 
+
+### Copyright and license
+Code and documentation copyright 2004-2015 Steinbeis GmbH & Co. KG. Code released under the GPL V3 license. Docs released under Creative Commons.
