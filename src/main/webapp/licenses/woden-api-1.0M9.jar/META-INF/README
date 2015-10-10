@@ -1,0 +1,35 @@
+
+                                 W  o  d  e  n
+  
+  What is it? 
+  -----------
+  
+  Woden is a Web Service Description Language (WSDL) validating parser. 
+  Currently Woden supports WSDL 2.0.
+
+
+  The Latest Version
+  ------------------
+
+  Details of the latest version can be found on the Apache Woden
+  Project web site <http://ws.apache.org/woden/>.
+
+
+  Documentation
+  -------------
+
+  Documentation is available in HTML format, in the docs/ directory.
+  In this release documentation is limited to Javadoc.
+  
+
+  Licensing
+  ---------
+
+  This software is licensed under the terms you may find in the file 
+  named "LICENSE" in this directory.
+  
+
+  Thanks for using Woden.
+
+                                          The Apache Woden Project
+                                      <http://ws.apache.org/woden/>

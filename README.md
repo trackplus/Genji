@@ -13,7 +13,7 @@ Genji is a web-based Scrum project management tool and issue tracker. It runs on
 * Well documented
 
 ### Build Instructions
-Genji uses Gradle as a build tool. After installing Gradle on your build machine, go into the Genji main directory and execute the command:
+Genji uses [Gradle](https://gradle.org/gradle-download/) as a build tool. After installing Gradle on your build machine, go into the Genji main directory and execute the command:
 
     gradle
 
@@ -23,4 +23,4 @@ The result will be a "war" file in the "target" directory. To install Genji, ple
 To install Genji on a Windows based system you can use the Windows installer. If you built Genji yourself or you want to install the system on a Unix based computer, please follow the instructions in the [installation manual](http://www.trackplus.com/en/issue-tracking-documentation.html). 
 
 ### Copyright and license
-Code and documentation copyright 2004-2015 Steinbeis GmbH & Co. KG. Code released under the GPL V3 license. Docs released under Creative Commons.
+Code and documentation copyright 2004-2015 Steinbeis GmbH & Co. KG. Code released under [the GPL V3 license](https://github.com/trackplus/Genji/blob/master/LICENSE). Docs released under Creative Commons.
