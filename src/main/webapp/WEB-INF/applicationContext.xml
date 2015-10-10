@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans SYSTEM "spring-beans.dtd">
+<beans>
+    <bean id="userDetailsServiceImpl" class="com.aurel.track.user.TpUserDetailsService"/>
+    
+    <bean id="TpPasswordEncoder" class="com.aurel.track.user.TpPasswordEncoder"/>
+
+<!-- 
+	<bean id="authenticationManager"
+		  class="org.springframework.security.providers.ProviderManager">
+		<property name="providers">
+			<list>
+				<ref local="daoAuthenticationProvider"/>
+				<ref local="anonymousAuthenticationProvider"/>
+				<ref local="rememberMeAuthenticationProvider"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="daoAuthenticationProvider"
+		  class="org.springframework.security.providers.dao.DaoAuthenticationProvider">
+		<property name="userDetailsService" ref="userDetailsServiceImpl"/>
+		<property name="passwordEncoder" ref="TpPasswordEncoder"/>
+	</bean>
+	
+	<bean id="anonymousAuthenticationProvider"
+		  class="org.springframework.security.providers.anonymous.AnonymousAuthenticationProvider">
+		<property name="key" value="foobar"/>
+	</bean>	
+	
+	<bean id="rememberMeAuthenticationProvider"
+	      class="org.springframework.security.providers.rememberme.RememberMeAuthenticationProvider">
+		<property name="key" value="springRocks"/>
+	</bean>	
+
+    <bean id="basicProcessingFilter" class="org.springframework.security.ui.basicauth.BasicProcessingFilter">
+        <property name="authenticationManager"><ref bean="authenticationManager"/></property>
+        <property name="authenticationEntryPoint"><ref bean="authenticationEntryPoint"/></property>
+    </bean>
+        
+    <bean id="authenticationEntryPoint"
+        class="org.springframework.security.ui.basicauth.BasicProcessingFilterEntryPoint">
+        <property name="realmName"><value>Track+</value></property>
+    </bean>
+    
+    <bean id="authenticationProcessingFilter"
+          class="org.springframework.security.ui.webapp.AuthenticationProcessingFilter">
+		<property name="authenticationManager" ref="authenticationManager"/>
+		<property name="authenticationFailureUrl" value="/spring_login?login_error=1"/>
+		<property name="defaultTargetUrl" value="/login.action"/>
+		<property name="filterProcessesUrl" value="/j_spring_security_check"/>
+	</bean>
+-->
+</beans>
+

@@ -1,0 +1,1989 @@
+/* 2006 C. Kirchmeier, www.sightdesign.de */
+
+/* General stuff */
+
+html, body {
+	height: 100%;
+}
+
+body {
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 11px;
+	color: #3A394B;
+	margin: 0;
+	padding: 0;
+	min-height: 100%;
+	/*background: #FFFFFF url(img/bg.gif) repeat-y;
+	background-position: 100% 0%;*/
+}
+
+/* IE5.x needs this */
+p, td /*, li*/ {
+	font-size: 11px;
+}
+
+h1 {
+	font-size: 18px;
+	font-weight: bold;	
+}
+
+h2 {
+	font-size: 13px;	
+	font-weight: bold;
+	color: #88898c;
+	margin: 0 0 5px 0;	
+}
+
+h3 {
+	font-size: 11px;	
+	font-weight: bold;
+	color: #88898c;
+	margin: 5px 0 0 0;	
+}
+
+h4 {
+	font-size: 13px;	
+	font-weight: bold;
+	margin: 0 0 17px 0;
+	background: url(img/dots.gif) repeat-x left bottom;
+	padding: 0 0 5px 0;
+}
+
+h4.splitPanel {	
+	margin: 15px 0 10px 0;
+}
+
+input, textarea, select {
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 11px;
+}
+
+form {
+	margin: 0;
+	padding: 0;	
+}
+
+a { 
+	color: #1D5090; 
+	text-decoration: none; 
+	font-weight:bold;
+}
+
+a:active  { 
+	color: #BF2128;
+}
+
+a:hover { 
+	color: #BF2128;
+}
+
+a.regular { 
+	color:#1d5090; 
+	text-decoration:underline; 
+	font-weight:normal; 
+	background: url(img/arrow-small2.gif) no-repeat 0 4px;
+	padding: 0 0 0 15px;
+	margin: 0 0 2px 0;
+	display: block;
+}
+
+a.regular:hover, a.regular:active { 
+	text-decoration:underline; 
+	color: #BF2128;
+}
+
+a.smallText { 
+	color: #1D5090; 
+	text-decoration: none; 
+	font-weight:normal;
+	font-size: 9px;
+	vertical-align: middle;
+} 
+
+ul {
+	/*margin: 10px 0 10px 10px;*/
+	padding: 0;
+	/*list-style-type: none;*/
+}
+
+
+/* IDs in order of appearance */
+
+#wrapper {
+	width: 100%;
+	min-height: 100%;
+	min-width: 875px;
+	/*margin-right: 10px;*/
+}
+
+#header {
+	/*height: 79px;*/	
+	width: 100%;
+}
+
+#headerl {
+	background: url(img/bg-headerl.gif) no-repeat left bottom;
+	height: 79px;	
+	width: 25px;
+    float: left;    
+}
+
+#headerm {
+ 	background: url(img/bg-headerm.gif) repeat-x left bottom;
+	height: 79px;
+    margin-left: 25px;
+    width: 88%;
+}
+
+
+#headerPopup {
+	background: url(img/bg-header.gif) no-repeat left bottom;
+	height: 79px;	
+	width: 300px;
+}
+
+
+#userInfo {
+	/*position: absolute;
+	top: 15px;
+	left: 25px;*/
+	font-size: 10px;
+}
+
+#search {
+	/*position: absolute;
+	top: 11px;
+	right: 197px;*/
+}
+
+#search form {
+	margin: 0;
+	padding: 0;
+}
+
+#search input {
+	border: 1px solid #393B40;
+	width: 195px;
+	height: 16px;
+	line-height: 16px;
+	padding: 0;
+}
+
+#search button {
+	border: none;
+	background: url(img/search.gif) no-repeat;
+	cursor: pointer;
+	height: 22px;
+	width: 22px;
+	margin: 0 0 0 7px;
+	vertical-align: middle;
+	z-index: 1000;
+	position: absolute;
+}
+
+#logo {
+	/*position: absolute;
+	right: 50px;
+	top: 0;*/
+}
+
+#logoPopup {
+	position: absolute;
+	left: 300px;
+	top: 0;
+}
+
+#logo img {
+	border: 0;
+	width: 180px;
+	height: 79px;
+	background: url(img/logo.jpg);
+	background-position: 0px;
+}
+
+#logoPopup img {
+	border: 0;
+	width: 180px;
+	height: 79px;
+	background: url(img/logo.jpg);
+}
+
+
+#menu {
+	position: absolute;
+	top: 39px;
+	left: 30px;
+	right: 230px;	
+}
+
+#basicMenuID {
+	/*position: absolute;
+	right: 230px;
+	top: 39px;*/
+	z-index:1000;
+}
+
+#basicMenuPopupID {
+	position: absolute;
+	left: 180px;
+	top: 0px;	
+}
+
+#menuCurrent {
+	/*position: absolute;
+	left: 10px;
+	top: 23px;*/
+	color: #77787B;	
+	font-weight: bold;
+	/*width: 730px;*/
+}
+
+#content {
+	padding-top: 25px;
+	padding-left: 25px;
+	padding-right: 25px;
+	padding-bottom: 45px;
+}
+
+#footer {
+	min-width: 790px; 
+	position: relative;
+	background: #77787B url(img/bg-footer.gif) no-repeat right top;
+	width: auto;
+	padding: 4px 35px 4px 0;
+	text-align: right;
+	margin: -31px 27px 10px 24px;
+	color: #fff;
+	clear: left;
+	height: 12px;
+}
+
+
+/* Classes */
+
+.clearer {
+	clear: both;
+	overflow: hidden;
+	height: 1px;
+	line-height: 1px;
+	font-size: 1px;
+	border: none;
+	margin: 0; 
+	padding: 0;
+	background: transparent;
+}
+
+/* default error text formatting set in fieldError.ftl 
+	and actionError.ftl consequently not needed to set this css directly in 
+	<s:fielderror> and <s:actionerot> tags */
+.errorMessage {
+	color: #BF2128;
+	font-weight: bold;	
+	line-height: 1.5em;
+	margin: 0;
+	padding: 0 0 2px 12px;
+	/* default by pages without ext-all.js but should be overrided by pages with ext-all.js included*/
+	list-style-type:disc
+	}
+	
+
+div.olist ol {
+	list-style-type:decimal;
+	padding-left:40px;
+}
+div.olist ol ol{
+	list-style-type:lower-alpha;
+}
+div.olist ol ol ol{
+	list-style-type:lower-roman;
+}
+div.ulist ul {
+	list-style-type:disc;
+	margin: 10px 0 10px 10px;
+}
+
+
+div.motd li {
+	background: url(img/list.gif) no-repeat 0 .5em;
+	line-height: 1.5em;
+	margin: 0;
+	padding: 0 0 2px 12px;
+	list-style-type:none;
+}
+
+
+div.ulist ul li{
+	background: url(img/list.gif) no-repeat 0 .5em;
+	line-height: 1.5em;
+	margin: 0;
+	padding: 0 0 2px 12px;
+	list-style-type:none;
+}
+div.olist ol li{
+	line-height: 1.5em;
+	margin: 0;
+}
+/*
+#err {
+	color: #f00;
+	font-weight: bold;
+}*/
+/* error text formatting for struts1 classes instead of the ul li and err */
+div.struts1ErrorMessage ul {
+	color: #BF2128;
+	font-weight: bold;
+	/*background: url(img/list.gif) no-repeat 0 .5em;*/
+	line-height: 1.5em;
+	margin: 0;
+	padding: 0 0 2px 12px;
+}
+	
+.errorIcon {
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 2;
+	border-top: 10px solid #BF2128;
+	border-bottom: 22px solid #BF2128;
+	padding: 4px 0;
+	width: 24px;
+	text-align: center;
+}
+
+.required {
+	font-weight: bold;
+}
+
+.emphasize {
+	color: #BF2128;
+	font-weight: bold;	
+}
+
+.dataEmphasize {
+	color: green;
+}
+
+.containerRow1 {  /* #77787B */
+	background: #EEF0F5;
+	border: 1px solid #C0C0C0;
+	padding: 11px 15px 13px 15px;
+}
+
+.containerRow2 {
+	background: #EEEDED;
+	border: 1px solid #C0C0C0;
+	padding: 11px 15px 13px 15px;
+
+}
+.containerSeparator {
+	background-color: #FEFEFE;
+	height: 3px;
+	line-height: 3px;
+	overflow: hidden;	
+}
+
+.containerSeparator2 {
+	background-color: #FEFEFE;
+	height: 11px;
+	line-height: 11px;
+	overflow: hidden;	
+}
+
+/* dashboard panels */
+.dashboardContainerFirst{
+	margin-top: 5px;
+}
+
+.dashboardContainerRow1Runtime {
+	/*background: #EEF0F5;
+	border: 1px solid #C0C0C0;
+    padding: 11px 15px 13px 15px;*/
+    margin-right: 5px;
+}
+
+.dashboardContainerRow2Runtime {
+	/*background:#EEEDED;
+	border: 1px solid #C0C0C0;
+    padding: 11px 15px 13px 15px;*/
+    margin-right: 5px;
+
+}
+.dashboardContainerRow1 {
+	background: #EEF0F5;
+	border: 1px solid #C0C0C0;
+    padding: 11px 15px 13px 15px;
+}
+
+.dashboardContainerRow2 {
+	background:#EEEDED;
+	border: 1px solid #C0C0C0;
+    padding: 11px 15px 13px 15px;
+
+}
+.dashboardContainerSeparator {
+	/* background: url(img/bg-contsep.gif) repeat-x left top; */
+	background-color: #FEFEFE;
+	height: 3px;
+	overflow: hidden;
+}
+
+.formButton {
+	padding-left:18px; 
+	padding-right:18px; 
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.dataBlock {
+	margin: 0 18px 0 0;	
+}
+
+tr.dataRow1 td, tr.dataRow2 td, tr.dataRow1 th, tr.dataRow2 th {
+	background: url(img/dots.gif) repeat-x left bottom;	
+}
+
+tr.dataRow1Rn td, tr.dataRow1Rn th {
+	background: url(img/dots.gif) repeat-x left bottom;
+	padding-top: 20px;
+	padding-bottom: 8px;	
+}
+
+.dataRow3 {
+	padding: 8px 5px 5px 5px;
+	border-right: 5px solid #D2D5DF;
+	border-left: 5px solid #D2D5DF;
+	background: #D2D5DF url(img/dots.gif) repeat-x left bottom;
+}
+
+.dataRow4 { 
+ 	padding: 8px 5px 5px 5px; 
+	border-right: 5px solid #EEF0F5;
+	border-left: 5px solid #EEF0F5;
+	background: #EEF0F5 url(img/dots.gif) repeat-x left bottom;
+ }
+ 
+.dataRow5 { 
+ 	padding: 8px 5px 5px 5px; 
+	border-right: 5px solid #EEEDED;
+	border-left: 5px solid #EEEDED;
+	background: #EEEDED url(img/dots.gif) repeat-x left bottom;
+}
+
+.dataRow6 { 
+ 	padding: 8px 5px 5px 5px; 
+	background: transparent url(img/dots.gif) repeat-x left bottom;
+ }
+.dataRow3Last, .dataRow4Last {
+	background-image: none;
+}
+
+th.dataRow3 {
+	border-right: none;
+	border-left: none;
+	font-weight: bold;
+	text-align: center;
+	border-bottom: 1px solid #77787B;	
+	background: url(img/bg-table-header.gif) right top;
+	font-size: 11px;
+	padding: 6px 12px 5px 9px;
+	white-space: nowrap;
+	border-top: 1px solid #fff;
+}
+
+.dataName {
+	height: 28px;
+	padding: 0 3px;
+	white-space: nowrap;
+}
+
+.headingEditUsers {
+	height: 28px;
+	padding: 0 3px;
+}
+
+.dataValue {
+	padding: 3px 3px 3px 10px;
+}
+
+.dataValueRn {
+	padding: 0px 5px 0px 10px;
+}
+
+.configBox {
+	border: 1px solid #393b40;
+	width: 210px;
+	background: #EEF0F5;	
+	padding: 3px;
+	float: left;
+	margin: 0 10px 10px 0;
+}
+
+.configBox h2 {
+	font-size: 12px;
+	font-weight: bold;
+	padding: 3px 0 3px 7px;
+	margin: -3px -3px 3px -3px;;
+	background: #393b40;
+	color: #f4f0f5;
+}
+
+.configBox select {
+	width: 100%;
+}
+
+.configButtons {
+	float: right; 
+	padding: 20px 130px 0 0;
+	width: 260px;
+}
+
+.configButtons div {
+	margin: 20px -130px 0 10px;
+	width: 200px;
+}
+
+.configButtons .toolbutton_big, .configButtons .toolbutton_big:hover .toolbutton_bigDisabled .toolbutton_bigDisabled:hover {
+	padding: 4px 10px;
+	display: block;
+}
+
+.configBox .toolbutton {
+	padding: 0 3px;
+	font-size: 10px;
+	height: 15px;
+	line-height: 10px;
+	vertical-align: top;
+	margin: -1px 0 0 0;
+}
+
+.adminTable {
+	border-collapse: collapse;
+} 
+
+.adminTable th {
+	background: #393b40;
+	font-weight: bold;
+	color: #fff;
+	text-align: center;
+	padding: 2px 7px;
+	font-size: 11px;
+	border-right: 1px solid #77787b;
+	border-left: 1px solid #77787b;
+} 
+
+.adminTable td {
+	/* text-align: center; */
+	padding: 3px 7px;
+	border: 1px solid #77787b;
+	background: #fff;
+} 
+
+td.adminTable {
+	border-style: none;
+	text-align: center;
+	padding: 3px 7px;
+	background: #fff url(img/dots.gif) repeat-x left bottom;
+}
+
+.myMailingList th {
+	background: #393b40;
+	font-weight: bold;
+	color: #fff;
+	/*text-align: center;*/
+	padding: 2px 7px;
+	font-size: 11px;
+}
+
+/* Color helpers to add a bit more flexibility  */
+
+.color1 {
+	background: #EEF0F5;	
+}
+
+.color2 {
+	background: #EEEDED;	
+}
+
+.color3 {
+	background: #bec0c6;	
+}
+
+.color4 {
+	background: #fff;	
+}
+
+.greyed{
+	color: #909090;
+}
+
+/* Edit Buttons and other items */
+
+#toolbar {
+	/*position: absolute;*/
+	width: auto;
+	height:52px;
+	/*top: 80px; 
+	right: 230px;*/
+	margin-left: 25px;
+	padding-right:155px;
+	background: #fff;
+	padding-bottom: 10px;
+	/*border-top: 19px solid #bec0c6;*/
+}
+
+
+.dojoSplitPane #toolbar {	
+	width: auto;
+	margin: 0 0 10px 0;
+	background: #fff;
+	border-top: none;
+}
+
+table.buttons {
+	float: right;
+	/*max-width: 740px;*/
+	/*margin-top: -20px;*/
+	background-color: #FFFFFF;
+	border-top: 4px solid #FFFFFF;
+	border-right: 1px solid #bec0c6;
+	border-bottom: 1px solid #bec0c6;
+	border-left: 1px solid #bec0c6;
+}
+
+.dojoSplitPane table.buttons {	
+	margin-top: 0;
+	border-top: 1px solid #bec0c6;
+}
+
+table.buttons td {
+	text-align: center;
+	vertical-align: top;
+	padding: 0 3px;
+	min-width: 24px;	
+}
+
+.dojoSplitPane table.buttons td {
+	padding: 3px 3px 0 3px;	
+}
+
+a.buttonSave, a.buttonCompile, a.buttonReset, a.buttonCancel, a.buttonCopy, a.buttonComment, a.buttonViewAll, a.buttonEdit,
+a.buttonMove, a.buttonChangeStatus, a.buttonAttachment, a.buttonAddChild,a.buttonAddSibling, a.buttonParent, a.buttonAdd, a.buttonExecute,
+a.buttonFilter, a.buttonDelete, a.buttonActivate, a.buttonDeactivate, 
+a.buttonBack, a.buttonForward, a.buttonUpward, a.buttonDownward, a.buttonEmail, 
+a.buttonBulkCopy, a.buttonBulkEdit, a.buttonExport, a.buttonPrintIssue, a.buttonImport,
+a.buttonExportXML, a.buttonExportCSV, a.buttonExportExcel, a.buttonExportPDF, a.buttonChart, a.buttonLock, a.buttonUnlock,
+a.buttonDeleteConsInf, a.buttonAddCons, a.buttonAddInf, a.buttonAddMeCons, a.buttonRemoveMeCons,
+a.buttonAddMeInf, a.buttonRemoveMeInf, a.buttonPreview, a.buttonNewTab, a.buttonNewPanel, 
+a.buttonDelete, a.buttonUndelete, a.buttonArchive, a.buttonUnarchive, a.buttonReport {
+	height: 22px;
+	display: block;	
+	padding: 24px 2px 0 2px;
+	font-size: 9px;
+	text-align: center;
+	color: #3A394B;	
+	white-space: nowrap;
+}
+
+#toolbar a.buttonSave, #toolbar a.buttonCompile, #toolbar a.buttonReset, #toolbar a.buttonCancel, #toolbar a.buttonCopy, #toolbar a.buttonComment, #toolbar a.buttonViewAll, #toolbar a.buttonEdit,
+#toolbar a.buttonMove, #toolbar a.buttonChangeStatus, #toolbar a.buttonAttachment, #toolbar a.buttonAddChild,#toolbar a.buttonAddSibling, #toolbar a.buttonParent, #toolbar a.buttonAdd, #toolbar a.buttonExecute,
+#toolbar a.buttonFilter, #toolbar a.buttonDelete, #toolbar a.buttonActivate, #toolbar a.buttonDeactivate, 
+#toolbar a.buttonBack, #toolbar a.buttonForward, #toolbar a.buttonUpward, #toolbar a.buttonDownward, #toolbar a.buttonEmail, 
+#toolbar a.buttonBulkEdit, #toolbar a.buttonBulkCopy, #toolbar a.buttonExport, #toolbar a.buttonPrintIssue, #toolbar a.buttonImport,
+#toolbar a.buttonExportXML, #toolbar a.buttonExportCSV, #toolbar a.buttonExportExcel, #toolbar buttonExportPDF, #toolbar a.buttonChart, #toolbar a.buttonLock, a.buttonUnlock,
+#toolbar a.buttonDeleteConsInf, #toolbar a.buttonAddCons, #toolbar a.buttonAddInf, #toolbar a.buttonAddMeCons, #toolbar a.buttonRemoveMeCons,
+#toolbar a.buttonAddMeInf, #toolbar a.buttonRemoveMeInf, #toolbar a.buttonPreview, #toolbar a.buttonNewTab, #toolbar a.buttonNewPanel, 
+#toolbar a.buttonDelete, #toolbar a.buttonUndelete, #toolbar a.buttonReport, #toolbar a.buttonArchive, #toolbar a.buttonUnarchive {
+	height: 16px;
+	padding: 24px 0 0 0;
+}
+
+.toolBarInactive {
+	height: 40px;
+	font-size: 9px;
+	color: #c0c0c0;
+}
+
+a.buttonNewTab {
+	background:transparent url(icons/tab.gif) no-repeat scroll center top;
+}
+
+a.buttonNewTab:hover {
+	background:transparent url(icons/tab.gif) no-repeat scroll center top;
+	color: #BF2128;
+}
+
+a.buttonNewPanel {
+	background:transparent url(icons/panel.gif) no-repeat scroll center top;
+}
+
+a.buttonNewPanel:hover {
+	background:transparent url(icons/panel.gif) no-repeat scroll center top;
+	color: #BF2128;
+}
+
+a.buttonUser {
+	color: #3A394B;	
+}
+
+a.buttonUser:hover {
+	color: #BF2128;	
+}
+
+a.buttonCompile {
+	background: url(icons/compile.gif) no-repeat center top;	
+}
+
+a.buttonSave {
+	background: url(icons/save.gif) no-repeat center top;	
+}
+
+a.buttonSave:hover {
+	background: url(icons/save-hover.gif) no-repeat center top;
+	color: #BF2128;	
+}
+
+a.buttonAdd {
+	background: url(icons/add.gif) no-repeat center 3px;	
+}
+
+a.buttonAdd:hover {
+	background: url(icons/add-hover.gif) no-repeat center 3px;
+	color: #BF2128;	
+}
+a.buttonFilter {
+	background: url(icons/filter-active.gif) no-repeat center top;	
+}
+
+a.buttonFilter:hover {
+	background: url(icons/filter-hover.gif) no-repeat center top;
+	color: #BF2128;	
+}
+
+a.buttonExecute {
+	background: url(icons/execute-active.gif) no-repeat center top;	
+}
+
+a.buttonExecute:hover {
+	background: url(icons/execute-hover.gif) no-repeat center top;
+	color: #BF2128;	
+}
+
+a.buttonDelete {
+	background: url(icons/delete.gif) no-repeat center top;	
+}
+
+a.buttonDelete:hover {
+	background: url(icons/delete-hover.gif) no-repeat center top;
+	color: #BF2128;	
+}
+
+a.buttonUndelete {
+	background: url(icons/undelete.gif) no-repeat center top;
+}
+
+a.buttonUndelete:hover {
+	background: url(icons/undelete-hover.gif) no-repeat center top;
+	color: #BF2128;	
+}
+
+a.buttonArchive {
+	background: url(icons/archive.gif) no-repeat center top;
+}
+
+a.buttonArchive:hover {
+	background: url(icons/archive-hover.gif) no-repeat center top;
+	color: #BF2128;	
+}
+
+a.buttonUnarchive {
+	background: url(icons/unarchive.gif) no-repeat center top;
+}
+
+a.buttonUnarchive:hover {
+	background: url(icons/unarchive-hover.gif) no-repeat center top;
+	color: #BF2128;	
+}
+ 
+a.buttonActivate {
+	background: url(icons/activate-active.gif) no-repeat center top;	
+}
+
+a.buttonActivate:hover {
+	background: url(icons/activate-hover.gif) no-repeat center top;
+	color: #BF2128;	
+}
+
+a.buttonDeactivate {
+	background: url(icons/deactivate-active.gif) no-repeat center top;	
+}
+
+a.buttonDeactivate:hover {
+	background: url(icons/deactivate-hover.gif) no-repeat center top;
+	color: #BF2128;	
+}
+
+a.buttonBack {
+	background: url(icons/backward.gif) no-repeat center top;
+}
+
+a.buttonBack:hover {
+	background: url(icons/backward-hover.gif) no-repeat center top;
+	color: #BF2128;	
+}
+
+a.buttonForward {
+	background: url(icons/forward.gif) no-repeat center top;
+}
+
+a.buttonForward:hover {
+	background: url(icons/forward-hover.gif) no-repeat center top;
+	color: #BF2128;	
+}
+
+a.buttonUpward {
+	background: url(icons/upward.gif) no-repeat center top;	
+}
+
+a.buttonUpward:hover {
+	background: url(icons/upward-hover.gif) no-repeat center top;
+	color: #BF2128;	
+}
+
+a.buttonDownward {
+	background: url(icons/downward.gif) no-repeat center top;	
+}
+
+a.buttonDownward:hover {
+	background: url(icons/downward-hover.gif) no-repeat center top;
+	color: #BF2128;	
+}
+a.buttonEmail {
+	background: url(icons/email-activ.gif) no-repeat center top;	
+}
+
+a.buttonEmail:hover {
+	background: url(icons/email-hover.gif) no-repeat center top;
+	color: #BF2128;	
+}
+
+a.buttonEdit {
+	background: url(icons/edit.gif) no-repeat center top;	
+}
+
+a.buttonEdit:hover {
+	background: url(icons/edit-hover.gif) no-repeat center top;
+	color: #BF2128;
+}
+a.buttonMove {
+	background: url(icons/move.gif) no-repeat center top;
+}
+
+a.buttonMove:hover {
+	background: url(icons/move-hover.gif) no-repeat center top;
+	color: #BF2128;
+}
+
+a.buttonReset {
+	background: url(icons/reset.gif) no-repeat center top;	
+}
+
+a.buttonReset:hover {
+	background: url(icons/reset-hover.gif) no-repeat center top;
+	color: #BF2128;	
+}
+
+a.buttonCancel {
+	background: url(icons/cancel.gif) no-repeat center top;	
+}
+
+a.buttonCancel:hover {
+	background: url(icons/cancel-hover.gif) no-repeat center top;
+	color: #BF2128;	
+}
+
+a.buttonCopy {
+	background: url(icons/copy.gif) no-repeat center top;	
+}
+
+a.buttonCopy:hover {
+	background: url(icons/copy-hover.gif) no-repeat center top;
+	color: #BF2128;	
+}
+
+a.buttonChangeStatus {
+	background: url(icons/changeStatus.gif) no-repeat center top;
+}
+
+a.buttonChangeStatus:hover {
+	background: url(icons/changeStatus-hover.gif) no-repeat center top;
+	color: #BF2128;
+}
+a.buttonAttachment {
+	background: url(icons/addAttachment.gif) no-repeat center top;
+}
+
+a.buttonAttachment:hover {
+	background: url(icons/addAttachment-hover.gif) no-repeat center top;
+	color: #BF2128;
+}
+a.buttonComment {
+	background: url(icons/comment.gif) no-repeat center top;
+}
+
+a.buttonComment:hover {
+	background: url(icons/comment-hover.gif) no-repeat center top;
+	color: #BF2128;
+}
+
+a.buttonAddChild {
+	background: url(icons/addChild.gif) no-repeat center top;
+}
+
+a.buttonAddChild:hover {
+	background: url(icons/addChild-hover.gif) no-repeat center top;
+	color: #BF2128;
+}
+
+a.buttonAddSibling {
+	background: url(icons/addSibling.png) no-repeat center top;
+}
+
+a.buttonAddSibling:hover {
+	background: url(icons/addSibling-hover.png) no-repeat center top;
+	color: #BF2128;
+}
+
+a.buttonParent {
+	background: url(icons/arrow-up.gif) no-repeat center top;
+}
+
+a.buttonParent:hover {
+	background: url(icons/arrow-up-active.gif) no-repeat center top;
+	color: #BF2128;
+}
+
+a.buttonViewAll {
+	background: url(icons/view-all.gif) no-repeat center top;	
+}
+
+a.buttonViewAll:hover {
+	background: url(icons/view-all-hover.gif) no-repeat center top;
+	color: #BF2128;	
+}
+
+a.buttonBulkCopy{
+  background: url(icons/bulkCopy.gif) no-repeat center top;
+}
+a.buttonBulkCopy:hover{
+  background: url(icons/bulkCopy-hover.gif) no-repeat center top;
+}
+
+a.buttonBulkEdit{
+  background: url(icons/bulkEdit.gif) no-repeat center top;
+}
+a.buttonBulkEdit:hover{
+  background: url(icons/bulkEdit-hover.gif) no-repeat center top;
+}
+
+a.buttonExport{
+  background: url(icons/export.gif) no-repeat center top;
+}
+a.buttonExport:hover{
+   background: url(icons/export-hover.gif) no-repeat center top;
+   color: #BF2128;
+}
+
+a.buttonReport{
+  background: url(icons/chart_pie2.gif) no-repeat center top;
+}
+a.buttonReport:hover{
+   background: url(icons/chart_pie2-hover.gif) no-repeat center top;
+   color: #BF2128;
+}
+
+a.buttonPrintIssue{
+  background: url(icons/printIssue.gif) no-repeat center top;
+}
+a.buttonPrintIssue:hover{
+   background: url(icons/printIssue-hover.gif) no-repeat center top;
+   color: #BF2128;
+}
+
+a.buttonImport{
+  background: url(icons/import.gif) no-repeat center top;
+}
+a.buttonImport:hover{
+   background: url(icons/import-hover.gif) no-repeat center top;
+   color: #BF2128;
+}
+
+
+a.buttonExportPDF{
+    background: url(icons/printIssue.gif) no-repeat center top;
+}
+
+a.buttonExportPDF:hover{
+   background: url(icons/printIssue-hover.gif) no-repeat center top;
+   color: #BF2128;
+}
+
+a.buttonExportXML{
+    background: url(icons/exportXML.gif) no-repeat center top;
+}
+a.buttonExportXML:hover{
+   background: url(icons/exportXML-hover.gif) no-repeat center top;
+   color: #BF2128;
+}
+a.buttonExportCSV{
+   background: url(icons/exportCSV.gif) no-repeat center top;
+}
+a.buttonExportCSV:hover{
+   background: url(icons/exportCSV-hover.gif) no-repeat center top;
+   color: #BF2128;
+}
+a.buttonExportExcel{
+    background: url(icons/exportExcel.gif) no-repeat center top;
+}
+a.buttonExportExcel:hover{
+   background: url(icons/exportExcel-hover.gif) no-repeat center top;
+   color: #BF2128;
+}
+a.buttonChart{
+    background: url(icons/chart.gif) no-repeat center top;
+}
+a.buttonChart:hover{
+   background: url(icons/chart-hover.gif) no-repeat center top;
+   color: #BF2128;
+}
+a.buttonLock{
+   background: url(icons/lock.gif) no-repeat center top;
+}
+a.buttonLock:hover{
+   background: url(icons/lock-hover.gif) no-repeat center top;
+   color: #BF2128;
+}
+a.buttonUnlock{
+   background: url(icons/unlock.gif) no-repeat center top;
+}
+a.buttonUnlock:hover{
+   background: url(icons/unlock-hover.gif) no-repeat center top;
+   color: #BF2128;
+}
+a.buttonPreview{
+   background: url(icons/preview.gif) no-repeat center top;
+}
+a.buttonPreview:hover{
+   background: url(icons/preview-hover.gif) no-repeat center top;
+   color: #BF2128;
+}
+
+a.buttonDeleteConsInf{
+   background: url(icons/icon_ci_delete.gif) no-repeat center top;
+}
+a.buttonAddCons{
+   background: url(icons/icon_consultant_add.gif) no-repeat center top;
+}
+a.buttonAddInf{
+   background: url(icons/icon_informant_add.gif) no-repeat center top;
+}
+a.buttonAddMeCons{
+   background: url(icons/icon_consultant_me_add.gif) no-repeat center top;
+}
+a.buttonRemoveMeCons{
+   background: url(icons/icon_consultant_me_delete.gif) no-repeat center top;
+}
+a.buttonAddMeInf{
+   background: url(icons/icon_informant_me_add.gif) no-repeat center top;
+}
+a.buttonRemoveMeInf{
+   background: url(icons/icon_informant_me_delete.gif) no-repeat center top;
+}
+
+a.buttonIssueType{
+   background: url(icons/issueType.gif ) no-repeat center top;
+}
+a.buttonIssueType:hover{
+   background: url(icons/issueType-hover.gif) no-repeat center top;
+   color: #BF2128;
+}
+
+.toolbutton {
+	background: #767586 url(img/bg-button.gif) repeat-x;
+	border-top: 1px solid #fff;
+	border-right: 1px solid #C8C7D5;
+	border-bottom: 1px solid #C8C7D5;
+	border-left: 1px solid #fff;
+	font-weight: bold;
+	padding: 0 3px;
+	color: #fff;
+	text-transform: uppercase;	
+}
+
+.toolbutton:hover {	
+	background: #767586 url(img/bg-button.gif) repeat-x;
+	border-top: 1px solid #C8C7D5;
+	border-right: 1px solid #fff;
+	border-bottom: 1px solid #fff;
+	border-left: 1px solid #C8C7D5;
+	font-weight: bold;
+	padding: 0 3px;
+	color: #fff;
+	text-transform: uppercase;
+}
+.toolbuttonDisabled {
+	border-top: 1px solid #fff;
+	border-right: 1px solid #C8C7D5;
+	border-bottom: 1px solid #C8C7D5;
+	border-left: 1px solid #fff;
+	font-weight: bold;
+	padding: 0 3px;
+	color: #fff;
+	text-transform: uppercase;	
+}
+
+.toolbuttonDisabled:hover {	
+	border-top: 1px solid #fff;
+	border-right: 1px solid #C8C7D5;
+	border-bottom: 1px solid #C8C7D5;
+	border-left: 1px solid #fff;
+	font-weight: bold;
+	padding: 0 3px;
+	color: #fff;
+	text-transform: uppercase;	
+}
+
+.toolbutton_big {	
+	background: #767586 url(img/bg-button.gif) repeat-x;
+	border-top: 1px solid #fff;
+	border-right: 1px solid #C8C7D5;
+	border-bottom: 1px solid #C8C7D5;
+	border-left: 1px solid #fff;
+	font-weight: bold;
+	padding: 0 8px;
+	color: #fff;
+	text-transform: uppercase;
+}
+
+.toolbutton_big:hover {	
+	background: #767586 url(img/bg-button.gif) repeat-x;
+	border-top: 1px solid #C8C7D5;
+	border-right: 1px solid #fff;
+	border-bottom: 1px solid #fff;
+	border-left: 1px solid #C8C7D5;
+	font-weight: bold;
+	padding: 0 8px;
+	color: #fff;
+	text-transform: uppercase;
+}
+
+.toolbutton_bigDisabled {	
+	background: #767586 url(img/bgd-button.gif) repeat-x;
+	border-top: 1px solid #fff;
+	border-right: 1px solid #C8C7D5;
+	border-bottom: 1px solid #C8C7D5;
+	border-left: 1px solid #fff;
+	font-weight: bold;
+	padding: 0 8px;
+	color: #000;
+	text-transform: uppercase;
+}
+
+.toolbutton_bigDisabled:hover {	
+	background: #767586 url(img/bgd-button.gif) repeat-x;
+	border-top: 1px solid #C8C7D5;
+	border-right: 1px solid #fff;
+	border-bottom: 1px solid #fff;
+	border-left: 1px solid #C8C7D5;
+	font-weight: bold;
+	padding: 0 8px;
+	color: #000;
+	text-transform: uppercase;
+}
+
+.toolbutton_small {	
+	background: #767586 url(img/bg-button.gif) repeat-x;
+	border-top: 1px solid #fff;
+	border-right: 1px solid #C8C7D5;
+	border-bottom: 1px solid #C8C7D5;
+	border-left: 1px solid #fff;
+	font-weight: normal;
+	padding: 0 0;
+	color: #fff;
+	text-transform: uppercase;
+	font-size: 8px;
+}
+
+.toolbutton_small:hover {	
+	background: #767586 url(img/bg-button.gif) repeat-x;
+	border-top: 1px solid #C8C7D5;
+	border-right: 1px solid #fff;
+	border-bottom: 1px solid #fff;
+	border-left: 1px solid #C8C7D5;
+	font-weight: normal;
+	padding: 0 0;
+	color: #fff;
+	text-transform: uppercase;
+	font-size: 8px;
+}
+
+.right {
+	float: right;	
+}
+
+.toolcombo {	
+	margin-top: 1px;
+}
+
+.tooltext {	
+	margin-left: 50px;
+}
+
+.parentid {
+	color: darkgreen;
+	font-weight: bold; 
+	background: #EEF0F5;
+	border: 1px solid #EEF0F5;
+}
+
+.parent_synopsys {
+	color: #000;
+	background: #EEF0F5;
+	border: 1px solid #EEF0F5;
+}
+.smallText {
+	font-weight: normal;
+	font-size: 10px;
+}
+
+
+/* Tabs */
+
+.tabActive a, .tabActive a:link, .tabActive a:visited, .tabActive a:hover, .tabActive a:active {
+	color: #fff;
+	background: url(img/bg-tab-active.gif) no-repeat right top;	
+	border-top: 1px solid #5F2B2B;
+	border-right: 1px solid #5F2B2B;
+	border-left: 1px solid #A21A20;	
+	padding: 4px 19px 3px 19px;
+	display: block;
+	float: left; /* IE bug fix because it doesn't render the background position correctly without a fixed width */
+	margin: 0 3px 0 0;
+}
+
+.tabInactive a, .tabInactive a:link, .tabInactive a:visited, .tabInactive a:hover, .tabInactive a:active {
+	color: #3A394B;
+	background: url(img/bg-tab-inactive.gif) no-repeat right top;
+	border-top: 1px solid #77787B;
+	border-right: 1px solid #77787B;
+	border-left: 1px solid #77787B;
+	padding: 4px 19px 3px 19px;
+	display: block;
+	margin: 0 3px 0 0;
+}
+
+.tabBottomBar {
+	border-top: 3px solid #BF2128;
+	height: 10px;
+	line-height: 10px;
+}
+
+
+/* Logon */
+
+.logonTab {
+	border: none;
+	width: 100%;	
+}
+
+.logonLeft {
+	vertical-align: top;
+	width: 295px;	
+}
+
+.logonRight {
+	vertical-align: top;
+}
+
+
+/* Reports */
+
+table.reportsTable, table.reportsTableSmall {
+	border: 1px solid #77787B;	
+	width: 100%;
+}
+
+table.reportsTable th, table.reportsTableSmall th {
+	border-bottom: 1px solid #77787B;	
+	background: url(img/bg-table-header.gif) right top;
+	font-size: 11px;
+	padding: 6px 12px 5px 9px;
+	text-align: left;
+	white-space: nowrap;
+	border-top: 1px solid #fff;
+}
+
+table.reportsTableSmall th {
+	font-size: 10px;
+	padding: 4px 4px 3px 5px;
+}
+
+table.reportsTableSmall .dataName {
+	text-align: right;
+	white-space: normal;
+	padding: 2px 1px;
+	height: auto;
+	background-image: url(img/dots.gif);
+	background-repeat:  repeat-x;
+	background-position: bottom;
+}
+
+table.reportsTableSmall .dataValue {
+	padding: 2px 4px 2px 6px;
+	background-image: url(img/dots.gif);
+	background-repeat: repeat-x;
+	background-position: bottom;
+	font-weight: bold;
+}
+
+table.reportsTable th.reportsTableSpecial {
+	background: url(img/bg-table-header.gif) no-repeat left top;
+}
+
+table.reportsTable th a {
+	color: #1D5090;	
+	padding: 0 13px 0 0;
+}
+
+table.reportsTable th a:hover {
+	color: #BF2128;
+	/*background: url(img/dataSort-inactive.gif) no-repeat right bottom;*/
+}
+
+table.reportsTable th a strong.reportsTableSortAsc  {
+	color: #BF2128;
+	padding: 0 13px 0 0;
+	/*margin: 0 -10px 0 0;*/
+	background: url(icons/sortAsc.gif) no-repeat right top;
+}
+table.reportsTable th a strong.reportsTableSortDesc  {
+	color: #BF2128;
+	padding: 0 13px 0 0;
+	/*margin: 0 -10px 0 0;*/
+	background: url(icons/sortDesc.gif) no-repeat right top;
+}
+table.reportsTable th a img.reportsTableSortAsc  {
+	color: #BF2128;
+	padding: 0 13px 0 0;
+	/*margin: 0 -10px 0 0;*/
+	background: url(icons/sortAsc.gif) no-repeat right top;
+}
+table.reportsTable th a img.reportsTableSortDesc  {
+	color: #BF2128;
+	padding: 0 13px 0 0;
+	/*margin: 0 -10px 0 0;*/
+	background: url(icons/sortDesc.gif) no-repeat right top;
+}
+table.reportsTable th a.plusminus, table.reportsTable th a.plusminus:hover {
+	background: none;	
+	padding: 0 0 0 0;
+}
+
+tr.reportsTable td {
+	background-color: #EEEDED;	
+}
+
+tr.reportsTableOdd td {
+	background-color: #e5e5e5;	
+}
+
+tr.reportsTableSelected td {
+	background-color :#ffaa9f;
+}
+
+tr.reportsTableGrouping td {
+	background-color :#BEC0C6;
+}
+
+td.reportsTable {
+	padding: 5px 9px 4px 9px;
+	font-size: 10px;
+	vertical-align: middle;
+	background: url(img/dots-vertical.gif) repeat-y right 3px;
+	border-bottom: 1px solid #fff;
+}
+
+td.reportsTableValignTop {
+	padding: 5px 9px 4px 9px;
+	font-size: 10px;
+	vertical-align: top;
+	background: url(img/dots-vertical.gif) repeat-y right 3px;
+	border-bottom: 1px solid #fff;
+}
+
+td.reportsTableSpecial {
+	background: none;	
+}
+
+.OnPlan td {
+	color: #393B40;	
+}
+
+.DueSoon td {
+	color: #FA763A;
+}
+.DueSoon td a{
+	color: #FA763A;
+}
+.DueSoon td a:active {
+	color: #FA763A;
+}
+.DueSoon td a:hover{ 
+	color: #1D5090;
+	background: none;
+	text-decoration:underline;
+}
+
+.NotOnPlan td {
+	color: #BF2128;	
+}
+.NotOnPlan td a {
+	color:#BF2128;
+}
+.NotOnPlan td a:active {
+	color:#BF2128;
+}
+.NotOnPlan td a:hover{ 
+	color: #1D5090;
+	background: none;
+	text-decoration:underline;
+}
+.ClosedNotOnPlan td {
+	color: #393B40;
+}
+
+.smallTable .dataName {
+	height: auto;
+	padding: 3px 3px;
+}
+
+.smallTable .dataValue {
+	padding: 3px 3px 3px 10px;
+}
+
+a.synopsis_blue { 
+	color: #1D5090;
+	font-weight: normal;
+}
+
+a.synopsis_blue:active { 
+   color: #1D5090;
+}
+
+a.synopsis_blue:hover { 
+   color: #BF2128;
+   background: none;
+   text-decoration:underline;                         
+}
+
+a.synopsis_red { 
+	color: #BF2128;
+}
+
+a.synopsis_red:active { 
+	color: #BF2128;
+}
+
+a.synopsis_red:hover { 
+	color: #1D5090;
+	background: none;
+	text-decoration:underline;
+}
+
+a.synopsis_orange{
+	color: #FA763A;
+}
+a.synopsis_orange:active {
+	color: #FA763A;
+}
+a.synopsis_orange:hover{ 
+	color: #1D5090;
+	background: none;
+	text-decoration:underline;
+}
+
+a.synopsisClosedNotOnPlan { 
+	color: #1D5090;
+	font-weight: normal;
+}
+
+a.synopsisClosedNotOnPlan:active { 
+   color: #1D5090;
+}
+
+a.synopsisClosedNotOnPlan:hover { 
+   color: #BF2128;
+   background: none;
+   text-decoration:underline;                         
+}
+
+.totalBudget { background: #0000ff !important; }
+.remainingBelow { background: #008800 !important; }
+.remainingAbove { background: #880000 !important; }
+.executedBelow { background: #00ff00 !important; }
+.executedAbove { background: #ff0000 !important; }
+
+.visible { display: block; }
+.invisible { display: none; }
+.visibleInline { display: inline; }
+.visibleTableCell { display:table-cell; }
+
+
+a.attach { 
+	color: #000; 
+	text-decoration: underline;
+   font-weight: normal; 
+}
+
+a.attach:hover {
+	color: red;
+	text-decoration: none;
+}
+
+ .code-text {
+   font-family: Courier;
+   font-size: 10px;
+   text-align: left;
+ }
+
+
+
+/* Old styles */
+
+ .background-gray { 
+ 	background-color:#EEF0F5;
+ 	padding: 1px; 
+ }
+ 
+ .background-darkgray { 
+ 	background-color:#BEC0C6; 
+ 	padding: 3px;
+ }
+
+a.MenuMainItem {
+	color:#fff;
+	font-weight:normal;
+}
+
+a.MenuMainItem:hover {
+	color:#fff;
+	font-weight:normal;
+}
+
+a.MenuSubItem {
+	color:#000;
+	font-weight:normal;
+}
+
+a.MenuSubItem:hover {
+	color:#000;
+	font-weight:normal;
+}
+
+/* Dashboard style */
+.dashboardField {
+    vertical-align: top;
+}
+.dashboardFieldCell{
+	vertical-align: top;
+}
+.dashboardFieldRuntime {
+    border: 1px solid #CACACA;
+ 	background-color:#EEEEEE;
+	padding:10px;
+	overflow: hidden;
+	margin: 0 0px 5px 5px; 
+}
+
+.dashboardFieldContainer {
+	padding-left: 8px;
+	padding-right: 8px;
+	padding-bottom: 8px;	
+}
+
+.dashboardEditButton {
+	float: right;
+}
+
+.dashboardEditButton a {
+	font-weight: normal;
+}
+
+/*screen form styles*/
+
+.screenFromDataName {
+    background: transparent url(img/dots.gif) repeat-x scroll left bottom;
+    height: 28px;
+	padding: 0 3px;
+	white-space: nowrap;
+	width: 10%;
+}
+
+.screenFromDataValue {
+    background: transparent url(img/dots.gif) repeat-x scroll left bottom;
+    padding:3px 3px 3px 10px;
+    width:auto;
+}
+
+.containerRow1 td.screenFromDataValue {
+    border-right: solid 15px #EEF0F5;
+}
+
+.containerRow2 td.screenFromDataValue {
+    border-right: solid 15px #EEEDED;
+}
+
+.containerTable {
+    width: 100%;	
+}
+
+.dojoTabContainer {
+	height: 1%; /* IE7 needs this... */
+}
+
+a.chooseParent {
+	color: #BF2128;
+	display:block;
+	font-size:9px;
+	padding:24px 24px 0;
+	height: 1px;
+	text-align:center;
+	white-space:nowrap;
+	background: url(icons/arrow-up-active.gif) no-repeat center top;
+}
+a.chooseParentDisabled {
+	color:#3A394B;
+	display:block;
+	font-size:9px;
+	padding:24px 24px 0;
+	height: 1px;
+	text-align:center;
+	white-space:nowrap;
+	background: url(icons/arrow-up.gif) no-repeat center top;
+}
+
+.itemDetailTabGrid{
+	padding:0px 0px 0px 0px;
+	height: auto;
+	width: 100%;
+	overflow: hidden;
+}
+.editableField{
+	background-image:url(icons/editableFieldBG.gif);
+	background-position:right bottom;
+	background-repeat:no-repeat;
+}
+
+#printItemTabs {
+	margin-top: 25px;
+}
+
+td.cell {
+	padding-top:0px;
+	padding-bottom:0px;
+	padding-left:5px;
+	padding-right: 0px;
+	font-size: 10px;
+	vertical-align: middle;
+	/*background: url(img/dots-vertical.gif) repeat-y right 3px;*/
+	border-right: 1px solid #CACACA;
+	border-bottom: 1px solid #fff;
+	white-space:nowrap;
+	overflow:hidden;
+}
+.rowWithDetail td{
+	border-bottom:none;
+}
+.resizableThWrapper{
+	width:auto;
+	white-space:nowrap;
+	overflow:hidden;
+	padding-left:5px;
+	padding-right: 3px;
+	padding-top: 3px;
+	padding-bottom: 2px;
+	height: 25px;
+}
+
+.cellw{
+	width:auto;
+	white-space:nowrap;
+	overflow:hidden;
+	padding-left:5px;
+	padding-right: 3px;
+}
+table.reportHistory {
+	width: 100%;
+	table-layout: fixed;
+	border-top:1px solid #CACACA;
+	border-left:1px solid #CACACA;
+	border-bottom:none;
+	border-right:none;
+	padding: 0px;
+}
+
+tr.reportHistoryRow td {
+	border-bottom: 1px solid #CACACA;
+}
+
+tr.reportHistoryRowLast td {
+	border-bottom: none;
+}
+.reportHistoryCellLabel{
+	border-right: none;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 2px;
+	padding-right: 2px;
+	font-style: italic;
+	font-weight: bold;
+}
+.reportHistoryCell {
+	border-right: 1px solid #CACACA;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 2px;
+	padding-right: 2px;
+	vertical-align: top;
+}
+
+.reportHistoryCellLast {
+	border-right: none;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 2px;
+	padding-right: 2px;
+	vertical-align: top;
+}
+
+/* report tree*/
+
+.rtspace{
+	width: 16px; 
+	border: none;
+	padding: 0px;
+}
+.rtspace-line{
+	width: 16px; 
+	border: none;
+	padding: 0px;
+	background-image: url(icons/tree-space.gif);
+}
+.rtnode{
+	width: 16px; 
+	border: none;
+	padding: 0px;
+	background-image: url(icons/tree-plus.gif);
+	height: 22px;
+}
+.rtnode-expanded{
+	width: 16px; 
+	border: none;
+	padding: 0px;
+	background-image: url(icons/tree-minus.gif);
+	height: 22px;
+}
+.rtnode-lower{
+	width: 16px; 
+	border: none;
+	padding: 0px;
+	background-image: url(icons/tree-plus-lower.gif);
+	height: 22px;
+}
+.rtnode-lower-expanded{
+	width: 16px; 
+	border: none;
+	padding: 0px;
+	background-image: url(icons/tree-minus-lower.gif);
+	height: 22px;
+}
+.rtnode-leaf{
+	width: 16px; 
+	border: none;
+	padding: 0px;
+	background-image: url(icons/tree-leaf.gif);
+	height: 22px;
+}
+.rtnode-leaf-lower{
+	width: 16px; 
+	border: none;
+	padding: 0px;
+	background-image: url(icons/tree-leaf-lower.gif);
+	height: 22px;
+}
+.bulkHeader{
+	background-color:transparent;
+	background-image:url("icons/bulkCheck.gif");
+	/*background-position:2px 2px;*/
+	background-repeat:no-repeat;
+	width:13px;
+	height:13px;
+	margin-left: 4px;
+	margin-right: 4px;
+}
+.bulkHeader-select{
+	background-color:transparent;
+	background-image:url("icons/bulkCheck-select.gif");
+	/*background-position:2px 2px;*/
+	background-repeat:no-repeat;
+	width:13px;
+	height:13px;
+	margin-left: 4px;
+	margin-right: 4px;
+}
+td.bulkCell{
+	padding-top:0px;
+	padding-bottom:0px;
+	padding-left:0px;
+	padding-right:0px;
+	font-size: 10px;
+	vertical-align: middle;
+	background-color:#DFDFE0;
+	border-right:1px solid #B9B9BA;
+	border-bottom: 1px solid #fff;
+}
+.rowWithDetail td.bulkCell{
+	border-bottom:none;
+}
+.intentTable{
+	border-spacing: 0px;
+	/*width:100%;*/
+	table-layout:fixed;
+	padding-top:0px;
+	padding-bottom: 0px;
+}
+
+.edit16 {
+    background-image:url(icons/edit16.gif) !important;
+}
+.copy16 {
+    background-image:url(icons/copy16.gif) !important;
+}
+.move16{
+	background-image:url(icons/move16.gif) !important;
+}
+.changeStatus16{
+	background-image:url(icons/changeStatus16.gif) !important;
+}
+.addChild16{
+	background-image:url(icons/addChild16.gif) !important;
+}
+.parent16{
+	background-image:url(icons/parent16.gif) !important;
+}
+.removeParent{
+	background-image:url(icons/removeParent.gif) !important;
+}
+.cost{
+	background-image:url(icons/cost.gif) !important;
+}
+.report16{
+	background-image:url(icons/chart_pie16.png) !important;
+}
+.lock16{
+	background-image:url(icons/lock16.gif) !important;
+}
+.unlock16{
+	background-image:url(icons/unlock16.gif) !important;
+}
+.indent{
+	background-image:url(icons/arrow-sort-right.gif) !important;
+}
+.outdent{
+	background-image:url(icons/arrow-sort-left.gif) !important;
+}
+
+.dd-arrow-down {
+	background-image: url(icons//arrow-sort-down.gif);
+	display: block;
+	visibility: visible;
+	z-index: 20000;
+	position: absolute;
+	width: 16px;
+	height: 16px;
+	top: 0;
+	left: 0;
+}
+
+.dd-line {
+	background-image: url(icons//GreenBar.gif);
+	display: block;
+	visibility: visible;
+	z-index: 20000;
+	position: absolute;
+	width: 100px;
+	height: 1px;
+	top: 0;
+	left: 0;
+}
+
+.descriptionWrapper{
+	max-height:600px;
+	width:100%;
+	overflow:auto;
+}
+
+/*
+print item 
+*/
+.bodyPrintItem{
+	background:none;
+}
+#contentPrintItem{
+	padding: 5px 5px 5px 5px;
+}
+#contentPrintItem h4{
+	background:none;
+}
+#contentPrintItem div.containerRow1 {
+	background:none; 
+}
+#contentPrintItem div.containerRow2 {
+	background:none; 
+}
+#contentPrintItem td.screenFromDataName {
+	background:none;
+}
+#contentPrintItem td.screenFromDataValue {
+	border-right:none;
+	padding:3px 3px 3px 3px;
+	background:none;
+}
+
+#contentPrintItem tr.dataRow1 td, #contentPrintItem tr.dataRow2 td,
+#contentPrintItem tr.dataRow1 th, #contentPrintItem tr.dataRow2 th {
+	background:none;
+}
+#contentPrintItem div.descriptionWrapper{
+	max-height:none;
+}
+
+/*
+END print item
+*/
+
+.permLinkKeepMeLogged{
+	color: red;
+}
+
+.permLinkNotKeepMeLogged{
+	color: black;
+}
+
+.errBox{
+	background: #ff4444;
+}
+
+.forgotPwd{
+	background: #b8b8b8;
+}
+

@@ -1,0 +1,655 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ns2:trackplusExchange xmlns:ns2="http://www.trackplus.com/exporter/" version="4.0.0">
+	<entityExchange entityId="1006" type="TMailTemplateBean">
+		<entityAttribute name="objectID"><![CDATA[1006]]></entityAttribute>
+		<entityAttribute name="name"><![CDATA[Item created by e-mail]]></entityAttribute>
+		<entityAttribute name="uuid">74e1c858-1ef1-4b48-8dd4-e036a89d7d68</entityAttribute>
+		<subEntityRelation parentAttributeName="mailTemplateID" type="TMailTemplateDefBean">
+			<trackEntity entityId="1023" type="TMailTemplateDefBean">
+				<entityAttribute name="theLocale"><![CDATA[en]]></entityAttribute>
+				<entityAttribute name="mailBody"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="generator" content="Track+ Task Management System 91827364"/>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+	<title>Track+ E-Mail Notification</title>
+	<style>
+	    td, th, p, div { 
+	    	font-family:  Helvetica,Arial,sans-serif;
+	        font-size: 11pt;
+	    }
+	    
+	    a { 
+			color: #1D5090; 
+			text-decoration: none; 
+			font-weight: normal;
+		}	
+			
+		a:active  { 
+			color: #BF2128;
+		}	
+			
+		a:hover { 
+			color: #BF2128;
+		}	
+		
+	    body {
+			font-family: Helvetica,Arial,sans-serif;
+			font-size: 11pt;
+			color: #3A394B;
+			margin: 0;
+			padding: 10px;	
+			background: #fff;
+		}
+		
+		p {
+			padding: 0;
+			margin: 0 0 0.6em;
+		}
+		
+
+		h1 {
+			font-weight: bold;
+			font-size: 14pt;
+			margin: 0 0 3px 0;
+		}
+		
+		h2 {
+			font-weight: bold;
+			font-size: 12pt;
+			margin: 0 0 6px 0;
+		}
+		
+		.table {
+			border: 0px none #77787b; 
+			border-collapse: collapse;
+		}
+		
+		.table th {
+			/* background:#393B40 none repeat scroll 0%;*/
+			border-bottom:1px solid #777;
+			border-left:1px solid #777;
+			color:#333;
+			font-size:11pt;
+			font-weight:bold;
+			padding: 4px 8px;
+			text-align:center;
+		}
+		
+		.table th:first-child{
+			border-left:0px solid #777;
+		}
+		
+		.table td {
+			border-top: 1px solid #e6e6e6;
+			border-left: 1px solid #777;
+			padding: 4px 8px;
+		}
+
+		.table tr td:first-child {
+			border-left: 0px solid #777;
+		}
+		
+		.firstcol {
+		    width:26%;
+		    /* background-color:#d8e1ed; */
+		    text-align:right;
+		}
+		
+		.valcol {
+		    width:74%;
+		    /* background-color:#edf0f6; */
+		    text-align:left;
+		}
+		
+		.containerRow1 {
+			/* background: #EEF0F5 none repeat scroll 0%; */
+			border: 0px solid #77787B;
+			padding: 5px 15px 0 15px;
+		}
+		
+		.containerRow2 {
+			/* background: #EEEDED none repeat scroll 0%; */
+			border-left: 1px solid #222;
+			padding: 5px 15px  0 15px;
+			margin: 10px 0 0 0;
+		}
+		
+		.red { color: #bf2128; }
+    </style>
+    <#assign bgcolorCellNormal = "#edf0f6">
+    <#assign bgcolorCellChanged = "#ffaa9f">
+	<#-- render the long fields  (description, comment, ... ) -->
+	<#macro renderLongFields fieldChangeRows>
+    	<#list fieldChangeRows as fieldChange>
+    	<div class="containerRow2">
+	    	<p><b>${fieldChange.localizedChangeDetail}</b>: <br />
+	    	${fieldChange.newShowValue}</p>
+	    </div>
+    	</#list>    
+	</#macro>
+    <#-- render the short fields -->
+    <#macro renderShortFields fieldChangeRows>     
+    	<#list fieldChangeRows as fieldChange>
+	    	<tr>
+		       	<td class="firstcol">${fieldChange.localizedFieldLabel}:</td>
+		       	<td class="valcol">${fieldChange.newShowValue}</td>
+	       	</tr>	       
+    	</#list>
+	</#macro>
+</head>
+<body> 
+	<table width="100%" cellpadding="0" cellspacing="0" style="margin: 0 0 12px 0;">
+		<tbody><tr>
+			<td valign="center">
+				<p>
+					Hello, </p><p>thank you for submitting your request which we will attend to immediately.
+				</p>
+				<p>
+					You will get a response as soon as possible. In case you have direct access to our support system you can see the 
+					actual workflow status at <a href="${moreInfo}">${moreInfo}</a>. You can give us additional information by replying to this e-mail.
+				</p>
+	<p>Thank you!</p>
+	<p style="margin-top:1.2em;">Your support team</p><p>&nbsp;</p>
+		<p style="margin-top:0.8em;">p.s.: For your records, the details of your request are listed here:</p>
+				<p>
+					Subject: ${title}
+				</p>
+		    </td>
+		    <td align="right" valign="top" style="padding-left:10px;"><a href="#"><img border="0" src='cid:$$CID$$' alt="Track+"></a></td>
+		</tr>
+	</tbody></table>
+	
+	<@renderLongFields longFieldChanges/>	
+
+</body><!--TPBODYEND-->
+</html>]]></entityAttribute>
+				<entityAttribute name="objectID"><![CDATA[1023]]></entityAttribute>
+				<entityAttribute name="templateChanged"><![CDATA[Y]]></entityAttribute>
+				<entityAttribute name="mailTemplateID"><![CDATA[1006]]></entityAttribute>
+				<entityAttribute name="plainMail"><![CDATA[false]]></entityAttribute>
+				<entityAttribute name="uuid"
+					><![CDATA[c00c7a61-b8f9-473c-8791-c21e323188a1]]></entityAttribute>
+				<entityAttribute name="mailSubject"
+					><![CDATA[${marker} Your support request]]></entityAttribute>
+			</trackEntity>
+
+			<!-- German HTML -->
+
+			<trackEntity entityId="1024" type="TMailTemplateDefBean">
+				<entityAttribute name="theLocale"><![CDATA[de]]></entityAttribute>
+				<entityAttribute name="mailBody"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="generator" content="Track+ Task Management System 91827364"/>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+	<title>Track+ E-Mail Notification</title>
+	<style>
+	    td, th, p, div { 
+	    	font-family:  Helvetica,Arial,sans-serif;
+	        font-size: 11pt;
+	    }
+	    
+	    a { 
+			color: #1D5090; 
+			text-decoration: none; 
+			font-weight: normal;
+		}	
+			
+		a:active  { 
+			color: #BF2128;
+		}	
+			
+		a:hover { 
+			color: #BF2128;
+		}	
+		
+	    body {
+			font-family: Helvetica,Arial,sans-serif;
+			font-size: 11pt;
+			color: #3A394B;
+			margin: 0;
+			padding: 10px;	
+			background: #fff;
+		}
+		
+		p {
+			padding: 0;
+			margin: 0 0 0.6em;
+		}
+		
+
+		h1 {
+			font-weight: bold;
+			font-size: 14pt;
+			margin: 0 0 3px 0;
+		}
+		
+		h2 {
+			font-weight: bold;
+			font-size: 12pt;
+			margin: 0 0 6px 0;
+		}
+		
+		.table {
+			border: 0px none #77787b; 
+			border-collapse: collapse;
+		}
+		
+		.table th {
+			/* background:#393B40 none repeat scroll 0%;*/
+			border-bottom:1px solid #777;
+			border-left:1px solid #777;
+			color:#333;
+			font-size:11pt;
+			font-weight:bold;
+			padding: 4px 8px;
+			text-align:center;
+		}
+		
+		.table th:first-child{
+			border-left:0px solid #777;
+		}
+		
+		.table td {
+			border-top: 1px solid #e6e6e6;
+			border-left: 1px solid #777;
+			padding: 4px 8px;
+		}
+
+		.table tr td:first-child {
+			border-left: 0px solid #777;
+		}
+		
+		.firstcol {
+		    width:26%;
+		    /* background-color:#d8e1ed; */
+		    text-align:right;
+		}
+		
+		.valcol {
+		    width:74%;
+		    /* background-color:#edf0f6; */
+		    text-align:left;
+		}
+		
+		.containerRow1 {
+			/* background: #EEF0F5 none repeat scroll 0%; */
+			border: 0px solid #77787B;
+			padding: 5px 15px 0 15px;
+		}
+		
+		.containerRow2 {
+			/* background: #EEEDED none repeat scroll 0%; */
+			border-left: 1px solid #222;
+			padding: 5px 15px  0 15px;
+			margin: 10px 0 0 0;
+		}
+		
+		.red { color: #bf2128; }
+    </style>
+    <#assign bgcolorCellNormal = "#edf0f6">
+    <#assign bgcolorCellChanged = "#ffaa9f">
+	<#-- render the long fields  (description, comment, ... ) -->
+	<#macro renderLongFields fieldChangeRows>
+    	<#list fieldChangeRows as fieldChange>
+    	<div class="containerRow2">
+	    	<p><b>${fieldChange.localizedChangeDetail}</b>: <br />
+	    	${fieldChange.newShowValue}</p>
+	    </div>
+    	</#list>    
+	</#macro>
+    <#-- render the short fields -->
+    <#macro renderShortFields fieldChangeRows>     
+    	<#list fieldChangeRows as fieldChange>
+	    	<tr>
+		       	<td class="firstcol">${fieldChange.localizedFieldLabel}:</td>
+		       	<td class="valcol">${fieldChange.newShowValue}</td>
+	       	</tr>	       
+    	</#list>
+	</#macro>
+</head>
+<body> 
+	<table width="100%" cellpadding="0" cellspacing="0" style="margin: 0 0 12px 0;">
+		<tbody><tr>
+			<td valign="center">
+				<p>
+					Guten Tag,</p><p>wir bedanken uns für Ihre Anfrage, die wir umgehend bearbeiten werden.
+				</p>
+				<p>
+					Sie werden so schnell wie möglich eine Antwort erhalten. Wenn Sie 
+direkten Zugang zu unserem Support-System haben, können Sie den aktuellen 
+Bearbeitungsstand unter <a href="${moreInfo}">${moreInfo}</a> einsehen.</p><p>
+Sie können uns zusätzliche Informationen zu diesem Vorgang zukommen lassen, 
+indem Sie auf diese E-Mail antworten.
+				</p>
+	<p>Freundliche Grüße</p>
+	<p style="margin-top:1.2em;">Ihr Support-Team</p>
+	<p>&nbsp;</p>
+				<p style="margin-top:0.8em;">p.s.: Für Ihre Unterlagen hier die Details Ihrer Anfrage:</p>
+				<p>
+					Betreff: ${title}
+				</p>
+		    </td>
+		    <td align="right" valign="top" style="padding-left:10px;"><a href="#"><img border="0" src='cid:$$CID$$' alt="Track+"></a></td>
+		</tr>
+	</tbody></table>
+	
+	<@renderLongFields longFieldChanges/>	
+
+</body><!--TPBODYEND-->
+</html>]]></entityAttribute>
+				<entityAttribute name="objectID"><![CDATA[1024]]></entityAttribute>
+				<entityAttribute name="templateChanged"><![CDATA[Y]]></entityAttribute>
+				<entityAttribute name="mailTemplateID"><![CDATA[1006]]></entityAttribute>
+				<entityAttribute name="plainMail"><![CDATA[false]]></entityAttribute>
+				<entityAttribute name="uuid"
+					><![CDATA[aa6c9224-1f97-4f11-989f-087fba61d5b0]]></entityAttribute>
+				<entityAttribute name="mailSubject"
+					><![CDATA[${marker} Ihre Anfrage]]></entityAttribute>
+			</trackEntity>
+
+			<!-- French HTML -->
+
+			<trackEntity entityId="1023" type="TMailTemplateDefBean">
+				<entityAttribute name="theLocale"><![CDATA[fr]]></entityAttribute>
+				<entityAttribute name="mailBody"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="generator" content="Track+ Task Management System 91827364"/>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+	<title>Notification E-mail Track+</title>
+	<style>
+	    td, th, p, div { 
+	    	font-family:  Helvetica,Arial,sans-serif;
+	        font-size: 11pt;
+	    }
+	    
+	    a { 
+			color: #1D5090; 
+			text-decoration: none; 
+			font-weight: normal;
+		}	
+			
+		a:active  { 
+			color: #BF2128;
+		}	
+			
+		a:hover { 
+			color: #BF2128;
+		}	
+		
+	    body {
+			font-family: Helvetica,Arial,sans-serif;
+			font-size: 11pt;
+			color: #3A394B;
+			margin: 0;
+			padding: 10px;	
+			background: #fff;
+		}
+		
+		p {
+			padding: 0;
+			margin: 0 0 0.6em;
+		}
+		
+		
+		h1 {
+			font-weight: bold;
+			font-size: 14pt;
+			margin: 0 0 3px 0;
+		}
+		
+		h2 {
+			font-weight: bold;
+			font-size: 12pt;
+			margin: 0 0 6px 0;
+		}
+		
+		.table {
+			border: 0px none #77787b; 
+			border-collapse: collapse;
+		}
+		
+		.table th {
+			/* background:#393B40 none repeat scroll 0%;*/
+			border-bottom:1px solid #777;
+			border-left:1px solid #777;
+			color:#333;
+			font-size:11pt;
+			font-weight:bold;
+			padding: 4px 8px;
+			text-align:center;
+		}
+		
+		.table th:first-child{
+			border-left:0px solid #777;
+		}
+		
+		.table td {
+			border-top: 1px solid #e6e6e6;
+			border-left: 1px solid #777;
+			padding: 4px 8px;
+		}
+		
+		.table tr td:first-child {
+			border-left: 0px solid #777;
+		}
+		
+		.firstcol {
+		    width:26%;
+		    /* background-color:#d8e1ed; */
+		    text-align:right;
+		}
+		
+		.valcol {
+		    width:74%;
+		    /* background-color:#edf0f6; */
+		    text-align:left;
+		}
+		
+		.containerRow1 {
+			/* background: #EEF0F5 none repeat scroll 0%; */
+			border: 0px solid #77787B;
+			padding: 5px 15px 0 15px;
+		}
+		
+		.containerRow2 {
+			/* background: #EEEDED none repeat scroll 0%; */
+			border-left: 1px solid #222;
+			padding: 5px 15px  0 15px;
+			margin: 10px 0 0 0;
+		}
+		
+		.red { color: #bf2128; }
+    </style>
+    <#assign bgcolorCellNormal = "#edf0f6">
+    <#assign bgcolorCellChanged = "#ffaa9f">
+	<#-- render the long fields  (description, comment, ... ) -->
+	<#macro renderLongFields fieldChangeRows>
+    	<#list fieldChangeRows as fieldChange>
+    	<div class="containerRow2">
+	    	<p><b>${fieldChange.localizedChangeDetail}</b>: <br />
+	    	${fieldChange.newShowValue}</p>
+	    </div>
+    	</#list>    
+	</#macro>
+    <#-- render the short fields -->
+    <#macro renderShortFields fieldChangeRows>     
+    	<#list fieldChangeRows as fieldChange>
+	    	<tr>
+		       	<td class="firstcol">${fieldChange.localizedFieldLabel}:</td>
+		       	<td class="valcol">${fieldChange.newShowValue}</td>
+	       	</tr>	       
+    	</#list>
+	</#macro>
+</head>
+<body> 
+	<table width="100%" cellpadding="0" cellspacing="0" style="margin: 0 0 12px 0;">
+		<tbody><tr>
+			<td valign="center">
+				<p>
+					Bonjour, </p><p>merci d'avoir soumis votre requête, nous allons nous en occuper immédiatement.
+				</p>
+				<p>
+					Vous recevrez une réponse dès que possible. Si vous avez un accès direct à notre système de support vous pouvez voir le statut 
+					actuel du processus <a href="${moreInfo}">${moreInfo}</a>.Vous pouvez nous donner plus d'informations en répondant à cet e-mail.
+				</p>
+	<p>Nous vous remercions!</p>
+	<p style="margin-top:1.2em;">Votre équipe support</p><p>&nbsp;</p>
+		<p style="margin-top:0.8em;">p.s.: Pour vos enregistrements, voici les détails de votre demande:</p>
+				<p>
+					Subjet: ${title}
+				</p>
+		    </td>
+		    <td align="right" valign="top" style="padding-left:10px;"><a href="#"><img border="0" src='cid:$$CID$$' alt="Track+"></a></td>
+		</tr>
+	</tbody></table>
+	
+	<@renderLongFields longFieldChanges/>	
+	
+</body><!--TPBODYEND-->
+</html>]]></entityAttribute>
+				<entityAttribute name="objectID"><![CDATA[1023]]></entityAttribute>
+				<entityAttribute name="templateChanged"><![CDATA[Y]]></entityAttribute>
+				<entityAttribute name="mailTemplateID"><![CDATA[1006]]></entityAttribute>
+				<entityAttribute name="plainMail"><![CDATA[false]]></entityAttribute>
+				<entityAttribute name="uuid"
+					><![CDATA[ff0c7a61-b8f9-473c-8791-c21e323188a1]]></entityAttribute>
+				<entityAttribute name="mailSubject"
+					><![CDATA[${marker} Votre demande au support]]></entityAttribute>
+			</trackEntity>
+
+			<!-- Plain section start -->
+
+			<trackEntity entityId="1025" type="TMailTemplateDefBean">
+				<entityAttribute name="theLocale"><![CDATA[en]]></entityAttribute>
+				<entityAttribute name="mailBody"><![CDATA[
+<#macro renderLongFields fieldChangeRows>     
+<#list fieldChangeRows as fieldChange>
+${fieldChange.localizedChangeDetail}
+${fieldChange.newShowValue}
+</#list>
+</#macro>
+Hello,
+
+thank you for submitting your request which we will look after immediately.
+
+You will get a response as soon possible. In case you have direct access to 
+our support system you can see the actual workflow status at ${moreInfo}. 
+You can give us additional information by replying to this e-mail.
+
+
+Thank you!
+Your support team
+
+
+p.s.: For your records, here are the details of your request:</p>
+
+--------
+Subject: ${title}					
+	  	
+<@renderLongFields longFieldChanges/>
+--------
+	
+]]></entityAttribute>
+				<entityAttribute name="objectID"><![CDATA[1025]]></entityAttribute>
+				<entityAttribute name="templateChanged"><![CDATA[Y]]></entityAttribute>
+				<entityAttribute name="mailTemplateID"><![CDATA[1006]]></entityAttribute>
+				<entityAttribute name="plainMail"><![CDATA[true]]></entityAttribute>
+				<entityAttribute name="uuid"
+					><![CDATA[c95e41f7-c467-451c-8efb-bb03f65c48c2]]></entityAttribute>
+				<entityAttribute name="mailSubject"
+					><![CDATA[${marker} Your support request]]></entityAttribute>
+			</trackEntity>
+
+			<!-- German plain -->
+
+			<trackEntity entityId="1026" type="TMailTemplateDefBean">
+				<entityAttribute name="theLocale"><![CDATA[de]]></entityAttribute>
+				<entityAttribute name="mailBody"><![CDATA[					
+<#macro renderLongFields fieldChangeRows>     
+<#list fieldChangeRows as fieldChange>
+${fieldChange.localizedChangeDetail}
+${fieldChange.newShowValue}
+</#list>
+</#macro>
+Guten Tag,
+
+wir bedanken uns für Ihre Anfrage, die wir umgehend bearbeiten werden.
+
+Sie werden so schnell wie möglich eine Antwort erhalten. Wenn Sie 
+direkten Zugang zu unserem Support-System haben, können Sie den aktuellen 
+Bearbeitungsstand unter ${moreInfo} einsehen. 
+
+Sie können uns zusätzliche Informationen zu diesem Vorgang zukommen lassen, 
+indem Sie auf diese E-Mail antworten.
+
+Freundliche Grüße
+Ihr Support-Team
+
+
+p.s.: Für Ihre Unterlagen hier die Details Ihrer Anfrage:
+
+------
+Betreff: ${title}					
+
+<@renderLongFields longFieldChanges/>
+
+------
+
+  	]]></entityAttribute>
+				<entityAttribute name="objectID"><![CDATA[1026]]></entityAttribute>
+				<entityAttribute name="templateChanged"><![CDATA[Y]]></entityAttribute>
+				<entityAttribute name="mailTemplateID"><![CDATA[1006]]></entityAttribute>
+				<entityAttribute name="plainMail"><![CDATA[true]]></entityAttribute>
+				<entityAttribute name="uuid"
+					><![CDATA[790516c3-2e37-4b91-817a-e327ef3e54d7]]></entityAttribute>
+				<entityAttribute name="mailSubject"
+					><![CDATA[${marker} Ihre Anfrage]]></entityAttribute>
+			</trackEntity>
+
+			<!-- French Plain -->
+
+			<trackEntity entityId="1025" type="TMailTemplateDefBean">
+				<entityAttribute name="theLocale"><![CDATA[fr]]></entityAttribute>
+				<entityAttribute name="mailBody"><![CDATA[
+<#macro renderLongFields fieldChangeRows>     
+<#list fieldChangeRows as fieldChange>
+${fieldChange.localizedChangeDetail}
+${fieldChange.newShowValue}
+</#list>
+</#macro>
+Bonjour,
+
+merci d'avoir soumis votre requête, nous allons nous en occuper immédiatement.
+
+Vous recevrez une réponse dès que possible. Si vous avez un accès direct à notre système de support vous pouvez voir le statut actuel du processus à ${moreInfo}. 
+Vous pouvez nous donner plus d'informations en répondant à cet e-mail.
+
+
+Nous vous remercions!
+Votre équipe support.
+
+
+p.s.: Pour vos enregistrements, voici les détails de votre demande:</p>
+
+--------
+Subjet: ${title}					
+	  	
+<@renderLongFields longFieldChanges/>
+--------
+	
+]]></entityAttribute>
+				<entityAttribute name="objectID"><![CDATA[1025]]></entityAttribute>
+				<entityAttribute name="templateChanged"><![CDATA[Y]]></entityAttribute>
+				<entityAttribute name="mailTemplateID"><![CDATA[1006]]></entityAttribute>
+				<entityAttribute name="plainMail"><![CDATA[true]]></entityAttribute>
+				<entityAttribute name="uuid"
+					><![CDATA[ff5e41f7-c467-451c-8efb-bb03f65c48c2]]></entityAttribute>
+				<entityAttribute name="mailSubject"
+					><![CDATA[${marker} Votre demande au support]]></entityAttribute>
+			</trackEntity>
+		</subEntityRelation>
+	</entityExchange>
+</ns2:trackplusExchange>

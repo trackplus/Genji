@@ -1,0 +1,653 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version last-->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="TrackReportByResponsible" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="782" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" resourceBundle="TrackReportStandard" uuid="c4198f6f-4e89-44ce-b936-86f55c056456">
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Track+ Standard"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<style name="Base" isDefault="true" fontName="Gyre Heros" fontSize="10" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+	<style name="IssueNumber" forecolor="#BF2128" isBold="true"/>
+	<style name="Label" markup="none" isBold="true"/>
+	<style name="DateLate" forecolor="#FFFFFF" backcolor="#009900" isBlankWhenNull="true">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean(($F{OffPlan}.booleanValue()))]]></conditionExpression>
+			<style forecolor="#FFFFFF" backcolor="#BF2128" isBlankWhenNull="true"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($F{Due Date} == null)]]></conditionExpression>
+			<style forecolor="#FFFFFF" backcolor="#FFFFFF" isBlankWhenNull="true"/>
+		</conditionalStyle>
+	</style>
+	<style name="NoLateIssues">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{LateCount}.intValue() > 0 )]]></conditionExpression>
+			<style forecolor="#BF2128" isBold="true"/>
+		</conditionalStyle>
+	</style>
+	<style name="LateLabel" style="Base" forecolor="#000000" isBlankWhenNull="true">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean(($F{OffPlan}.booleanValue()))]]></conditionExpression>
+			<style forecolor="#A60000" isBlankWhenNull="true"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="BASE_URL" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+		<parameter name="LOGO_URL" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="COPYRIGHTHOLDER" class="java.lang.String" isForPrompting="false">
+		<parameterDescription><![CDATA[The name appearing at the bottom copyright statement]]></parameterDescription>
+		<defaultValueExpression><![CDATA["Steinbeis GmbH & Co.KG"]]></defaultValueExpression>
+	</parameter>
+	<queryString language="xPath">
+		<![CDATA[/track-report/item/.]]>
+	</queryString>
+	<field name="IssueNumber" class="java.lang.String">
+		<fieldDescription><![CDATA[IssueNo]]></fieldDescription>
+	</field>
+	<field name="Project" class="java.lang.String">
+		<fieldDescription><![CDATA[Project]]></fieldDescription>
+	</field>
+	<field name="ReleaseScheduled" class="java.lang.String">
+		<fieldDescription><![CDATA[ReleaseScheduled]]></fieldDescription>
+	</field>
+	<field name="ReleaseNoticed" class="java.lang.String">
+		<fieldDescription><![CDATA[ReleaseNoticed]]></fieldDescription>
+	</field>
+	<field name="Subsystem" class="java.lang.String">
+		<fieldDescription><![CDATA[Subproject]]></fieldDescription>
+	</field>
+	<field name="Title" class="java.lang.String">
+		<fieldDescription><![CDATA[Synopsis]]></fieldDescription>
+	</field>
+	<field name="Description" class="java.lang.String">
+		<fieldDescription><![CDATA[Description]]></fieldDescription>
+	</field>
+	<field name="Status" class="java.lang.String">
+		<fieldDescription><![CDATA[Status]]></fieldDescription>
+	</field>
+	<field name="Originator" class="java.lang.String">
+		<fieldDescription><![CDATA[Originator]]></fieldDescription>
+	</field>
+	<field name="Manager" class="java.lang.String">
+		<fieldDescription><![CDATA[Manager]]></fieldDescription>
+	</field>
+	<field name="Responsible" class="java.lang.String">
+		<fieldDescription><![CDATA[Responsible]]></fieldDescription>
+	</field>
+	<field name="LastEdit" class="java.util.Date">
+		<fieldDescription><![CDATA[LastModifiedDate]]></fieldDescription>
+	</field>
+	<field name="Class" class="java.lang.String">
+		<fieldDescription><![CDATA[Class]]></fieldDescription>
+	</field>
+	<field name="Priority" class="java.lang.String">
+		<fieldDescription><![CDATA[Priority]]></fieldDescription>
+	</field>
+	<field name="Severity" class="java.lang.String">
+		<fieldDescription><![CDATA[Severity]]></fieldDescription>
+	</field>
+	<field name="Issue Type" class="java.lang.String">
+		<fieldDescription><![CDATA[IssueType]]></fieldDescription>
+	</field>
+	<field name="Start Date" class="java.util.Date">
+		<fieldDescription><![CDATA[StartDate]]></fieldDescription>
+	</field>
+	<field name="Due Date" class="java.util.Date">
+		<fieldDescription><![CDATA[EndDate]]></fieldDescription>
+	</field>
+	<field name="OffPlan" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[committedDateConflict]]></fieldDescription>
+	</field>
+	<field name="Created" class="java.util.Date">
+		<fieldDescription><![CDATA[CreateDate]]></fieldDescription>
+	</field>
+	<field name="StateFlag" class="java.lang.String">
+		<fieldDescription><![CDATA[StateFlag]]></fieldDescription>
+	</field>
+	<field name="indent-level" class="java.lang.Integer">
+		<fieldDescription><![CDATA[indent-level]]></fieldDescription>
+	</field>
+	<sortField name="Responsible"/>
+	<sortField name="Project"/>
+	<sortField name="ReleaseScheduled"/>
+	<variable name="LateCount" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{OffPlan}.booleanValue()?new Integer(1):new Integer(0)]]></variableExpression>
+		<initialValueExpression><![CDATA[new Integer(0)]]></initialValueExpression>
+	</variable>
+	<group name="Responsible">
+		<groupExpression><![CDATA[(($F{Responsible} != null && $F{Responsible}.length() > 0) ? $F{Responsible} : "")]]></groupExpression>
+		<groupHeader>
+			<band height="19" splitType="Stretch">
+				<textField isBlankWhenNull="false">
+					<reportElement uuid="a0192618-0a4f-4dea-a910-1f742c76be22" key="textField-15" x="2" y="4" width="168" height="12">
+						<property name="local_mesure_unity" value="pixel"/>
+					</reportElement>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{Responsible}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="10" splitType="Stretch">
+				<line>
+					<reportElement uuid="e354e7c1-fc07-416e-a196-86240fbf6b5d" x="1" y="8" width="781" height="1" forecolor="#BF2128"/>
+				</line>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="50" splitType="Stretch">
+			<image isUsingCache="true" isLazy="true" onErrorType="Icon">
+				<reportElement uuid="66c9dd0c-e40e-4d34-ab3c-752079bc7d88" key="image-1" x="712" y="0" width="70" height="30" backcolor="#FF3333"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<imageExpression><![CDATA[$P{LOGO_URL}]]></imageExpression>
+			</image>
+			<textField isStretchWithOverflow="true" evaluationTime="Report" isBlankWhenNull="false">
+				<reportElement uuid="de4ff805-bd38-4de9-95c1-2152c37e276e" key="textField" x="0" y="33" width="161" height="16"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{total}+": "+ $V{REPORT_COUNT}.toString()]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" evaluationTime="Report" isBlankWhenNull="false">
+				<reportElement uuid="0e69ca7d-8db3-4b9d-a25b-ebafecd71f76" key="textField" style="NoLateIssues" x="195" y="33" width="197" height="16"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Gyre Heros" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{overdue}+": " + $V{LateCount}.toString()]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="4d0aa8e1-902a-4de3-8858-8a1d33f34aae" key="textField-3" x="236" y="0" width="306" height="24"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{Header}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="17" splitType="Stretch">
+			<textField evaluationTime="Report" pattern="dd/MM/yyyy HH:mm" isBlankWhenNull="false">
+				<reportElement uuid="56ae1ba0-12ba-427a-abd2-20015a8f2542" key="textField" x="682" y="0" width="100" height="12">
+					<property name="local_mesure_unitheight" value="pixel"/>
+				</reportElement>
+				<box rightPadding="3">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.MEDIUM,java.text.DateFormat.SHORT,$P{REPORT_LOCALE}).format(new java.util.Date())]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="16" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="559551c0-a263-4f9e-9adf-8dfb4288f7b2" key="rectangle-1" x="0" y="0" width="781" height="16" backcolor="#BF2128"/>
+				<graphicElement>
+					<pen lineWidth="0.0" lineStyle="Solid"/>
+				</graphicElement>
+			</rectangle>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="4b24f605-656e-4fa5-a234-2bc6f2b20167" key="textField-11" x="714" y="2" width="67" height="12" forecolor="#FFFFFF">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="local_mesure_unitx" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{LastChange}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="2129ad22-df06-464c-b554-4e09f924f5b7" key="textField-9" x="594" y="2" width="62" height="12" forecolor="#FFFFFF">
+					<property name="local_mesure_unitheight" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{Status}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="1260d565-942c-4a25-9f83-53b917a94554" key="textField-10" x="663" y="2" width="46" height="12" forecolor="#FFFFFF">
+					<property name="local_mesure_unitheight" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Gyre Heros" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{Due}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="4623d689-ad0d-4a91-80bb-51dc60933423" key="textField-4" x="2" y="2" width="54" height="12" forecolor="#FFFFFF">
+					<property name="local_mesure_unitheight" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Gyre Heros" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{No}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="0f0c7d5f-cff1-4838-9a54-705925d7ef41" key="line-7" stretchType="RelativeToBandHeight" x="590" y="0" width="1" height="16" forecolor="#CCCCCC">
+					<property name="local_mesure_unitx" value="pixel"/>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement uuid="f63ff083-1d73-4dfe-acc4-e10a4fec670e" key="line-8" stretchType="RelativeToBandHeight" x="659" y="0" width="1" height="16" forecolor="#CCCCCC">
+					<property name="local_mesure_unitx" value="pixel"/>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement uuid="cee46fe9-8919-421f-9696-52ac2b1ae138" key="line-9" x="710" y="0" width="1" height="16" forecolor="#CCCCCC">
+					<property name="local_mesure_unitx" value="pixel"/>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement uuid="899326ac-6563-47b2-b5db-e50e17c37263" key="line-15" stretchType="RelativeToBandHeight" x="286" y="0" width="1" height="16" forecolor="#CCCCCC">
+					<property name="local_mesure_unitx" value="pixel"/>
+				</reportElement>
+			</line>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="8e2e781e-a1fd-4fc6-8b24-ce6a266396d2" key="textField-7" x="290" y="2" width="190" height="12" forecolor="#FFFFFF">
+					<property name="local_mesure_unitheight" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Gyre Heros" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{Title}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="3bbb4a66-81bf-4e99-9ef2-4c7573c2a801" key="line-20" stretchType="RelativeToBandHeight" x="80" y="0" width="1" height="16" forecolor="#888888">
+					<property name="local_mesure_unitx" value="pixel"/>
+				</reportElement>
+			</line>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="d0f3961e-d0ad-4a37-9ff2-ea15845fb321" key="textField-21" x="84" y="2" width="117" height="12" forecolor="#FFFFFF">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="local_mesure_unitx" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Gyre Heros" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{Project}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="ffe7c642-688d-4777-b0c1-311611989787" key="line-22" stretchType="RelativeToBandHeight" x="531" y="0" width="1" height="16" forecolor="#CCCCCC">
+					<property name="local_mesure_unitx" value="pixel"/>
+				</reportElement>
+			</line>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="ab7ab2dc-6432-4bed-8bb2-782765075e90" key="textField-22" x="535" y="2" width="54" height="12" forecolor="#FFFFFF">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="local_mesure_unitx" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{Priority}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="14" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="d455c3f8-024a-4d4d-a4fb-cd65f9266111" key="rectangle-3" mode="Opaque" x="0" y="0" width="781" height="14" backcolor="#FFFFFF">
+					<printWhenExpression><![CDATA[$V{REPORT_COUNT}.intValue() % 2 != 0 ? Boolean.TRUE : Boolean.FALSE]]></printWhenExpression>
+				</reportElement>
+				<graphicElement fill="Solid">
+					<pen lineWidth="0.0" lineStyle="Solid"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement uuid="5c7e2699-5822-402b-b7c0-f0a6e101d991" key="rectangle-2" mode="Opaque" x="0" y="0" width="781" height="14" backcolor="#E0E0E0">
+					<printWhenExpression><![CDATA[$V{REPORT_COUNT}.intValue() % 2 == 0 ? Boolean.TRUE : Boolean.FALSE]]></printWhenExpression>
+				</reportElement>
+				<graphicElement fill="Solid">
+					<pen lineWidth="0.0" lineStyle="Solid"/>
+				</graphicElement>
+			</rectangle>
+			<textField pattern="###0" isBlankWhenNull="false">
+				<reportElement uuid="6ae5546b-5f74-4a7e-9fea-34f78b550429" key="textField" style="LateLabel" x="2" y="1" width="78" height="12">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["                                                      ".substring(0,$F{indent-level}*5) + $F{IssueNumber}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="60790988-0d4b-48a1-abbe-266b474ae527" key="textField" style="LateLabel" mode="Transparent" x="290" y="1" width="241" height="12"/>
+				<box topPadding="0">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Title}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="c68eb436-8003-4d63-a0f8-2d4904b4af50" key="textField" style="IssueNumber" x="594" y="1" width="62" height="12" forecolor="#000000">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="local_mesure_unitwidth" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Status}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement uuid="a21a332a-b698-4d5b-976b-4f87870b85a5" key="textField" x="714" y="1" width="69" height="12">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="local_mesure_unitx" value="pixel"/>
+				</reportElement>
+				<box topPadding="0" rightPadding="3">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.MEDIUM,java.text.DateFormat.SHORT,$P{REPORT_LOCALE}).format($F{LastEdit})]]></textFieldExpression>
+			</textField>
+			<textField pattern="yyyy-MM-dd" isBlankWhenNull="true">
+				<reportElement uuid="5394a187-a643-46ab-83c2-561c7faff944" key="textField" style="DateLate" mode="Opaque" x="660" y="1" width="50" height="12">
+					<printWhenExpression><![CDATA[new Boolean($F{Due Date} != null)]]></printWhenExpression>
+				</reportElement>
+				<box leftPadding="4">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Gyre Heros" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[java.text.DateFormat.getDateInstance(java.text.DateFormat.MEDIUM,$P{REPORT_LOCALE}).format($F{Due Date})]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="40ccdc2d-84b2-4cea-8024-0e87bbaea65b" key="line-10" stretchType="RelativeToBandHeight" x="710" y="0" width="1" height="14" forecolor="#CCCCCC">
+					<property name="local_mesure_unitx" value="pixel"/>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement uuid="23b4446c-da6a-4acc-aaee-c24a8147cb09" key="line-11" stretchType="RelativeToBandHeight" x="659" y="0" width="1" height="14" forecolor="#CCCCCC"/>
+			</line>
+			<line>
+				<reportElement uuid="c036f5f5-bd9f-4211-a5b7-857f7c0ef982" key="line-12" stretchType="RelativeToBandHeight" x="590" y="0" width="1" height="14" forecolor="#CCCCCC">
+					<property name="local_mesure_unitx" value="pixel"/>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement uuid="7e094cbc-bdae-4a39-8a15-292492e57ece" key="line-14" stretchType="RelativeToBandHeight" x="286" y="0" width="1" height="14" forecolor="#CCCCCC">
+					<property name="local_mesure_unitx" value="pixel"/>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement uuid="22850b3e-73f3-4400-ac37-e8922cc2f115" key="line-21" stretchType="RelativeToBandHeight" x="80" y="0" width="1" height="14" forecolor="#CCCCCC">
+					<property name="local_mesure_unitx" value="pixel"/>
+				</reportElement>
+			</line>
+			<textField pattern="###0" isBlankWhenNull="false">
+				<reportElement uuid="9a251b4e-c785-4803-9bd4-18bcd70874fd" key="textField-20" x="84" y="1" width="196" height="12">
+					<property name="local_mesure_unitx" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Project} + 
+(
+	$F{ReleaseScheduled}!=null || $F{ReleaseNoticed}!=null ? 
+	( " (" +
+            (
+            	$F{ReleaseNoticed}!=null ? ("\u2191"+$F{ReleaseNoticed} + 
+            	           (	$F{ReleaseScheduled}!=null ? "/\u2192" + $F{ReleaseScheduled} : "")):
+                            ($F{ReleaseScheduled}!=null ? "\u2192" + $F{ReleaseScheduled}	: "")
+            )
+           + ($F{ReleaseScheduled}!=null || $F{ReleaseNoticed}!=null ? ")" : "")
+           ) : ""
+)]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="4f913dd3-a24b-431d-a92a-f0b34621d874" key="line-23" stretchType="RelativeToBandHeight" x="531" y="0" width="1" height="14" forecolor="#CCCCCC">
+					<property name="local_mesure_unitx" value="pixel"/>
+				</reportElement>
+			</line>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="8f68580b-acca-472d-bd94-9b3fe3e7629e" key="textField-23" x="535" y="1" width="53" height="12">
+					<property name="local_mesure_unitx" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Priority}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="28" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="26" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
+				<reportElement uuid="92c8c95c-6905-46c7-b7fd-907babf429f3" key="textField" x="680" y="6" width="80" height="15">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="local_mesure_unitwidth" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{Page} + " " + $V{PAGE_NUMBER} + " " + $R{of} + " "]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="4ff49d3c-d274-421f-8ae5-2ecf26d77159" key="textField-12" x="181" y="6" width="419" height="16"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" (C) " + new java.text.SimpleDateFormat("yyyy").format(new java.util.Date()) + " " + $P{COPYRIGHTHOLDER}+ " - " + $R{rights}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" isBlankWhenNull="false">
+				<reportElement uuid="0c35a28f-c078-4a8b-8369-d2efce5b75db" key="textField" x="763" y="6" width="25" height="15">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="local_mesure_unitwidth" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="cbfc23db-a24b-459d-a76f-0b5c0b888ddf" key="line-1" mode="Opaque" x="0" y="0" width="782" height="1" forecolor="#CCCCCC"/>
+			</line>
+		</band>
+	</pageFooter>
+	<lastPageFooter>
+		<band height="26" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<line>
+				<reportElement uuid="ab658cf7-94cd-4192-8a43-a192d4c09e28" key="line-2" mode="Opaque" x="0" y="0" width="782" height="1" forecolor="#CCCCCC"/>
+			</line>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="f63fbbfc-2209-4a5e-984f-9eb9c410099a" key="textField-13" x="181" y="6" width="419" height="16"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" (C) " + new java.text.SimpleDateFormat("yyyy").format(new java.util.Date()) + " " + $P{COPYRIGHTHOLDER}+ " - " + $R{rights}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" isBlankWhenNull="false">
+				<reportElement uuid="a1b36cbc-bb8a-4377-8447-8a93bdef779f" key="textField-2" x="763" y="6" width="25" height="15">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="local_mesure_unitwidth" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
+				<reportElement uuid="2924f30c-590b-40a1-907e-10cb4e5d5077" key="textField-14" x="680" y="6" width="80" height="15">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="local_mesure_unitwidth" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{Page} + " " + $V{PAGE_NUMBER} + " " + $R{of} + " "]]></textFieldExpression>
+			</textField>
+		</band>
+	</lastPageFooter>
+	<summary>
+		<band height="12" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+		</band>
+	</summary>
+</jasperReport>

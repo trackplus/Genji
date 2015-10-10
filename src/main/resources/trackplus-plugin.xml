@@ -1,0 +1,618 @@
+<trackplus-plugin id="trackplus.plugin" name="DefaultPlugins">
+
+	<plugin-info>
+		<description>Default plugins</description>
+		<version>1.1</version>
+		<application-version min="3.7" max="3.7"/>
+		<vendor name="Trackplus" url="http://www.trackplus.com"/>
+	</plugin-info>
+	<!--MyItems dashboard -->
+	<dashboard id="com.aurel.track.report.dashboard.MyItems"
+		name="MyItems"
+		class="com.aurel.track.report.dashboard.MyItems"
+		jsClass="js.ext.com.track.dashboard.MyItems"
+		jsConfigClass="js.ext.com.track.dashboard.MyItemsConfig"
+		bundleName="resources.DashboardResources.DashboardResources"
+		description="myItems.description"
+		label="myItems.label"
+		tooltip="myItems.tooltip"
+		thumbnail="plugins/dashboard/images/myItems.png"
+		thumbnailProject="plugins/dashboard/images/myItemsDefProject.png"
+		thumbnailRelease="plugins/dashboard/images/myItemsDefProject.png"
+		pageDescription="plugins/dashboard/templates/commonDescription.ftl"/>
+
+	<!-- MyTqlView -->
+	<dashboard id="com.aurel.track.report.dashboard.MyTqlView"
+		name="MyTqlView"
+		class="com.aurel.track.report.dashboard.MyTqlView"
+		jsClass="js.ext.com.track.dashboard.IssuesView"
+		jsConfigClass="js.ext.com.track.dashboard.MyTqlConfig"
+		bundleName="resources.DashboardResources.DashboardResources"
+		description="myTqlView.description"
+		label="myTqlView.label"
+		tooltip="myTqlView.tooltip"
+		thumbnail="plugins/dashboard/images/myTqlDef.png"
+		pageDescription="plugins/dashboard/templates/commonDescription.ftl"/>
+
+	<!-- ProjectSummary -->
+	<dashboard id="com.aurel.track.report.dashboard.ProjectSummary"
+		name="ProjectSummary"
+		class="com.aurel.track.report.dashboard.ProjectSummary"
+		jsClass="js.ext.com.track.dashboard.ProjectSummary"
+		jsConfigClass="js.ext.com.track.dashboard.ProjectSummaryConfig"
+		bundleName="resources.DashboardResources.DashboardResources"
+		description="projectSummary.description"
+		label="projectSummary.label"
+		tooltip="projectSummary.tooltip"
+		thumbnail="plugins/dashboard/images/projectSummaryDef.png"
+		thumbnailProject="plugins/dashboard/images/projectSummaryDefProject.png"
+		thumbnailRelease="plugins/dashboard/images/projectSummaryDefProject.png"
+		pageDescription="plugins/dashboard/templates/commonDescription.ftl"/>
+
+	<!-- ManagerView -->
+	<dashboard id="com.aurel.track.report.dashboard.ManagerView"
+		name="ManagerView"
+		class="com.aurel.track.report.dashboard.ManagerView"
+		jsClass="js.ext.com.track.dashboard.ManagerView"
+		jsConfigClass="js.ext.com.track.dashboard.BaseConfig"
+		bundleName="resources.DashboardResources.DashboardResources"
+		description="managerView.description"
+		label="managerView.label"
+		tooltip="managerView.tooltip"
+		thumbnail="plugins/dashboard/images/managerView.png"
+		pageDescription="plugins/dashboard/templates/commonDescription.ftl"/>
+
+	<!-- Report filters -->
+	<dashboard id="com.aurel.track.report.dashboard.TqlItems"
+		name="MyFilters"
+		class="com.aurel.track.report.dashboard.MyFilters"
+		jsClass="js.ext.com.track.dashboard.MyFilters"
+		jsConfigClass="js.ext.com.track.dashboard.BaseConfig"
+		bundleName="resources.DashboardResources.DashboardResources"
+		description="myFilters.description"
+		label="myFilters.label"
+		tooltip="myFilters.tooltip"
+		thumbnail="plugins/dashboard/images/reportFilters.png"
+		pageDescription="plugins/dashboard/templates/commonDescription.ftl"/>
+
+	<!-- My Filter View -->
+	<dashboard id="com.aurel.track.report.dashboard.MyFilterView"
+		name="myFilter"
+		class="com.aurel.track.report.dashboard.MyFilterView"
+		jsClass="js.ext.com.track.dashboard.IssuesView"
+		jsConfigClass="js.ext.com.track.dashboard.MyFilterConfig"
+		bundleName="resources.DashboardResources.DashboardResources"
+		description="myFilterView.description"
+		label="myFilterView.label"
+		tooltip="myFilterView.tooltip"
+		thumbnail="plugins/dashboard/images/myFilterView.png"
+		pageDescription="plugins/dashboard/templates/commonDescription.ftl"/>
+
+
+
+	<!-- Burn down chart -->
+	<dashboard id="com.aurel.track.report.dashboard.BurnDownChart"
+		name="BurnDownChart"
+		class="com.aurel.track.report.dashboard.BurnDownChart"
+		jsClass="js.ext.com.track.dashboard.BurnDownChart"
+		jsConfigClass="js.ext.com.track.dashboard.BurnDownChartConfig"
+		bundleName="resources.DashboardResources.DashboardResources"
+		description="burnDownChart.description"
+		label="burnDownChart.label"
+		tooltip="burnDownChart.tooltip"
+		thumbnail="plugins/dashboard/images/burnDownChart.png"
+		pageDescription="plugins/dashboard/templates/commonDescription.ftl"/>
+
+  <!-- Average Time to Close Item -->
+	<dashboard id="com.aurel.track.report.dashboard.AverageTimeToCloseItem"
+		name="AverageTimeToCloseItem"
+		class="com.aurel.track.report.dashboard.AverageTimeToCloseItem"
+		jsClass="js.ext.com.track.dashboard.AverageTimeToCloseItem"
+		jsConfigClass="js.ext.com.track.dashboard.AverageTimeToCloseItemConfig"
+		bundleName="resources.DashboardResources.DashboardResources"
+		description="averageTimeToCloseItem.description"
+		label="averageTimeToCloseItem.label"
+		tooltip="averageTimeToCloseItem.tooltip"
+		thumbnail="plugins/dashboard/images/averageTimeToCloseItem.png"
+		pageDescription="plugins/dashboard/templates/commonDescription.ftl"/>
+
+  <dashboard id="com.aurel.track.report.dashboard.CalendarDash"
+		name="Calendar"
+		class="com.aurel.track.report.dashboard.CalendarDash"
+		jsClass="js.ext.com.track.dashboard.CalendarDash"
+		jsConfigClass="js.ext.com.track.dashboard.CalendarDashConfig"
+		bundleName="resources.DashboardResources.DashboardResources"
+		description="CalendarDash.description"
+		label="CalendarDash.label"
+		pageDescription="plugins/dashboard/templates/commonDescription.ftl"
+		thumbnail="plugins/dashboard/images/calendar.png"
+		thumbnailProject="plugins/dashboard/images/calendarMonthly.png"
+		thumbnailRelease="plugins/dashboard/images/calendarMonthly.png"
+	 	tooltip="CalendarDash.tooltip" />
+
+
+	 <!-- QuickSearchView -->
+	<dashboard id="com.aurel.track.report.dashboard.QuickSearchView"
+		name="QuickSearchView"
+		class="com.aurel.track.report.dashboard.QuickSearchView"
+		jsClass="js.ext.com.track.dashboard.QuickSearch"
+		jsConfigClass="js.ext.com.track.dashboard.BaseConfig"
+		bundleName="resources.DashboardResources.DashboardResources"
+		description="quickSearch.description"
+		label="quickSearch.label"
+		tooltip="quickSearch.tooltip"
+		thumbnail="plugins/dashboard/images/quickSearchViewDef.png"
+		thumbnailProject="plugins/dashboard/images/quickSearchViewDefProject.png"
+		thumbnailRelease="plugins/dashboard/images/quickSearchViewDefProject.png"
+		pageDescription="plugins/dashboard/templates/commonDescription.ftl"/>
+
+	<!-- ReleaseNotes -->
+	<dashboard id="com.aurel.track.report.dashboard.ReleaseNotes"
+		name="ReleaseNotes"
+		class="com.aurel.track.report.dashboard.ReleaseNotes"
+		jsClass="js.ext.com.track.dashboard.ReleaseNotes"
+		jsConfigClass="js.ext.com.track.dashboard.ReleaseNotesConfig"
+		bundleName="resources.DashboardResources.DashboardResources"
+		description="releaseNotes.description"
+		label="releaseNotes.label"
+		tooltip="releaseNotes.tooltip"
+		thumbnail="plugins/dashboard/images/releaseNotes.png"
+		pageDescription="plugins/dashboard/templates/commonDescription.ftl"/>
+
+	<!-- ReportsAndFilters -->
+	<dashboard id="com.aurel.track.report.dashboard.ReportsAndFilters"
+		name="ReportsAndFilters"
+		class="com.aurel.track.report.dashboard.ReportsAndFilters"
+		jsClass="js.ext.com.track.dashboard.ReportsAndFilters"
+		jsConfigClass="js.ext.com.track.dashboard.ReportsAndFiltersConfig"
+		bundleName="resources.DashboardResources.DashboardResources"
+		description="reportsAndFilters.description"
+		label="reportsAndFilters.label"
+		tooltip="reportsAndFilters.tooltip"
+		thumbnail="plugins/dashboard/images/reportsAndFilters.png"
+		thumbnailProject="plugins/dashboard/images/reportsAndFiltersProject.png"
+		thumbnailRelease="plugins/dashboard/images/reportsAndFiltersProject.png"
+		pageDescription="plugins/dashboard/templates/commonDescription.ftl"/>
+
+	<!-- UserLoad -->
+	<dashboard id="com.aurel.track.report.dashboard.UserLoad"
+		name="UserLoad"
+		class="com.aurel.track.report.dashboard.UserLoad"
+		jsClass="js.ext.com.track.dashboard.UserLoad"
+		jsConfigClass="js.ext.com.track.dashboard.BaseConfig"
+		bundleName="resources.DashboardResources.DashboardResources"
+		description="userLoad.description"
+		label="userLoad.label"
+		tooltip="userLoad.tooltip"
+		thumbnail="plugins/dashboard/images/userLoad.png"
+		pageDescription="plugins/dashboard/templates/commonDescription.ftl"/>
+
+
+	<dashboard id="com.aurel.track.report.dashboard.MeetingsDashboard"
+		name="MeetingsDashboard"
+		class="com.aurel.track.report.dashboard.MeetingsDashboard"
+		jsClass="js.ext.com.track.dashboard.Meetings"
+		jsConfigClass="js.ext.com.track.dashboard.BaseConfig"
+		bundleName="resources.DashboardResources.DashboardResources"
+		description="meetings.description"
+		label="meetings.label"
+		tooltip="meetings.tooltip"
+		thumbnail="plugins/dashboard/images/meetings.png"
+		pageDescription="plugins/dashboard/templates/commonDescription.ftl"/>
+
+	<!--twoDimensionalStatistic-->
+	<dashboard id="com.aurel.track.report.dashboard.TwoDimensionalStatistic"
+		name="TwoDimensionalStatistic"
+		class="com.aurel.track.report.dashboard.TwoDimensionalStatistic"
+		jsClass="js.ext.com.track.dashboard.TwoDimensionalStatistic"
+		jsConfigClass="js.ext.com.track.dashboard.TwoDimensionalStatisticConfig"
+		bundleName="resources.DashboardResources.DashboardResources"
+		description="twoDimensionalStatistic.description"
+		label="twoDimensionalStatistic.label"
+		tooltip="twoDimensionalStatistic.tooltip"
+		thumbnail="plugins/dashboard/images/twoDimensionalStatistic.png"
+		pageDescription="plugins/dashboard/templates/commonDescription.ftl"/>
+
+	<!-- My Watch list-->
+	<dashboard id="com.aurel.track.report.dashboard.MyWatch"
+		name="MyWatch"
+		class="com.aurel.track.report.dashboard.MyWatch"
+		jsClass="js.ext.com.track.dashboard.MyWatch"
+		jsConfigClass="js.ext.com.track.dashboard.BaseConfig"
+		bundleName="resources.DashboardResources.DashboardResources"
+		description="myWatch.description"
+		label="myWatch.label"
+		tooltip="myWatch.tooltip"
+		thumbnail="plugins/dashboard/images/myWatch.png"
+		pageDescription="plugins/dashboard/templates/commonDescription.ftl"/>
+
+	<!-- ModifiedFiles-->
+	<dashboard id="com.aurel.track.report.dashboard.ModifiedFiles"
+		name="ModifiedFiles"
+		class="com.aurel.track.report.dashboard.ModifiedFiles"
+		jsClass="js.ext.com.track.dashboard.ModifiedFiles"
+		jsConfigClass="js.ext.com.track.dashboard.ModifiedFilesConfig"
+		bundleName="resources.DashboardResources.DashboardResources"
+		description="modifiedFiles.description"
+		label="modifiedFiles.label"
+		tooltip="modifiedFiles.tooltip"
+		thumbnail="plugins/dashboard/images/modifiedFiles.png"
+		pageDescription="plugins/dashboard/templates/commonDescription.ftl"/>
+
+	<!-- VersionControlActivity-->
+	<dashboard id="com.aurel.track.report.dashboard.VersionControlActivity"
+		name="VersionControlActivity"
+		class="com.aurel.track.report.dashboard.VersionControlActivity"
+		jsClass="js.ext.com.track.dashboard.VersionControlActivity"
+		jsConfigClass="js.ext.com.track.dashboard.VersionControlActivityConfig"
+		bundleName="resources.DashboardResources.DashboardResources"
+		description="versionControlActivity.description"
+		label="versionControlActivity.label"
+		tooltip="versionControlActivity.tooltip"
+		thumbnail="plugins/dashboard/images/versionControlActivity.png"
+		pageDescription="plugins/dashboard/templates/commonDescription.ftl"/>
+
+	<dashboard id="com.aurel.track.report.dashboard.ActivityStream"
+		name="ActivityStream"
+		class="com.aurel.track.report.dashboard.ActivityStream"
+		jsClass="js.ext.com.track.dashboard.ActivityStream"
+		jsConfigClass="js.ext.com.track.dashboard.ActivityStreamConfig"
+		bundleName="resources.DashboardResources.DashboardResources"
+		description="activityStream.description"
+		label="activityStream.label"
+		tooltip="activityStream.tooltip"
+		thumbnail="plugins/dashboard/images/activityStream.png"
+		pageDescription="plugins/dashboard/templates/commonDescription.ftl"/>
+
+	<version-control id="cvs"
+		name="CVS"
+		class="com.aurel.track.vc.cvss.CVSPlugin"
+		bundleName="resources.VersionControlResources"
+		jsConfigClass="js.ext.com.track.vc.CVSVersionControlPlugin">
+		<browser id="viewvc" name="ViewVC">
+			<baseURL><![CDATA[http://SERVER/cgi-bin/viewvc.cgi/SVN_INSTANCE]]></baseURL>
+			<changeset-link><![CDATA[?revision=${rev}&view=rev]]></changeset-link>
+			<added-link><![CDATA[${path}?revision=${rev}&view=markup]]></added-link>
+			<modified-link><![CDATA[${path}?revision=${rev}&view=markup]]></modified-link>
+			<replaced-link><![CDATA[${path}?revision=${rev}&view=markup]]></replaced-link>
+			<deleted-link><![CDATA[${path}?revision=${rev}&view=markup]]></deleted-link>
+		</browser>
+	</version-control>
+	<!--
+	<version-control id="svn"
+					 name="Subversion"
+					 class="com.aurel.track.vc.svn.SVNPlugin"
+					 bundleName="resources.VersionControlResources"
+					 jsConfigClass="plugins/versionControl/templates/svn.ftl"/>
+	-->
+
+	<!--
+	<version-control id="pvc"
+					 name="Perforce"
+					 class="com.aurel.track.vc.pvc.PVCPlugin"
+					 bundleName="resources.VersionControlResources"
+					 jsConfigClass="plugins/versionControl/templates/pvc.ftl"/>
+	-->
+	<!-- check box -->
+	<fieldType id="com.aurel.track.fieldType.types.custom.CustomCheckBoxSingle"
+		name="customCheckBoxSingle"
+		class="com.aurel.track.fieldType.types.custom.CustomCheckBoxSingle"
+		bundleName="resources.FieldTypeResources.FieldTypeResources"
+		description="customCheckBoxSingle.description"
+		label="customCheckBoxSingle.label"
+		tooltip="customCheckBoxSingle.tooltip"
+		jsConfigClass="js.ext.com.track.fieldType.Checkbox"/>
+
+	<!-- parent-child select -->
+	<fieldType id="com.aurel.track.fieldType.types.custom.CustomSelectParentChild"
+		name="customSelectParentChild"
+		class="com.aurel.track.fieldType.types.custom.CustomSelectParentChild"
+		bundleName="resources.FieldTypeResources.FieldTypeResources"
+		description="customSelectParentChild.description"
+		label="customSelectParentChild.label"
+		tooltip="customSelectParentChild.tooltip"
+		jsConfigClass="js.ext.com.track.fieldType.Select"/>
+
+	<!-- parent-child-grand child select -->
+	<fieldType id="com.aurel.track.fieldType.types.custom.CustomSelectParentChildGrandchild"
+		name="customSelectParentChildGrandchild"
+		class="com.aurel.track.fieldType.types.custom.CustomSelectParentChildGrandchild"
+		bundleName="resources.FieldTypeResources.FieldTypeResources"
+		description="customSelectParentChildGrandchild.description"
+		label="customSelectParentChildGrandchild.label"
+		tooltip="customSelectParentChildGrandchild.tooltip"
+		jsConfigClass="js.ext.com.track.fieldType.Select"/>
+
+	<!-- parent-children select -->
+	<fieldType id="com.aurel.track.fieldType.types.custom.CustomSelectParentChilds"
+		name="CustomSelectParentChilds"
+		class="com.aurel.track.fieldType.types.custom.CustomSelectParentChilds"
+		bundleName="resources.FieldTypeResources.FieldTypeResources"
+		description="CustomSelectParentChilds.description"
+		label="CustomSelectParentChilds.label"
+		tooltip="CustomSelectParentChilds.tooltip"
+		jsConfigClass="js.ext.com.track.fieldType.Select"/>
+
+	<!-- simple select -->
+	<fieldType id="com.aurel.track.fieldType.types.custom.CustomSelectSimple"
+		name="customSelectSimple"
+		class="com.aurel.track.fieldType.types.custom.CustomSelectSimple"
+		bundleName="resources.FieldTypeResources.FieldTypeResources"
+		description="customSelectSimple.description"
+		label="customSelectSimple.label"
+		tooltip="customSelectSimple.tooltip"
+		jsConfigClass="js.ext.com.track.fieldType.Select"/>
+
+	<!-- multiple select -->
+	<fieldType id="com.aurel.track.fieldType.types.custom.CustomSelectMultiple"
+		name="customSelectMultiple"
+		class="com.aurel.track.fieldType.types.custom.CustomSelectMultiple"
+		bundleName="resources.FieldTypeResources.FieldTypeResources"
+		description="customSelectMultiple.description"
+		label="customSelectMultiple.label"
+		tooltip="customSelectMultiple.tooltip"
+		jsConfigClass="js.ext.com.track.fieldType.Select"/>
+
+	<!-- extensible select -->
+	<fieldType id="com.aurel.track.fieldType.types.custom.CustomExtensibleSelect"
+		name="customExtensibleSelect"
+		class="com.aurel.track.fieldType.types.custom.CustomExtensibleSelect"
+		bundleName="resources.FieldTypeResources.FieldTypeResources"
+		description="customExtensibleSelect.description"
+		label="customExtensibleSelect.label"
+		tooltip="customExtensibleSelect.tooltip"
+		jsConfigClass="js.ext.com.track.fieldType.Select"/>
+
+	<!-- date field -->
+	<fieldType id="com.aurel.track.fieldType.types.custom.CustomTextBoxDate"
+		name="customTextBoxDate"
+		class="com.aurel.track.fieldType.types.custom.CustomTextBoxDate"
+		bundleName="resources.FieldTypeResources.FieldTypeResources"
+		description="customTextArea.description"
+		label="customTextBoxDate.label"
+		tooltip="customTextBoxDate.tooltip"
+		jsConfigClass="js.ext.com.track.fieldType.TextboxDate"/>
+
+	<!-- double field -->
+	<fieldType id="com.aurel.track.fieldType.types.custom.CustomTextBoxDouble"
+		name="customTextBoxDouble"
+		class="com.aurel.track.fieldType.types.custom.CustomTextBoxDouble"
+		bundleName="resources.FieldTypeResources.FieldTypeResources"
+		description="customTextBoxDouble.description"
+		label="customTextBoxDouble.label"
+		tooltip="customTextBoxDouble.tooltip"
+		jsConfigClass="js.ext.com.track.fieldType.TextboxDouble"/>
+
+	<!-- integer field -->
+	<fieldType id="com.aurel.track.fieldType.types.custom.CustomTextBoxInteger"
+		name="customTextBoxInteger"
+		class="com.aurel.track.fieldType.types.custom.CustomTextBoxInteger"
+		bundleName="resources.FieldTypeResources.FieldTypeResources"
+		description="customTextBoxInteger.description"
+		label="customTextBoxInteger.label"
+		tooltip="customTextBoxInteger.tooltip"
+		jsConfigClass="js.ext.com.track.fieldType.TextboxInteger"/>
+
+	<!-- short text -->
+	<fieldType id="com.aurel.track.fieldType.types.custom.CustomTextBoxText"
+		name="customTextBoxText"
+		class="com.aurel.track.fieldType.types.custom.CustomTextBoxText"
+		bundleName="resources.FieldTypeResources.FieldTypeResources"
+		description="customTextBoxText.description"
+		label="customTextBoxText.label"
+		tooltip="customTextBoxText.tooltip"
+		jsConfigClass="js.ext.com.track.fieldType.TextboxText"/>
+
+	<!-- long text -->
+	<fieldType id="com.aurel.track.fieldType.types.custom.CustomTextArea"
+		name="customTextArea"
+		class="com.aurel.track.fieldType.types.custom.CustomTextArea"
+		bundleName="resources.FieldTypeResources.FieldTypeResources"
+		description="customTextArea.description"
+		label="customTextArea.label"
+		tooltip="customTextArea.tooltip"
+		jsConfigClass="js.ext.com.track.fieldType.Textarea"/>
+
+	<!-- Rich text editor -->
+	<fieldType id="com.aurel.track.fieldType.types.custom.CustomRichTextEditor"
+		name="customRichTextEditor"
+		class="com.aurel.track.fieldType.types.custom.CustomRichTextEditor"
+		bundleName="resources.FieldTypeResources.FieldTypeResources"
+		description="customRichTextEditor.description"
+		label="customRichTextEditor.label"
+		tooltip="customRichTextEditor.tooltip"
+		jsConfigClass="js.ext.com.track.fieldType.Textarea"/>
+
+	<!-- user picker general -->
+	<fieldType id="com.aurel.track.fieldType.types.custom.CustomUserPicker"
+		name="customUserPicker"
+		class="com.aurel.track.fieldType.types.custom.CustomUserPicker"
+		bundleName="resources.FieldTypeResources.FieldTypeResources"
+		description="customUserPicker.description"
+		label="customUserPicker.label"
+		tooltip="customUserPicker.tooltip"
+		jsConfigClass="js.ext.com.track.fieldType.UserPicker"/>
+
+
+	<!-- item pickr -->
+	<fieldType id="com.aurel.track.fieldType.types.custom.CustomItemPicker"
+		name="customItemPicker"
+		class="com.aurel.track.fieldType.types.custom.CustomItemPicker"
+		bundleName="resources.FieldTypeResources.FieldTypeResources"
+		description="customItemPicker.description"
+		label="customItemPicker.label"
+		tooltip="customItemPicker.tooltip"
+		jsConfigClass="js.ext.com.track.fieldType.ItemPicker"/>
+
+	<!-- static html label -->
+	<fieldType id="com.aurel.track.fieldType.types.custom.CustomHTMLLabel"
+		name="customHTMLLabel"
+		class="com.aurel.track.fieldType.types.custom.CustomHTMLLabel"
+		bundleName="resources.FieldTypeResources.FieldTypeResources"
+		description="customHTMLLabel.description"
+		label="customHTMLLabel.label"
+		tooltip="customHTMLLabel.tooltip"
+		jsConfigClass="js.ext.com.track.fieldType.HTMLLabel"/>
+	<datasource id="com.aurel.track.report.datasource.filterHistory.FilterHistoryDatasource"
+		name="FilterHistoryDatasource"
+		class="com.aurel.track.report.datasource.filterHistory.FilterHistoryDatasource"
+		bundleName="resources.DatasourceResources.DatasourceConfigResources"
+		description="Filtered History"
+		listing="History report"
+		preview-gif="/plugins/datasource/images/prjCcAccPersSum.jpg"
+		jsConfigClass="js.ext.com.track.datasource.FilterHistory"/>
+	<datasource id="com.aurel.track.report.datasource.meeting.MeetingDatasource"
+		name="MeetingDatasource"
+		class="com.aurel.track.report.datasource.meeting.MeetingDatasource"
+		bundleName="resources.DatasourceResources.DatasourceConfigResources"
+		description="Meeting report"
+		listing="Meeting report"
+		preview-gif="/plugins/datasource/images/meeting.jpg"
+		jsConfigClass="js.ext.com.track.datasource.Meeting"/>
+	<datasource id="com.aurel.track.report.datasource.meeting.LaTeXMeetingDatasource"
+		name="MeetingDatasource"
+		class="com.aurel.track.report.datasource.meeting.LaTeXMeetingDatasource"
+		bundleName="resources.DatasourceResources.DatasourceConfigResources"
+		description="Meeting report"
+		listing="Meeting report"
+		preview-gif="/plugins/datasource/images/meeting.jpg"
+		jsConfigClass="js.ext.com.track.datasource.Meeting"/>
+
+	<datasource id="com.aurel.track.report.datasource.LaTeXReportBeanDatasource"
+		name="LaTeXReportBeanDatasource"
+		class="com.aurel.track.report.datasource.LaTeXReportBeanDatasource"
+		bundleName="resources.DatasourceResources.DatasourceConfigResources"
+		description="General LaTeX template based reports"
+		listing="General LaTeX template based reports"
+		jsConfigClass="js.ext.com.track.datasource.BasicDatasource"/>
+
+	<datasource id="com.aurel.track.report.datasource.openedVsClosed.OpenedClosedDatasource"
+		name="OpenedVsClosedChart"
+		class="com.aurel.track.report.datasource.openedVsClosed.OpenedClosedDatasource"
+		bundleName="resources.DatasourceResources.DatasourceConfigResources"
+		description="Opened vs closed Chart"
+		jsConfigClass="js.ext.com.track.datasource.TimeIntervalWithStatus"/>
+	<datasource id="com.aurel.track.report.datasource.releaseNotes.ReleaseNotesDatasource"
+		name="ReleaseNotes"
+		class="com.aurel.track.report.datasource.releaseNotes.ReleaseNotesDatasource"
+		bundleName="resources.DatasourceResources.DatasourceConfigResources"
+		description="Release Notes"
+		jsConfigClass="/plugins/datasource/configs/releaseNotes.ftl"/>
+	<datasource id="com.aurel.track.report.datasource.faqs.FaqsDatasource"
+		name="FAQs"
+		class="com.aurel.track.report.datasource.faqs.FaqsDatasource"
+		bundleName="resources.DatasourceResources.DatasourceConfigResources"
+		description="Frequently Asked Questions"
+		jsConfigClass="js.ext.com.track.datasource.FaqDatasource"/>
+
+
+	<linkType id="com.aurel.track.linkType.GenericLinkType"
+		name="Generic linktype"
+		class="com.aurel.track.linkType.GenericLinkType"
+		description="Generic linktype for links which does not involve any additional logic"/>
+
+	<linkType id="com.aurel.track.linkType.CloseDependsOnLinkType"
+		name="Close depends on"
+		class="com.aurel.track.linkType.CloseDependsOnLinkType"
+		description="Linktype which prevents closing the issue when it still has open linked issues through this linktype"/>
+
+
+	<issueListView
+			id="com.trackplus.itemNavigator.FlatGridViewPlugin"
+			name="flatGridView"
+			description="flatGridViewDescription"
+			iconCls="flatGridView"
+			enabledColumnChoose="true"
+			enabledGrouping="false"
+			useLongFields="true"
+			plainData="true"
+			class="com.aurel.track.itemNavigator.FlatGridViewPlugin"
+			jsClass="com.trackplus.itemNavigator.FlatGridViewPlugin"/>
+	<issueListView
+		id="com.trackplus.itemNavigator.SimpleTreeGridViewPlugin"
+		name="treeGridView"
+		description="treeGridViewDescription"
+		iconCls="treeGridView"
+		enabledColumnChoose="true"
+		enabledGrouping="true"
+		useLongFields="false"
+		plainData="false"
+		class="com.aurel.track.itemNavigator.BaseIssueListViewPlugin"
+		jsClass="com.trackplus.itemNavigator.SimpleTreeGridViewPlugin"/>
+
+    <issueListView
+		id="com.trackplus.itemNavigator.WBSViewPlugin"
+		name="wbsView"
+		description="wbsViewDescription"
+		iconCls="wbsView"
+		enabledColumnChoose="true"
+		enabledGrouping="false"
+		useLongFields="false"
+		plainData="false"
+		class="com.aurel.track.itemNavigator.WBSIssueListViewPlugin"
+		jsClass="com.trackplus.itemNavigator.WBSViewPlugin"/>
+
+
+    <issueListView
+            id="com.trackplus.itemNavigator.CardViewPlugin"
+            name="cardView"
+            description="cardViewDescription"
+            iconCls="cardView"
+            enabledColumnChoose="false"
+            enabledGrouping="false"
+            useLongFields="false"
+            plainData="false"
+            class="com.aurel.track.itemNavigator.cardView.CardViewPlugin"
+            jsClass="com.trackplus.itemNavigator.CardViewPlugin"/>
+
+
+	<module id="trackplus"
+		name="Genji"
+		iconCls="trackplusApp"
+		description="Trackplus"
+		url="cockpit.action"/>
+
+	<!--  ${SERVER} will be replaced by the Track+ server base URL  -->
+	<!--  including the protocol. You can also use a fixed URL like -->
+	<!--  https://www.yourdomain.com                                -->
+    <!--  The real file for the following plug-ins is located at    -->
+    <!--  TRACKPLUS_HOME/plugins/portal                             -->
+    <!--  Thus you should not enable the following modules here.    -->
+
+<!--
+	<module id="jenkins"
+			name="Jenkins"
+			iconCls="jenkinsApp"
+			useHeader="true"
+			description="Jenkins integration"
+			url="${SERVER}/jenkins"/>
+
+	<module id="websvn"
+		name="Subversion"
+		iconCls="websvnApp"
+		useHeader="true"
+		description="Subversion repository browser"
+		url="${SERVER}/websvn"/>
+
+	<module id="viewvc"
+		name="Subversion"
+		iconCls="websvnApp"
+		useHeader="true"
+		description="Subversion repository browser"
+		url="${SERVER}/cgi-bin/viewvc.cgi"/>
+
+	<module id="viewgit"
+        name="ViewGit"
+        iconCls="viewgitApp"
+        description="ViewGit"
+        useHeader="true"
+        url="${SERVER}/viewgit/"/>
+
+	<module id="sonar"
+		name="SonarQube"
+		iconCls="sonarApp"
+		useHeader="true"
+		description="SonarCube Quality Assurance"
+		url="${SERVER}/sonar"/>
+	-->
+</trackplus-plugin>

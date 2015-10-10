@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glossary version="1.0"  srclang="*all*" xmlns="http://www.maxprograms.com/gml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.maxprograms.com/gml GlossML.xsd">
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>en</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>de</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>budget</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Budget</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>panel</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Tafel</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>SMTP</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>SMTP</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>account</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Konto</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>workspace</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Arbeitsraum</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>Java applets</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Java Applets</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>directory</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Verzeichnis</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>code</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Code</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>remaining PV</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>verbleibende Restarbeit</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>ancestors</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Vorgänger</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>label for</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Bezeichnung für</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>Manager</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Manager</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>on hold</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>gestoppt</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>configurations</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Konfigurationen</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>Tomcat7</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Tomcat7</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>IMAP</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>IMAP</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>Track+</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Track+</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>attachments</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Anhänge</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>attachment</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Anhang</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>merged</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>zusammengeführt</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>merge</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>zusammenführen</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>interfaces</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Schnittstellen</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>descendant</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Nachfolger</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>estimated remaining work</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>geschätzte Restarbeit</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>logged in</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>angemeldet</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>for CSV</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>für CSV</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>paste</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>einfügen</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>reset</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>zurücksetzen</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>TLS</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>TLS</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>item</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Vorgang</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>items</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Vorgänge</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>project</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Projekt</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>responsible</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Bearbeiter</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>role</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Rolle</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>start date</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Beginn</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>tab</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Reiter</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>task</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Aufgabe</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>user</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Benutzer</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>workflow</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Workflow</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>workspace</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Arbeitsraum</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>space</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Raum</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>priority</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Priorität</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>severity</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Auswirkung</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>set</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Menge</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>form</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Eingabemaske</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>fieldName</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Feldname</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>severity</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>Auswirkung</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>WBS</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>PSP</term>
+    </langentry>
+  </glossentry>
+  <glossentry>
+    <langentry xml:lang="en">
+      <term>mail template</term>
+    </langentry>
+    <langentry xml:lang="de">
+      <term>E-Mail-Vorlage</term>
+    </langentry>
+  </glossentry>
+</glossary>

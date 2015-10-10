@@ -1,0 +1,342 @@
+/* Tree icons */
+/* User section */
+.userprefs-ticon {
+   background-image: url(16x16/userPreferences.png) !important;
+}
+.user-ticon {
+   background-image: url(16x16/user.png) !important;
+}
+
+.group-ticon {
+   background-image: url(16x16/group.png) !important;
+}
+
+.department-ticon {
+   background-image: url(16x16/orgchart.png) !important;
+}
+.cockpit-ticon {
+   background-image: url(16x16/cockpit.png) !important;
+}
+.users-ticon {
+   background-image: url(16x16/users.png) !important;
+}
+.automailc-ticon {
+   background-image: url(16x16/automailc.png) !important;
+}
+.automailt-ticon {
+   background-image: url(16x16/mailtrigger.png) !important;
+}
+.automailf-ticon {
+   background-image: url(16x16/mailfilter.png) !important;
+}
+.calendar-ticon {
+   background-image: url(16x16/calendar.png) !important;
+}
+
+.docx-ticon {
+   background-image: url(16x16/word.png) !important;
+}
+
+/* Projects section */
+.projects-ticon {
+   background-image: url(16x16/project.png) !important;
+}
+.mosaicdiv .projects-ticon {
+   background-image: url(lightbox/project.png) !important;
+}
+
+.project-ticon, .project-Active-ticon {
+   background-image: url(16x16/project.png) !important;
+}
+
+.project-Inactive-ticon {
+   background-image: url(16x16/projectInactive.png) !important;
+}
+
+.project-Closed-ticon {
+   background-image: url(16x16/projectClosed.png) !important;
+}
+
+.project-notSelectable-ticon {
+	background-image: url(16x16/projectNotSelectable.png) !important;
+}
+
+/* Customization section */
+.customize-ticon {
+   background-image: url(16x16/customize.png) !important;
+}
+.filter-ticon {
+   background-image: url(16x16/filter.png) !important;
+}
+.report-ticon {
+   background-image: url(16x16/rtemplate.png) !important;
+}
+.roles-ticon {
+   background-image: url(16x16/roles.png) !important;
+   background-repeat: no-repeat;
+}
+.account-ticon {
+   background-image: url(16x16/account.png) !important;
+   background-repeat: no-repeat;
+}
+.automail-ticon {
+   background-image: url(16x16/automail.png) !important;
+}
+.links-ticon {
+   background-image: url(16x16/link.png) !important;
+}
+.forms-ticon {
+   background-image: url(16x16/form.png) !important;
+}
+.fields-ticon {
+   background-image: url(16x16/customFields.png) !important;
+}
+.picklists-ticon {
+   background-image: url(16x16/picklists.png) !important;
+}
+.projecttypes-ticon {
+   background-image: url(16x16/spacesType.png) !important;
+   background-repeat: no-repeat;
+}
+.workflow-ticon {
+   background-image: url(16x16/workflow.png) !important;
+}
+.localize-ticon {
+   background-image: url(16x16/localization.png) !important;
+}
+.scripts-ticon {
+   background-image: url(16x16/script.png) !important;
+}
+/* Server section */
+
+.server-ticon {
+   background-image: url(16x16/server.png) !important;
+}
+.motd-ticon {
+   background-image: url(16x16/loginPageText.png) !important;
+}
+.broadcast-ticon {
+   background-image: url(16x16/broadcast.png) !important;
+}
+.serverStatus-ticon {
+   background-image: url(16x16/serverStatus.png) !important;
+}
+.logging-ticon {
+   background-image: url(16x16/logging.png) !important;
+}
+.backup-ticon {
+   background-image: url(16x16/backup.png) !important;
+}
+.restore-ticon {
+   background-image: url(16x16/restore.png) !important;
+}
+
+.treeFilter-ticon {
+   background-image: url(16x16/filter.png) !important;
+}
+.tqlPlusFilter-ticon {
+   background-image: url(16x16/tqlPlusFilter.png) !important;
+}
+.tqlFilter-ticon {
+   background-image: url(16x16/tqlFilter.png) !important;
+}
+.dashboard-ticon {
+   background-image: url(16x16/cockpit.png) !important;
+}
+.pdf-ticon {
+   background-image: url(16x16/pdf.png) !important;
+}
+.xls-ticon {
+   background-image: url(16x16/xls.png) !important;
+}
+
+/*Issue navigator schedule section*/
+.schedule-ticon{
+    background-image: url(16x16/schedule_nextMonth.png) !important;
+}
+.schedule_today-ticon{
+	background-image: url(16x16/schedule_today.png) !important;
+}
+.schedule_tomorrow-ticon{
+	background-image: url(16x16/schedule_tomorrow.png) !important;
+}
+.schedule_nextWeek-ticon{
+	background-image: url(16x16/schedule_nextWeek.png) !important;
+}
+.schedule_nextMonth-ticon{
+	background-image: url(16x16/schedule_nextMonth.png) !important;
+}
+.schedule_notScheduled-ticon{
+	background-image: url(16x16/schedule_notScheduled.png) !important;
+}
+.schedule_overdue-ticon{
+	background-image: url(16x16/schedule_overdue.png) !important;
+}
+
+.config-global-ticon{
+	background-image: url(16x16/global.png) !important;
+}
+
+.config-issueType-ticon{
+	background-image: url(16x16/issueType.png) !important;
+}
+
+.config-projectType-ticon{
+	background-image: url(16x16/spacesType.png) !important;
+}
+
+.config-project-ticon{
+	background-image: url(16x16/spaces.png) !important;
+}
+
+.systemFields-ticon{
+	background-image: url(16x16/systemFields.png) !important;
+}
+
+.customFields-ticon{
+	background-image: url(16x16/customFields.png) !important;
+    background-repeat: no-repeat;
+}
+
+.calendar-ticon{
+	background-image: url(16x16/calendar.png) !important;
+}
+
+.cascadeSelect-ticon{
+	background-image: url(16x16/cascadeSelect.png) !important;
+}
+
+.check-ticon{
+	background-image: url(16x16/checkbox.png) !important;
+}
+
+.combo-ticon{
+	background-image: url(16x16/combo.png) !important;
+}
+
+.label-ticon{
+	background-image: url(16x16/label.png) !important;
+}
+
+.textField-ticon{
+	background-image: url(16x16/textField.png) !important;
+}
+
+
+.config-configItem-ticon{
+	background-image: url(16x16/configItem.png) !important;
+}
+.config-event-ticon{
+    background-image: url(16x16/event.png) !important;
+}
+
+.status-ticon{
+	background-image: url(16x16/status.png) !important;
+    background-repeat: no-repeat;
+}
+
+.priority-ticon{
+	background-image: url(16x16/priority.png) !important;
+    background-repeat: no-repeat;
+}
+
+.severity-ticon{
+	background-image: url(16x16/severity.png) !important;
+    background-repeat: no-repeat;
+}
+
+.issueType-ticon{
+	background-image: url(16x16/issueType.png) !important;
+    background-repeat: no-repeat;
+}
+.basket-ticon{
+	background-image: url(16x16/basket.png) !important;
+}
+
+.projectActive16-ticon{
+	background-image: url(16x16/project.png) !important;
+}
+
+.release-ticon, .releaseActive-ticon{
+	background-image: url(16x16/release.png) !important;
+}
+.release-Inactive-ticon{
+	background-image: url(16x16/releaseInactive.png) !important;
+}
+.release-Unscheduled-ticon{
+	background-image: url(16x16/releaseUnscheduled.png) !important;
+}
+
+.release-Closed-ticon{
+	background-image: url(16x16/releaseClosed.png) !important;
+}
+
+
+.expense-ticon{
+	background-image: url(16x16/expense.png) !important;
+}
+
+.trash-ticon{
+	background-image: url(16x16/trash.png) !important;
+}
+
+.incubator-ticon{
+	background-image: url(16x16/incubator.png) !important;
+}
+
+.reference-ticon{
+	background-image: url(16x16/reference.png) !important;
+}
+
+.action-ticon{
+	background-image: url(16x16/action.png) !important;
+}
+
+.delegated-ticon{
+	background-image: url(16x16/delegated.png) !important;
+}
+
+.versionControl-ticon{
+	background-image: url(16x16/versionControl.png) !important;
+}
+
+.msProject-ticon{
+	background-image: url(16x16/msProject.png) !important;
+}
+
+.mailTemplate-ticon{
+	background-image: url(16x16/mail.png) !important;
+}
+
+.action-ticon{
+	background-image: url(16x16/gear.png) !important;
+}
+
+.objectStatus-ticon{
+	background-image: url(16x16/sysStatus.png) !important;
+}
+
+.import-ticon{
+	background-image: url(16x16/import.png) !important;
+}
+
+.export-ticon{
+	background-image: url(16x16/export.png) !important;
+}
+
+.excel-ticon{
+	background-image: url(16x16/excel.png) !important;
+}
+
+.trackPlus-ticon{
+	background-image: url(16x16/favicon.png) !important;
+}
+.brokenParent{
+    color: red;
+}
+.brokenParent .projects-ticon{
+    background-image: url(16x16/project_warning.png) !important;
+}
+
+
+

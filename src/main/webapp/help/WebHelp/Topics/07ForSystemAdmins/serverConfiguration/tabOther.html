@@ -1,0 +1,204 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="On this tab you can configure directories, URLs, web services, backups, handling of item numbers, auto-login for guests, and more. Directories and URLs Genji stores a number of items on disk rather ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="concept"/><meta name="DC.Title" content="Various configuration items"/><meta name="abstract" content="On this tab you can configure directories, URLs, web services, backups, handling of item numbers, auto-login for guests, and more."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="On this tab you can configure directories, URLs, web services, backups, handling of item numbers, auto-login for guests, and more."/><meta name="indexterms" content="TRACKPLUS_HOME"/><meta name="DC.subject" content="TRACKPLUS_HOME"/><meta name="keywords" content="TRACKPLUS_HOME"/><meta name="DC.Relation" scheme="URI" content="../../../Topics/07ForSystemAdmins/serverConfiguration/serverConfig.html"/><meta name="DC.Creator" content="Steinbeis Technical Documentation"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="id131UEM010KE"/><link rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Various configuration items</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()" id="id131UEM010KE">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../../Topics/07ForSystemAdmins/serverConfiguration/serverConfig.html" title="There are a number of parameters that need to be configured before Genji can run in a meaningful way. This section describes these basic system settings."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Server configuration</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../../Topics/07ForSystemAdmins/serverConfiguration/../../../Topics/07ForSystemAdmins/Chapter7Wrapper.html" title="Administering the server">Administering the server</a> / <a class="navheader_parent_path" href="../../../Topics/07ForSystemAdmins/serverConfiguration/serverConfig.html" title="There are a number of parameters that need to be configured before Genji can run in a meaningful way. This section describes these basic system settings.">Server configuration</a></td></tr></tbody></table>
+
+    <h1 class="title topictitle1">Various configuration items</h1>
+
+    
+    
+    <div class="body conbody"><p class="shortdesc">On this tab you can configure directories, URLs, web services, backups, handling of
+        item numbers, auto-login for guests, and more.</p>
+
+        <div class="section"><h2 class="title sectiontitle">Directories and URLs</h2>
+            
+            <p class="p"><span class="ph"><span class="ph">Genji</span></span> stores a number of items on disk rather
+                than in its database. You should set the following directory entries to an absolute
+                path and you must make sure that they can be written to by the user that runs the
+                application server (e.g., tomcat7 on an Ubuntu/Debian system with Tomcat 7):</p>
+
+            <dl class="dl">
+                
+                    <dt class="dthd"><strong>Name</strong></dt>
+
+                    <dd class="ddhd"><strong>Description</strong></dd>
+
+                
+                
+                    <dt class="dt dlterm">TRACKPLUS_HOME</dt>
+
+                    <dd class="dd">At this location <span class="ph"><span class="ph">Genji</span></span> stores among
+                        other things attachments and report templates. Make sure there is sufficient
+                        disk space available and that this is an absolute path.</dd>
+
+                
+                
+                    <dt class="dt dlterm">Backup directory</dt>
+
+                    <dd class="dd"><span class="ph"><span class="ph">Genji</span></span> can create regularly backups of
+                        its database and all other data. Such backups are stored in this
+                        directory.</dd>
+
+                
+                
+                    <dt class="dt dlterm">Full text search index</dt>
+
+                    <dd class="dd"><span class="ph"><span class="ph">Genji</span></span> keeps the indices for full text
+                        search on the file system, in specially formatted files and directories. The
+                        indices can grow quite large. Here you should provide sufficient disk space
+                        to keep the indices on. Also keep in mind that with each search and each
+                        save of an item this index is touched. We therefore recommend to have a high
+                        bandwidth connection between the <span class="ph"><span class="ph">Genji</span></span>
+                        server and the machine managing the index disk space to keep both on the
+                        same machine.</dd>
+
+                
+            </dl>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Force <span class="ph"><span class="ph">Genji</span></span> server URL</h2>
+            
+            <p class="p"><span class="ph"><span class="ph">Genji</span></span> has been designed to operate in a proxy
+                environment, that is it works well even when its address from the outside is
+                different from the internal address. </p>
+
+            <p class="p">Usually, <span class="ph"><span class="ph">Genji</span></span> extracts its base URL from the
+                first access to the system after server startup. </p>
+
+            <div class="cautiontitle">CAUTION:</div><div class="note caution">If you access the system using „localhost“, which you may be
+                tempted to do as a system administrator, <span class="ph"><span class="ph">Genji</span></span>
+                will use „localhost“  as its base address until the 
+                next application restart. This
+                will cause problems 
+                when other people iare accessing the system from some other
+                computer. You thus should always access the system using its real address, as seen
+                from the outside.</div>
+
+            <p class="p">The automatic base URL detection works fine if there are no proxy servers between the
+                application server and the user clients. If there is a proxy server hiding the
+                application server, the correct server URL has to be configured.</p>
+
+            <p class="p">The application name must not be included, <span class="ph"><span class="ph">Genji</span></span>
+                will find that out itself. Example for the <span class="ph"><span class="ph">Genji</span></span>
+                server URL:</p>
+
+            <p class="p">
+                <samp class="ph codeph"> http://gandalf </samp>
+            </p>
+
+            <p class="p">This will work for an installation where the <span class="ph"><span class="ph">Genji</span></span> application can be reached under</p>
+
+            <samp class="ph codeph"> http://gandalf/track </samp>
+            <p class="p">or</p>
+
+            <samp class="ph codeph"> http://gandalf/track-dev </samp>
+            <p class="p">or any other application name you might have chosen. In non-proxied environments, you
+                can leave this field empty, which will enable the automatic detection feature for
+                the server URL.</p>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Configuring self registration</h2>
+            
+            <p class="p">It is possible to permit users to register themselves. This can decrease the burden
+                on the system administrator. Registration is always limited to certain e-mail domain
+                patterns, as configured under „Allowed e-mail pattern“ in the incoming e-mail
+                configuration section.</p>
+
+            <p class="p">Even if users register themselves, the system administrator is the only one that can
+                assign employee numbers and departments to accounts.</p>
+
+            <p class="p">Project administrators have to grant users access to their projects, otherwise users
+                will not be able to access any project data.</p>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Automatic guest login</h2>
+            
+            <p class="p">When turned on, access to any system URL automatically logs the guest user into the
+                system. This is convenient if you want to make queries publicly accessible without
+                requiring users to have an account.</p>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Workspace specific item number</h2>
+            
+            <p class="p">For each item <span class="ph"><span class="ph">Genji</span></span> generates a unique and global
+                identification number like 4789 or 6789. If you turn on the project specific item
+                numbering, <span class="ph"><span class="ph">Genji</span></span> will generate instead item
+                numbers composed of a project specific prefix and a project specific integer, like
+                TRA-1, TRA-2, and so on.</p>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Summary items behavior</h2>
+            
+            <p class="p">This activates automated computation of start date, end date, and planned value for
+                summary items from their child items values. If not set parent or summary items can
+                have dates and planned values independent of their children, which in most cases is
+                probably not what you want.</p>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Activate top-down support</h2>
+            
+            <p class="p">This enables support for top-down planning of budgets and dates. The top-down values
+                are compared with the bottom-up values and conflicts are marked. For example, if the
+                budget was 100 Euro, and the planned value entered by the responsible was 130 Euro,
+                this item would be marked being in a conflict state. For more information have a
+                look at „<a class="xref" href="../../02KeyConcepts/Planning/bottomUp.html" title="In many organizations planning is a recursive process, with desired deadlines and budgets coming from the top, and estimated expenses and delivery dates coming from those that actually do the work.">Bottom-up and top-down</a>“.</p>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Configuring site as demo site</h2>
+            
+            <p class="p">This is a switch to make installation of a demo site easy. In a demo site it is not
+                possible to save changes to the guest user account. Usually this should be
+                disabled.</p>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Alert of new software version</h2>
+            
+            <p class="p">This displays a message in the state line when there is a newer program version
+                available than the one you are running. The message is only shown to system
+                administrators.</p>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Webservice activation</h2>
+            
+            <p class="p">You can activate the web service interface which is being used by external software
+                like Eclipse Mylyn and Hudson/Jenkins. The address under which you can reach the web
+                service is the URL of your instance amended by
+                    <samp class="ph codeph">services/TrackplusService</samp>. Example:</p>
+
+            <pre class="pre codeblock">
+https://www.trackplus.net/services/TrackplusService
+</pre>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Automated data backup</h2>
+            
+            <p class="p">This turns on regular automated data backups. The number and frequency of backups you
+                can configure on the data backup configuration page (see <a class="xref fm:" href="../databackup.html#id31backup" title="A system administrator can backup all data from the database and optionally all attachments into a ZIP archive file. Furthermore it is possible to create such backups automatically on a regular basis. The backup data can be used to restore the database and all attachments at a later point in time.">Data Backup</a>).</p>
+
+        </div>
+
+    </div>
+
+<div class="related-links"/>
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../../Topics/07ForSystemAdmins/serverConfiguration/serverConfig.html" title="There are a number of parameters that need to be configured before Genji can run in a meaningful way. This section describes these basic system settings."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Server configuration</span></a></span>  </div>
+</body>
+</html>

@@ -1,0 +1,728 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:trackplusExchange xmlns:ns2="http://www.trackplus.com/exporter/" version="4.0.0">
+    <entityExchange entityId="1004" type="TMailTemplateBean">
+        <entityAttribute name="objectID">1004</entityAttribute>
+        <entityAttribute name="name">Reminder</entityAttribute>
+        <entityAttribute name="uuid">f4e1c058-1b91-4b48-8dd4-e036a89d7d77</entityAttribute>
+        <subEntityRelation parentAttributeName="mailTemplateID" type="TMailTemplateDefBean">
+            <trackEntity entityId="1016" type="TMailTemplateDefBean">
+                <entityAttribute name="theLocale">en</entityAttribute>
+                <entityAttribute name="mailBody"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+	<title>Track+ E-Mail Notification</title>
+	<style>
+	    td, th, p, div {
+	    	font-family: Verdana,Arial,Helvetica,sans-serif;
+	        font-size: 11px;
+	    }
+	   
+	    a {
+			color: #1D5090;
+			text-decoration: none;
+			font-weight: normal;
+		}	
+			
+		a:active  {
+			color: #BF2128;
+		}	
+			
+		a:hover {
+			color: #BF2128;
+		}	
+		
+	    body {
+			font-family: Verdana,Arial,Helvetica,sans-serif;
+			font-size: 11px;
+			color: #3A394B;
+			margin: 0;
+			padding: 10px;	
+			background: #fff;
+		}
+		
+		p {
+			padding: 0 0 10px 0;
+		}
+		
+		h1 {
+			font-weight: bold;
+			font-size: 12px;
+			margin: 10px 0 5px;
+		}
+		
+		.table {
+			border: 1px solid #77787b;
+			border-collapse: collapse;
+		}
+		
+		.table th {
+			background:#393B40 none repeat scroll 0%;
+			border:1px solid #fff;
+			color:#FFFFFF;
+			font-size:11px;
+			font-weight:bold;
+			padding: 4px 8px;
+			text-align:center;
+		}
+		
+		.table td {
+			border: 1px solid #fff;
+			padding: 5px 4px 5px 4px;
+		}
+		
+		.containerRow1 {
+			background: #EEF0F5 none repeat scroll 0%;
+			border: 1px solid #77787B;
+			padding: 5px 15px 0 15px;
+			margin: 0 0 20px 0;
+		}
+		
+		.red { color: #bf2128; }
+		.rowoff { background-color:#d0d0d0;}
+		.rowon { background-color:#ededed;}
+		
+    </style>
+    <#assign late="#ffaa9f">
+    <#assign dueSoon="#FCE08B">	
+	
+	<#-- render the short fields -->
+    <#macro renderReminderRows reminderRows>     
+    	<#list reminderRows as reminderRow>
+    		<#if reminderRow.isDueSoon = true>
+    		  <#assign bgColor=dueSoon>
+    		</#if>
+    		<#if reminderRow.isLate = true>
+    		  <#assign bgColor=late>
+    		</#if>
+	    	<tr class="<#if reminderRow_index % 2 ==0>rowon<#else>rowoff</#if>">
+		       	<td style="width: 20%;">${reminderRow.project}</td>
+		       	<td style="width: 12%;">${reminderRow.itemId}</td>
+		       	<td style="width: 40%;">${reminderRow.titleWithLink}</td>
+		       	<td style="width: 15%;">${reminderRow.raciPerson}</td>
+		       	<td <#if reminderRow.isLate = true || reminderRow.isDueSoon = true>bgcolor="${bgColor}" </#if>style="width: 10%;">${reminderRow.endDate}</td>
+	       	</tr>	     
+    	</#list>
+	</#macro>
+</head>
+<body>
+	<table width="100%" cellpadding="0" cellspacing="0" style="margin: 0 0 15px 0;">
+		<tr><td valign="center"><h1>The following items are due soon or overdue.</h1></td>
+		    <td align="right"><a href='#'><img border='0' src='cid:$$CID$$' alt='Track+'></a></td>
+		</tr>
+	</table>
+	<#if hasResponsibleItems=='true'>
+	<h1>I am responsible:</h1>
+	<div class="containerRow1" style="padding: 0;">	
+	<table width="100%" cellpadding="0" cellspacing="0" class="table"> 		
+	 	<tr>
+	    	<th>Project</th>
+	 		<th>Id</th>
+			<th>Title</th>
+			<th>Author</th>
+			<th>Due date</th>
+	  	</tr>	  		  	  
+	  	<@renderReminderRows responsibleItems/>	  	  
+	</table></div>
+	</#if>	
+
+	<#if hasManagerItems=='true'>
+    <h1>I am the manager:</h1>
+    <div class="containerRow1" style="padding: 0;"> 	
+	<table width="100%" cellpadding="0" cellspacing="0" class="table"> 		
+	 	<tr>
+	    	<th>Project</th>
+	 		<th>Id</th>
+			<th>Title</th>
+			<th>Responsible</th>
+			<th>Due date</th>
+	  	</tr>	  		  	  
+	  	<@renderReminderRows managerItems/>	  	  
+	</table></div>
+	</#if>
+
+	<#if hasOriginatorItems=='true'>
+    <h1>I am the originator:</h1>
+   	<div class="containerRow1" style="padding: 0;">  
+	<table width="100%" cellpadding="0" cellspacing="0" class="table"> 		
+	 	<tr>
+	    	<th>Project</th>
+	 		<th>Id</th>
+			<th>Title</th>
+			<th>Responsible</th>
+			<th>Due date</th>
+	  	</tr> 		  		  	  
+	  	<@renderReminderRows originatorItems/>	  	  
+	</table></div>
+	</#if>		
+	
+	<#if hasReminderBasketItems=='true'>
+    <h1>My reminder basket items:</h1>
+  	<div class="containerRow1" style="padding: 0;">   
+	<table width="100%" cellpadding="0" cellspacing="0" class="table"> 		
+	 	<tr>
+	    	<th>Projekt</th>
+	 		<th>Id</th>
+			<th>Titel</th>
+			<th>Author</th>
+			<th>Reminder date</th>
+	  	</tr> 		  		  	  
+	  	<@renderReminderRows reminderBasketItems/>	  	  
+	</table></div>
+	</#if>
+	
+	<#if hasDelegatedBasketItems=='true'>
+    <h1>My delegated basket items:</h1>
+  	<div class="containerRow1" style="padding: 0;">   
+	<table width="100%" cellpadding="0" cellspacing="0" class="table"> 		
+	 	<tr>
+	    	<th>Projekt</th>
+	 		<th>Id</th>
+			<th>Titel</th>
+			<th>Author</th>
+			<th>Reminder date</th>
+	  	</tr> 		  		  	  
+	  	<@renderReminderRows delegatedBasketItems/>	  	  
+	</table></div>
+	</#if>
+</body>
+</html>]]></entityAttribute>
+                <entityAttribute name="objectID">1016</entityAttribute>
+                <entityAttribute name="templateChanged">N</entityAttribute>
+                <entityAttribute name="mailTemplateID">1004</entityAttribute>
+                <entityAttribute name="plainMail">false</entityAttribute>
+                <entityAttribute name="uuid">c00c7a61-b8f1-473c-8770-c21552318870</entityAttribute>
+                <entityAttribute name="mailSubject">Track+: Reminder of due tasks</entityAttribute>
+            </trackEntity>
+        	
+        	<!-- German HTML -->
+        	
+            <trackEntity entityId="1017" type="TMailTemplateDefBean">
+                <entityAttribute name="theLocale">de</entityAttribute>
+                <entityAttribute name="mailBody"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+	<title>Track+ E-Mail-Benachrichtigung</title>
+	<style>
+	    td, th, p, div {
+	    	font-family: Verdana,Arial,Helvetica,sans-serif;
+	        font-size: 11px;
+	    }
+	   
+	    a {
+			color: #1D5090;
+			text-decoration: none;
+			font-weight: normal;
+		}	
+			
+		a:active  {
+			color: #BF2128;
+		}	
+			
+		a:hover {
+			color: #BF2128;
+		}	
+		
+	    body {
+			font-family: Verdana,Arial,Helvetica,sans-serif;
+			font-size: 11px;
+			color: #3A394B;
+			margin: 0;
+			padding: 10px;	
+			background: #fff;
+		}
+		
+		p {
+			padding: 0 0 10px 0;
+		}
+		
+		h1 {
+			font-weight: bold;
+			font-size: 12px;
+			margin: 10px 0 5px;
+		}
+		
+		.table {
+			border: 1px solid #77787b;
+			border-collapse: collapse;
+		}
+		
+		.table th {
+			background:#393B40 none repeat scroll 0%;
+			border:1px solid #fff;
+			color:#FFFFFF;
+			font-size:11px;
+			font-weight:bold;
+			padding: 4px 8px;
+			text-align:center;
+		}
+		
+		.table td {
+			border: 1px solid #fff;
+			padding: 5px 4px 5px 4px;
+		}
+
+		.containerRow1 {
+			background: #EEF0F5 none repeat scroll 0%;
+			border: 1px solid #77787B;
+			padding: 5px 15px 30px 15px;
+		}
+		
+		.red { color: #bf2128; }
+		.rowoff { background-color:#d0d0d0;}
+		.rowon { background-color:#ededed;}
+    </style>
+    <#assign late="#ffaa9f">
+    <#assign dueSoon="#FCE08B">		
+		
+	<#-- render the short fields -->
+    <#macro renderReminderRows reminderRows>     
+    	<#list reminderRows as reminderRow>
+    		<#if reminderRow.isDueSoon = true>
+    		  <#assign bgColor=dueSoon>
+    		</#if>
+    		<#if reminderRow.isLate = true>
+    		  <#assign bgColor=late>
+    		</#if>    	
+	    	<tr class="<#if reminderRow_index % 2 ==0>rowon<#else>rowoff</#if>">
+		       	<td style="width: 20%;">${reminderRow.project}</td>
+		       	<td style="width: 12%;">${reminderRow.itemId}</td>
+		       	<td style="width: 40%;">${reminderRow.titleWithLink}</td>
+		       	<td style="width: 15%;">${reminderRow.raciPerson}</td>
+		       	<td <#if reminderRow.isLate = true || reminderRow.isDueSoon = true>bgcolor="${bgColor}" </#if>style="width: 10%;">${reminderRow.endDate}</td>
+	       	</tr>	     
+    	</#list>
+	</#macro>
+</head>
+<body>
+	<table width="100%" cellpadding="0" cellspacing="0" style="margin: 0 0 15px 0;">
+		<tr><td valign="center"><h1>Die folgenden Vorgänge sind demnächst fällig oder schon überfällig.</h1></td>
+		    <td align="right"><a href='#'><img border='0' src='cid:$$CID$$' alt='Track+'></a></td>
+		</tr>
+	</table>	
+	<#if hasResponsibleItems=='true'>
+	<h1>Ich bin der Bearbeiter:</h1>
+	<div class="containerRow1" style="padding: 0;">
+	<table width="100%" cellpadding="0" cellspacing="0" class="table"> 		
+	 	<tr>
+	    	<th>Projekt</th>
+	 		<th>Id</th>
+			<th>Titel</th>
+			<th>Verfasser</th>
+			<th>Fällig</th>
+	  	</tr>	  		  	  
+	  	<@renderReminderRows responsibleItems/>	  	  
+	</table></div>
+	</#if>
+	
+	<#if hasManagerItems=='true'>
+    <h1>Ich bin der Manager:</h1>
+    <div class="containerRow1" style="padding: 0;"> 	
+	<table width="100%" cellpadding="0" cellspacing="0" class="table"> 		
+	 	<tr>
+	    	<th>Projekt</th>
+	 		<th>Id</th>
+			<th>Titel</th>
+			<th>Bearbeiter</th>
+			<th>Fällig</th>
+	  	</tr>	  		  	  
+	  	<@renderReminderRows managerItems/>	  	  
+	</table></div>
+	</#if>
+	
+	<#if hasOriginatorItems=='true'>
+    <h1>Ich bin der Ersteller:</h1>
+  	<div class="containerRow1" style="padding: 0;">   
+	<table width="100%" cellpadding="0" cellspacing="0" class="table"> 		
+	 	<tr>
+	    	<th>Projekt</th>
+	 		<th>Id</th>
+			<th>Titel</th>
+			<th>Bearbeiter</th>
+			<th>Fällig</th>
+	  	</tr> 		  		  	  
+	  	<@renderReminderRows originatorItems/>	  	  
+	</table></div>
+	</#if>
+	
+	<#if hasReminderBasketItems=='true'>
+    <h1>Meine Wiederforlage-Vorgänge:</h1>
+  	<div class="containerRow1" style="padding: 0;">   
+	<table width="100%" cellpadding="0" cellspacing="0" class="table"> 		
+	 	<tr>
+	    	<th>Projekt</th>
+	 		<th>Id</th>
+			<th>Titel</th>
+			<th>Verfasser</th>
+			<th>Fällig</th>
+	  	</tr> 		  		  	  
+	  	<@renderReminderRows reminderBasketItems/>	  	  
+	</table></div>
+	</#if>
+	
+	<#if hasDelegatedBasketItems=='true'>
+    <h1>Meine delegierte Vorgänge:</h1>
+  	<div class="containerRow1" style="padding: 0;">   
+	<table width="100%" cellpadding="0" cellspacing="0" class="table"> 		
+	 	<tr>
+	    	<th>Projekt</th>
+	 		<th>Id</th>
+			<th>Titel</th>
+			<th>Verfasser</th>
+			<th>Reminder date</th>
+	  	</tr> 		  		  	  
+	  	<@renderReminderRows delegatedBasketItems/>	  	  
+	</table></div>
+	</#if>
+</body>
+</html>]]></entityAttribute>
+                <entityAttribute name="objectID">1017</entityAttribute>
+                <entityAttribute name="templateChanged">N</entityAttribute>
+                <entityAttribute name="mailTemplateID">1004</entityAttribute>
+                <entityAttribute name="plainMail">false</entityAttribute>
+                <entityAttribute name="uuid">fa6c6624-1f97-4f11-9871-08777a61d571</entityAttribute>
+                <entityAttribute name="mailSubject">Track+: Erinnerung an fällige Aufgaben</entityAttribute>
+            </trackEntity>
+        	
+        	<!-- French HTML -->
+        	
+        	<trackEntity entityId="1016" type="TMailTemplateDefBean">
+        		<entityAttribute name="theLocale">fr</entityAttribute>
+        		<entityAttribute name="mailBody"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+	<title>Notification E-Mail Track+</title>
+	<style>
+	    td, th, p, div {
+	    	font-family: Verdana,Arial,Helvetica,sans-serif;
+	        font-size: 11px;
+	    }
+	   
+	    a {
+			color: #1D5090;
+			text-decoration: none;
+			font-weight: normal;
+		}	
+			
+		a:active  {
+			color: #BF2128;
+		}	
+			
+		a:hover {
+			color: #BF2128;
+		}	
+		
+	    body {
+			font-family: Verdana,Arial,Helvetica,sans-serif;
+			font-size: 11px;
+			color: #3A394B;
+			margin: 0;
+			padding: 10px;	
+			background: #fff;
+		}
+		
+		p {
+			padding: 0 0 10px 0;
+		}
+		
+		h1 {
+			font-weight: bold;
+			font-size: 12px;
+			margin: 10px 0 5px;
+		}
+		
+		.table {
+			border: 1px solid #77787b;
+			border-collapse: collapse;
+		}
+		
+		.table th {
+			background:#393B40 none repeat scroll 0%;
+			border:1px solid #fff;
+			color:#FFFFFF;
+			font-size:11px;
+			font-weight:bold;
+			padding: 4px 8px;
+			text-align:center;
+		}
+		
+		.table td {
+			border: 1px solid #fff;
+			padding: 5px 4px 5px 4px;
+		}
+		
+		.containerRow1 {
+			background: #EEF0F5 none repeat scroll 0%;
+			border: 1px solid #77787B;
+			padding: 5px 15px 0 15px;
+			margin: 0 0 20px 0;
+		}
+		
+		.red { color: #bf2128; }
+		.rowoff { background-color:#d0d0d0;}
+		.rowon { background-color:#ededed;}
+		
+    </style>
+    <#assign late="#ffaa9f">
+    <#assign dueSoon="#FCE08B">	
+	
+	<#-- render the short fields -->
+    <#macro renderReminderRows reminderRows>     
+    	<#list reminderRows as reminderRow>
+    		<#if reminderRow.isDueSoon = true>
+    		  <#assign bgColor=dueSoon>
+    		</#if>
+    		<#if reminderRow.isLate = true>
+    		  <#assign bgColor=late>
+    		</#if>
+	    	<tr class="<#if reminderRow_index % 2 ==0>rowon<#else>rowoff</#if>">
+		       	<td style="width: 20%;">${reminderRow.project}</td>
+		       	<td style="width: 12%;">${reminderRow.itemId}</td>
+		       	<td style="width: 40%;">${reminderRow.titleWithLink}</td>
+		       	<td style="width: 15%;">${reminderRow.raciPerson}</td>
+		       	<td <#if reminderRow.isLate = true || reminderRow.isDueSoon = true>bgcolor="${bgColor}" </#if>style="width: 10%;">${reminderRow.endDate}</td>
+	       	</tr>	     
+    	</#list>
+	</#macro>
+</head>
+<body>
+	<table width="100%" cellpadding="0" cellspacing="0" style="margin: 0 0 15px 0;">
+		<tr><td valign="center"><h1>The following items are due soon or overdue.</h1></td>
+		    <td align="right"><a href='#'><img border='0' src='cid:$$CID$$' alt='Track+'></a></td>
+		</tr>
+	</table>
+	<#if hasResponsibleItems=='true'>
+	<h1>Je suis le responsable:</h1>
+	<div class="containerRow1" style="padding: 0;">	
+	<table width="100%" cellpadding="0" cellspacing="0" class="table"> 		
+	 	<tr>
+	    	<th>Project</th>
+	 		<th>Id</th>
+			<th>Title</th>
+			<th>Auteur</th>
+			<th>Due date</th>
+	  	</tr>	  		  	  
+	  	<@renderReminderRows responsibleItems/>	  	  
+	</table></div>
+	</#if>	
+	
+	<#if hasManagerItems=='true'>
+    <h1>Je suis le manager:</h1>
+    <div class="containerRow1" style="padding: 0;"> 	
+	<table width="100%" cellpadding="0" cellspacing="0" class="table"> 		
+	 	<tr>
+	    	<th>Project</th>
+	 		<th>Id</th>
+			<th>Title</th>
+			<th>Responsable</th>
+			<th>Due date</th>
+	  	</tr>	  		  	  
+	  	<@renderReminderRows managerItems/>	  	  
+	</table></div>
+	</#if>
+	
+	<#if hasOriginatorItems=='true'>
+    <h1>Je suis l'auteur:</h1>
+   	<div class="containerRow1" style="padding: 0;">  
+	<table width="100%" cellpadding="0" cellspacing="0" class="table"> 		
+	 	<tr>
+	    	<th>Project</th>
+	 		<th>Id</th>
+			<th>Title</th>
+			<th>Responsable</th>
+			<th>Due date</th>
+	  	</tr> 		  		  	  
+	  	<@renderReminderRows originatorItems/>	  	  
+	</table></div>
+	</#if>		
+	
+	<#if hasReminderBasketItems=='true'>
+    <h1>Mes éléments à me rappeler:</h1>
+  	<div class="containerRow1" style="padding: 0;">   
+	<table width="100%" cellpadding="0" cellspacing="0" class="table"> 		
+	 	<tr>
+	    	<th>Projekt</th>
+	 		<th>Id</th>
+			<th>Titel</th>
+			<th>Auteur</th>
+			<th>Reminder date</th>
+	  	</tr> 		  		  	  
+	  	<@renderReminderRows reminderBasketItems/>	  	  
+	</table></div>
+	
+	<#if hasDelegatedBasketItems=='true'>
+    <h1>Mes éléments délégués:</h1>
+  	<div class="containerRow1" style="padding: 0;">   
+	<table width="100%" cellpadding="0" cellspacing="0" class="table"> 		
+	 	<tr>
+	    	<th>Projekt</th>
+	 		<th>Id</th>
+			<th>Titel</th>
+			<th>Auteur</th>
+			<th>Reminder date</th>
+	  	</tr> 		  		  	  
+	  	<@renderReminderRows delegatedBasketItems/>	  	  
+	</table></div>
+	</#if>
+</#if>
+</body>
+</html>]]></entityAttribute>
+        		<entityAttribute name="objectID">1016</entityAttribute>
+        		<entityAttribute name="templateChanged">N</entityAttribute>
+        		<entityAttribute name="mailTemplateID">1004</entityAttribute>
+        		<entityAttribute name="plainMail">false</entityAttribute>
+        		<entityAttribute name="uuid">ff0c7a61-b8f1-473c-8770-c21552318870</entityAttribute>
+        		<entityAttribute name="mailSubject">Track+: Rappel des tâches à accomplir</entityAttribute>
+        	</trackEntity>
+        	
+        	<!-- English plain -->
+        	
+            <trackEntity entityId="1018" type="TMailTemplateDefBean">
+                <entityAttribute name="theLocale">en</entityAttribute>
+                <entityAttribute name="mailBody"><![CDATA[            
+    <#macro renderReminderRows reminderRows>     
+    	<#list reminderRows as reminderRow>
+${reminderRow.project}   |   ${reminderRow.itemId}   |   ${reminderRow.title}   |   ${reminderRow.raciPerson}   |   ${reminderRow.endDate}   
+    	</#list>
+	</#macro>
+<#if hasResponsibleItems=='true'>
+
+I am responsible
+
+<@renderReminderRows responsibleItems/>	  	  
+</#if>
+<#if hasManagerItems=='true'>
+
+Im am the manager 
+
+<@renderReminderRows managerItems/>	  	  
+</#if>
+<#if hasOriginatorItems=='true'>
+I am the originator
+	  		  	  
+<@renderReminderRows originatorItems/>	  	  
+</#if>
+
+<#if hasReminderBasketItems=='true'>
+My reminder basket items
+	  		  	  
+<@renderReminderRows reminderBasketItems/>
+</#if>
+
+<#if hasDelegatedBasketItems=='true'>
+My delegated basket items:
+
+<@renderReminderRows delegatedBasketItems/>	  	  
+</#if>
+]]>
+</entityAttribute>
+                <entityAttribute name="objectID">1018</entityAttribute>
+                <entityAttribute name="templateChanged">N</entityAttribute>
+                <entityAttribute name="mailTemplateID">1004</entityAttribute>
+                <entityAttribute name="plainMail">true</entityAttribute>
+                <entityAttribute name="uuid">c95e41f7-c467-451c-8e72-bbcff65c4872</entityAttribute>
+                <entityAttribute name="mailSubject">Track+: Reminder of due tasks</entityAttribute>
+            </trackEntity>
+        	
+        	<!-- German plain -->
+        	
+            <trackEntity entityId="1019" type="TMailTemplateDefBean">
+                <entityAttribute name="theLocale">de</entityAttribute>
+                <entityAttribute name="mailBody"><![CDATA[    
+    <#macro renderReminderRows reminderRows>     
+    	<#list reminderRows as reminderRow>
+${reminderRow.project}   |   ${reminderRow.itemId}   |   ${reminderRow.title}   |   ${reminderRow.raciPerson}   |   ${reminderRow.endDate}      
+    	</#list>
+	</#macro>
+Die folgenden Vorgänge sind demnächst fällig oder schon überfällig:
+	<#if hasResponsibleItems=='true'>
+
+Ich bin der Bearbeiter:
+
+<@renderReminderRows responsibleItems/>	  	  
+	</#if>
+	<#if hasManagerItems=='true'>
+
+Ich bin der Manager: 
+
+<@renderReminderRows managerItems/>	  	  
+</#if>
+	<#if hasOriginatorItems=='true'>
+Ich bin der Ersteller:
+	  		  	  
+<@renderReminderRows originatorItems/>	  	  
+	</#if>
+
+<#if hasReminderBasketItems=='true'>
+Meine Wiederforlage-Vorgänge:
+	  		  	  
+<@renderReminderRows reminderBasketItems/>
+</#if>
+
+<#if hasDelegatedBasketItems=='true'>
+Meine delegierte Vorgänge:
+
+<@renderReminderRows delegatedBasketItems/>	  	  
+</#if>
+	]]></entityAttribute>
+                <entityAttribute name="objectID">1019</entityAttribute>
+                <entityAttribute name="templateChanged">N</entityAttribute>
+                <entityAttribute name="mailTemplateID">1004</entityAttribute>
+                <entityAttribute name="plainMail">true</entityAttribute>
+                <entityAttribute name="uuid">e90d16c3-7c37-4b91-817a-e227ef3e5473</entityAttribute>
+                <entityAttribute name="mailSubject"><![CDATA[Track+: Erinnerung an fällige Aufgaben]]></entityAttribute>
+            </trackEntity>
+        	
+        	<!-- French Plain -->
+        	
+        	<trackEntity entityId="1018" type="TMailTemplateDefBean">
+        		<entityAttribute name="theLocale">fr</entityAttribute>
+        		<entityAttribute name="mailBody"><![CDATA[            
+    <#macro renderReminderRows reminderRows>     
+    	<#list reminderRows as reminderRow>
+${reminderRow.project}   |   ${reminderRow.itemId}   |   ${reminderRow.title}   |   ${reminderRow.raciPerson}   |   ${reminderRow.endDate}   
+    	</#list>
+	</#macro>
+<#if hasResponsibleItems=='true'>
+
+Je suis le responsable
+
+<@renderReminderRows responsibleItems/>	  	  
+</#if>
+<#if hasManagerItems=='true'>
+
+Je suis le manager
+
+<@renderReminderRows managerItems/>	  	  
+</#if>
+<#if hasOriginatorItems=='true'>
+Je suis l'auteur
+	  		  	  
+<@renderReminderRows originatorItems/>	  	  
+</#if>
+
+<#if hasReminderBasketItems=='true'>
+Mes éléments à me rappeler:
+	  		  	  
+<@renderReminderRows reminderBasketItems/>
+</#if>
+
+<#if hasDelegatedBasketItems=='true'>
+Mes éléments délégués:
+
+<@renderReminderRows delegatedBasketItems/>	  	  
+</#if>
+]]>
+        		</entityAttribute>
+        		<entityAttribute name="objectID">1018</entityAttribute>
+        		<entityAttribute name="templateChanged">N</entityAttribute>
+        		<entityAttribute name="mailTemplateID">1004</entityAttribute>
+        		<entityAttribute name="plainMail">true</entityAttribute>
+        		<entityAttribute name="uuid">ff5e41f7-c467-451c-8e72-bbcff65c4872</entityAttribute>
+        		<entityAttribute name="mailSubject">Track+: Rappel des tâches à accomplir</entityAttribute>
+        	</trackEntity>
+        </subEntityRelation>
+    </entityExchange>
+</ns2:trackplusExchange>

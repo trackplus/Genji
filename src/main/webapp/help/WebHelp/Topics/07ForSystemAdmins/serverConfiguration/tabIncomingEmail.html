@@ -1,0 +1,190 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="Genji can receive e-mails and create from them new items or add information to existing items. To this end Genji acts like any standard e-mail client like Outlook or Thunderbird and needs to know how ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="concept"/><meta name="DC.Title" content="Incoming e-mail connection"/><meta name="abstract" content="Genji can receive e-mails and create from them new items or add information to existing items. To this end Genji acts like any standard e-mail client like Outlook or Thunderbird and needs to know how to connect to a mailbox on an POP3 or IMAP mail server."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="Genji can receive e-mails and create from them new items or add information to existing items. To this end Genji acts like any standard e-mail client like Outlook or Thunderbird and needs to know how to connect to a mailbox on an POP3 or IMAP mail server."/><meta name="DC.Relation" scheme="URI" content="../../../Topics/07ForSystemAdmins/serverConfiguration/serverConfig.html"/><meta name="DC.Creator" content="Steinbeis Technical Documentation"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="id131UEH0H088"/><link rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Incoming e-mail connection</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()" id="id131UEH0H088">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../../Topics/07ForSystemAdmins/serverConfiguration/serverConfig.html" title="There are a number of parameters that need to be configured before Genji can run in a meaningful way. This section describes these basic system settings."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Server configuration</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../../Topics/07ForSystemAdmins/serverConfiguration/../../../Topics/07ForSystemAdmins/Chapter7Wrapper.html" title="Administering the server">Administering the server</a> / <a class="navheader_parent_path" href="../../../Topics/07ForSystemAdmins/serverConfiguration/serverConfig.html" title="There are a number of parameters that need to be configured before Genji can run in a meaningful way. This section describes these basic system settings.">Server configuration</a></td></tr></tbody></table>
+
+    <h1 class="title topictitle1">Incoming e-mail connection</h1>
+
+    
+    
+    <div class="body conbody"><p class="shortdesc"><span class="ph"><span class="ph">Genji</span></span> can receive e-mails and create from them new items or add
+        information to existing items. To this end <span class="ph"><span class="ph">Genji</span></span> acts like any standard
+        e-mail client like Outlook or Thunderbird and needs to know how to
+        connect to a mailbox on an POP3 or IMAP mail server.</p>
+
+        <div class="section"><h2 class="title sectiontitle">Mail server protocol</h2>
+            
+            <p class="p">There are two popular e-mail protocols to communicate with a
+                mailbox: IMAP. Here you can select which one you prefer. Your
+                server has to offer the protocol you select here. Many servers
+                offer even both at the same time.</p>
+
+            <div class="p">A good way to check is again the setting in your own e-mail
+                client software.<div class="fig fignone"><br/><div class="imagecenter"><img class="image imagecenter" id="id131UEH0H088__image_afy_2qw_3k" src="../figures/incomingEmail.png" height="250" width="357"/></div><br/></div>
+</div>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Mail server name and port</h2>
+            
+            <p class="p">Mailboxes are managed by mail servers. Here you enter the name of
+                the mail server where the <span class="ph"><span class="ph">Genji</span></span> system mailbox resides. You can
+                leave this empty if you do not plan to use the item submission
+                by e-mail feature, and do not require authentication by first
+                reading a mailbox before sending anything.</p>
+
+            <p class="p">Typically, you should leave the default port set (110 for POP3 or
+                143 for IMAP, and 995 for POP3 via SSL/TLS and 993 for IMAP via
+                SSL/TLS).</p>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Mailbox user name and password</h2>
+            
+            <p class="p">All mailbox servers require you to authenticate yourself before
+                retrieving any e-mails. Here you enter the user name and
+                password associated with the <span class="ph"><span class="ph">Genji</span></span> system e-mail inbox. Be
+                careful if you try to reuse an existing, private account: you
+                might loose e-mails since they would be read by the <span class="ph"><span class="ph">Genji</span></span>
+                system, and it is possible that contention occurs if you are
+                trying to access the mailbox from two different sessions (like
+                from your private e-mail client and through the <span class="ph"><span class="ph">Genji</span></span>
+                system).</p>
+
+            <p class="p">It is therefore recommended to establish an extra e-mail account
+                for the <span class="ph"><span class="ph">Genji</span></span> system, unless this field is kept empty.</p>
+
+            <p class="p">In case item e-mail submissions are enabled, this mailbox is
+                regularly scanned for new e-mails. The e-mails are read, and
+                items are created from each e-mail. The e-mail subject is mapped
+                to the item title, the e-mail body is mapped to the item
+                description, and any attachments are added to the item as item
+                attachments.</p>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Encrypted connections</h2>
+            
+            <p class="p">You can use an encrypted connection between your <span class="ph"><span class="ph">Genji</span></span> server
+                and your POP3 or IMAP e-mail server. You can select between SSL,
+                TLS, and TLS if available.</p>
+
+            <p class="p">For encrypted connections to work you first have to import a certificate from your
+                e-mail server into your <span class="ph"><span class="ph">Genji</span></span> server local
+                keystore. How this is done is described under "<a class="xref" href="../usingEncryption.html" title="You can use encrypted connections between Genji and your e-mail server to prevent passwords from being transmitted clear text across your network.">Using SSL and TLS encryption on e-mail and LDAP connections</a>".</p>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">E-mail submissions</h2>
+            
+            <p class="p"><span class="ph"><span class="ph">Genji</span></span> can be configured to accept item
+                submissions
+                and additions to existing items via e-mail. This can be quite
+                useful if customers shall not get access to the <span class="ph"><span class="ph">Genji</span></span> database
+                itself, but they should channel their requests via e-mails to a
+                specific account.</p>
+
+            <p class="p">You can enable or disable e-mail submissions to the <span class="ph"><span class="ph">Genji</span></span> system
+                selecting the radio buttons provided on the configuration
+                screen. You can also decide if you want to accept e-mail
+                submissions from users that are not registered with the system,
+                or you want to limit acceptance to users that are known in
+                <span class="ph"><span class="ph">Genji</span></span>.</p>
+
+            <p class="p"><span class="ph"><span class="ph">Genji</span></span> regularly scans the POP3 input box of the <span class="ph"><span class="ph">Genji</span></span> e-mail
+                account provided in the upper part of the configuration screen
+                for new messages and either creates new items in the default
+                project you have to configure here, or adds submissions as
+                comments to existing items if the subject line starts with a
+                number and that number corresponds to an existing item.</p>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Keep messages on server</h2>
+            
+            <p class="p">Check this if you want to keep messages on your mail server even
+                though your <span class="ph"><span class="ph">Genji</span></span> server has read them. This can be useful if
+                you access the same mailbox also with an interactive client like
+                Thunderbird or Outlook.</p>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Accept unknown sender</h2>
+            
+            <p class="p">Check this box if you want to permit unknown senders to submit
+                items to the <span class="ph"><span class="ph">Genji</span></span> system via e-mail. The e-mail senders
+                address is still checked for compliance with the allowed domain
+                patterns, but it is not required any more that the senders
+                e-mail address is registered with some user within the <span class="ph"><span class="ph">Genji</span></span>
+                system.</p>
+
+            <p class="p">Be careful when you expose <span class="ph"><span class="ph">Genji</span></span> to the internet, leaving the
+                wildcard domain pattern at the same time, which is the default.
+                This could result in spamming your <span class="ph"><span class="ph">Genji</span></span> installation.</p>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">E-mail default project</h2>
+            
+            <p class="p">When e-mail item
+                submission has been enabled, there has to be a project the
+                incoming items can be assigned to. This could be some kind of
+                „catch all“ project, from where the items are regularly
+                transferred to their final points of destination. Typically, one
+                or two people monitor this catch all project, and take action
+                when items come in.</p>
+
+            <p class="p">Each project can have their own e-mail inbox configured, if it
+                likes to do so. In this case the global e-mail inbox might be
+                obsolete.</p>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Allowed domain pattern</h2>
+            
+            <p class="p">To prevent users from unverified domains (e.g. hotmail.com,
+                gmx.com) to register, a Perl5 regular expression can be defined
+                so that only e-mail domains matching that expression are allowed
+                to register. You most likely will have to change the example
+                default on the site configuration page.</p>
+
+            <p class="p">Example pattern: </p>
+
+            <p class="p">
+                <samp class="ph codeph"> [^@ \t]@bosch\.com </samp>
+            </p>
+
+            <p class="p">This example permits just users from domain
+                    „<samp class="ph codeph">bosch.com</samp>“ to register. Some more
+                examples:</p>
+
+            <p class="p">
+                <samp class="ph codeph"> [^@ \t]@t-online\.de|[^@ \t]@computer\.org </samp>
+            </p>
+
+            <p class="p">matches all users from domains <samp class="ph codeph">t-online.de</samp> and
+                    <samp class="ph codeph">computer.org</samp>. The pattern</p>
+
+            <p class="p">
+                <samp class="ph codeph"> \w[-.\w]+\@[-.\w]+\.\w{2,3} </samp>
+            </p>
+
+            <p class="p">matches all e-mail domains with no restrictions.</p>
+
+        </div>
+
+    </div>
+
+<div class="related-links"/>
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../../Topics/07ForSystemAdmins/serverConfiguration/serverConfig.html" title="There are a number of parameters that need to be configured before Genji can run in a meaningful way. This section describes these basic system settings."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Server configuration</span></a></span>  </div>
+</body>
+</html>

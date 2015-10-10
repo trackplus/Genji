@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version last-->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="HistoryTrail" pageWidth="650" pageHeight="70" orientation="Landscape" columnWidth="650" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" resourceBundle="TrackReport" uuid="d733e47f-cd46-4f44-b669-88de7702f668">
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="ireport.zoom" value="4.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<import value="net.sf.jasperreports.engine.util.*"/>
+	<style name="Base" isDefault="true" fontName="Gyre Heros" fontSize="10" pdfEncoding="UTF-8" isPdfEmbedded="true"/>
+	<style name="NewStatus" isBold="true">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($F{NewStatus}==null)]]></conditionExpression>
+			<style mode="Transparent" forecolor="#FFFFFF" isBold="true"/>
+		</conditionalStyle>
+	</style>
+	<style name="NewStatusField" mode="Transparent" forecolor="#BF2128" isBlankWhenNull="true" isBold="true"/>
+	<style name="NewDate" mode="Transparent" forecolor="#000000" pattern="" isBlankWhenNull="false" isBold="true"/>
+	<style name="Label" forecolor="#666666"/>
+	<queryString language="xPath">
+		<![CDATA[/track-report/item/*/*]]>
+	</queryString>
+	<field name="ChangedBy" class="java.lang.String">
+		<fieldDescription><![CDATA[changed-by]]></fieldDescription>
+	</field>
+	<field name="ChangedAt" class="java.util.Date">
+		<fieldDescription><![CDATA[changed-at]]></fieldDescription>
+	</field>
+	<field name="ChangeDescription" class="java.lang.String">
+		<fieldDescription><![CDATA[change-description]]></fieldDescription>
+	</field>
+	<field name="labelType" class="java.lang.String">
+		<fieldDescription><![CDATA[labelType]]></fieldDescription>
+	</field>
+	<field name="firstLabel" class="java.lang.String">
+		<fieldDescription><![CDATA[firstLabel]]></fieldDescription>
+	</field>
+	<field name="firstValue" class="java.lang.String">
+		<fieldDescription><![CDATA[firstValue]]></fieldDescription>
+	</field>
+	<field name="secondLabel" class="java.lang.String">
+		<fieldDescription><![CDATA[secondLabel]]></fieldDescription>
+	</field>
+	<field name="secondValue" class="java.lang.String">
+		<fieldDescription><![CDATA[secondValue]]></fieldDescription>
+	</field>
+	<field name="account" class="java.lang.String">
+		<fieldDescription><![CDATA[account]]></fieldDescription>
+	</field>
+	<field name="subject" class="java.lang.String">
+		<fieldDescription><![CDATA[subject]]></fieldDescription>
+	</field>
+	<field name="currency" class="java.lang.String">
+		<fieldDescription><![CDATA[currency]]></fieldDescription>
+	</field>
+	<field name="unit" class="java.lang.String">
+		<fieldDescription><![CDATA[unit]]></fieldDescription>
+	</field>
+	<field name="firstDateValue" class="java.util.Date">
+		<fieldDescription><![CDATA[firstDateValue]]></fieldDescription>
+	</field>
+	<field name="secondDateValue" class="java.util.Date">
+		<fieldDescription><![CDATA[secondDateValue]]></fieldDescription>
+	</field>
+	<field name="labelTypeDateChange" class="java.lang.String">
+		<fieldDescription><![CDATA[labelTypeDateChange]]></fieldDescription>
+	</field>
+	<sortField name="ChangedAt" order="Descending"/>
+	<variable name="changeType" class="java.lang.String" resetType="None">
+		<variableExpression><![CDATA[new String($F{labelType}).trim()]]></variableExpression>
+	</variable>
+	<variable name="changeTypeLocalized" class="java.lang.String">
+		<variableExpression><![CDATA["Comment".equals($V{changeType}) ? $R{commentAdded}
+	: ("Expense".equals($V{changeType}) ? $R{expenseChange}
+	: ("BudgetChanged".equals($V{changeType}) ? $R{budgetChange}
+	: ("RemainingBudget".equals($V{changeType}) ? $R{remainBudgetChange}
+	: (("DateChange".equals($V{changeType}) && "EndDate".equals($F{labelTypeDateChange})) ? $R{EndDate}
+	: (("DateChange".equals($V{changeType}) && "StartDate".equals($F{labelTypeDateChange})) ? $R{StartDate}
+	: ("Responsible".equals($V{changeType}) ? $R{Responsible}
+	: ("Status".equals($V{changeType}) ? $R{Status}
+	: ("Common".equals($V{changeType}) ? $R{Common}
+	: ("Manager".equals($V{changeType}) ? $R{Manager}
+	: $F{labelType}
+	)))))))))]]></variableExpression>
+	</variable>
+	<variable name="varFirstValue" class="java.lang.String">
+		<variableExpression><![CDATA[$F{firstValue} == null ? "" : new String($F{firstValue}).trim()]]></variableExpression>
+	</variable>
+	<variable name="varSecondValue" class="java.lang.String">
+		<variableExpression><![CDATA[$F{secondValue} == null ? "" :  new String($F{secondValue}).trim()]]></variableExpression>
+	</variable>
+	<variable name="varCurrency" class="java.lang.String">
+		<variableExpression><![CDATA[$F{currency} == null ? "" : "<font color='#BF2128'>" + new String($F{currency}).trim() + "</font>"]]></variableExpression>
+	</variable>
+	<variable name="varUnit" class="java.lang.String">
+		<variableExpression><![CDATA[$F{unit} == null ? "" : "<font color='#BF2128'>" + new String($F{unit}).trim() + "</font>"]]></variableExpression>
+	</variable>
+	<variable name="varSubject" class="java.lang.String">
+		<variableExpression><![CDATA[$F{subject} == null ? "" : "<font color='#BF2128'>" + new String(JRStringUtil.xmlEncode($F{subject})).trim() + "</font>"]]></variableExpression>
+	</variable>
+	<variable name="varAccount" class="java.lang.String">
+		<variableExpression><![CDATA[$F{account} == null ? "" : "<font color='#BF2128'>" + new String(JRStringUtil.xmlEncode($F{account})).trim() + "</font>"]]></variableExpression>
+	</variable>
+	<variable name="varFirstDateValue" class="java.lang.String">
+		<variableExpression><![CDATA[$F{firstDateValue} == null ? "" : "<font color='#BF2128'>" + new String(java.text.DateFormat.getDateInstance( java.text.DateFormat.MEDIUM,$P{REPORT_LOCALE}).format($F{firstDateValue})) + "</font>"]]></variableExpression>
+	</variable>
+	<variable name="varSecondDateValue" class="java.lang.String">
+		<variableExpression><![CDATA[$F{secondDateValue} == null ? "" : "<font color='#BF2128'>" + new String(java.text.DateFormat.getDateInstance( java.text.DateFormat.MEDIUM,$P{REPORT_LOCALE}).format($F{secondDateValue})) + "</font>"]]></variableExpression>
+	</variable>
+	<group name="ChangedAt">
+		<groupExpression><![CDATA[$F{ChangedAt}]]></groupExpression>
+		<groupHeader>
+			<band height="16">
+				<property name="local_mesure_unitheight" value="pixel"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy HH:mm" isBlankWhenNull="true">
+					<reportElement uuid="6a780a68-9c7f-4387-896a-9715eff307d3" key="textField" style="Label" isPrintRepeatedValues="false" x="0" y="0" width="330" height="15" forecolor="#000000">
+						<property name="local_mesure_unitwidth" value="pixel"/>
+					</reportElement>
+					<box topPadding="0" leftPadding="0">
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Gyre Heros" size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.MEDIUM,java.text.DateFormat.SHORT,$P{REPORT_LOCALE}).format($F{ChangedAt})+" "+($F{ChangedBy}==null ? "" : $R{by} + " " + $F{ChangedBy})]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement uuid="6ea2d03f-022b-4283-a2d4-1f91c52c91a3" x="0" y="15" width="646" height="1" forecolor="#7F8785">
+						<property name="local_mesure_unitx" value="pixel"/>
+						<property name="local_mesure_unity" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+				</line>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="6c24597c-e8f8-4934-a95f-0aab62f36316" key="textField-3" style="Label" mode="Transparent" x="365" y="0" width="145" height="15" forecolor="#000000">
+						<property name="local_mesure_unitheight" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<box leftPadding="0" rightPadding="3">
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Gyre Heros" size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$R{OldValue}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="8">
+				<property name="local_mesure_unitheight" value="pixel"/>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="30" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="6d5d69c1-c89b-495e-8bb2-c768897e05e2" key="textField" style="Label" positionType="Float" stretchType="RelativeToTallestObject" isPrintRepeatedValues="false" mode="Opaque" x="90" y="14" width="518" height="14" isRemoveLineWhenBlank="true" forecolor="#000000" backcolor="#F6F6F6"/>
+				<box topPadding="0" leftPadding="4" rightPadding="3">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle" markup="styled">
+					<font fontName="Gyre Heros" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[("Expense".equals($V{changeType}) ? $R{Subject} + ": " + $V{varSubject} + " " + $R{Account}+": " + $V{varAccount} + " " + $F{ChangeDescription}: $F{ChangeDescription})]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="8d68eac0-13bd-4a95-9745-ad76a0dc4b03" key="textField-3" style="Label" mode="Transparent" x="0" y="0" width="90" height="14" forecolor="#000000"/>
+				<box leftPadding="0" rightPadding="3">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Gyre Heros" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{changeTypeLocalized}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="507e1df9-4a9b-4d6b-a369-c8b83c2b9fd6" key="textField-4" style="Label" x="90" y="0" width="240" height="14" isRemoveLineWhenBlank="true" forecolor="#000000"/>
+				<box topPadding="0" leftPadding="4">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle" markup="html">
+					<font fontName="Gyre Heros" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Comment".equals($V{changeType}) ? "" 
+				: ("Expense".equals($V{changeType}) ? "<font color='BF2128'>"+$V{varSecondValue} + "</font> " + $V{varUnit}
+				: ("BudgetChanged".equals($V{changeType}) ? "<font color='BF2128'>" + $V{varSecondValue} + "</font> " + $V{varUnit}				
+	            : ("RemainingBudgetChanged".equals($V{changeType}) ? "<font color='BF2128'>" + $V{varSecondValue} + "</font> " + $V{varUnit}
+	            : ("DateChange".equals($V{changeType}) ? $V{varFirstDateValue}
+	            	: ("Status".equals($V{changeType}) ? "<font color='BF2128'>" + $V{varFirstValue} + "</font> "
+	            : "<font color='BF2128'>" + $V{varFirstValue} + "</font>"
+                )))))]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="224fbefc-8bf3-4845-9a3d-ef863e25e138" key="textField-7" style="Label" x="365" y="0" width="244" height="14" isRemoveLineWhenBlank="true" forecolor="#000000"/>
+				<box topPadding="0" leftPadding="0">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle" markup="html">
+					<font fontName="Gyre Heros" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Comment".equals($V{changeType}) ? "" 
+				: ("Expense".equals($V{changeType}) ? ""
+				: ("BudgetChanged".equals($V{changeType}) ? ""
+	            : ("RemainingBudgetChanged".equals($V{changeType}) ? ""
+	            : ("DateChange".equals($V{changeType}) ? $V{varSecondDateValue}
+	            	: ("Status".equals($V{changeType}) ? "<font color='BF2128'>" + $V{varSecondValue} + "</font>"	            	
+	            : "<font color='BF2128'>" + $V{varSecondValue} + "</font>"
+	)))))]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

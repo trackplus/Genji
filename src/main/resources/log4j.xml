@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  This is the logging configuration file for the Track+ application.
+  For user access logging configuration see WEB-INF/Logging.properties.
+  Usually, there is no need to change this.
+    
+  $Id: log4j.xml 1229 2015-08-15 10:23:23Z friedric $#
+-->
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd" >
+<log4j:configuration>
+    <appender name="STDERR" class="org.apache.log4j.ConsoleAppender">
+        <param name="threshold" value="warn" />
+        <param name="target" value="System.err"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %-5p %c [%L] : %m%n" />
+        </layout>
+    </appender>
+    <appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
+        <param name="threshold" value="info" />
+        <param name="target" value="System.out"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %-5p %c [%L] : %m%n" />
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="info" />
+            <param name="LevelMax" value="info" />
+        </filter>
+    </appender>
+
+    <logger name="org.apache.torque">
+         <level value="error"/> 
+    </logger>
+    <logger name="com.opensymphony.xwork2">
+         <level value="error"/> 
+    </logger>
+        <logger name="ognl">
+         <level value="error"/> 
+    </logger>
+        <logger name="org.apache.struts2.dispatcher.mapper">
+         <level value="debug"/> 
+    </logger>
+
+    <logger name="org.quartz">
+         <level value="warn"/> 
+    </logger>
+    <logger name="org.apache.jasper.compiler.TldLocationsCache">
+         <level value="info"/> 
+    </logger>
+    <logger name="AllTests">
+         <level value="debug"/> 
+    </logger>  
+  
+    <root>
+        <priority value="error"></priority>
+        <appender-ref ref="STDERR" />
+        <appender-ref ref="STDOUT" />
+    </root>
+</log4j:configuration>

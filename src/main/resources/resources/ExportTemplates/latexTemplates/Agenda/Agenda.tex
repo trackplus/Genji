@@ -1,0 +1,204 @@
+% Template for a meeting agenda
+% Copyright 2015 Steinbeis GmbH & Co. KG - Task Management Solutions
+%
+% $id:$
+%‚
+\documentclass[10pt,a4paper]{article}
+\pagestyle{plain}
+
+\usepackage{fontspec} % Font selection for XeLaTeX; see fontspec.pdf for documentation
+\defaultfontfeatures{Mapping=tex-text} % to support TeX conventions like ``---''
+\usepackage{xunicode} % Unicode support for LaTeX character names (accents, European chars, etc)
+\usepackage{xltxtra} % Extra customizations for XeLaTeX
+\setmainfont{Helvetica} % set the main body font (\textrm), assumes Charis SIL is installed
+\setsansfont{Helvetica}
+
+\usepackage{eurosym}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{pstricks}
+\usepackage{tabularx}
+\usepackage{verbatim}
+\usepackage{wrapfig}
+\usepackage{alltt}
+\usepackage{longtable}
+\usepackage{fancyhdr}
+\usepackage[absolute]{textpos}
+\usepackage[colorlinks=true,
+            linkcolor=blue,
+            urlcolor=blue,
+            citecolor=blue,
+            anchorcolor=blue,
+            bookmarks=true]{hyperref}
+\usepackage{float}
+
+% %%TP <#if (locale)?has_content && locale=="de">
+% %%TP \usepackage[ngerman]{babel}
+% %%TP  <#else>
+% %%TP  \usepackage[british]{babel}
+% %%TP </#if>
+\usepackage[nodayofweek]{datetime}
+\usepackage{fullpage}
+\usepackage{xcolor,colortbl}
+\usepackage{eso-pic, rotating}
+
+%%Postscript fonts
+%\def\palatino{\renewcommand{\rmdefault}{ppl}}
+%\def\helvetica{\renewcommand{\sfdefault}{phv}}
+%\def\courier{\renewcommand{\ttdefault}{pcr}}
+%\helvetica
+
+\setlength{\textwidth}{165mm}
+\setlength{\textheight}{245mm}
+\setlength{\parindent}{0mm}
+\setlength{\parskip}{8pt plus 1pt minus 2pt}
+
+\definecolor{tpred}{RGB}{214,20,22}
+\definecolor{Gray}{gray}{0.85}
+\pagestyle{fancy}
+\fancyhead{} % clear all fields
+\rhead{\includegraphics[width=28mm]{trackLogo.jpg}}
+\setlength\headheight{40pt}
+\fancyfoot[C]{Meeting Agenda \${title}}
+\fancyfoot[R]{\thepage}
+\setlength{\voffset}{-15.4mm}
+\setlength{\headsep}{10mm}
+\renewcommand{\headrulewidth}{0pt}
+
+\renewcommand{\familydefault}{\sfdefault}
+\let\margin\marginpar
+\newcommand\myMargin[1]{\margin{\raggedright\scriptsize #1}}
+\renewcommand{\marginpar}[1]{\myMargin{#1}}
+\newcommand{\action}[3]{\marginpar{#1 [#2]}}
+\newcommand\Vl{\vrule width 0.75pt}
+\newcommand\htpline{\noalign{\hrule height 0.75pt}}
+
+\newcommand\StrMeetingAgenda{Meeting Agenda}
+\newcommand\StrDate{Date}
+\newcommand\StrTime{Time}
+\newcommand\StrLocation{Location}
+\newcommand\StrAuthor{Author}
+\newcommand\StrParticipants{Participants}
+\newcommand\StrPartTime{Part time}
+\newcommand\StrAbsent{Absent}
+\newcommand\StrAgenda{Agenda}
+\newcommand\StrTopic{Topic}
+\newcommand\StrPriority{Priority}
+\newcommand\StrStatus{Status}
+\newcommand\StrPage{Page}
+
+% \DeclareUnicodeCharacter{00A0}{~}
+
+\AddToShipoutPicture{\put(30,280){\rotatebox{90}{\scalebox{0.8}{Copyright © \the\year \ \${licenseHolder}, All rights reserved}}}}
+
+\begin{document}
+
+% %%TP <#if (locale)?has_content && locale=="de">
+% %%TP \renewcommand\StrMeetingAgenda{Besprechungsvorlage}
+% %%TP \renewcommand\StrDate{Datum}
+% %%TP \renewcommand\StrTime{Zeit}
+% %%TP \renewcommand\StrLocation{Ort}
+% %%TP \renewcommand\StrAuthor{Leiter}
+% %%TP \renewcommand\StrParticipants{Teilnehmer}
+% %%TP \renewcommand\StrPartTime{Zeitweise}
+% %%TP \renewcommand\StrAbsent{Abwesend}
+% %%TP \renewcommand\StrAgenda{Agenda}
+% %%TP \renewcommand\StrTopic{Thema}
+% %%TP \renewcommand\StrPriority{Priorität}
+% %%TP \renewcommand\StrStatus{Status}
+% %%TP \renewcommand\StrPage{Seite}
+% %%TP </#if>
+
+% %%TP <#macro listPersons persons>
+% %%TP    <#if (persons)?has_content>
+% %%TP    <#list persons?split(",") as x>
+% %%TP  ${x?trim}<#if x_has_next>, </#if>
+% %%TP     </#list> 
+% %%TP </#if>
+% %%TP </#macro>
+
+% %%TP <#macro mTime>
+% %%TP    <#if (MeetingTime)?has_content>
+% %%TP      ${MeetingTime}
+% %%TP    <#else>
+% %%TP      ${.now?time}
+% %%TP    </#if>
+% %%TP </#macro>
+
+% %%TP <#macro mDate>
+% %%TP    <#if (MeetingDate)?has_content>
+% %%TP      ${MeetingDate}
+% %%TP    <#else>
+% %%TP      ${.now?date}
+% %%TP    </#if>
+% %%TP </#macro>
+
+% %%TP <#macro mLocation>
+% %%TP    <#if (Location)?has_content>
+% %%TP    ${Location}
+% %%TP    </#if>
+% %%TP </#macro>
+
+% %%TP <#macro makeTopicTable meetingTopics>     
+% %%TP <#list meetingTopics as topic>	   		
+% %%TP \rule[-4mm]{0mm}{10mm}\${topic.IssueNo} \${topic.title} & \rule[-4mm]{0mm}{10mm}\${topic.Priority}  & \rule[-4mm]{0mm}{10mm}\${topic.Status} & \rule[-4mm]{0mm}{10mm}\pageref{top\${topic.IssueNo}} \\ \htpline
+% %%TP </#list>
+% %%TP </#macro>
+
+% %%TP <#macro makeTopics meetingTopics>     
+% %%TP <#list meetingTopics as topic>	   		
+% %%TP \subsection*{\color{tpred} ${topic_index+1}. \${topic.title} [\${topic.IssueNo}]}
+% %%TP \label{top\${topic.IssueNo}}
+% %%TP \${topic.Description}
+% %%TP </#list>
+% %%TP </#macro>
+
+\newpage
+%\begin{textblock*}{150mm}(160mm,10mm)%
+% \textblockcolour{}
+%       \includegraphics[width=28mm]{trackLogo.jpg}
+%\end{textblock*}
+
+\begin{flushleft}
+{\Large\color{tpred}\bf{\StrMeetingAgenda}}\vskip 1.0em
+{\LARGE\color{tpred}\bf \${title}}\\
+\end{flushleft}
+
+\begin{table}[h]
+\begin{tabularx}{\textwidth}{!{\Vl}ll!{\Vl}X!{\Vl}l!{\Vl}} \noalign{\hrule height 1pt}
+\rowcolor{Gray} 
+ \rule[-2.5mm]{0pt}{8mm}{\StrDate}: 
+% %%TP <@mDate/>
+ {\Vl} & {\StrTime}: 
+% %%TP <@mTime/>
+& {\StrLocation}: 
+% %%TP <@mLocation/>
+ & {\StrAuthor}: \${Manager} \\ \htpline
+ {\StrParticipants}: \rule[-4mm]{0mm}{10mm} & \multicolumn{3}{p{12cm}!{\Vl}}{
+% %%TP <@listPersons Participants/>
+   } \\ \htpline
+\multicolumn{1}{!{\Vl}p{2cm}}{{\StrPartTime}:} \rule[-4mm]{0mm}{10mm} & \multicolumn{3}{p{12cm}!{\Vl}}{
+% %%TP <#if (PartTime)?has_content><@listPersons PartTime/></#if>
+   } \\ \htpline
+ {\StrAbsent}: \rule[-4mm]{0mm}{10mm} & \multicolumn{3}{p{12cm}!{\Vl}}{
+% %%TP <#if (Absent)?has_content><@listPersons Absent/></#if>
+  } \\ \htpline
+\end{tabularx}
+\end{table}
+
+\section*{\color{tpred}\StrAgenda}
+\begin{tabularx}{\textwidth}{!{\Vl}p{10cm}!{\Vl}X!{\Vl}l!{\Vl}c!{\Vl}} \htpline
+\rowcolor{Gray} 
+ \rule[-2.5mm]{0mm}{8mm}{\StrTopic} & {\StrPriority}  & {\StrStatus} & {\StrPage}  \\ \htpline
+%\rule[-4mm]{0mm}{10mm}hhh  gjh h jghjg hj hjhghg    jhgh h g hj jg h & ghighghg & jghhhhj & 4 \\ \htpline
+%\rule[-4mm]{0mm}{10mm}hhh  gjh h jghjg hj hjhghg    jhgh h g hj jg h & ghighghg & jghhhhj & 4 \\ \htpline
+%\rule[-4mm]{0mm}{10mm}hhh  gjh h jghjg hj hjhghg    jhgh h g hj jg h & ghighghg & jghhhhj & 4 \\ \htpline
+% %%TP <@makeTopicTable meetingTopics/>
+\end{tabularx}
+
+
+\newpage
+
+% %%TP <@makeTopics meetingTopics/>
+
+\end{document}

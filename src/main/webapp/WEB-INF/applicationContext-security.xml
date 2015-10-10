@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  - Sample namespace-based configuration
+  -
+  - $Id: applicationContext-security.xml 3019 2008-05-01 17:51:48Z luke_t $
+  -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.1.xsd">
+
+	<security:global-method-security secured-annotations="enabled">
+		<!-- AspectJ pointcut expression that locates our "post" method and applies security that way
+		<protect-pointcut expression="execution(* bigbank.*Service.post*(..))" access="ROLE_TELLER"/>
+		-->
+	</security:global-method-security>
+	
+
+    <security:http auto-config="false">
+        <security:intercept-url pattern="/logoff.action" filters="none"/>
+        <security:intercept-url pattern="/logon.action" filters="none"/>
+        <security:intercept-url pattern="/logon!failLogin.action" filters="none"/>                         
+        <security:intercept-url pattern="/logon.jsp" filters="none"/>
+        <security:intercept-url pattern="/printItem.action" filters="none"/>
+        <security:intercept-url pattern="/iCalendarSynchronize.action" filters="none"/>       
+        <security:intercept-url pattern="/design/**" filters="none"/>
+        <security:intercept-url pattern="/common/**" filters="none"/>                 
+        <security:intercept-url pattern="/tiles/logon.jsp" filters="none"/>           
+        <security:intercept-url pattern="/**" access="ROLE_USER"/>
+
+        <security:form-login login-page="/logon.action" authentication-failure-url="/logon!failLogin.action" default-target-url="/logon!doLogin.action" always-use-default-target="true"/>
+        <security:http-basic />
+        <security:remember-me key="trackplus" user-service-ref="userDetailsServiceImpl" />
+        <security:anonymous />
+        
+        
+        <security:logout logout-url="/logoff.action"/>
+        <!--
+        Uncomment to enable X509 client authentication support
+        <security:x509 /> 
+        -->
+        <!-- Uncomment to limit the number of sessions a user can have
+        <security:concurrent-session-control max-sessions="1" exception-if-maximum-exceeded="true"/>
+		-->		
+    </security:http>
+    
+        
+    <security:authentication-provider user-service-ref="userDetailsServiceImpl">
+        <security:password-encoder ref="TpPasswordEncoder"/>
+	</security:authentication-provider>
+
+    <bean id="userDetailsServiceImpl" class="com.aurel.track.user.TpUserDetailsService"/>
+    
+    <bean id="TpPasswordEncoder" class="com.aurel.track.user.TpPasswordEncoder"/>
+    
+    <!-- 
+    <bean id="anonymousProcessingFilter"
+          class="org.springframework.security.providers.anonymous.AnonymousProcessingFilter">
+       <property name="key" value="trackplus"/>
+       <property name="userAttribute" value="guest,ROLE_USER"/>
+       <security:custom-filter position="ANONYMOUS_FILTER"/>
+    </bean>
+    -->
+	
+	<!-- 
+	<bean id="filterChainProxy"
+	        class="org.springframework.security.util.FilterChainProxy">
+        <security:filter-chain-map path-type="ant">
+             <security:filter-chain  pattern="/logoff.action" filters="none"/>
+             <security:filter-chain  pattern="/logon.action" filters="none"/>
+             <security:filter-chain  pattern="/logon!failLogin.action" filters="none"/>                         
+             <security:filter-chain  pattern="/logon.jsp" filters="none"/>
+             <security:filter-chain  pattern="/design/**" filters="none"/>
+             <security:filter-chain  pattern="/common/**" filters="none"/>                 
+             <security:filter-chain  pattern="/tiles/logon.jsp" filters="none"/>           
+             <security:filter-chain  pattern="/**" filters="httpSessionContextIntegrationFilter,logoutFilter,authenticationProcessingFilter,basicProcessingFilter,securityContextHolderAwareRequestFilter,rememberMeProcessingFilter,anonymousProcessingFilter,exceptionTranslationFilter,filterInvocationInterceptor"/>
+        </security:filter-chain-map>	        
+	</bean>
+	
+	<bean id="authenticationProcessingFilterEntryPoint"
+	        class="org.springframework.security.ui.webapp.AuthenticationProcessingFilterEntryPoint">
+	  <property name="loginFormUrl" value="/logon.action"/>
+	  <property name="forceHttps" value="false"/>
+	</bean>
+	
+	<bean id="authenticationEntryPoint"
+        class="org.springframework.security.ui.basicauth.BasicProcessingFilterEntryPoint">
+        <property name="realmName"><value>Track+</value></property>
+    </bean>
+	-->
+	<!-- The filter definitions follow here -->
+	<!-- 
+	<bean id="exceptionTranslationFilter"
+	        class="org.springframework.security.ui.ExceptionTranslationFilter">
+	  <property name="authenticationEntryPoint" ref="authenticationProcessingFilterEntryPoint"/>
+	  <property name="accessDeniedHandler">
+	    <bean class="org.springframework.security.ui.AccessDeniedHandlerImpl">
+	      <property name="errorPage" value="/accessDenied.jsp"/>
+	    </bean>
+	  </property>
+	</bean>
+	
+
+    <bean id="basicProcessingFilter" class="org.springframework.security.ui.basicauth.BasicProcessingFilter">
+        <property name="authenticationManager"><ref bean="authenticationManager"/></property>
+        <property name="authenticationEntryPoint"><ref bean="authenticationEntryPoint"/></property>
+    </bean>
+    
+    <bean id="authenticationProcessingFilter"
+          class="org.springframework.security.ui.webapp.AuthenticationProcessingFilter">
+		<property name="authenticationManager" ref="authenticationManager"/>
+		<property name="authenticationFailureUrl" value="/logon!failLogin.action"/>
+		<property name="defaultTargetUrl" value="/logon!doLogin.action"/>
+		<property name="filterProcessesUrl" value="/j_spring_security_check"/>
+	</bean>
+	
+	<bean id="filterInvocationInterceptor"
+	    class="org.springframework.security.intercept.web.FilterSecurityInterceptor">
+	  <property name="authenticationManager" ref="authenticationManager"/>
+	  <property name="accessDecisionManager" ref="httpRequestAccessDecisionManager"/>
+	  <property name="objectDefinitionSource">
+	    <security:filter-invocation-definition-source>
+          <security:intercept-url  pattern="/logoff.action" access='ROLE_ANONYMOUS,ROLE_USER'/>
+          <security:intercept-url  pattern="/logon.action" access='ROLE_ANONYMOUS,ROLE_USER'/>
+          <security:intercept-url  pattern="/logon!failLogin.action" access='ROLE_ANONYMOUS,ROLE_USER'/>                         
+          <security:intercept-url  pattern="/logon.jsp" access='ROLE_ANONYMOUS,ROLE_USER'/>
+          <security:intercept-url  pattern="/design/**" access='ROLE_ANONYMOUS,ROLE_USER'/>
+          <security:intercept-url  pattern="/common/**" access='ROLE_ANONYMOUS,ROLE_USER'/>                 
+          <security:intercept-url  pattern="/tiles/logon.jsp" access='ROLE_ANONYMOUS,ROLE_USER'/>  	      
+	      <security:intercept-url pattern='/**' access='ROLE_USER'/>
+	    </security:filter-invocation-definition-source>
+	  </property>
+	</bean>	
+	
+	<bean id="authenticationManager"
+		  class="org.springframework.security.providers.ProviderManager">
+		<property name="providers">
+			<list>
+				<ref local="daoAuthenticationProvider"/>
+				<ref local="anonymousAuthenticationProvider"/>
+				<ref local="rememberMeAuthenticationProvider"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="daoAuthenticationProvider"
+		  class="org.springframework.security.providers.dao.DaoAuthenticationProvider">
+		<property name="userDetailsService" ref="userDetailsServiceImpl"/>
+		<property name="passwordEncoder" ref="TpPasswordEncoder"/>
+	</bean>
+	-->
+	<!--  Configuration for anonymous login -->
+	<!-- 
+	<bean id="anonymousAuthenticationProvider"
+		  class="org.springframework.security.providers.anonymous.AnonymousAuthenticationProvider">
+		<property name="key" value="trackplus"/>
+	</bean>
+		
+	<bean id="rememberMeAuthenticationProvider"
+	      class="org.springframework.security.providers.rememberme.RememberMeAuthenticationProvider">
+		<property name="key" value="trackplus"/>
+	</bean>	 
+	--> 
+
+</beans>

@@ -1,0 +1,38 @@
+#!/bin/sh
+# ibserver script - Start/stop the InterBase daemon
+# Set these environment variables if and only if they are not set.
+: ${INTERBASE:=/opt/interbase}
+: ${ISC_USER:=SYSDBA}
+: ${ISC_PASSWORD:=masterkey}
+# WARNING: in a real-world installation, you should not put the
+# SYSDBA password in a publicly-readable file. To protect it:
+# chmod 700 ibserver; chown root ibserver
+export INTERBASE
+export ISC_USER
+export ISC_PASSWORD
+ibserver_start() {
+    # This example assumes the InterBase server is
+    # being started as UNIX user "interbase".
+    # echo "$INTERBASE/bin/ibmgr -start -forever" | su interbase
+    su -c $INTERBASE'/bin/ibmgr -start -forever' interbase
+}
+
+ibserver_stop() {
+    echo "$INTERBASE/bin/ibmgr -shut -password XXXX"
+    $INTERBASE/bin/ibmgr -shut -password $ISC_PASSWORD
+}
+case $1 in
+'start') 
+    echo -e 'InterBase Server starting...\c';
+    ibserver_start ;;
+'start_msg') 
+    echo 'InterBase Server starting...\c' ;;
+'stop') 
+    echo -e "InterBase Server stopping..." 
+    ibserver_stop ;;
+'stop_msg') 
+    echo 'InterBase Server stopping...\c' ;;
+*) 
+    echo "Usage: $0 { start | stop }" ; exit 1 ;;
+esac
+exit 0

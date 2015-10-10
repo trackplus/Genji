@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+"http://struts.apache.org/dtds/struts-2.0.dtd ">
+<struts>
+
+ 
+	<package name="struts-admin" extends="struts-track-base" >
+
+		<default-interceptor-ref name="default" />
+		<!--SCREEN EDIT ACTIONS -->
+		<action name="indexScreens" class="com.aurel.track.screen.item.action.ScreenAction"
+			method="list">
+			<interceptor-ref name="editStack" />
+		</action>
+		
+		<!-- Login Level Settings Configuration edit action -->
+		<action name="editAdminLoggingConfig"
+			class="com.aurel.track.admin.server.logging.LoggingConfigAction">
+			<result name="failure">cockpit</result>
+			<result name="done">editAdminLoggingConfig!load</result>
+			<interceptor-ref name="editStackSysAuth" />
+		</action>
+
+		<!-- Login Level Settings Configuration edit action -->
+		<action name="saveAdminLoggingConfig"
+			class="com.aurel.track.admin.server.logging.LoggingConfigAction">
+			<result name="failure">cockpit</result>
+			<result name="done" type="redirectAction">editAdminLoggingConfig!load</result>
+			<interceptor-ref name="editStackSysAuth" />
+		</action>
+
+		<action name="screenTree"
+			class="com.aurel.track.screen.item.action.FieldsTreeAction" method="list">
+		</action>
+		<action name="screenEdit"
+			class="com.aurel.track.screen.item.action.ScreenEditAction">
+			<result name="success">/tiles/layouts/BorderLayout.jsp</result>
+			<!-- the edit is used to redirect to edit screen from addTab, removeTab,or
+				other action methods -->
+			<result name="edit" type="redirectAction">screenEdit?screenID=${screenID}&amp;selectedTab=${selectedTab}</result>
+			<interceptor-ref name="editStackSysAdminManagerAuth" />
+		</action>
+		<action name="updateScreenProperty"
+			class="com.aurel.track.screen.item.action.ScreenEditAction" method="updateProperty">
+			<interceptor-ref name="paramsPrepareParams" />
+		</action>
+		<action name="tab"
+			class="com.aurel.track.screen.item.action.ScreenTabAction" method="reload">
+			<interceptor-ref name="editStack" />
+		</action>
+		<action name="updateTabProperty"
+			class="com.aurel.track.screen.item.action.ScreenTabAction" method="updateProperty">
+			<interceptor-ref name="paramsPrepareParams" />
+		</action>
+		<action name="panel"
+			class="com.aurel.track.screen.item.action.ScreenPanelAction" method="reload">
+			<interceptor-ref name="editStack" />
+		</action>
+		<action name="updatePanelProperty"
+			class="com.aurel.track.screen.item.action.ScreenPanelAction" method="updateProperty">
+			<interceptor-ref name="paramsPrepareParams" />
+		</action>
+		<action name="field"
+			class="com.aurel.track.screen.item.action.ScreenFieldAction" method="reload">
+			<interceptor-ref name="editStack" />
+		</action>
+		<action name="updateFieldProperty"
+			class="com.aurel.track.screen.item.action.ScreenFieldAction" method="updateProperty">
+			<interceptor-ref name="paramsPrepareParams" />
+		</action>
+		<!-- Site Configuration edit action -->
+		<action name="editAdminSiteConfig"
+			class="com.aurel.track.admin.server.siteConfig.SiteConfigAction">
+			<result name="input">/tiles/layouts/BorderLayout.jsp</result>
+			<interceptor-ref name="editStackSysAuth" />
+		</action>
+
+		<!-- Site Configuration save action -->
+		<action name="saveAdminSiteConfig"
+			class="com.aurel.track.admin.server.siteConfig.SiteConfigAction">
+			<interceptor-ref name="editStackSysAuth" />
+		</action>
+
+		<!-- Site Status edit action -->
+		<action name="editAdminSiteStatus"
+			class="com.aurel.track.admin.server.status.ServerStatusAction">
+			<interceptor-ref name="editStackSysAuth" />
+		</action>
+
+		<!-- User profile load action -->
+		<action name="userProfile" class="com.aurel.track.admin.user.profile.ProfileAction">
+			<result name="confirmed">/tiles/layouts/BorderLayout.jsp</result>
+			<result name="expired">/tiles/layouts/BorderLayout.jsp</result>
+			<interceptor-ref name="editNoAuth" />
+		</action>
+
+		<action name="avatar" class="com.aurel.track.admin.user.avatar.AvatarAction">
+			<interceptor-ref name="fileUpload" />
+			<interceptor-ref name="editStack" />
+		</action>
+		<action name="personAvatar" class="com.aurel.track.admin.user.avatar.AvatarAction" method="download">
+			<interceptor-ref name="editAnonymousStack"/>
+		</action>
+
+		<action name="person" class="com.aurel.track.admin.user.person.PersonAction">
+			<interceptor-ref name="editStackSysAdminManagerAuth" />
+		</action>
+
+		<action name="licenseHelper" class="com.aurel.track.license.LicenseHelper">
+            <interceptor-ref name="editStackSysAdminManagerAuth" />
+        </action>
+
+
+		<action name="setUserProperty" class="com.aurel.track.admin.user.person.PersonAction"
+			method="setUserProperty">
+			<interceptor-ref name="editStackSysAdminManagerAuth" />
+			<result name="success">tiles/pages/logon/userProperty.jsp</result>
+		</action>
+
+		<action name="personPicker"
+			class="com.aurel.track.admin.user.person.PersonPickerAction">
+			<interceptor-ref name="editNoAuth" />
+		</action>
+
+		<action name="group" class="com.aurel.track.admin.user.group.GroupAction">
+			<interceptor-ref name="editStackSysAdminManagerAuth" />
+		</action>
+
+		<action name="rolesInProjects"
+			class="com.aurel.track.admin.user.assignments.RolesInProjectsAction">
+			<interceptor-ref name="editStackSysAdminManagerAuth" />
+		</action>
+
+		<action name="filtersInMenu"
+			class="com.aurel.track.admin.user.filtersInMenu.FiltersInMenuAction">
+			<interceptor-ref name="editStackSysAdminManagerAuth" />
+		</action>
+
+		<action name="department"
+			class="com.aurel.track.admin.user.department.DepartmentAction">
+			<interceptor-ref name="editStackSysAdminManagerAuth" />
+		</action>
+		<action name="roleView" class="com.aurel.track.admin.customize.role.RoleAction">
+			<result name="refresh" type="redirectAction">roleView</result>
+			<interceptor-ref name="editStackProjSysAuth" />
+		</action>
+
+		<action name="roleSave" class="com.aurel.track.admin.customize.role.RoleAction"
+			method="save">
+			<result name="refresh" type="redirectAction">roleView</result>
+			<interceptor-ref name="paramsPrepareParamsSysAdminManagerAuth" />
+		</action>
+
+		<action name="issueTypeToRole"
+			class="com.aurel.track.admin.customize.role.IssueTypeToRoleAction">
+			<result name="success" type="redirectAction">roleView</result>
+			<interceptor-ref name="editStackSysAdminManagerAuth" />
+		</action>
+
+		<action name="fieldsRestrictionsToRole"
+			class="com.aurel.track.admin.customize.role.FieldsRestrictionsToRoleAction">
+			<interceptor-ref name="editStackSysAdminManagerAuth" />
+		</action>
+
+		<action name="databaseBackup"
+			class="com.aurel.track.admin.server.dbbackup.DatabaseBackupAction">
+			<interceptor-ref name="defaultSysAuth" />
+		</action>
+		<action name="databaseRestore"
+			class="com.aurel.track.admin.server.dbbackup.DatabaseRestoreAction">
+			<result name="success" type="redirectAction">cockpit</result>
+			<interceptor-ref name="defaultSysAuth" />
+		</action>
+		
+		<action name="iCalendar" class="com.cynertia.track.iCalendar.ICalendarAction">
+		</action>
+		<action name="iCalendarSynchronize"
+			class="com.cynertia.track.iCalendar.ICalendarSynchronizeAction"
+			method="sendIcs">
+			<interceptor-ref name="defaultNoAuth" />
+		</action>
+		<action name="userPreferences" class="com.aurel.track.user.UserPreferencesAction">
+			<result name="ok" type="freemarker">template/ok.ftl</result>
+			<interceptor-ref name="editStack" />
+		</action>
+		<action name="sendItemEmail" class="com.aurel.track.item.SendItemEmailAction">
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="script"
+			class="com.aurel.track.admin.customize.scripting.ScriptAdminAction">
+			<!-- <result name="refresh" type="redirectAction">script</result> -->
+			<interceptor-ref name="editStackSysAdminManagerAuth" />
+		</action>
+		<action name="projectType"
+			class="com.aurel.track.admin.customize.projectType.ProjectTypeAction">
+			<interceptor-ref name="fileUpload" />
+			<interceptor-ref name="editStackSysAdminManagerAuth" />
+		</action>
+		<action name="projectTypeListAssignments"
+			class="com.aurel.track.admin.customize.projectType.assignments.ProjectTypeAssignmentsAction">
+			<interceptor-ref name="editStackSysAdminManagerAuth" />
+		</action>
+
+		<action name="projectTypeSimpleAssignment"
+			class="com.aurel.track.admin.customize.projectType.assignments.ProjectTypeSimpleAssignmentAction">
+			<interceptor-ref name="editStackSysAdminManagerAuth" />
+		</action>
+
+		<action name="linking" class="com.aurel.track.linking.LinkingAction">
+			<result name="success">/tiles/layouts/BorderLayout.jsp</result>
+		</action>
+
+
+		<action name="customFrame" class="com.aurel.track.customFrame.CustomFrameAction">
+			<result name="success">/tiles/layouts/BorderLayout.jsp</result>
+		</action>
+
+		<action name="admin" class="com.aurel.track.admin.AdminAction">
+			<result name="success">/tiles/layouts/BorderLayout.jsp</result>
+		</action>
+
+		<action name="listOptions"
+			class="com.aurel.track.admin.customize.lists.ListOptionsAction">
+			<interceptor-ref name="fileUpload" />
+			<interceptor-ref name="editStackProjSysAuth" />
+		</action>
+		<action name="listOptionsLocalize"
+			class="com.aurel.track.admin.customize.lists.ListOptionsAction"
+			method="localizedLabels">
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="childIssueTypeAssignments"
+			class="com.aurel.track.admin.customize.lists.ChildIssueTypeAssignmentsAction">
+			<interceptor-ref name="editStackSysAdminManagerAuth" />
+		</action>
+
+		<!-- <action name="listAssignments" class="com.aurel.track.admin.customize.lists.ListAssignmentsAction">
+			<interceptor-ref name="editStack"/> </action> -->
+		<action name="listOptionIcon"
+			class="com.aurel.track.admin.customize.lists.OptionIconConfigAction">
+			<interceptor-ref name="fileUpload" />
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="optionIconStream"
+			class="com.aurel.track.admin.customize.lists.OptionIconStreamAction">
+			<interceptor-ref name="editNoAuth" />
+		</action>
+
+		<action name="objectStatus"
+			class="com.aurel.track.admin.customize.objectStatus.ObjectStatusAction">
+			<interceptor-ref name="editStackSysAdminManagerAuth" />
+		</action>
+
+
+		<action name="notify"
+			class="com.aurel.track.admin.customize.notify.NotifyAction">
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="notifyTrigger"
+			class="com.aurel.track.admin.customize.notify.trigger.NotifyTriggerAction">
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="notifySettings"
+			class="com.aurel.track.admin.customize.notify.settings.NotifySettingsAction">
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="treeConfig"
+			class="com.aurel.track.admin.customize.treeConfig.TreeConfigAction">
+			<interceptor-ref name="editStackProjSysAuth" />
+		</action>
+
+		<action name="fieldConfigItemDetail"
+			class="com.aurel.track.admin.customize.treeConfig.field.FieldConfigDetailAction">
+			<interceptor-ref name="editStackProjSysAuth" />
+		</action>
+
+		<action name="screenConfigItemDetail"
+			class="com.aurel.track.admin.customize.treeConfig.screen.ScreenAssignmentAction">
+			<interceptor-ref name="fileUpload" />
+			<interceptor-ref name="editStackProjSysAuth" />
+		</action>
+		<action name="mailTemplateConfigItemDetail"
+			class="com.aurel.track.admin.customize.treeConfig.mailTemplate.MailTemplateAssignmentAction">
+			<interceptor-ref name="fileUpload" />
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="categoryConfig"
+			class="com.aurel.track.admin.customize.category.CategoryAction">
+			<interceptor-ref name="editStack" />
+		</action>
+		<action name="categoryPicker"
+			class="com.aurel.track.admin.customize.category.CategoryPickerAction">
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="categoryPathPicker"
+			class="com.aurel.track.admin.customize.category.CategoryPathPickerAction">
+			<interceptor-ref name="editStack" />
+		</action>
+
+
+		<action name="filterConfig"
+			class="com.aurel.track.admin.customize.category.filter.FilterAction">
+			<interceptor-ref name="editStack" />
+			<result name="itemNavigator" type="redirectAction">itemNavigator</result>
+			<result name="filterParameters" type="redirectAction">filterParameters?filterID=${filterID}</result>
+		</action>
+		<action name="fieldExpression"
+			class="com.aurel.track.admin.customize.category.filter.FieldExpressionAction">
+			<interceptor-ref name="editStack" />
+		</action>
+		<action name="filterUpperRefresh"
+			class="com.aurel.track.admin.customize.category.filter.FilterUpperRefreshAction">
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="filterParameters"
+			class="com.aurel.track.admin.customize.category.filter.parameters.FilterParamertersAction">
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="savedFilterExecute"
+			class="com.aurel.track.admin.customize.category.filter.execute.SavedFilterExecuteAction">
+			<interceptor-ref name="editStack" />
+			<result name="itemNavigator" type="redirectAction">itemNavigator</result>
+		</action>
+
+		<action name="encodedQuery"
+			class="com.aurel.track.admin.customize.category.filter.execute.SavedFilterExecuteAction"
+			method="executeEncodedQuery">
+			<!-- redirect for rendering the parameters for an encoded filter -->
+			<!-- <result name="filterParameters" type="redirectAction">filterParameters!renderParameters?query=${query}</result> -->
+			<result name="filterParameters" type="chain">
+				<param name="actionName">filterParameters</param>
+				<param name="method">renderParameters</param>
+			</result>
+			<result name="itemNavigator" type="redirectAction">itemNavigator?lite=${lite}</result>
+			<result name="itemNavigatorLite">/tiles/layouts/BorderLayout.jsp</result>
+			<interceptor-ref name="defaultNoAuth" />
+		</action>
+
+		<action name="filterLink"
+			class="com.aurel.track.admin.customize.category.filter.execute.FilterLinkAction">
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="reportConfig"
+			class="com.aurel.track.admin.customize.category.report.ReportAction">
+			<interceptor-ref name="fileUpload" />
+			<interceptor-ref name="editStack" />
+			<result name="success">/tiles/layouts/BorderLayout.jsp</result>
+		</action>
+
+		<action name="logonPageText" class="com.aurel.track.admin.server.motd.MotdAction">
+			<interceptor-ref name="editStackSysAdminManagerAuth" />
+		</action>
+
+		<action name="sendEmail"
+			class="com.aurel.track.admin.server.sendEmail.SendEmailAction">
+			<interceptor-ref name="editStackSysAdminManagerAuth" />
+		</action>
+
+		<action name="project" class="com.aurel.track.admin.project.ProjectAction">
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="projectCopy"
+			class="com.aurel.track.admin.projectCopy.ProjectCopyAction">
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="projectPicker"
+			class="com.aurel.track.admin.project.ProjectPickerAction">
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="release"
+			class="com.aurel.track.admin.project.release.ReleaseAction">
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="releasePicker"
+			class="com.aurel.track.admin.project.release.ReleasePickerAction">
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="roleAssignments"
+			class="com.aurel.track.admin.project.assignments.RoleAssignmentsAction">
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="accountAssignments"
+			class="com.aurel.track.admin.project.assignments.AccountAssignmentsAction">
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="mailTemplate"
+			class="com.aurel.track.admin.customize.mailTemplateEdit.MailTemplateAction">
+			<interceptor-ref name="fileUpload" />
+			<interceptor-ref name="editStackSysAdminManagerAuth" />
+		</action>
+
+		<action name="mailTemplateEdit"
+			class="com.aurel.track.admin.customize.mailTemplateEdit.MailTemplateEditAction">
+			<interceptor-ref name="fileUpload" />
+			<interceptor-ref name="editStackSysAdminManagerAuth" />
+			<result name="success">/tiles/layouts/BorderLayout.jsp</result>
+		</action>
+
+
+		<action name="userLevel" class="com.aurel.track.admin.user.userLevel.UserLevelAction">
+			<interceptor-ref name="editStack" />
+		</action>
+
+
+
+	</package>
+	<package name="struts-admin-rest" extends="struts-track-base" namespace="/rest">
+
+			<!--  logonPageText.action and save!logonPageText.action -->
+			<action name="logonPageText" class="com.aurel.track.admin.server.motd.MotdAction">
+			<interceptor-ref name="restSysAdminManager" />
+			
+			
+		</action>
+	</package>
+</struts>

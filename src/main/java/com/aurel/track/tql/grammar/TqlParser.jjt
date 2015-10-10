@@ -1,0 +1,406 @@
+/*
+ * $Id: TqlParser.jjt 3495 2012-03-15 17:23:21Z tamas $
+ */
+
+options
+{
+	MULTI = true;
+	STATIC = false;
+	IGNORE_CASE = true;
+}
+
+
+
+PARSER_BEGIN(TqlParser)
+
+package com.aurel.track.tql.parser;
+
+/**
+ * This class implements the TqlParser. It is used for transforming
+ * a TQL statement into an equivalent abstract syntax tree.
+ *
+ * @author Clemens Fuchslocher &lt;clfuit00@fht-esslingen.de&gt;
+ */
+public class TqlParser
+{
+	public final static int ROOT = JJTROOT;
+	public final static int OR_EXPRESSION = JJTOREXPRESSION;
+	public final static int AND_EXPRESSION = JJTANDEXPRESSION;
+	public final static int RELATIONAL_EXPRESSION = JJTRELATIONALEXPRESSION;
+	public final static int LITERAL_EXPRESSION = JJTLITERALEXPRESSION;
+	public final static int DATE_OPERATOR = JJTDATEOPERATOR;
+
+	public final static int ORDER_BY_EXPRESSION = JJTORDERBY;
+	public final static int ORDER_BY_DESCENDING = 1000;
+	public final static int ORDER_BY_ASCENDING = 2000;
+}
+
+PARSER_END(TqlParser)
+
+
+
+SKIP :
+{
+	" "
+	| "\t"
+	| "\n"
+	| "\r"
+}
+
+
+
+// Primitives
+TOKEN :
+{
+	< SIGN : (["-","+"])+ >
+}
+
+
+
+// Boolean operators
+TOKEN :
+{
+	< AND : "AND" >
+	| < OR : "OR" >
+}
+
+
+
+// Relational operators
+TOKEN :
+{
+	< EQUAL : "==" >
+	| < NOT_EQUAL : "!=" >
+	| < GREATER_EQUAL : ">=" >
+	| < GREATER_THAN : ">" >
+	| < LESS_EQUAL : "<=" >
+	| < LESS_THAN : "<" >
+	| < LIKE : "LIKE" >
+	| < NOT_LIKE : "NOT_LIKE" >
+	| < OLDER_THAN : "OLDER_THAN" >
+	| < NEWER_THAN : "NEWER_THAN" >
+}
+
+
+
+// Date related tokens
+TOKEN :
+{
+	< HOURS : "HOUR" ("S")?  >
+	| < DAYS : "DAY" ("S")? >
+	| < WEEKS : "WEEK" ("S")? >
+	| < MONTHS : "MONTH" ("S")? >
+	| < YEARS : "YEAR" ("S")? >
+	| < START_DATE_LITERAL : "DATE" ([" "])* "(" > : IN_DATE_LITERAL
+	| < BEGINNING_OF_THIS_YEAR : "BEGINNING_OF_THIS_YEAR" >
+	| < BEGINNING_OF_THIS_QUARTER : "BEGINNING_OF_THIS_QUARTER" >
+	| < BEGINNING_OF_THIS_MONTH : "BEGINNING_OF_THIS_MONTH" >
+	| < BEGINNING_OF_THIS_WEEK : "BEGINNING_OF_THIS_WEEK" >
+	| < BEGINNING_OF_THIS_DAY : "BEGINNING_OF_THIS_DAY" >
+	| < LAST_LOGIN : "LAST_LOGIN" >
+}
+
+
+
+< IN_DATE_LITERAL > TOKEN:
+{
+	< DATE_LITERAL : (~[")"])+ >
+	| < END_DATE_LITERAL : ")" > : DEFAULT
+}
+
+
+
+// ORDER_BY related tokens
+TOKEN :
+{
+	< ORDER_BY : "ORDER_BY" >
+	| < DESC : "DESC" >
+	| < ASC : "ASC" >
+	| < SEMICOLON : ";" >
+	| < COMMA : "," >
+}
+
+
+
+// Literals
+TOKEN :
+{
+	< START_QUOTED_STRING_LITERAL : "\"" > : IN_QUOTED_STRING_LITERAL
+	| < LITERAL : <CHARS> >
+	| < #LETTER : ["a"-"z","A"-"Z","ä","Ä","ö","Ö","ü","Ü","ß"] >
+	| < #DIGITS : ["0"-"9"] >
+	| < #MISC : ["_","-"] >
+	| < #CHARS : (<LETTER>|<DIGITS>) (<LETTER>|<DIGITS>|<MISC>)* >
+}
+
+
+
+< IN_QUOTED_STRING_LITERAL > TOKEN :
+{
+	< QUOTED_STRING_LITERAL : (~["\""])+ >
+	| < END_QUOTED_STRING_LITERAL : "\"" > : DEFAULT
+}
+
+
+
+// Non terminals
+SimpleNode start () #Root :
+{
+}
+{
+	(OrderBy ())? OrExpression () {
+		jjtThis.setType (ROOT);
+		jjtThis.setValue ("ROOT");
+		return jjtThis;
+	}
+}
+
+
+
+void OrExpression () #OrExpression(>1) :
+{
+}
+{
+	AndExpression () (<OR> {
+		jjtThis.setType (OR_EXPRESSION);
+		jjtThis.setOperator (OR_EXPRESSION);
+		jjtThis.setValue ("OR");
+	} AndExpression ())*
+}
+
+
+
+void AndExpression () #AndExpression(>1) :
+{
+}
+{
+	RelationalExpression () (<AND> {
+		jjtThis.setType (AND_EXPRESSION);
+		jjtThis.setOperator (AND_EXPRESSION);
+		jjtThis.setValue ("AND");
+	} RelationalExpression ())*
+}
+
+
+
+void RelationalExpression () #RelationalExpression(>1) :
+{
+	int timeUnit = -1;
+}
+{
+	LiteralExpression () (
+		(
+			<EQUAL> {
+				jjtThis.setType (RELATIONAL_EXPRESSION);
+				jjtThis.setOperator (EQUAL);
+				jjtThis.setValue ("==");
+			}
+			| <NOT_EQUAL> {
+				jjtThis.setType (RELATIONAL_EXPRESSION);
+				jjtThis.setOperator (NOT_EQUAL);
+				jjtThis.setValue ("!=");
+			}
+			| <GREATER_EQUAL> {
+				jjtThis.setType (RELATIONAL_EXPRESSION);
+				jjtThis.setOperator (GREATER_EQUAL);
+				jjtThis.setValue (">=");
+			}
+			| <GREATER_THAN> {
+				jjtThis.setType (RELATIONAL_EXPRESSION);
+				jjtThis.setOperator (GREATER_THAN);
+				jjtThis.setValue (">");
+			}
+			| <LESS_EQUAL> {
+				jjtThis.setType (RELATIONAL_EXPRESSION);
+				jjtThis.setOperator (LESS_EQUAL);
+				jjtThis.setValue ("<=");
+			}
+			| <LESS_THAN> {
+				jjtThis.setType (RELATIONAL_EXPRESSION);
+				jjtThis.setOperator (LESS_THAN);
+				jjtThis.setValue ("<");
+			}
+			| <LIKE> {
+				jjtThis.setType (RELATIONAL_EXPRESSION);
+				jjtThis.setOperator (LIKE);
+				jjtThis.setValue ("LIKE");
+			}
+			| <NOT_LIKE> {
+				jjtThis.setType (RELATIONAL_EXPRESSION);
+				jjtThis.setOperator (NOT_LIKE);
+				jjtThis.setValue ("NOT_LIKE");
+			}
+		) LiteralExpression ()
+		|
+		(
+			<OLDER_THAN> {
+				jjtThis.setType (RELATIONAL_EXPRESSION);
+				jjtThis.setOperator (OLDER_THAN);
+				jjtThis.setValue ("OLDER_THAN");
+			}
+			| <NEWER_THAN> {
+				jjtThis.setType (RELATIONAL_EXPRESSION);
+				jjtThis.setOperator (NEWER_THAN);
+				jjtThis.setValue ("NEWER_THAN");
+			}
+		) (
+			DateOperator()
+			| LiteralExpression () (
+				timeUnit = TimeUnits () {
+					jjtThis.setTimeUnit (timeUnit);
+				}
+			)?
+		)
+	)
+	| "(" OrExpression () ")"
+}
+
+
+void DateOperator () #DateOperator:
+{
+	Token sign = null;
+	Token value = null;
+	int timeUnit = -1;
+}
+{
+	(
+		<BEGINNING_OF_THIS_YEAR> {
+			jjtThis.setType (DATE_OPERATOR);
+			jjtThis.setDateOperator(BEGINNING_OF_THIS_YEAR);
+			jjtThis.setValue ("BEGINNING_OF_THIS_YEAR");
+		}
+		|
+		<BEGINNING_OF_THIS_QUARTER> {
+			jjtThis.setType (DATE_OPERATOR);
+			jjtThis.setDateOperator(BEGINNING_OF_THIS_QUARTER);
+			jjtThis.setValue ("BEGINNING_OF_THIS_QUARTER");
+		}
+		|
+		<BEGINNING_OF_THIS_MONTH> {
+			jjtThis.setType (DATE_OPERATOR);
+			jjtThis.setDateOperator(BEGINNING_OF_THIS_MONTH);
+			jjtThis.setValue ("BEGINNING_OF_THIS_MONTH");
+		}
+		|
+		<BEGINNING_OF_THIS_WEEK> {
+			jjtThis.setType (DATE_OPERATOR);
+			jjtThis.setDateOperator(BEGINNING_OF_THIS_WEEK);
+			jjtThis.setValue ("BEGINNING_OF_THIS_WEEK");
+		}
+		|
+		<BEGINNING_OF_THIS_DAY> {
+			jjtThis.setType (DATE_OPERATOR);
+			jjtThis.setDateOperator(BEGINNING_OF_THIS_DAY);
+			jjtThis.setValue ("BEGINNING_OF_THIS_DAY");
+		}
+		|
+		<LAST_LOGIN> {
+			jjtThis.setType (DATE_OPERATOR);
+			jjtThis.setDateOperator(LAST_LOGIN);
+			jjtThis.setValue ("LAST_LOGIN");
+		}
+	) (
+		sign = <SIGN> {
+			jjtThis.setDateOperatorSign(sign == null ? "" : sign.image);
+		} LiteralExpression () (
+			timeUnit = TimeUnits () {
+				jjtThis.setDateOperatorTimeUnit (timeUnit);
+			}
+		)?
+	)?
+}
+
+
+int TimeUnits () #TimeUnits(>1) :
+{
+}
+{
+	<HOURS> {
+		return HOURS;
+	}
+	| <DAYS> {
+		return DAYS;
+	}
+	| <WEEKS> {
+		return WEEKS;
+	}
+	| <MONTHS> {
+		return MONTHS;
+	}
+	| <YEARS> {
+		return YEARS;
+	}
+}
+
+
+Token LiteralExpression () :
+{
+	Token token = null;
+}
+{
+	token = <LITERAL> {
+		jjtThis.setType (LITERAL_EXPRESSION);
+		jjtThis.setValue (token.image);
+		return token;
+	}
+	| <START_QUOTED_STRING_LITERAL> (token = <QUOTED_STRING_LITERAL>)? <END_QUOTED_STRING_LITERAL> {
+		jjtThis.setType (LITERAL_EXPRESSION);
+		jjtThis.setValue (token == null ? "" : token.image);
+		return token;
+	}
+	| <START_DATE_LITERAL> (token = <DATE_LITERAL>)? <END_DATE_LITERAL> {
+		jjtThis.setType (DATE_LITERAL);
+		jjtThis.setValue (token == null ? "" : token.image);
+		return token;
+	}
+}
+
+
+void SortExpression () :
+{
+	Token token = null;
+}
+{
+	token = <LITERAL> {
+		jjtThis.setType (ORDER_BY_EXPRESSION);
+		jjtThis.setValue (token.image);
+		jjtThis.setOperator (ORDER_BY_ASCENDING);
+	} (
+		<DESC> {
+			jjtThis.setOperator (ORDER_BY_DESCENDING);
+		}
+		| <ASC> {
+			jjtThis.setOperator (ORDER_BY_ASCENDING);
+		}
+	)?
+}
+
+void OrderBy () #OrderBy :
+{
+	Token token = null;
+}
+{
+	<ORDER_BY> SortExpression() {
+    } (<COMMA> SortExpression())? <SEMICOLON>
+}
+
+/*
+void OrderBy () #OrderBy :
+{
+	Token token = null;
+}
+{
+	<ORDER_BY> token = <LITERAL> {
+		jjtThis.setType (ORDER_BY_EXPRESSION);
+		jjtThis.setValue (token.image);
+		jjtThis.setOperator (ORDER_BY_ASCENDING);
+	} (
+		<DESC> {
+			jjtThis.setOperator (ORDER_BY_DESCENDING);
+		}
+		| <ASC> {
+			jjtThis.setOperator (ORDER_BY_ASCENDING);
+		}
+	)? <SEMICOLON>
+}
+*/

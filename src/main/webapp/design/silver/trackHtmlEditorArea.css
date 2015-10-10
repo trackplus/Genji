@@ -1,0 +1,224 @@
+/* 2006 C. Kirchmeier, www.sightdesign.de */
+
+/* General stuff */
+
+html, body {
+	background-color: transparent;
+}
+
+body {
+	font-family: Tahoma,Verdana,Arial,Helvetica,sans-serif;
+	font-size: 12px;
+	color: #3A394B;
+	margin: 0;
+	padding: 3px 0 0 3px;	
+	background-color: #ffffff;
+	/*background: transparent;url(img/bg.gif) repeat-y;*/
+}
+
+/* IE5.x needs this */
+p, td /*, li*/ {
+	font-size: 12px;
+}
+
+p {
+	margin-top: 2px;
+	margin-bottom: 8px;
+}
+
+h1 {
+	font-size: 16px;
+	font-weight: bold;	
+}
+
+h2 {
+	font-size: 14px;	
+	font-weight: bold;
+	color: #333333;
+	margin: 0 0 5px 0;	
+}
+
+h3 {
+	font-size: 13px;	
+	font-weight: bold;
+	color: #444444;
+	margin: 5px 0 0 0;	
+}
+
+h4 {
+	font-size: 12px;	
+	font-weight: bold;
+	margin: 0 0 17px 0;
+	background: url(img/dots.gif) repeat-x left bottom;
+	padding: 0 0 5px 0;
+}
+
+h4.splitPanel {	
+	margin: 15px 0 10px 0;
+}
+
+input, textarea, select {
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 11px;
+}
+
+form {
+	margin: 0;
+	padding: 0;	
+}
+
+a { 
+	color: #1D5090; 
+	text-decoration: none; 
+	font-weight:bold;
+}
+
+a:active  { 
+	color: #BF2128;
+}
+
+a:hover { 
+	color: #BF2128;
+}
+
+a.regular { 
+	color:#1d5090; 
+	text-decoration:underline; 
+	font-weight:normal; 
+	background: url(img/arrow-small2.gif) no-repeat 0 4px;
+	padding: 0 0 0 15px;
+	margin: 0 0 2px 0;
+	display: block;
+}
+
+a.regular:hover, a.regular:active { 
+	text-decoration:underline; 
+	color: #BF2128;
+} 
+
+ul {
+	margin: 10px 0 10px 10px;
+	padding: 0;
+	list-style-type: none;
+}
+
+
+ul li {
+	background: url(img/list.gif) no-repeat 0 .5em;
+	line-height: 1.5em;
+	margin: 0;
+	padding: 0 0 2px 12px;
+}
+ol li {
+	line-height: 1.5em;
+	margin: 0;
+}
+ol {
+	/*list-style-type:decimal;*/
+}
+ol ol{
+	list-style-type:lower-alpha;
+}
+ol ol ol{
+	list-style-type:lower-roman;
+}
+
+/* Color helpers to add a bit more flexibility  */
+
+.color1 {
+	background: #EEF0F5;	
+}
+
+.color2 {
+	background: #EEEDED;	
+}
+
+.color3 {
+	background: #bec0c6;	
+}
+
+.color4 {
+	background: #fff;	
+}
+
+.greyed{
+	color: #909090;
+}
+
+
+a.synopsis_blue { 
+	color: #1D5090;
+	font-weight: normal;
+}
+
+a.synopsis_blue:active { 
+   color: #1D5090;
+}
+
+a.synopsis_blue:hover { 
+   color: #BF2128;
+   background: none;
+   text-decoration:underline;                         
+}
+
+a.synopsis_red { 
+	color: #BF2128;
+}
+
+a.synopsis_red:active { 
+	color: #BF2128;
+}
+
+a.synopsis_red:hover { 
+	color: #1D5090;
+	background: none;
+	text-decoration:underline;
+}
+
+a.synopsisClosedNotOnPlan { 
+	color: #1D5090;
+	font-weight: normal;
+}
+
+a.synopsisClosedNotOnPlan:active { 
+   color: #1D5090;
+}
+
+a.synopsisClosedNotOnPlan:hover { 
+   color: #BF2128;
+   background: none;
+   text-decoration:underline;                         
+}
+
+
+.visible { display: block; }
+.invisible { display: none; }
+
+
+
+.code-text {
+   font-family: courier new,courier,monospace;
+   font-size: 12px;
+   text-align: left;
+ }
+
+
+
+/* Old styles */
+
+ .background-gray { 
+ 	background-color:#EEF0F5;
+ 	padding: 1px; 
+ }
+ 
+ .background-darkgray { 
+ 	background-color:#BEC0C6; 
+ 	padding: 3px;
+ }
+ 
+ .cke_top {
+   padding: 5px 5px 0 5px;
+ }
+ span.disabled{
+     color:#808080;
+ }

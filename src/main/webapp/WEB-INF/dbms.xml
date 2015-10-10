@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dbmsList>
+ 	<dbms name="MySQL" user="friedj" passwd="tissi">
+			<driver name="org.gjt.mm.mysql.Driver" url="jdbc:mysql://localhost:3306/track" adapter="mysql"/>
+   </dbms>
+	<dbms name="Firebird" user="friedj" passwd="tissi">
+        <driver name="org.firebirdsql.jdbc.FBDriver" url="jdbc:firebirdsql://localhost/D:/Daten/trackdata/track310.gdb" adapter="firebird"/>
+    </dbms>
+	<dbms name="MS SQL Server" user="friedj" passwd="tissi">
+	 	<driver name="net.sourceforge.jtds.jdbc.Driver" url="jdbc:jtds:sqlserver://127.0.0.1:1433/track" adapter="mssql"/>
+	</dbms>
+	<dbms name="Oracle" user="friedj" passwd="tissi">
+		<driver name="oracle.jdbc.driver.OracleDriver" url="jdbc:oracle:thin:@localhost:1521:ORCL" adapter="oracle"/>
+	</dbms>
+	<dbms name="HSQL" user="sa" passwd="tissi">
+			<driver name="org.hsqldb.jdbcDriver" url="jdbc:hsqldb:hsql://localhost/track/" adapter="hypersonic"/>
+	</dbms>
+	<dbms name="Interclient" user="friedj" passwd="tissi">
+        <driver name="interbase.interclient.Driver" url="jdbc:interbase://localhost/D:/Daten/trackdata/tracktest31.gdb" adapter="interclient"/>
+    </dbms>
+	<dbms name="DB2" user="friedj" passwd="tissi">
+		<driver name="com.ibm.db2.jdbc.net.DB2Driver" url="jdbc:db2://192.168.22.10/TRACK" adapter="db2"/>
+   </dbms>
+	 <dbms name="Sybase" user="friedj" passwd="tissi">
+        <driver name="com.sybase.jdbc2.jdbc.SybDriver" url="jdbc:sybase:Tds:localhost:2048"/>
+    </dbms>
+    <dbms name="PostgreSQL" user="friedj" passwd="tissi">
+        <driver name="org.postgresql.Driver" url="jdbc:postgresql://192.168.22.5:5432/track"/>
+    </dbms>
+</dbmsList>

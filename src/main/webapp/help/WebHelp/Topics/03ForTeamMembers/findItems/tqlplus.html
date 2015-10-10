@@ -1,0 +1,343 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="The Genji Query Language (TQL) permits to define filters including search in attached files (HTML, text, XML, OpenOffice, PDF, Excel) and permits to perform fuzzy and proximity searches. Terms A query ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="concept"/><meta name="DC.Title" content="Using TQL"/><meta name="abstract" content="The Genji Query Language (TQL) permits to define filters including search in attached files (HTML, text, XML, OpenOffice, PDF, Excel) and permits to perform fuzzy and proximity searches."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="The Genji Query Language (TQL) permits to define filters including search in attached files (HTML, text, XML, OpenOffice, PDF, Excel) and permits to perform fuzzy and proximity searches."/><meta name="DC.Relation" scheme="URI" content="../../../Topics/03ForTeamMembers/itemNavigator/findingItems.html"/><meta name="DC.Creator" content="Steinbeis Technical Documentation"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="id131MA0H0C0Y"/><link rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Using TQL</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()" id="id131MA0H0C0Y">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../../Topics/03ForTeamMembers/itemNavigator/findingItems.html" title="A Genji database may contain thousands of items even for a single project. Genji permits you to select subsets of items by means of „views“ and display them in an item navigator. This way you only see those items you are interested in."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Finding items</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../../Topics/03ForTeamMembers/itemNavigator/../../../Topics/03ForTeamMembers/Chapter3Wrapper.html" title="Genji for team members">Genji for team members</a> / <a class="navheader_parent_path" href="../../../Topics/03ForTeamMembers/itemNavigator/findingItems.html" title="A Genji database may contain thousands of items even for a single project. Genji permits you to select subsets of items by means of „views“ and display them in an item navigator. This way you only see those items you are interested in.">Finding items</a></td></tr></tbody></table>
+
+    <h1 class="title topictitle1">Using TQL</h1>
+
+    
+    
+    <div class="body conbody"><p class="shortdesc">The <span class="ph"><span class="ph">Genji</span></span> Query
+        Language (TQL) permits to define filters including search in attached files (HTML, text,
+        XML, OpenOffice, PDF, Excel) and permits to perform fuzzy and proximity
+        searches.</p>
+
+        <div class="section"><h2 class="title sectiontitle">Terms</h2>
+            
+            <p class="p">A query is broken up into terms and operators. There are two types of terms: Single
+                Terms and Phrases.</p>
+
+            <p class="p">A Single Term is a single word such as "test" or "hello".</p>
+
+            <p class="p">A Phrase is a group of words surrounded by double quotes such as "hello dolly".</p>
+
+            <p class="p">Multiple terms can be combined together with Boolean operators to form a more complex
+                query (see below).</p>
+
+            <p class="p">If the term consists of just a number, only the item number property is searched for
+                exactly this number.</p>
+
+        </div>
+
+        <div class="section">You can use localized value terms coming from selection fields like state or
+            <span class="ph">priority</span>.</div>
+
+    </div>
+
+    <div class="related-links"/>
+<div class="topic concept nested1" id="id0774G0H06HT">
+        <h2 class="title topictitle2">Fields in TQL</h2>
+
+        <div class="body conbody">
+            <p class="p">TQL supports fielded data. When performing a search you can either specify an property,
+                or use the default property. The default property encompasses basically all textual fields
+                of <span class="ph"><span class="ph">Genji</span></span>.</p>
+
+            <p class="p">You can search any property by typing the property name followed by a colon ":" and then
+                the term you are looking for.</p>
+
+            <p class="p">As an example, let's assume you want to find the item entitled "The Right Way" which
+                contains the text "don't go this way", you can enter:</p>
+
+            <pre class="pre codeblock">
+Synopsis:"The Right Way" AND Description:go
+</pre>
+
+            <p class="p">or</p>
+
+            <pre class="pre codeblock">
+Synopsis:"The Right Way" AND go
+</pre>
+
+            <p class="p">Since by default all text fields are searched, in the second example items having
+                "go" in another text property than Description  would qualify as well.</p>
+
+            <p class="p">You can enter either the system internal property name ("Synopsis") or the localized
+                property name as you see it in the user interface ("Title").</p>
+
+            <p class="p">For a complete list of system fields have a look at the section on <a class="xref fm:" href="systemFields.html#id131MDE0I0HE">System
+                Fields</a>.</p>
+
+            <div class="cautiontitle">CAUTION:</div><div class="note caution">The property is only valid for the term that it directly precedes, so
+                the query<pre class="pre codeblock">
+Synopsis:Do it right
+</pre>
+<p class="p">will only find "Do" in the
+                    title property. It will find "it" and "right" in the default property (in this case
+                    the text property).</p>
+</div>
+
+        </div>
+
+        <div class="related-links">
+<div class="linklist linklist">
+<div><a class="navheader_parent_path" href="systemFields.html#id131MDE0I0HE" title="System Fields">System Fields</a></div></div>
+</div>
+    </div>
+
+    <div class="topic concept nested1" id="id33tqlTermModifiers">
+        <h2 class="title topictitle2">Term Modifiers</h2>
+
+        
+        <div class="body conbody"><p class="shortdesc">TQL supports modifying query terms to provide a wide
+            range of searching options.</p>
+
+            <div class="section"><h3 class="title sectiontitle">Wildcard Searches</h3>
+                
+                <p class="p">TQL supports single and multiple character wildcard searches. To perform a single
+                    character wildcard search use the "?" symbol. To perform a multiple character
+                    wildcard search use the "*" symbol. </p>
+
+                <p class="p">The single character wildcard search looks for terms that match that with the
+                    single character replaced. For example, to search for "text" or "test" you can
+                    use the search:</p>
+
+                <pre class="pre codeblock">
+te?t
+</pre>
+
+                <p class="p">Multiple character wildcard searches looks for 0 or more characters. For example,
+                    to search for "test", "tests" or "tester", you can use the search:</p>
+
+                <pre class="pre codeblock">
+test
+</pre>
+
+                <p class="p">You can also use the wildcard searches in the middle of a term:</p>
+
+                <pre class="pre codeblock">
+te*t
+</pre>
+
+                <div class="note note"><span class="notetitle">Note:</span> You cannot use a * or ? symbol as the first character of a search.</div>
+
+            </div>
+
+            <div class="section"><h3 class="title sectiontitle">Fuzzy Searches</h3>
+                
+                <p class="p">TQL supports fuzzy searches based on the Levenshtein Distance, or Edit Distance
+                    algorithm. To do a fuzzy search use the tilde, "~", symbol at the end of a
+                    Single word Term. For example to search for a term similar in spelling to "roam"
+                    use the fuzzy search:</p>
+
+                <pre class="pre codeblock">
+roam~
+</pre>
+
+                <p class="p">This search will find terms like foam and roams. An additional (optional)
+                    parameter can specify the required similarity. The value is between 0 and 1,
+                    with a value closer to 1 only terms with a higher similarity will be matched.
+                    For example:</p>
+
+                <pre class="pre codeblock">
+roam~0.8
+</pre>
+
+                <p class="p">The default that is used if the parameter is not given is 0.5.</p>
+
+            </div>
+
+            <div class="section"><h3 class="title sectiontitle">Proximity Searches</h3>
+                
+                <p class="p">TQL supports finding words that are within a specific distance away. To do a
+                    proximity search use the tilde, "~", symbol at the end of a Phrase. For example
+                    to search for a "project" and "management" within 10 words of each other in a
+                    item use the search:</p>
+
+                <pre class="pre codeblock">
+„project management“~10
+</pre>
+
+            </div>
+
+            <div class="section"><h3 class="title sectiontitle">Range Searches</h3>
+                
+                <p class="p">Range Queries allow one to match items whose property(s) values are between the
+                    lower and upper bound specified by the Range Query. Range Queries can be
+                    inclusive or exclusive of the upper and lower bounds. Sorting is done
+                    lexicographically.</p>
+
+                <pre class="pre codeblock">
+Lastedit:[20060101 TO 20060101]
+</pre>
+
+                <p class="p"> This will find items whose Lastedit fields have values between 20060101 and
+                    20060101, inclusive. Note that Range Queries are not reserved for date fields.
+                    You could also use range queries with non-date fields:</p>
+
+                <pre class="pre codeblock">
+Synopsis:{Aida TO Carmen}
+</pre>
+
+                <p class="p">This will find all items whose synopsis are between Aida and Carmen, but not
+                    including Aida and Carmen.</p>
+
+                <p class="p">Inclusive range queries are denoted by square brackets. Exclusive range queries
+                    are denoted by curly brackets.</p>
+
+            </div>
+
+            <div class="section"><h3 class="title sectiontitle">Boosting a Term</h3>
+                
+                <p class="p">TQL provides the relevance level of matching items based on the terms found. To
+                    boost a term use the caret, "^", symbol with a boost factor (a number) at the
+                    end of the term you are searching. The higher the boost factor, the more
+                    relevant the term will be.</p>
+
+                <p class="p">Boosting allows you to control the relevance of a item by boosting its term. For
+                    example, if you are searching for</p>
+
+                <pre class="pre codeblock">
+project management
+</pre>
+
+                <p class="p">and you want the term "project" to be more relevant boost it using the ^ symbol
+                    along with the boost factor next to the term. You would type:</p>
+
+                <pre class="pre codeblock">
+project^4management
+</pre>
+
+                <p class="p">This will make items with the term "project" appear more relevant. You can also
+                    boost Phrase Terms as in the example:</p>
+
+                <pre class="pre codeblock">
+"project management"^4 "TQL"
+</pre>
+
+                <p class="p">By default, the boost factor is 1. Although the boost factor must be positive, it
+                    can be less than 1 (e.g. 0.2).</p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="topic concept nested1" id="id33tqlPlusBoolean">
+        <h2 class="title topictitle2">Boolean Operators</h2>
+
+        
+        <div class="body conbody"><p class="shortdesc">Boolean operators allow terms to be combined through
+            logic operators. TQL supports AND, "+", OR, NOT and "-" as Boolean operators(Note:
+            Boolean operators must be ALL CAPS).</p>
+
+            <div class="section"><h3 class="title sectiontitle">OR</h3>
+                
+                <p class="p">The OR operator is the default conjunction operator. This means that if there is
+                    no Boolean operator between two terms, the OR operator is used. The OR operator
+                    links two terms and finds a matching item if either of the terms exist in an
+                    item. This is equivalent to a union using sets. The symbol || can be used in
+                    place of the word OR.</p>
+
+                <p class="p">To search for items that contain either "project management" or just "project"
+                    use the query:</p>
+
+                <pre class="pre codeblock">
+"project management" project
+</pre>
+
+                <p class="p">or</p>
+
+                <pre class="pre codeblock">
+"project management" OR project
+</pre>
+
+            </div>
+
+            <div class="section"><h3 class="title sectiontitle">AND</h3>
+                
+                <p class="p">The AND operator matches items where both terms exist anywhere in the text of a
+                    single item. This is equivalent to an intersection using sets. The symbol
+                    &amp;&amp; can be used in place of the word AND.</p>
+
+                <p class="p">To search for items that contain "project management" and "TQLplus new" use the
+                    query:</p>
+
+                <pre class="pre codeblock">
+"project management" AND "TQLplus new"
+</pre>
+
+            </div>
+
+            <div class="section"><h3 class="title sectiontitle">„+“-Operator</h3>
+                
+                <p class="p">The "+" or required operator requires that the term after the "+" symbol exist
+                    somewhere in a the property of a single item.</p>
+
+                <p class="p">To search for items that must contain "project" and may contain "TQL" use the
+                    query:</p>
+
+                <pre class="pre codeblock">
++project TQL
+</pre>
+
+            </div>
+
+            <div class="section"><h3 class="title sectiontitle">NOT</h3>
+                
+                <p class="p">The NOT operator excludes items that contain the term after NOT. This is
+                    equivalent to a difference using sets. The symbol ! can be used in place of the
+                    word NOT.</p>
+
+                <p class="p">To search for items that contain "project management" but not "TQL new" use the
+                    query:</p>
+
+                <pre class="pre codeblock">
+"project management" NOT "TQL new"
+</pre>
+
+                <div class="p">
+                    <div class="cautiontitle">CAUTION:</div><div class="note caution">The NOT operator cannot be used with just one term. For
+                        example, the following search will return no results:</div>
+
+                    <pre class="pre codeblock">
+NOT "project management"
+</pre>
+
+                </div>
+
+            </div>
+
+            <div class="section"><h3 class="title sectiontitle">„-“-Operator</h3>
+                
+                <p class="p">The "-" or prohibit operator excludes items that contain the term after the "-"
+                    symbol. To search for items that contain "project management" but not "issue
+                    tracking" use the query:</p>
+
+                <pre class="pre codeblock">
+"project management" -"issue tracking"
+</pre>
+
+            </div>
+
+        </div>
+
+        <div class="related-links"><div class="relinfo relref"><strong>Related reference</strong><br/>
+<div><a class="navheader_parent_path" href="systemFields.html" title="System properties">System properties</a></div>
+</div>
+</div>
+    </div>
+
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../../Topics/03ForTeamMembers/itemNavigator/findingItems.html" title="A Genji database may contain thousands of items even for a single project. Genji permits you to select subsets of items by means of „views“ and display them in an item navigator. This way you only see those items you are interested in."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Finding items</span></a></span>  </div>
+</body>
+</html>

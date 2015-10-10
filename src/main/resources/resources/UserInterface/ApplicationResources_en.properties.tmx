@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tmx
+  PUBLIC "-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN" "tmx14.dtd">
+<tmx version="1.4">
+   <header srclang="*all*" creationtool="Anchovy" creationtoolversion="1.0" adminlang="en"
+           datatype="xml"
+           o-tmf="unknown"
+           segtype="block"/>
+   <body>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>en</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>de</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>budget</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Budget</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>panel</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Tafel</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>SMTP</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>SMTP</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>account</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Konto</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>workspace</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Arbeitsraum</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>Java applets</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Java Applets</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>directory</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Verzeichnis</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>code</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Code</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>remaining PV</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>verbleibende Restarbeit</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>ancestors</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Vorgänger</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>label for</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Bezeichnung für</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>Manager</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Manager</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>on hold</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>gestoppt</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>configurations</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Konfigurationen</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>Tomcat7</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Tomcat7</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>IMAP</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>IMAP</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>Track+</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Track+</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>attachments</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Anhänge</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>attachment</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Anhang</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>merged</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>zusammengeführt</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>merge</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>zusammenführen</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>interfaces</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Schnittstellen</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>descendant</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Nachfolger</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>estimated remaining work</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>geschätzte Restarbeit</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>logged in</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>angemeldet</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>for CSV</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>für CSV</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>paste</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>einfügen</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>reset</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>zurücksetzen</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>TLS</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>TLS</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>item</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Vorgang</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>items</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Vorgänge</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>project</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Projekt</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>responsible</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Bearbeiter</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>role</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Rolle</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>start date</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Beginn</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>tab</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Reiter</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>task</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Aufgabe</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>user</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Benutzer</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>workflow</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Workflow</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>workspace</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Arbeitsraum</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>space</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Raum</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>priority</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Priorität</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>severity</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Auswirkung</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>set</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Menge</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>form</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Eingabemaske</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>fieldName</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Feldname</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>severity</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>Auswirkung</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>WBS</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>PSP</seg>
+         </tuv>
+      </tu>
+      <tu>
+         <tuv xml:lang="en">
+            <seg>mail template</seg>
+         </tuv>
+         <tuv xml:lang="de">
+            <seg>E-Mail-Vorlage</seg>
+         </tuv>
+      </tu>
+   </body>
+</tmx>

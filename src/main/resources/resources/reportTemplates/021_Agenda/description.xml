@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	Description file for a Track+ report template. This file
+	is read by Track+ and used for presentation of the report
+	template for selection by the users. 
+-->
+<reportTemplate>
+  <name>Agenda</name>	
+  <locale value="en">
+      <description>
+  	     Meeting agenda.
+      </description>
+      <listing>Agenda 2</listing>
+      <tool-tip>Meeting agenda, portrait A4</tool-tip>
+  </locale>
+  <locale value="de">
+      <description>
+  	      Besprechungsagenda.
+      </description>
+      <listing>Besprechungsagenda 2</listing>
+      <tool-tip>Agenda für Besprechungen, A4 Hochformat</tool-tip>
+  </locale>  
+  <!-- The icon should be in GIF format and have a size (width x height) of at most 150 x 100 -->
+  <icon-gif>icon.gif</icon-gif>
+  <size>A4 portrait</size>
+  <!-- The preview should be in GIF format and have a size of at most 800 x 600 -->
+  <preview-gif>preview.png</preview-gif>
+  <!-- Type of report: Jasper Report or FOP Report -->
+  <type>LaTeX Report</type>
+  <!-- Format of report: pdf, rtf, xml, xsl, png etc -->
+  <format>pdf</format>
+  <!-- The compiled master report template file -->
+  <masterFile>Agenda.tex</masterFile>
+  <datasourcePlugin>com.aurel.track.report.datasource.meeting.LaTeXMeetingDatasource</datasourcePlugin>
+</reportTemplate>

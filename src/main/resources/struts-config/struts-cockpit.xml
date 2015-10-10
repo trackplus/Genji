@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+"http://struts.apache.org/dtds/struts-2.0.dtd ">
+<struts>
+	<package name="struts-cockpit" extends="struts-track-base">
+
+		<default-interceptor-ref name="default" />
+
+		<action name="cardView" class="com.aurel.track.itemNavigator.cardView.CardViewAction">
+		</action>
+
+		<action name="dashboardAssign"
+			class="com.aurel.track.screen.dashboard.assign.DashboardAssignAction">
+			<result name="input">/tiles/layouts/BorderLayout.jsp</result>
+			<result name="edit" type="redirectAction">dashboardEdit?backAction=${backAction}</result>
+			<result name="copy">/tiles/layouts/BorderLayout.jsp</result>
+			<interceptor-ref name="editStackProjSysAuth" />
+		</action>
+
+		<action name="dashboardTabRuntime"
+			class="com.aurel.track.screen.dashboard.action.DashboardTabRuntime">
+			<result name="ok" type="freemarker">template/ok.ftl</result>
+			<interceptor-ref name="editStack" />
+		</action>
+		<action name="dashboardEdit"
+			class="com.aurel.track.screen.dashboard.action.DashboardScreenEditAction">
+			<result name="success">/tiles/layouts/BorderLayout.jsp</result>
+			<!-- the edit is used to redirect to edit action from addTab, removeTab,or
+				other action methods -->
+			<result name="edit" type="redirectAction">dashboardEdit?screenID=${screenID}&amp;selectedTab=${selectedTab}&amp;projectID=${projectID}&amp;entityType=${entityType}&amp;backAction=${backAction}</result>
+			<interceptor-ref name="editStack" />
+		</action>
+		<action name="updateDashboardScreenProperty"
+			class="com.aurel.track.screen.dashboard.action.DashboardScreenEditAction"
+			method="updateProperty">
+			<interceptor-ref name="paramsPrepareParams" />
+		</action>
+		<action name="dashboardTab"
+			class="com.aurel.track.screen.dashboard.action.ScreenTabAction"
+			method="reload">
+			<interceptor-ref name="editStack" />
+		</action>
+		<action name="updateDashboardTabProperty"
+			class="com.aurel.track.screen.dashboard.action.ScreenTabAction"
+			method="updateProperty">
+			<interceptor-ref name="paramsPrepareParams" />
+		</action>
+		<action name="dashboardPanel"
+			class="com.aurel.track.screen.dashboard.action.ScreenPanelAction"
+			method="reload">
+			<result name="reloadParent" type="redirectAction">tab?tabID=${tabID}</result>
+			<interceptor-ref name="editStack" />
+		</action>
+		<action name="updateDashboardPanelProperty"
+			class="com.aurel.track.screen.dashboard.action.ScreenPanelAction"
+			method="updateProperty">
+			<interceptor-ref name="paramsPrepareParams" />
+		</action>
+		<action name="dashboardField"
+			class="com.aurel.track.screen.dashboard.action.ScreenFieldAction"
+			method="reload">
+			<interceptor-ref name="editStack" />
+		</action>
+		<action name="updateDashboardFieldProperty"
+			class="com.aurel.track.screen.dashboard.action.ScreenFieldAction"
+			method="updateProperty">
+			<interceptor-ref name="paramsPrepareParams" />
+		</action>
+
+		<action name="dashboardPluginList"
+			class="com.aurel.track.screen.dashboard.action.DashboardPluginListAction"
+			method="list">
+		</action>
+
+		<action name="dashboardParamsConfig"
+			class="com.aurel.track.screen.dashboard.action.DashboardParamsConfigAction">
+			<result name="dashboardEdit" type="redirect">dashboard!edit.action</result>
+			<result name="loadTemplate" type="freemarker">${jspConfig}</result>
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="dashboardAJAX"
+			class="com.aurel.track.screen.dashboard.action.DashboardAJAXAction">
+			<result name="success" type="freemarker">${templateAjax}</result>
+			<result name="input" type="freemarker">${templateAjaxError}</result>
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="dashboard"
+			class="com.aurel.track.screen.dashboard.action.DashboardAction"
+			method="executeJSON">
+		</action>
+
+		<action name="cockpit"
+			class="com.aurel.track.screen.dashboard.action.DashboardAction">
+			<result name="success">/tiles/layouts/BorderLayout.jsp</result>
+			<result name="edit">/tiles/layouts/BorderLayout.jsp</result>
+		</action>
+
+		<action name="dashboardTemplate"
+				class="com.aurel.track.screen.dashboard.template.DashboardTemplateAction">
+			<result name="success">/tiles/layouts/BorderLayout.jsp</result>
+			<result name="edit">/tiles/layouts/BorderLayout.jsp</result>
+		</action>
+
+
+
+
+
+	</package>
+</struts>

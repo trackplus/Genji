@@ -1,0 +1,82 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="Genji has a highly configurable e-mail notification system. E-mail notifications can be globally and individually configured to ensure proper information flow. Genji can automatically send e-mails to ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="task"/><meta name="DC.Title" content="Configuring automail"/><meta name="abstract" content="Genji has a highly configurable e-mail notification system. E-mail notifications can be globally and individually configured to ensure proper information flow."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="Genji has a highly configurable e-mail notification system. E-mail notifications can be globally and individually configured to ensure proper information flow."/><meta name="indexterms" content="filter, automail, automail, filter, e-mail filter, notification, e-mail notification, trigger, notification, trigger, automail, trigger"/><meta name="DC.subject" content=", filter, automail, e-mail filter, notification, e-mail notification, trigger"/><meta name="keywords" content=", filter, automail, e-mail filter, notification, e-mail notification, trigger"/><meta name="DC.Relation" scheme="URI" content="../../../Topics/03ForTeamMembers/Chapter3Wrapper.html"/><meta name="DC.Relation" scheme="URI" content="../../../Topics/03ForTeamMembers/notifications/automailTrigger.html"/><meta name="DC.Relation" scheme="URI" content="../../../Topics/03ForTeamMembers/notifications/automailCondition.html"/><meta name="DC.Relation" scheme="URI" content="../../../Topics/03ForTeamMembers/notifications/automailAssignment.html"/><meta name="DC.Relation" scheme="URI" content="../../02KeyConcepts/Communication/triggersAndFilters.html#id12BQFE00TV5"/><meta name="DC.Creator" content=""/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="id1317GJ00XLM"/><link rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Configuring automail</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()" id="id1317GJ00XLM">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../../Topics/03ForTeamMembers/Chapter3Wrapper.html" title="Genji for team members"><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Genji for team members</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../../Topics/03ForTeamMembers/Chapter3Wrapper.html" title="Genji for team members">Genji for team members</a></td></tr></tbody></table>
+
+    <h1 class="title topictitle1">Configuring automail</h1>
+
+    
+    
+    <div class="body taskbody"><p class="shortdesc"><span class="ph"><span class="ph">Genji</span></span> has a highly
+        configurable e-mail notification system. E-mail notifications can be globally and
+        individually configured to ensure proper information flow. </p>
+
+        <div class="section context">
+            <p class="p"><span class="ph"><span class="ph">Genji</span></span> can automatically send e-mails to users.
+                Such e-mails are triggered by system events. Two types of events sending e-mails are
+                built in, others can be added. The two types are</p>
+
+            <ul class="sl simple">
+                <li class="sli">due date notifications</li>
+
+                <li class="sli">item change notifications</li>
+
+            </ul>
+
+            <p class="p">Due date notifications can be sent to users based on each users profile settings. <span class="ph"><span class="ph">Genji</span></span> can send you an e-mail some time before an
+                item you have an interest in is due.</p>
+
+            <p class="p">The second type of notification occurs whenever an item is created or changed. To
+                limit the amount of e-mail traffic you receive from the <span class="ph"><span class="ph">Genji</span></span> system to the information you are really
+                interested in you can configure the item change notification scheme.</p>
+
+            <p class="p">For each project you can configure a combination of a trigger and a condition, or
+                work with the project or system defaults. If you are a project administrator, you
+                can define a trigger and condition settings for your projects.</p>
+
+            <p class="p">Configuring e-mail notifications is a 3-step process:</p>
+
+        </div>
+
+        <ol class="ol steps"><li class="li step">
+                <span class="ph cmd">You define an automail trigger unless you want to use an existing one. The
+                    procedure is described in <a class="xref" href="automailTrigger.html#id1317I0E09XI" title="Automail triggers define which user induced actions trigger a notification from the system.">Configuring automail triggers</a>.</span>
+            </li>
+<li class="li step">
+                <span class="ph cmd">You define an automail condition unless you want to use an existing one. The
+                    procedure is described in <a class="xref" href="automailCondition.html#id1317I0F00G4" title="In the second step of a notification process, notification messages are passed through a notification filter with an automail condition. Only if messages match the condition, an e-mail is actually sent.">Configuring automail conditions</a>.</span>
+            </li>
+<li class="li step">
+                <span class="ph cmd">You assign a combination of a trigger and a condition filter to a space or all
+                    spaces that do not explicitly have their own notification assignments. The
+                    procedure is described in <a class="xref" href="automailAssignment.html">Assigning automail trigger and condition</a>.</span>
+            </li>
+</ol>
+
+    </div>
+
+    <div class="related-links">
+<ul class="ullinks">
+<li class="link ulchildlink"><strong><a href="../../../Topics/03ForTeamMembers/notifications/automailTrigger.html">Configuring automail triggers</a></strong><br/>
+Automail triggers define which user induced actions trigger a notification from the         system.</li>
+<li class="link ulchildlink"><strong><a href="../../../Topics/03ForTeamMembers/notifications/automailCondition.html">Configuring automail conditions</a></strong><br/>
+In the second step of a notification         process, notification messages are passed through a notification filter         with an automail condition. Only if messages match the condition, an         e-mail is actually sent. </li>
+<li class="link ulchildlink"><strong><a href="../../../Topics/03ForTeamMembers/notifications/automailAssignment.html">Assigning automail trigger and condition</a></strong><br/>
+</li>
+</ul>
+
+<div class="linklist linklist">
+<div><a class="navheader_parent_path" href="../../02KeyConcepts/Communication/triggersAndFilters.html#id12BQFE00TV5" title="You can receive e-mail notifications from the Genji system when items you have an interest in are created, changed, or due. You can control under what circumstances you receive such information by means of automail triggers and automail conditions.">Triggers and conditions</a></div></div>
+</div>
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../../Topics/03ForTeamMembers/Chapter3Wrapper.html" title="Genji for team members"><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Genji for team members</span></a></span>  </div>
+</body>
+</html>

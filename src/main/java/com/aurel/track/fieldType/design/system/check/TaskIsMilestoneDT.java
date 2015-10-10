@@ -1,0 +1,47 @@
+/**
+ * Genji Scrum Tool and Issue Tracker
+ * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
+
+ * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
+
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* $Id:$ */
+
+package com.aurel.track.fieldType.design.system.check;
+
+import com.aurel.track.fieldType.design.BaseFieldTypeNotRenderRequiredDT;
+
+public class TaskIsMilestoneDT extends BaseFieldTypeNotRenderRequiredDT {
+	
+	
+	public TaskIsMilestoneDT(Integer parameterCode, String pluginID) {
+		super(parameterCode, pluginID);		
+	}
+
+	public TaskIsMilestoneDT(String pluginID) {
+		super(pluginID);
+	}
+
+	/**
+	 * Whether the "Deprecated" check box should be rendered 
+	 * Typically it should be rendered when the required flag should be also rendered 
+	 * @return
+	 */
+	@Override
+	public boolean renderDeprecatedFlag() {
+		return true;
+	}
+}

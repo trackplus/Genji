@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version last-->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="TrackReportExcel" pageWidth="1600" pageHeight="842" orientation="Landscape" columnWidth="1600" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" resourceBundle="TrackReportStandard" isIgnorePagination="true" uuid="90baff6d-1110-44cc-ba6d-d0a10e5027cc">
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Track+ Standard"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<style name="IssueNumber" forecolor="#BF2128" isBold="true"/>
+	<style name="Label" markup="none" isBold="true"/>
+	<style name="DateLate" forecolor="#FFFFFF" backcolor="#009900" isBlankWhenNull="true">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($F{OffPlan}.equals("true"))]]></conditionExpression>
+			<style forecolor="#FFFFFF" backcolor="#BF2128" isBlankWhenNull="true"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($F{Due Date} == null)]]></conditionExpression>
+			<style forecolor="#FFFFFF" isBlankWhenNull="true"/>
+		</conditionalStyle>
+	</style>
+	<style name="NoLateIssues">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{LateCount}.intValue() > 0 )]]></conditionExpression>
+			<style forecolor="#BF2128" isBold="true"/>
+		</conditionalStyle>
+	</style>
+	<style name="Default" isDefault="true" mode="Transparent"/>
+	<parameter name="BASE_URL" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="LOGO_URL" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="net.sf.jasperreports.print.keep.full.text" class="java.lang.Boolean" isForPrompting="false">
+		<defaultValueExpression><![CDATA[true]]></defaultValueExpression>
+	</parameter>
+	<queryString language="xPath">
+		<![CDATA[/track-report/item/.]]>
+	</queryString>
+	<field name="IssueNumber" class="java.lang.String">
+		<fieldDescription><![CDATA[IssueNo]]></fieldDescription>
+	</field>
+	<field name="Project" class="java.lang.String">
+		<fieldDescription><![CDATA[Project]]></fieldDescription>
+	</field>
+	<field name="ReleaseScheduled" class="java.lang.String">
+		<fieldDescription><![CDATA[ReleaseScheduled]]></fieldDescription>
+	</field>
+	<field name="ReleaseNoticed" class="java.lang.String">
+		<fieldDescription><![CDATA[ReleaseNoticed]]></fieldDescription>
+	</field>
+	<field name="Subsystem" class="java.lang.String">
+		<fieldDescription><![CDATA[Subproject]]></fieldDescription>
+	</field>
+	<field name="Title" class="java.lang.String">
+		<fieldDescription><![CDATA[Synopsis]]></fieldDescription>
+	</field>
+	<field name="Description" class="java.lang.String">
+		<fieldDescription><![CDATA[Description]]></fieldDescription>
+	</field>
+	<field name="Status" class="java.lang.String">
+		<fieldDescription><![CDATA[Status]]></fieldDescription>
+	</field>
+	<field name="Originator" class="java.lang.String">
+		<fieldDescription><![CDATA[Originator]]></fieldDescription>
+	</field>
+	<field name="Manager" class="java.lang.String">
+		<fieldDescription><![CDATA[Manager]]></fieldDescription>
+	</field>
+	<field name="Responsible" class="java.lang.String">
+		<fieldDescription><![CDATA[Responsible]]></fieldDescription>
+	</field>
+	<field name="LastEdit" class="java.util.Date">
+		<fieldDescription><![CDATA[LastModifiedDate]]></fieldDescription>
+	</field>
+	<field name="Class" class="java.lang.String">
+		<fieldDescription><![CDATA[Class]]></fieldDescription>
+	</field>
+	<field name="Priority" class="java.lang.String">
+		<fieldDescription><![CDATA[Priority]]></fieldDescription>
+	</field>
+	<field name="Severity" class="java.lang.String">
+		<fieldDescription><![CDATA[Severity]]></fieldDescription>
+	</field>
+	<field name="Issue Type" class="java.lang.String">
+		<fieldDescription><![CDATA[IssueType]]></fieldDescription>
+	</field>
+	<field name="Start Date" class="java.util.Date">
+		<fieldDescription><![CDATA[StartDate]]></fieldDescription>
+	</field>
+	<field name="Due Date" class="java.util.Date">
+		<fieldDescription><![CDATA[EndDate]]></fieldDescription>
+	</field>
+	<field name="OffPlan" class="java.lang.String">
+		<fieldDescription><![CDATA[committedDateConflict]]></fieldDescription>
+	</field>
+	<field name="Created" class="java.util.Date">
+		<fieldDescription><![CDATA[CreateDate]]></fieldDescription>
+	</field>
+	<field name="StateFlag" class="java.lang.String">
+		<fieldDescription><![CDATA[StateFlag]]></fieldDescription>
+	</field>
+	<field name="FilterName" class="java.lang.String">
+		<fieldDescription><![CDATA[/track-report/filter/name]]></fieldDescription>
+	</field>
+	<field name="indent-level" class="java.lang.Integer">
+		<fieldDescription><![CDATA[indent-level]]></fieldDescription>
+	</field>
+	<field name="TotalExpenseCost" class="java.lang.String">
+		<fieldDescription><![CDATA[TotalExpenseCost]]></fieldDescription>
+	</field>
+	<field name="TotalExpenseTime" class="java.lang.String">
+		<fieldDescription><![CDATA[TotalExpenseTime/value]]></fieldDescription>
+	</field>
+	<field name="MyExpenseCost" class="java.lang.String">
+		<fieldDescription><![CDATA[MyExpenseCost]]></fieldDescription>
+	</field>
+	<field name="MyExpenseTime" class="java.lang.String">
+		<fieldDescription><![CDATA[MyExpenseTime/value]]></fieldDescription>
+	</field>
+	<field name="TotalBudgetCost" class="java.lang.String">
+		<fieldDescription><![CDATA[TotalBudgetCost/value]]></fieldDescription>
+	</field>
+	<field name="TotalBudgetTime" class="java.lang.String">
+		<fieldDescription><![CDATA[TotalBudgetTime/value]]></fieldDescription>
+	</field>
+	<field name="RemainingBudgetCost" class="java.lang.String">
+		<fieldDescription><![CDATA[RemainingBudgetCost]]></fieldDescription>
+	</field>
+	<field name="RemainingBudgetTime" class="java.lang.String">
+		<fieldDescription><![CDATA[RemainingBudgetTime/value]]></fieldDescription>
+	</field>
+	<variable name="LateCount" class="java.lang.Integer" incrementType="Report" calculation="Count">
+		<variableExpression><![CDATA[$F{OffPlan}.equals("true")?new Integer(1):new Integer(0)]]></variableExpression>
+		<initialValueExpression><![CDATA[new Integer(1)]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch">
+			<printWhenExpression><![CDATA[false]]></printWhenExpression>
+		</band>
+	</background>
+	<title>
+		<band splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<printWhenExpression><![CDATA[false]]></printWhenExpression>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<printWhenExpression><![CDATA[false]]></printWhenExpression>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="13" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
+				<reportElement key="textField-11" x="850" y="0" width="104" height="13" forecolor="#000000" uuid="a9cc4bd8-99d9-43af-9b84-8fa4a70825dd"/>
+				<textElement textAlignment="Left">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{LastChange}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField-5" x="50" y="0" width="112" height="13" forecolor="#000000" uuid="90cff5be-50d1-4af2-ade8-b5e4de34862f"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{Project}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField-9" x="702" y="0" width="62" height="13" forecolor="#000000" uuid="dad9df53-62e6-4b8a-a0c3-4c6f91710dcb"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{Status}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
+				<reportElement key="textField-10" x="764" y="0" width="86" height="13" forecolor="#000000" uuid="d55b1cf7-eec4-40d1-80a8-1595380c7445"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{Due}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField-4" x="0" y="0" width="50" height="13" forecolor="#000000" uuid="8d2fc69a-14b8-4fcd-994b-4221cd9b506c">
+					<property name="local_mesure_unity" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{No}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField-6" x="162" y="0" width="74" height="13" forecolor="#000000" uuid="0b971fa6-b816-4679-b13f-ba9b9e0f4b62"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{ReleaseScheduled}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField-7" x="310" y="0" width="279" height="13" forecolor="#000000" uuid="f0c6ffb3-2921-4b04-bd66-cadf07249d4a"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{Title}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField-8" x="589" y="0" width="113" height="13" forecolor="#000000" uuid="c5e6bbc1-3700-4cf7-b575-9471e7750454"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{Responsible}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField-6" x="236" y="0" width="74" height="13" forecolor="#000000" uuid="cf1b64d1-1e38-4fe7-a453-3da5e827c7a2"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{ReleaseNoticed}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
+				<reportElement key="textField-11" x="954" y="0" width="69" height="13" forecolor="#000000" uuid="32323865-b330-4f11-967b-d078482cf04c"/>
+				<textElement textAlignment="Left">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{ItemType}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
+				<reportElement key="textField-11" x="1023" y="0" width="69" height="13" forecolor="#000000" uuid="65e6491b-046c-4b06-ba08-45bccd45a3b6"/>
+				<textElement textAlignment="Left">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{Priority}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
+				<reportElement key="textField-11" x="1092" y="0" width="69" height="13" forecolor="#000000" uuid="93f87045-d8ce-4cc3-8f3b-f35488ff294d"/>
+				<textElement textAlignment="Left">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{Severity}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
+				<reportElement key="textField-11" x="1161" y="0" width="69" height="13" forecolor="#000000" uuid="160a1fc4-ac69-4186-9535-3c564c934f40"/>
+				<textElement textAlignment="Left">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{Created}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
+				<reportElement key="textField-11" x="1230" y="0" width="60" height="13" forecolor="#000000" uuid="96098d95-3aca-4d0c-b0f2-3b5a6b0dc062"/>
+				<textElement textAlignment="Left">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{TotalPVTime}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
+				<reportElement key="textField-11" x="1290" y="0" width="50" height="13" forecolor="#000000" uuid="d6ac6485-bdd9-45b4-acd9-6bf007f23a49"/>
+				<textElement textAlignment="Left">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{Expense}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
+				<reportElement key="textField-11" x="1340" y="0" width="80" height="13" forecolor="#000000" uuid="f8e9cb7b-41ea-4298-80e1-1d5a25ee5193"/>
+				<textElement textAlignment="Left">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{RemainingTime}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="12" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField isStretchWithOverflow="true" pattern="###0" isBlankWhenNull="false">
+				<reportElement key="textField" style="IssueNumber" positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="50" height="12" uuid="78f52c38-b870-4911-be21-40dde27cea17"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{indent-level}.equals(new Integer(0)) ? $F{IssueNumber}.toString()
+        : ($F{indent-level}.equals(new Integer(1)) ? "- "  + $F{IssueNumber}.toString()
+        : ($F{indent-level}.equals(new Integer(2)) ? "-- "  + $F{IssueNumber}.toString()
+        : ($F{indent-level}.equals(new Integer(3)) ? "--- "  + $F{IssueNumber}.toString()
+        : ($F{indent-level}.equals(new Integer(4)) ? "---- " + $F{IssueNumber}.toString()
+        : "   + " + $F{IssueNumber}.toString())
+)))]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement key="textField" stretchType="RelativeToBandHeight" x="162" y="0" width="74" height="12" uuid="3e116396-0ffa-4f81-a8d0-62c7eef63cd3">
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ReleaseScheduled}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
+				<reportElement key="textField" positionType="Float" stretchType="RelativeToBandHeight" mode="Transparent" x="50" y="0" width="112" height="12" uuid="4e41392c-cd2d-4e4b-940d-1663eb03e31e"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Project}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
+				<reportElement key="textField" stretchType="RelativeToBandHeight" mode="Transparent" x="310" y="0" width="279" height="12" uuid="04467a0d-ff89-49a0-bff8-8122a19ee9b2"/>
+				<textElement textAlignment="Left">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Title}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
+				<reportElement key="textField" stretchType="RelativeToBandHeight" x="589" y="0" width="113" height="12" uuid="65d2da7b-cb12-4bf2-b287-63a412d6ded1"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Responsible}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
+				<reportElement key="textField" style="IssueNumber" stretchType="RelativeToBandHeight" x="702" y="0" width="62" height="12" uuid="0cabb15f-38c1-4f66-b5d3-6a25fd33b5f1"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Status}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement key="textField" style="DateLate" stretchType="RelativeToBandHeight" mode="Opaque" x="764" y="0" width="86" height="12" uuid="63439ae4-bdfe-40e3-b4e6-67133a3e13a4">
+					<printWhenExpression><![CDATA[new Boolean($F{Due Date} != null)]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Due Date}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy HH:mm" isBlankWhenNull="true">
+				<reportElement key="textField" stretchType="RelativeToBandHeight" x="850" y="0" width="104" height="12" uuid="7df42a46-bb8f-42b2-83be-8c1088314dcc"/>
+				<textElement textAlignment="Left">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LastEdit}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement key="textField" stretchType="RelativeToBandHeight" x="236" y="0" width="74" height="12" uuid="1e196571-3802-4de4-862b-46623bdb12fc">
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ReleaseNoticed}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy HH:mm" isBlankWhenNull="true">
+				<reportElement key="textField" stretchType="RelativeToBandHeight" x="954" y="0" width="69" height="12" uuid="00faa384-50d1-46a8-b5d5-334d7c7663a0"/>
+				<textElement textAlignment="Left">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Issue Type}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy HH:mm" isBlankWhenNull="true">
+				<reportElement key="textField" stretchType="RelativeToBandHeight" x="1023" y="0" width="69" height="12" uuid="12cd8207-8875-4fe0-bff2-925262f3c6ad"/>
+				<textElement textAlignment="Left">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Priority}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy HH:mm" isBlankWhenNull="true">
+				<reportElement key="textField" stretchType="RelativeToBandHeight" x="1092" y="0" width="69" height="12" uuid="b54629d8-d0b9-4cec-ae35-5b40851547a9"/>
+				<textElement textAlignment="Left">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Severity}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy HH:mm" isBlankWhenNull="true">
+				<reportElement key="textField" stretchType="RelativeToBandHeight" x="1161" y="0" width="69" height="12" uuid="4bf65c03-a54e-4061-855c-195792949f4a"/>
+				<textElement textAlignment="Left">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Created}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00#" isBlankWhenNull="true">
+				<reportElement key="textField" stretchType="RelativeToBandHeight" x="1230" y="0" width="60" height="12" uuid="4ac3e3f0-9e19-4279-b5ca-ad8688ad4095">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{TotalBudgetTime}==null || "".equals($F{TotalBudgetTime}))?"":$F{TotalBudgetTime}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00#" isBlankWhenNull="true">
+				<reportElement key="textField" stretchType="RelativeToBandHeight" x="1290" y="0" width="50" height="12" uuid="618d5fa1-d518-4d13-802f-b338c61fdb0d"/>
+				<textElement textAlignment="Left">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{TotalExpenseTime}==null || "".equals($F{TotalExpenseTime}))?"":$F{TotalExpenseTime}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00#" isBlankWhenNull="true">
+				<reportElement key="textField" stretchType="RelativeToBandHeight" x="1340" y="0" width="80" height="12" uuid="57c6943e-860f-486c-addf-70241d998857"/>
+				<textElement textAlignment="Left">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{RemainingBudgetTime}==null || "".equals($F{RemainingBudgetTime}))?"":$F{RemainingBudgetTime}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch">
+			<printWhenExpression><![CDATA[false]]></printWhenExpression>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch">
+			<printWhenExpression><![CDATA[false]]></printWhenExpression>
+		</band>
+	</pageFooter>
+	<lastPageFooter>
+		<band splitType="Stretch"/>
+	</lastPageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

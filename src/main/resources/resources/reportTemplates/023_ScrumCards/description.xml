@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	Description file for a Track+ report template. This file
+	is read by Track+ and used for presentation of the report
+	template for selection by the users. 
+-->
+<reportTemplate>
+  <name>Scrum Cards</name>	
+  <locale value="en">
+      <description>
+  	     Daily Scrum cards for agile board.
+      </description>
+      <listing>Scrum board cards</listing>
+      <tool-tip>Daily Scrum cards for agile board,  two A5 landscape on one portrait A4</tool-tip>
+  </locale>
+  <locale value="de">
+      <description>
+  	      Scrum-Zettel für das Agile Board.
+      </description>
+      <listing>Scrum-Zettel für das Agile Board.</listing>
+      <tool-tip>Für Daily Scrum, zwei A5 Querformat auf einem A4 Hochformat</tool-tip>
+  </locale>  
+  <!-- The icon should be in GIF format and have a size (width x height) of at most 150 x 100 -->
+  <icon-gif>icon.gif</icon-gif>
+  <size>A5 landscape / A4 portrait</size>
+  <!-- The preview should be in GIF format and have a size of at most 800 x 600 -->
+  <preview-gif>preview.png</preview-gif>
+  <!-- Type of report: Jasper Report or FOP Report -->
+  <type>LaTeX Report</type>
+  <!-- Format of report: pdf, rtf, xml, xsl, png etc -->
+  <format>pdf</format>
+  <!-- The compiled master report template file -->
+  <masterFile>ScrumCards.tex</masterFile>
+  <datasourcePlugin>com.aurel.track.report.datasource.LaTeXReportBeanDatasource</datasourcePlugin>
+</reportTemplate>

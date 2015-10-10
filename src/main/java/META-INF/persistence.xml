@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+	<persistence-unit name="com.trackplus.core">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<exclude-unlisted-classes>false</exclude-unlisted-classes>
+		<properties>
+		    <property name="javax.persistence.transactionType" value="RESOURCE_LOCAL"/>
+		    <!-- The following parameters are taken from Torque.properties -->
+		    <!-- 
+ 			<property name="javax.persistence.jdbc.driver" value="org.gjt.mm.mysql.Driver"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/track400"/>
+            <property name="eclipselink.jdbc.property.useUnicode" value="true"/>
+            <property name="eclipselink.jdbc.property.characterEncoding" value="UTF-8"/>
+            <property name="eclipselink.jdbc.property.zeroDateTimeBehavior" value="convertToNull"/>
+            <property name="javax.persistence.jdbc.user" value="trackp"/>
+            <property name="javax.persistence.jdbc.password" value="whatever"/>
+            -->
+            <!--  Logging level SEVERE, WARNING, INFO, CONFIG, FINE, FINEST -->
+            <!--  See http://eclipse.org/eclipselink/documentation/2.4/jpa/extensions/p_logging_level.htm -->
+            <property name="eclipselink.logging.level" value="WARNING"/>  
+		</properties>
+	</persistence-unit>
+	<!-- 
+	<persistence-unit name="com.trackplus.test">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+		<properties>
+		    <property name="javax.persistence.transactionType" value="RESOURCE_LOCAL"/>
+ 			<property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:15270/TestDB"/>
+            <property name="eclipselink.jdbc.property.create" value="true"/>
+            <property name="javax.persistence.jdbc.user" value="trackp"/>
+            <property name="javax.persistence.jdbc.password" value="tissi"/>
+    -->        
+            <!--  Logging level SEVERE, WARNING, INFO, CONFIG, FINE, FINEST -->
+            <!--  See http://eclipse.org/eclipselink/documentation/2.4/jpa/extensions/p_logging_level.htm -->
+    <!--    <property name="eclipselink.logging.level" value="WARNING"/>   
+		</properties>
+	</persistence-unit>		     
+	-->
+</persistence>

@@ -1,0 +1,182 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="You can define workflows that specify who can perform state transitions on items and what happens together with such state transitions. You can associate scripts with workflow state transitions that ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="concept"/><meta name="DC.Title" content="Managing workflows"/><meta name="abstract" content="You can define workflows that specify who can perform state transitions on items and what happens together with such state transitions. You can associate scripts with workflow state transitions that perform arbitrary actions and checks."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="You can define workflows that specify who can perform state transitions on items and what happens together with such state transitions. You can associate scripts with workflow state transitions that perform arbitrary actions and checks."/><meta name="indexterms" content="workflow, customize, workflow"/><meta name="DC.subject" content="workflow, customize"/><meta name="keywords" content="workflow, customize"/><meta name="DC.Creator" content="Steinbeis Technical Documentation"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="id132LE0Z0163"/><link rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Managing workflows</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()" id="id132LE0Z0163">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader"/></td><td width="75%"/></tr></tbody></table>
+
+    <h1 class="title topictitle1">Managing workflows</h1>
+
+    
+    
+    <div class="body conbody"><p class="shortdesc">You can define workflows that specify who can perform state transitions on items and
+        what happens together with such state transitions. You can associate scripts with workflow
+        state transitions that perform arbitrary actions and checks. </p>
+
+        <p class="p">To add or edit workflows go to <span class="ph menucascade"><span class="ph uicontrol">Administration</span> &gt; <span class="ph uicontrol">Customize</span> &gt; <span class="ph uicontrol">Workflows</span></span>.</p>
+
+        <div class="fig fignone"><br/><div class="imagecenter"><img class="image imagecenter" id="id132LE0Z0163__image_ljc_53s_kk" src="figures/workflow1.png" height="290" width="422"/></div><br/>
+            
+            <p class="p">In the second column from the left you see the standard <span class="ph"><span class="ph">Genji</span></span>hierarchical configuration scheme.
+                You assign workflows to item types, workspace types and spaces by dragging them from
+                the grid on the right to the appropriate node on the left. Workflows are inherited
+                from global assignments to the most detailed assignment for a specific item type in
+                a specific space.</p>
+
+            <p class="p">You can overwrite a workflow at a lower level by assigning another workflow there.
+                You can revert to the inherited assignment by resetting that node.</p>
+
+            <div class="p">To add a workflow click on "Add" in the small toolbar. Enter a name, an optional tag
+                in case you have a lot of workflows and you want to be able to group and categorize
+                them, and an optional description. Then save the workflow.<div class="fig fignone"><br/><div class="imagecenter"><img class="image imagecenter" id="id132LE0Z0163__image_og3_2ms_kk" src="figures/workflow2.png" height="154" width="307"/></div><br/>
+                    
+                </div>
+</div>
+
+            <div class="p">To define the workflow select in the grid and click on "Configure" in the small
+                toolbar. A graphical editor window is opened.<div class="fig fignone"><br/><div class="imagecenter"><img class="image imagecenter" id="id132LE0Z0163__image_hvx_fms_kk" src="figures/workflow3.png" height="330" width="516"/></div><br/>
+                    
+                </div>
+</div>
+
+            <p class="p">Initially you will drag a number of states from area A to area B. There is a special
+                start state that is outside of your regular set of states. The transition from that
+                start state to another state in your workflow diagram is taken when an item is
+                created. This is useful in case you want to assign this item initially to somebody
+                depending on item data like keywords or tags. This also works when items are created
+                by e-mail submission.</p>
+
+            <p class="p">You can connect states by transitions. To draw a transition select the transition
+                symbol in the small toolbar, click on the source node and drag the line to the
+                target node. You can change the shape of the transition by moving its handles (shown
+                as "C") in the figure above.</p>
+
+            <div class="p">You can associate a transition with four entities:<ul class="ul" id="id132LE0Z0163__ul_vbw_k4s_kk">
+                <li class="li">An event triggering that transition</li>
+
+                <li class="li">Activities that are executed when the transition is taken</li>
+
+                <li class="li">Guards that can prevent the transition from taking place.</li>
+
+            </ul>
+In the following section these entities are described in more detail.</div>
+
+        </div>
+
+        
+        <div class="section" id="id132LE0Z0163__esctrigger"><h2 class="title sectiontitle">Triggering event</h2>
+            
+            <p class="p">A transition is fired or initiated by a triggering event. The following events are predefined in
+                <span class="ph"><span class="ph">Genji</span></span>:</p>
+
+            <ul class="ul"> <li class="li">An explicit user action
+                <ul class="ul">
+                <li class="li">Edit item</li>
+
+                <li class="li">Change item state</li>
+
+                <li class="li">Copy item</li>
+
+                <li class="li">Move item to new item type or space</li>
+
+                <li class="li">Add child item</li>
+
+                </ul>
+</li>
+
+                <li class="li">A timeout based on the last explicit user action</li>
+
+                <li class="li">A timeout based on the last status change</li>
+
+            </ul>
+
+            <p class="p">A state change action implies that source and target state are different. In all other cases
+                the source and target state may be the same. For example, you could perform checks on an item when
+                it is edited. Or you could automatically change an item property if the responsible was changed. Or
+                you could automatically change assign the responsible person for a child item. In principle there
+                are no limits on what you can do when an item is modified.</p>
+
+            <p class="p">You associate a triggering action with a transition by first selecting the transition (C) and
+                then selecting the action (F).</p>
+
+        </div>
+
+        
+        <div class="section" id="id132LE0Z0163__wfguards"><h2 class="title sectiontitle">Guards</h2>
+            
+            <p class="p">Once a transition is fired, an optional guard condition has to be met for the
+                transition to really take place. If the guard condition is false, the transition is
+                rejected. You associate a guard with a transition by first selecting the transition
+                (C) and then adding the desired guard conditions (D). </p>
+
+            <p class="p">A number of guard conditions are available:</p>
+
+            <ul class="ul">
+                <li class="li">A role the person initiating this transition via an action must have in the
+                    space the item belongs to</li>
+
+                <li class="li">A specific person</li>
+
+                <li class="li">A workflow guard script</li>
+
+                <li class="li">An automail condition (see <a class="xref" href="../automail/automailCondition.html" title="You can further filter automails generated from triggers by assigning automail conditions. With these filters you can control down to each item property what kind of messages you will get from your Genji system when items are created or modified.">Automail conditions</a>)</li>
+
+            </ul>
+
+            <p class="p">If you specify a number of guards, if any of the guards is true the transition will
+                be taken.</p>
+
+        </div>
+
+        <div class="section" id="id132LE0Z0163__wfactivities"><h2 class="title sectiontitle">Transition activities</h2>
+            
+            <p class="p">When a transition is taken, associated activities are executed. You associate
+                transition activities with a transition by first selecting the transition (C) and
+                then adding the desired activities (E).</p>
+
+            <p class="p">A number of transition activities are available</p>
+
+            <ul class="ul">
+                <li class="li">Changing any item property like responsible, manager, or status</li>
+
+                <li class="li">Sending an e-mail based on an e-mail template</li>
+
+                <li class="li">Executing a workflow activity script</li>
+
+            </ul>
+
+            <p class="p">With a workflow activity script you can basically do anything conceivable, creating
+                child items, copying project templates, and so on.</p>
+
+            <p class="p">When you select an item property change activity you can put a parameter into the
+                workflow instead of a concrete value. When you assign such a workflow to a workspace
+                or item type or workspace type you can then assign a real value.</p>
+
+        </div>
+
+        <div class="section" id="id132LE0Z0163__wfstates"><h2 class="title sectiontitle">States</h2>
+            
+            <p class="p">A workflow is described mostly by states and transitions between states. In addition
+                to the states you have defined in your system, there are two more states available
+                in the workflows editor.</p>
+
+            <p class="p">The initial state is the one where an item is in after it has been created and before
+                it is saved. For example,if you permit to create items by e-mail you could add
+                guards and activities to that transition which based on the submitters e-mail
+                address would assign the item to a specific workspace or responsible.</p>
+
+            <p class="p">The transition to the final state is taken when an item is deleted. This is not
+                enabled right now.</p>
+
+        </div>
+
+    </div>
+
+<div class="navfooter"><!----></div>
+</body>
+</html>

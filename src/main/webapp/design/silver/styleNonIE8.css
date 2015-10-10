@@ -1,0 +1,30 @@
+.x-toolbar-text{
+    text-shadow: 1px 1px 0px #f2f2f2;
+    filter: dropshadow(color=#f2f2f2, offx=2, offy=2);
+}
+
+.metaNavi .x-btn-inner{
+    text-shadow: 1px 1px 0px #f2f2f2;
+    filter: dropshadow(color=#f2f2f2, offx=2, offy=2);
+}
+.dashboardField .x-panel-header-text-container-default-framed {
+    text-shadow: 1px 1px 0px #ffffff;
+    filter: dropshadow(color=#ffffff, offx=2, offy=2);
+}
+.x-btn-default-toolbar-small .x-btn-inner {
+    text-shadow: 1px 1px 0px #ffffff;
+    filter: dropshadow(color=#ffffff, offx=1, offy=1);
+}
+
+.toolbarActions .x-toolbar-item {
+    text-shadow: 1px 0px 0px #f2f2f2;
+    filter: dropshadow(color=#f2f2f2, offx=0, offy=1s);
+}
+
+.toolbarActions .x-toolbar-item .x-btn-over button .x-btn-inner {
+    text-shadow: 0px 0px 0px #f2f2f2;
+    filter: dropshadow(color=#f2f2f2, offx=0, offy=0);
+}
+.x-btn-default-small span{
+    text-shadow: 1px 1px 0px #f2f2f2;
+}

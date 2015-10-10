@@ -1,0 +1,109 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="When exposing your Genji installation to the internet it is usually best to work with an Apache HTTP server or IIS server as a front end to Genji . When you support other applications not running on ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="concept"/><meta name="DC.Title" content="Configuring Apache Tomcat"/><meta name="abstract" content="When exposing your Genji installation to the internet it is usually best to work with an Apache HTTP server or IIS server as a front end to Genji. When you support other applications not running on the same Tomcat server as Genji, but via the same Apache HTTP server, you can still use single sign on without having to install a big SSO solution."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="When exposing your Genji installation to the internet it is usually best to work with an Apache HTTP server or IIS server as a front end to Genji. When you support other applications not running on the same Tomcat server as Genji, but via the same Apache HTTP server, you can still use single sign on without having to install a big SSO solution."/><meta name="indexterms" content="SSO, Single Sign On, Apache Tomcat, Apache web server, Tomcat, SSPI"/><meta name="DC.subject" content="SSO, Single Sign On, Apache Tomcat, Apache web server, Tomcat, SSPI"/><meta name="keywords" content="SSO, Single Sign On, Apache Tomcat, Apache web server, Tomcat, SSPI"/><meta name="DC.Relation" scheme="URI" content="../../Topics/07ForSystemAdmins/Chapter7Wrapper.html"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="concept_z3q_b4h_sk"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Configuring Apache Tomcat</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()" id="concept_z3q_b4h_sk">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../Topics/07ForSystemAdmins/Chapter7Wrapper.html" title="Administering the server"><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Administering the server</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../Topics/07ForSystemAdmins/Chapter7Wrapper.html" title="Administering the server">Administering the server</a></td></tr></tbody></table>
+
+ <h1 class="title topictitle1">Configuring Apache Tomcat</h1>
+
+ 
+ 
+ <div class="body conbody"><p class="shortdesc">When exposing your <span class="ph"><span class="ph">Genji</span></span>
+  installation to the internet it is usually best to work with an Apache HTTP
+  server or IIS server as a front end to <span class="ph"><span class="ph">Genji</span></span>. When you support other applications not running on the same Tomcat server
+  as <span class="ph"><span class="ph">Genji</span></span>, but via the same Apache HTTP
+  server, you can still use single sign on without having to install a big SSO
+  solution.</p>
+
+  <p class="p"><span class="ph"><span class="ph">Genji</span></span> requires more memory than the default installations
+   of Apachee Tomcat provide. On Linux systems, these settings can be modified as follows in file
+    <span class="ph filepath">/etc/default/tomcat7</span> or <span class="ph filepath">/etc/default/tomcat8</span>:</p>
+
+  <pre class="pre codeblock">
+JAVA_OPTS="-Djava.awt.headless=true -DJENKINS_HOME=/home/jenkins \\
+           -DTRACKPLUS_HOME="/home/trackplus" -DLATEX_HOME="/usr/bin" \\
+           -XX:PermSize=384M -XX:MaxPermSize=550M -Xms512M -Xmx1624M \\
+           -XX:+UseConcMarkSweepGC"
+  </pre>
+
+  <p class="p"> On Windows system you can add these parameters in the Tomcat manager application. </p>
+
+  <p class="p">To operate <span class="ph"><span class="ph">Genji</span></span> on a Tomcat server behind an Apache web
+   server, you need to consider the following configuration items.</p>
+
+  <div class="p">
+   <ol class="ol" id="concept_z3q_b4h_sk__ol_izz_y4h_sk">
+    <li class="li">Locate your Apache web server configuration file (<span class="ph filepath">httpd.conf</span> is the
+     standard name). Let us call the directory where it is located APACHE_DIR/conf.</li>
+
+    <li class="li">Add the following line at the end of the file:
+     <pre class="pre codeblock">Include &lt;APACHE_DIR&gt;/conf/track.conf</pre>
+</li>
+
+    <li class="li">Make sure that the following modules are loaded somewhere in your Apache web server
+     configuration:<pre class="pre codeblock">LoadModule proxy_module modules/mod_proxy.so
+LoadModule proxy_http_module modules/mod_proxy_http.so
+LoadModule proxy_ajp_module modules/mod_proxy_ajp.so</pre>
+</li>
+
+    <li class="li">Create or modify file &lt;APACHE_DIR&gt;/conf/track.conf. For basic authentication it should
+     look like
+     this:<pre class="pre codeblock">&lt;Location ~ "/(track|websvn|crm|otherApps)"&gt;
+     AuthName "Steinbeis GmbH &amp; Co. KG Login"
+     AuthType Basic
+     AuthUserFile &lt;APACHE_DIR&gt;/conf/.htpasswd
+     AuthGroupFile /dev/null
+     require valid-user
+&lt;/Location&gt;
+
+ProxyPreserveHost On
+ProxyPass       /track ajp://localhost:9008/track
+ProxyPassReverse    /track ajp://localhost:9008/track</pre>
+In
+     a real environment you would use something like LDAP authentication or SSPI here, which would
+     permit authentication via your Windows PC login without further password requests. We use basic
+     authentication here only because it is simple to set up and permits you to test your
+     installation quickly.</li>
+
+    <li class="li">To create the basic authentication password file open a command shell and
+     type:<pre class="pre codeblock">htpasswd -c &lt;APACHE_DIR&gt;/conf/.htpasswd firstUserLoginName
+htpasswd &lt;APACHE_DIR&gt;/conf/.htpasswd secondUserLoginName</pre>
+
+     and so on. </li>
+
+    <li class="li">Make sure you have container based authentication turned on in <span class="ph"><span class="ph">Genji</span></span> (see <a class="xref" href="serverConfiguration/tabLDAP.html" title="If you want to use always the same password on your Genji account as on your other computers, you can connect Genji to a directory server (LDAP server, Active Directory). If you have several applications all running on the same server, you can provide a single login to that server and have Genji use the authentication of that login process.">LDAP and SSO</a>).</li>
+
+    <li class="li">Locate the Tomcat server configuration file <span class="ph filepath">server.xml</span>, usually at
+     &lt;TOMCAT_DIR&gt;/conf. Make sure you have an entry like
+     this:<pre class="pre codeblock">&lt;!-- Define an AJP 1.3 Connector on port 9008 --&gt;
+&lt;Connector port="9008" protocol="AJP/1.3" tomcatAuthentication="false" 
+                                redirectPort="8443"/&gt;
+</pre>
+</li>
+
+   </ol>
+
+  </div>
+
+  <div class="p">This should enable your <span class="ph"><span class="ph">Genji</span></span> to run with SSO behind an
+   Apache web server.<div class="cautiontitle">CAUTION:</div><div class="note caution">This is not a complete description
+    for setting up a secured production environment. In particular, you should disable the standard
+    access port (80 or 8080) in <span class="ph filepath">server.xml</span>, and you should force SSL encrypted
+    connections from your Apache web server to the browsers for the <span class="ph filepath">/track</span>
+    location.</div>
+</div>
+
+ </div>
+
+<div class="related-links"/>
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../Topics/07ForSystemAdmins/Chapter7Wrapper.html" title="Administering the server"><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Administering the server</span></a></span>  </div>
+</body>
+</html>

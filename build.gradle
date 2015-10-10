@@ -1,0 +1,773 @@
+/**
+ * Genji Scrum Tool and Issue Tracker
+ * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
+
+ * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
+
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* $Id: build-genji.gradle 1574 2015-10-09 15:16:04Z friedric $ */
+
+
+import java.util.Properties;
+import org.codehaus.groovy.runtime.*;
+
+plugins { id "com.eriwen.gradle.js" version "1.12.1"
+}
+
+apply plugin: 'eclipse'
+apply plugin: 'eclipse-wtp'
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'jacoco'
+apply plugin: 'application'
+apply plugin: 'jetty'
+apply plugin: 'groovy'
+
+defaultTasks 'dist'
+
+version = '5.0.1'  // just a dummy
+
+// Uses JDK 7
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+// 1. Get dependencies from Maven local repository
+// 2. Get dependencies from Maven central repository
+// 3. Get dependencies from our WEB-INF/lib directory
+repositories {
+	mavenCentral()
+	jcenter()
+	flatDir { dirs 'src/main/webapp/WEB-INF/lib' }
+	mavenLocal()
+}
+
+//Project dependencies, search in http://mvnrepository.com
+configurations {
+	jasperreports { transitive = true }
+
+	compile {
+		exclude group: 'stax'
+		exclude group: 'javax.xml.stream', module: 'stax-api'
+		exclude group: 'bouncycastle', module: 'bctsp-jdk14' // pulled in from JasperReports
+		exclude group: 'eclipse', module: 'jdtcore' // pulled in from JasperReports
+		exclude group: 'org.apache.xmlgraphics', module: 'fop' // pulled in from docx4j
+		exclude group: 'org.eclipse.jgit'      // pulled in by Git plugin
+		exclude group: 'org.tmatesoft.svnkit'  // pulled in by SVN plugin
+		exclude group: 'org.apache.geronimo.specs', module: 'geronimo-javamail_1.4_spec'
+		exclude group: 'geronimo-spec', module: 'geronimo-spec-javamail' // from axis and torque
+		exclude group: 'geronimo-spec', module: 'geronimo-spec-jms'
+		exclude group: 'commons-beanutils', module: 'commons-beanutils-core'
+		exclude group: 'org.codehaus.groovy', module: 'groovy-all'
+	}
+
+	runtime {
+		exclude group: 'org.eclipse.jgit'      // pulled in by Git plugin
+		exclude group: 'org.tmatesoft.svnkit' // pulled in by SVN plugin
+	}
+}
+
+dependencies {
+	compile "org.apache.struts:struts2-core:2.3.20"
+	compile 'ognl:ognl:3.0.8'
+	compile 'org.apache.velocity:velocity:1.7'
+
+	compile "log4j:log4j:1.2.16"
+	compile "org.apache.logging.log4j:log4j-api:2.3"
+	compile "org.apache.logging.log4j:log4j-core:2.3"
+	compile 'org.slf4j:slf4j-log4j12:1.7.9'
+	compile 'xerces:xercesImpl:2.10.0'
+	compile 'xalan:xalan:2.7.1'
+
+	compile 'org.quartz-scheduler:quartz:2.2.1'
+	compile 'org.quartz-scheduler:quartz-jobs:2.2.1'
+
+	compile 'org.mnode.ical4j:ical4j:1.0.6'
+	compile 'org.eclipse.persistence:eclipselink:2.5.2'
+
+	compile 'org.netbeans.lib:cvsclient:20060125'
+
+	compile ('org.docx4j:docx4j:3.2.1') {
+		exclude group: 'org.apache.xmlgraphics'
+		exclude group: 'junit'
+	}
+	compile ('org.docx4j:docx4j-ImportXHTML:3.2.2') { exclude group: 'junit' }
+
+	compile 'joda-time:joda-time:2.6'
+	compile 'net.htmlparser.jericho:jericho-html:3.3'
+	compile 'net.sf.jtidy:jtidy:r938'
+
+	// Lucene full text search
+	compile ('org.apache.lucene:lucene-core:5.2.1')
+	compile 'org.apache.lucene:lucene-analyzers-common:5.2.1'
+	compile 'org.apache.lucene:lucene-queryparser:5.2.1'
+	compile 'org.apache.lucene:lucene-highlighter:5.2.1'
+	compile 'org.apache.pdfbox:pdfbox:1.8.8'
+	compile 'local:tm-extractors:1.0' // patched by us
+
+	compile 'org.codehaus.groovy:groovy-all:1.8.8'
+
+	compile 'org.apache.axis2:axis2-kernel:1.6.2'
+
+	compile 'org.apache.axis2:axis2-adb:1.6.2'
+	compile 'org.apache.axis2:axis2-adb-codegen:1.6.2'
+	compile 'org.apache.axis2:axis2-clustering:1.6.2'
+	compile 'org.apache.axis2:axis2-fastinfoset:1.6.2'
+	compile 'org.apache.axis2:axis2-jaxbri:1.6.2'
+	compile 'org.apache.axis2:axis2-jaxws:1.6.2'
+	compile 'org.apache.axis2:axis2-jibx:1.6.2'
+	compile 'org.apache.axis2:axis2-json:1.6.2'
+	compile 'org.apache.axis2:axis2-saaj:1.6.2'
+	compile 'org.apache.axis2:axis2-xmlbeans:1.6.2'
+	compile 'org.apache.axis2:axis2-mtompolicy:1.6.2'
+	compile 'org.apache.axis2:axis2-transport-http:1.6.2'
+	compile 'org.apache.axis2:axis2-transport-tcp:1.0.0'
+
+	compile 'wsdl4j:wsdl4j:1.6.3'
+	compile 'org.apache.woden:woden-api:1.0M8'
+	compile 'org.apache.woden:woden-impl-dom:1.0M8'
+	compile 'org.apache.neethi:neethi:2.0.4'
+
+	compile 'com.ibm.icu:icu4j:3.4.4'
+
+	compile 'org.codehaus.woodstox:wstx-asl:3.2.4'
+	compile 'org.apache.httpcomponents:httpcore-nio:4.1.3'
+	compile 'org.apache.httpcomponents:httpclient:4.1.3'
+
+
+	// JasperReports
+	compile ('net.sf.jasperreports:jasperreports:6.0.3') {
+		exclude group: 'org.apache.lucene' // We don't need this here
+		exclude group: 'org.olap4j' // We don't need this here
+		exclude group: 'bouncycastle'
+		exclude group: 'org.codehaus.castor'
+	}
+	compile 'net.sf.jasperreports:jasperreports-fonts:6.0.0'
+	compile 'org.springframework:spring-core:4.1.5.RELEASE' // not pulled in, but required
+	compile 'org.springframework:spring-beans:4.1.5.RELEASE'
+
+
+	// For template compilation
+	jasperreports ('net.sf.jasperreports:jasperreports:6.0.3') {
+		exclude group: 'org.apache.lucene' // We don't need this here
+		exclude group: 'org.olap4j' // We don't need this here
+		exclude group: 'bouncycastle'
+		exclude group: 'org.codehaus.castor'
+	}
+	jasperreports 'org.codehaus.groovy:groovy:2.4.3'
+
+	compile 'local:jasperreport-gyreheros-fonts:5.0'
+	compile 'local:jasperreports-chart-themes:5.0.0'
+
+	compile 'org.apache.commons:commons-email:1.3.3'
+	compile 'commons-cli:commons-cli:1.2'
+	compile 'org.imgscalr:imgscalr-lib:4.2'
+	compile 'oro:oro:2.0.8'  // Deprecated, replace with regex
+
+	// MS Office import/export support
+	compile 'org.apache.poi:poi:3.9'  // 3.10.1
+	compile 'org.apache.poi:poi-ooxml:3.9'
+	compile 'net.sf.mpxj:mpxj:4.7.2'
+
+	// Stuff we need ourselves directly and which is not accessible
+	// from the repositories
+	compile 'local:whc:5.0'
+	compile 'json-lib:json-lib:2.5'
+	compile 'net.sf.ezmorph:ezmorph:1.0.6'
+	compile 'org.codehaus.groovy:groovy:2.4.3'
+
+	compile 'local:ganymed-ssh2:build209'
+	compile 'local:daisydiff:5.0'
+	compile 'local:dashboard_default:5.0'
+
+	compile 'local:langdetect:5.0'
+	compile 'local:jsonic:1.2.0'
+	compile 'net.sourceforge.nekohtml:nekohtml:1.9.20'  // for daisydiff
+
+	compile 'local:jnotify:0.94'
+
+	compile 'local:track-binding:5.0'
+	compile 'local:torque:3.3.1-SNAPSHOT'
+
+	compile 'org.jsoup:jsoup:1.8.2'
+
+	compile 'commons-collections:commons-collections:3.2.1'
+	compile 'commons-configuration:commons-configuration:1.9'
+	compile 'commons-dbcp:commons-dbcp:1.4'
+	compile 'org.apache.torque:village:3.3'
+
+	compile 'net.sourceforge.jexcelapi:jxl:2.6.12'
+
+	//include in compile only, exclude in the war
+	providedCompile ('javax.servlet:servlet-api:2.5') {force=true}
+	providedCompile "javax.servlet:jsp-api:2.0"
+
+	runtime 'org.firebirdsql.jdbc:jaybird-jdk16:2.2.5'
+	runtime 'mysql:mysql-connector-java:5.1.34'
+
+	testCompile 'junit:junit:4.12'
+	testCompile 'org.mockito:mockito-all:1.10.17'
+	testCompile 'org.powermock:powermock-module-junit4:1.6.2'
+	testCompile 'org.powermock:powermock-api-mockito:1.6.2'
+
+	testCompile 'org.eclipse.jetty:jetty-server:9.2.6.v20141205'
+	testCompile 'org.eclipse.jetty:jetty-webapp:9.2.6.v20141205'
+	testCompile 'org.eclipse.jetty:jetty-jsp:9.2.6.v20141205'
+	testCompile 'javax.servlet:servlet-api:3.1.0'
+
+	testCompile 'org.apache.derby:derby:10.11.1.1'
+	testCompile 'org.apache.derby:derbynet:10.11.1.1'
+
+	testCompile 'org.firebirdsql.jdbc:jaybird-jdk16:2.2.5'
+
+	testCompile 'org.apache.struts:struts2-junit-plugin:2.3.20'
+
+}
+
+sourceSets {
+	main {
+		resources {
+			srcDirs = ["src/main/java", "src/main/resources"]
+		}
+	}
+}
+
+project.ext.app_version='100';  // just dummies
+project.ext.base_version='1.0.0';
+project.ext.versionClass='1.0.x';
+
+def projectDirPath = projectDir.getAbsolutePath()+'/';
+
+def isUnix = false;
+def isWindows = false;
+
+ext.xversion = "String like 415b288";
+
+/**
+ * Initialize the ant.properties and project.ext.properties depending on
+ * operating system/build server and release build or nightly build.
+ */
+def void init() {
+
+	// println '-------------- Starting init configuration -------------------';
+
+	String osName = System.getProperty("os.name").toLowerCase();
+
+	project.ext.set("isWindows",false);
+	project.ext.set("isUnix",false);
+	project.ext.set("appBaseName", "Genji");
+
+	def versionFile = new File(projectDir.getAbsolutePath()+'/Version.properties');
+
+	if (osName.contains("windows")) {
+		isWindows = true;
+		rootProject.ext.set("isWindows",true);
+		rootProject.ext.set("argChar",'/');
+	};
+
+	if (osName.contains("unix") || osName.contains("linux") || osName.contains("mac os x")) {
+		isUnix = true;
+		rootProject.ext.set("argChar",'-');
+		rootProject.ext.set("isUnix",true);
+	};
+
+	setXversion(projectDir.getAbsolutePath());
+
+	ant.delete (includeEmptyDirs: 'true') {
+		fileset(dir: file(projectDir.getAbsolutePath()+"/src/main/webapp/WEB-INF"),
+		includes: 'Version.properties*')
+	}
+
+	copy {
+		from projectDir.getAbsolutePath()+"/Version.properties"
+		into projectDir.getAbsolutePath()+"/src/main/webapp/WEB-INF"
+	}
+
+}
+
+init();
+
+task incrementVersion << {
+
+	Properties props = new Properties();
+	File propsFile = new File(projectDirPath+"Version.properties");
+	if (propsFile.exists()) {
+		props.load(propsFile.newDataInputStream());
+	} else {
+		props = initVersionProps();
+	}
+
+	def Boolean isReleaseEnv = true; // new Boolean("$System.env.ISRELEASE");
+	def newBuild = props['build'];
+
+	if (isReleaseEnv != null && isReleaseEnv.equals(true)) {
+		props['build'] = (new Integer(props['build'])+1).toString();
+	}
+	props['date'] = DateGroovyMethods.format(new Date(), 'yyyy-MM-dd')
+	props['time'] = DateGroovyMethods.format(new Date(), 'hh:mm')
+	props['version'] = props['base.version']+"."+ props['build']
+	int bn = Integer.valueOf(props['build']) + 1
+	props['versionnext'] = props['base.version']+"."+ bn
+	props.store(propsFile.newWriter(), null);
+
+	setXversion(projectDir.getAbsolutePath());
+
+	println ' '
+	println "Actual version number is " + rootProject.ext.xversion+".";
+	println ' '
+
+	ant.delete (includeEmptyDirs: 'true') {
+		fileset(dir: file(projectDir.getAbsolutePath()+"/src/main/webapp/WEB-INF"),
+		includes: 'Version.properties*')
+	}
+	copy {
+		from projectDir.getAbsolutePath()+"/Version.properties"
+		into projectDir.getAbsolutePath()+"/src/main/webapp/WEB-INF"
+	}
+}
+
+
+def void setXversion(String versionDir) {
+	def Boolean isReleaseEnv = true; // new Boolean("$System.env.ISRELEASE");
+	Properties vprops = new Properties();
+	ext.xversion = "";
+	File propsFile = new File(versionDir+"/Version.properties");
+	if (propsFile.exists()) {
+		vprops.load(propsFile.newDataInputStream());
+	} else {
+		vprops = initVersionProps();
+		vprops.store(propsFile.newWriter(), null);
+	}
+
+	if (isReleaseEnv != null && isReleaseEnv.equals(true)) {
+		ext.xversion = vprops['app.version']+"b"+vprops["build"];
+	} else {
+		ext.xversion = vprops['app.version']+"b"+vprops["date"]+"-"+vprops['time'];
+		ext.xversion = ext.xversion.replaceAll(":","-");
+	}
+
+	project.ext['appBaseName'] = "genji";
+	project.ext['appInitDir'] = 'bugs';
+	project.ext['appTypeNo'] = 3;
+	project.ext['appDisplayName'] = 'Genji';
+
+	rootProject.ext['baseVersion'] = vprops['base.version'];
+	rootProject.ext['version'] = vprops['version'];
+	rootProject.ext['xversion'] = ext.xversion;
+	rootProject.ext['trackInstaller'] = 'genji-'+ext.xversion+"-win32x64-setup.exe";
+	project.ext['trackWar'] = "genji-"+ext.xversion+".war";
+	project.ext['trackEar'] = "genji-"+ext.xversion+".ear";
+	rootProject.ext['appDisplayName'] = 'Genji';
+
+	project.ext['baseVersion'] = rootProject.ext['baseVersion'];
+	project.ext['version'] = rootProject.ext['version'];
+	project.ext['xversion'] = ext.xversion;
+	project.ext['trackInstaller'] = rootProject.ext['trackInstaller'];
+//	project.ext['trackWar'] = rootProject.ext['trackWar'];
+//	project.ext['trackEar'] = rootProject.ext['trackEar'];
+}
+
+def Properties initVersionProps() {
+	Properties vprops = new Properties();
+	vprops['ntype']='3';
+	vprops['time']=DateGroovyMethods.format(new Date(), 'hh:mm');
+	vprops['date']=DateGroovyMethods.format(new Date(), 'yyyy-MM-dd');
+	vprops['app.version']=project.ext.app_version
+	vprops['base.version']=project.ext.base_version
+	vprops['version']=project.ext.base_version+".10" // dummy
+	vprops['type']='Genji'
+	vprops['versionClass']=project.ext.versionClass
+	vprops['build']='10'
+	return vprops;
+}
+
+
+/* This is the main task */
+task distnoinc (dependsOn: ['clean','jasper','minifyJs','war']) {
+	mustRunAfter incrementVersion
+	doLast {
+		ant.mkdir(dir: projectDir.getAbsolutePath()+"/target");
+		file(buildDir.getAbsolutePath()+"/libs/"+rootProject.ext['trackWar']).renameTo(projectDir.getAbsolutePath()+"/target/"+rootProject.ext['trackWar'])
+		println "The result is in "+projectDir.getAbsolutePath()+"/target";
+	}
+}
+
+task dist (dependsOn: ['incrementVersion','distnoinc']) {
+
+}
+
+clean {
+	doFirst {
+		delete fileTree(dir: project.webAppDir.toString()+'/js/',
+		include: 'trackplus.js*')
+	}
+}
+
+def File combineJs() {
+	File borderLayout = new File(project.webAppDir.toString()+'/tiles/layouts/BorderLayout.jsp');
+	File trackplus;
+	if (!borderLayout.exists()) {
+		println "File does not exist.";
+		exit;
+	} else {
+		def nline = "";
+		trackplus = new File(project.webAppDir.toString()+'/js/trackplus-max.js');
+		if (trackplus.exists()) {
+			trackplus.delete();
+		}
+		borderLayout.eachLine { line ->
+			nline = line.replaceAll("^(?:(?!\\s+.script.type=.text.javascript.*src=..%=request.get).)*\$","");
+			nline = nline.replaceAll("^\\s+.script.type=.text.javascript.\\s+src=..%=request.get.*%..","");
+			nline = nline.replaceAll(".../script>\$","");
+			//		replace="," flags="gs" byline="true"/>
+			nline = nline.replaceAll("js/ext/ext.*|^js.v.*|js/trackplus.js.*","");
+			nline = nline.replaceAll("js/layouts/borderLayout.js.*","");
+			nline = nline.replaceAll("js/ckeditor/ckeditor.js.*","");
+			nline = nline.replaceAll("js/lib/log4javascript_production.js.*","");
+			nline = nline.replaceAll("js/test/test.js.*","");
+			nline = nline.replaceAll("js/gantt/gnt-all.js.*","");
+			nline = nline.replaceAll("js/gantt/gnt-all-debug.js.*","");
+			nline = nline.replaceAll("js/test/logon/logonTest.js.*","");
+			nline = nline.replaceAll("js/jQuery/jquery-1.11.0.min.js.*","");
+			nline = nline.replaceAll("js/lightbox/lightbox.js.*","");
+
+			nline = nline.replaceAll(".>./script>","");
+			nline = nline.trim();
+			if (nline.contains("s:property value=")) {
+				nline="";
+			}
+			if (nline.size() > 0) {
+				File jsFile = new File(project.webAppDir.toString()+'/'+nline);
+				StringBuffer buffer = new StringBuffer();
+				if (!jsFile.exists()) {
+					println "File " + jsFile.toString() + " not found even though it is in BorderLayout.jsp";
+				} else {
+					jsFile.eachLine { jline ->
+						jline = jline.replaceAll("(\r\n|\n\r|\r|\n)", "\n");
+						if ("".equals(jline.trim())) {
+
+						} else {
+							buffer.append(jline + "\n");
+						}
+					}
+					buffer.append("\n");
+					trackplus << buffer;
+				}
+			}
+		}
+	}
+	return trackplus;
+}
+
+
+minifyJs {
+	mustRunAfter clean
+	source = combineJs() //file(project.webAppDir.toString()+'/js/trackplus-max.js');
+	dest = file(project.webAppDir.toString()+'/js/trackplus.js');
+	closure {
+		warningLevel = 'DEFAULT'
+		compilerOptions = ['languageIn':"ECMASCRIPT5"];
+	}
+	doLast {
+		delete webAppDir.toString()+'/js/trackplus-max.js'
+	}
+}
+
+compileJava { mustRunAfter minifyJs // mustRunAfter jasper
+}
+
+war {
+	zip64 false
+	duplicatesStrategy DuplicatesStrategy.EXCLUDE
+	doFirst {
+		excludes.each { String path ->
+			rootSpec.exclude(path)
+		}
+		rootSpec.exclude("**/js/ext/ext-all*debug*.js")
+		rootSpec.exclude("**/js/ext/ext-debug*.js")
+		rootSpec.exclude("**/js/ext/**/ext*debug.css")
+		rootSpec.exclude("**/js/gantt/gnt-all-debug.js")
+		rootSpec.exclude("**/js/trackplus-max.js")
+		rootSpec.exclude("dbase/*.dm1")
+		rootSpec.exclude("dbase/**/initScripts/**")
+		rootSpec.exclude("**/classes/**/prop/**")
+		rootSpec.exclude("**/tmp/**")
+		rootSpec.exclude("**/Webhelp.zip")
+		rootSpec.exclude("**/torque-runtime-3.3.jar")
+
+		// rootSpec.include("**/WEB-INF/lib/torque-3.3.1-SNAPSHOT.jar")
+
+		rootSpec.exclude("**/META-INF/MANIFEST.MF")
+		manifest {
+			attributes 'Implementation-Title': 'Genji',
+			'Implementation-Version': rootProject.ext['version'],
+			'Manifest-Version': '1.0',
+			'Created-By': 'Steinbeis GmbH & Co. KG'
+		}
+		archiveName rootProject.ext['trackWar']
+		println ''
+		println ''
+		println '***********************************************************************'
+		println ''
+		println 'Building war file ' + archiveName + '  (Version ' + rootProject.ext['version'] + ')'
+		println ''
+		println '***********************************************************************'
+		println ''
+		println ''
+		delete project.webAppDir.toString()+"/WEB-INF/Version.properties"
+		copy {
+			from projectDir.getAbsolutePath()+"/Version.properties"
+			into project.webAppDir.toString()+"/WEB-INF"
+			filter { String line ->
+				line = line.replaceFirst(/^type=.*/, 'type='+rootProject.ext['appDisplayName'])
+				line = line.replaceFirst(/^ntype=.*/, 'ntype='+rootProject.ext['appTypeNo'])
+			}
+		}
+
+		copy {
+			from file(project.webAppDir.toString()+'/tiles/layouts/BorderLayout.jsp')
+			into project.buildDir
+		}
+
+		String contents = new File(project.webAppDir.toString()+'/tiles/layouts/BorderLayout.jsp').getText( 'UTF-8' )
+		def newContents = "";
+		contents.eachLine { line ->
+			line = line.replaceAll('^.*REMOVE_ON_BUILD.*$','');
+			line = line.replaceAll('ext-all-debug-w-comments.js','ext-all.js');
+			newContents = newContents + line + '\n'
+		}
+		new File(project.webAppDir.toString()+'/tiles/layouts/BorderLayout.jsp').write( newContents, 'UTF-8' )
+	}
+	doLast {
+
+		copy {
+			from project.buildDir.toString()+'/BorderLayout.jsp'
+			into project.webAppDir.toString()+'/tiles/layouts'
+			//			rename { String fileName ->
+			//				fileName.replace('BorderLayout.jsp', 'BorderLayout3.jsp')
+			//			}
+		}
+		delete file(project.buildDir.toString()+'/BorderLayout.jsp')
+	}
+}
+
+task ('ear', type: Jar, dependsOn: 'war') {
+	doFirst {
+		manifest {
+			attributes 'Implementation-Title': 'Track+ Class Library',
+			'Implementation-Version': rootProject.ext['version'],
+			'Manifest-Version': '1.0',
+			'Created-By': 'Steinbeis GmbH & Co. KG'
+		}
+		from project.buildDir.toString()+'/libs/'+rootProject.ext['trackWar']
+		archiveName rootProject.ext['trackEar']
+		println "Building ear file " + archiveName
+		copy {
+			from project.buildDir.toString()+'/libs/'+rootProject.ext['trackWar']
+			into project.buildDir.toString()+'/libs/'
+			rename {String filename ->
+				filename.replace(rootProject.ext['trackWar'], 'track.war')
+			}
+		}
+	}
+	doLast {
+		delete project.buildDir.toString()+'/libs/track.war'
+	}
+}
+
+
+/* Create the core JavaDoc files */
+javadoc {
+//	options.group "Administration Packages" "com.aurel.track:com.aurel.track.admin*"
+	options.bottom '<a href="http://www.trackplus.com">Genji Scrum Tool &amp; Issue Tracking API Documentation</a> &nbsp; &nbsp; &nbsp;<i>Copyright &#169; 2015 Steinbeis Task Management Solutions. All Rights Reserved.</i>'
+	title "Genji Scrum Tool & Issue Tracking API Documentation ${version}"
+	doLast {
+		copy  {
+			from project.buildDir.getAbsolutePath() + "/docs/javadoc"
+			into project.docsDirName
+		}
+		copy  {
+			from projectDir.getAbsolutePath() + "/docResources"
+			into project.docsDirName+"/resources"
+		}
+	}
+}
+
+/* Compile all Jasper report templates and pack them into ZIP files
+ * so they can be uploaded to a server
+ */
+task jasper << {
+	def jasperSourceDir = file('src/main/resources/resources/reportTemplates')
+	def jasperTargetDir = file('src/main/resources/resources/reportTemplates')
+	ant {
+		taskdef(name: 'jrc', classname: 'net.sf.jasperreports.ant.JRAntCompileTask', classpath: configurations.jasperreports.asPath)
+		jasperTargetDir.mkdirs()
+		jrc(srcdir: jasperSourceDir, destdir: jasperTargetDir) {
+			classpath(path: sourceSets.main.output.classesDir)
+			include(name: '**/*.jrxml')
+		}
+	}
+
+	def FileCollection reports = files(jasperSourceDir.listFiles())
+	reports.each { File rep ->
+		def rname = rep.name;
+		if (rname =~ /^[0-9][0-9][0-9]*/) {
+			rname = rname.replaceFirst(/([0-9][0-9][0-9])_.*/,{ it[1] })
+			def zname = 'exportTemplate00' + rname + '.zip';
+			ant.zip (destfile: jasperTargetDir.toString()+'/'+zname,
+			basedir: jasperSourceDir.toString()+'/'+rep.name)
+		}
+	}
+	delete fileTree(dir: jasperTargetDir, include: '*.zip.r*')
+}
+
+
+test {
+
+	scanForTestClasses false
+	include "com/aurel/track/TestSuiteTrack.class"
+	scanForTestClasses false
+
+	//	testLogging.showStandardStreams = true
+
+	// set heap size for the test JVM(s)
+	minHeapSize = "128m"
+	maxHeapSize = "512m"
+
+	// set JVM arguments for the test JVM(s).
+	// The -noverify we need because of a PowerMock JDk 1.7 issue
+	jvmArgs = [
+		'-XX:MaxPermSize=256m',
+		'-noverify'
+	]
+
+	// listen to events in the test execution lifecycle
+	beforeTest { descriptor ->
+		logger.lifecycle("Running test: " + descriptor)
+	}
+
+	// listen to standard out and standard error of the test JVM(s)
+	onOutput { descriptor, event ->
+		logger.lifecycle(event.message )
+	}
+
+	jacoco {
+		append = true
+		destinationFile = file("$buildDir/jacoco/jacocoTest.exec")
+		classDumpFile = file("$buildDir/jacoco/classpathdumps")
+	}
+}
+
+
+
+jacoco {
+	toolVersion = "0.7.1.201405082137"
+	applyTo run
+}
+
+def coverageSourceDirs = [
+	'src/main/java',
+	'src/main/java/com/aurel/track/admin',
+	'src/main/java/com/aurel/track/dbase',
+	'src/main/java/com/aurel/track/exchange',
+	'src/main/java/com/aurel/track/util'
+]
+
+jacocoTestReport {
+	dependsOn "test"
+	group = "Reporting"
+	description = "Generates Jacoco coverage reports"
+	reports {
+		xml.enabled = true
+		html.enabled = true
+		// html.destination  project.buildDir.toString()+'/reports/jacocoHtml'
+	}
+	doFirst{
+		classDirectories = fileTree(
+				dir: 'build/classes/main/com',
+				excludes: [
+					'**/R.class',
+					'**/org/**/*.class',
+					'**/*Test*.class',
+					'**/R$*.class',
+					'**/BuildConfig.*',
+					'**/Manifest*.*',
+					'**/*Activity*.*',
+					'**/*Fragment*.*',
+					'com/aurel/track/beans/base/**',
+					'com/aurel/track/persist/map'
+				]
+				)
+	}
+	sourceDirectories = files(coverageSourceDirs)
+	additionalSourceDirs = files(coverageSourceDirs)
+	executionData = files('build/jacoco/jacocoTest.exec')
+}
+
+jettyRun {
+	dependsOn 'startDerby'
+	contextPath 'track-test'
+	httpPort 	10888
+	stopPort 	10889
+	stopKey 	'secret'
+}
+
+jettyStop {
+	dependsOn 'stopDerby'
+	stopPort 	10889
+	stopKey 	'secret'
+}
+
+task startDerby(type:JavaExec) {
+	main = 'com.aurel.track.StartServerTest'
+	classpath = sourceSets.test.runtimeClasspath+sourceSets.main.runtimeClasspath
+}
+
+task stopDerby(type:JavaExec) {
+	main = 'com.aurel.track.StopServerTest'
+	classpath = sourceSets.test.runtimeClasspath+sourceSets.main.runtimeClasspath
+}
+
+def scriptsToCopy = copySpec {
+	from project.projectDir.getPath()+"/src/main/groovy" include ("*.groovy")
+}
+
+task copyScriptsToDoc << {
+	def dest1 = project.projectDir.getPath()+"/src/main/webapp/help/WebHelp/Topics/40Scripts";
+	def dest2 = rootProject.ext.ditaScriptDir;
+
+	if ("".equals(dest2)) dest2 = dest1;  // Do not copy if Dita documentation is not reachable
+
+	[dest1, dest2].each { dest ->
+		copy {
+			with scriptsToCopy
+			into dest
+		}
+	}
+}
+
+task distSrc (type:Zip) {
+	    archiveName 'genji-'+project.ext.xversion+'-src.zip'
+		destinationDir projectDir
+        classifier = 'src'
+        from projectDir
+
+        include 'build.gradle'
+        include 'Version.properties'
+        include 'docResources/**'
+        include 'docs/**'
+        include 'src/**'
+}
+

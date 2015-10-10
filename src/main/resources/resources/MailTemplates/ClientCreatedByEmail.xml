@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns2:trackplusExchange xmlns:ns2="http://www.trackplus.com/exporter/" version="4.0.0">
+   <entityExchange entityId="1009" type="TMailTemplateBean">
+      <entityAttribute name="objectID"><![CDATA[1009]]></entityAttribute>
+      <entityAttribute name="name"><![CDATA[Client created by e-mail]]></entityAttribute>
+      <entityAttribute name="uuid"><![CDATA[91aa70e7-e45e-4684-a51a-0cf7028745c3]]></entityAttribute>
+      <subEntityRelation parentAttributeName="mailTemplateID" type="TMailTemplateDefBean">
+         <trackEntity entityId="1052" type="TMailTemplateDefBean">
+            <entityAttribute name="theLocale"><![CDATA[en]]></entityAttribute>
+            <entityAttribute name="mailBody"><![CDATA[<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html;charset=utf-8">
+		<title>You have been registered with our help desk!</title>
+		<style>
+		    body {
+				font-family: Arial,Helvetica,sans-serif;
+				font-size: 10pt;
+				color: #3A394B;
+				margin: 0;
+				padding: 12px;	
+				background: #fff;
+			}
+			p {
+				padding: 0 0 0px 0;
+				margin:5px 0 10px 0;
+				max-width: 50em;
+			}
+			ul {
+				padding: 5px 0 5px 25px;
+				margin: 5px 0 5px 0;
+				list-style-type: square;
+			}
+			h1 {
+				font-weight: bold;
+				font-size: 13pt;
+				margin: 0 0 20px 0;
+				padding: 0 0 10px 0;
+				border-bottom: 1px solid #c8c8c8;
+				max-width: 35em;
+			}
+		    
+		    .boldred {
+		    	font-weight: normal; color: #1010f8; font-size:10pt;
+		    }
+		    
+		    a { 
+				/* text-decoration: none; */
+				font-weight: normal;
+			}			
+    	</style>
+	</head>
+	<body>
+	<table width="100%" cellpadding="0" cellspacing="0" style="margin: 0 0 12px 0;"><tbody><tr><td>  
+		<p><b>Dear ${firstname} ${lastname},</b></p>
+		<p>You receive this message because you sent an email to our support.<br>
+	   		We have created an account for you on our support system so that you can get information on the status of your tickets anytime you like.</p>	  
+	   	<p>Your login name is <b>${loginname}</b>.</p>
+		<p>Please go to <a href="${confirmUrl}">${confirmUrl}</a> to set your password and to log in.</p>
+		<p>With best regards,<br>
+		Your support team</p>
+		</td>
+		   <td align="right" valign="top" style="padding-left:10px;"><a href="#"><img border="0" src='cid:$$CID$$' alt="Track+"></a></td>
+		</tr>
+		</tbody>
+		</table>
+	</body>
+</html>]]></entityAttribute>
+            <entityAttribute name="objectID"><![CDATA[1052]]></entityAttribute>
+            <entityAttribute name="templateChanged"><![CDATA[Y]]></entityAttribute>
+            <entityAttribute name="mailTemplateID"><![CDATA[1009]]></entityAttribute>
+            <entityAttribute name="plainMail"><![CDATA[false]]></entityAttribute>
+            <entityAttribute name="uuid"><![CDATA[ba939e8e-2aef-4ea4-a43a-0209e5ae4f61]]></entityAttribute>
+            <entityAttribute name="mailSubject"><![CDATA[You have been registered with our help desk!]]></entityAttribute>
+         </trackEntity>
+         <trackEntity entityId="1053" type="TMailTemplateDefBean">
+            <entityAttribute name="theLocale"><![CDATA[de]]></entityAttribute>
+            <entityAttribute name="mailBody"><![CDATA[<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html;charset=utf-8">
+		<title>Ihr Zugang zu unserem Helpdesk</title>
+		<style>
+		    body {
+				font-family: Arial,Helvetica,sans-serif;
+				font-size: 10pt;
+				color: #3A394B;
+				margin: 0;
+				padding: 12px;	
+				background: #fff;
+			}
+			p {
+				padding: 0 0 0px 0;
+				margin:5px 0 10px 0;
+				max-width: 50em;
+			}
+			ul {
+				padding: 5px 0 5px 25px;
+				margin: 5px 0 5px 0;
+				list-style-type: square;
+			}
+			h1 {
+				font-weight: bold;
+				font-size: 13pt;
+				margin: 0 0 20px 0;
+				padding: 0 0 10px 0;
+				border-bottom: 1px solid #c8c8c8;
+				max-width: 35em;
+			}
+		    
+		    .boldred {
+		    	font-weight: normal; color: #1010f8; font-size:10pt;
+		    }
+		    
+		    a { 
+				/* text-decoration: none; */
+				font-weight: normal;
+			}			
+    	</style>
+	</head>
+	<body>
+		<table width="100%" cellpadding="0" cellspacing="0" style="margin: 0 0 12px 0;"><tbody><tr><td>   
+		<p>Sehr geehrte(r) ${firstname} ${lastname},</p>
+		<p>Sie erhalten diese E-Mail, weil Sie unseren Support kontaktiert haben.<br>
+	   	Wir haben für Sie in unserem Support-System ein Konto angelegt, so dass Sie sich jederzeit über den  Zustand Ihrer Tickets informieren können.</p>	  
+	   	<p>Ihr Benutzername ist <b>${loginname}</b>.</p>
+		<p>Bitte gehen Sie auf <a href="${confirmUrl}">${confirmUrl}</a> um Ihr Kennwort festzulegen und sich anzumelden.</p>
+		<p>Freundliche Grüße,<br>
+		Ihr Support-Team</p>
+		</td>
+		   <td align="right" valign="top" style="padding-left:10px;"><a href="#"><img border="0" src='cid:$$CID$$' alt="Track+"></a></td>
+		</tr>
+		</tbody>
+		</table>
+	</body>
+</html>]]></entityAttribute>
+            <entityAttribute name="objectID"><![CDATA[1053]]></entityAttribute>
+            <entityAttribute name="templateChanged"><![CDATA[Y]]></entityAttribute>
+            <entityAttribute name="mailTemplateID"><![CDATA[1009]]></entityAttribute>
+            <entityAttribute name="plainMail"><![CDATA[false]]></entityAttribute>
+            <entityAttribute name="uuid"><![CDATA[d3e07fd8-26c9-4d25-af64-44fe2bde5b78]]></entityAttribute>
+            <entityAttribute name="mailSubject"><![CDATA[Sie haben nun Zugang zu unserem Helpdesk]]></entityAttribute>
+         </trackEntity>
+         <trackEntity entityId="1054" type="TMailTemplateDefBean">
+            <entityAttribute name="theLocale"><![CDATA[en]]></entityAttribute>
+            <entityAttribute name="mailBody"><![CDATA[Dear ${firstname} ${lastname},
+
+You receive this message because you sent an email to our support.
+We have created an account for you on our support system so that you can get information on the status of your tickets anytime you like.  
+
+Your login name is ${loginname}.
+
+Please go to ${confirmUrl} to set your password and to log in.
+
+With best regards,
+Your support team]]></entityAttribute>
+            <entityAttribute name="objectID"><![CDATA[1054]]></entityAttribute>
+            <entityAttribute name="templateChanged"><![CDATA[Y]]></entityAttribute>
+            <entityAttribute name="mailTemplateID"><![CDATA[1009]]></entityAttribute>
+            <entityAttribute name="plainMail"><![CDATA[true]]></entityAttribute>
+            <entityAttribute name="uuid"><![CDATA[2bf2d7ea-82bc-41c7-8ad0-0e7ff10857c0]]></entityAttribute>
+            <entityAttribute name="mailSubject"><![CDATA[You have been successfully registered!]]></entityAttribute>
+         </trackEntity>
+         <trackEntity entityId="1055" type="TMailTemplateDefBean">
+            <entityAttribute name="theLocale"><![CDATA[de]]></entityAttribute>
+            <entityAttribute name="mailBody"><![CDATA[Sehr geehrte(r) ${firstname} ${lastname},
+Sie erhalten diese E-Mail, weil Sie unseren Support kontaktiert haben.
+Wir haben für Sie in unserem Support-System ein Konto angelegt, so dass Sie sich jederzeit über den  Zustand Ihrer Tickets informieren können.
+
+Ihr Benutzername ist ${loginname}.
+
+Bitte gehen Sie auf ${confirmUrl} um Ihr Kennwort festzulegen und sich anzumelden.
+
+Freundliche Grüße,
+Ihr Support-Team]]></entityAttribute>
+            <entityAttribute name="objectID"><![CDATA[1055]]></entityAttribute>
+            <entityAttribute name="templateChanged"><![CDATA[Y]]></entityAttribute>
+            <entityAttribute name="mailTemplateID"><![CDATA[1009]]></entityAttribute>
+            <entityAttribute name="plainMail"><![CDATA[true]]></entityAttribute>
+            <entityAttribute name="uuid"><![CDATA[ac9b8118-a92c-4da4-a076-d96be82381b7]]></entityAttribute>
+            <entityAttribute name="mailSubject"><![CDATA[You have been successfully registered!]]></entityAttribute>
+         </trackEntity>
+      </subEntityRelation>
+   </entityExchange>
+</ns2:trackplusExchange>

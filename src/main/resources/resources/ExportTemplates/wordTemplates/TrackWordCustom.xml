@@ -1,0 +1,120 @@
+<TrackplusDocument>
+	<Project>docx4j</Project>
+	<ProjectPresent>true</ProjectPresent>
+	<IssueType>Document</IssueType>
+	<IssueTypePresent>true</IssueTypePresent>
+	<Status>opened</Status>
+	<StatusPresent>true</StatusPresent>
+	<Manager>Manager, Guntram</Manager>
+	<ManagerPresent>true</ManagerPresent>
+	<Responsible>Bearbeiter, Hans</Responsible>
+	<ResponsiblePresent>true</ResponsiblePresent>
+	<ReleaseNoticedPresent>false</ReleaseNoticedPresent>
+	<ReleaseNoticed/>
+	<ReleaseScheduled>Release 1.0</ReleaseScheduled>
+	<ReleaseScheduledPresent>true</ReleaseScheduledPresent>
+	<Priority>immediate</Priority>
+	<PriorityPresent>true</PriorityPresent>
+	<SeverityPresent>false</SeverityPresent>
+	<Severity/>
+	<IssueNo>1125</IssueNo>
+	<IssueNoPresent>true</IssueNoPresent>
+	<Originator>Ersteller, Franz!</Originator>
+	<OriginatorPresent>true</OriginatorPresent>
+	<CreateDate>24/09/2014 13:01:52</CreateDate>
+	<CreateDatePresent>true</CreateDatePresent>
+	<LastModifiedDate>24/09/2014 13:56:49</LastModifiedDate>
+	<LastModifiedDatePresent>true</LastModifiedDatePresent>
+	<SuperiorWorkItemPresent>false</SuperiorWorkItemPresent>
+	<SuperiorWorkItem/>
+	<Synopsis>Projekt Pflichtenheft Beispiel</Synopsis>
+	<SynopsisPresent>true</SynopsisPresent>
+	<BuildPresent>false</BuildPresent>
+	<Build/>
+	<StartDate>24/09/2014</StartDate>
+	<StartDatePresent>true</StartDatePresent>
+	<EndDate>01/10/2014</EndDate>
+	<EndDatePresent>true</EndDatePresent>
+	<DescriptionPresent>false</DescriptionPresent>
+	<Description/>
+	<AccessLevel>No</AccessLevel>
+	<AccessLevelPresent>true</AccessLevelPresent>
+	<CommentPresent>false</CommentPresent>
+	<Comment/>
+	<LastEditedBy>Administrator, Track+ System !</LastEditedBy>
+	<LastEditedByPresent>true</LastEditedByPresent>
+	<ArchiveLevelPresent>false</ArchiveLevelPresent>
+	<ArchiveLevel/>
+	<SubmitterEmailPresent>false</SubmitterEmailPresent>
+	<SubmitterEmail/>
+	<WBS>2</WBS>
+	<WBSPresent>true</WBSPresent>
+	<ProjectSpecificIssueNo>Anforderungen</ProjectSpecificIssueNo>
+	<ProjectSpecificIssueNoPresent>true</ProjectSpecificIssueNoPresent>
+	<TargetStartDatePresent>false</TargetStartDatePresent>
+	<TargetStartDate/>
+	<TargetEndDatePresent>false</TargetEndDatePresent>
+	<TargetEndDate/>
+	<ParticipantsPresent>false</ParticipantsPresent>
+	<Participants/>
+	<cascPresent>false</cascPresent>
+	<casc/>
+	<SimpleSelectPresent>false</SimpleSelectPresent>
+	<SimpleSelect/>
+	<MultiselectPresent>false</MultiselectPresent>
+	<Multiselect/>
+	<TaskIsMilestone>No</TaskIsMilestone>
+	<TaskIsMilestonePresent>true</TaskIsMilestonePresent>
+	<CustomCheckboxPresent>false</CustomCheckboxPresent>
+	<CustomCheckbox/>
+	<longTextPresent>false</longTextPresent>
+	<longText/>
+	<pcgPresent>false</pcgPresent>
+	<pcg/>
+	<BehalfPersonPresent>false</BehalfPersonPresent>
+	<BehalfPerson/>
+	<ProjectPickerPresent>false</ProjectPickerPresent>
+	<ProjectPicker/>
+	<UserPickerPresent>false</UserPickerPresent>
+	<UserPicker/>
+	<cPresent>false</cPresent>
+	<c/>
+	<crmPresent>false</crmPresent>
+	<crm/>
+	<gccPresent>false</gccPresent>
+	<gcc/>
+	<GyumolcsPresent>false</GyumolcsPresent>
+	<Gyumolcs/>
+	<CascGyumolcsPresent>false</CascGyumolcsPresent>
+	<CascGyumolcs/>
+	<DoublePresent>false</DoublePresent>
+	<Double/>
+	<IntegerPresent>false</IntegerPresent>
+	<Integer/>
+	<ShorttextPresent>false</ShorttextPresent>
+	<Shorttext/>
+	<LongtextPresent>false</LongtextPresent>
+	<Longtext/>
+	<datePresent>false</datePresent>
+	<date/>
+	<ConsultedPersonsPresent>false</ConsultedPersonsPresent>
+	<InformedPersonsPresent>false</InformedPersonsPresent>
+	<Comments>
+		<Comment>
+			<CommentText>Hier sind die Kommentare zu sehen</CommentText>
+			<CommentedBy>Kommentator, Susi</CommentedBy>
+			<CommentedAt>24/09/2014</CommentedAt>
+		</Comment>
+		<Comment>
+			<CommentText>Added from user 2</CommentText>
+			<CommentedBy>last2, first2</CommentedBy>
+			<CommentedAt>24/09/2014</CommentedAt>
+		</Comment>
+		<Comment>
+			<CommentText>Comment one</CommentText>
+			<CommentedBy>Administrator, Track+ System !</CommentedBy>
+			<CommentedAt>24/09/2014</CommentedAt>
+		</Comment>
+	</Comments>
+	<CommentsPresent>true</CommentsPresent>
+</TrackplusDocument>

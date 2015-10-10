@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	Description file for a Track+ report template. This file
+	is read by Track+ and used for presentation of the report
+	template for selection by the users. 
+-->
+<reportTemplate>
+  <name>SimpleReport</name>	
+  <locale value="en">
+     <description>
+  	    Standard report overview, with only a few columns.
+     </description>
+     <listing>Concise report, no history</listing>
+     <tool-tip>Report overview, no history, landscape A4</tool-tip>
+  </locale>
+  <locale value="de">
+     <description>
+  	    Standard-Bericht mit einigen wenigen Spalten.
+     </description>
+     <listing>Schlanker Bericht ohne Verlauf</listing>
+     <tool-tip>Übersichtsbericht ohne Verlauf, A4-Querformat</tool-tip>
+  </locale>
+  <!-- The icon should be in GIF format and have a size (width x height) of at most 150 x 100 -->
+  <icon-gif>icon.gif</icon-gif>
+  <size>A4 landscape</size>
+  <!-- The preview should be in GIF or PNG format and have a size of at most 800 x 600 -->
+  <preview-gif>preview.png</preview-gif>
+  <!-- Type of report: Jasper Report or FOP Report -->
+  <type>Jasper Report</type>
+  <!-- Format of report: pdf, rtf, xml, xls, png etc -->
+  <format>pdf</format>
+  <!-- The compiled master report template file -->
+  <masterFile>TrackReportStandard.jasper</masterFile>
+</reportTemplate>

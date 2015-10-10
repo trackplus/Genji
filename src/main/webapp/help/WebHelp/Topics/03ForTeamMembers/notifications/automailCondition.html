@@ -1,0 +1,107 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="In the second step of a notification process, notification messages are passed through a notification filter with an automail condition. Only if messages match the condition, an e-mail is actually ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="task"/><meta name="DC.Title" content="Configuring automail conditions"/><meta name="abstract" content="In the second step of a notification process, notification messages are passed through a notification filter with an automail condition. Only if messages match the condition, an e-mail is actually sent."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="In the second step of a notification process, notification messages are passed through a notification filter with an automail condition. Only if messages match the condition, an e-mail is actually sent."/><meta name="indexterms" content="automail condition, configure, automail condition"/><meta name="DC.subject" content="automail condition, configure, automail condition"/><meta name="keywords" content="automail condition, configure, automail condition"/><meta name="DC.Relation" scheme="URI" content="../../../Topics/03ForTeamMembers/notifications/configAutomail.html"/><meta name="DC.Relation" scheme="URI" content="../../02KeyConcepts/Communication/triggersAndFilters.html#id12BQFE00TV5"/><meta name="DC.Relation" scheme="URI" content="automailTrigger.html"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="id1317I0F00G4"/><link rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Configuring automail conditions</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()" id="id1317I0F00G4">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../../Topics/03ForTeamMembers/notifications/configAutomail.html" title="Genji has a highly configurable e-mail notification system. E-mail notifications can be globally and individually configured to ensure proper information flow."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Configuring automail</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../../Topics/03ForTeamMembers/notifications/../../../Topics/03ForTeamMembers/Chapter3Wrapper.html" title="Genji for team members">Genji for team members</a> / <a class="navheader_parent_path" href="../../../Topics/03ForTeamMembers/notifications/configAutomail.html" title="Genji has a highly configurable e-mail notification system. E-mail notifications can be globally and individually configured to ensure proper information flow.">Configuring automail</a></td></tr></tbody></table>
+
+    <h1 class="title topictitle1">Configuring automail conditions</h1>
+
+    
+    
+    <div class="body taskbody"><p class="shortdesc">In the second step of a notification
+        process, notification messages are passed through a notification filter
+        with an automail condition. Only if messages match the condition, an
+        e-mail is actually sent. </p>
+
+        <div class="section context">
+            <p class="p">For example, you may only be interested in e-mail notification
+                for items that have both a high <span class="ph">priority</span> and <span class="ph">severity</span>, or which
+                were changed by a certain person.</p>
+
+            <p class="p">With automail conditions you can define complex filter criteria
+                based on the new and previous item property values. For
+                example, you may only be interested in items whose new state is
+                „closed“, or whose old state was „closed“. You ask yourself why
+                would anybody make changes to a closed item, you want to be
+                informed in that case. And you don’t care about all the work
+                until an item is closed, you just want to see the results.</p>
+
+            <p class="p">This can be done with automail conditions. You can define your
+                own conditions, or use existing conditions, and you can assign
+                your personal condition specifically for each project. If you do
+                not do this, the settings provided by the project or system
+                administrator pertain.</p>
+
+            <p class="p">You will notice that all properties can be selected with either
+                their „new“ or their „old“ value. New in this case means the
+                property value that was the result of the action causing the
+                automail trigger, and old in this case means the value the
+                property carried before the action.</p>
+
+            <p class="p">This makes it possible to define conditions that check for
+                transitions, for example state transitions from anywhere to
+                closed, or responsible transitions from yourself to anybody
+                else.</p>
+
+            <p class="p">As an example let us assume you only want to get notifications in
+                case an item was closed. This implies that it was in a different
+                state before.</p>
+
+        </div>
+
+        <ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">From the main menu, select Administration &gt; My settings &gt;
+                    Automail assignments.</span>
+                <div class="itemgroup stepxmp">
+                    <div class="fig fignone"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/automail.png" height="118" width="168"/></div><br/>
+                        
+                    </div>
+
+                </div>
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">Select „Automail conditions“ in the second navigation
+                    column and click on „Add automail condition“.</span>
+                <div class="itemgroup stepxmp">
+                    <div class="fig fignone"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/automailCondition1.png" height="89" width="331"/></div><br/>
+                        
+                    </div>
+
+                </div>
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">In the new windows define the logical expression for the
+                    automail condition.</span>
+                <div class="itemgroup stepxmp">
+                    <div class="fig fignone"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/automailCondition2.png" height="118" width="445"/></div><br/>
+                        
+                    </div>
+
+                </div>
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">Give a name to the new condition and save it. Before it
+                    becomes effective you have to assign it to a workspace (see
+                        <a class="xref fm:" href="automailAssignment.html#id131UA0D0ASC">Assigning
+                        Automail Trigger and Condition</a>). </span>
+            </li>
+</ol>
+
+    </div>
+
+    <div class="related-links">
+<div class="linklist linklist">
+<div><a class="navheader_parent_path" href="../../02KeyConcepts/Communication/triggersAndFilters.html#id12BQFE00TV5" title="You can receive e-mail notifications from the Genji system when items you have an interest in are created, changed, or due. You can control under what circumstances you receive such information by means of automail triggers and automail conditions.">Triggers and Conditions</a></div>
+<div><a class="navheader_parent_path" href="automailTrigger.html" title="Automail triggers define which user induced actions trigger a notification from the system.">Automail Trigger</a></div></div>
+</div>
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../../Topics/03ForTeamMembers/notifications/configAutomail.html" title="Genji has a highly configurable e-mail notification system. E-mail notifications can be globally and individually configured to ensure proper information flow."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Configuring automail</span></a></span>  </div>
+</body>
+</html>

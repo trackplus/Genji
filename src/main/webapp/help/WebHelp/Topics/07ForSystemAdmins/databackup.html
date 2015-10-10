@@ -1,0 +1,74 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="A system administrator can backup all data from the database and optionally all attachments into a ZIP archive file. Furthermore it is possible to create such backups automatically on a regular basis. ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="concept"/><meta name="DC.Title" content="Data backup"/><meta name="abstract" content="A system administrator can backup all data from the database and optionally all attachments into a ZIP archive file. Furthermore it is possible to create such backups automatically on a regular basis. The backup data can be used to restore the database and all attachments at a later point in time."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="A system administrator can backup all data from the database and optionally all attachments into a ZIP archive file. Furthermore it is possible to create such backups automatically on a regular basis. The backup data can be used to restore the database and all attachments at a later point in time."/><meta name="DC.Relation" scheme="URI" content="../../Topics/07ForSystemAdmins/Chapter7Wrapper.html"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="id31backup"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Data backup</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../Topics/07ForSystemAdmins/Chapter7Wrapper.html" title="Administering the server"><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Administering the server</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../Topics/07ForSystemAdmins/Chapter7Wrapper.html" title="Administering the server">Administering the server</a></td></tr></tbody></table>
+
+    <div class="nested0" id="id31backup">
+        <h1 class="title topictitle1">Data backup</h1>
+
+        
+        <div class="body conbody"><p class="shortdesc">A system administrator can backup all data from the
+            database and optionally all attachments into a ZIP archive file. Furthermore it is
+            possible to create such backups automatically on a regular basis. The backup data can be
+            used to restore the database and all attachments at a later point in time.</p>
+
+            <div class="section"><h2 class="title sectiontitle">Manual backup</h2>
+                <div class="note note"><span class="notetitle">Note:</span> For production environments with more than 25 users we recommended to use
+                    native database and file system backup tools rather than the internal backup
+                    facility described here.</div>
+
+                
+                <p class="p"><span class="ph">In the top toolbar select <span class="ph menucascade"><span class="ph uicontrol">Administration</span> &gt; <span class="ph uicontrol">Manage server</span> &gt; <span class="ph uicontrol">Data backup</span></span>.</span></p>
+
+                <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/dataBackup.png" height="231" width="362"/></div><br/>
+                    
+                </div>
+
+                <p class="p">You will see a list of backups that are already available. The default naming
+                    scheme is &lt;YYYY_MM_DD_HH_MM&gt;. However, you can choose any name you wish. </p>
+
+                <p class="p">The backup process can take some time. You can select if you want to be informed
+                    by e-mail when the backup is finished.</p>
+
+                <p class="p">You can also choose if you want to include the attachments in the backup process,
+                    or rather limit the backup to the data in the database. Selecting to include the
+                    attachments has the advantage that the attachment meta data in the database and
+                    the attachments stay consistent. You could also decide to backup the attachments
+                    using your regular operating system backup features.</p>
+
+                <div class="note note"><span class="notetitle">Note:</span> You may not be able to execute a backup when at that same moment an automated
+                    backup is running. You will have to wait until the automated backup process is
+                    finished before you can execute your manual backup. By default, the automated
+                    backup is running from Monday to Friday, at 23:15 each night (server
+                    time).</div>
+
+                <div class="note note"><span class="notetitle">Note:</span> The backup data is placed into the directory you have configured for
+                    attachments, in a subdirectory there called „dbBackup“.</div>
+
+            </div>
+
+            <div class="section"><h2 class="title sectiontitle">Automated backup</h2>
+                
+                <p class="p">You can enable your system to create backups regularly by itself. To enable
+                    automated backups activate the corresponding check box. You can then choose at
+                    what weekdays and at what time on each weekday you want to create a backup.</p>
+
+            </div>
+
+        </div>
+
+    <div class="related-links"/>
+</div>
+
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../Topics/07ForSystemAdmins/Chapter7Wrapper.html" title="Administering the server"><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Administering the server</span></a></span>  </div>
+</body>
+</html>

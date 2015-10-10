@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.trackplus.com/exporter/" targetNamespace="http://www.trackplus.com/exporter/">
+    <complexType name="entity">
+    	<sequence maxOccurs="1" minOccurs="1">
+    		<element name="entityAttribute" type="tns:attribute"
+    			maxOccurs="unbounded" minOccurs="0" />
+    		<element name="subEntityRelation" type="tns:dependencyData"
+    			maxOccurs="unbounded" minOccurs="0" />    			
+    		<element name="referredDependency" type="tns:reference"
+    			maxOccurs="unbounded" minOccurs="0" />
+    	</sequence>
+    	<attribute name="type" type="string" use="required"/>
+    	<attribute name="entityId" type="string" use="required"/>
+    </complexType>
+
+    <complexType name="attribute">
+    	<simpleContent>
+    		<extension base="string">
+    			<attribute name="name" type="string" use="required"/>
+    		</extension>
+    	</simpleContent>
+    </complexType>
+
+    <complexType name="reference">
+    	<attribute name="attributeName" type="string" use="required"/>
+    	<attribute name="dependencyEntityType" type="string" use="required"/>
+    	<attribute name="dependencyId" type="string" use="required"/>
+    </complexType>
+
+    <complexType name="dependency">
+    	<sequence maxOccurs="1" minOccurs="1">
+    		<element name="dependencyData" type="tns:dependencyData" 
+    			maxOccurs="unbounded" minOccurs="0" />
+    	</sequence>
+    </complexType>
+
+    <complexType name="dependencyData">
+    	<sequence maxOccurs="1" minOccurs="1">
+    		<element name="trackEntity" type="tns:entity" 
+    			maxOccurs="unbounded" minOccurs="0" />
+    	</sequence>
+    	<attribute name="type" type="string" use="required"/>
+    	<attribute name="parentAttributeName" type="string" use="required"/>  	
+    </complexType>
+
+    <complexType name="trackplusRoot">
+    	<sequence maxOccurs="1" minOccurs="0">
+    		<element name="entityExchange" type="tns:entity" 
+    			maxOccurs="unbounded" minOccurs="0" />
+    		<element name="entityDependency" type="tns:dependencyData" maxOccurs="unbounded" minOccurs="0"/>
+    	</sequence>
+    	<attribute name="version" type="string" use="required"/>
+    </complexType>
+
+    <element name="trackplusExchange" type="tns:trackplusRoot"/>
+</schema>
+
+<!-- xjc -d generated -p com.aurel.track.configExchange.exporter.jaxb exporter.xsd -->

@@ -1,0 +1,40 @@
+                          Track+ License
+	            Version 2.2.0 as of April 2, 2004
+
+Track+ has been published as open source to facilitate modifications. 
+The copyright (C) is with Joerg Friedrich.
+
+Redistribution and use of this software in source and binary forms, 
+with or without modification, are permitted within your organization,
+provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, 
+   this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice, 
+   this list of conditions and the disclaimer listed below in the 
+   documentation and/or other materials provided with the distribution.
+
+3. Any derivative work may not use the name and logo of Track+ or TrackPlus 
+   as a product name or to endorse or promote products derived from this 
+   work without specific prior written permission by the copyright holder.
+
+4. There are 10 or less users in the Track+ database, or it is
+   being used on an open source project or in an educational 
+   institution, or you have significantly contributed to the
+   development of Track+ over the last two years. Other users should
+   obtain a commercial license.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE 
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+POSSIBILITY OF SUCH DAMAGE.
+
+		     END OF TERMS AND CONDITIONS

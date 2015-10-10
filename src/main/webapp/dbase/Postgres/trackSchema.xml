@@ -1,0 +1,2207 @@
+<?xml version="1.0"?>
+<!DOCTYPE database SYSTEM "http://db.apache.org/torque/dtd/database">
+  <database name="model">
+    <table name="clusternode" description="This table holds properties for each node in the cluster">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="nodeaddress" primaryKey="false" required="false" type="VARCHAR" size="40" autoIncrement="false" description="The ip address of this node"/>
+      <column name="nodeurl" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false" description="The URL where the managing instance of this node can be reached"/>
+      <column name="lastupdate" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false" description="This enables to clean the table in case of a crash"/>
+      <column name="masternode" primaryKey="false" required="false" type="INTEGER" size="10" default="0" autoIncrement="false" description="If this is the master node, this value is &gt; 0"/>
+      <column name="reloadconfig" primaryKey="false" required="false" type="INTEGER" size="10" default="0" autoIncrement="false" description="If this is not 0, reload the configuration from TSITE"/>
+    </table>
+    <table name="id_table">
+      <column name="id_table_id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="table_name" primaryKey="false" required="true" type="VARCHAR" size="128" autoIncrement="false"/>
+      <column name="next_id" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="quantity" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <unique name="id_table_u_1">
+        <unique-column name="table_name"/>
+      </unique>
+    </table>
+    <table name="qrtz_blob_triggers">
+      <column name="trigger_name" primaryKey="true" required="true" type="VARCHAR" size="80" autoIncrement="false"/>
+      <column name="trigger_group" primaryKey="true" required="true" type="VARCHAR" size="80" autoIncrement="false"/>
+      <column name="blob_data" primaryKey="false" required="false" type="LONGVARBINARY" autoIncrement="false"/>
+      <foreign-key foreignTable="qrtz_triggers" name="qrtz_blob_triggers_trigger_name_fkey">
+        <reference local="trigger_name" foreign="trigger_name"/>
+        <reference local="trigger_group" foreign="trigger_group"/>
+      </foreign-key>
+    </table>
+    <table name="qrtz_calendars">
+      <column name="calendar_name" primaryKey="true" required="true" type="VARCHAR" size="80" autoIncrement="false"/>
+      <column name="calendar" primaryKey="false" required="true" type="LONGVARBINARY" autoIncrement="false"/>
+    </table>
+    <table name="qrtz_cron_triggers">
+      <column name="trigger_name" primaryKey="true" required="true" type="VARCHAR" size="80" autoIncrement="false"/>
+      <column name="trigger_group" primaryKey="true" required="true" type="VARCHAR" size="80" autoIncrement="false"/>
+      <column name="cron_expression" primaryKey="false" required="true" type="VARCHAR" size="80" autoIncrement="false"/>
+      <column name="time_zone_id" primaryKey="false" required="false" type="VARCHAR" size="80" autoIncrement="false"/>
+      <foreign-key foreignTable="qrtz_triggers" name="qrtz_cron_triggers_trigger_name_fkey">
+        <reference local="trigger_name" foreign="trigger_name"/>
+        <reference local="trigger_group" foreign="trigger_group"/>
+      </foreign-key>
+    </table>
+    <table name="qrtz_fired_triggers">
+      <column name="entry_id" primaryKey="true" required="true" type="VARCHAR" size="95" autoIncrement="false"/>
+      <column name="trigger_name" primaryKey="false" required="true" type="VARCHAR" size="80" autoIncrement="false"/>
+      <column name="trigger_group" primaryKey="false" required="true" type="VARCHAR" size="80" autoIncrement="false"/>
+      <column name="is_volatile" primaryKey="false" required="true" type="BIT" size="1" autoIncrement="false"/>
+      <column name="instance_name" primaryKey="false" required="true" type="VARCHAR" size="80" autoIncrement="false"/>
+      <column name="fired_time" primaryKey="false" required="true" type="BIGINT" size="19" autoIncrement="false"/>
+      <column name="priority" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="state" primaryKey="false" required="true" type="VARCHAR" size="16" autoIncrement="false"/>
+      <column name="job_name" primaryKey="false" required="false" type="VARCHAR" size="80" autoIncrement="false"/>
+      <column name="job_group" primaryKey="false" required="false" type="VARCHAR" size="80" autoIncrement="false"/>
+      <column name="is_stateful" primaryKey="false" required="false" type="BIT" size="1" autoIncrement="false"/>
+      <column name="requests_recovery" primaryKey="false" required="false" type="BIT" size="1" autoIncrement="false"/>
+    </table>
+    <table name="qrtz_job_details">
+      <column name="job_name" primaryKey="true" required="true" type="VARCHAR" size="80" autoIncrement="false"/>
+      <column name="job_group" primaryKey="true" required="true" type="VARCHAR" size="80" autoIncrement="false"/>
+      <column name="description" primaryKey="false" required="false" type="VARCHAR" size="120" autoIncrement="false"/>
+      <column name="job_class_name" primaryKey="false" required="true" type="VARCHAR" size="128" autoIncrement="false"/>
+      <column name="is_durable" primaryKey="false" required="true" type="BIT" size="1" autoIncrement="false"/>
+      <column name="is_volatile" primaryKey="false" required="true" type="BIT" size="1" autoIncrement="false"/>
+      <column name="is_stateful" primaryKey="false" required="true" type="BIT" size="1" autoIncrement="false"/>
+      <column name="requests_recovery" primaryKey="false" required="true" type="BIT" size="1" autoIncrement="false"/>
+      <column name="job_data" primaryKey="false" required="false" type="LONGVARBINARY" autoIncrement="false"/>
+    </table>
+    <table name="qrtz_job_listeners">
+      <column name="job_name" primaryKey="true" required="true" type="VARCHAR" size="80" autoIncrement="false"/>
+      <column name="job_group" primaryKey="true" required="true" type="VARCHAR" size="80" autoIncrement="false"/>
+      <column name="job_listener" primaryKey="true" required="true" type="VARCHAR" size="80" autoIncrement="false"/>
+      <foreign-key foreignTable="qrtz_job_details" name="qrtz_job_listeners_job_name_fkey">
+        <reference local="job_name" foreign="job_name"/>
+        <reference local="job_group" foreign="job_group"/>
+      </foreign-key>
+    </table>
+    <table name="qrtz_locks">
+      <column name="lock_name" primaryKey="true" required="true" type="VARCHAR" size="40" autoIncrement="false"/>
+    </table>
+    <table name="qrtz_paused_trigger_grps">
+      <column name="trigger_group" primaryKey="true" required="true" type="VARCHAR" size="80" autoIncrement="false"/>
+    </table>
+    <table name="qrtz_scheduler_state">
+      <column name="instance_name" primaryKey="true" required="true" type="VARCHAR" size="80" autoIncrement="false"/>
+      <column name="last_checkin_time" primaryKey="false" required="true" type="BIGINT" size="19" autoIncrement="false"/>
+      <column name="checkin_interval" primaryKey="false" required="true" type="BIGINT" size="19" autoIncrement="false"/>
+    </table>
+    <table name="qrtz_simple_triggers">
+      <column name="trigger_name" primaryKey="true" required="true" type="VARCHAR" size="80" autoIncrement="false"/>
+      <column name="trigger_group" primaryKey="true" required="true" type="VARCHAR" size="80" autoIncrement="false"/>
+      <column name="repeat_count" primaryKey="false" required="true" type="BIGINT" size="19" autoIncrement="false"/>
+      <column name="repeat_interval" primaryKey="false" required="true" type="BIGINT" size="19" autoIncrement="false"/>
+      <column name="times_triggered" primaryKey="false" required="true" type="BIGINT" size="19" autoIncrement="false"/>
+      <foreign-key foreignTable="qrtz_triggers" name="qrtz_simple_triggers_trigger_name_fkey">
+        <reference local="trigger_name" foreign="trigger_name"/>
+        <reference local="trigger_group" foreign="trigger_group"/>
+      </foreign-key>
+    </table>
+    <table name="qrtz_trigger_listeners">
+      <column name="trigger_name" primaryKey="true" required="true" type="VARCHAR" size="80" autoIncrement="false"/>
+      <column name="trigger_group" primaryKey="true" required="true" type="VARCHAR" size="80" autoIncrement="false"/>
+      <column name="trigger_listener" primaryKey="true" required="true" type="VARCHAR" size="80" autoIncrement="false"/>
+      <foreign-key foreignTable="qrtz_triggers" name="qrtz_trigger_listeners_trigger_name_fkey">
+        <reference local="trigger_name" foreign="trigger_name"/>
+        <reference local="trigger_group" foreign="trigger_group"/>
+      </foreign-key>
+    </table>
+    <table name="qrtz_triggers">
+      <column name="trigger_name" primaryKey="true" required="true" type="VARCHAR" size="80" autoIncrement="false"/>
+      <column name="trigger_group" primaryKey="true" required="true" type="VARCHAR" size="80" autoIncrement="false"/>
+      <column name="job_name" primaryKey="false" required="true" type="VARCHAR" size="80" autoIncrement="false"/>
+      <column name="job_group" primaryKey="false" required="true" type="VARCHAR" size="80" autoIncrement="false"/>
+      <column name="is_volatile" primaryKey="false" required="true" type="BIT" size="1" autoIncrement="false"/>
+      <column name="description" primaryKey="false" required="false" type="VARCHAR" size="120" autoIncrement="false"/>
+      <column name="next_fire_time" primaryKey="false" required="false" type="BIGINT" size="19" autoIncrement="false"/>
+      <column name="prev_fire_time" primaryKey="false" required="false" type="BIGINT" size="19" autoIncrement="false"/>
+      <column name="priority" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="trigger_state" primaryKey="false" required="true" type="VARCHAR" size="16" autoIncrement="false"/>
+      <column name="trigger_type" primaryKey="false" required="true" type="VARCHAR" size="8" autoIncrement="false"/>
+      <column name="start_time" primaryKey="false" required="true" type="BIGINT" size="19" autoIncrement="false"/>
+      <column name="end_time" primaryKey="false" required="false" type="BIGINT" size="19" autoIncrement="false"/>
+      <column name="calendar_name" primaryKey="false" required="false" type="VARCHAR" size="80" autoIncrement="false"/>
+      <column name="misfire_instr" primaryKey="false" required="false" type="SMALLINT" size="5" autoIncrement="false"/>
+      <column name="job_data" primaryKey="false" required="false" type="LONGVARBINARY" autoIncrement="false"/>
+      <foreign-key foreignTable="qrtz_job_details" name="qrtz_triggers_job_name_fkey">
+        <reference local="job_name" foreign="job_name"/>
+        <reference local="job_group" foreign="job_group"/>
+      </foreign-key>
+    </table>
+    <table name="taccount">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="accountnumber" primaryKey="false" required="true" type="VARCHAR" size="30" autoIncrement="false"/>
+      <column name="accountname" primaryKey="false" required="false" type="VARCHAR" size="80" autoIncrement="false"/>
+      <column name="status" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="costcenter" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="description" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="moreprops" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false" description="This is a multi-purpose field. It contains a text in .properties format with a number of additional attributes."/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tcostcenter" name="taccount_fk_2">
+        <reference local="costcenter" foreign="objectid"/>
+      </foreign-key>
+      <foreign-key foreignTable="tsystemstate" name="taccount_fk_1">
+        <reference local="status" foreign="objectid"/>
+      </foreign-key>
+      <index name="taccountindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tacl" description="Describes which person has which role in which project.">
+      <column name="personkey" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="rolekey" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="projkey" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tperson" name="tacl_fk_1">
+        <reference local="personkey" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tproject" name="tacl_fk_3">
+        <reference local="projkey" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="trole" name="tacl_fk_2">
+        <reference local="rolekey" foreign="pkey"/>
+      </foreign-key>
+      <index name="taclindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="taction">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="name" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="label" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="description" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <index name="tactionindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tactualestimatedbudget">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="workitemkey" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="estimatedhours" primaryKey="false" required="false" type="DOUBLE" size="17,17" autoIncrement="false"/>
+      <column name="timeunit" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="estimatedcost" primaryKey="false" required="false" type="DOUBLE" size="17,17" autoIncrement="false"/>
+      <column name="efforttype" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="effortvalue" primaryKey="false" required="false" type="DOUBLE" size="17,17" autoIncrement="false"/>
+      <column name="changedby" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="lastedit" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tperson" name="tactualestimatedbudget_fk_2">
+        <reference local="changedby" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tworkitem" name="tactualestimatedbudget_fk_1">
+        <reference local="workitemkey" foreign="workitemkey"/>
+      </foreign-key>
+      <index name="tactualestindex1">
+        <index-column name="workitemkey"/>
+      </index>
+      <index name="tactualestindex2">
+        <index-column name="changedby"/>
+      </index>
+      <index name="tactualestindex3">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tapplicationcontext">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="loggedfullusers" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="loggedlimitedusers" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="refreshconfiguration" primaryKey="false" required="true" type="INTEGER" size="10" default="0" autoIncrement="false" description="In case of configuration change, this is set to the number of nodes. As each node updates its configuration, the count is decremented."/>
+      <column name="firsttime" primaryKey="false" required="true" type="INTEGER" size="10" default="0" autoIncrement="false" description="When this is the first start after a version upgrade, go to site configuration"/>
+      <column name="moreprops" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false" description="This is a multi-purpose field. It contains a text in .properties format with a number of additional attributes."/>
+    </table>
+    <table name="tattachment">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="workitem" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="changedby" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="documentstate" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="filename" primaryKey="false" required="true" type="VARCHAR" size="256" autoIncrement="false"/>
+      <column name="filesize" primaryKey="false" required="false" type="VARCHAR" size="20" autoIncrement="false"/>
+      <column name="mimetype" primaryKey="false" required="false" type="VARCHAR" size="15" autoIncrement="false"/>
+      <column name="lastedit" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="version" primaryKey="false" required="false" type="VARCHAR" size="20" autoIncrement="false"/>
+      <column name="description" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false"/>
+      <column name="cryptkey" primaryKey="false" required="false" type="VARCHAR" size="4096" autoIncrement="false"/>
+      <column name="isencrypted" primaryKey="false" required="false" type="CHAR" size="1" default="N" autoIncrement="false"/>
+      <column name="isdeleted" primaryKey="false" required="false" type="CHAR" size="1" default="N" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tdocstate" name="tattachment_fk_3">
+        <reference local="documentstate" foreign="objectid"/>
+      </foreign-key>
+      <foreign-key foreignTable="tperson" name="tattachment_fk_2">
+        <reference local="changedby" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tworkitem" name="tattachment_fk_1">
+        <reference local="workitem" foreign="workitemkey"/>
+      </foreign-key>
+      <index name="tattachindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tattribute">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="attributename" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="attributetype" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="deleted" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="description" primaryKey="false" required="false" type="VARCHAR" size="64" autoIncrement="false"/>
+      <column name="permission" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="requiredoption" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tattributeoption" name="tattribute_fk_1">
+        <reference local="requiredoption" foreign="objectid"/>
+      </foreign-key>
+      <index name="tattributeindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tattributeclass">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="attributeclassname" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="attributeclassdesc" primaryKey="false" required="false" type="VARCHAR" size="64" autoIncrement="false"/>
+      <column name="javaclassname" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <index name="tattclassindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tattributeoption">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="attributeid" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="parentoption" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="optionname" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="deleted" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="sortorder" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tattribute" name="tattributeoption_fk_1">
+        <reference local="attributeid" foreign="objectid"/>
+      </foreign-key>
+      <index name="tattoptindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tattributetype">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="attributetypename" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="attributeclass" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="javaclassname" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="validationkey" primaryKey="false" required="false" type="VARCHAR" size="25" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tattributeclass" name="tattributetype_fk_1">
+        <reference local="attributeclass" foreign="objectid"/>
+      </foreign-key>
+      <index name="tatttypeindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tattributevalue">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="fieldkey" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="workitem" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="textvalue" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="integervalue" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="doublevalue" primaryKey="false" required="false" type="DOUBLE" size="17,17" autoIncrement="false"/>
+      <column name="datevalue" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="charactervalue" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="longtextvalue" primaryKey="false" required="false" type="VARCHAR" size="32000" autoIncrement="false"/>
+      <column name="systemoptionid" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="systemoptiontype" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="customoptionid" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="parametercode" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="validvalue" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="lastedit" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tfield" name="tattributevalue_fk_1">
+        <reference local="fieldkey" foreign="objectid"/>
+      </foreign-key>
+      <foreign-key foreignTable="tworkitem" name="tattributevalue_fk_2">
+        <reference local="workitem" foreign="workitemkey"/>
+      </foreign-key>
+      <index name="tattvalueindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tbaseline" description="For each workitem this table contains the history of start and due dates.">
+      <column name="blkey" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="workitemkey" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="startdate" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="enddate" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="reasonforchange" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false"/>
+      <column name="changedby" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="lastedit" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tperson" name="tbaseline_fk_2">
+        <reference local="changedby" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tworkitem" name="tbaseline_fk_1">
+        <reference local="workitemkey" foreign="workitemkey"/>
+      </foreign-key>
+      <index name="tbasindex1">
+        <index-column name="workitemkey"/>
+      </index>
+      <index name="tbasindex2">
+        <index-column name="changedby"/>
+      </index>
+      <index name="tbasindex3">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tblob">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="blobvalue" primaryKey="false" required="false" type="LONGVARBINARY" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <index name="tblobindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tbudget">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="workitemkey" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="estimatedhours" primaryKey="false" required="false" type="DOUBLE" size="17,17" autoIncrement="false"/>
+      <column name="timeunit" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="estimatedcost" primaryKey="false" required="false" type="DOUBLE" size="17,17" autoIncrement="false"/>
+      <column name="efforttype" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="effortvalue" primaryKey="false" required="false" type="DOUBLE" size="17,17" autoIncrement="false"/>
+      <column name="changedescription" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="moreprops" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false" description="This is a multi-purpose field. It contains a text in .properties format with a number of additional attributes."/>
+      <column name="changedby" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="lastedit" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tperson" name="tbudget_fk_2">
+        <reference local="changedby" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tworkitem" name="tbudget_fk_1">
+        <reference local="workitemkey" foreign="workitemkey"/>
+      </foreign-key>
+      <index name="tbudgetindex1">
+        <index-column name="workitemkey"/>
+      </index>
+      <index name="tbudgetindex2">
+        <index-column name="changedby"/>
+      </index>
+      <index name="tbudgetindex3">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tcategory" description="Holds all known issue types.">
+      <column name="pkey" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="label" primaryKey="false" required="true" type="VARCHAR" size="25" autoIncrement="false" description="The name of this issue type. Localization will be applied if possible by the business logic."/>
+      <column name="sortorder" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="symbol" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false" description="File name for a small graphical symbol (GIF or PNG)"/>
+      <column name="iconkey" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tblob" name="tcategory_fk_1">
+        <reference local="iconkey" foreign="objectid"/>
+      </foreign-key>
+      <index name="tcategoryindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tclass" description="A class is just a special project specific list field, e.g. for categorizing issues further into documentation related issues, hardware related issues, etc.">
+      <column name="pkey" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="label" primaryKey="false" required="true" type="VARCHAR" size="25" autoIncrement="false"/>
+      <column name="projkey" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tproject" name="tclass_fk_1">
+        <reference local="projkey" foreign="pkey"/>
+      </foreign-key>
+      <index name="tclassindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tclob">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="clobvalue" primaryKey="false" required="false" type="LONGVARCHAR" autoIncrement="false"/>
+      <index name="tclobindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tcomputedvalues">
+      <column name="pkey" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="workitemkey" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="efforttype" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="computedvaluetype" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="computedvalue" primaryKey="false" required="false" type="DOUBLE" size="17,17" autoIncrement="false"/>
+      <column name="measurementunit" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="person" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tperson" name="tcomputedvalues_fk_2">
+        <reference local="person" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tworkitem" name="tcomputedvalues_fk_1">
+        <reference local="workitemkey" foreign="workitemkey"/>
+      </foreign-key>
+      <index name="tcvindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tconfigoptionsrole">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="configkey" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="rolekey" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="optionkey" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tfieldconfig" name="tconfigoptionsrole_fk_1">
+        <reference local="configkey" foreign="objectid"/>
+      </foreign-key>
+      <foreign-key foreignTable="toption" name="tconfigoptionsrole_fk_3">
+        <reference local="optionkey" foreign="objectid"/>
+      </foreign-key>
+      <foreign-key foreignTable="trole" name="tconfigoptionsrole_fk_2">
+        <reference local="rolekey" foreign="pkey"/>
+      </foreign-key>
+      <index name="tconfigoptindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tcost">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="account" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="person" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="workitem" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="hours" primaryKey="false" required="false" type="DOUBLE" size="17,17" autoIncrement="false"/>
+      <column name="cost" primaryKey="false" required="false" type="DOUBLE" size="17,17" autoIncrement="false"/>
+      <column name="subject" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="efforttype" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="effortvalue" primaryKey="false" required="false" type="DOUBLE" size="17,17" autoIncrement="false"/>
+      <column name="effortdate" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="invoicenumber" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="invoicedate" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="invoicepath" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="description" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="moreprops" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false" description="This is a multi-purpose field. It contains a text in .properties format with a number of additional attributes."/>
+      <column name="lastedit" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="taccount" name="tcost_fk_1">
+        <reference local="account" foreign="objectid"/>
+      </foreign-key>
+      <foreign-key foreignTable="tefforttype" name="tcost_fk_4">
+        <reference local="efforttype" foreign="objectid"/>
+      </foreign-key>
+      <foreign-key foreignTable="tperson" name="tcost_fk_2">
+        <reference local="person" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tworkitem" name="tcost_fk_3">
+        <reference local="workitem" foreign="workitemkey"/>
+      </foreign-key>
+      <index name="tcostindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tcostcenter">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="costcenternumber" primaryKey="false" required="true" type="VARCHAR" size="30" autoIncrement="false"/>
+      <column name="costcentername" primaryKey="false" required="false" type="VARCHAR" size="80" autoIncrement="false"/>
+      <column name="moreprops" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false" description="This is a multi-purpose field. It contains a text in .properties format with a number of additional attributes."/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <index name="tcostcenterindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tdashboardfield">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="name" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="description" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false"/>
+      <column name="sortorder" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="colindex" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="rowindex" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="colspan" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="rowspan" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="parent" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="dashboardid" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="thedescription" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tdashboardpanel" name="tdashboardfield_fk_1">
+        <reference local="parent" foreign="objectid"/>
+      </foreign-key>
+      <index name="tdbfieldindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tdashboardpanel">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="name" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="label" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="description" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false"/>
+      <column name="sortorder" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="rowsno" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="colsno" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="parent" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tdashboardtab" name="tdashboardpanel_fk_1">
+        <reference local="parent" foreign="objectid"/>
+      </foreign-key>
+      <index name="tdbpanelindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tdashboardparameter">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="name" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="paramvalue" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false"/>
+      <column name="dashboardfield" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tdashboardfield" name="tdashboardparameter_fk_1">
+        <reference local="dashboardfield" foreign="objectid"/>
+      </foreign-key>
+      <index name="tdbparamindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tdashboardscreen">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="name" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="label" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="personpkey" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="description" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tperson" name="tdashboardscreen_fk_1">
+        <reference local="personpkey" foreign="pkey"/>
+      </foreign-key>
+      <index name="tdbscreenindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tdashboardtab">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="name" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="label" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="description" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false"/>
+      <column name="sortorder" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="parent" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tdashboardscreen" name="tdashboardtab_fk_1">
+        <reference local="parent" foreign="objectid"/>
+      </foreign-key>
+      <index name="tdbtabindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tdepartment" description="This table holds the departments. Each user belongs to one department.">
+      <column name="pkey" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="label" primaryKey="false" required="true" type="VARCHAR" size="18" autoIncrement="false"/>
+      <column name="costcenter" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tcostcenter" name="tdepartment_fk_1">
+        <reference local="costcenter" foreign="objectid"/>
+      </foreign-key>
+      <index name="tdepartmentindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tdisablefield">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="fieldname" primaryKey="false" required="true" type="VARCHAR" size="25" autoIncrement="false"/>
+      <column name="listtype" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="projecttype" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tcategory" name="tdisablefield_fk_1">
+        <reference local="listtype" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tprojecttype" name="tdisablefield_fk_2">
+        <reference local="projecttype" foreign="objectid"/>
+      </foreign-key>
+      <index name="tdisablefindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tdocstate">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="label" primaryKey="false" required="true" type="VARCHAR" size="25" autoIncrement="false"/>
+      <column name="stateflag" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="projecttype" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tprojecttype" name="tdocstate_fk_1">
+        <reference local="projecttype" foreign="objectid"/>
+      </foreign-key>
+      <index name="tdocstateindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tefforttype">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="label" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="effortunit" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="description" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="teffortunit" name="tefforttype_fk_1">
+        <reference local="effortunit" foreign="objectid"/>
+      </foreign-key>
+      <index name="tefforttypeindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="teffortunit">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="label" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="description" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <index name="teffortunitindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="temailprocessed">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="processeddate" primaryKey="false" required="true" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="messageuid" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="receivedat" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <index name="temailprocindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tentitychanges" description="This table holds the changed entities for updating the full text search index in each clusternode">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="entitykey" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="entitytype" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="clusternode" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <foreign-key foreignTable="clusternode" name="tentitychanges_fk_1">
+        <reference local="clusternode" foreign="objectid"/>
+      </foreign-key>
+      <index name="entitychangesindex1">
+        <index-column name="entitytype"/>
+      </index>
+      <index name="entitychangesindex2">
+        <index-column name="clusternode"/>
+      </index>
+    </table>
+    <table name="tevent">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="eventname" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="eventtype" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="projecttype" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="project" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="eventscript" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tclob" name="tevent_fk_3">
+        <reference local="eventscript" foreign="objectid"/>
+      </foreign-key>
+      <foreign-key foreignTable="tproject" name="tevent_fk_2">
+        <reference local="project" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tprojecttype" name="tevent_fk_1">
+        <reference local="projecttype" foreign="objectid"/>
+      </foreign-key>
+      <index name="teventindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="texporttemplate">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="name" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="reporttype" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="exportformat" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="repositorytype" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="description" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false"/>
+      <column name="project" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="person" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tperson" name="texporttemplate_fk_1">
+        <reference local="person" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tproject" name="texporttemplate_fk_2">
+        <reference local="project" foreign="pkey"/>
+      </foreign-key>
+      <index name="texpoprttempindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tfield">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="name" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="fieldtype" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="deprecated" primaryKey="false" required="false" type="CHAR" size="1" default="N" autoIncrement="false"/>
+      <column name="iscustom" primaryKey="false" required="true" type="CHAR" size="1" default="Y" autoIncrement="false"/>
+      <column name="required" primaryKey="false" required="true" type="CHAR" size="1" default="N" autoIncrement="false"/>
+      <column name="description" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false"/>
+      <column name="owner" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tperson" name="tfield_fk_1">
+        <reference local="owner" foreign="pkey"/>
+      </foreign-key>
+      <index name="tfieldindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tfieldchange">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="fieldkey" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="historytransaction" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="newtextvalue" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="oldtextvalue" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="newintegervalue" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="oldintegervalue" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="newdoublevalue" primaryKey="false" required="false" type="DOUBLE" size="17,17" autoIncrement="false"/>
+      <column name="olddoublevalue" primaryKey="false" required="false" type="DOUBLE" size="17,17" autoIncrement="false"/>
+      <column name="newdatevalue" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="olddatevalue" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="newcharactervalue" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="oldcharactervalue" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="newlongtextvalue" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false"/>
+      <column name="oldlongtextvalue" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false"/>
+      <column name="newsystemoptionid" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="oldsystemoptionid" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="systemoptiontype" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="newcustomoptionid" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="oldcustomoptionid" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="parametercode" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="validvalue" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="parentcomment" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="timesedited" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tfieldchange" name="tfieldchange_fk_2">
+        <reference local="parentcomment" foreign="objectid"/>
+      </foreign-key>
+      <foreign-key foreignTable="thistorytransaction" name="tfieldchange_fk_1">
+        <reference local="historytransaction" foreign="objectid"/>
+      </foreign-key>
+      <foreign-key foreignTable="toption" name="tfieldchange_fk_3">
+        <reference local="newcustomoptionid" foreign="objectid"/>
+      </foreign-key>
+      <foreign-key foreignTable="toption" name="tfieldchange_fk_4">
+        <reference local="oldcustomoptionid" foreign="objectid"/>
+      </foreign-key>
+      <index name="tfieldchange1">
+        <index-column name="fieldkey"/>
+      </index>
+      <index name="tfieldchange2">
+        <index-column name="historytransaction"/>
+      </index>
+      <index name="tfieldchange3">
+        <index-column name="validvalue"/>
+      </index>
+      <index name="tfieldchange4">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tfieldconfig">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="fieldkey" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="label" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="tooltip" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="required" primaryKey="false" required="true" type="CHAR" size="1" default="N" autoIncrement="false"/>
+      <column name="history" primaryKey="false" required="true" type="CHAR" size="1" default="N" autoIncrement="false"/>
+      <column name="issuetype" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="projecttype" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="project" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="description" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tcategory" name="tfieldconfig_fk_2">
+        <reference local="issuetype" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tfield" name="tfieldconfig_fk_1">
+        <reference local="fieldkey" foreign="objectid"/>
+      </foreign-key>
+      <foreign-key foreignTable="tproject" name="tfieldconfig_fk_4">
+        <reference local="project" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tprojecttype" name="tfieldconfig_fk_3">
+        <reference local="projecttype" foreign="objectid"/>
+      </foreign-key>
+      <index name="tfieldconfigindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tgeneralsettings">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="config" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="integervalue" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="doublevalue" primaryKey="false" required="false" type="DOUBLE" size="17,17" autoIncrement="false"/>
+      <column name="textvalue" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="datevalue" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="charactervalue" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="parametercode" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="validvalue" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tfieldconfig" name="tgeneralsettings_fk_1">
+        <reference local="config" foreign="objectid"/>
+      </foreign-key>
+      <index name="tgeneralconfindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tgroupmember">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="thegroup" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="person" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tperson" name="tgroupmember_fk_1">
+        <reference local="thegroup" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tperson" name="tgroupmember_fk_2">
+        <reference local="person" foreign="pkey"/>
+      </foreign-key>
+      <index name="tgroupmemindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="thistorytransaction">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="workitem" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="changedby" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="lastedit" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tperson" name="thistorytransaction_fk_2">
+        <reference local="changedby" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tworkitem" name="thistorytransaction_fk_1">
+        <reference local="workitem" foreign="workitemkey"/>
+      </foreign-key>
+      <index name="thistorytransindex1">
+        <index-column name="workitem"/>
+      </index>
+      <index name="thistorytransindex2">
+        <index-column name="changedby"/>
+      </index>
+      <index name="thistorytransindex3">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tinitstate">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="project" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="listtype" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="statekey" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tcategory" name="tinitstate_fk_2">
+        <reference local="listtype" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tproject" name="tinitstate_fk_1">
+        <reference local="project" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tstate" name="tinitstate_fk_3">
+        <reference local="statekey" foreign="pkey"/>
+      </foreign-key>
+      <index name="tinitstateindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tissueattributevalue">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="attributeid" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="deleted" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="issue" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="numericvalue" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="timestampvalue" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="longtextvalue" primaryKey="false" required="false" type="VARCHAR" size="32000" autoIncrement="false"/>
+      <column name="optionid" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="person" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="charvalue" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="displayvalue" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tattribute" name="tissueattributevalue_fk_3">
+        <reference local="attributeid" foreign="objectid"/>
+      </foreign-key>
+      <foreign-key foreignTable="tattributeoption" name="tissueattributevalue_fk_4">
+        <reference local="optionid" foreign="objectid"/>
+      </foreign-key>
+      <foreign-key foreignTable="tperson" name="tissueattributevalue_fk_1">
+        <reference local="person" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tworkitem" name="tissueattributevalue_fk_2">
+        <reference local="issue" foreign="workitemkey"/>
+      </foreign-key>
+      <index name="tissueattindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tlinktype">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="name" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="reversename" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="lefttorightfirst" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="lefttorightlevel" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="lefttorightall" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="righttoleftfirst" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="righttoleftlevel" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="righttoleftall" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="linkdirection" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="outwardiconkey" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="inwardiconkey" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="linktypeplugin" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="moreprops" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false" description="This is a multi-purpose field. It contains a text in .properties format with a number of additional attributes."/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tblob" name="tlinktype_fk_1">
+        <reference local="outwardiconkey" foreign="objectid"/>
+      </foreign-key>
+      <foreign-key foreignTable="tblob" name="tlinktype_fk_2">
+        <reference local="inwardiconkey" foreign="objectid"/>
+      </foreign-key>
+      <index name="tlinktypeindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tlist">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="name" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="description" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false"/>
+      <column name="parentlist" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="listtype" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="childnumber" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="deleted" primaryKey="false" required="false" type="CHAR" size="1" default="N" autoIncrement="false"/>
+      <column name="repositorytype" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="project" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="owner" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tlist" name="tlist_fk_1">
+        <reference local="parentlist" foreign="objectid"/>
+      </foreign-key>
+      <foreign-key foreignTable="tperson" name="tlist_fk_3">
+        <reference local="owner" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tproject" name="tlist_fk_2">
+        <reference local="project" foreign="pkey"/>
+      </foreign-key>
+      <index name="tlistindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tlocalizedresources">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tablename" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="primarykeyvalue" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="fieldname" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="localizedtext" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="locale" primaryKey="false" required="false" type="VARCHAR" size="20" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <index name="tlocalresindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tloggedinusers">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false" description="This helps with the bookkeeping of logged in users"/>
+      <column name="nodeaddress" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false" description="The ip address of the node which counts these numbers"/>
+      <column name="sessionid" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false" description="The session id under which this user was logged"/>
+      <column name="loggeduser" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false" description="Foreign key reference to TPERSON"/>
+      <column name="userlevel" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false" description="Indicates a full or limited user"/>
+      <column name="lastupdate" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false" description="This enables to clean the table in case of a crash"/>
+      <column name="moreprops" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false" description="This is a multi-purpose field. It contains a text in .properties format with a number of additional attributes."/>
+      <foreign-key foreignTable="clusternode" name="tloggedinusers_fk_2">
+        <reference local="nodeaddress" foreign="objectid"/>
+      </foreign-key>
+      <foreign-key foreignTable="tperson" name="tloggedinusers_fk_1">
+        <reference local="loggeduser" foreign="pkey"/>
+      </foreign-key>
+    </table>
+    <table name="tlogginglevel">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="theclassname" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="loglevel" primaryKey="false" required="true" type="VARCHAR" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <index name="tloglevelindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tmotd">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="thelocale" primaryKey="false" required="false" type="VARCHAR" size="2" autoIncrement="false"/>
+      <column name="themessage" primaryKey="false" required="false" type="VARCHAR" size="32000" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <index name="tmotdindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tnotify">
+      <column name="pkey" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false" description="This table holds the notification configuration for each user."/>
+      <column name="projcatkey" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false" description="Notify me only for this project component (category)."/>
+      <column name="statekey" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false" description="Notify me only for these statuses."/>
+      <column name="personkey" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="workitem" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false" description="If this is null, this pertains to the regular watch list, otherwise it pertains to this specific WORKITEM."/>
+      <column name="racirole" primaryKey="false" required="false" type="VARCHAR" size="1" autoIncrement="false" description="Abbreviation for RACI roles of (C)onsulted or (I)nformed"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tperson" name="tnotify_fk_3">
+        <reference local="personkey" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tprojcat" name="tnotify_fk_1">
+        <reference local="projcatkey" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tstate" name="tnotify_fk_2">
+        <reference local="statekey" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tworkitem" name="tnotify_fk_4">
+        <reference local="workitem" foreign="workitemkey"/>
+      </foreign-key>
+      <index name="tnotifyindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tnotifyfield">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="field" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="actiontype" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="fieldtype" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="notifytrigger" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="originator" primaryKey="false" required="false" type="CHAR" size="1" default="N" autoIncrement="false"/>
+      <column name="manager" primaryKey="false" required="false" type="CHAR" size="1" default="N" autoIncrement="false"/>
+      <column name="responsible" primaryKey="false" required="false" type="CHAR" size="1" default="N" autoIncrement="false"/>
+      <column name="consultant" primaryKey="false" required="false" type="CHAR" size="1" default="N" autoIncrement="false"/>
+      <column name="informant" primaryKey="false" required="false" type="CHAR" size="1" default="N" autoIncrement="false"/>
+      <column name="observer" primaryKey="false" required="false" type="CHAR" size="1" default="N" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tnotifytrigger" name="tnotifyfield_fk_1">
+        <reference local="notifytrigger" foreign="objectid"/>
+      </foreign-key>
+      <index name="tnotifyfieldindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tnotifysettings">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="person" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="project" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="notifytrigger" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="notifyfilter" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tnotifytrigger" name="tnotifysettings_fk_3">
+        <reference local="notifytrigger" foreign="objectid"/>
+      </foreign-key>
+      <foreign-key foreignTable="tperson" name="tnotifysettings_fk_1">
+        <reference local="person" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tproject" name="tnotifysettings_fk_2">
+        <reference local="project" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tqueryrepository" name="tnotifysettings_fk_4">
+        <reference local="notifyfilter" foreign="objectid"/>
+      </foreign-key>
+      <index name="tnotifyconfindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tnotifytrigger">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="label" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="person" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="issystem" primaryKey="false" required="false" type="CHAR" size="1" default="N" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tperson" name="tnotifytrigger_fk_1">
+        <reference local="person" foreign="pkey"/>
+      </foreign-key>
+      <index name="tnotifytriggerindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="toption">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="list" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="label" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="parentoption" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="sortorder" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="isdefault" primaryKey="false" required="true" type="CHAR" size="1" default="N" autoIncrement="false"/>
+      <column name="deleted" primaryKey="false" required="false" type="CHAR" size="1" default="N" autoIncrement="false"/>
+      <column name="iconkey" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tblob" name="toption_fk_2">
+        <reference local="iconkey" foreign="objectid"/>
+      </foreign-key>
+      <foreign-key foreignTable="tlist" name="toption_fk_1">
+        <reference local="list" foreign="objectid"/>
+      </foreign-key>
+      <index name="toptionindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="toptionsettings">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="list" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="config" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="parametercode" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="multiple" primaryKey="false" required="false" type="CHAR" size="1" default="N" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tfieldconfig" name="toptionsettings_fk_2">
+        <reference local="config" foreign="objectid"/>
+      </foreign-key>
+      <foreign-key foreignTable="tlist" name="toptionsettings_fk_1">
+        <reference local="list" foreign="objectid"/>
+      </foreign-key>
+      <index name="toptionconfindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="toutlinecode" description="Holds the outline codes">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="parentid" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="levelno" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="levelcode" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="fullcode" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="entityid" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="outlinetemplate" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="toutlinetemplate" name="toutlinecode_fk_1">
+        <reference local="outlinetemplate" foreign="objectid"/>
+      </foreign-key>
+      <index name="toutlinecodeindex1">
+        <index-column name="parentid"/>
+      </index>
+      <index name="toutlinecodeindex2">
+        <index-column name="entityid"/>
+      </index>
+      <index name="toutlinecodeindex3">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="toutlinetemplate" description="Holds the association between the entity and the outline template">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="label" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="entitytype" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <index name="toutlinetemplateindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="toutlinetemplatedef" description="defines the parts of an outline code">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="levelno" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="sequencetype" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="listid" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="sequencelength" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="separatorchar" primaryKey="false" required="true" type="VARCHAR" size="10" autoIncrement="false"/>
+      <column name="outlinetemplate" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="toutlinetemplate" name="toutlinetemplatedef_fk_1">
+        <reference local="outlinetemplate" foreign="objectid"/>
+      </foreign-key>
+      <index name="toutlinetemplatedefindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tperson" description="This table holds all user related information, like user name, e-mail, etc.">
+      <column name="pkey" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="firstname" primaryKey="false" required="false" type="VARCHAR" size="25" autoIncrement="false"/>
+      <column name="lastname" primaryKey="false" required="false" type="VARCHAR" size="25" autoIncrement="false"/>
+      <column name="loginname" primaryKey="false" required="true" type="VARCHAR" size="60" autoIncrement="false"/>
+      <column name="email" primaryKey="false" required="false" type="VARCHAR" size="60" autoIncrement="false"/>
+      <column name="passwd" primaryKey="false" required="false" type="VARCHAR" size="80" autoIncrement="false"/>
+      <column name="phone" primaryKey="false" required="false" type="VARCHAR" size="18" autoIncrement="false"/>
+      <column name="depkey" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="validuntil" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="preferences" primaryKey="false" required="false" type="VARCHAR" size="2000" autoIncrement="false" description="This is a multi-purpose field. It contains a text in .properties format with a number of additional attributes."/>
+      <column name="lastedit" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="deleted" primaryKey="false" required="false" type="CHAR" size="1" default="N" autoIncrement="false"/>
+      <column name="tokenpasswd" primaryKey="false" required="false" type="VARCHAR" size="80" autoIncrement="false"/>
+      <column name="tokenexpdate" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="emailfrequency" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="emaillead" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="emaillastreminded" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="emailremindme" primaryKey="false" required="false" type="CHAR" size="1" default="N" autoIncrement="false"/>
+      <column name="prefemailtype" primaryKey="false" required="false" type="VARCHAR" size="15" default="Plain" autoIncrement="false"/>
+      <column name="preflocale" primaryKey="false" required="false" type="VARCHAR" size="10" autoIncrement="false"/>
+      <column name="mydefaultreport" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="noemailsplease" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="remindmeasoriginator" primaryKey="false" required="false" type="CHAR" size="1" default="N" autoIncrement="false"/>
+      <column name="remindmeasmanager" primaryKey="false" required="false" type="CHAR" size="1" default="Y" autoIncrement="false"/>
+      <column name="remindmeasresponsible" primaryKey="false" required="false" type="CHAR" size="1" default="Y" autoIncrement="false"/>
+      <column name="emailremindplevel" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="emailremindslevel" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="hoursperworkday" primaryKey="false" required="false" type="DOUBLE" size="17,17" autoIncrement="false"/>
+      <column name="employeeid" primaryKey="false" required="false" type="VARCHAR" size="30" autoIncrement="false"/>
+      <column name="isgroup" primaryKey="false" required="false" type="CHAR" size="1" default="N" autoIncrement="false" description="Groups are treated like users in most cases."/>
+      <column name="userlevel" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false" description="The user capability level, e.g. full user, limited user, sysadmin, sysman"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tdepartment" name="tperson_fk_1">
+        <reference local="depkey" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tprivatereportrepository" name="tperson_fk_2">
+        <reference local="mydefaultreport" foreign="pkey"/>
+      </foreign-key>
+      <index name="tpersindex1">
+        <index-column name="depkey"/>
+      </index>
+      <index name="tpersindex2">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tplisttype">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="projecttype" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="category" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tcategory" name="tplisttype_fk_2">
+        <reference local="category" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tprojecttype" name="tplisttype_fk_1">
+        <reference local="projecttype" foreign="objectid"/>
+      </foreign-key>
+      <index name="tplisttypeindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tppriority">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="priority" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="projecttype" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="listtype" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tcategory" name="tppriority_fk_3">
+        <reference local="listtype" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tpriority" name="tppriority_fk_1">
+        <reference local="priority" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tprojecttype" name="tppriority_fk_2">
+        <reference local="projecttype" foreign="objectid"/>
+      </foreign-key>
+      <index name="tpprioindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tpriority">
+      <column name="pkey" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="label" primaryKey="false" required="false" type="VARCHAR" size="25" autoIncrement="false"/>
+      <column name="sortorder" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="wlevel" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="symbol" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false" description="File name for a small graphical symbol (GIF or PNG)"/>
+      <column name="iconkey" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tblob" name="tpriority_fk_1">
+        <reference local="iconkey" foreign="objectid"/>
+      </foreign-key>
+      <index name="tprioindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tprivatereportrepository">
+      <column name="pkey" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="owner" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="name" primaryKey="false" required="true" type="VARCHAR" size="100" autoIncrement="false"/>
+      <column name="query" primaryKey="false" required="true" type="VARCHAR" size="10000" autoIncrement="false"/>
+      <column name="menuitem" primaryKey="false" required="false" type="CHAR" size="1" default="N" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tperson" name="tprivatereportrepository_fk_1">
+        <reference local="owner" foreign="pkey"/>
+      </foreign-key>
+      <index name="tprivreprepindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tprojcat">
+      <column name="pkey" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="label" primaryKey="false" required="false" type="VARCHAR" size="35" autoIncrement="false"/>
+      <column name="projkey" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tproject" name="tprojcat_fk_1">
+        <reference local="projkey" foreign="pkey"/>
+      </foreign-key>
+      <index name="tprojcatindex1">
+        <index-column name="projkey"/>
+      </index>
+      <index name="tprojcatindex2">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tproject">
+      <column name="pkey" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="label" primaryKey="false" required="false" type="VARCHAR" size="35" autoIncrement="false"/>
+      <column name="defowner" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="defmanager" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="definitstate" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="projecttype" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="versionsystemfield0" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="versionsystemfield1" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="versionsystemfield2" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="versionsystemfield3" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="deleted" primaryKey="false" required="true" type="VARCHAR" size="1" default="N" autoIncrement="false"/>
+      <column name="status" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="currencyname" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="currencysymbol" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="hoursperworkday" primaryKey="false" required="false" type="DOUBLE" size="17,17" autoIncrement="false"/>
+      <column name="moreprops" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false" description="This is a multi-purpose field. It contains a text in .properties format with a number of additional attributes."/>
+      <column name="description" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="prefix" primaryKey="false" required="false" type="VARCHAR" size="10" autoIncrement="false"/>
+      <column name="lastid" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tperson" name="tproject_fk_1">
+        <reference local="defowner" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tperson" name="tproject_fk_2">
+        <reference local="defmanager" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tprojecttype" name="tproject_fk_4">
+        <reference local="projecttype" foreign="objectid"/>
+      </foreign-key>
+      <foreign-key foreignTable="tstate" name="tproject_fk_3">
+        <reference local="definitstate" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tsystemstate" name="tproject_fk_5">
+        <reference local="status" foreign="objectid"/>
+      </foreign-key>
+      <index name="tprojectindex">
+        <index-column name="tpuuid"/>
+      </index>
+      <index name="tprojectindexidpf">
+        <index-column name="prefix"/>
+      </index>
+    </table>
+    <table name="tprojectaccount">
+      <column name="account" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="project" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="taccount" name="tprojectaccount_fk_2">
+        <reference local="account" foreign="objectid"/>
+      </foreign-key>
+      <foreign-key foreignTable="tproject" name="tprojectaccount_fk_1">
+        <reference local="project" foreign="pkey"/>
+      </foreign-key>
+      <index name="tprojaccindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tprojectreportrepository">
+      <column name="pkey" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="project" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="name" primaryKey="false" required="true" type="VARCHAR" size="100" autoIncrement="false"/>
+      <column name="query" primaryKey="false" required="true" type="VARCHAR" size="10000" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tproject" name="tprojectreportrepository_fk_1">
+        <reference local="project" foreign="pkey"/>
+      </foreign-key>
+      <index name="tprojreprepindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tprojecttype">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="label" primaryKey="false" required="false" type="VARCHAR" size="35" autoIncrement="false"/>
+      <column name="notifyownerlevel" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="notifymanagerlevel" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="hoursperworkday" primaryKey="false" required="false" type="DOUBLE" size="17,17" autoIncrement="false"/>
+      <column name="moreprops" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false" description="This is a multi-purpose field. It contains a text in .properties format with a number of additional attributes."/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <index name="tprojtypeindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tpseverity">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="severity" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="projecttype" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="listtype" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tcategory" name="tpseverity_fk_3">
+        <reference local="listtype" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tprojecttype" name="tpseverity_fk_2">
+        <reference local="projecttype" foreign="objectid"/>
+      </foreign-key>
+      <foreign-key foreignTable="tseverity" name="tpseverity_fk_1">
+        <reference local="severity" foreign="pkey"/>
+      </foreign-key>
+      <index name="tpsevindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tpstate">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="state" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="projecttype" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="listtype" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tcategory" name="tpstate_fk_3">
+        <reference local="listtype" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tprojecttype" name="tpstate_fk_2">
+        <reference local="projecttype" foreign="objectid"/>
+      </foreign-key>
+      <foreign-key foreignTable="tstate" name="tpstate_fk_1">
+        <reference local="state" foreign="pkey"/>
+      </foreign-key>
+      <index name="tpstateindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tpublicreportrepository">
+      <column name="pkey" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="owner" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="name" primaryKey="false" required="true" type="VARCHAR" size="100" autoIncrement="false"/>
+      <column name="query" primaryKey="false" required="true" type="VARCHAR" size="10000" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tperson" name="tpublicreportrepository_fk_1">
+        <reference local="owner" foreign="pkey"/>
+      </foreign-key>
+      <index name="tpubreprepindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tqueryrepository">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="person" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="project" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="label" primaryKey="false" required="false" type="VARCHAR" size="100" autoIncrement="false"/>
+      <column name="querytype" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="repositorytype" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="querykey" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="menuitem" primaryKey="false" required="false" type="CHAR" size="1" default="N" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tclob" name="tqueryrepository_fk_3">
+        <reference local="querykey" foreign="objectid"/>
+      </foreign-key>
+      <foreign-key foreignTable="tperson" name="tqueryrepository_fk_1">
+        <reference local="person" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tproject" name="tqueryrepository_fk_2">
+        <reference local="project" foreign="pkey"/>
+      </foreign-key>
+      <index name="tqueryrepindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="trelease">
+      <column name="pkey" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="label" primaryKey="false" required="false" type="VARCHAR" size="25" autoIncrement="false"/>
+      <column name="projkey" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="status" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="sortorder" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="moreprops" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false" description="This is a multi-purpose field. It contains a text in .properties format with a number of additional attributes."/>
+      <column name="description" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="duedate" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tproject" name="trelease_fk_1">
+        <reference local="projkey" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tsystemstate" name="trelease_fk_2">
+        <reference local="status" foreign="objectid"/>
+      </foreign-key>
+      <index name="trelindex1">
+        <index-column name="projkey"/>
+      </index>
+      <index name="trelindex2">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="treportlayout">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="projecttype" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="project" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="person" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="reportfield" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="fposition" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="fwidth" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="fsortorder" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="fsortdir" primaryKey="false" required="false" type="VARCHAR" size="1" autoIncrement="false"/>
+      <column name="fieldtype" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false" description="show or grouping"/>
+      <column name="expanding" primaryKey="false" required="false" type="VARCHAR" size="1" autoIncrement="false" description="used only for grouping fields"/>
+      <column name="layoutkey" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false" description="report overview, issue overview history/comment/attachment/worlog/watchers/version... etc."/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tperson" name="treportlayout_fk_3">
+        <reference local="person" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tproject" name="treportlayout_fk_2">
+        <reference local="project" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tprojecttype" name="treportlayout_fk_1">
+        <reference local="projecttype" foreign="objectid"/>
+      </foreign-key>
+      <index name="treportlayoutindex1">
+        <index-column name="fieldtype"/>
+      </index>
+      <index name="treportlayoutindex2">
+        <index-column name="layoutkey"/>
+      </index>
+      <index name="treportlayoutindex3">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="trepository" description="Version control repositiories defined">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="repositorytype" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="repositoryurl" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="startdate" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="enddate" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="statuskey" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <index name="trepositoryindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="trevision" description="Comments from the version control system">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="filename" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="authorname" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="changedescription" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false"/>
+      <column name="revisiondate" primaryKey="false" required="true" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="revisionnumbr" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="repositorykey" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="trepository" name="trevision_fk_1">
+        <reference local="repositorykey" foreign="objectid"/>
+      </foreign-key>
+      <index name="trevisionindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="trevisionworkitems" description="Comments from the version control system">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="workitemkey" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="revisionkey" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="trevision" name="trevisionworkitems_fk_1">
+        <reference local="revisionkey" foreign="objectid"/>
+      </foreign-key>
+      <index name="trevisionworkitemsindex1">
+        <index-column name="workitemkey"/>
+      </index>
+      <index name="trevisionworkitemsindex2">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="trole">
+      <column name="pkey" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="label" primaryKey="false" required="true" type="VARCHAR" size="25" autoIncrement="false"/>
+      <column name="accesskey" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="extendedaccesskey" primaryKey="false" required="false" type="VARCHAR" size="30" autoIncrement="false"/>
+      <column name="projecttype" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tprojecttype" name="trole_fk_1">
+        <reference local="projecttype" foreign="objectid"/>
+      </foreign-key>
+      <index name="troleindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="trolefield">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="rolekey" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="fieldkey" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="accessright" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tfield" name="trolefield_fk_2">
+        <reference local="fieldkey" foreign="objectid"/>
+      </foreign-key>
+      <foreign-key foreignTable="trole" name="trolefield_fk_1">
+        <reference local="rolekey" foreign="pkey"/>
+      </foreign-key>
+      <index name="trolefieldindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="trolelisttype">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="prole" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="listtype" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tcategory" name="trolelisttype_fk_2">
+        <reference local="listtype" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="trole" name="trolelisttype_fk_1">
+        <reference local="prole" foreign="pkey"/>
+      </foreign-key>
+      <index name="trolelisttindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tscheduler">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="cronwhen" primaryKey="false" required="true" type="VARCHAR" size="64" autoIncrement="false"/>
+      <column name="javaclassname" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="externalexe" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="person" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tperson" name="tscheduler_fk_1">
+        <reference local="person" foreign="pkey"/>
+      </foreign-key>
+      <index name="tschedulerindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tscreen">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="name" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="label" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="description" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false"/>
+      <column name="owner" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tperson" name="tscreen_fk_1">
+        <reference local="owner" foreign="pkey"/>
+      </foreign-key>
+      <index name="tscreenindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tscreenconfig">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="name" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="description" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false"/>
+      <column name="screen" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="issuetype" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="projecttype" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="project" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="actionkey" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="taction" name="tscreenconfig_fk_5">
+        <reference local="actionkey" foreign="objectid"/>
+      </foreign-key>
+      <foreign-key foreignTable="tcategory" name="tscreenconfig_fk_2">
+        <reference local="issuetype" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tproject" name="tscreenconfig_fk_4">
+        <reference local="project" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tprojecttype" name="tscreenconfig_fk_3">
+        <reference local="projecttype" foreign="objectid"/>
+      </foreign-key>
+      <foreign-key foreignTable="tscreen" name="tscreenconfig_fk_1">
+        <reference local="screen" foreign="objectid"/>
+      </foreign-key>
+      <index name="tscreenconfindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tscreenfield">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="name" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="description" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false"/>
+      <column name="sortorder" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="colindex" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="rowindex" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="colspan" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="rowspan" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="labelhalign" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="labelvalign" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="valuehalign" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="valuevalign" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="isempty" primaryKey="false" required="true" type="CHAR" size="1" default="N" autoIncrement="false"/>
+      <column name="parent" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="fieldkey" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tfield" name="tscreenfield_fk_2">
+        <reference local="fieldkey" foreign="objectid"/>
+      </foreign-key>
+      <foreign-key foreignTable="tscreenpanel" name="tscreenfield_fk_1">
+        <reference local="parent" foreign="objectid"/>
+      </foreign-key>
+      <index name="tscreenfieldindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tscreenpanel">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="name" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="label" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="description" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false"/>
+      <column name="sortorder" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="rowsno" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="colsno" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="parent" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tscreentab" name="tscreenpanel_fk_1">
+        <reference local="parent" foreign="objectid"/>
+      </foreign-key>
+      <index name="tscreenpanelindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tscreentab">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="name" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="label" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="description" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false"/>
+      <column name="sortorder" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="parent" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tscreen" name="tscreentab_fk_1">
+        <reference local="parent" foreign="objectid"/>
+      </foreign-key>
+      <index name="tscreentabindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tscripts" description="Contains Groovy scripts">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="changedby" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="lastedit" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="scriptversion" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="originalversion" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="projecttype" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="project" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="scripttype" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="clazzname" primaryKey="false" required="false" type="VARCHAR" size="253" autoIncrement="false"/>
+      <column name="sourcecode" primaryKey="false" required="false" type="VARCHAR" size="32000" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tperson" name="tscripts_fk_1">
+        <reference local="changedby" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tproject" name="tscripts_fk_3">
+        <reference local="project" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tprojecttype" name="tscripts_fk_2">
+        <reference local="projecttype" foreign="objectid"/>
+      </foreign-key>
+      <index name="tscriptindex1">
+        <index-column name="clazzname"/>
+      </index>
+      <index name="tscriptindex2">
+        <index-column name="projecttype"/>
+      </index>
+      <index name="tscriptindex3">
+        <index-column name="project"/>
+      </index>
+      <index name="tscriptindex4">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tseverity">
+      <column name="pkey" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="label" primaryKey="false" required="false" type="VARCHAR" size="25" autoIncrement="false"/>
+      <column name="sortorder" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="wlevel" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="symbol" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false" description="File name for a small graphical symbol (GIF or PNG)"/>
+      <column name="iconkey" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tblob" name="tseverity_fk_1">
+        <reference local="iconkey" foreign="objectid"/>
+      </foreign-key>
+      <index name="tsevindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tsite">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="trackversion" primaryKey="false" required="false" type="VARCHAR" size="10" autoIncrement="false"/>
+      <column name="dbversion" primaryKey="false" required="false" type="VARCHAR" size="10" autoIncrement="false"/>
+      <column name="licensekey" primaryKey="false" required="false" type="VARCHAR" size="80" autoIncrement="false"/>
+      <column name="licenseext" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="expdate" primaryKey="false" required="false" type="DATE" size="13" autoIncrement="false"/>
+      <column name="numberofusers" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="trackemail" primaryKey="false" required="false" type="VARCHAR" size="100" autoIncrement="false"/>
+      <column name="smtpservername" primaryKey="false" required="false" type="VARCHAR" size="100" autoIncrement="false"/>
+      <column name="smtpport" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="mailencoding" primaryKey="false" required="false" type="VARCHAR" size="20" autoIncrement="false"/>
+      <column name="smtpuser" primaryKey="false" required="false" type="VARCHAR" size="100" autoIncrement="false"/>
+      <column name="smtppassword" primaryKey="false" required="false" type="VARCHAR" size="30" autoIncrement="false"/>
+      <column name="popservername" primaryKey="false" required="false" type="VARCHAR" size="100" autoIncrement="false"/>
+      <column name="popport" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="popuser" primaryKey="false" required="false" type="VARCHAR" size="100" autoIncrement="false"/>
+      <column name="poppassword" primaryKey="false" required="false" type="VARCHAR" size="30" autoIncrement="false"/>
+      <column name="receivingprotocol" primaryKey="false" required="false" type="VARCHAR" size="6" autoIncrement="false"/>
+      <column name="allowedemailpattern" primaryKey="false" required="false" type="VARCHAR" size="20000" autoIncrement="false"/>
+      <column name="isldapon" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="ldapserverurl" primaryKey="false" required="false" type="VARCHAR" size="100" autoIncrement="false"/>
+      <column name="ldapattributeloginname" primaryKey="false" required="false" type="VARCHAR" size="30" autoIncrement="false"/>
+      <column name="attachmentrootdir" primaryKey="false" required="false" type="VARCHAR" size="512" autoIncrement="false"/>
+      <column name="serverurl" primaryKey="false" required="false" type="VARCHAR" size="100" autoIncrement="false"/>
+      <column name="descriptionlength" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="isselfregisterallowed" primaryKey="false" required="false" type="CHAR" size="1" default="Y" autoIncrement="false"/>
+      <column name="isdemosite" primaryKey="false" required="false" type="CHAR" size="1" default="N" autoIncrement="false"/>
+      <column name="usetrackfromaddress" primaryKey="false" required="false" type="CHAR" size="1" default="Y" autoIncrement="false"/>
+      <column name="reserveduse" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="executable1" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="executable2" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="ldapbinddn" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="ldapbindpassw" primaryKey="false" required="false" type="VARCHAR" size="20" autoIncrement="false"/>
+      <column name="preferences" primaryKey="false" required="false" type="VARCHAR" size="8000" autoIncrement="false" description="This is a multi-purpose field. It contains a text in .properties format with a number of additional attributes."/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <index name="tsiteindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tstate">
+      <column name="pkey" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="label" primaryKey="false" required="true" type="VARCHAR" size="25" autoIncrement="false"/>
+      <column name="stateflag" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="sortorder" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="symbol" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false" description="File name for a small graphical symbol (GIF or PNG)"/>
+      <column name="iconkey" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tblob" name="tstate_fk_1">
+        <reference local="iconkey" foreign="objectid"/>
+      </foreign-key>
+      <index name="tstateindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tstatechange">
+      <column name="statechangekey" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="workitemkey" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="changedby" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="changedto" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="changedescription" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false"/>
+      <column name="lastedit" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tperson" name="tstatechange_fk_1">
+        <reference local="changedby" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tstate" name="tstatechange_fk_2">
+        <reference local="changedto" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tworkitem" name="tstatechange_fk_3">
+        <reference local="workitemkey" foreign="workitemkey"/>
+      </foreign-key>
+      <index name="tstatechangeindex1">
+        <index-column name="changedby"/>
+      </index>
+      <index name="tstatechangeindex2">
+        <index-column name="changedto"/>
+      </index>
+      <index name="tstatechangeindex3">
+        <index-column name="workitemkey"/>
+      </index>
+      <index name="tstatechangeindex4">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tsummarymail" description="This table holds the summary mail parts before they are sent">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="workitem" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="personfrom" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="fromaddress" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="mailsubject" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="workitemlink" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="personto" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="lastedit" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tperson" name="tsummarymail_fk_2">
+        <reference local="personfrom" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tperson" name="tsummarymail_fk_3">
+        <reference local="personto" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tworkitem" name="tsummarymail_fk_1">
+        <reference local="workitem" foreign="workitemkey"/>
+      </foreign-key>
+      <index name="tsummarymailindex1">
+        <index-column name="workitem"/>
+      </index>
+      <index name="tsummarymailindex2">
+        <index-column name="personfrom"/>
+      </index>
+      <index name="tsummarymailindex3">
+        <index-column name="personto"/>
+      </index>
+      <index name="tsummarymailindex4">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tsystemstate">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="label" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="stateflag" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="symbol" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false" description="File name for a small graphical symbol (GIF or PNG)"/>
+      <column name="entityflag" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="sortorder" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <index name="tsystemstateindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="ttemplateperson" description="The persons who can or can not run a report template">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="reporttemplate" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="person" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="rightflag" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false" description="whether the right is added or revoked"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="texporttemplate" name="ttemplateperson_fk_2">
+        <reference local="reporttemplate" foreign="objectid"/>
+      </foreign-key>
+      <foreign-key foreignTable="tperson" name="ttemplateperson_fk_1">
+        <reference local="person" foreign="pkey"/>
+      </foreign-key>
+      <index name="ttemplatepersonindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="ttextboxsettings">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="config" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="required" primaryKey="false" required="true" type="VARCHAR" size="1" default="N" autoIncrement="false"/>
+      <column name="defaulttext" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="defaultinteger" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="defaultdouble" primaryKey="false" required="false" type="DOUBLE" size="17,17" autoIncrement="false"/>
+      <column name="defaultdate" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="defaultchar" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="defaultoption" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="minoption" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="maxoption" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="mintextlength" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="maxtextlength" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="mindate" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="maxdate" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="mininteger" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="maxinteger" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="mindouble" primaryKey="false" required="false" type="DOUBLE" size="17,17" autoIncrement="false"/>
+      <column name="maxdouble" primaryKey="false" required="false" type="DOUBLE" size="17,17" autoIncrement="false"/>
+      <column name="maxdecimaldigit" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="parametercode" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="validvalue" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tfieldconfig" name="ttextboxsettings_fk_1">
+        <reference local="config" foreign="objectid"/>
+      </foreign-key>
+      <index name="ttextboxconfindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="ttrail">
+      <column name="trailkey" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="workitemkey" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="changedby" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="changedescription" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false"/>
+      <column name="lastedit" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tperson" name="ttrail_fk_2">
+        <reference local="changedby" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tworkitem" name="ttrail_fk_1">
+        <reference local="workitemkey" foreign="workitemkey"/>
+      </foreign-key>
+      <index name="ttrailindex1">
+        <index-column name="workitemkey"/>
+      </index>
+      <index name="ttrailindex2">
+        <index-column name="changedby"/>
+      </index>
+      <index name="ttrailindex3">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tversioncontrolparameter">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="name" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="paramvalue" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false"/>
+      <column name="project" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tproject" name="tversioncontrolparameter_fk_1">
+        <reference local="project" foreign="pkey"/>
+      </foreign-key>
+      <index name="tvcparamindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tworkflow">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="statefrom" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="stateto" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="projecttype" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tprojecttype" name="tworkflow_fk_3">
+        <reference local="projecttype" foreign="objectid"/>
+      </foreign-key>
+      <foreign-key foreignTable="tstate" name="tworkflow_fk_1">
+        <reference local="statefrom" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tstate" name="tworkflow_fk_2">
+        <reference local="stateto" foreign="pkey"/>
+      </foreign-key>
+      <index name="tworkflowindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tworkflowcategory">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="workflow" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="category" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tcategory" name="tworkflowcategory_fk_2">
+        <reference local="category" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tworkflow" name="tworkflowcategory_fk_1">
+        <reference local="workflow" foreign="objectid"/>
+      </foreign-key>
+      <index name="tworkflowcatindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tworkflowrole">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="workflow" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="maychangerole" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="trole" name="tworkflowrole_fk_2">
+        <reference local="maychangerole" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tworkflow" name="tworkflowrole_fk_1">
+        <reference local="workflow" foreign="objectid"/>
+      </foreign-key>
+      <index name="tworkflowroleindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tworkitem">
+      <column name="workitemkey" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="owner" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="changedby" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="originator" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="responsible" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="projcatkey" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="categorykey" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="classkey" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="prioritykey" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="severitykey" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="superiorworkitem" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="packagesynopsys" primaryKey="false" required="true" type="VARCHAR" size="80" autoIncrement="false"/>
+      <column name="packagedescription" primaryKey="false" required="false" type="VARCHAR" size="32000" autoIncrement="false"/>
+      <column name="reference" primaryKey="false" required="false" type="VARCHAR" size="20" autoIncrement="false"/>
+      <column name="lastedit" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="relnoticedkey" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="relscheduledkey" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="build" primaryKey="false" required="false" type="VARCHAR" size="25" autoIncrement="false"/>
+      <column name="state" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="startdate" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="enddate" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="submitteremail" primaryKey="false" required="false" type="VARCHAR" size="60" autoIncrement="false"/>
+      <column name="created" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="actualstartdate" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="actualenddate" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="wlevel" primaryKey="false" required="false" type="VARCHAR" size="14" autoIncrement="false"/>
+      <column name="accesslevel" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="archivelevel" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="taskismilestone" primaryKey="false" required="false" type="CHAR" size="1" default="N" autoIncrement="false"/>
+      <column name="taskissubproject" primaryKey="false" required="false" type="CHAR" size="1" default="N" autoIncrement="false"/>
+      <column name="taskissummary" primaryKey="false" required="false" type="CHAR" size="1" default="N" autoIncrement="false"/>
+      <column name="taskconstraint" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="taskconstraintdate" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="pspcode" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="idnumber" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tcategory" name="tworkitem_fk_6">
+        <reference local="categorykey" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tclass" name="tworkitem_fk_7">
+        <reference local="classkey" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tperson" name="tworkitem_fk_3">
+        <reference local="originator" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tperson" name="tworkitem_fk_4">
+        <reference local="responsible" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tperson" name="tworkitem_fk_1">
+        <reference local="owner" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tperson" name="tworkitem_fk_2">
+        <reference local="changedby" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tpriority" name="tworkitem_fk_8">
+        <reference local="prioritykey" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tprojcat" name="tworkitem_fk_5">
+        <reference local="projcatkey" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="trelease" name="tworkitem_fk_10">
+        <reference local="relnoticedkey" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="trelease" name="tworkitem_fk_11">
+        <reference local="relscheduledkey" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tseverity" name="tworkitem_fk_9">
+        <reference local="severitykey" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tstate" name="tworkitem_fk_12">
+        <reference local="state" foreign="pkey"/>
+      </foreign-key>
+      <index name="twiindex1">
+        <index-column name="prioritykey"/>
+      </index>
+      <index name="twiindex10">
+        <index-column name="responsible"/>
+      </index>
+      <index name="twiindex11">
+        <index-column name="projcatkey"/>
+      </index>
+      <index name="twiindex12">
+        <index-column name="state"/>
+      </index>
+      <index name="twiindex13">
+        <index-column name="startdate"/>
+      </index>
+      <index name="twiindex14">
+        <index-column name="enddate"/>
+      </index>
+      <index name="twiindex15">
+        <index-column name="actualstartdate"/>
+      </index>
+      <index name="twiindex16">
+        <index-column name="actualenddate"/>
+      </index>
+      <index name="twiindex17">
+        <index-column name="wlevel"/>
+      </index>
+      <index name="twiindex18">
+        <index-column name="accesslevel"/>
+      </index>
+      <index name="twiindex19">
+        <index-column name="archivelevel"/>
+      </index>
+      <index name="twiindex2">
+        <index-column name="severitykey"/>
+      </index>
+      <index name="twiindex20">
+        <index-column name="tpuuid"/>
+      </index>
+      <index name="twiindex21">
+        <index-column name="idnumber"/>
+      </index>
+      <index name="twiindex3">
+        <index-column name="categorykey"/>
+      </index>
+      <index name="twiindex4">
+        <index-column name="classkey"/>
+      </index>
+      <index name="twiindex5">
+        <index-column name="changedby"/>
+      </index>
+      <index name="twiindex6">
+        <index-column name="relnoticedkey"/>
+      </index>
+      <index name="twiindex7">
+        <index-column name="relscheduledkey"/>
+      </index>
+      <index name="twiindex8">
+        <index-column name="owner"/>
+      </index>
+      <index name="twiindex9">
+        <index-column name="originator"/>
+      </index>
+    </table>
+    <table name="tworkitemlink">
+      <column name="objectid" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="linkiscrossproject" primaryKey="false" required="false" type="CHAR" size="1" default="N" autoIncrement="false"/>
+      <column name="linkpred" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="linksucc" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="linktype" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="linkdirection" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="linklag" primaryKey="false" required="false" type="DOUBLE" size="17,17" autoIncrement="false"/>
+      <column name="linklagformat" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="stringvalue1" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="stringvalue2" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="stringvalue3" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="integervalue1" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="integervalue2" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="integervalue3" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="datevalue" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="description" primaryKey="false" required="false" type="VARCHAR" size="10000" autoIncrement="false"/>
+      <column name="externallink" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="changedby" primaryKey="false" required="false" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="lastedit" primaryKey="false" required="false" type="TIMESTAMP" size="29,6" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tlinktype" name="tworkitemlink_fk_3">
+        <reference local="linktype" foreign="objectid"/>
+      </foreign-key>
+      <foreign-key foreignTable="tperson" name="tworkitemlink_fk_4">
+        <reference local="changedby" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tworkitem" name="tworkitemlink_fk_1">
+        <reference local="linkpred" foreign="workitemkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tworkitem" name="tworkitemlink_fk_2">
+        <reference local="linksucc" foreign="workitemkey"/>
+      </foreign-key>
+      <index name="tworkitemlinkindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+    <table name="tworkitemlock">
+      <column name="workitem" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="person" primaryKey="false" required="true" type="INTEGER" size="10" autoIncrement="false"/>
+      <column name="httpsession" primaryKey="false" required="true" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="tpuuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="tperson" name="tworkitemlock_fk_2">
+        <reference local="person" foreign="pkey"/>
+      </foreign-key>
+      <foreign-key foreignTable="tworkitem" name="tworkitemlock_fk_1">
+        <reference local="workitem" foreign="workitemkey"/>
+      </foreign-key>
+      <index name="tworkitemlockindex1">
+        <index-column name="tpuuid"/>
+      </index>
+    </table>
+  </database>

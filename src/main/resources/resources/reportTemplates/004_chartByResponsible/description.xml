@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	Description file for a Track+ report template. This file
+	is read by Track+ and used for presentation of the report
+	template for selection by the users. 
+-->
+<reportTemplate>
+  <locale value="en">
+     <description>
+  	   Chart with workload by responsible.
+     </description>
+     <listing>Chart: No. of items By responsible</listing>
+     <tool-tip>Chart: no. of items by responsible, landscape A4</tool-tip>
+  </locale>
+  <locale value="de">
+     <description>
+  	   Tortengrafik mit Anzahl Vorgänge pro Bearbeiter.
+     </description>
+     <listing>Diagramm: Anzahl Vorgänge pro Bearbeiter</listing>
+     <tool-tip>Diagramm: Anzahl Vorgänge pro Bearbeiter, A4 Querformat</tool-tip>
+  </locale>
+  <!-- The icon should be in GIF format and have a size (width x height) of at most 150 x 100 -->
+  <icon-gif>icon.gif</icon-gif>
+  <size>A4 landscape</size>
+  <!-- The preview should be in GIF format and have a size of at most 800 x 600 -->
+  <preview-gif>preview.gif</preview-gif>
+  <!-- Type of report: Jasper Report or FOP Report -->
+  <type>Jasper Report</type>
+  <!-- Format of report: pdf, rtf, xml, xsl, png etc -->
+  <format>pdf</format>
+  <!-- The compiled master report template file -->
+  <masterFile>WorkloadResponsible.jasper</masterFile>
+  <xslt>Workload.xsl</xslt>
+</reportTemplate>

@@ -1,0 +1,86 @@
+<!-- This is the ant build file for creating the Track+ derby database.
+     $Id: build-derby.xml 658 2009-01-02 10:48:52Z friedj $
+-->
+<project name="DerbyDb" default="dist" basedir=".">
+
+	<property name="base.name"              value="${basedir}"/>
+	<property name="db.name"                value="trackdb" />    <!-- name of the database -->
+	<property name="db.user"                value="track" />      <!-- username for the database -->
+	<property name="db.password"            value="tissi" />      <!-- password for the database -->
+	
+	<property name="ij.database"            value="-Dij.database=${db.name};user=${db.user};password=${db.password}" />
+	<property name="ij.database.create"     value="${ij.database};create=true"/>
+	<property name="ij.database.protocol"   value="-Dij.protocol=jdbc:derby:"/>
+	<property name="ij.vmarg"               value="${ij.database.protocol} ${ij.database}" />
+	<property name="ij.vmarg.create"        value="${ij.database.protocol} ${ij.database.create}" />
+	
+	<property name="track.dist.dir"         value="../../dist" />
+	<property name="track.dist.war"         value="${track.dist.dir}/track-${dversion}.war" />
+	<property name="track.derby.dist"       value="trackderby.war" />
+	<property name="track.derby.prefix"     value="trackdata/db/trackdb" />
+	
+	<!-- =================================================================== -->
+	<!-- Defines the classpath used for derby and ij                         -->
+	<!-- =================================================================== -->
+	<path id="derby.ij.cp">
+		<pathelement path="${classpath}" />
+		<pathelement location="${basedir}/derbytools.jar"/>
+		<pathelement location="${basedir}/../../lib/derby.jar"/>
+	</path>
+
+	<!-- ================================================================= -->
+	<!-- The "moveold" target makes a savety copy for an existing database -->
+	<!-- ================================================================= -->
+ 
+	<target name="moveold">
+		<move file="${db.name}" tofile="${db.name}.old" failonerror="false"> </move>
+	</target>
+	
+	<!-- ================================================================= -->
+	<!-- The "dbcreate" target is used to create the derby database and    -->
+	<!-- to populate it with the default values.                           -->
+	<!-- ================================================================= -->
+	<target name="dbcreate" depends="moveold">
+		<java classname="org.apache.derby.tools.ij" fork="true" dir="${basedir}">
+		    <classpath refid="derby.ij.cp" />
+			<jvmarg line="${ij.vmarg.create}"/>
+			<arg line="id-table-schema.sql" />
+		</java>
+		<java classname="org.apache.derby.tools.ij" fork="true" dir="${basedir}">
+		    <classpath refid="derby.ij.cp" />
+		    <jvmarg line="${ij.vmarg}"/>
+			<arg line="track-schema.sql" />
+		</java>
+		<java classname="org.apache.derby.tools.ij" fork="true" dir="${basedir}">
+		    <classpath refid="derby.ij.cp" />
+		    <jvmarg line="${ij.vmarg}"/>
+			<arg line="../populate.sql" />
+		</java>
+	</target>
+
+
+	<!-- ================================================================= -->
+	<!-- The "dist" target is used to create the war-file with             -->
+	<!-- included embedded derby database.                                 -->
+	<!-- ================================================================= -->
+	<target name="dist" depends="dbcreate">
+		
+		<jar jarfile="${track.dist.dir}/${track.derby.dist}">
+			<zipfileset dir="${db.name}" prefix="${track.derby.prefix}"/>
+			<zipfileset dir="${basedir}" prefix="WEB-INF" >
+		    		<include name="Torque.properties"/>
+			</zipfileset>
+			<zipfileset src="${track.dist.war}">
+				<exclude name="dbase/**" />
+				<exclude name="WEB-INF/Torque.properties" />
+				<exclude name="WEB-INF/lib/firebirdsql-full.jar" />
+				<exclude name="WEB-INF/lib/hsqldb172.jar" />
+				<exclude name="WEB-INF/lib/interclient.jar" />
+				<exclude name="WEB-INF/lib/mysql-connector-java-3.1.8-bin.jar" />
+				<exclude name="trackman.jar" />
+			</zipfileset>
+		</jar>
+    </target>
+	
+</project>
+

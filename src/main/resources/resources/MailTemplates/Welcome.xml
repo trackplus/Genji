@@ -1,0 +1,230 @@
+<?xml version='1.0' encoding='UTF-8'?><ns2:trackplusExchange xmlns:ns2="http://www.trackplus.com/exporter/" version="4.0.0"><entityExchange type="TMailTemplateBean" entityId="1004"><entityAttribute name="objectID"><![CDATA[1004]]></entityAttribute><entityAttribute name="name"><![CDATA[Welcome]]></entityAttribute><entityAttribute name="uuid"><![CDATA[74e1c058-1b91-4b48-8dd4-e036a89d7db7]]></entityAttribute><subEntityRelation type="TMailTemplateDefBean" parentAttributeName="mailTemplateID"><trackEntity type="TMailTemplateDefBean" entityId="1018"><entityAttribute name="theLocale"><![CDATA[en]]></entityAttribute><entityAttribute name="mailBody"><![CDATA[Welcome to the Track+ System!
+
+Dear ${firstname} ${lastname},
+You receive this message because the Track+ admin has registered you with the Track+ task and project management system.
+
+You will find the login page of Track+ at ${serverurl}.
+
+Your user name is ${loginname}. 
+<#if ldap=='true'>
+Your password is the same that you are using on other systems.
+<#else>
+Please change your password by clicking on this link here ${confirmUrl}.
+This link will expire at ${tokenExpDate}.
+</#if>
+
+Your project manager has to grant you appropriate permissions in his project before you can fully work with the system.
+
+With best regards,
+Your Track+ team]]></entityAttribute><entityAttribute name="objectID"><![CDATA[1018]]></entityAttribute><entityAttribute name="templateChanged"><![CDATA[Y]]></entityAttribute><entityAttribute name="mailTemplateID"><![CDATA[1004]]></entityAttribute><entityAttribute name="plainMail"><![CDATA[true]]></entityAttribute><entityAttribute name="uuid"><![CDATA[c95e41f7-c467-451c-8efb-bbcff65c4812]]></entityAttribute><entityAttribute name="mailSubject"><![CDATA[Welcome]]></entityAttribute></trackEntity><trackEntity type="TMailTemplateDefBean" entityId="1079"><entityAttribute name="theLocale"><![CDATA[en]]></entityAttribute><entityAttribute name="mailBody"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html;charset=utf-8">
+		<title>Welcome to the Track+ System</title>
+		<style>
+			body {
+				font-family: Arial,Helvetica,sans-serif;
+				font-size: 10pt;
+				color: #3A394B;
+				margin: 0;
+				padding: 12px;
+				background: #fff;
+			}
+			p {
+				padding: 0 0 0px 0;
+				margin:5px 0 10px 0;
+				max-width: 50em;
+			}
+			ul {
+				padding: 5px 0 5px 25px;
+				margin: 5px 0 5px 0;
+				list-style-type: square;
+			}
+			h1 {
+				font-weight: bold;
+				font-size: 13pt;
+				margin: 0 0 20px 0;
+				padding: 0 0 10px 0;
+				border-bottom: 1px solid #c8c8c8;
+				max-width: 35em;
+			}
+
+			.boldred {
+				font-weight: normal; color: #1010f8; font-size:10pt;
+			}
+
+			a {
+				/* text-decoration: none; */
+				font-weight: normal;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Welcome to the Track+ System!</h1>
+		<p><b>Dear ${firstname} ${lastname},</b></p>
+		<p>You receive this message because the Track+ admin has registered you with the <a href="http://www.trackplus.com/en">Track+ task and project management system</a>.</p>
+		<p>You will find the login page of Track+ at <a href="${serverurl}">${serverurl}</a>.</p>
+		<p>Your user name is <span class="boldred">${loginname}</span>.</p>
+		<#if ldap=='true'>
+			<p>Your password is the same that you are using on other systems.</p>
+			<#else>
+				<p>Please change your password by <a href="${confirmUrl}">clicking on this link here</a>.<br/>This link will expire at ${tokenExpDate}.</p>
+		 </#if>
+		<p>Your project manager has to grant you appropriate permissions in his project before you can fully work with the system.<br><br></p>
+		<p>With best regards,</p>
+		<p>Your Track+ team</p>
+	</body>
+</html>]]></entityAttribute><entityAttribute name="objectID"><![CDATA[1079]]></entityAttribute><entityAttribute name="templateChanged"><![CDATA[Y]]></entityAttribute><entityAttribute name="mailTemplateID"><![CDATA[1004]]></entityAttribute><entityAttribute name="plainMail"><![CDATA[false]]></entityAttribute><entityAttribute name="uuid"><![CDATA[c00c7a61-b8f1-473c-8766-c215523188f1]]></entityAttribute><entityAttribute name="mailSubject"><![CDATA[Welcome at Track+]]></entityAttribute></trackEntity><trackEntity type="TMailTemplateDefBean" entityId="1080"><entityAttribute name="theLocale"><![CDATA[de]]></entityAttribute><entityAttribute name="mailBody"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html;charset=utf-8">
+		<title>Willkommen beim Track+ System</title>
+		<style>
+			body {
+				font-family: Arial,Helvetica,sans-serif;
+				font-size: 10pt;
+				color: #3A394B;
+				margin: 0;
+				padding: 12px;
+				background: #fff;
+			}
+			p {
+				padding: 0 0 0px 0;
+				margin:5px 0 10px 0;
+				max-width: 50em;
+			}
+			ul {
+				padding: 5px 0 5px 25px;
+				margin: 5px 0 5px 0;
+				list-style-type: square;
+			}
+			h1 {
+				font-weight: bold;
+				font-size: 13pt;
+				margin: 0 0 20px 0;
+				padding: 0 0 10px 0;
+				border-bottom: 1px solid #c8c8c8;
+				max-width: 35em;
+			}
+
+			.boldred {
+				font-weight: normal; color: #1010f8; font-size:10pt;
+			}
+
+			a {
+				/* text-decoration: none; */
+				font-weight: normal;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Willkommen beim Track+ System!</h1>
+		<p><b>Hallo ${firstname} ${lastname},</b></p>
+		<p>Sie erhalten diese Nachricht, weil der Track+ Admin Ihre E-Mail-Adresse beim <a href="http://www.trackplus.com">Track+ Task- und Projektmanagementsystem</a> registriert hat.</p>
+		<p>Sie finden die Anmeldeseite von Track+ unter <a href="${serverurl}">${serverurl}</a>.</p>
+		<p>Ihr Benutzername ist <span class="boldred">${loginname}</span>.</p>
+		<#if ldap=='true'>
+			<p>Ihr Kennwort ist identisch zu dem, das Sie überall anders auch benutzen.</p>
+			<#else>
+				<p>Bitte ändern Sie Ihr Passwort durch <a href="${confirmUrl}">Klicken auf diesen Link hier</a>.<br/>Dieser Link wird am ${tokenExpDate} ablaufen.</p>
+		</#if>
+		<p>Damit Sie in Projekten mitarbeiten können, muss Ihr jeweiliger Projektmanager Ihnen noch Zugriffsrechte einräumen.<br><br></p>
+		<p>Mit freundlichen Grüßen</p>
+		<p>Ihr Track+ Team</p>
+	</body>
+</html>]]></entityAttribute><entityAttribute name="objectID"><![CDATA[1080]]></entityAttribute><entityAttribute name="templateChanged"><![CDATA[Y]]></entityAttribute><entityAttribute name="mailTemplateID"><![CDATA[1004]]></entityAttribute><entityAttribute name="plainMail"><![CDATA[false]]></entityAttribute><entityAttribute name="uuid"><![CDATA[aa6c6624-1f97-4f11-989f-08777a61d5a0]]></entityAttribute><entityAttribute name="mailSubject"><![CDATA[Willkommen bei Track+]]></entityAttribute></trackEntity><trackEntity type="TMailTemplateDefBean" entityId="1081"><entityAttribute name="theLocale"><![CDATA[fr]]></entityAttribute><entityAttribute name="mailBody"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+	<title>Bienvenue dans le système Track+</title>
+	<style>
+	    body {
+			font-family: Arial,Helvetica,sans-serif;
+			font-size: 10pt;
+			color: #3A394B;
+			margin: 0;
+			padding: 12px;	
+			background: #fff;
+		}
+		p {
+			padding: 0 0 0px 0;
+			margin:5px 0 10px 0;
+			max-width: 50em;
+		}
+		ul {
+			padding: 5px 0 5px 25px;
+			margin: 5px 0 5px 0;
+			list-style-type: square;
+		}
+		h1 {
+			font-weight: bold;
+			font-size: 13pt;
+			margin: 0 0 20px 0;
+			padding: 0 0 10px 0;
+			border-bottom: 1px solid #c8c8c8;
+			max-width: 35em;
+		}
+	    
+	    .boldred {
+	    	font-weight: normal; color: #1010f8; font-size:10pt;
+	    }
+	    
+	    a { 
+			/* text-decoration: none; */
+			font-weight: normal;
+		}
+    </style>
+</head>
+<body>
+<h1>Bienvenue dans le système Track+!</h1>
+<p><b>Bonjour ${firstname} ${lastname},</b></p>
+<p>Vous recevez ce message car vous avez été enregistré par vous ou quelqu'un d'autre avec 
+<a href="http://www.trackplus.com">le système de gestion de tâches et de projet Track+</a>. 
+
+<p>S'il vous plaît activer votre compte en <a href="${confirmUrl}">cliquant sur ce lien ici</a>.</p>
+<p>
+Vous trouverez la page de connexion de Track+ à l'adresse <a href="${serverurl}">${serverurl}</a>.
+</p>
+<p>Votre nom d'utilisateur est <span class="boldred">${loginname}</span>.
+<#if ldap=='true'>Votre mot de passe est le même que vous utilisez sur d'autres systèmes.<#else> 
+Votre mot de passe que vous avez entré pendant le processus d'enregistrement.</#if></p>
+<p>
+Votre manager de projet doit vous donner les autorisations appropriées dans son projet avant que vous puissiez utiliser pleinement le système.<br><br></p>
+<p>
+Cordialement,</p>
+<p>Votre équipe Track+</p>
+</body>
+</html>]]></entityAttribute><entityAttribute name="objectID"><![CDATA[1081]]></entityAttribute><entityAttribute name="templateChanged"><![CDATA[N]]></entityAttribute><entityAttribute name="mailTemplateID"><![CDATA[1004]]></entityAttribute><entityAttribute name="plainMail"><![CDATA[false]]></entityAttribute><entityAttribute name="uuid"><![CDATA[ff0c7a61-b8f1-473c-8766-c215523188f1]]></entityAttribute><entityAttribute name="mailSubject"><![CDATA[Bienvenue]]></entityAttribute></trackEntity><trackEntity type="TMailTemplateDefBean" entityId="1082"><entityAttribute name="theLocale"><![CDATA[de]]></entityAttribute><entityAttribute name="mailBody"><![CDATA[Willkommen beim Track+ System!
+
+Hallo ${firstname} ${lastname},
+
+Sie erhalten diese Nachricht, weil der Track+ Admin Ihre E-Mail-Adresse beim Track+ Task- und Projektmanagementsystem registriert hat.
+
+Sie finden die Anmeldeseite von Track+ unter ${serverurl}.
+Ihr Benutzername ist ${loginname}. 
+
+<#if ldap=='true'>
+Ihr Kennwort ist identisch zu dem, das Sie überall anders auch benutzen.
+<#else>
+Bitte ändern Sie Ihr Passwort durch Klicken auf diesen Link hier: ${confirmUrl}.
+Dieser Link wird am ${tokenExpDate} ablaufen.
+</#if>
+
+Damit Sie in Projekten mitarbeiten können, muss Ihr jeweiliger Projektmanager Ihnen noch Zugriffsrechte einräumen.
+
+Mit freundlichen Grüßen
+Ihr Track+ Team]]></entityAttribute><entityAttribute name="objectID"><![CDATA[1082]]></entityAttribute><entityAttribute name="templateChanged"><![CDATA[Y]]></entityAttribute><entityAttribute name="mailTemplateID"><![CDATA[1004]]></entityAttribute><entityAttribute name="plainMail"><![CDATA[true]]></entityAttribute><entityAttribute name="uuid"><![CDATA[790d16c3-7c37-4b91-817a-e227ef3e5427]]></entityAttribute><entityAttribute name="mailSubject"><![CDATA[Willkommen]]></entityAttribute></trackEntity><trackEntity type="TMailTemplateDefBean" entityId="1083"><entityAttribute name="theLocale"><![CDATA[fr]]></entityAttribute><entityAttribute name="mailBody"><![CDATA[Bonjour et bienvenue dans le système Track+!
+        			
+Vous recevez ce message car vous avez été enregistré par vous ou quelqu'un d'autre avec le système de gestion de tâches et de projet Track+. Vos paramètres d'accès sont
+
+  * Nom d'utilisateur: ${loginname}
+  * Mot de passe initial: <#if ldap=='true'>Your standard password just as on other systems<#else>${password}</#if>
+  
+S'il vous plaît changez le mot de passe après votre première connexion (Administration > Mes paramètres...).
+
+Vous trouverez la page de connexion de Track+ à l'adresse ${serverurl}..
+
+Votre manager de projet doit vous donner les autorisations appropriées dans son projet avant que vous puissiez utiliser pleinement le système.
+
+Cordialement,
+Votre équipe Track+]]></entityAttribute><entityAttribute name="objectID"><![CDATA[1083]]></entityAttribute><entityAttribute name="templateChanged"><![CDATA[N]]></entityAttribute><entityAttribute name="mailTemplateID"><![CDATA[1004]]></entityAttribute><entityAttribute name="plainMail"><![CDATA[true]]></entityAttribute><entityAttribute name="uuid"><![CDATA[ff5e41f7-c467-451c-8efb-bbcff65c4812]]></entityAttribute><entityAttribute name="mailSubject"><![CDATA[Bienvenue]]></entityAttribute></trackEntity></subEntityRelation></entityExchange></ns2:trackplusExchange>

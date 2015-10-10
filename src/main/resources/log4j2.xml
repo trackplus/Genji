@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  This is the logging configuration file for the Track+ application.
+  For user access logging configuration see WEB-INF/Logging.properties.
+  Usually, there is no need to change this.
+    
+  $Id: log4j2.xml 1580 2015-10-10 14:44:33Z friedric $#
+-->
+<Configuration packages="com.aurel.track.admin.server.logging">
+    <Properties>
+        <Property name="logDir">${sys:java.io.tmpdir}/log</Property>
+    </Properties>
+    <Appenders>
+	    <Console name="STDERR" target="SYSTEM_ERR">
+	    	<filters>
+	        	<ThresholdFilter level="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
+	       	</filters>
+	       	<PatternLayout pattern="%d %-5p %c{2} [%L] - %m%n" />
+	       	<!--
+	        <PatternLayout pattern="%d %-5p %C{2} (%F:%L) - %m%n" />
+	        -->
+	    </Console>
+	    <Console name="STDOUT" target="SYSTEM_OUT">
+	        <filters>
+	        	<ThresholdFilter level="WARN" onMatch="DENY" onMismatch="ACCEPT"/>
+	        </filters>
+	        <PatternLayout pattern="%d %-5p %c{2} [%L] - %m%n" />
+	    </Console>
+	    <Memory name="MEMORY" numberOfLines="5000">
+	    	<filters>
+	        	<ThresholdFilter level="ALL" onMatch="ACCEPT"/>
+	        </filters>
+	        <PatternLayout pattern="%d %-5p %c{2} [%L] - %m%n" />
+	    </Memory>
+	    <RollingFile name="ACCESSFILE" fileName="${logDir}/access.log"
+	                                   filePattern="${logDir}/access-%d{yyyy-MM-dd}.log">
+	         <Policies>
+	             <TimeBasedTriggeringPolicy interval="1"  modulate="true"/>
+	         </Policies>
+	         <DefaultRolloverStrategy max="14" />
+	         <PatternLayout pattern="%d %-5p %c - %m%n"/>
+	    </RollingFile>
+	    <RollingFile name="ACTIONSFILE" fileName="${logDir}/actions.log" 
+						                filePattern="${logDir}/actions-%i.log">
+	         <Policies>
+	             <SizeBasedTriggeringPolicy size="100 KB"/>
+	         </Policies>
+	         <DefaultRolloverStrategy max="5" />
+	         <PatternLayout pattern="%d - %m%n"/>
+	    </RollingFile>
+	    <!-- 
+	    <File name="LFILE" fileName="${sys:logFileTp.name}">
+	         <PatternLayout pattern="%d %-5p %c - %m%n"/>
+	    </File>
+	    -->
+    </Appenders>
+
+	<Loggers>
+		<!-- Direct all login and logout activities to our Access Appender -->
+	    <Logger name="Access" level="info" additivity="false">
+	         <AppenderRef ref="ACCESSFILE" /> 
+	    </Logger>
+	    
+		<!-- Direct all administrative actions to our Actions appender -->
+	    <Logger name="Actions" level="info">
+	         <AppenderRef ref="ACTIONSFILE" /> 
+	    </Logger>
+	    <Logger name="org.apache.torque" level="error">
+	    </Logger>
+	    <Logger name="org.quartz" level="warn">
+	    </Logger>
+	    <Logger name="com.aurel.track" level="info">
+	    </Logger>
+	    <Logger name="com.aurel.track.lucene" level="info">
+	    </Logger>
+	    <Logger name="org.apache.jasper.compiler.TldLocationsCache" level="info">
+	    </Logger>
+	    <Logger name="AllTests" level="debug">
+	    </Logger>  
+	  
+	    <Root level="error">
+	        <AppenderRef ref="STDERR" />
+	        <AppenderRef ref="STDOUT" />
+	        <AppenderRef ref="MEMORY" />
+	    </Root>
+    </Loggers>
+</Configuration>

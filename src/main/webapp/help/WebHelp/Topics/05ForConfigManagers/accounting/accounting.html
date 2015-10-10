@@ -1,0 +1,105 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="Track+ Service Desk permits to budget and track times and expenses for items. To this purpose, the system provides accounts and cost centers. All expenses are accumulated in accounts, and each account ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="concept"/><meta name="DC.Title" content="Managing cost centers and accounts"/><meta name="abstract" content="Track+ Service Desk permits to budget and track times and expenses for items. To this purpose, the system provides accounts and cost centers. All expenses are accumulated in accounts, and each account belongs to a cost center. Projects write their expenses against those accounts that they are permitted to use."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="Track+ Service Desk permits to budget and track times and expenses for items. To this purpose, the system provides accounts and cost centers. All expenses are accumulated in accounts, and each account belongs to a cost center. Projects write their expenses against those accounts that they are permitted to use."/><meta name="DC.Relation" scheme="URI" content="../../../Topics/05ForConfigManagers/Chapter5Wrapper.html"/><meta name="DC.Creator" content=""/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="id132LEJ0N0D9"/><link rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Managing cost centers and accounts</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()" id="id132LEJ0N0D9">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../../Topics/05ForConfigManagers/Chapter5Wrapper.html" title="Customizing Track+ Service Desk"><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Customizing Track+ Service Desk</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../../Topics/05ForConfigManagers/Chapter5Wrapper.html" title="Customizing Track+ Service Desk">Customizing Track+ Service Desk</a></td></tr></tbody></table>
+
+    <h1 class="title topictitle1">Managing cost centers and accounts</h1>
+
+    
+    
+    <div class="body conbody"><p class="shortdesc"><span class="ph"><span class="ph">Track+ Service Desk</span></span> permits to budget and track times and
+        expenses for items. To this purpose, the system
+        provides accounts and cost centers. All expenses are accumulated in accounts, and each
+        account belongs to a cost center. Projects write their expenses against those accounts that
+        they are permitted to use.</p>
+
+        <div class="section"><h2 class="title sectiontitle">Accounting overview</h2>
+            
+            <p class="p">There may be as many
+                accounts in the
+                system as required. Accounts may assume states; for example they can be open, so
+                authorized people can place their expenses on them, or they can be closed, and it
+                will not be possible any more to write expenses against them.</p>
+
+            <p class="p">A single account may belong to one or more projects. For example, there may be
+                accounts for common tasks or overheads like department meetings, vacation, illness,
+                etc.</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/costCenterAccount.png" height="129" width="211"/></div><br/>
+                
+            </div>
+
+            <p class="p"><span class="ph"><span class="ph">Track+ Service Desk</span></span> is not a bookkeeping system. However, it is
+                easy to connect an enterprise management system like SAP or Oracle to the
+                information stored in <span class="ph"><span class="ph">Track+ Service Desk</span></span>. In this case it has
+                to be made sure that the account and cost center numbers in <span class="ph"><span class="ph">Track+ Service Desk</span></span>match those in the bookkeeping system.</p>
+
+            <p class="p">Accounting can be enabled for each project separately. So if a project manager does
+                not require accounting and budgeting for
+                his project, this function can be disabled.</p>
+
+            <p class="p">Cost centers can be deleted; in this case their accounts are being transferred to a
+                replacement cost center.</p>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Setting up accounting</h2>
+            
+            <p class="p">The first step in enabling accounting is to create cost centers. <span class="ph"><span class="ph">Track+ Service Desk</span></span> associates but little information with
+                cost centers: a unique number which should match that of the larger bookkeeping
+                software, if available, and a name. Oftentimes cost centers correspond to
+                departments.</p>
+
+            <p class="p">The second step is to create accounts. Accounts carry four properties:</p>
+
+            <ul class="ul">
+                <li class="li">a unique account number</li>
+
+                <li class="li">a name</li>
+
+                <li class="li">a cost center</li>
+
+                <li class="li">a state</li>
+
+            </ul>
+
+            <p class="p">The account number should match that of the bookkeeping system being used. The
+                account name can be any string and should briefly describe the purpose of the
+                account. Each account is assigned to exactly one cost center. The person responsible
+                for the cost center thereby is also the person responsible for the account.</p>
+
+            <p class="p">Each account has a state. The state determines if the account can be actively used,
+                or if the account is closed. If the account is closed it will not appear any more in
+                the selection boxes when users need to record their expenses.</p>
+
+            <p class="p">Accounts can be deleted; however their entire history has then to be mapped to
+                another account that still exists.</p>
+
+            <p class="p">Accounts can accumulate either monetary expenses (cost) or time expenses (efforts).
+                Each project defines the base currency for the monetary costs. Their can be
+                different base currencies for different projects. The base „currency“ for time
+                expenses is one working hour. Working days are mapped to working hours by the values
+                found in either the project type definition, the project definition, or a single
+                users definition for how many hours one working has.</p>
+
+            <p class="p">The third step in setting up accounting for a project is to assign the accounts
+                defined previously to the projects. It is possible to assign a single account to
+                more than one project. It is also possible to disconnect accounts from projects.</p>
+
+        </div>
+
+    </div>
+
+<div class="related-links"/>
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../../Topics/05ForConfigManagers/Chapter5Wrapper.html" title="Customizing Track+ Service Desk"><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Customizing Track+ Service Desk</span></a></span>  </div>
+</body>
+</html>

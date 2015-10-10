@@ -1,0 +1,2 @@
+select DBVersion from TSITE;
+

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	Description file for a Track+ report template. This file
+	is read by Track+ and used for presentation of the report
+	template for selection by the users. 
+-->
+<reportTemplate>
+  <name>RTByRelease</name>	
+  <locale value="en">
+     <description>
+  	    Report overview, grouped by project and release.
+     </description>
+     <listing>Grouped by project and phase</listing>
+     <tool-tip>Report overview, grouped by workspace and phase, landscape A4</tool-tip>
+  </locale>
+  <locale value="de">
+     <description>
+  	   Übersichtsbericht gruppiert nach Projekt und Release.
+     </description>
+     <listing>Gruppiert nach Arbeitsraum und Phase</listing>
+     <tool-tip>Übersicht gruppiert nach Raum und Phase, A4 Querformat</tool-tip>
+  </locale>
+  <!-- The icon should be in GIF format and have a size (width x height) of at most 150 x 100 -->
+  <icon-gif>icon.gif</icon-gif>
+  <size>A4 landscape</size>
+  <!-- The preview should be in GIF or PNG format and have a size of at most 800 x 600 -->
+  <preview-gif>preview.png</preview-gif>
+  <!-- Type of report: Jasper Report or FOP Report -->
+  <type>Jasper Report</type>
+  <!-- Format of report: pdf, rtf, xml, xsl, png etc -->
+  <format>pdf</format>
+  <!-- The compiled master report template file -->
+  <masterFile>TrackReportByRelease.jasper</masterFile>
+</reportTemplate>

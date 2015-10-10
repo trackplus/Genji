@@ -1,0 +1,608 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="You can perform many administrative tasks like adding and changing users, groups, workspaces, and role assignments using the Genji command line client from a Groovy console. Installing Groovy You can ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="concept"/><meta name="DC.Title" content="Using the TC command line client"/><meta name="abstract" content="You can perform many administrative tasks like adding and changing users, groups, workspaces, and role assignments using the Genji command line client from a Groovy console."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="You can perform many administrative tasks like adding and changing users, groups, workspaces, and role assignments using the Genji command line client from a Groovy console."/><meta name="DC.Relation" scheme="URI" content="../../Topics/06ForSystemManagers/Chapter6Wrapper.html"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="id31managingUsersGroups"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Using the TC command line client</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../Topics/06ForSystemManagers/Chapter6Wrapper.html" title="Managing the system"><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Managing the system</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../Topics/06ForSystemManagers/Chapter6Wrapper.html" title="Managing the system">Managing the system</a></td></tr></tbody></table>
+
+  <div class="nested0" id="id31managingUsersGroups">
+    <h1 class="title topictitle1">Using the TC command line client</h1>
+
+    
+    <div class="body conbody"><p class="shortdesc">You can perform many administrative tasks like adding
+      and changing users, groups, workspaces, and role assignments using the <span class="ph"><span class="ph">Genji</span></span> command line client from a Groovy
+      console.</p>
+
+      <div class="section"><h2 class="title sectiontitle">Installing Groovy</h2>
+        
+        <p class="p">You can download Groovy from <a class="xref" href="http://groovy.codehaus.org/Download" target="_blank">groovy.codehaus.org/Download‎</a>. Follow the instructions to install
+          Groovy on your personal computer.</p>
+
+      </div>
+
+      <div class="section"><h2 class="title sectiontitle">Installing the <span class="ph"><span class="ph">Genji</span></span> libraries</h2>
+        
+        <p class="p">You can download the TC package from <a class="xref" href="http://www.trackplus.com/en/download.html" target="_blank">www.trackplus.com/en/download.html</a>. Install the files in this package to
+          <span class="ph filepath">Your home directory/.groovy/lib</span>. This directory
+          probably already exists when you have Groovy installed.</p>
+
+      </div>
+
+      <div class="section"><h2 class="title sectiontitle">Running TC in a Groovy console or shell</h2>
+        
+        <p class="p">Execute <span class="ph filepath">&lt;Groovy install directory&gt;/bin/groovyconsole</span> or
+            <span class="ph filepath">&lt;Groovy install directory&gt;/bin/groovysh</span>. Make sure on your <span class="ph"><span class="ph">Genji</span></span> server the webservice is enabled (see <a class="xref" href="../07ForSystemAdmins/serverConfiguration/tabOther.html" title="On this tab you can configure directories, URLs, web services, backups, handling of item numbers, auto-login for guests, and more.">Various configuration items</a>). Then in the Groovy
+          console type</p>
+
+        <div class="p">
+          <pre class="pre codeblock">import com.trackplus.*;
+TC.login("admin","tissi","http://localhost:8080/track");
+TC.help();</pre>
+
+        </div>
+
+        <p class="p">replacing <span class="q">"localhost:8080/track"</span> with your servers URL and the user name and
+          password with your user name and password.</p>
+
+        <p class="p">If you want to get a JSON string with all users and print it to the console
+          (assuming you have administrator rights) type</p>
+
+        <div class="p"><pre class="pre codeblock">String users = TC.getAllUsers();
+System.out.println(users);</pre>
+Some
+          more methods to get you started are listed below. See the TC API reference available via
+          <samp class="ph codeph">TC.help()</samp> for up to date information.</div>
+
+        
+<div class="tablenoborder"><table cellpadding="4" cellspacing="0" summary="" class="table" frame="border" border="1" rules="all">
+            <tbody class="tbody">
+              <tr class="row">
+                <td class="entry" valign="top">Modifier and Type</td>
+
+                <td class="entry" valign="top">Method and Description</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  java.lang.String</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">addGroup</strong>(java.lang.String groupName)</samp>
+                  <p class="p">Creates a new group with the given name</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  void</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">addPersonsToGroup</strong>(java.lang.String  groupID,
+                    java.lang.String[]  personIDs)</samp>
+                  <p class="p">Adds a number of persons identified by their object ids to the group with the
+                    given id.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  java.lang.String</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">addProject</strong>(java.lang.String  projectName)</samp>
+                  <p class="p">Creates a new project or workspace and saves it to the database.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  void</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">addRoleAssignment</strong>(WSRoleAssignmentEditBean 
+                    roleAssignmentEditBean)</samp>
+                  <p class="p">Adds a role assignment (a users role in a workspace).</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  void</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">deleteGroup</strong>(java.lang.String  groupID)</samp>
+                  <p class="p">Deletes the group with the given object identifier.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  void</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">deleteGroupWithReplacement</strong>(java.lang.String  groupID,
+                    java.lang.String replacementID)</samp>
+                  <p class="p">Replaces all references to the group with object identifier groupID with the
+                    replacement and then deletes the group with groupID.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  void</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">deletePerson</strong>(java.lang.String  personID)</samp>
+                  <p class="p">Delete a user from the database based on its object id.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  void</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">deletePersonWithReplacement</strong>(java.lang.String  personID,
+                    java.lang.String  replacementID)</samp>
+                  <p class="p">Delete a user from the database based on its object id.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  void</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">deleteProject</strong>(java.lang.Integer  projectID)</samp>
+                  <p class="p">Deletes a project or workspace based on its object identifier.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  void</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">deleteProject</strong>(java.lang.String  projectID)</samp>
+                  <p class="p">Deletes a project or workspace based on its object identifier.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  java.lang.String</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">getAllGroups</strong>()</samp>
+                  <p class="p">Gets a JSON string with all user groups.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  WSGroupBean[]</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">getAllGroupsBeans</strong>()</samp>
+                  <p class="p">Gets an array of all user group beans.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  WSLabelValueBean[]</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">getAllRoles</strong>()</samp>
+                  <p class="p">Gets all user roles with their names and object identifiers.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  java.lang.String</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">getAllUsers</strong>()</samp>
+                  <p class="p">Gets a JSON string with all users registered in the systems database.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  WSPersonBean[]</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">getAllUsersBeans</strong>()</samp>
+                  <p class="p">Gets an array with all users registered in the systems database.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  java.lang.String</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">getAssignmentRolesByProject</strong>(java.lang.String 
+                    projectID)</samp>
+                  <p class="p">Gets a JSON string list with roles assignments (which user has which roles) for
+                    a project or workspace.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  WSRoleAssignmentBean[]</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">getAssignmentRolesByProjectBeans</strong>(java.lang.String 
+                    projectID)</samp>
+                  <p class="p">Gets a list with roles assignments (which user has which roles) for a project
+                    or workspace.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  java.lang.String</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">getGroupEdit</strong>(java.lang.String  groupID)</samp>
+                  <p class="p">Gets a group bean you can modify and save back.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  WSGroupEditBean</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">getGroupEditBean</strong>(java.lang.String  groupID)</samp>
+                  <p class="p">Gets a group bean you can modify and save back.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  java.lang.String</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">getPersonEdit</strong>(java.lang.Integer  personID)</samp>
+                  <p class="p">Gets a JSON string of a user based on his integer object id.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  java.lang.String</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">getPersonEdit</strong>(java.lang.String  personID)</samp>
+                  <p class="p">Gets a JSON string of a user based on his object id.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  java.lang.String</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">getPersonEditByLoginName</strong>(java.lang.String 
+                    loginName)</samp>
+                  <p class="p">Gets a JSON string of a user based on his login name.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  WSPersonEditBean</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">getPersonEditBean</strong>(java.lang.String  personID)</samp>
+                  <p class="p">Gets a bean of a user based on his object id.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  WSPersonEditBean</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">getPersonEditBeanByLoginName</strong>(java.lang.String 
+                    loginName)</samp>
+                  <p class="p">Gets a bean of a user based on his user name.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  java.lang.String</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">getPersonsForGroup</strong>(java.lang.String  groupID)</samp>
+                  <p class="p">Returns a JSON string of person beans that are members of the given
+                  group.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  WSPersonBean[]</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">getPersonsForGroupBeans</strong>(java.lang.String 
+                    groupID)</samp>
+                  <p class="p">Returns a list of person beans that are members of the given group.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  java.lang.String</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">getProjectEdit</strong>(java.lang.Integer  projectID)</samp>
+                  <p class="p">Gets a project bean in a JSON string that can be edited and saved back to the
+                    database.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  java.lang.String</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">getProjectEdit</strong>(java.lang.String  projectID)</samp>
+                  <p class="p">Gets a project bean in a JSON string that can be edited and saved back to the
+                    database.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  java.lang.String</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">getProjectEditByName</strong>(java.lang.String 
+                    projectName)</samp>
+                  <p class="p">Gets a project bean in a JSON string that can be edited and saved back to the
+                    database.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  WSProjectEditBean</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">getProjectEditBean</strong>(java.lang.Integer  projectID)</samp>
+                  <p class="p">Gets a project bean that can be edited and saved back to the
+                  database.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  WSProjectEditBean</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">getProjectEditBean</strong>(java.lang.String  projectID)</samp>
+                  <p class="p">Gets a project bean that can be edited and saved back to the
+                  database.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  WSProjectEditBean</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">getProjectEditBeanByName</strong>(java.lang.String 
+                    projectName)</samp>
+                  <p class="p">Gets a project bean that can be edited and saved back to the
+                  database.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  WSTreeNode[]</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">getProjectsAsTree</strong>()</samp>
+                  <p class="p">Gets a tree structure of project label/value beans (see <samp class="ph codeph">WSLabelValueBean</samp>). .</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">protected static  void</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">TCLFacadeException  e)</strong></samp>
+                  <p class="p">Simple Handler for TCLFacadeException</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  void</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">help</strong>()</samp>
+                  <p class="p">Opens a browser with the help for this class.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  java.lang.String</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">login</strong>()</samp>
+                  <p class="p">This method is just for error handling.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  java.lang.String</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">login</strong>(java.lang.String  dummy)</samp>
+                  <p class="p">This method is just for error handling.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  java.lang.String</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">login</strong>(java.lang.String  dummy, java.lang.String 
+                    dummy2)</samp>
+                  <p class="p">This method is just for error handling.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  TCLFacade</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">login</strong>(java.lang.String  user, java.lang.String 
+                    passwd, java.lang.String  url)</samp>
+                  <p class="p">Logs you in to the <span class="ph"><span class="ph">Genji</span></span> web service.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  void</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">main</strong>(java.lang.String[]  args)</samp>
+                  <p class="p">The main function just prints some help on how to use this class.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  void</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">printAllProjects</strong>()</samp>
+                  <p class="p">Prints all projects to the console.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  void</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">printAllRoles</strong>()</samp>
+                  <p class="p">Prints a list with all roles defined in the system to the console.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  void</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">removePersonsFromGroup</strong>(java.lang.String  groupID,
+                    java.lang.String[]  personIDs)</samp>
+                  <p class="p">Removes a number of persons identified by their object ids from the group with
+                    the given id.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  void</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">removeRoleAssignment</strong> (WSRoleAssignmentEditBean 
+                    roleAssignmentEditBean)</samp>
+                  <p class="p">Removes a specific role assignment.</p>
+</td>
+
+              </tr>
+
+              <tr class="row">
+                <td class="entry" valign="top">
+                  <samp class="ph codeph">static  java.lang.String</samp></td>
+
+                <td class="entry" valign="top"><samp class="ph codeph"><strong class="ph b">savePersonEdit</strong>(java.lang.String  personJSON)</samp>
+                  <p class="p">Save a user to the database.</p>
+</td>
+
+              </tr>
+
+              
+            </tbody>
+
+          </table>
+</div>
+
+      </div>
+
+      <div class="section"><h2 class="title sectiontitle">Protecting the webservice connection with SSL</h2>
+        
+        <p class="p">In case you use a self-signed certificate or a certificate from a Certificate Authority
+          not known by your system you have to install the certificate identifying your server in
+          your local computers Java <span class="ph"><span class="ph">Genji</span></span> keystore. You need to
+          proceed as follows:</p>
+
+        <ol class="ol" id="id31managingUsersGroups__ol_hyt_kdp_34">
+          <li class="li">Obtain the public certificate from your <span class="ph"><span class="ph">Genji</span></span>
+            server. You can use your browser and go to the login page using the <samp class="ph codeph">https</samp> protocol. In
+            most browsers you can download the certificate by right-clicking on the little trust
+            symbol in the URL line,  looking for the certificcate details and then exporting the
+            certificate to your local file system.</li>
+
+          <li class="li">Import the certificate into your local Java keystore using the “keytool” utility that
+            comes with any Java installation:
+            <pre class="pre codeblock">
+keytool -keystore &lt;your home dir&gt;/.keystore
+                             /&lt;your.domain.com&gt;.ks
+        -import -file theServersCertificate.pem -alias "Key1"</pre>
+</li>
+
+        </ol>
+
+        <p class="p">You will be asked for a password to protect the keystore if this is the first entry. When
+          you use the TC command line client you can activate the key as follows:</p>
+
+        <pre class="pre codeblock">import com.trackplus.*;
+System.setProperty("javax.net.ssl.trustStore",
+          "&lt;your home dir&gt;/.keystore/&lt;your.domain.com&gt;.ks");
+System.setProperty("javax.net.ssl.trustStorePassword",
+                                    "&lt;yourKeystorePasswd&gt;");
+
+TC.login("&lt;user&gt;","&lt;password&gt;","https://yourserver.tld/track");
+TC.help();</pre>
+
+        <p class="p">In case you can't get a connection you need to run the <samp class="ph codeph">LoginSample</samp> example and add the
+          following line at the beginning of the <samp class="ph codeph">main</samp> method:</p>
+
+        <pre class="pre codeblock">System.setProperty("javax.net.debug","ssl");</pre>
+
+        </div>
+
+    </div>
+
+  <div class="related-links"/>
+</div>
+
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../Topics/06ForSystemManagers/Chapter6Wrapper.html" title="Managing the system"><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Managing the system</span></a></span>  </div>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!-- This is the database specific type mapping for MySQL -->
+<!-- $Id: field-types-MySQL.xml 160 2008-09-10 11:19:52Z friedj $ -->
+<domain name="CDATETIME"
+        type="TIMESTAMP"
+        description="a portable date/time data type"/>
+
+<domain name="CLONGDESCRIPTION"
+        type="LONGVARCHAR"
+        size="32000"
+        description="a very long text field (up to 32000 characters)"/>
+
+<domain name="CSHORTDESCRIPTION"
+        type="LONGVARCHAR"
+        size="10000"
+        description="a very long text field (up to 10000 characters)"/>
+
+<domain name="CSMALLDESCRIPTION"
+        type="LONGVARCHAR"
+        size="10000"
+        description="a smaller text field (up to 10000 characters)"/>
+
+<domain name="CQUERY"
+        type="LONGVARCHAR"
+        size="10000"
+        description="a text field for storing queries"/>
+        
+<domain name="CMOREPROPS"
+        type="LONGVARCHAR"
+        size="10000"
+        description="a text field for storing properties"/>        
+        
+<domain name="CEMAILPATTERN"
+        type="LONGVARCHAR"
+        size="20000"
+        description="contains allowed email patterns"/>
+        
+<domain name="CPATH"
+        type="LONGVARCHAR"
+        size="512"
+        description="contains a directory path"/>
+        
+<domain name="CCRYPTKEY"
+        type="LONGVARCHAR"
+        size="4096"
+        description="a text field for a cryptograhic key"/>
+
+<domain name="CSITEPREF"
+        type="LONGVARCHAR"
+        size="8000"
+        description="contains site preferences"/> 
+        
+<domain name="CSMALLPREFS"
+        type="LONGVARCHAR"
+        size="2000"
+        description="contains more personal preferences"/>         
+        
+<domain name="CLONGTEXTVALUE"
+        type="LONGVARCHAR"
+        size="32000"
+        description="a generic long text value field"/> 
+
+<domain name="CBOOLEAN"
+        type="CHAR"
+        size="1"
+        description="a generic boolean value field"/>   
+
+<domain name="CUUID"
+        type="VARCHAR"
+        size="36"
+        description="a string field for UUIDs"/>  

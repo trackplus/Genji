@@ -1,0 +1,86 @@
+% Style definitions for articles and reports
+% Copyright 2015 Steinbeis GmbH & Co. KG - Task Management Solutions
+%
+% $Id:$
+%
+\usepackage{fontspec} % Font selection for XeLaTeX; see fontspec.pdf for documentation
+\defaultfontfeatures{Mapping=tex-text} % to support TeX conventions like ``---''
+\usepackage{xunicode} % Unicode support for LaTeX character names (accents, European chars, etc)
+\usepackage{xltxtra} % Extra customizations for XeLaTeX
+
+\usepackage{eurosym}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{pstricks}
+\usepackage{tabularx}
+\usepackage{verbatim}
+\usepackage{wrapfig}
+\usepackage{alltt}
+\usepackage{longtable}
+\usepackage{fancyhdr}
+\usepackage[absolute]{textpos}
+\usepackage{xcolor,colortbl}
+\usepackage{framed}
+\usepackage{draftwatermark}
+
+\definecolor{tpred}{RGB}{214,20,22}
+\definecolor{tpblue}{RGB}{20,20,198}
+\definecolor{Gray}{gray}{0.85}
+
+\usepackage[colorlinks=true,
+            linkcolor=tpblue,
+            urlcolor=tpblue,
+            citecolor=blue,
+            anchorcolor=blue,
+            bookmarks=true]{hyperref}
+\usepackage{float}
+
+\usepackage[nodayofweek]{datetime}
+\usepackage{fullpage}
+\usepackage{eso-pic, rotating}
+
+%Postscript fonts
+%\def\palatino{\renewcommand{\rmdefault}{ppl}}
+%\def\helvetica{\renewcommand{\sfdefault}{phv}}
+%\def\courier{\renewcommand{\ttdefault}{pcr}}
+%\helvetica
+
+\setlength{\textwidth}{165mm}
+\setlength{\textheight}{245mm}
+\setlength{\parindent}{0mm}
+\setlength{\parskip}{8pt plus 1pt minus 2pt}
+
+\pagestyle{fancy}
+\fancyhead{} % clear all fields
+\rhead{\includegraphics[width=28mm]{trackLogo.jpg}}
+\setlength\headheight{40pt}
+\fancyfoot[R]{\thepage}
+\setlength{\voffset}{-15.4mm}
+\setlength{\headsep}{10mm}
+\renewcommand{\headrulewidth}{0pt}
+
+\renewcommand{\familydefault}{\sfdefault}
+\let\margin\marginpar
+\newcommand\myMargin[1]{\margin{\raggedright\scriptsize #1}}
+\renewcommand{\marginpar}[1]{\myMargin{#1}}
+\newcommand{\action}[3]{\marginpar{#1 [#2]}}
+\newcommand\Vl{\vrule width 0.75pt}
+\newcommand\htpline{\noalign{\hrule height 0.75pt}}
+
+\newcommand\StrRequirements{Requirements Specification}
+\newcommand\StrDate{Date}
+\newcommand\StrAuthor{Author}
+\newcommand\StrPriority{Priority}
+\newcommand\StrStatus{Status}
+\newcommand\StrPage{Page}
+\newcommand\inlineLink[5]{\textit{#1} ({#2}) #3 #4 #5}
+
+\usepackage{tocstyle}
+\usetocstyle[toc]{standard}
+\selecttocstyleoption{tocfullflat}
+
+% \DeclareUnicodeCharacter{00A0}{~}
+% \DeclareUnicodeCharacter{200B}{\hspace{0pt}}
+% \setmainfont{Helvetica} % set the main body font (\textrm), assumes Charis SIL is installed
+% \setsansfont{Helvetica}
+

@@ -1,0 +1,183 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="This section gives examples of configuration scenarios, pertaining to roles and permissions, item types, and workflows. Customers and developers A common scenario is to grant customers access to the ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="concept"/><meta name="DC.Title" content="Configuration scenarios"/><meta name="abstract" content="This section gives examples of configuration scenarios, pertaining to roles and permissions, item types, and workflows."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="This section gives examples of configuration scenarios, pertaining to roles and permissions, item types, and workflows."/><meta name="DC.Relation" scheme="URI" content="../../Topics/05ForConfigManagers/Chapter5Wrapper.html"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="id31configScenarios"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Configuration scenarios</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()" id="id31configScenarios">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../Topics/05ForConfigManagers/Chapter5Wrapper.html" title="Customizing Genji"><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Customizing Genji</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../Topics/05ForConfigManagers/Chapter5Wrapper.html" title="Customizing Genji">Customizing Genji</a></td></tr></tbody></table>
+
+    <h1 class="title topictitle1">Configuration scenarios</h1>
+
+    
+    <div class="body conbody"><p class="shortdesc">This section gives examples of configuration scenarios,
+        pertaining to roles and permissions, item types, and workflows.</p>
+
+        <div class="section"><h2 class="title sectiontitle">Customers and developers</h2>
+            
+            <p class="p">A common scenario is to grant customers access to the system but in a way that they
+                only see their own entries. Developers should be able to see all entries, including
+                internally generated tasks. There are three ways to accomplish this setup in <span class="ph"><span class="ph">Genji</span></span>:</p>
+
+            <ol class="ol">
+                <li class="li">Customers are assigned to role „Extern“. This way they can only see their own
+                    items. A disadvantage may be that entries from this customers are not grouped.
+                    If there are several people associated with this customer, each can only see his
+                    own entries, but not those of his peers from the same company. If each customer
+                    is granted a collective account, this usually poses no problem though.</li>
+
+                <li class="li">If there is only a limited amount of customers, a list is created for each
+                    customer. Only people associated with this customer and developers are granted
+                    access to this list. Customers may now have extended rights to this list, and
+                    all people associated with this customer may see all tasks in this list.</li>
+
+                <li class="li">A separate project is created for each customer. Internal developers can access
+                    all projects, while customers can only access their specific project. This
+                    permits to use the finer classification of different lists even with many
+                    different customers.</li>
+
+            </ol>
+
+            <p class="p">Each solution has its distinct advantages, and it depends on the number of customers
+                and how one likes to interface the system with the customer which solution is
+                preferable.</p>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Anonymous access</h2>
+            
+        </div>
+
+        <div class="section">
+            <p class="p">To permit anonymous access to the system create an account „anonymous“ or use the
+                predefined „guest“ account with no password or a public password and grant this user
+                all access rights desired. Public passwords may for example published on the login
+                page.</p>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Personal To Do list</h2>
+            
+            <p class="p">It is possible to configure <span class="ph"><span class="ph">Genji</span></span> such that you
+                have your personal to do list that is not visible to others. There are three ways
+                how to achieve this. One solution is to define a new project, e.g. named „Personal“,
+                and assign each user the „Extern“ role. This permits you to create, modify and close
+                items that only you can see.</p>
+
+            <p class="p">The second approach is to define a new item type „personal items“ and define via
+                access restriction on the access permission page that only role „Extern“ can access
+                this list.</p>
+
+            <p class="p">The third approach is to use the privacy flag on items you want to hide. You can set
+                this flag when creating items, or later on when you modify your own items. It is not
+                possible to set the privacy flag on items you have not originated.</p>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Small development teams, lean, informal</h2>
+            
+            <p class="p">Here is an example for a lean configuration. This works very well for small teams, in
+                open cultures with less formal approaches.</p>
+
+            <p class="p">The following item types are used:</p>
+
+            <div class="p">
+                <ul class="ul">
+                    <li class="li">tasks</li>
+
+                    <li class="li">mile stones</li>
+
+                </ul>
+
+            </div>
+
+            <p class="p">You may delete all other item types.</p>
+
+            <p class="p">You can use the default priorities and severities.</p>
+
+            <p class="p">The following states are being used:</p>
+
+            <ul class="ul">
+                <li class="li">opened</li>
+
+                <li class="li">suspended</li>
+
+                <li class="li">closed</li>
+
+                <li class="li">processing</li>
+
+            </ul>
+
+            <p class="p">There should be no workflows configured; thus it is possible to go from any state to
+                any other state. All team members shall have role „responsible“.This will give you a
+                solid yet open process which is very efficient for small teams.</p>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Large development teams, lean, formal</h2>
+            
+            <p class="p">Here is an example for a lean but more formal configuration. This works very well for
+                larger teams where it may be necessary to restrict state changes to certain people,
+                e.g. that only a tester can close an item, or that marketing should not see bugs
+                only known to the developers.</p>
+
+            <p class="p">The following item types are used:</p>
+
+            <ul class="ul">
+                <li class="li">tasks</li>
+
+                <li class="li">problem reports</li>
+
+                <li class="li">request for enhancements</li>
+
+                <li class="li">mile stones</li>
+
+            </ul>
+
+            <p class="p">You may delete all other item types.</p>
+
+            <p class="p">You can use the default priorities and severities.</p>
+
+            <p class="p">The following states are being used:</p>
+
+            <ul class="ul">
+                <li class="li">opened</li>
+
+                <li class="li">analyzed</li>
+
+                <li class="li">assigned</li>
+
+                <li class="li">suspended</li>
+
+                <li class="li">testing</li>
+
+                <li class="li">closed</li>
+
+                <li class="li">processing</li>
+
+            </ul>
+
+            <p class="p">Item type access should be constrained to the specific roles; for example marketing
+                shall only be able to see mile stones and requests for enhancements, developers
+                should be able to see everything.</p>
+
+            <p class="p">There should be reasonably open workflows configured. In general, any state
+                transition shall be possible with a few exceptions. You should ask yourself not „who
+                should be able to carry out this transition?“ but rather „is there any reason that
+                not anybody could carry out this transition?“. This will lead to a more practical
+                workflow than if you just go ahead and consider the „good“ case, not taking into
+                account the many exceptions that might happen in the course of a project.</p>
+
+        </div>
+
+    </div>
+
+<div class="related-links"/>
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../Topics/05ForConfigManagers/Chapter5Wrapper.html" title="Customizing Genji"><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Customizing Genji</span></a></span>  </div>
+</body>
+</html>

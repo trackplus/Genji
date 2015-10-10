@@ -1,0 +1,50 @@
+JavaCC and GraphViz
+===================
+
+	'JavaCC - The Java Parser Generator'
+	<https://javacc.dev.java.net/>
+
+	'GraphViz - Open Source Graph Drawing Software'
+	<http://www.research.att.com/sw/tools/graphviz/>
+
+
+Generating the parser from the JavaCC grammar file
+==================================================
+
+	$ cd src/com/aurel/track/tql/
+	$ rm parser/*
+	$ cp grammar/SimpleNode.j parser/SimpleNode.java
+	$ jjtree -OUTPUT_DIRECTORY="parser" grammar/TqlParser.jjt
+	$ javacc -OUTPUT_DIRECTORY="parser" parser/TqlParser.jj
+
+
+Visualize the parse tree with GraphViz
+======================================
+
+	The GraphViz definition of the parse tree will be logged
+	into the logfile of Tomcat (catalina.out) through the
+	Logger.debug function.
+
+	This is how such a tree definition looks like:
+	-=-= -=-= -=-= -=-= -=-= -=-= -=-= -=-= -=-= -=-= -=-= -=-=
+	digraph DirectedGraph {
+	[...]
+	}
+	-=-= -=-= -=-= -=-= -=-= -=-= -=-= -=-= -=-= -=-= -=-= -=-=
+
+	After copying this tree definition into a separate file
+	(ast.dot) the visualized tree can then be created with
+	the following command:
+
+	$ dot -T png -o ast.png ast.dot && display ast.png
+
+
+Last message:
+
+$ cd src/com/aurel/track/tql/
+$ rm parser/*
+$ cp grammar/SimpleNode.j parser/SimpleNode.java
+$ jjtree -OUTPUT_DIRECTORY="parser" grammar/TqlParser.jjt
+$ javacc -OUTPUT_DIRECTORY="parser" parser/TqlParser.jj
+$ javac parser/*.java
+

@@ -1,0 +1,694 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:trackplusExchange xmlns:ns2="http://www.trackplus.com/exporter/" version="4.0.0">
+    <entityExchange entityId="1000" type="TMailTemplateBean">
+        <entityAttribute name="objectID">1000</entityAttribute>
+        <entityAttribute name="name">Item changed</entityAttribute>
+        <entityAttribute name="uuid">74e1c858-1ef1-4b48-8dd4-e036a89d7db7</entityAttribute>
+        <subEntityRelation parentAttributeName="mailTemplateID" type="TMailTemplateDefBean">
+            <trackEntity entityId="1000" type="TMailTemplateDefBean">
+                <entityAttribute name="theLocale">en</entityAttribute>
+                <entityAttribute name="mailBody"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="generator" content="Track+ Task Management System 91827364"/>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8"/>
+	<title>Track+ E-Mail Notification</title>
+<style>
+    td, th, p, div {
+    font-family: Tahoma, Arial,Helvetica,sans-serif;
+        font-size: 11px;
+    }
+   
+    a {
+color: #1D5090;
+text-decoration: none;
+font-weight: bold;
+}
+
+a:active  {
+color: #BF2128;
+}
+
+a:hover {
+color: #BF2128;
+}
+
+    body {
+font-family: Tahoma,Arial,Helvetica,sans-serif;
+font-size: 11px;
+color: #3A394B;
+margin: 0;
+padding: 10px;
+background: #fff;
+}
+
+p {
+padding: 0 0 10px 0;
+}
+
+
+h1 {
+font-weight: bold;
+font-size: 14px;
+margin: 0 0 3px 0;
+}
+
+h2 {
+font-weight: bold;
+font-size: 12px;
+margin: 0 0 6px 0;
+}
+
+.table {
+border: 0px none #77787b;
+border-collapse: collapse;
+}
+
+.table th {
+/* background:#393B40 none repeat scroll 0%;*/
+border-bottom:1px solid #777;
+border-left:1px solid #777;
+color:#333;
+font-size:11px;
+font-weight:bold;
+padding: 4px 8px;
+text-align:center;
+}
+
+.table th:first-child{
+border-left:0px solid #777;
+}
+
+.table td {
+border-top: 1px solid #e6e6e6;
+border-left: 1px solid #777;
+padding: 4px 8px;
+}
+
+.table tr td:first-child {
+border-left: 0px solid #777;
+}
+
+.firstcol {
+    width:26%;
+    /* background-color:#d8e1ed; */
+    text-align:right;
+}
+
+.valcol {
+    width:37%;
+    /* background-color:#edf0f6; */
+    text-align:left;
+}
+.valcolChanged {
+    width:37%;
+    background-color:#ffaa9f;
+    text-align:left;
+}
+
+.containerRow1 {
+/* background: #EEF0F5 none repeat scroll 0%; */
+border: 0px solid #77787B;
+padding: 5px 15px 0 15px;
+}
+
+.containerRow2 {
+/* background: #EEEDED none repeat scroll 0%; */
+border-left: 1px solid #222;
+padding: 5px 15px  0 15px;
+margin: 10px 0 0 0;
+}
+
+.red { color: #bf2128; }
+    </style>
+    <#-- render the short fields -->
+    <#macro renderShortFields fieldChangeRows>     
+    	<#list fieldChangeRows as fieldChange>
+	    	<tr>
+		       	<td class="firstcol">${fieldChange.localizedFieldLabel}:</td>
+		       	<#-- if copy we are not interested in the change compared to the original workItem -->
+		       	<#assign dispOldValue = "">
+		       	<#if !fieldChange.changed || isCopy>
+		       	    <td class="valcol">${fieldChange.newShowValue}</td>
+		       	<#else>
+		       	    <td class="valcolChanged">${fieldChange.newShowValue}</td>
+		        	<#assign dispOldValue = fieldChange.oldShowValue>
+		       	</#if>
+		       	<td class="valcol">${dispOldValue}</td>
+	       	</tr>	       
+    	</#list>
+	</#macro>
+	<#-- render the long fields  (description, comment, ... ) -->
+	<#macro renderLongFields fieldChangeRows>
+    	<#list fieldChangeRows as fieldChange>
+    	<div class="containerRow2">
+	    	<p><b>${fieldChange.localizedChangeDetail}</b> <br />
+	    	${fieldChange.newShowValue}</p>
+	    </div>
+    	</#list>    
+	</#macro>
+</head>
+<body>
+	<table width="100%" cellpadding="0" cellspacing="0" style="margin: 0 0 12px 0;">
+		<tr>
+			<td valign="middle">
+				<h2>
+				    <#if isCreated>
+						<span class="red">${createdBy}</span> has created an item ${itemNo} in workspace <span class="red">${project}</span>.
+					<#elseif isCopy>
+						<span class="red">${createdBy}</span> has created an item ${itemNo} in workspace <span class="red">${project}</span> as a copy of item ${oldIssue}.
+					<#else>
+						<span class="red">${changedBy}</span> has changed item ${itemNo} in workspace <span class="red">${project}</span>.					
+					</#if>					
+				</h2>
+				<h1>
+					${title}
+				</h1>
+		    </td>
+		    <td align="right" ><a href='#'><img border='0' src='cid:$$CID$$' alt='Track+'/></a></td>
+		</tr>
+	</table>
+
+    <@renderLongFields longFieldChanges/>		
+
+    <div class="containerRow1" style="padding: 0;">
+        <table width="100%" cellpadding="0" cellspacing="0" class="table"> 
+		 	<tr>
+		    	<th>Attribute</th>
+		 		<th>New value</th>
+				<th>Old value</th>
+		  	</tr>			  		  	  
+		  	<@renderShortFields shortFieldChanges/>	  	  
+	  	</table>
+	</div>  	
+		
+	<p>More details at <a href="${moreInfo}">${moreInfo}</a></p>
+</body><!--TPBODYEND-->
+</html>]]></entityAttribute>
+                <entityAttribute name="objectID">1000</entityAttribute>
+                <entityAttribute name="templateChanged">N</entityAttribute>
+                <entityAttribute name="mailTemplateID">1000</entityAttribute>
+                <entityAttribute name="plainMail">false</entityAttribute>
+                <entityAttribute name="uuid">c00c7a61-b8f9-473c-8791-c21e323188f1</entityAttribute>
+                <entityAttribute name="mailSubject">${marker}[${project}] ${changeDetail}</entityAttribute>
+            </trackEntity>
+        	
+        	<!-- German HTML -->
+        	
+            <trackEntity entityId="1001" type="TMailTemplateDefBean">
+                <entityAttribute name="theLocale">de</entityAttribute>
+                <entityAttribute name="mailBody"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="generator" content="Track+ Task Management System 91827364"/>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8"/>
+	<title>Track+ E-Mail Benachrichtigung</title>
+<style>
+    td, th, p, div {
+    font-family: Tahoma, Arial,Helvetica,sans-serif;
+        font-size: 11px;
+    }
+   
+    a {
+color: #1D5090;
+text-decoration: none;
+font-weight: bold;
+}
+
+a:active  {
+color: #BF2128;
+}
+
+a:hover {
+color: #BF2128;
+}
+
+    body {
+font-family: Tahoma,Arial,Helvetica,sans-serif;
+font-size: 11px;
+color: #3A394B;
+margin: 0;
+padding: 10px;
+background: #fff;
+}
+
+p {
+padding: 0 0 10px 0;
+}
+
+
+h1 {
+font-weight: bold;
+font-size: 14px;
+margin: 0 0 3px 0;
+}
+
+h2 {
+font-weight: bold;
+font-size: 12px;
+margin: 0 0 6px 0;
+}
+
+.table {
+border: 0px none #77787b;
+border-collapse: collapse;
+}
+
+.table th {
+/* background:#393B40 none repeat scroll 0%;*/
+border-bottom:1px solid #777;
+border-left:1px solid #777;
+color:#333;
+font-size:11px;
+font-weight:bold;
+padding: 4px 8px;
+text-align:center;
+}
+
+.table th:first-child{
+border-left:0px solid #777;
+}
+
+.table td {
+border-top: 1px solid #e6e6e6;
+border-left: 1px solid #777;
+padding: 4px 8px;
+}
+
+.table tr td:first-child {
+border-left: 0px solid #777;
+}
+
+.firstcol {
+    width:26%;
+    /* background-color:#d8e1ed; */
+    text-align:right;
+}
+
+.valcol {
+    width:37%;
+    /* background-color:#edf0f6; */
+    text-align:left;
+}
+.valcolChanged {
+    width:37%;
+    background-color:#ffaa9f;
+    text-align:left;
+}
+
+.containerRow1 {
+/* background: #EEF0F5 none repeat scroll 0%; */
+border: 0px solid #77787B;
+padding: 5px 15px 0 15px;
+}
+
+.containerRow2 {
+/* background: #EEEDED none repeat scroll 0%; */
+border-left: 1px solid #222;
+padding: 5px 15px  0 15px;
+margin: 10px 0 0 0;
+}
+
+.red { color: #bf2128; }
+    </style>
+     <#-- render the short fields -->
+    <#macro renderShortFields fieldChangeRows>     
+    	<#list fieldChangeRows as fieldChange>
+	    	<tr>
+		       	<td class="firstcol">${fieldChange.localizedFieldLabel}:</td>
+		       	<#-- if copy we are not interested in the change compared to the original workItem -->
+		       	<#assign dispOldValue = "">
+		       	<#if !fieldChange.changed || isCopy>
+		       	    <td class="valcol">${fieldChange.newShowValue}</td>
+		       	<#else>
+		       	    <td class="valcolChanged">${fieldChange.newShowValue}</td>
+		        	<#assign dispOldValue = fieldChange.oldShowValue>
+		       	</#if>
+		       	<td class="valcol">${dispOldValue}</td>
+	       	</tr>	       
+    	</#list>
+	</#macro>
+	<#-- render the long fields  (description, comment, ... ) -->
+	<#macro renderLongFields fieldChangeRows>
+    	<#list fieldChangeRows as fieldChange>
+    	<div class="containerRow2">
+	    	<p>${fieldChange.localizedChangeDetail} <br />
+	    	${fieldChange.newShowValue}</p>
+	    </div>
+    	</#list>    
+	</#macro>
+</head>
+<body> 
+	<table width="100%" cellpadding="0" cellspacing="0" style="margin: 0 0 12px 0;">
+		<tr>
+			<td valign="middle">
+				<h2>
+				    <#if isCreated>
+						<span class="red">${createdBy}</span> hat einen neuen Vorgang ${itemNo} im Raum <span class="red">${project}</span> erstellt.
+					<#elseif isCopy>
+						<span class="red">${createdBy}</span> hat einen neuen Vorgang ${itemNo} im Raum <span class="red">${project}</span> als Kopie von Vorgang ${oldIssue} erstellt.
+					<#else>
+						<span class="red">${changedBy}</span> hat Vorgang ${itemNo} im Raum <span class="red">${project}</span> geändert.					
+					</#if>					
+				</h2>
+				<h1>
+					${title}
+				</h1>
+		    </td>
+		    <td align="right" ><a href='#'><img border='0' src='cid:$$CID$$' alt='Track+'/></a></td>
+		</tr>
+	</table>
+	
+	<@renderLongFields longFieldChanges/>				
+
+	<div class="containerRow1" style="padding: 0;">
+		<table width="100%" cellpadding="0" cellspacing="0" class="table"> 		
+		 	<tr>
+		    	<th>Attribut</th>
+		 		<th>Neuer Wert</th>
+				<th>Alter Wert</th>
+		  	</tr>		  			  		  	  
+		  	<@renderShortFields shortFieldChanges/>	  	  
+	  	</table>
+	</div>  	
+		  
+  	<p>Alle Details unter <a href="${moreInfo}">${moreInfo}</a></p>
+</body><!--TPBODYEND-->
+</html>]]></entityAttribute>
+                <entityAttribute name="objectID">1001</entityAttribute>
+                <entityAttribute name="templateChanged">N</entityAttribute>
+                <entityAttribute name="mailTemplateID">1000</entityAttribute>
+                <entityAttribute name="plainMail">false</entityAttribute>
+                <entityAttribute name="uuid">aa6c9224-1f97-4f11-989f-087fba61d5a0</entityAttribute>
+            	<entityAttribute name="mailSubject">${marker}[${project}] ${changeDetail}</entityAttribute>
+            </trackEntity>
+        	
+        	<!-- French HTML -->
+        	
+        	<trackEntity entityId="1000" type="TMailTemplateDefBean">
+        		<entityAttribute name="theLocale">fr</entityAttribute>
+        		<entityAttribute name="mailBody"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="generator" content="Track+ Task Management System 91827364"/>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8"/>
+	<title>Notification E-Mail Track+</title>
+<style>
+    td, th, p, div {
+    font-family: Tahoma, Arial,Helvetica,sans-serif;
+        font-size: 11px;
+    }
+   
+    a {
+color: #1D5090;
+text-decoration: none;
+font-weight: bold;
+}
+
+a:active  {
+color: #BF2128;
+}
+
+a:hover {
+color: #BF2128;
+}
+
+    body {
+font-family: Tahoma,Arial,Helvetica,sans-serif;
+font-size: 11px;
+color: #3A394B;
+margin: 0;
+padding: 10px;
+background: #fff;
+}
+
+p {
+padding: 0 0 10px 0;
+}
+
+
+h1 {
+font-weight: bold;
+font-size: 14px;
+margin: 0 0 3px 0;
+}
+
+h2 {
+font-weight: bold;
+font-size: 12px;
+margin: 0 0 6px 0;
+}
+
+.table {
+border: 0px none #77787b;
+border-collapse: collapse;
+}
+
+.table th {
+/* background:#393B40 none repeat scroll 0%;*/
+border-bottom:1px solid #777;
+border-left:1px solid #777;
+color:#333;
+font-size:11px;
+font-weight:bold;
+padding: 4px 8px;
+text-align:center;
+}
+
+.table th:first-child{
+border-left:0px solid #777;
+}
+
+.table td {
+border-top: 1px solid #e6e6e6;
+border-left: 1px solid #777;
+padding: 4px 8px;
+}
+
+.table tr td:first-child {
+border-left: 0px solid #777;
+}
+
+.firstcol {
+    width:26%;
+    /* background-color:#d8e1ed; */
+    text-align:right;
+}
+
+.valcol {
+    width:37%;
+    /* background-color:#edf0f6; */
+    text-align:left;
+}
+.valcolChanged {
+    width:37%;
+    background-color:#ffaa9f;
+    text-align:left;
+}
+
+.containerRow1 {
+/* background: #EEF0F5 none repeat scroll 0%; */
+border: 0px solid #77787B;
+padding: 5px 15px 0 15px;
+}
+
+.containerRow2 {
+/* background: #EEEDED none repeat scroll 0%; */
+border-left: 1px solid #222;
+padding: 5px 15px  0 15px;
+margin: 10px 0 0 0;
+}
+
+.red { color: #bf2128; }
+    </style>
+    <#-- render the short fields -->
+    <#macro renderShortFields fieldChangeRows>     
+    	<#list fieldChangeRows as fieldChange>
+	    	<tr>
+		       	<td class="firstcol">${fieldChange.localizedFieldLabel}:</td>
+		       	<#-- if copy we are not interested in the change compared to the original workItem -->
+		       	<#assign dispOldValue = "">
+		       	<#if !fieldChange.changed || isCopy>
+		       	    <td class="valcol">${fieldChange.newShowValue}</td>
+		       	<#else>
+		       	    <td class="valcolChanged">${fieldChange.newShowValue}</td>
+		        	<#assign dispOldValue = fieldChange.oldShowValue>
+		       	</#if>
+		       	<td class="valcol">${dispOldValue}</td>
+	       	</tr>	       
+    	</#list>
+	</#macro>
+	<#-- render the long fields  (description, comment, ... ) -->
+	<#macro renderLongFields fieldChangeRows>
+    	<#list fieldChangeRows as fieldChange>
+    	<div class="containerRow2">
+	    	<p><b>${fieldChange.localizedChangeDetail}</b> <br />
+	    	${fieldChange.newShowValue}</p>
+	    </div>
+    	</#list>    
+	</#macro>
+</head>
+<body>
+	<table width="100%" cellpadding="0" cellspacing="0" style="margin: 0 0 12px 0;">
+		<tr>
+			<td valign="middle">
+				<h2>
+				    <#if isCreated>
+						<span class="red">${createdBy}</span> a créé un élément ${itemNo} dans l'espce de travail <span class="red">${project}</span>.
+					<#elseif isCopy>
+						<span class="red">${createdBy}</span> a créé un élément ${itemNo} dans l'espce de travail <span class="red">${project}</span> en tant que copie de l'élément ${oldIssue}.
+					<#else>
+						<span class="red">${changedBy}</span> a modifié un élément ${itemNo} dans l'espce de travail <span class="red">${project}</span>.					
+					</#if>					
+				</h2>
+				<h1>
+					${title}
+				</h1>
+		    </td>
+		    <td align="right" ><a href='#'><img border='0' src='cid:$$CID$$' alt='Track+'/></a></td>
+		</tr>
+	</table>
+	
+    <@renderLongFields longFieldChanges/>		
+    
+    <div class="containerRow1" style="padding: 0;">
+        <table width="100%" cellpadding="0" cellspacing="0" class="table"> 
+		 	<tr>
+		    	<th>Attribute</th>
+		 		<th>New value</th>
+				<th>Old value</th>
+		  	</tr>			  		  	  
+		  	<@renderShortFields shortFieldChanges/>	  	  
+	  	</table>
+	</div>  	
+		
+	<p>Plus de détails à l'adresse <a href="${moreInfo}">${moreInfo}</a></p>
+</body><!--TPBODYEND-->
+</html>]]></entityAttribute>
+        		<entityAttribute name="objectID">1000</entityAttribute>
+        		<entityAttribute name="templateChanged">N</entityAttribute>
+        		<entityAttribute name="mailTemplateID">1000</entityAttribute>
+        		<entityAttribute name="plainMail">false</entityAttribute>
+        		<entityAttribute name="uuid">ff0c7a61-b8f9-473c-8791-c21e323188f1</entityAttribute>
+        		<entityAttribute name="mailSubject">${marker}[${project}] ${changeDetail}</entityAttribute>
+        	</trackEntity> 
+        	
+        	<!-- English plain -->
+        	
+            <trackEntity entityId="1002" type="TMailTemplateDefBean">
+                <entityAttribute name="theLocale">en</entityAttribute>
+                <entityAttribute name="mailBody"><![CDATA[${changeDetail}
+Project: ${project} - ${itemNo}
+<#if isCreated || isCopy>
+Created by: ${createdBy}
+<#if isCopy>
+Copied from issue <a href="${oldIssue}">${oldIssue}</a>
+</#if>
+<#else>
+Modified by: ${changedBy}
+</#if>	
+
+<#macro renderShortFields fieldChangeRows>     
+<#list fieldChangeRows as fieldChange>	   		
+${fieldChange.localizedFieldLabel}: ${fieldChange.newShowValue} <#if fieldChange.localizedChangeDetail??> < ${fieldChange.localizedChangeDetail} > </#if>  
+</#list>
+</#macro>
+<#macro renderLongFields fieldChangeRows>     
+<#list fieldChangeRows as fieldChange>
+${fieldChange.localizedChangeDetail}
+${fieldChange.newShowValue}
+</#list>
+</#macro>
+<@renderShortFields shortFieldChanges/>	  	  
+	  	
+<@renderLongFields longFieldChanges/>
+
+For further information: ${moreInfo}]]></entityAttribute>
+                <entityAttribute name="objectID">1002</entityAttribute>
+                <entityAttribute name="templateChanged">N</entityAttribute>
+                <entityAttribute name="mailTemplateID">1000</entityAttribute>
+                <entityAttribute name="plainMail">true</entityAttribute>
+                <entityAttribute name="uuid">c95e41f7-c467-451c-8efb-bb03f65c4812</entityAttribute>
+            	<entityAttribute name="mailSubject">${marker}[${project}] ${changeDetail}</entityAttribute>
+            </trackEntity>
+        	
+        	<!-- German plain -->
+        	
+            <trackEntity entityId="1003" type="TMailTemplateDefBean">
+                <entityAttribute name="theLocale">de</entityAttribute>
+                <entityAttribute name="mailBody"><![CDATA[${changeDetail}					
+Projekt: ${project} - ${itemNo}
+<#if isCreated || isCopy>
+Erstellt von: ${createdBy}
+<#if isCopy>
+Kopiert von Vorgang <a href="${oldIssue}">${oldIssue}</a>
+</#if>
+<#else>
+Geändert von: ${changedBy}
+</#if>
+
+<#macro renderShortFields fieldChangeRows>     
+<#list fieldChangeRows as fieldChange>	   		
+${fieldChange.localizedFieldLabel}: ${fieldChange.newShowValue} <#if fieldChange.localizedChangeDetail??> < ${fieldChange.localizedChangeDetail} > </#if>  
+</#list>
+</#macro>
+<#macro renderLongFields fieldChangeRows>     
+<#list fieldChangeRows as fieldChange>
+${fieldChange.localizedChangeDetail}
+${fieldChange.newShowValue}
+</#list>
+</#macro>
+<@renderShortFields shortFieldChanges/>	  	  
+	  	
+<@renderLongFields longFieldChanges/>
+
+Weitere Informationen erhalten Sie unter: ${moreInfo}]]></entityAttribute>
+                <entityAttribute name="objectID">1003</entityAttribute>
+                <entityAttribute name="templateChanged">N</entityAttribute>
+                <entityAttribute name="mailTemplateID">1000</entityAttribute>
+                <entityAttribute name="plainMail">true</entityAttribute>
+                <entityAttribute name="uuid">790516c3-2e37-4b91-817a-e327ef3e5427</entityAttribute>
+            	<entityAttribute name="mailSubject">${marker}[${project}] ${changeDetail}</entityAttribute>
+            </trackEntity>
+  
+  			<!-- French Plain -->
+  
+        	<trackEntity entityId="1002" type="TMailTemplateDefBean">
+        		<entityAttribute name="theLocale">fr</entityAttribute>
+        		<entityAttribute name="mailBody"><![CDATA[${changeDetail}
+Projec: ${project} - ${itemNo}
+<#if isCreated || isCopy>
+Créé par: ${createdBy}
+<#if isCopy>
+Copié à partir de l'élément <a href="${oldIssue}">${oldIssue}</a>
+</#if>
+<#else>
+Modifié par: ${changedBy}
+</#if>	
+
+<#macro renderShortFields fieldChangeRows>     
+<#list fieldChangeRows as fieldChange>	   		
+${fieldChange.localizedFieldLabel}: ${fieldChange.newShowValue} <#if fieldChange.localizedChangeDetail??> < ${fieldChange.localizedChangeDetail} > </#if>  
+</#list>
+</#macro>
+<#macro renderLongFields fieldChangeRows>     
+<#list fieldChangeRows as fieldChange>
+${fieldChange.localizedChangeDetail}
+${fieldChange.newShowValue}
+</#list>
+</#macro>
+<@renderShortFields shortFieldChanges/>	  	  
+	  	
+<@renderLongFields longFieldChanges/>
+
+Pour de plus amples informations: ${moreInfo}]]></entityAttribute>
+        		<entityAttribute name="objectID">1002</entityAttribute>
+        		<entityAttribute name="templateChanged">N</entityAttribute>
+        		<entityAttribute name="mailTemplateID">1000</entityAttribute>
+        		<entityAttribute name="plainMail">true</entityAttribute>
+        		<entityAttribute name="uuid">ff5e41f7-c467-451c-8efb-bb03f65c4812</entityAttribute>
+        		<entityAttribute name="mailSubject">${marker}[${project}] ${changeDetail}</entityAttribute>
+        	</trackEntity>        	
+        </subEntityRelation>
+    </entityExchange>
+</ns2:trackplusExchange>

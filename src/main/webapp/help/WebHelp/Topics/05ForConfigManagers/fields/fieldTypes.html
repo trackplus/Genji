@@ -1,0 +1,475 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="Items have properties like a title or the date they were last modified. This section describes the types of item properties that are available in Genji . New item property types can be added as ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="concept"/><meta name="DC.Title" content="Item property types"/><meta name="abstract" content="Items have properties like a title or the date they were last modified. This section describes the types of item properties that are available in Genji. New item property types can be added as plug-ins, without modification of the core software."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="Items have properties like a title or the date they were last modified. This section describes the types of item properties that are available in Genji. New item property types can be added as plug-ins, without modification of the core software."/><meta name="indexterms" content="property type, item property type"/><meta name="DC.subject" content="property type, item property type"/><meta name="keywords" content="property type, item property type"/><meta name="DC.Relation" scheme="URI" content="../../../Topics/05ForConfigManagers/fields/customFields.html"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="id31fieldTypes"/><link rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Item property types</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()" id="id31fieldTypes">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../../Topics/05ForConfigManagers/fields/customFields.html" title="Items have properties. There are several system properties predefined which you can modify, for example change their label or set default values. Beyond these pre-defined properties you can define custom properties. There are a number of property types like text properties, numeric properties, selections, and date properties provided with Genji. It is possible to extend the number of property types using the Genji plug-in architecture."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Item properties</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../../Topics/05ForConfigManagers/fields/../../../Topics/05ForConfigManagers/Chapter5Wrapper.html" title="Customizing Genji">Customizing Genji</a> / <a class="navheader_parent_path" href="../../../Topics/05ForConfigManagers/fields/customFields.html" title="Items have properties. There are several system properties predefined which you can modify, for example change their label or set default values. Beyond these pre-defined properties you can define custom properties. There are a number of property types like text properties, numeric properties, selections, and date properties provided with Genji. It is possible to extend the number of property types using the Genji plug-in architecture.">Item properties</a></td></tr></tbody></table>
+
+    <h1 class="title topictitle1">Item property types</h1>
+
+    
+    
+    <div class="body conbody"><p class="shortdesc">Items have properties like a title or the date they were
+        last modified. This section describes the types of item properties that are available in <span class="ph"><span class="ph">Genji</span></span>. New item property types can be added as
+        plug-ins, without modification of the core software.</p>
+
+        <div class="section"><h2 class="title sectiontitle">Short text</h2><p class="p">Short text properties
+                can contain short (one line, up to 50 characters) text.</p>
+<div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/shortText1.png" height="110" width="258"/></div><br/>
+                
+            </div>
+<p class="p">You can define a default text that appears when creating an item, and you can
+                define the minimum and maximum length of the property.</p>
+<div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/shortText2.png" height="62" width="258"/></div><br/>
+                
+            </div>
+<p class="p">When you place this property on an input form, it will look like shown
+                below.</p>
+<div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/shortText3.png" height="24" width="138"/></div><br/>
+                
+            </div>
+</div>
+
+        <div class="section"><h2 class="title sectiontitle">Long text for descriptions</h2>
+            
+            <p class="p">Long text properties can contain longer descriptions, up to many thousands of
+                characters. Long texts display as a text area for convenient editing.</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/longText1.png" height="43" width="146"/></div><br/>
+                
+            </div>
+
+            <p class="p">You can define a default text that appears when creating an item, and you can define
+                the minimum and maximum length of the property.</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/longText2.png" height="70" width="154"/></div><br/>
+                
+            </div>
+
+            <p class="p">When you place this property on an input form, it will look like shown below.</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/longText3.png" height="43" width="227"/></div><br/>
+                
+            </div>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Rich text label</h2>
+            
+            <p class="p">Rich text label permits you to show rich text, for example a warning. If the form
+                contains nothing but a rich text label, you will not be able to save it.</p>
+
+            <p class="p">When you place this property on an input form, it will look like shown below.</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/fixedRichText3.png" height="20" width="176"/></div><br/>
+                
+            </div>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Date</h2>
+            
+            <p class="p">Date properties
+                contain dates. At the user interface, the date is formatted according to the users
+                preferred locale. Date properties come with a number of options.</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/date1.png" height="97" width="257"/></div><br/>
+                
+            </div>
+
+            <p class="p"><strong class="ph b">Default value</strong></p>
+
+            <div class="p">You can set the field to contain default values when the user creates a new item.<ul class="ul" id="id31fieldTypes__ul_dtc_hyr_44">
+                    <li class="li">The field is empty</li>
+
+                    <li class="li">The field contains the current date</li>
+
+                    <li class="li">The field contains a constant date</li>
+
+                    <li class="li">The field contains a date related to another date field plus a number of
+                        days</li>
+
+                </ul>
+</div>
+
+            <p class="p"><strong class="ph b">Defining constraints</strong></p>
+
+            <div class="p">You can set restrictions on the date values a user can enter.<ul class="ul" id="id31fieldTypes__ul_dtc_hyr_43">
+                    <li class="li">The earliest date can be set to be either <span class="q">"now"</span> or some fixed date</li>
+
+                    <li class="li">The latest date can be set to be either <span class="q">"now"</span> or some fixed date</li>
+
+                </ul>
+</div>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/date2.png" height="158" width="257"/></div><br/>
+                
+            </div>
+
+            <p class="p"><strong class="ph b">Hierarchical behavior</strong></p>
+
+            <p class="p">When used in an item hierarchy specific date fields come with a default behavior as
+                described below.</p>
+
+            <ul class="ul" id="id31fieldTypes__ul_lsd_szr_44">
+                <li class="li">System fields <span class="q">"Start date"</span> and <span class="q">"End date"</span> of parent items are
+                    calculated from the start and end dates of their descendants (bottom-up). The
+                    calculated values cannot be modified.</li>
+
+                <li class="li">System fields <span class="q">"Target start date"</span> and <span class="q">"Target end date"</span> of parent
+                    items are checked against the target start dates and target end dates of their
+                    descendents. Any conflicts are indicated but not corrected or prohibited.</li>
+
+                <li class="li">Conflicts between target start dates and start dates (bottom-up) and target end
+                    and end dates (bottom-up) are indicated but not prohibited.</li>
+
+            </ul>
+
+            <div class="p">You can overwrite this behavior as follows<ul class="ul" id="id31fieldTypes__ul_zvf_mzr_44">
+                    <li class="li">Setting the hierarchical behavior to  <span class="q">"Compute bottom-up"</span> enforces that
+                        the date field value of parent items is calculated from the date field value
+                        of their descendants (bottom-up). This is the standard behavior for the
+                        system fields <span class="q">"Start date"</span> and <span class="q">"End date"</span>.</li>
+
+                    <li class="li">Setting the hierarchical behavior to <span class="q">"Validate divergence"</span> enforces
+                        that the date field value of parent items is compared with the date field
+                        value of their descendants. Any violation is marked but not prohibited. This
+                        is the standard behavior for the system fields <span class="q">"Target start date"</span> and
+                            <span class="q">"Target end date"</span>.</li>
+
+                </ul>
+</div>
+
+            <p class="p">At the user interface a date property would appear as shown below.</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/date3.png" height="18" width="112"/></div><br/>
+                
+            </div>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Integer</h2>
+            
+            <p class="p">Integer
+                properties can contain integer numbers, negative or positive.</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/integer1.png" height="43" width="149"/></div><br/>
+                
+            </div>
+
+            <p class="p">You can define a default value, a minimum and maximum value. The minimum value needs
+                to be less than the maximum value, if any is defined. Furthermore, the default value
+                needs to be larger or equal to the minimum and less than or equal to the maximum
+                value.</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/integer2.png" height="69" width="149"/></div><br/>
+                
+            </div>
+
+            <p class="p">At the user interface this property appears as shown below.</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/integer3.png" height="18" width="125"/></div><br/>
+                
+            </div>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Double</h2>
+            
+            <p class="p">Double properties
+                can contain floating point numbers, negative or positive.</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/double1.png" height="43" width="144"/></div><br/>
+                
+            </div>
+
+            <p class="p">You can define a default value, a minimum and maximum value. The minimum value needs
+                to be less than the maximum value, if any is defined. Furthermore, the default value
+                needs to be larger or equal to the minimum and less than or equal to the maximum
+                value.</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/double2.png" height="86" width="156"/></div><br/>
+                
+            </div>
+
+            <p class="p">At the user interface this property appears as shown below.</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/double3.png" height="22" width="142"/></div><br/>
+                
+            </div>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Check box</h2>
+            
+            <p class="p">Check box
+                properties can be marked or unmarked.</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/checkbox1.png" height="110" width="254"/></div><br/>
+                
+            </div>
+
+            <p class="p">You define a default value, either marked or unmarked.</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/checkbox2.png" height="30" width="257"/></div><br/>
+                
+            </div>
+
+            <p class="p">When you place this property on an input form, it will look like shown below.</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/checkbox3.png" height="16" width="92"/></div><br/>
+                
+            </div>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Simple select</h2>
+            
+            <p class="p">Simple select lists permit to select a single
+                item from a given list. The default value is configured as part of the list, not as
+                part of the property.</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/simple1.png" height="44" width="148"/></div><br/>
+                
+            </div>
+
+            <div class="note note"><span class="notetitle">Note:</span> You must have defined already a simple list before you start defining a item
+                property of this type. Otherwise you may not be able to complete the definition of
+                an property of this type.</div>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/simple2.png" height="38" width="145"/></div><br/>
+                
+            </div>
+
+            <p class="p">When you place this property on a form, it will look like shown below.</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/simple3.png" height="56" width="123"/></div><br/>
+                
+            </div>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Extensible simple select</h2>
+            
+            <p class="p">The extensible simple select lists permit
+                to select a single item from a given list. Additionally, it permits regular users to
+                add new list entries directly in the edit or create new item mask.</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/extensible1.png" height="37" width="180"/></div><br/>
+                
+            </div>
+
+            <div class="note note"><span class="notetitle">Note:</span> You must have defined already a simple list before you start defining a item
+                property of this type. Otherwise you may not be able to complete the definition of
+                an property of this type.</div>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/simple2.png" height="38" width="145"/></div><br/>
+                
+            </div>
+
+            <p class="p">When you place this property on a form, it will look like shown below.</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/extensible3.png" height="32" width="178"/></div><br/>
+                
+            </div>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Multiple select</h2>
+            
+            <p class="p">Multiple select lists permit to select one or
+                more items from a given list. The default value is configured as part of the list,
+                not as part of the property.</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/multiple1.png" height="43" width="145"/></div><br/>
+                
+            </div>
+
+            <div class="note note"><span class="notetitle">Note:</span> You must have defined already a simple list before you start defining a item
+                property of this type. Otherwise you may not be able to complete the definition of
+                an property of this type.</div>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/multiple2.png" height="37" width="145"/></div><br/>
+                
+            </div>
+
+            <p class="p">When you place this property on a form, it will look like shown below.</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/multiple3.png" height="58" width="136"/></div><br/>
+                
+            </div>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Cascading select parent-child</h2>
+            
+            <p class="p">Cascading select
+                list of type parent-child permit to select from a list of parent items, and when a
+                parent item has been selected the list of selectable child items changes as well.
+                For example, the parent list could be products, and the child list could be
+                components.</p>
+
+            <div class="note note"><span class="notetitle">Note:</span> You must have defined already a list of this type before you start defining a
+                custom property of this type. Otherwise you may not be able to complete the
+                definition of an property of this type.</div>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/parentChild1.png" height="44" width="145"/></div><br/>
+                
+            </div>
+
+            <p class="p">In our example, we have a short list of customers, Bosch and Siemens. The children
+                are divisions of Bosch and Siemens. For Bosch, we have divisions Benzin and Diesel,
+                for Siemens we have divisions telecommunication and medical. All this information is
+                contained in the list named „Customers“.</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/parentChild2.png" height="36" width="134"/></div><br/>
+                
+            </div>
+
+            <p class="p">When placed on the screen, this selection would look like shown below.</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/parentChild3.png" height="35" width="148"/></div><br/>
+                
+            </div>
+
+            <p class="p">When the selection in the left box is changed, the selection in the right box changes
+                as well. Another example would be a selection for an operating system: Windows,
+                Linux, Solaris on the left, and the version (98, ME, XP, Vista, Redhat, Debian,
+                SuSE) on the right.</p>
+
+            <div class="note note"><span class="notetitle">Note:</span> Even though the selection appears as two properties, this will be a single
+                property in the database. To search for this in TQLPlus you would search for
+                „Customer:Bosch#Benzin“. The property name is shown as part of the tool tip, in
+                case your label is different from the property name.</div>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Cascading select parent-children</h2>
+            
+            <p class="p">Cascading select
+                list of type parent-children associate two lists of child items with a single entry
+                in the parent item list. The first child has no dependence on the second child.</p>
+
+            <p class="p">For example, if the parent item list would contain car models, the first child list
+                could contain engine sizes available for this model, and the second child list could
+                contain colours available for this model. Different models might be offered with
+                different engine sizes and colors.</p>
+
+            <div class="note note"><span class="notetitle">Note:</span> You must have defined already a list of this type before you start defining a item
+                property of this type. Otherwise you may not be able to complete the definition of
+                an property of this type.</div>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/parentChildren1.png" height="44" width="148"/></div><br/>
+                
+            </div>
+
+            <p class="p">In our example we have defined a generic list Parent-Children, with three parent,
+                Parent-1, Parent-2, and Parent-3. Each parent item has two lists with a number of
+                child items associated with it. For example, Parent-1 has in its first child list
+                Child-1:1, Child-1:2 and in its second child list Child-1:L1, Child-1:L2,
+                Child-1:L3. The names can of course be anything.</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/parentChildren2.png" height="38" width="152"/></div><br/>
+                
+            </div>
+
+            <p class="p">At the user interface this would look like shown below. When the parent selection is
+                changed, the two children lists change along.</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/parentChildren3.png" height="18" width="202"/></div><br/>
+                
+            </div>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Cascading select parent-child-grandchild</h2><p class="p">Cascading select list of type
+                parent-child-grandchild creates a hierarchy of dependencies. The child list is
+                unique for each parent. The grandchild list is unique for each child. This can be
+                thought of as a tree with a nesting level of two.</p>
+<p class="p">For example, if the parent
+                item list would contain car manufacturers, the child list could contain models for
+                each car manufacturer, and the second list could contain engine sizes for each model
+                of that manufacturer.</p>
+<p class="p">The engine size that could be selected would depend on
+                the specific model of that manufacturer.</p>
+<div class="note note"><span class="notetitle">Note:</span> You must have defined already a
+                list of this type before you start defining a item property of this type. Otherwise
+                you may not be able to complete the definition of an property of this
+                type.</div>
+<div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/parentcgc1.png" height="44" width="146"/></div><br/>
+                
+            </div>
+In our example we have defined a parent list with three parent entries. For each
+            parent we have defined three children. For each child we have defined a number of
+                grandchildren.<div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/parentcgc2.png" height="41" width="177"/></div><br/>
+                
+            </div>
+<p class="p">At the user interface this property type would look like shown below. When you
+                change the parent selection, both the child and grandchild selection changes
+                automatically. </p>
+<p class="p">When you change the child selection, the grandchild selection
+                changes automatically.</p>
+<div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/parentcgc3.png" height="42" width="209"/></div><br/>
+                
+            </div>
+</div>
+
+        <div class="section"><h2 class="title sectiontitle">User picker (general)</h2>
+            
+            <p class="p">The user picker is an property where you can
+                select an entry from a list of users. Which users appear in this list you can define
+                by roles a user has in that project, or by the organizational unit the user belongs
+                to.</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/userpicker1.png" height="112" width="256"/></div><br/>
+                
+            </div>
+
+            <p class="p">You can assign automail settings to the selected user based on the predefined
+                automail roles. You can disable automail for the selected user, or treat him like he
+                was the author, manager, or responsible of the item. You can also treat him like he
+                was on the consulted or observed list.</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/userpicker2.png" height="134" width="255"/></div><br/>
+                
+            </div>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">User picker (on behalf of)</h2>
+            
+            <p class="p">The user picker (on behalf of) is treated in
+                the system like the author of an item. This permits you to create an item on behalf
+                of somebody else, and this other person will see this item and can treat it as if he
+                was the orginal author. Which users you can select you can define by roles a user
+                has in the workspace the current item belongs to, or by the organizational unit the
+                user belongs to.</p>
+
+            <p class="p">The automail settings are the same as for the author.</p>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Workspace picker</h2>
+            
+            <p class="p">The workspace picker permits to relate a
+                workspace to an item other than the workspace this item is a part of.</p>
+
+            <div class="fig figborder" id="id31fieldTypes__fig_xkz_45x_44"><br/><div class="imagecenter"><img class="image imagecenter" id="id31fieldTypes__image_zkz_45x_44" src="figures/workspace1.png" height="187" width="256"/></div><br/>
+                
+            </div>
+
+        </div>
+
+    </div>
+
+<div class="related-links"/>
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../../Topics/05ForConfigManagers/fields/customFields.html" title="Items have properties. There are several system properties predefined which you can modify, for example change their label or set default values. Beyond these pre-defined properties you can define custom properties. There are a number of property types like text properties, numeric properties, selections, and date properties provided with Genji. It is possible to extend the number of property types using the Genji plug-in architecture."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Item properties</span></a></span>  </div>
+</body>
+</html>

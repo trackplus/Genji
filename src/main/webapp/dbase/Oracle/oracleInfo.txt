@@ -1,0 +1,51 @@
+
+
+
+***********************************************************************
+
+This happend because the Oracle JDBC driver for Version 9 or 10 change
+the behavior of the JDBC DATE and now support the sql DATE standard by
+having only a DATE, no time.
+
+Torque is mapping TIMESTAMP to Oracle DATE datatype so this is why you
+get a truncated date now. ( See
+http://otn.oracle.com/tech/java/sqlj_jdbc/htdocs/jdbc_faq.htm ).
+
+When Oracle changed the DATE behavior, they added the TIMESTAMP datatype
+that contain the date and time. 
+
+We converted our Oracle schema to use the TIMESTAMP datatype instead of
+the DATE datatype when we needed the precision and modified the db_props
+mapping in the torque jar to use the TIMESTAMP datatype and everything
+work fine now. 
+
+No need for the patched village jar.
+
+Hope this help. Tell me if this resolved your issue.
+
+Thank you.
+
+
+HOW TO MODIFY DB.PROPS
+
+Open the torque-gen-3.1.jar ( WinZip work well to do that ) and edit the
+sql\base\oracle\db.props.properties file.
+
+Change the mapping for the TIMESTAMP to TIMESTAMP. You should also
+change the TIME to TIME instead of DATE as in the original file.
+
+Here is my changes:
+=========================================================
+# Changed to support JDBC for Oracle DB V9 and better.
+# The DATE format changed in Oracle to only a date, no time.
+# so we now use the TIME type.
+# Was TIME = DATE
+# Luc Major 2004/06/17
+TIME = TIME
+# Changed to support JDBC for Oracle DB V9 and better.
+# Was TIMESTAMP = DATE
+# The DATE format changed in Oracle to only a date, no time.
+# They created TIMESTAMP type.
+# Luc Major 2004/06/17
+TIMESTAMP = TIMESTAMP
+==========================================================

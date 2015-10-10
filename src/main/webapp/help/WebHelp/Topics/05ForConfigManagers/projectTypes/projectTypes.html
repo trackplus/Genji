@@ -1,0 +1,210 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="Workspace types help you minimize the effort of configuring a large number of workspaces or projects. Workspaces inherit their configuration from their associated workspace type. By configuring a ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="concept"/><meta name="DC.Title" content="Managing workspace types"/><meta name="abstract" content="Workspace types help you minimize the effort of configuring a large number of workspaces or projects. Workspaces inherit their configuration from their associated workspace type. By configuring a workspace type you configure all workspaces that you have associated with that type."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="Workspace types help you minimize the effort of configuring a large number of workspaces or projects. Workspaces inherit their configuration from their associated workspace type. By configuring a workspace type you configure all workspaces that you have associated with that type."/><meta name="indexterms" content="workspace type, restrict item types, restrict statuses, restrict priorities, restrict severities, restrict child workspace types, customize, workspace type"/><meta name="DC.subject" content="workspace type, restrict item types, restrict statuses, restrict priorities, restrict severities, restrict child workspace types, customize"/><meta name="keywords" content="workspace type, restrict item types, restrict statuses, restrict priorities, restrict severities, restrict child workspace types, customize"/><meta name="DC.Relation" scheme="URI" content="../../../Topics/05ForConfigManagers/Chapter5Wrapper.html"/><meta name="DC.Creator" content="Steinbeis Technical Documentation"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="idWorkspaceTypes"/><link rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Managing workspace types</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()" id="idWorkspaceTypes">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../../Topics/05ForConfigManagers/Chapter5Wrapper.html" title="Customizing Genji"><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Customizing Genji</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../../Topics/05ForConfigManagers/Chapter5Wrapper.html" title="Customizing Genji">Customizing Genji</a></td></tr></tbody></table>
+
+    <h1 class="title topictitle1">Managing workspace types</h1>
+
+    
+    
+    <div class="body conbody"><p class="shortdesc">Workspace types help you minimize the effort of configuring a large number of
+        workspaces or projects. Workspaces inherit their configuration from their associated
+        workspace type. By configuring a workspace type you configure all workspaces that you have
+        associated with that type.</p>
+
+        <p class="p">With workspace types you can provide different configurations for different types of
+            spaces or projects. For example, if you are in embedded systems development, or develop
+            mechatronical systems, you may have a workspace type for the electronics part, for the
+            mechanical part, and for the software. For the mechanical part you don't need releases,
+            for the electronic circuit boards you may have three editions, and for the software you
+            need a lot of releases, a product backlog, sprints, and so on.</p>
+
+        <p class="p">For a workspace type you can configure the following entities:</p>
+
+        <ul class="ul">
+            <li class="li">if it can have phases and releases</li>
+
+            <li class="li">if it supports accounting and progress monitoring</li>
+
+            <li class="li">which item types are available</li>
+
+            <li class="li">which states are available</li>
+
+            <li class="li">which priorities are available</li>
+
+            <li class="li">which severities are available</li>
+
+            <li class="li">which child workspace types are available</li>
+
+            <li class="li">custom properties</li>
+
+            <li class="li">custom forms</li>
+
+            <li class="li">workflow assignments</li>
+
+        </ul>
+
+        <p class="p">To edit<span class="ph">, create or delete</span> workspace types go to <span class="ph menucascade"><span class="ph uicontrol">Administration</span> &gt; <span class="ph uicontrol">Customize</span> &gt; <span class="ph uicontrol">Workspace types</span></span>.</p>
+
+        <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" id="idWorkspaceTypes__image_vj3_3ts_kk" src="figures/workspace1.png" height="329" width="516"/></div><br/>
+            
+        </div>
+
+        <p class="p"><span class="ph">Add a workspace type by clicking on "Add" in the small toolbar.</span>
+            Edit a workspace type
+            by selecting it in the second navigation column from the left. The workspace type flag
+            mostly affects terminology, like "sprint" instead of "phase", etc.</p>
+
+        <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" id="idWorkspaceTypes__image_jlb_sts_kk" src="figures/workspace2.png" height="329" width="585"/></div><br/>
+            
+        </div>
+
+        <p class="p">You can enter a default for the hours of work per working day. This value is taken if no
+            other value is set in the workspaces themselves.</p>
+
+        <p class="p">Once you are done with editing, save the changes using the „Save“ button in the small
+            toolbar area.</p>
+
+        <div class="section"><h2 class="title sectiontitle">Assigning available item types</h2>
+            
+            <p class="p">You can assign which of all defined item types will be available for spaces of the
+                selected workspace type. Drag those that you want from the right column to the left
+                column. If you don't drag any there, all will be available.</p>
+
+            <div class="p">
+                <div class="fig fignone"><br/><div class="imagecenter"><img class="image imagecenter" id="idWorkspaceTypes__image_e33_fxs_kk" src="figures/wst-itemt.png" height="178" width="485"/></div><br/>
+                    
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Assigning available states</h2>
+            
+            <p class="p">You can assign which of all defined states will be available for spaces of the
+                selected workspace type. This you define for each item type. For example, an item of
+                type "mile stone" might require only the states "open" and "passed", while a problem
+                report might require many more states.</p>
+
+            <p class="p">Drag those states that you want from the right column to the left column. If you
+                don't drag any there, all will be available.</p>
+
+            <div class="p">
+                <div class="fig fignone"><br/><div class="imagecenter"><img class="image imagecenter" id="idWorkspaceTypes__image_f4w_xxs_kk" src="figures/wst-status.png" height="214" width="437"/></div><br/>
+                    
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Assigning available priorities</h2>
+            
+            <p class="p">You can assign which of all defined priorities will be available for spaces of the
+                selected workspace type. This you define for each item type. Drag those that you
+                want from the right column to the left column. If you don't drag any there, all will
+                be available.</p>
+
+            <div class="p">
+                <div class="fig fignone"><br/><div class="imagecenter"><img class="image imagecenter" id="idWorkspaceTypes__image_ksq_2xs_ky" src="figures/wst-prio.png" height="184" width="440"/></div><br/>
+                    
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Assigning available severities</h2>
+            
+            <p class="p">You can assign which of all defined severities will be available for spaces of the
+                selected workspace type. This you define for each item type. Drag those that you
+                want from the right column to the left column. If you don't drag any there, all will
+                be available.</p>
+
+            <div class="p">
+                <div class="fig fignone"><br/><div class="imagecenter"><img class="image imagecenter" id="idWorkspaceTypes__image_ksq_2xs_kk" src="figures/wst-sev.png" height="178" width="435"/></div><br/>
+                    
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Assigning child workspace types</h2>
+            
+            <p class="p">You can assign which workspace types are available for a subspace or child
+                workspace for the selected parent workspace type. For example, you can define
+                that for a workspace of tpye "Helpdesk" you can only create child workspaces of the
+                same type. Drag the workspace types you want to make available from the right 
+                column to the left column. If you don't drag any there, all will
+                be available.</p>
+
+            <div class="p">
+                <div class="fig fignone"><br/><div class="imagecenter"><img class="image imagecenter" id="idWorkspaceTypes__image_ksq_3xs_kk" src="figures/wst-childwst.png" height="232" width="390"/></div><br/>
+                    
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Defining and assigning custom properties</h2>
+            
+            <p class="p">You can define custom properties specifically for each workspace type. You could
+                overwrite property properties at this level, for example because you need to call items
+                "issues" in some projects, and "bugs" in another project. The procedure of defining
+                and assigning custom properties is described in <a class="xref" href="../fields/manageFields.html" title="This section describes how to add, overwrite, modify, and delete custom properties.">Managing custom properties</a>.</p>
+
+            <div class="p">
+                <div class="fig fignone"><br/><div class="imagecenter"><img class="image imagecenter" id="idWorkspaceTypes__image_fsz_dxs_kk" src="figures/wst-fields.png" height="271" width="483"/></div><br/>
+                    
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Defining and assigning custom forms</h2>
+            
+            <p class="p">You can define and assign custom forms specifically for the selected workspace type.
+                How this is done is described in <a class="xref" href="../forms/managingForms.html" title="This section describes how to create, assign, modify, and delete custom forms.">Managing custom Forms</a>.</p>
+
+            <div class="p">
+                <div class="fig fignone"><br/><div class="imagecenter"><img class="image imagecenter" id="idWorkspaceTypes__image_ql4_dxs_kk" src="figures/wst-forms.png" height="276" width="547"/></div><br/>
+                    
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Assigning workflows</h2>
+            
+            <p class="p">You can assign workflows to item types in the selected workspace type. How this is
+                done is described in <a class="xref" href="../workflows/workflows.html" title="You can define workflows that specify who can perform state transitions on items and what happens together with such state transitions. You can associate scripts with workflow state transitions that perform arbitrary actions and checks.">Managing workflows</a>.</p>
+
+            <div class="p">
+                <div class="fig fignone"><br/><div class="imagecenter"><img class="image imagecenter" id="idWorkspaceTypes__image_ed1_dxs_kk" src="figures/wst-workflow.png" height="179" width="541"/></div><br/>
+                    
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+<div class="related-links"/>
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../../Topics/05ForConfigManagers/Chapter5Wrapper.html" title="Customizing Genji"><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Customizing Genji</span></a></span>  </div>
+</body>
+</html>

@@ -1,0 +1,359 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<meta charset=utf-8 />
+		<title>Track+</title>
+		<!-- <link rel="shortcut icon" href="resources/img/trackLogo.jpg" type="image/x-icon"> -->
+		<style>
+			#submitButton2 {
+				display: block !important;
+				font-weight: normal;
+				height: 34px !important;
+				padding: 0 25px !important;
+				top: 1px;
+				position: relative;
+				width: 145px !important;
+			}
+
+			input#submitButton2.button.large.blue.signin-button {
+				margin-left: 14px !important;
+			}
+
+			@media only screen and (max-device-width: 1024px) {
+				#submitButton2 {
+					width: 100px !important;
+				}
+			}
+
+			html, body, div, ul, ol, li, dl, dt, dd, h1, h2, h3, h4, h5, h6, pre, form, p, blockquote, fieldset, input, abbr, article, aside, command, details, figcaption, figure, footer, header, hgroup, mark, meter, nav, output, progress, section, summary, time {
+				margin: 0;
+				padding: 0;
+			}
+			h1, h2, h3, h4, h5, h6, pre, code, address, caption, cite, code, em, strong, th, figcaption {
+				font-size: 1em;
+				font-style: normal;
+				font-weight: normal;
+			}
+
+			table {
+				border-collapse: collapse;
+				border-spacing: 0;
+			}
+			html {
+				background-color: rgba(0, 0, 0, 0);
+			}
+			body {
+				background-color: #f1f1f1;
+			}
+
+			img {
+				border: 0 none;
+			}
+			.content, .rounded {
+				border-radius: 4px;
+			}
+			.shadow {
+				box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+			}
+
+			body {
+				color: #333;
+				font: 14px/20px "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+			}
+			a {
+				color: #08c;
+			}
+			a:link, a:visited, a:active {
+				text-decoration: none;
+			}
+			a:hover {
+				text-decoration: underline;
+			}
+			a.block {
+				cursor: pointer;
+				display: block;
+			}
+			a.block span, a.block em {
+				color: #08c;
+				cursor: pointer;
+			}
+			a.block:hover {
+				text-decoration: none;
+			}
+			a.block:hover span, a.block:hover em {
+				color: #08c;
+				text-decoration: underline;
+			}
+
+			p {
+				margin-bottom: 18px;
+				word-spacing: -1px;
+			}
+
+			.button {
+				display: inline;
+				font-size: 12px;
+				font-weight: bold;
+				padding: 4px 0 6px 10px;
+				text-align: center;
+			}
+			.button span, .button input {
+				border: medium none;
+				display: inline;
+				font-size: 1em;
+				font-weight: normal;
+				padding: 4px 18px 6px 8px;
+			}
+			.button input {
+			}
+			@media only screen and (max-device-width: 768px) {
+				.button {
+					padding-left: 8px;
+				}
+				.button span, .button input {
+					padding-right: 16px;
+				}
+			}
+			.button, .button span, .button input {
+				color: #333;
+				text-shadow: 0 1px 1px #fff;
+			}
+			.button:hover, .button:hover span, .button:hover input {
+				color: #666;
+				cursor: pointer;
+				text-decoration: none;
+			}
+
+			.button {
+				background: rgba(0, 0, 0, 0) url("https://devimages.apple.com.edgekey.net/assets/elements/buttons/button_left.png") no-repeat scroll 0 50%;
+			}
+			.button input, .button span {
+				background: rgba(0, 0, 0, 0) url("https://devimages.apple.com.edgekey.net/assets/elements/buttons/button_right.png") no-repeat scroll 100% 50%;
+			}
+			.button.blue, .button.liteblue {
+				background-image: url("https://devimages.apple.com.edgekey.net/assets/elements/buttons/button_lilblue_left.png");
+			}
+			.button.blue input, .button.blue span, .button.liteblue input, .button.liteblue span {
+				background-image: url("https://devimages.apple.com.edgekey.net/assets/elements/buttons/button_lilblue_right.png");
+			}
+			.button.large, .button.small {
+				display: inline-block;
+				float: left;
+			}
+			.button.large {
+				font-size: 13px;
+				height: 31px;
+				line-height: 30px;
+				padding: 0 26px;
+			}
+
+			.button.large span, .button.large input, .button.small span, .button.small input {
+				background-image: none;
+				color: inherit;
+				display: inline-block;
+				font-size: inherit;
+				font-weight: bold;
+				height: auto !important;
+				margin: 0 !important;
+				padding: 0 !important;
+				text-shadow: inherit;
+				white-space: nowrap;
+				width: auto !important;
+			}
+
+			.button.large.red, .button.red.disabled:hover {
+				background-color: #ee0306;
+				background-image: linear-gradient(to bottom, #ee0306, #cd0205);
+				border-color: #a60303 #a60303 #a50101 #a50101;
+				color: #fff;
+				text-shadow: 0 -1px 1px #7f0000;
+			}
+			.button.large.red:hover {
+				background-color: #de0000;
+				background-image: linear-gradient(to bottom, #de0000, #bd0000);
+				color: #fff;
+				text-shadow: 0 -1px 1px #860000;
+			}
+			.button.large.red:active {
+				background-color: #860000;
+				background-image: linear-gradient(to bottom, #860000, #ee0306);
+				border-color: #8d0000 #9c0000 #9c0000 #8d0000;
+			}
+			.button.red.disabled, .button.red.disabled:hover, .button.red.disabled:hover span {
+				color: #eb8a8a !important;
+				text-shadow: 0 -1px 1px #b30f0f;
+			}
+
+			.button, .large {
+				height: auto !important;
+				padding: 0 !important;
+			}
+			.button.large {
+				background: rgba(0, 0, 0, 0) linear-gradient(to bottom, #fff 0px, #ebebeb 100%) repeat scroll 0 0;
+				border: 1px solid #aaa;
+				border-radius: 4px;
+				color: #0085cc;
+				display: inline-block;
+			}
+			.button.large span, .button.large input {
+				display: block;
+				font-weight: normal;
+				padding: 2px 24px !important;
+			}
+			.button.large:hover input, .button.large:hover span {
+				background: rgba(0, 0, 0, 0) linear-gradient(to bottom, #fff 0px, #ddd 100%) repeat scroll 0 0;
+				border-radius: 4px;
+				/* color: #0085cc; */
+				color: #d80306;
+			}
+			.blue:hover input, .blue:hover span {
+				color: #fff !important;
+			}
+			.button.large.blue {
+				background: rgba(0, 0, 0, 0) linear-gradient(to bottom, #37aaea 0px, #117ed2 100%) repeat scroll 0 0;
+				border-color: #1992da #0c75bb #00589c;
+				box-shadow: 0 1px 1px 0 #6fc5f5 inset;
+				color: #ffffff !important;
+			}
+			.button.large.blue:hover input, .button.large.blue:hover span {
+				background: #37aaea linear-gradient(to bottom, #37aaea 0%, #0e63b0 100%) repeat scroll 0 0 !important;
+				border-radius: 4px;
+				box-shadow: 0 1px 1px 0 #6fc5f5 inset;
+				color: #fff;
+			}
+			a.forgot-button {
+				clear: both;
+				color: #fff !important;
+				cursor: pointer;
+				display: block;
+				font-size: 14px;
+				height: 0;
+				position: relative;
+				text-align: center;
+				text-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+				top: 18px;
+			}
+
+			.register-button span {
+				color: #d80306 !important;
+			}
+			#content {
+				padding: 18px 20px;
+				position: relative;
+			}
+
+			.content {
+				-moz-border-bottom-colors: none !important;
+				-moz-border-left-colors: none !important;
+				-moz-border-right-colors: none !important;
+				-moz-border-top-colors: none !important;
+				background: rgba(0, 0, 0, 0) linear-gradient(to bottom, #e8e8e8 0%, #cccccc 100%) repeat scroll 0 0;
+				border-color: -moz-use-text-color #bbb #bbb !important;
+				border-image: none !important;
+				border-radius: 6px;
+				border-style: none solid solid !important;
+				border-width: medium 1px 1px !important;
+				box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+				padding: 24px !important;
+			}
+
+			input[type="text"], input[type="password"], input[type="search"] {
+				border: medium none;
+				border-radius: 6px;
+				box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4) inset;
+				font-size: 14px;
+				height: 36px;
+				padding: 0px 10px 0px 10px;
+			}
+			.textfield {
+				width: 320px;
+				color: #333;
+				font-family: "Lucida Grande", Helvetica, Arial, Verdana, sans-serif;
+			}
+
+			body, html {
+				height: 100%;
+				min-height: 100%;
+				margin: 0;
+			}
+			.wrapper {
+				background: rgba(0, 0, 0, 0) linear-gradient(to bottom, #82878f 0%, #73787e 100%) repeat scroll 0 0;
+				min-height: 100%;
+				position: relative;
+			}
+			.wrongpwd {
+				color:#ff0000;
+				font-size:9pt;
+				text-align:center;
+				padding-bottom:20px;
+			}
+
+		</style>
+	</head>
+
+	<body>
+		<div class="wrapper">
+
+			<table style="margin: auto;width:350px;">
+				<tbody>
+					<tr>
+						<td style="text-align:center;padding-top:70px;padding-bottom:30px;"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEQAAAAcCAYAAADYzhkoAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAhNJREFUeNrsWEtugzAQhaoXQOq+Eqvu6RHoEegR6BHIEdIjJEdIjkCOQPbdFCn7ihyBYtW0TyOPf0AbpR5pJIT9iOd5/GacuO/7KNiP3V5TMHEcs2Onu4fvnb//eGMn3oScCIQEQgIhgZBAyHKVSvQhunJ1YVYOXsjn1eBHrrT+lz4kGTyH58WPTC+9Dp3qFZiuAw2d6h9liDjH2eAHzZiwMxVAg2US0zquJwNtaT3wg2B83XYr0A/quUJfhNK/k3kbIKFWfKeDOVwwOwVOYFI5p1KsCyvQONbQ3xFHZvS5CemYeY0kqjd4o1iGCdfJADlCMh0ZPoTYVBkaVA7B1LCISgZQAjYlWVORo9VB4KV8hwSUmgxJCT7jRHVJQlILbaGWAn4H7zHIgsFFDCGJ3BwtGS6E+Ijq0UKszop3LUNYDuN7A47aBkhYqYQbNjzGnZ2TkLPFnBR20KYyRB4VYa3LiEtqzHZM6rscr8iBSCRob7lhv3bbXQMZYnFPxH0zjrOtPCojsZvJEXiIqu6e02lKK/eNGkTRZBUjzA3Xn4j4XHzuDEk0u85VpgNgCwfcFp5XRGiTuTIEmS6JMNpkSE3wGFTDfGNqH4JEjGNr3wyhhBSWrTtnNp2q6htTO1VKbD+K7tQjI4Tw2fEipsK3CuF8MeAemT5kK8dM4ivGX6cenSX/QsSb58ED63PbNUmC0T4FGAC3QqPMvPIyIAAAAABJRU5ErkJggg=="
+						style="align:center; margin: auto;"  alt=""></td>
+					</tr>
+				</tbody>
+			</table>
+			<div id="content"  class="content" style="margin:auto;width:350px;">
+				<div  class="wrongpwd">
+					Your login name or password was entered incorrectly.
+				</div>
+				<form method="POST" action="j_security_check">
+					<table>
+						<tbody>
+							<tr>
+								<td colspan="2">
+								<div>
+									<input type="text" class = "textfield" name="j_username" placeholder="Login Name"/>
+
+								</div></td>
+							</tr>
+							<tr>
+								<td>
+								<div class="spacerrow">
+									&nbsp;
+								</div></td>
+							</tr>
+							<tr>
+								<td colspan="2">
+								<div>
+									<input type="password" class = "textfield" name="j_password" placeholder="Password"/>
+
+								</div></td>
+							</tr>
+							<tr>
+								<td >
+								<div class="spacerrow">
+									&nbsp;
+								</div></td>
+							</tr>
+							<tr>
+								<td ><a style="margin-left:10px;" class="button large register-button" href="REGISTERURL"> <span>Create Track+ ID</span> </a></td>
+								<td>
+								<input type="submit" id="submitButton2" class="button red large" value="Login" />
+								</td>
+							</tr>
+
+						</tbody>
+					</table>
+				</form>
+			</div>
+			<table style="margin: auto;width:350px;">
+				<tbody>
+					<tr>
+						<td style="text-align:center;padding-top:10px;padding-bottom:30px;"><a class="forgot-button" href="FORGOTURL">Forgot Password?</a></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+	</body>
+</html>

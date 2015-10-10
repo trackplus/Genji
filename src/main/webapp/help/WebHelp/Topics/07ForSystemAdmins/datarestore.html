@@ -1,0 +1,79 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="A system administrator can restore data from a backup file to recover from a crash, port data to a new system, or go back to previous date. In the top toolbar select Administration &gt; Manage server &gt; ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="concept"/><meta name="DC.Title" content="Restoring data from backup"/><meta name="abstract" content="A system administrator can restore data from a backup file to recover from a crash, port data to a new system, or go back to previous date."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="A system administrator can restore data from a backup file to recover from a crash, port data to a new system, or go back to previous date."/><meta name="DC.Relation" scheme="URI" content="../../Topics/07ForSystemAdmins/Chapter7Wrapper.html"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="id32restore"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Restoring data from backup</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../Topics/07ForSystemAdmins/Chapter7Wrapper.html" title="Administering the server"><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Administering the server</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../Topics/07ForSystemAdmins/Chapter7Wrapper.html" title="Administering the server">Administering the server</a></td></tr></tbody></table>
+
+    <div class="nested0" id="id32restore">
+        <h1 class="title topictitle1">Restoring data from backup</h1>
+
+        
+        <div class="body conbody"><p class="shortdesc">A system administrator can restore data from a backup
+            file to recover from a crash, port data to a new system, or go back to previous
+            date.</p>
+
+            <p class="p"><span class="ph">In the top toolbar select <span class="ph menucascade"><span class="ph uicontrol">Administration</span> &gt; <span class="ph uicontrol">Manage server</span> &gt; <span class="ph uicontrol">Data restore</span></span>.</span></p>
+
+            <p class="p">On the screen that appears select the file from which you want to restore data. Then
+                you need to enter:</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/dataRestore.png" height="205" width="354"/></div><br/>
+                
+            </div>
+
+            <ol class="ol">
+                <li class="li">A JDBC driver class. When you open the screen you see the same driver class your
+                    current <span class="ph"><span class="ph">Genji</span></span> instance is using. For a
+                    standard backup into the same type of database system this selection is fine. If
+                    you want to move to another database system, you would have to enter the driver
+                    class for your new target database system here.</li>
+
+                <li class="li">A JDBC URL. Here the JDBC URL of your current <span class="ph"><span class="ph">Genji</span></span> database instance is already entered,
+                    but with a renamed database name. <div class="note important"><span class="importanttitle">Important:</span> You need to create a
+                        new empty database and enter its name here before you can proceed with the
+                        backup. It is not possible to use the same database the current <span class="ph"><span class="ph">Genji</span></span> instance is running
+                    on.</div>
+</li>
+
+                <li class="li">A JDBC user name and password, as you have configured when you created the
+                    database.</li>
+
+                <li class="li">Do not restore the database schema when you switch database systems. Mark the
+                    check box appropriately.</li>
+
+                <li class="li">Check if you also want to restore attachments if any are included in the backup
+                    file.</li>
+
+                <li class="li">The directory where you want to restore the attachments to. It is not possible
+                    and advisable to restore to the same directory as your current attachments are
+                    in, you should define a new directory here.</li>
+
+            </ol>
+
+            <p class="p">Thereafter you can start the restore process. Once the process is done you need to
+                switch over to the restored database, and need to configure the path to the new
+                attachment directory.</p>
+
+            <p class="p">To have your <span class="ph"><span class="ph">Genji</span></span> installation point to the new
+                (restored) database you need to change the JDBC URL, user name and password in file
+                    <span class="ph filepath">WEB-INF/Torque.properties</span>. Then you need to restart your
+                server.</p>
+
+            <p class="p">To adapt your attachment directory go to <span class="ph menucascade"><span class="ph uicontrol">Administration</span> &gt; <span class="ph uicontrol">Manager server</span> &gt; <span class="ph uicontrol">Server configuration...</span> &gt; <span class="ph uicontrol">tab Other</span></span>.</p>
+
+        </div>
+
+    <div class="related-links"/>
+</div>
+
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../Topics/07ForSystemAdmins/Chapter7Wrapper.html" title="Administering the server"><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Administering the server</span></a></span>  </div>
+</body>
+</html>

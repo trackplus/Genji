@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+version="2.5">
+	<display-name>Track+</display-name>
+
+	<!--
+	<listener>
+        <listener-class> org.jhades.JHadesServletListener</listener-class>
+    </listener>
+    -->
+	<!-- This filter is needed for Weblogic server-->
+	<filter>
+		<filter-name>struts-cleanup</filter-name>
+		<filter-class>org.apache.struts2.dispatcher.ActionContextCleanUp</filter-class>
+	</filter>
+
+	<filter>
+		<filter-name>struts2</filter-name>
+		<filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
+	</filter>
+
+	<!-- ============================================================ -->
+	<!-- The well known filter from Jakarta Tomcat Examples that	  -->
+	<!-- unconditionally sets the character encoding to be used in	-->
+	<!-- parsing the incoming request.								-->
+	<!-- ============================================================ -->
+	<filter>
+		<filter-name>Set Character Encoding</filter-name>
+		<filter-class>filters.SetCharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+
+    <filter-mapping>
+        <filter-name>Set Character Encoding</filter-name>
+        <!-- <servlet-name>action</servlet-name>  -->
+        <url-pattern>*.action</url-pattern>
+    </filter-mapping>
+
+	<filter-mapping>
+		<filter-name>struts2</filter-name>
+		<url-pattern>*.action</url-pattern>
+	</filter-mapping>
+
+
+	<!-- The root of all tracks ... -->
+	<servlet>
+		<servlet-name>startServlet</servlet-name>
+		<servlet-class>com.aurel.track.StartServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet>
+		<servlet-name>AxisServlet</servlet-name>
+		<servlet-class>
+			org.apache.axis2.transport.http.AxisServlet</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+
+	<servlet>
+		<servlet-name>JspSupportServlet</servlet-name>
+		<servlet-class>org.apache.struts2.views.JspSupportServlet</servlet-class>
+		<load-on-startup>3</load-on-startup>
+	</servlet>
+
+	<servlet>
+		<servlet-name>ReportXMLServlet</servlet-name>
+		<servlet-class>com.aurel.track.servlet.ReportXMLServlet</servlet-class>
+		<load-on-startup>4</load-on-startup>
+	</servlet>
+    <servlet>
+        <servlet-name>ReadyTesterServlet</servlet-name>
+        <servlet-class>com.aurel.track.dbase.ReadyTesterServlet</servlet-class>
+        <load-on-startup>5</load-on-startup>
+    </servlet>
+
+    <servlet>
+        <servlet-name>wiki</servlet-name>
+        <jsp-file>/wiki.jsp</jsp-file>
+    </servlet>
+
+
+
+	<!-- SOAP MONITOR -->
+	<!--
+	<servlet>
+		<servlet-name>SOAPMonitorService</servlet-name>
+		<display-name>SOAPMonitorService</display-name>
+		<servlet-class>
+			org.apache.axis2.soapmonitor.servlet.SOAPMonitorService
+		</servlet-class>
+		<init-param>
+			<param-name>SOAPMonitorPort</param-name>
+			<param-value>5001</param-value>
+		</init-param>
+		<load-on-startup>100</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>SOAPMonitorService</servlet-name>
+		<url-pattern>/SOAPMonitor</url-pattern>
+	</servlet-mapping>
+  -->
+
+	<servlet-mapping>
+		<servlet-name>ReportXMLServlet</servlet-name>
+		<url-pattern>/xml/report</url-pattern>
+	</servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ReadyTesterServlet</servlet-name>
+        <url-pattern>/readyTester</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+<servlet-name>wiki</servlet-name>
+<url-pattern>/wiki</url-pattern>
+</servlet-mapping>
+
+
+	<!-- Webservice with Axis -->
+	<servlet-mapping>
+		<servlet-name>AxisServlet</servlet-name>
+		<url-pattern>/services/*</url-pattern>
+	</servlet-mapping>
+
+	<!--
+	<servlet-mapping>
+		<servlet-name>AxisServlet</servlet-name>
+		<url-pattern>/servlet/AxisServlet</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>AxisServlet</servlet-name>
+		<url-pattern>/services/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>SOAPMonitorService</servlet-name>
+		<url-pattern>/SOAPMonitor</url-pattern>
+	</servlet-mapping>
+	-->
+
+
+
+	<session-config>
+		<session-timeout>120</session-timeout>
+	</session-config>
+
+
+	<!-- Webservice with Axis -->
+	<!--
+	<mime-mapping>
+		<extension>wsdl</extension>
+	 	<mime-type>text/xml</mime-type>
+	</mime-mapping>
+
+
+	<mime-mapping>
+		<extension>xsd</extension>
+		<mime-type>text/xml</mime-type>
+	</mime-mapping>
+	-->
+
+	<!--  for the FCKEditor on Weblogic and IE -->
+	<mime-mapping>
+		<extension>xml</extension>
+		<mime-type>application/xml</mime-type>
+	</mime-mapping>
+
+	<mime-mapping>
+    	<extension>docx</extension>
+    	<mime-type>application/vnd.openxmlformats-officedocument.wordprocessingml.document</mime-type>
+	</mime-mapping>
+
+	<mime-mapping>
+    	<extension>xlsx</extension>
+    	<mime-type>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</mime-type>
+	</mime-mapping>
+
+	<mime-mapping>
+		<extension>pptx</extension>
+		<mime-type>application/vnd.openxmlformats-officedocument.presentationml.presentation</mime-type>
+	</mime-mapping>
+
+	<!-- ============================================================ -->
+	<!-- The well known filter from Jakarta Tomcat Examples that	  -->
+	<!-- unconditionally sets the character encoding to be used in	-->
+	<!-- parsing the incoming request.								-->
+	<!-- ============================================================ -->
+
+	<!-- The Welcome File List -->
+	<welcome-file-list>
+		<welcome-file>logon.jsp</welcome-file>
+	</welcome-file-list>
+	<!--
+	<error-page>
+		<error-code>500</error-code>
+		<location>/tiles/pages/error500.jsp</location>
+	</error-page>
+		-->
+	<error-page>
+		<error-code>404</error-code>
+		<location>/tiles/pages/error404.jsp</location>
+	</error-page>
+
+	<!-- Define a Security Constraint on this Application -->
+	<!-- Uncomment this section and add users in tomcat-users.xml -->
+	<!-- with the same user name as in the Track+ database -->
+
+	<!-- Please remove the comment for ENABLING CBA -->
+<!--
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Track+</web-resource-name>
+			<url-pattern>/*</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>admin</role-name>
+		</auth-constraint>
+		<user-data-constraint>
+			<transport-guarantee>NONE</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
+
+	<login-config>
+		<auth-method>BASIC</auth-method>
+	</login-config>
+
+	<login-config>
+        <auth-method>FORM</auth-method>
+        <form-login-config>
+            <form-login-page>/login.jsp</form-login-page>
+            <form-error-page>/login-failed.html</form-error-page>
+        </form-login-config>
+    </login-config>
+-->
+</web-app>

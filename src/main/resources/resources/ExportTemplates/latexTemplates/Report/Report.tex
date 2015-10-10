@@ -1,0 +1,230 @@
+% Template for a general report document
+% Copyright 2015 Steinbeis GmbH & Co. KG - Task Management Solutions
+%
+% $id:$
+%‚
+\documentclass[10pt,a4paper]{report}
+\pagestyle{plain}
+
+% %%TP <#if (locale)?has_content && locale=="de">
+% %%TP \usepackage[ngerman]{babel}
+% %%TP  <#else>
+% %%TP  \usepackage[british]{babel}
+% %%TP </#if>
+
+\usepackage{docstyle}
+
+\usepackage{draftwatermark}
+
+\SetWatermarkText{\${Status}}
+\SetWatermarkLightness{0.93}
+\SetWatermarkScale{0.8}
+
+% The following line defines how inline items are being rendered. 
+% %%ITP   \begin{framed}
+% %%ITP \href{${serverurl}/printItem.action?key=${IssueNo}}{\textbf{\color{tpred}${Project}:[${ProjectSpecificIssueNo}]}: ${Title}} 
+% %%ITP \vspace{2mm}\newline
+% %%ITP    {\color{tpblue}${Description}}
+% %%ITP \end{framed}
+
+
+\AddToShipoutPicture{\put(30,280){\rotatebox{90}{\scalebox{0.8}{Copyright © \the\year \ \${licenseHolder}, All rights reserved}}}}
+
+\fancyfoot[C]{\${Title}}
+
+
+\begin{document}
+
+% %%TP <#if (locale)?has_content && locale=="de">
+% %%TP \renewcommand\StrRequirements{Anforderungen}
+% %%TP \renewcommand\StrDate{Datum}
+% %%TP \renewcommand\StrPriority{Priorität}
+% %%TP \renewcommand\StrStatus{Status}
+% %%TP \renewcommand\StrPage{Seite}
+% %%TP </#if>
+
+
+% %%TP <#macro mDate>
+% %%TP    <#if (MeetingDate)?has_content>
+% %%TP      ${MeetingDate}
+% %%TP    <#else>
+% %%TP      ${.now?date}
+% %%TP    </#if>
+% %%TP </#macro>
+
+% %%TP <#macro mLocation>
+% %%TP    <#if (Location)?has_content>
+% %%TP    ${Location}
+% %%TP    </#if>
+% %%TP </#macro>
+
+
+% %%TP <#macro makeTopicTable meetingTopics>     
+% %%TP <#list meetingTopics as topic>	   		
+% %%TP \rule[-4mm]{0mm}{10mm}\${topic.IssueNo} \${topic.title} & \rule[-4mm]{0mm}{10mm}\${topic.Priority}  & \rule[-4mm]{0mm}{10mm}\${topic.Status} & \rule[-4mm]{0mm}{10mm}\pageref{top\${topic.IssueNo}} \\ \htpline
+% %%TP </#list>
+% %%TP </#macro>
+
+% %%TP <#macro makeTopics meetingTopics> 
+% %%TP <#list meetingTopics as topic>
+% %%TP  <#assign slevel=topic.WBS-WBS/>  		   
+% %%TP {\color{tpred}<#if (slevel)==1>\chapter</#if><#if (slevel)==2>\section</#if><#if (slevel)==3>\subsection</#if><#if (slevel)==4>\subsubsubsection</#if> {\${topic.title} }}
+% %%TP \label{top\${topic.IssueNo}}
+% %%TP \${topic.Description}
+% %%TP </#list>
+% %%TP </#macro>
+
+
+\newpage
+%\begin{textblock*}{150mm}(160mm,10mm)%
+% \textblockcolour{}
+%       \includegraphics[width=28mm]{trackLogo.jpg}
+%\end{textblock*}
+
+\ 
+\vskip 8cm
+\begin{center}
+{\LARGE\color{tpred}\bf \${project}}\\ \vskip 1.0em
+{\Huge\color{tpred}\bf \${title}}\\ \vskip 1.0em
+%{\LARGE\color{tpred}\bf{\StrRequirements}}\\ \vskip 1.0em
+\end{center}
+
+\vfill{}
+\begin{tabularx}{\textwidth}{!{\Vl}l!{\Vl}X!{\Vl}l!{\Vl}} \noalign{\hrule height 1pt}
+\rule[-3.5mm]{0pt}{10mm} Created: & \${Responsible} & 
+\${LastModifiedDate}
+\\ \htpline
+\rule[-3.5mm]{0pt}{10mm} Assessed: & \${Manager} & 
+\${LastModifiedDate}
+\\ \htpline
+\rule[-3.5mm]{0pt}{10mm} Released: & \${Manager} & 
+\${LastModifiedDate}
+\\ \htpline
+
+\end{tabularx}
+\vskip 1.5cm
+\ 
+
+\newpage
+
+\tableofcontents
+
+% %%TP <#if noOfFigures gt 0 >\newpage \listoffigures</#if>
+
+% %%TP <#if noOfFigures gt 8  || noOfFigures == 0> 
+% %%TP     <#if noOfTables gt 0 >\newpage </#if>
+% %%TP </#if>
+% %%TP <#if noOfTables gt 0 >\listoftables</#if>
+
+\newpage
+
+% %%TP <@makeTopics meetingTopics/>
+
+\end{document}
+
+% The following keys are available for the enclosing document itself:
+% AccessLevel
+% IssueNo
+% licenseHolder
+% serverurl
+% TaskIsMilestone
+% Stakeholder
+% locale
+% LastModifiedDate
+% CreateDate
+% WBS
+% BusinessValue
+% inlineItems
+% Participants
+% IssueType
+% RequirementType
+% title
+% noOfFigures
+% Severity
+% StartDate
+% Manager
+% Build
+% LastEditedBy
+% ProjectSpecificIssueNo
+% Project
+% SuperiorWorkItem
+% Responsible
+% RequirementStability
+% ArchiveLevel
+% Description
+% Resolution
+% noOfTables
+% Originator
+% Comment
+% ReqAgreementStatus
+% ReleaseScheduled
+% Title
+% Priority
+% StoryPoints
+% Status
+% SubmitterEmail
+% TargetStartDate
+% project
+% topics
+% EndDate
+% SafetyRelated
+% Synopsis
+% meetingTopics
+% ReleaseNoticed
+% TargetEndDate
+
+% The following keys are available for the document sections:
+% meetingTopics.serverurl
+% meetingTopics.LastModifiedDate
+% meetingTopics.CreateDate
+% meetingTopics.WBS
+% meetingTopics.inlineItems
+% meetingTopics.RequirementType
+% meetingTopics.noOfFigures
+% meetingTopics.Severity
+% meetingTopics.StartDate
+% meetingTopics.Build
+% meetingTopics.DateConflict
+% meetingTopics.LastEditedBy
+% meetingTopics.ProjectSpecificIssueNo
+% meetingTopics.Project
+% meetingTopics.StateFlag
+% meetingTopics.SuperiorWorkItem
+% meetingTopics.Responsible
+% meetingTopics.RequirementStability
+% meetingTopics.ArchiveLevel
+% meetingTopics.isSummary
+% meetingTopics.noOfTables
+% meetingTopics.Comment
+% meetingTopics.ReqAgreementStatus
+% meetingTopics.isTargetDateConflict
+% meetingTopics.StoryPoints
+% meetingTopics.TargetStartDate
+% meetingTopics.project
+% meetingTopics.EndDate
+% meetingTopics.isBudgetOrPlanConflict
+% meetingTopics.SafetyRelated
+% meetingTopics.isCommittedDateConflict
+% meetingTopics.ReleaseNoticed
+% meetingTopics.AccessLevel
+% meetingTopics.IssueNo
+% meetingTopics.TaskIsMilestone
+% meetingTopics.Stakeholder
+% meetingTopics.BusinessValue
+% meetingTopics.IssueType
+% meetingTopics.Participants
+% meetingTopics.title
+% meetingTopics.Manager
+% meetingTopics.Description
+% meetingTopics.Resolution
+% meetingTopics.TopDownDateDueFlag
+% meetingTopics.Originator
+% meetingTopics.ReleaseScheduled
+% meetingTopics.Title
+% meetingTopics.Priority
+% meetingTopics.isPlannedValueConflict
+% meetingTopics.Status
+% meetingTopics.SubmitterEmail
+% meetingTopics.Synopsis
+% meetingTopics.isBudgetConflict
+% meetingTopics.TargetEndDate

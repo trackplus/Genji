@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+"http://struts.apache.org/dtds/struts-2.0.dtd ">
+<struts>
+    <package name="struts-track" extends="struts-track-base">
+
+		<action name="banned" class="com.aurel.track.user.LogonErrorAction">
+			<result name="banned">/tiles/layouts/BorderLayout.jsp</result>
+			<result name="success">/tiles/layouts/BorderLayout.jsp</result>
+			<result name="banRemoved" type="redirect">logoff.action</result>
+			<interceptor-ref name="defaultNoAuth" />
+		</action>
+
+		<action name="browseProjects"
+			class="com.aurel.track.browseProjects.BrowseProjectsAction">
+			<result name="success">/tiles/layouts/BorderLayout.jsp</result>
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="copyProjectDashboard"
+			class="com.aurel.track.browseProjects.CopyProjectDashboardAction">
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="reportExpand"
+			class="com.aurel.track.report.execute.ReportExpandAction">
+			<!-- <result name="input" type="redirectAction">reportItem!changeExpanding</result>
+				<result name="ok" type="freemarker">template/ok.ftl</result> -->
+			<interceptor-ref name="editStack" />
+		</action>
+		<!-- <action name="changeGrouping" class="com.aurel.track.report.group.GroupingAction">
+			<interceptor-ref name="editStack"/> </action> -->
+		<!-- logon and logoff -->
+		<action name="logoff" class="com.aurel.track.user.LogoffAction">
+			<result name="success">/tiles/layouts/BorderLayout.jsp</result>
+			<result name="loading">logon.jsp</result>
+			<result name="successMobile">tiles/pages/mobile/loginMobile.jsp</result>
+			<result name="error">tiles/pages/logon/installProblem.jsp</result>
+            <result name="cockpit" type="redirect">cockpit.action</result>
+			<result name="itemNavigator" type="redirect">itemNavigator.action</result>
+			<interceptor-ref name="editNoAuth" />
+		</action>
+
+		<action name="anonymousToLogon" class="com.aurel.track.user.AnonymousToLogonAction">
+			<interceptor-ref name="editNoAuth" />
+			<result name="success" type="redirect">logon.action</result>
+			<result name="input" type="redirect">logon.action</result>
+		</action>
+
+		<action name="logon" class="com.aurel.track.prop.actions.LogonAction">
+			<result name="loading">logon.jsp</result>
+			<result name="admin" type="redirect">admin.action</result>
+			<result name="banned" type="redirect">banned.action</result>
+			<result name="cockpit" type="redirect">cockpit.action</result>
+			<result name="itemNavigator" type="redirect">itemNavigator.action</result>
+			<result name="input">/tiles/layouts/BorderLayout.jsp</result>
+			<result name="forwardTo" type="redirect">${forwardUrl}</result>
+			<result name="forwardToLogin" type="chain">
+			<param name="actionName">logoff</param>
+			</result>
+			<interceptor-ref name="editNoAuth" />
+		</action>
+
+
+		<!-- Process a new password -->
+		<action name="resetPassword" class="com.aurel.track.user.ResetPasswordAction">
+			<result name="failure" type="redirectAction">logoff</result>
+			<result name="resetPassword">/tiles/layouts/BorderLayout.jsp</result>
+			<result name="expired">/tiles/layouts/BorderLayout.jsp</result>
+			<interceptor-ref name="defaultNoAuth" />
+		</action>
+
+		<action name="logClient"
+			class="com.aurel.track.admin.server.logging.LoggingConfigAction"
+			method="logClient">
+			<interceptor-ref name="defaultNoAuth" />
+		</action>
+
+
+		<!--action used for image loading -->
+		<action name="loadImage" class="com.aurel.track.plugin.ImageAction">
+		</action>
+		<!--action used for JavaScript loading -->
+		<action name="loadJavaScript"
+			class="com.aurel.track.plugin.JavaScriptPathExtenderAction">
+		</action>
+		<action name="flatActivity"
+			class="com.aurel.track.report.dashboard.ActivityStreamAction" method="flatActivity">
+			<result name="success" type="freemarker">/template/flatActivityStream.ftl</result>
+			<interceptor-ref name="editNoAuth" />
+		</action>
+
+
+
+		<action name="imageServerAction" class="com.aurel.track.util.ImageServerAction">
+			<interceptor-ref name="prepareParams" />
+		</action>
+
+		<action name="logoAction" class="com.aurel.track.util.LogoAction">
+			<interceptor-ref name="prepareLogo" />
+		</action>
+
+
+		<action name="exchangeExport"
+			class="com.aurel.track.exchange.track.exporter.TrackExportAction">
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="trackplusUpload"
+			class="com.aurel.track.exchange.track.importer.TrackImportAction">
+			<interceptor-ref name="fileUpload" />
+			<interceptor-ref name="editStackProjSysAuth" />
+		</action>
+
+		<action name="excelUploadRender" class="com.aurel.track.exchange.excel.ExcelUploadAction">
+			<interceptor-ref name="editStack" />
+		</action>
+		<action name="excelUpload" class="com.aurel.track.exchange.excel.ExcelUploadAction"
+			method="upload">
+			<interceptor-ref name="fileUpload" />
+			<interceptor-ref name="editStack" />
+			<result name="excelImport" type="redirectAction">excelFieldMatch?fileName=${uploadFileFileName}</result>
+		</action>
+		<action name="excelFieldMatch"
+			class="com.aurel.track.exchange.excel.ExcelFieldMatchAction">
+			<result name="next" type="redirectAction">excelInvalidValueHandling?fileName=${fileName}&amp;selectedSheet=${selectedSheet}</result>
+		</action>
+		<action name="excelInvalidValueHandling" class="com.aurel.track.exchange.excel.ExcelImportAction">
+			<interceptor-ref name="editStack" />
+		</action>
+		<action name="excelImport" class="com.aurel.track.exchange.excel.ExcelImportAction"
+			method="excelImport">
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="msProjectUploadRender"
+			class="com.aurel.track.exchange.msProject.importer.MsProjectUploadAction">
+			<interceptor-ref name="editStack" />
+		</action>
+		<action name="msProjectUpload"
+			class="com.aurel.track.exchange.msProject.importer.MsProjectUploadAction"
+			method="upload">
+			<interceptor-ref name="fileUpload" />
+			<interceptor-ref name="editStack" />
+			<result name="msProjectImport" type="redirectAction">msProjectImport?fileName=${uploadFileFileName}&amp;fromProject=${fromProject}&amp;projectOrReleaseID=${projectOrReleaseID}</result>
+		</action>
+
+		<action name="msProjectImport"
+			class="com.aurel.track.exchange.msProject.importer.MsProjectImportAction">
+			<interceptor-ref name="defaultProjSysAuth" />
+		</action>
+
+		<action name="msProjectExport"
+			class="com.aurel.track.exchange.msProject.exporter.MsProjectExportAction">
+			<interceptor-ref name="editStackProjSysAuth" />
+		</action>
+
+
+		<action name="error" class="com.aurel.track.prop.ErrorAction">
+			<result name="success">/tiles/layouts/BorderLayout.jsp</result>
+			<interceptor-ref name="editNoAuth" />
+		</action>
+		<!-- release notes -->
+		<action name="releaseNotes" class="com.aurel.track.report.ReleaseNotesAction">
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<!-- exporting docx files -->
+		<action name="docxExport"
+			class="com.aurel.track.exchange.docx.exporter.DocxExportAction">
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="docxTemplate"
+			class="com.aurel.track.exchange.docx.exporter.DocxTemplateAction">
+			<interceptor-ref name="fileUpload" />
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="docxlUploadRender"
+			class="com.aurel.track.exchange.docx.importer.DocxUploadAction">
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="docxUpload"
+			class="com.aurel.track.exchange.docx.importer.DocxUploadAction"
+			method="upload">
+			<interceptor-ref name="fileUpload" />
+			<interceptor-ref name="editStack" />
+			<result name="docxImport" type="redirectAction">docxAddTo?fileName=${uploadFileFileName}</result>
+		</action>
+
+		<action name="docxAddTo"
+			class="com.aurel.track.exchange.docx.importer.DocxImportAction"
+			method="addTo">
+			<interceptor-ref name="editStack" />
+			<result name="next" type="redirectAction">docxPreview?fileName=${fileName}&amp;workItemID=${workItemID}&amp;parentID=${parentID}&amp;projectOrReleaseID=${projectOrReleaseID}</result>
+		</action>
+
+		<action name="docxPreview"
+			class="com.aurel.track.exchange.docx.importer.DocxImportAction"
+			method="preview">
+			<interceptor-ref name="editStack" />
+			<result name="next" type="redirectAction">docxImport?attachmentID=${attachmentID}&amp;workItemID=${workItemID}&amp;parentID=${parentID}&amp;projectOrReleaseID=${projectOrReleaseID}</result>
+		</action>
+		<action name="docxImport"
+			class="com.aurel.track.exchange.docx.importer.DocxImportAction">
+			<interceptor-ref name="editStack" />
+		</action>
+		<action name="releaseItemLock" class="com.aurel.track.item.lock.ReleaseItemLockAction">
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<!-- Mobile helper action -->
+		<action name="mobile" class="com.aurel.track.mobile.MobileAction">
+		</action>
+
+		<action name="browseFile" class="com.aurel.track.attachment.BrowseFileAction">
+			<result name="success">tiles/pages/browseFile.jsp</result>
+		</action>
+
+		<action name="masterHome" class="com.aurel.track.master.MasterHomeAction">
+			<result name="success">/tiles/layouts/BorderLayout.jsp</result>
+		</action>
+
+		<action name="externalAction" class="com.aurel.track.master.ExternalAction">
+			<result name="success">/tiles/layouts/BorderLayout.jsp</result>
+		</action>
+    </package>
+    
+    
+    
+    
+    <package name="struts-track-rest" extends="struts-track-base" namespace="/rest">
+
+		<action name="logoff" class="com.aurel.track.user.LogoffAction" method="restLogout">
+			<interceptor-ref name="rest" />
+		</action>
+
+		<action name="login" class="com.aurel.track.prop.actions.LogonAction" method="restLogin">
+			<interceptor-ref name="editNoAuth" />
+		</action>
+
+
+		<action name="imageServerAction" class="com.aurel.track.util.ImageServerAction">
+			<interceptor-ref name="prepareParams" />
+		</action>
+
+		<action name="logoAction" class="com.aurel.track.util.LogoAction">
+			<interceptor-ref name="prepareLogo" />
+		</action>
+
+
+    </package>
+</struts>

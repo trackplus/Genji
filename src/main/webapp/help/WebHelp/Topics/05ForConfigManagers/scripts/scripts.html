@@ -1,0 +1,464 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="You can add Groovy (a Java scripting language) scripts to Genji that can be attached to workflow transitions. With such scripts you can for example automatically change the responsible person based on ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="concept"/><meta name="DC.Title" content="Managing scripts"/><meta name="abstract" content="You can add Groovy (a Java scripting language) scripts to Genjithat can be attached to workflow transitions. With such scripts you can for example automatically change the responsible person based on a state change, or perform checks before an item is saved."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="You can add Groovy (a Java scripting language) scripts to Genjithat can be attached to workflow transitions. With such scripts you can for example automatically change the responsible person based on a state change, or perform checks before an item is saved."/><meta name="DC.Creator" content=""/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="id132LEB003DA"/><link rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Managing scripts</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()" id="id132LEB003DA">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader"/></td><td width="75%"/></tr></tbody></table>
+
+    <h1 class="title topictitle1">Managing scripts</h1>
+
+    
+    
+    <div class="body conbody"><p class="shortdesc">You can add Groovy (a Java scripting language) scripts to <span class="ph"><span class="ph">Genji</span></span>that can be attached to workflow transitions. With
+        such scripts you can for example automatically change the responsible person based on a
+        state change, or perform checks before an item is saved.</p>
+
+        <p class="p">To add or edit scripts go to <span class="ph menucascade"><span class="ph uicontrol">Administration</span> &gt; <span class="ph uicontrol">Customize</span> &gt; <span class="ph uicontrol">Scripts</span></span>.</p>
+
+        <div class="p"><div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/manageScripts1.png" height="282" width="363"/></div><br/>
+                
+            </div>
+You can add workflow activity scripts and workflow guard scripts. You attach these
+            scripts to workflow transitions when you create or edit workflows.</div>
+
+        <p class="p">A workflow activity script is executed whenever the workflow transition is initiated the
+            script is attached to. For example, this permits you to automatically change the
+            responsible person or create a child item when an items state is changed from "analyzed"
+            to "assigned".</p>
+
+        <p class="p">A workflow guard script is also executed whenever the workflow transition is initiated
+            the script is attached to. The guard script can perform checks and block a workflow
+            transition when it returns "false" as a result. This way you could for example check
+            that the description of an item meets certain standards, or that the new responsible
+            does not have too many items to take care of already, or some other condition is met
+            before moving an item further in the workflow.</p>
+
+        <div class="p">
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/manageScripts2.png" height="288" width="386"/></div><br/>
+                
+            </div>
+
+        </div>
+
+        <p class="p">In the following there are three example scripts. The following script appends a comment
+            at the end of the description field when an item status was changed. Please be aware
+            that you may not be able to copy and paste this code since it might have an unsuitable
+            encoding. You probably must replace the white space characters with blanks. </p>
+
+<pre class="pre codeblock">
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import com.aurel.track.beans.TWorkItemBean;
+import com.aurel.track.errors.ErrorData;
+import com.aurel.track.util.event.IEventHandler;
+
+public class CommentByReopen implements IEventHandler {			
+	
+	private static String REOPEN_SEPARATOR  = "**************************REOPEN*******************************";
+	
+	public Map&lt;String, Object&gt; handleEvent(Map&lt;String, Object&gt; inputBinding) {
+		TWorkItemBean workItemBean = (TWorkItemBean)inputBinding.get("issue");
+		String comment = workItemBean.getComment();
+		if (comment==null || comment.trim().length()==0) {
+			List&lt;ErrorData&gt; errorList = new LinkedList&lt;ErrorData&gt;();
+			errorList.add(new ErrorData("Comment is required by reopen"));
+			inputBinding.put("errorList", errorList);	
+		} else {
+			String description = workItemBean.getDescription();
+			if (description==null) {
+				description = "";
+			}
+			description = description + REOPEN_SEPARATOR + comment;
+			workItemBean.setDescription(description);
+			workItemBean.setComment(null);			
+		}
+		return inputBinding;
+	}
+}
+</pre>
+
+        <p class="p">The next script changes the responsible to a certain person („guest“):</p>
+
+<pre class="pre codeblock">
+//
+// This script changes the responsible to "guest" when a status change occurs
+//
+import com.aurel.track.beans.TWorkItemBean;
+import com.aurel.track.util.event.IEventHandler;
+import com.aurel.track.errors.ErrorData;
+import com.aurel.track.dao.DAOFactory;
+import com.aurel.track.dao.PersonDAO;
+import com.aurel.track.beans.TPersonBean;
+
+public class ChangeResponsible implements IEventHandler {
+
+   def public Map handleEvent(Map inputBinding) {
+        TWorkItemBean workItemBean = inputBinding.get("issue");
+        PersonDAO personDAO =
+                 DAOFactory.getFactory().getPersonDAO();
+        TPersonBean personBean =
+                         personDAO.loadByLoginName("guest");
+        workItemBean.setResponsibleID(personBean.getObjectID());  
+   }
+   
+}
+</pre>
+
+        <p class="p">The next script changes the manager to the first person that belongs to a group of persons
+            in a specific role („roleNew“):</p>
+
+<pre class="pre codeblock">
+//
+// Change the manager to the first person that belongs to a group in role "roleNew"
+// upon a status change
+//
+import com.aurel.track.beans.TWorkItemBean;
+import com.aurel.track.util.event.IEventHandler;
+import com.aurel.track.errors.ErrorData;
+import com.aurel.track.dao.DAOFactory;
+import com.aurel.track.dao.PersonDAO;
+import com.aurel.track.beans.TPersonBean;
+import com.aurel.track.dao.RoleDAO;
+import com.aurel.track.beans.TRoleBean;
+
+public class ChangeManager implements IEventHandler {
+
+    def public Map handleEvent(Map inputBinding) {
+        
+        TWorkItemBean workItemBean = inputBinding.get("issue");
+        PersonDAO personDAO =
+                   DAOFactory.getFactory().getPersonDAO();
+            
+        RoleDAO roleDAO= DAOFactory.getFactory().getRoleDAO();
+        TRoleBean roleBean = roleDAO.loadByName("roleNew");
+            
+        if (roleBean!=null) {
+           List&lt;TPersonBean&gt; personsWithExchangeRole =
+                   personDAO.loadByProjectAndRoles(
+                                   workItemBean.getProjectID(),
+                                   roleBean.getObjectID());
+
+           if (personsWithExchangeRole!=null &amp;&amp;
+                personsWithExchangeRole.size() &gt; 0) {
+                   TPersonBean personBean =
+                      (TPersonBean)personsWithExchangeRole.get(0);
+                   workItemBean.setOwnerID(
+                         personBean.getObjectID());
+           }
+       }
+    }
+}
+</pre>
+
+        <p class="p">The next script copies an item and creates a link between the copy and the original:</p>
+
+<pre class="pre codeblock">
+
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import com.aurel.track.beans.TLinkTypeBean;
+import com.aurel.track.beans.TPersonBean;
+import com.aurel.track.beans.TWorkItemBean;
+import com.aurel.track.errors.ErrorData;
+import com.aurel.track.fieldType.runtime.base.WorkItemContext;
+import com.aurel.track.item.ItemBL;
+import com.aurel.track.item.link.ItemLinkConfigBL;
+import com.aurel.track.linkType.LinkTypeBL;
+import com.aurel.track.util.event.IEventHandler;
+
+public class CopyItem implements IEventHandler {			
+	
+	/**
+	 * Copies an item and creates a link between the original item and copied item
+	 */
+	public Map&lt;String, Object&gt; handleEvent(Map&lt;String, Object&gt; inputBinding) {
+		WorkItemContext workItemContext = (WorkItemContext)inputBinding.get("workItemContext");
+		TWorkItemBean workItemBean = workItemContext.getWorkItemBean();
+		Integer copiedFromItemID = workItemBean.getObjectID();
+		TPersonBean personBean = (TPersonBean)inputBinding.get("user");
+		Locale locale = (Locale)inputBinding.get("locale");
+		List&lt;ErrorData&gt; errorList = new LinkedList&lt;ErrorData&gt;();
+		//create a copy of an item
+		WorkItemContext copyContext =  ItemBL.editCopyWorkItem(copiedFromItemID, personBean.getObjectID(), locale);
+		TWorkItemBean workItemBeanCopy = copyContext.getWorkItemBean();
+		//change the copied item as needed
+		workItemBeanCopy.setSynopsis("(Copy) " + workItemBeanCopy.getSynopsis());
+		//save the copied item in db
+		Integer copiedItemID = ItemBL.copyWorkItem(copyContext, errorList, false);
+		//look up the linktype ID in Link types config, ID column
+		Integer linkTypeID = 1001;
+		//1=Unidirectional outward and bidirectional links, 2=Unidirectional inward (MsProject) 
+		Integer linkDirection = 1; 
+		List&lt;ErrorData&gt; linkErrors = ItemLinkConfigBL.saveItemLink(copiedFromItemID, copiedItemID, linkTypeID, linkDirection, null, null, personBean, locale, null, workItemContext);
+		if (linkErrors!=null) {
+			errorList.addAll(linkErrors);
+		}
+		inputBinding.put("errorList", errorList);	
+		return inputBinding;
+	}
+}
+</pre>
+
+        <p class="p">The following script demonstrates how to access custom fields:</p>
+
+        <pre class="pre codeblock">
+import com.aurel.track.beans.TWorkItemBean;
+import com.aurel.track.util.event.IEventHandler;
+import com.aurel.track.errors.ErrorData;
+import com.aurel.track.admin.customize.treeConfig.field.FieldDesignBL;
+import com.aurel.track.beans.TFieldBean;
+
+public class ConnectNavision {
+    private String CRLF=System.getProperty("line.separator");
+    
+    public Map handleEvent (Map&lt;String, Object&gt; inputBinding) {
+          TWorkItemBean workItemBean = inputBinding.get("issue");
+
+          // PLZ is a custom field 
+          List&lt;TFieldBean&gt; fieldBeans = FieldDesignBL.loadByName("PLZ");
+          TFieldBean fieldBean=fieldBeans.getFirst();
+          Integer fieldID = fieldBean.getObjectID();
+
+          String fname="NAV"+String.valueOf(workItemBean.getObjectID());
+          def file=new File("C:\\temp\\"+fname+".txt");
+          if (file.exists()){
+              file.delete();
+          }
+
+          file &lt;&lt; workItemBean.getObjectID()+CRLF;
+          file &lt;&lt; workItemBean.getSynopsis()+CRLF;
+          file &lt;&lt; workItemBean.getAttribute(fieldID)+CRLF;
+          
+          return inputBinding;
+    }    
+ }
+
+</pre>
+
+        <p class="p">The next script changes the item status:</p>
+
+        <pre class="pre codeblock">
+import com.aurel.track.beans.TWorkItemBean;
+import com.aurel.track.util.event.IEventHandler;
+import com.aurel.track.errors.ErrorData;
+import com.aurel.track.beans.TStateBean;
+import com.aurel.track.beans.TPersonBean;
+import com.aurel.track.resources.LocalizeUtil;
+
+public class SetState implements IEventHandler {
+
+   def public Map handleEvent(Map inputBinding) {
+        TWorkItemBean workItemBean = inputBinding.get("issue");
+        TPersonBean user =  inputBinding.get("user");
+        String firstName = user.getFirstName();
+        String lastName = user.getLastName();
+        String name = user.getName();
+
+        Integer stateID = LocalizeUtil.getDropDownPrimaryKeyFromLocalizedText(
+                                  new TStateBean().getKeyPrefix(), "registriert", new Locale("DE"));
+        workItemBean.setStateID(stateID);
+   }   
+}
+</pre>
+
+        
+        
+<div class="tablenoborder"><table cellpadding="4" cellspacing="0" summary="" id="id132LEB003DA__table_szl_mhq_zk" class="table" frame="border" border="1" rules="all"><caption><span class="tablecap">Table 1. Input binding keys for workflow scripts</span></caption>
+                
+                
+                
+                <thead class="thead" align="left">
+                    <tr class="row">
+                        <th class="entry" valign="top" width="18.181818181818183%" id="d41539e115">Key name</th>
+
+                        <th class="entry" valign="top" width="45.45454545454545%" id="d41539e118">Key symbol</th>
+
+                        <th class="entry" valign="top" width="36.36363636363637%" id="d41539e121">Description</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody class="tbody">
+                    <tr class="row">
+                        <td class="entry" valign="top" width="18.181818181818183%" headers="d41539e115 ">user</td>
+
+                        <td class="entry" valign="top" width="45.45454545454545%" headers="d41539e118 ">com.aurel.track.admin.customize. scripting.BINDING_PARAMS.
+                            BINDING_USER</td>
+
+                        <td class="entry" valign="top" width="36.36363636363637%" headers="d41539e121 ">the current user as TPersonBean</td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry" valign="top" width="18.181818181818183%" headers="d41539e115 ">userID</td>
+
+                        <td class="entry" valign="top" width="45.45454545454545%" headers="d41539e118 ">...BINDING_PARAMS. USER_ID</td>
+
+                        <td class="entry" valign="top" width="36.36363636363637%" headers="d41539e121 ">the current users user ID</td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry" valign="top" width="18.181818181818183%" headers="d41539e115 ">issue</td>
+
+                        <td class="entry" valign="top" width="45.45454545454545%" headers="d41539e118 ">...BINDING_PARAMS. ISSUE</td>
+
+                        <td class="entry" valign="top" width="36.36363636363637%" headers="d41539e121 ">the current issue after a change</td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry" valign="top" width="18.181818181818183%" headers="d41539e115 ">originalIssue</td>
+
+                        <td class="entry" valign="top" width="45.45454545454545%" headers="d41539e118 ">...BINDING_PARAMS. ISSUE_ORIGINAL</td>
+
+                        <td class="entry" valign="top" width="36.36363636363637%" headers="d41539e121 ">the current issue before a change</td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry" valign="top" width="18.181818181818183%" headers="d41539e115 ">workItemContext</td>
+
+                        <td class="entry" valign="top" width="45.45454545454545%" headers="d41539e118 ">...BINDING_PARAMS. WORKITEM_CONTEXT</td>
+
+                        <td class="entry" valign="top" width="36.36363636363637%" headers="d41539e121 ">the workItem context (contains also the previous two beans but they
+                            will be also directly available in the map)</td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry" valign="top" width="18.181818181818183%" headers="d41539e115 ">project</td>
+
+                        <td class="entry" valign="top" width="45.45454545454545%" headers="d41539e118 ">...BINDING_PARAMS. EMAIL_PROJECT</td>
+
+                        <td class="entry" valign="top" width="36.36363636363637%" headers="d41539e121 ">the current workspace</td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry" valign="top" width="18.181818181818183%" headers="d41539e115 ">errorList</td>
+
+                        <td class="entry" valign="top" width="45.45454545454545%" headers="d41539e118 ">...BINDING_PARAMS. ERRORLIST</td>
+
+                        <td class="entry" valign="top" width="36.36363636363637%" headers="d41539e121 ">the error list which should be returned in case the activity can't be
+                            executed. The errors will be shown as validation errors</td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry" valign="top" width="18.181818181818183%" headers="d41539e115 ">emailAttachments</td>
+
+                        <td class="entry" valign="top" width="45.45454545454545%" headers="d41539e118 ">...BINDING_PARAMS. EMAIL_ATTACHMENTS</td>
+
+                        <td class="entry" valign="top" width="36.36363636363637%" headers="d41539e121 ">attachments from e-mail submission</td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry" valign="top" width="18.181818181818183%" headers="d41539e115 ">fromAddress</td>
+
+                        <td class="entry" valign="top" width="45.45454545454545%" headers="d41539e118 ">...BINDING_PARAMS. EMAIL_FROM_ADDRESS</td>
+
+                        <td class="entry" valign="top" width="36.36363636363637%" headers="d41539e121 ">from address from e-mail submission</td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry" valign="top" width="18.181818181818183%" headers="d41539e115 ">subject</td>
+
+                        <td class="entry" valign="top" width="45.45454545454545%" headers="d41539e118 ">...BINDING_PARAMS. EMAIL_SUBJECT</td>
+
+                        <td class="entry" valign="top" width="36.36363636363637%" headers="d41539e121 ">subject from e-mail submission</td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry" valign="top" width="18.181818181818183%" headers="d41539e115 ">body</td>
+
+                        <td class="entry" valign="top" width="45.45454545454545%" headers="d41539e118 ">...BINDING_PARAMS. EMAIL_BODY</td>
+
+                        <td class="entry" valign="top" width="36.36363636363637%" headers="d41539e121 ">e-mail body from e-mail submission</td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry" valign="top" width="18.181818181818183%" headers="d41539e115 ">siteBean</td>
+
+                        <td class="entry" valign="top" width="45.45454545454545%" headers="d41539e118 ">...BINDING_PARAMS. SITEBEAN</td>
+
+                        <td class="entry" valign="top" width="36.36363636363637%" headers="d41539e121 ">TSiteBean for this <span class="ph"><span class="ph">Genji</span></span> instance</td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry" valign="top" width="18.181818181818183%" headers="d41539e115 ">filter</td>
+
+                        <td class="entry" valign="top" width="45.45454545454545%" headers="d41539e118 ">...BINDING_PARAMS. FILTER</td>
+
+                        <td class="entry" valign="top" width="36.36363636363637%" headers="d41539e121 ">LDAP search filter expression</td>
+
+                    </tr>
+
+                    <tr class="row">
+                        <td class="entry" valign="top" width="18.181818181818183%" headers="d41539e115 ">ldapmap</td>
+
+                        <td class="entry" valign="top" width="45.45454545454545%" headers="d41539e118 ">...BINDING_PARAMS. LDAPMAP</td>
+
+                        <td class="entry" valign="top" width="36.36363636363637%" headers="d41539e121 ">LDAP map from quartz-jobs.xml</td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+</div>
+
+        
+<div class="tablenoborder"><table cellpadding="4" cellspacing="0" summary="" id="id132LEB003DA__table_szl_mklhq_zk" class="table" frame="border" border="1" rules="all"><caption><span class="tablecap">Table 2. Output binding keys</span></caption>
+                
+                
+                
+                <thead class="thead" align="left">
+                    <tr class="row">
+                        <th class="entry" valign="top" width="18.181818181818183%" id="d41539e322">Key name</th>
+
+                        <th class="entry" valign="top" width="45.45454545454545%" id="d41539e325">Key symbol</th>
+
+                        <th class="entry" valign="top" width="36.36363636363637%" id="d41539e328">Description</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody class="tbody">
+                    <tr class="row">
+                        <td class="entry" valign="top" width="18.181818181818183%" headers="d41539e322 ">guardPassed</td>
+
+                        <td class="entry" valign="top" width="45.45454545454545%" headers="d41539e325 ">...BINDING_PARAMS. GUARD_PASSED</td>
+
+                        <td class="entry" valign="top" width="36.36363636363637%" headers="d41539e328 ">the current users user ID</td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+</div>
+
+    </div>
+
+<div class="navfooter"><!----></div>
+</body>
+</html>

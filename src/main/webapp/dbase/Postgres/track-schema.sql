@@ -1,0 +1,6302 @@
+
+-----------------------------------------------------------------------------
+-- TACL
+-----------------------------------------------------------------------------
+-- DROP TABLE TACL CASCADE;
+
+
+
+CREATE TABLE TACL
+(
+    PERSONKEY INTEGER NOT NULL,
+    ROLEKEY INTEGER NOT NULL,
+    PROJKEY INTEGER NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (PERSONKEY,ROLEKEY,PROJKEY)
+);
+CREATE INDEX TACLINDEX1 ON TACL (TPUUID);
+
+COMMENT ON TABLE TACL IS 'Describes which person has which role in which project.';
+
+
+
+-----------------------------------------------------------------------------
+-- TBASELINE
+-----------------------------------------------------------------------------
+-- DROP TABLE TBASELINE CASCADE;
+
+
+
+CREATE TABLE TBASELINE
+(
+    BLKEY INTEGER NOT NULL,
+    WORKITEMKEY INTEGER NOT NULL,
+    STARTDATE TIMESTAMP,
+    ENDDATE TIMESTAMP,
+    REASONFORCHANGE TEXT,
+    CHANGEDBY INTEGER,
+    LASTEDIT TIMESTAMP,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (BLKEY)
+);
+CREATE INDEX TBASINDEX1 ON TBASELINE (WORKITEMKEY);
+CREATE INDEX TBASINDEX2 ON TBASELINE (CHANGEDBY);
+CREATE INDEX TBASINDEX3 ON TBASELINE (TPUUID);
+
+COMMENT ON TABLE TBASELINE IS 'For each workitem this table contains the history of start and due dates.';
+
+
+
+-----------------------------------------------------------------------------
+-- TCATEGORY
+-----------------------------------------------------------------------------
+-- DROP TABLE TCATEGORY CASCADE;
+
+
+
+CREATE TABLE TCATEGORY
+(
+    PKEY INTEGER NOT NULL,
+    LABEL VARCHAR(255) NOT NULL,
+    TOOLTIP VARCHAR(255),
+    TYPEFLAG INTEGER,
+    SORTORDER INTEGER,
+    SYMBOL VARCHAR(255),
+    ICONKEY INTEGER,
+    ICONCHANGED CHAR(1) default 'N',
+    CSSSTYLE VARCHAR(255),
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (PKEY)
+);
+CREATE INDEX TCATEGORYINDEX1 ON TCATEGORY (TPUUID);
+
+COMMENT ON TABLE TCATEGORY IS 'Holds all known issue types.';
+
+COMMENT ON COLUMN TCATEGORY.LABEL IS 'The name of this issue type. Localization will be applied if possible by the business logic.';
+COMMENT ON COLUMN TCATEGORY.SYMBOL IS 'File name for a small graphical symbol (GIF or PNG)';
+COMMENT ON COLUMN TCATEGORY.CSSSTYLE IS 'CSS styles for rows with this issue type';
+
+
+-----------------------------------------------------------------------------
+-- TCLASS
+-----------------------------------------------------------------------------
+-- DROP TABLE TCLASS CASCADE;
+
+
+
+CREATE TABLE TCLASS
+(
+    PKEY INTEGER NOT NULL,
+    LABEL VARCHAR(25) NOT NULL,
+    PROJKEY INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (PKEY)
+);
+CREATE INDEX TCLASSINDEX1 ON TCLASS (TPUUID);
+
+COMMENT ON TABLE TCLASS IS 'A class is just a special project specific list field, e.g. for categorizing issues further into documentation related issues, hardware related issues, etc.';
+
+
+
+-----------------------------------------------------------------------------
+-- TDEPARTMENT
+-----------------------------------------------------------------------------
+-- DROP TABLE TDEPARTMENT CASCADE;
+
+
+
+CREATE TABLE TDEPARTMENT
+(
+    PKEY INTEGER NOT NULL,
+    LABEL VARCHAR(255) NOT NULL,
+    COSTCENTER INTEGER,
+    PARENT INTEGER,
+    DOMAINKEY INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (PKEY)
+);
+CREATE INDEX TDEPARTMENTINDEX1 ON TDEPARTMENT (TPUUID);
+
+COMMENT ON TABLE TDEPARTMENT IS 'This table holds the departments. Each user belongs to one department.';
+
+
+
+-----------------------------------------------------------------------------
+-- TNOTIFY
+-----------------------------------------------------------------------------
+-- DROP TABLE TNOTIFY CASCADE;
+
+
+
+CREATE TABLE TNOTIFY
+(
+    PKEY INTEGER NOT NULL,
+    PROJCATKEY INTEGER,
+    STATEKEY INTEGER,
+    PERSONKEY INTEGER NOT NULL,
+    WORKITEM INTEGER,
+    RACIROLE VARCHAR(1),
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (PKEY)
+);
+CREATE INDEX TNOTIFYINDEX1 ON TNOTIFY (TPUUID);
+
+
+COMMENT ON COLUMN TNOTIFY.PKEY IS 'This table holds the notification configuration for each user.';
+COMMENT ON COLUMN TNOTIFY.PROJCATKEY IS 'Notify me only for this project component (category).';
+COMMENT ON COLUMN TNOTIFY.STATEKEY IS 'Notify me only for these statuses.';
+COMMENT ON COLUMN TNOTIFY.WORKITEM IS 'If this is null, this pertains to the regular watch list, otherwise it pertains to this specific WORKITEM.';
+COMMENT ON COLUMN TNOTIFY.RACIROLE IS 'Abbreviation for RACI roles of (C)onsulted or (I)nformed';
+
+
+-----------------------------------------------------------------------------
+-- TPERSON
+-----------------------------------------------------------------------------
+-- DROP TABLE TPERSON CASCADE;
+
+
+
+CREATE TABLE TPERSON
+(
+    PKEY INTEGER NOT NULL,
+    FIRSTNAME VARCHAR(25),
+    LASTNAME VARCHAR(25),
+    LOGINNAME VARCHAR(60) NOT NULL,
+    EMAIL VARCHAR(60),
+    PASSWD VARCHAR(160),
+    SALT VARCHAR(80),
+    FORGOTPASSWORDKEY VARCHAR(100),
+    PHONE VARCHAR(18),
+    DEPKEY INTEGER,
+    VALIDUNTIL TIMESTAMP,
+    PREFERENCES VARCHAR(2000),
+    LASTEDIT TIMESTAMP,
+    CREATED TIMESTAMP,
+    DELETED CHAR(1) default 'N',
+    TOKENPASSWD VARCHAR(80),
+    TOKENEXPDATE TIMESTAMP,
+    EMAILFREQUENCY INTEGER,
+    EMAILLEAD INTEGER,
+    EMAILLASTREMINDED TIMESTAMP,
+    EMAILREMINDME CHAR(1) default 'N',
+    PREFEMAILTYPE VARCHAR(15) default 'Plain',
+    PREFLOCALE VARCHAR(10),
+    MYDEFAULTREPORT INTEGER,
+    NOEMAILSPLEASE INTEGER,
+    REMINDMEASORIGINATOR CHAR(1) default 'N',
+    REMINDMEASMANAGER CHAR(1) default 'Y',
+    REMINDMEASRESPONSIBLE CHAR(1) default 'Y',
+    EMAILREMINDPLEVEL INTEGER,
+    EMAILREMINDSLEVEL INTEGER,
+    HOURSPERWORKDAY DOUBLE PRECISION,
+    HOURLYWAGE DOUBLE PRECISION,
+    EXTRAHOURWAGE DOUBLE PRECISION,
+    EMPLOYEEID VARCHAR(30),
+    ISGROUP CHAR(1) default 'N',
+    USERLEVEL INTEGER,
+    MAXASSIGNEDITEMS INTEGER,
+    MESSENGERURL VARCHAR(255),
+    CALLURL VARCHAR(255),
+    SYMBOL VARCHAR(255),
+    ICONKEY INTEGER,
+    SUBSTITUTEKEY INTEGER,
+    SUBSTITUTEACTIVE CHAR(1) default 'N',
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (PKEY)
+);
+CREATE INDEX TPERSINDEX1 ON TPERSON (DEPKEY);
+CREATE INDEX TPERSINDEX2 ON TPERSON (TPUUID);
+CREATE INDEX TPERSINDEX3 ON TPERSON (FIRSTNAME);
+CREATE INDEX TPERSINDEX4 ON TPERSON (LASTNAME);
+CREATE INDEX TPERSINDEX5 ON TPERSON (LOGINNAME);
+CREATE INDEX TPERSINDEX6 ON TPERSON (ISGROUP);
+
+COMMENT ON TABLE TPERSON IS 'This table holds all user related information, like user name, e-mail, etc.';
+
+COMMENT ON COLUMN TPERSON.PREFERENCES IS 'This is a multi-purpose field. It contains a text in .properties format with a number of additional attributes.';
+COMMENT ON COLUMN TPERSON.ISGROUP IS 'Groups are treated like users in most cases.';
+COMMENT ON COLUMN TPERSON.USERLEVEL IS 'The user capability level, e.g. full user, limited user, sysadmin, sysman';
+COMMENT ON COLUMN TPERSON.MAXASSIGNEDITEMS IS 'maximal number of assigned items for this person';
+COMMENT ON COLUMN TPERSON.MESSENGERURL IS 'the instant messenger URL';
+COMMENT ON COLUMN TPERSON.CALLURL IS 'the voice URL';
+COMMENT ON COLUMN TPERSON.SYMBOL IS 'File name for a photo';
+COMMENT ON COLUMN TPERSON.ICONKEY IS 'The photo stored in the database blob';
+COMMENT ON COLUMN TPERSON.SUBSTITUTEKEY IS 'The substituting preson';
+COMMENT ON COLUMN TPERSON.SUBSTITUTEACTIVE IS 'Substitute person is active';
+
+
+-----------------------------------------------------------------------------
+-- TPRIORITY
+-----------------------------------------------------------------------------
+-- DROP TABLE TPRIORITY CASCADE;
+
+
+
+CREATE TABLE TPRIORITY
+(
+    PKEY INTEGER NOT NULL,
+    LABEL VARCHAR(255),
+    TOOLTIP VARCHAR(255),
+    SORTORDER INTEGER,
+    WLEVEL INTEGER,
+    SYMBOL VARCHAR(255),
+    ICONKEY INTEGER,
+    ICONCHANGED CHAR(1) default 'N',
+    CSSSTYLE VARCHAR(255),
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (PKEY)
+);
+CREATE INDEX TPRIOINDEX1 ON TPRIORITY (TPUUID);
+
+
+COMMENT ON COLUMN TPRIORITY.SYMBOL IS 'File name for a small graphical symbol (GIF or PNG)';
+COMMENT ON COLUMN TPRIORITY.CSSSTYLE IS 'CSS style for rows with this priority';
+
+
+-----------------------------------------------------------------------------
+-- TPPRIORITY
+-----------------------------------------------------------------------------
+-- DROP TABLE TPPRIORITY CASCADE;
+
+
+
+CREATE TABLE TPPRIORITY
+(
+    OBJECTID INTEGER NOT NULL,
+    PRIORITY INTEGER,
+    PROJECTTYPE INTEGER,
+    LISTTYPE INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TPPRIOINDEX1 ON TPPRIORITY (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TPROJCAT
+-----------------------------------------------------------------------------
+-- DROP TABLE TPROJCAT CASCADE;
+
+
+
+CREATE TABLE TPROJCAT
+(
+    PKEY INTEGER NOT NULL,
+    LABEL VARCHAR(35),
+    PROJKEY INTEGER NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (PKEY)
+);
+CREATE INDEX TPROJCATINDEX1 ON TPROJCAT (PROJKEY);
+CREATE INDEX TPROJCATINDEX2 ON TPROJCAT (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TPROJECT
+-----------------------------------------------------------------------------
+-- DROP TABLE TPROJECT CASCADE;
+
+
+
+CREATE TABLE TPROJECT
+(
+    PKEY INTEGER NOT NULL,
+    LABEL VARCHAR(255),
+    DEFOWNER INTEGER,
+    DEFMANAGER INTEGER,
+    DEFINITSTATE INTEGER,
+    PROJECTTYPE INTEGER,
+    VERSIONSYSTEMFIELD0 VARCHAR(255),
+    VERSIONSYSTEMFIELD1 VARCHAR(255),
+    VERSIONSYSTEMFIELD2 VARCHAR(255),
+    VERSIONSYSTEMFIELD3 VARCHAR(255),
+    DELETED VARCHAR(1) default 'N' NOT NULL,
+    STATUS INTEGER,
+    CURRENCYNAME VARCHAR(255),
+    CURRENCYSYMBOL VARCHAR(255),
+    HOURSPERWORKDAY DOUBLE PRECISION,
+    MOREPROPS VARCHAR(10000),
+    TAGLABEL VARCHAR(50),
+    DESCRIPTION VARCHAR(255),
+    PREFIX VARCHAR(50),
+    NEXTITEMID INTEGER,
+    LASTID INTEGER,
+    PARENT INTEGER,
+    SORTORDER INTEGER,
+    ISPRIVATE VARCHAR(1) default 'N',
+    ISTEMPLATE CHAR(1) default 'N',
+    DOMAINKEY INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (PKEY)
+);
+CREATE INDEX TPROJECTINDEX ON TPROJECT (TPUUID);
+CREATE INDEX TPROJECTINDEX1 ON TPROJECT (STATUS);
+CREATE INDEX TPROJECTINDEX2 ON TPROJECT (SORTORDER);
+
+
+COMMENT ON COLUMN TPROJECT.MOREPROPS IS 'This is a multi-purpose field. It contains a text in .properties format with a number of additional attributes.';
+COMMENT ON COLUMN TPROJECT.TAGLABEL IS 'A user defined tag used for filtering/grouping the projects';
+
+
+-----------------------------------------------------------------------------
+-- TRELEASE
+-----------------------------------------------------------------------------
+-- DROP TABLE TRELEASE CASCADE;
+
+
+
+CREATE TABLE TRELEASE
+(
+    PKEY INTEGER NOT NULL,
+    LABEL VARCHAR(255),
+    PROJKEY INTEGER NOT NULL,
+    STATUS INTEGER,
+    SORTORDER INTEGER,
+    MOREPROPS VARCHAR(10000),
+    DESCRIPTION VARCHAR(255),
+    DUEDATE TIMESTAMP,
+    PARENT INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (PKEY)
+);
+CREATE INDEX TRELINDEX1 ON TRELEASE (PROJKEY);
+CREATE INDEX TRELINDEX2 ON TRELEASE (TPUUID);
+
+
+COMMENT ON COLUMN TRELEASE.MOREPROPS IS 'This is a multi-purpose field. It contains a text in .properties format with a number of additional attributes.';
+
+
+-----------------------------------------------------------------------------
+-- TROLE
+-----------------------------------------------------------------------------
+-- DROP TABLE TROLE CASCADE;
+
+
+
+CREATE TABLE TROLE
+(
+    PKEY INTEGER NOT NULL,
+    LABEL VARCHAR(255) NOT NULL,
+    ACCESSKEY INTEGER,
+    EXTENDEDACCESSKEY VARCHAR(30),
+    PROJECTTYPE INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (PKEY)
+);
+CREATE INDEX TROLEINDEX1 ON TROLE (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TSEVERITY
+-----------------------------------------------------------------------------
+-- DROP TABLE TSEVERITY CASCADE;
+
+
+
+CREATE TABLE TSEVERITY
+(
+    PKEY INTEGER NOT NULL,
+    LABEL VARCHAR(255),
+    TOOLTIP VARCHAR(255),
+    SORTORDER INTEGER,
+    WLEVEL INTEGER,
+    SYMBOL VARCHAR(255),
+    ICONKEY INTEGER,
+    ICONCHANGED CHAR(1) default 'N',
+    CSSSTYLE VARCHAR(255),
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (PKEY)
+);
+CREATE INDEX TSEVINDEX1 ON TSEVERITY (TPUUID);
+
+
+COMMENT ON COLUMN TSEVERITY.SYMBOL IS 'File name for a small graphical symbol (GIF or PNG)';
+COMMENT ON COLUMN TSEVERITY.CSSSTYLE IS 'CSS style for rows with this severity';
+
+
+-----------------------------------------------------------------------------
+-- TPSEVERITY
+-----------------------------------------------------------------------------
+-- DROP TABLE TPSEVERITY CASCADE;
+
+
+
+CREATE TABLE TPSEVERITY
+(
+    OBJECTID INTEGER NOT NULL,
+    SEVERITY INTEGER,
+    PROJECTTYPE INTEGER,
+    LISTTYPE INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TPSEVINDEX1 ON TPSEVERITY (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TSTATE
+-----------------------------------------------------------------------------
+-- DROP TABLE TSTATE CASCADE;
+
+
+
+CREATE TABLE TSTATE
+(
+    PKEY INTEGER NOT NULL,
+    LABEL VARCHAR(255) NOT NULL,
+    TOOLTIP VARCHAR(255),
+    STATEFLAG INTEGER,
+    SORTORDER INTEGER,
+    SYMBOL VARCHAR(255),
+    ICONKEY INTEGER,
+    ICONCHANGED CHAR(1) default 'N',
+    CSSSTYLE VARCHAR(255),
+    PERCENTCOMPLETE INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (PKEY)
+);
+CREATE INDEX TSTATEINDEX1 ON TSTATE (TPUUID);
+
+
+COMMENT ON COLUMN TSTATE.SYMBOL IS 'File name for a small graphical symbol (GIF or PNG)';
+COMMENT ON COLUMN TSTATE.CSSSTYLE IS 'CSS style for rows with this status';
+
+
+-----------------------------------------------------------------------------
+-- TSTATECHANGE
+-----------------------------------------------------------------------------
+-- DROP TABLE TSTATECHANGE CASCADE;
+
+
+
+CREATE TABLE TSTATECHANGE
+(
+    STATECHANGEKEY INTEGER NOT NULL,
+    WORKITEMKEY INTEGER NOT NULL,
+    CHANGEDBY INTEGER NOT NULL,
+    CHANGEDTO INTEGER NOT NULL,
+    CHANGEDESCRIPTION TEXT,
+    LASTEDIT TIMESTAMP,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (STATECHANGEKEY)
+);
+CREATE INDEX TSTATECHANGEINDEX1 ON TSTATECHANGE (CHANGEDBY);
+CREATE INDEX TSTATECHANGEINDEX2 ON TSTATECHANGE (CHANGEDTO);
+CREATE INDEX TSTATECHANGEINDEX3 ON TSTATECHANGE (WORKITEMKEY);
+CREATE INDEX TSTATECHANGEINDEX4 ON TSTATECHANGE (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TTRAIL
+-----------------------------------------------------------------------------
+-- DROP TABLE TTRAIL CASCADE;
+
+
+
+CREATE TABLE TTRAIL
+(
+    TRAILKEY INTEGER NOT NULL,
+    WORKITEMKEY INTEGER NOT NULL,
+    CHANGEDBY INTEGER NOT NULL,
+    CHANGEDESCRIPTION TEXT,
+    LASTEDIT TIMESTAMP,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (TRAILKEY)
+);
+CREATE INDEX TTRAILINDEX1 ON TTRAIL (WORKITEMKEY);
+CREATE INDEX TTRAILINDEX2 ON TTRAIL (CHANGEDBY);
+CREATE INDEX TTRAILINDEX3 ON TTRAIL (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TWORKITEM
+-----------------------------------------------------------------------------
+-- DROP TABLE TWORKITEM CASCADE;
+
+
+
+CREATE TABLE TWORKITEM
+(
+    WORKITEMKEY INTEGER NOT NULL,
+    OWNER INTEGER NOT NULL,
+    CHANGEDBY INTEGER NOT NULL,
+    ORIGINATOR INTEGER,
+    RESPONSIBLE INTEGER,
+    PROJECTKEY INTEGER,
+    PROJCATKEY INTEGER,
+    CATEGORYKEY INTEGER NOT NULL,
+    CLASSKEY INTEGER,
+    PRIORITYKEY INTEGER NOT NULL,
+    SEVERITYKEY INTEGER,
+    SUPERIORWORKITEM INTEGER,
+    PACKAGESYNOPSYS VARCHAR(255) NOT NULL,
+    PACKAGEDESCRIPTION TEXT,
+    REFERENCE VARCHAR(20),
+    LASTEDIT TIMESTAMP,
+    RELNOTICEDKEY INTEGER,
+    RELSCHEDULEDKEY INTEGER,
+    BUILD VARCHAR(25),
+    STATE INTEGER,
+    STARTDATE TIMESTAMP,
+    ENDDATE TIMESTAMP,
+    SUBMITTEREMAIL VARCHAR(60),
+    CREATED TIMESTAMP,
+    ACTUALSTARTDATE TIMESTAMP,
+    ACTUALENDDATE TIMESTAMP,
+    WLEVEL VARCHAR(14),
+    ACCESSLEVEL INTEGER default 0,
+    ARCHIVELEVEL INTEGER default 0,
+    ESCALATIONLEVEL INTEGER,
+    TASKISMILESTONE CHAR(1) default 'N',
+    TASKISSUBPROJECT CHAR(1) default 'N',
+    TASKISSUMMARY CHAR(1) default 'N',
+    TASKCONSTRAINT INTEGER,
+    TASKCONSTRAINTDATE TIMESTAMP,
+    PSPCODE VARCHAR(255),
+    IDNUMBER INTEGER,
+    WBSONLEVEL INTEGER,
+    REMINDERDATE TIMESTAMP,
+    TOPDOWNSTARTDATE TIMESTAMP,
+    TOPDOWNENDDATE TIMESTAMP,
+    OVERBUDGET CHAR(1) default 'N',
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (WORKITEMKEY)
+);
+CREATE INDEX TWIINDEX1 ON TWORKITEM (PRIORITYKEY);
+CREATE INDEX TWIINDEX2 ON TWORKITEM (SEVERITYKEY);
+CREATE INDEX TWIINDEX3 ON TWORKITEM (CATEGORYKEY);
+CREATE INDEX TWIINDEX4 ON TWORKITEM (CLASSKEY);
+CREATE INDEX TWIINDEX5 ON TWORKITEM (CHANGEDBY);
+CREATE INDEX TWIINDEX6 ON TWORKITEM (RELNOTICEDKEY);
+CREATE INDEX TWIINDEX7 ON TWORKITEM (RELSCHEDULEDKEY);
+CREATE INDEX TWIINDEX8 ON TWORKITEM (OWNER);
+CREATE INDEX TWIINDEX9 ON TWORKITEM (ORIGINATOR);
+CREATE INDEX TWIINDEX10 ON TWORKITEM (RESPONSIBLE);
+CREATE INDEX TWIINDEX11 ON TWORKITEM (PROJCATKEY);
+CREATE INDEX TWIINDEX12 ON TWORKITEM (STATE);
+CREATE INDEX TWIINDEX13 ON TWORKITEM (STARTDATE);
+CREATE INDEX TWIINDEX14 ON TWORKITEM (ENDDATE);
+CREATE INDEX TWIINDEX15 ON TWORKITEM (ACTUALSTARTDATE);
+CREATE INDEX TWIINDEX16 ON TWORKITEM (ACTUALENDDATE);
+CREATE INDEX TWIINDEX17 ON TWORKITEM (WLEVEL);
+CREATE INDEX TWIINDEX18 ON TWORKITEM (ACCESSLEVEL);
+CREATE INDEX TWIINDEX19 ON TWORKITEM (ARCHIVELEVEL);
+CREATE INDEX TWIINDEX20 ON TWORKITEM (TPUUID);
+CREATE INDEX TWIINDEX21 ON TWORKITEM (IDNUMBER);
+CREATE INDEX TWIINDEX22 ON TWORKITEM (CREATED);
+CREATE INDEX TWIINDEX23 ON TWORKITEM (WBSONLEVEL);
+CREATE INDEX TWIINDEX24 ON TWORKITEM (TOPDOWNSTARTDATE);
+CREATE INDEX TWIINDEX25 ON TWORKITEM (TOPDOWNENDDATE);
+CREATE INDEX TWIINDEX26 ON TWORKITEM (PROJECTKEY);
+
+
+COMMENT ON COLUMN TWORKITEM.ESCALATIONLEVEL IS 'the last escalation e-mail was sent for this level';
+
+
+-----------------------------------------------------------------------------
+-- TCOMPUTEDVALUES
+-----------------------------------------------------------------------------
+-- DROP TABLE TCOMPUTEDVALUES CASCADE;
+
+
+
+CREATE TABLE TCOMPUTEDVALUES
+(
+    PKEY INTEGER NOT NULL,
+    WORKITEMKEY INTEGER NOT NULL,
+    EFFORTTYPE INTEGER NOT NULL,
+    COMPUTEDVALUETYPE INTEGER NOT NULL,
+    COMPUTEDVALUE DOUBLE PRECISION,
+    MEASUREMENTUNIT INTEGER,
+    PERSON INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (PKEY)
+);
+CREATE INDEX TCVINDEX1 ON TCOMPUTEDVALUES (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TPRIVATEREPORTREPOSITORY
+-----------------------------------------------------------------------------
+-- DROP TABLE TPRIVATEREPORTREPOSITORY CASCADE;
+
+
+
+CREATE TABLE TPRIVATEREPORTREPOSITORY
+(
+    PKEY INTEGER NOT NULL,
+    OWNER INTEGER NOT NULL,
+    NAME VARCHAR(100) NOT NULL,
+    QUERY VARCHAR(10000) NOT NULL,
+    MENUITEM CHAR(1) default 'N',
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (PKEY)
+);
+CREATE INDEX TPRIVREPREPINDEX1 ON TPRIVATEREPORTREPOSITORY (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TPUBLICREPORTREPOSITORY
+-----------------------------------------------------------------------------
+-- DROP TABLE TPUBLICREPORTREPOSITORY CASCADE;
+
+
+
+CREATE TABLE TPUBLICREPORTREPOSITORY
+(
+    PKEY INTEGER NOT NULL,
+    OWNER INTEGER NOT NULL,
+    NAME VARCHAR(100) NOT NULL,
+    QUERY VARCHAR(10000) NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (PKEY)
+);
+CREATE INDEX TPUBREPREPINDEX1 ON TPUBLICREPORTREPOSITORY (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TPROJECTREPORTREPOSITORY
+-----------------------------------------------------------------------------
+-- DROP TABLE TPROJECTREPORTREPOSITORY CASCADE;
+
+
+
+CREATE TABLE TPROJECTREPORTREPOSITORY
+(
+    PKEY INTEGER NOT NULL,
+    PROJECT INTEGER NOT NULL,
+    NAME VARCHAR(100) NOT NULL,
+    QUERY VARCHAR(10000) NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (PKEY)
+);
+CREATE INDEX TPROJREPREPINDEX1 ON TPROJECTREPORTREPOSITORY (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TACCOUNT
+-----------------------------------------------------------------------------
+-- DROP TABLE TACCOUNT CASCADE;
+
+
+
+CREATE TABLE TACCOUNT
+(
+    OBJECTID INTEGER NOT NULL,
+    ACCOUNTNUMBER VARCHAR(30) NOT NULL,
+    ACCOUNTNAME VARCHAR(80),
+    STATUS INTEGER,
+    COSTCENTER INTEGER,
+    DESCRIPTION VARCHAR(255),
+    MOREPROPS VARCHAR(10000),
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TACCOUNTINDEX1 ON TACCOUNT (TPUUID);
+
+
+COMMENT ON COLUMN TACCOUNT.MOREPROPS IS 'This is a multi-purpose field. It contains a text in .properties format with a number of additional attributes.';
+
+
+-----------------------------------------------------------------------------
+-- TATTACHMENT
+-----------------------------------------------------------------------------
+-- DROP TABLE TATTACHMENT CASCADE;
+
+
+
+CREATE TABLE TATTACHMENT
+(
+    OBJECTID INTEGER NOT NULL,
+    WORKITEM INTEGER NOT NULL,
+    CHANGEDBY INTEGER,
+    DOCUMENTSTATE INTEGER,
+    FILENAME VARCHAR(256) NOT NULL,
+    ISURL CHAR(1) default 'N',
+    FILESIZE VARCHAR(20),
+    MIMETYPE VARCHAR(15),
+    LASTEDIT TIMESTAMP,
+    VERSION VARCHAR(20),
+    DESCRIPTION VARCHAR(10000),
+    CRYPTKEY VARCHAR(4096),
+    ISENCRYPTED CHAR(1) default 'N',
+    ISDELETED CHAR(1) default 'N',
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TATTACHINDEX1 ON TATTACHMENT (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TCOST
+-----------------------------------------------------------------------------
+-- DROP TABLE TCOST CASCADE;
+
+
+
+CREATE TABLE TCOST
+(
+    OBJECTID INTEGER NOT NULL,
+    ACCOUNT INTEGER,
+    PERSON INTEGER,
+    WORKITEM INTEGER,
+    HOURS DOUBLE PRECISION,
+    COST DOUBLE PRECISION,
+    SUBJECT VARCHAR(255),
+    EFFORTTYPE INTEGER,
+    EFFORTVALUE DOUBLE PRECISION,
+    EFFORTDATE TIMESTAMP,
+    INVOICENUMBER VARCHAR(255),
+    INVOICEDATE TIMESTAMP,
+    INVOICEPATH VARCHAR(255),
+    DESCRIPTION VARCHAR(255),
+    MOREPROPS VARCHAR(10000),
+    LASTEDIT TIMESTAMP,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TCOSTINDEX1 ON TCOST (TPUUID);
+CREATE INDEX TCOSTINDEX2 ON TCOST (LASTEDIT);
+CREATE INDEX TCOSTINDEX3 ON TCOST (EFFORTDATE);
+
+
+COMMENT ON COLUMN TCOST.MOREPROPS IS 'This is a multi-purpose field. It contains a text in .properties format with a number of additional attributes.';
+
+
+-----------------------------------------------------------------------------
+-- TEFFORTTYPE
+-----------------------------------------------------------------------------
+-- DROP TABLE TEFFORTTYPE CASCADE;
+
+
+
+CREATE TABLE TEFFORTTYPE
+(
+    OBJECTID INTEGER NOT NULL,
+    LABEL VARCHAR(255) NOT NULL,
+    EFFORTUNIT INTEGER,
+    DESCRIPTION VARCHAR(255),
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TEFFORTTYPEINDEX1 ON TEFFORTTYPE (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TEFFORTUNIT
+-----------------------------------------------------------------------------
+-- DROP TABLE TEFFORTUNIT CASCADE;
+
+
+
+CREATE TABLE TEFFORTUNIT
+(
+    OBJECTID INTEGER NOT NULL,
+    LABEL VARCHAR(255) NOT NULL,
+    DESCRIPTION VARCHAR(255),
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TEFFORTUNITINDEX1 ON TEFFORTUNIT (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TDOCSTATE
+-----------------------------------------------------------------------------
+-- DROP TABLE TDOCSTATE CASCADE;
+
+
+
+CREATE TABLE TDOCSTATE
+(
+    OBJECTID INTEGER NOT NULL,
+    LABEL VARCHAR(25) NOT NULL,
+    STATEFLAG INTEGER,
+    PROJECTTYPE INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TDOCSTATEINDEX1 ON TDOCSTATE (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TDISABLEFIELD
+-----------------------------------------------------------------------------
+-- DROP TABLE TDISABLEFIELD CASCADE;
+
+
+
+CREATE TABLE TDISABLEFIELD
+(
+    OBJECTID INTEGER NOT NULL,
+    FIELDNAME VARCHAR(25) NOT NULL,
+    LISTTYPE INTEGER,
+    PROJECTTYPE INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TDISABLEFINDEX1 ON TDISABLEFIELD (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TPLISTTYPE
+-----------------------------------------------------------------------------
+-- DROP TABLE TPLISTTYPE CASCADE;
+
+
+
+CREATE TABLE TPLISTTYPE
+(
+    OBJECTID INTEGER NOT NULL,
+    PROJECTTYPE INTEGER,
+    CATEGORY INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TPLISTTYPEINDEX1 ON TPLISTTYPE (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TPROJECTTYPE
+-----------------------------------------------------------------------------
+-- DROP TABLE TPROJECTTYPE CASCADE;
+
+
+
+CREATE TABLE TPROJECTTYPE
+(
+    OBJECTID INTEGER NOT NULL,
+    LABEL VARCHAR(255),
+    NOTIFYOWNERLEVEL INTEGER,
+    NOTIFYMANAGERLEVEL INTEGER,
+    HOURSPERWORKDAY DOUBLE PRECISION,
+    MOREPROPS VARCHAR(10000),
+    DEFAULTFORPRIVATE VARCHAR(1) default 'N',
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TPROJTYPEINDEX1 ON TPROJECTTYPE (TPUUID);
+
+
+COMMENT ON COLUMN TPROJECTTYPE.MOREPROPS IS 'This is a multi-purpose field. It contains a text in .properties format with a number of additional attributes.';
+
+
+-----------------------------------------------------------------------------
+-- TPSTATE
+-----------------------------------------------------------------------------
+-- DROP TABLE TPSTATE CASCADE;
+
+
+
+CREATE TABLE TPSTATE
+(
+    OBJECTID INTEGER NOT NULL,
+    STATE INTEGER,
+    PROJECTTYPE INTEGER,
+    LISTTYPE INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TPSTATEINDEX1 ON TPSTATE (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TSITE
+-----------------------------------------------------------------------------
+-- DROP TABLE TSITE CASCADE;
+
+
+
+CREATE TABLE TSITE
+(
+    OBJECTID INTEGER NOT NULL,
+    TRACKVERSION VARCHAR(10),
+    DBVERSION VARCHAR(10),
+    LICENSEEXT VARCHAR(512),
+    EXPDATE DATE,
+    NUMBEROFUSERS INTEGER,
+    TRACKEMAIL VARCHAR(100),
+    SMTPSERVERNAME VARCHAR(100),
+    SMTPPORT INTEGER,
+    MAILENCODING VARCHAR(20),
+    SMTPUSER VARCHAR(100),
+    SMTPPASSWORD VARCHAR(30),
+    POPSERVERNAME VARCHAR(100),
+    POPPORT INTEGER,
+    POPUSER VARCHAR(100),
+    POPPASSWORD VARCHAR(30),
+    RECEIVINGPROTOCOL VARCHAR(6),
+    ALLOWEDEMAILPATTERN VARCHAR(20000),
+    ISLDAPON CHAR(1),
+    LDAPSERVERURL VARCHAR(100),
+    LDAPATTRIBUTELOGINNAME VARCHAR(30),
+    ATTACHMENTROOTDIR VARCHAR(512),
+    SERVERURL VARCHAR(100),
+    DESCRIPTIONLENGTH INTEGER,
+    ISSELFREGISTERALLOWED CHAR(1) default 'Y',
+    ISDEMOSITE CHAR(1) default 'N',
+    USETRACKFROMADDRESS CHAR(1) default 'Y',
+    RESERVEDUSE INTEGER,
+    LDAPBINDDN VARCHAR(255),
+    LDAPBINDPASSW VARCHAR(20),
+    PREFERENCES VARCHAR(8000),
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TSITEINDEX1 ON TSITE (TPUUID);
+
+
+COMMENT ON COLUMN TSITE.PREFERENCES IS 'This is a multi-purpose field. It contains a text in .properties format with a number of additional attributes.';
+
+
+-----------------------------------------------------------------------------
+-- TWORKFLOW
+-----------------------------------------------------------------------------
+-- DROP TABLE TWORKFLOW CASCADE;
+
+
+
+CREATE TABLE TWORKFLOW
+(
+    OBJECTID INTEGER NOT NULL,
+    STATEFROM INTEGER,
+    STATETO INTEGER,
+    PROJECTTYPE INTEGER,
+    RESPONSIBLE INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TWORKFLOWINDEX1 ON TWORKFLOW (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TWORKFLOWROLE
+-----------------------------------------------------------------------------
+-- DROP TABLE TWORKFLOWROLE CASCADE;
+
+
+
+CREATE TABLE TWORKFLOWROLE
+(
+    OBJECTID INTEGER NOT NULL,
+    WORKFLOW INTEGER,
+    MAYCHANGEROLE INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TWORKFLOWROLEINDEX1 ON TWORKFLOWROLE (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TWORKFLOWCATEGORY
+-----------------------------------------------------------------------------
+-- DROP TABLE TWORKFLOWCATEGORY CASCADE;
+
+
+
+CREATE TABLE TWORKFLOWCATEGORY
+(
+    OBJECTID INTEGER NOT NULL,
+    WORKFLOW INTEGER,
+    CATEGORY INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TWORKFLOWCATINDEX1 ON TWORKFLOWCATEGORY (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TROLELISTTYPE
+-----------------------------------------------------------------------------
+-- DROP TABLE TROLELISTTYPE CASCADE;
+
+
+
+CREATE TABLE TROLELISTTYPE
+(
+    OBJECTID INTEGER NOT NULL,
+    PROLE INTEGER NOT NULL,
+    LISTTYPE INTEGER NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TROLELISTTINDEX1 ON TROLELISTTYPE (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TISSUEATTRIBUTEVALUE
+-----------------------------------------------------------------------------
+-- DROP TABLE TISSUEATTRIBUTEVALUE CASCADE;
+
+
+
+CREATE TABLE TISSUEATTRIBUTEVALUE
+(
+    OBJECTID INTEGER NOT NULL,
+    ATTRIBUTEID INTEGER NOT NULL,
+    DELETED INTEGER,
+    ISSUE INTEGER NOT NULL,
+    NUMERICVALUE INTEGER,
+    TIMESTAMPVALUE TIMESTAMP,
+    LONGTEXTVALUE VARCHAR(32000),
+    OPTIONID INTEGER,
+    PERSON INTEGER,
+    CHARVALUE VARCHAR(255),
+    DISPLAYVALUE VARCHAR(255),
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TISSUEATTINDEX1 ON TISSUEATTRIBUTEVALUE (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TATTRIBUTEOPTION
+-----------------------------------------------------------------------------
+-- DROP TABLE TATTRIBUTEOPTION CASCADE;
+
+
+
+CREATE TABLE TATTRIBUTEOPTION
+(
+    OBJECTID INTEGER NOT NULL,
+    ATTRIBUTEID INTEGER NOT NULL,
+    PARENTOPTION INTEGER,
+    OPTIONNAME VARCHAR(255) NOT NULL,
+    DELETED INTEGER,
+    SORTORDER INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TATTOPTINDEX1 ON TATTRIBUTEOPTION (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TATTRIBUTECLASS
+-----------------------------------------------------------------------------
+-- DROP TABLE TATTRIBUTECLASS CASCADE;
+
+
+
+CREATE TABLE TATTRIBUTECLASS
+(
+    OBJECTID INTEGER NOT NULL,
+    ATTRIBUTECLASSNAME VARCHAR(255) NOT NULL,
+    ATTRIBUTECLASSDESC VARCHAR(64),
+    JAVACLASSNAME VARCHAR(255),
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TATTCLASSINDEX1 ON TATTRIBUTECLASS (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TATTRIBUTETYPE
+-----------------------------------------------------------------------------
+-- DROP TABLE TATTRIBUTETYPE CASCADE;
+
+
+
+CREATE TABLE TATTRIBUTETYPE
+(
+    OBJECTID INTEGER NOT NULL,
+    ATTRIBUTETYPENAME VARCHAR(255) NOT NULL,
+    ATTRIBUTECLASS INTEGER NOT NULL,
+    JAVACLASSNAME VARCHAR(255),
+    VALIDATIONKEY VARCHAR(25),
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TATTTYPEINDEX1 ON TATTRIBUTETYPE (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TATTRIBUTE
+-----------------------------------------------------------------------------
+-- DROP TABLE TATTRIBUTE CASCADE;
+
+
+
+CREATE TABLE TATTRIBUTE
+(
+    OBJECTID INTEGER NOT NULL,
+    ATTRIBUTENAME VARCHAR(255) NOT NULL,
+    ATTRIBUTETYPE INTEGER NOT NULL,
+    DELETED INTEGER,
+    DESCRIPTION VARCHAR(64),
+    PERMISSION VARCHAR(255),
+    REQUIREDOPTION INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TATTRIBUTEINDEX1 ON TATTRIBUTE (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TREPORTLAYOUT
+-----------------------------------------------------------------------------
+-- DROP TABLE TREPORTLAYOUT CASCADE;
+
+
+
+CREATE TABLE TREPORTLAYOUT
+(
+    OBJECTID INTEGER NOT NULL,
+    PROJECTTYPE INTEGER,
+    PROJECT INTEGER,
+    PERSON INTEGER,
+    REPORTFIELD INTEGER NOT NULL,
+    FPOSITION INTEGER NOT NULL,
+    FWIDTH INTEGER NOT NULL,
+    FSORTORDER INTEGER,
+    FSORTDIR VARCHAR(1),
+    FIELDTYPE INTEGER,
+    EXPANDING VARCHAR(1),
+    LAYOUTKEY INTEGER,
+    QUERYID INTEGER,
+    QUERYTYPE INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TREPORTLAYOUTINDEX1 ON TREPORTLAYOUT (FIELDTYPE);
+CREATE INDEX TREPORTLAYOUTINDEX2 ON TREPORTLAYOUT (LAYOUTKEY);
+CREATE INDEX TREPORTLAYOUTINDEX3 ON TREPORTLAYOUT (TPUUID);
+CREATE INDEX TREPORTLAYOUTINDEX4 ON TREPORTLAYOUT (QUERYID);
+
+
+COMMENT ON COLUMN TREPORTLAYOUT.FIELDTYPE IS 'show or grouping';
+COMMENT ON COLUMN TREPORTLAYOUT.EXPANDING IS 'used only for grouping fields';
+COMMENT ON COLUMN TREPORTLAYOUT.LAYOUTKEY IS 'report overview, issue overview history/comment/attachment/worlog/watchers/version... etc.';
+COMMENT ON COLUMN TREPORTLAYOUT.QUERYID IS 'specified for query specific layout';
+COMMENT ON COLUMN TREPORTLAYOUT.QUERYTYPE IS 'specifies the type of the query: manager, reponsible, tree, tql private, etc.';
+
+
+-----------------------------------------------------------------------------
+-- TSCHEDULER
+-----------------------------------------------------------------------------
+-- DROP TABLE TSCHEDULER CASCADE;
+
+
+
+CREATE TABLE TSCHEDULER
+(
+    OBJECTID INTEGER NOT NULL,
+    CRONWHEN VARCHAR(64) NOT NULL,
+    JAVACLASSNAME VARCHAR(255),
+    EXTERNALEXE VARCHAR(255),
+    PERSON INTEGER NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TSCHEDULERINDEX1 ON TSCHEDULER (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TPROJECTACCOUNT
+-----------------------------------------------------------------------------
+-- DROP TABLE TPROJECTACCOUNT CASCADE;
+
+
+
+CREATE TABLE TPROJECTACCOUNT
+(
+    ACCOUNT INTEGER NOT NULL,
+    PROJECT INTEGER NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (ACCOUNT,PROJECT)
+);
+CREATE INDEX TPROJACCINDEX1 ON TPROJECTACCOUNT (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TGROUPMEMBER
+-----------------------------------------------------------------------------
+-- DROP TABLE TGROUPMEMBER CASCADE;
+
+
+
+CREATE TABLE TGROUPMEMBER
+(
+    OBJECTID INTEGER NOT NULL,
+    THEGROUP INTEGER NOT NULL,
+    PERSON INTEGER NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TGROUPMEMINDEX1 ON TGROUPMEMBER (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TBUDGET
+-----------------------------------------------------------------------------
+-- DROP TABLE TBUDGET CASCADE;
+
+
+
+CREATE TABLE TBUDGET
+(
+    OBJECTID INTEGER NOT NULL,
+    WORKITEMKEY INTEGER NOT NULL,
+    ESTIMATEDHOURS DOUBLE PRECISION,
+    TIMEUNIT INTEGER,
+    ESTIMATEDCOST DOUBLE PRECISION,
+    EFFORTTYPE INTEGER,
+    EFFORTVALUE DOUBLE PRECISION,
+    CHANGEDESCRIPTION VARCHAR(255),
+    MOREPROPS VARCHAR(10000),
+    CHANGEDBY INTEGER,
+    LASTEDIT TIMESTAMP,
+    BUDGETTYPE INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TBUDGETINDEX1 ON TBUDGET (WORKITEMKEY);
+CREATE INDEX TBUDGETINDEX2 ON TBUDGET (CHANGEDBY);
+CREATE INDEX TBUDGETINDEX3 ON TBUDGET (TPUUID);
+CREATE INDEX TBUDGETINDEX4 ON TBUDGET (LASTEDIT);
+
+
+COMMENT ON COLUMN TBUDGET.MOREPROPS IS 'This is a multi-purpose field. It contains a text in .properties format with a number of additional attributes.';
+COMMENT ON COLUMN TBUDGET.BUDGETTYPE IS 'top-down (agreement) or bottom up (commitment) budget';
+
+
+-----------------------------------------------------------------------------
+-- TACTUALESTIMATEDBUDGET
+-----------------------------------------------------------------------------
+-- DROP TABLE TACTUALESTIMATEDBUDGET CASCADE;
+
+
+
+CREATE TABLE TACTUALESTIMATEDBUDGET
+(
+    OBJECTID INTEGER NOT NULL,
+    WORKITEMKEY INTEGER NOT NULL,
+    ESTIMATEDHOURS DOUBLE PRECISION,
+    TIMEUNIT INTEGER,
+    ESTIMATEDCOST DOUBLE PRECISION,
+    EFFORTTYPE INTEGER,
+    EFFORTVALUE DOUBLE PRECISION,
+    CHANGEDBY INTEGER,
+    LASTEDIT TIMESTAMP,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TACTUALESTINDEX1 ON TACTUALESTIMATEDBUDGET (WORKITEMKEY);
+CREATE INDEX TACTUALESTINDEX2 ON TACTUALESTIMATEDBUDGET (CHANGEDBY);
+CREATE INDEX TACTUALESTINDEX3 ON TACTUALESTIMATEDBUDGET (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TSYSTEMSTATE
+-----------------------------------------------------------------------------
+-- DROP TABLE TSYSTEMSTATE CASCADE;
+
+
+
+CREATE TABLE TSYSTEMSTATE
+(
+    OBJECTID INTEGER NOT NULL,
+    LABEL VARCHAR(255),
+    STATEFLAG INTEGER,
+    SYMBOL VARCHAR(255),
+    ENTITYFLAG INTEGER,
+    SORTORDER INTEGER,
+    ICONKEY INTEGER,
+    CSSSTYLE VARCHAR(255),
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TSYSTEMSTATEINDEX1 ON TSYSTEMSTATE (TPUUID);
+
+
+COMMENT ON COLUMN TSYSTEMSTATE.SYMBOL IS 'File name for a small graphical symbol (GIF or PNG)';
+COMMENT ON COLUMN TSYSTEMSTATE.CSSSTYLE IS 'CSS style for rows with this system status';
+
+
+-----------------------------------------------------------------------------
+-- TCOSTCENTER
+-----------------------------------------------------------------------------
+-- DROP TABLE TCOSTCENTER CASCADE;
+
+
+
+CREATE TABLE TCOSTCENTER
+(
+    OBJECTID INTEGER NOT NULL,
+    COSTCENTERNUMBER VARCHAR(30) NOT NULL,
+    COSTCENTERNAME VARCHAR(80),
+    MOREPROPS VARCHAR(10000),
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TCOSTCENTERINDEX1 ON TCOSTCENTER (TPUUID);
+
+
+COMMENT ON COLUMN TCOSTCENTER.MOREPROPS IS 'This is a multi-purpose field. It contains a text in .properties format with a number of additional attributes.';
+
+
+-----------------------------------------------------------------------------
+-- TMOTD
+-----------------------------------------------------------------------------
+-- DROP TABLE TMOTD CASCADE;
+
+
+
+CREATE TABLE TMOTD
+(
+    OBJECTID INTEGER NOT NULL,
+    THELOCALE VARCHAR(2),
+    THEMESSAGE TEXT,
+    TEASERTEXT VARCHAR(255),
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TMOTDINDEX1 ON TMOTD (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TDASHBOARDSCREEN
+-----------------------------------------------------------------------------
+-- DROP TABLE TDASHBOARDSCREEN CASCADE;
+
+
+
+CREATE TABLE TDASHBOARDSCREEN
+(
+    OBJECTID INTEGER NOT NULL,
+    NAME VARCHAR(255) NOT NULL,
+    LABEL VARCHAR(255),
+    PERSONPKEY INTEGER,
+    PROJECT INTEGER,
+    ENTITYTYPE INTEGER,
+    OWNER INTEGER,
+    DESCRIPTION VARCHAR(10000),
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TDBSCREENINDEX1 ON TDASHBOARDSCREEN (TPUUID);
+
+
+COMMENT ON COLUMN TDASHBOARDSCREEN.PROJECT IS 'specified if dashboard screen is project specific';
+COMMENT ON COLUMN TDASHBOARDSCREEN.ENTITYTYPE IS 'whether the dashboard screen is project specific or release specific';
+
+
+-----------------------------------------------------------------------------
+-- TDASHBOARDTAB
+-----------------------------------------------------------------------------
+-- DROP TABLE TDASHBOARDTAB CASCADE;
+
+
+
+CREATE TABLE TDASHBOARDTAB
+(
+    OBJECTID INTEGER NOT NULL,
+    NAME VARCHAR(255) NOT NULL,
+    LABEL VARCHAR(255),
+    DESCRIPTION VARCHAR(10000),
+    SORTORDER INTEGER,
+    PARENT INTEGER NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TDBTABINDEX1 ON TDASHBOARDTAB (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TDASHBOARDPANEL
+-----------------------------------------------------------------------------
+-- DROP TABLE TDASHBOARDPANEL CASCADE;
+
+
+
+CREATE TABLE TDASHBOARDPANEL
+(
+    OBJECTID INTEGER NOT NULL,
+    NAME VARCHAR(255) NOT NULL,
+    LABEL VARCHAR(255),
+    DESCRIPTION VARCHAR(10000),
+    SORTORDER INTEGER,
+    ROWSNO INTEGER NOT NULL,
+    COLSNO INTEGER NOT NULL,
+    PARENT INTEGER NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TDBPANELINDEX1 ON TDASHBOARDPANEL (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TDASHBOARDFIELD
+-----------------------------------------------------------------------------
+-- DROP TABLE TDASHBOARDFIELD CASCADE;
+
+
+
+CREATE TABLE TDASHBOARDFIELD
+(
+    OBJECTID INTEGER NOT NULL,
+    NAME VARCHAR(255) NOT NULL,
+    DESCRIPTION VARCHAR(10000),
+    SORTORDER INTEGER,
+    COLINDEX INTEGER,
+    ROWINDEX INTEGER,
+    COLSPAN INTEGER,
+    ROWSPAN INTEGER,
+    PARENT INTEGER NOT NULL,
+    DASHBOARDID VARCHAR(255) NOT NULL,
+    THEDESCRIPTION VARCHAR(255),
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TDBFIELDINDEX1 ON TDASHBOARDFIELD (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TDASHBOARDPARAMETER
+-----------------------------------------------------------------------------
+-- DROP TABLE TDASHBOARDPARAMETER CASCADE;
+
+
+
+CREATE TABLE TDASHBOARDPARAMETER
+(
+    OBJECTID INTEGER NOT NULL,
+    NAME VARCHAR(255) NOT NULL,
+    PARAMVALUE VARCHAR(10000),
+    DASHBOARDFIELD INTEGER NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TDBPARAMINDEX1 ON TDASHBOARDPARAMETER (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TVERSIONCONTROLPARAMETER
+-----------------------------------------------------------------------------
+-- DROP TABLE TVERSIONCONTROLPARAMETER CASCADE;
+
+
+
+CREATE TABLE TVERSIONCONTROLPARAMETER
+(
+    OBJECTID INTEGER NOT NULL,
+    NAME VARCHAR(255) NOT NULL,
+    PARAMVALUE VARCHAR(10000),
+    PROJECT INTEGER NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TVCPARAMINDEX1 ON TVERSIONCONTROLPARAMETER (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TFIELD
+-----------------------------------------------------------------------------
+-- DROP TABLE TFIELD CASCADE;
+
+
+
+CREATE TABLE TFIELD
+(
+    OBJECTID INTEGER NOT NULL,
+    NAME VARCHAR(255) NOT NULL,
+    FIELDTYPE VARCHAR(255) NOT NULL,
+    DEPRECATED CHAR(1) default 'N',
+    ISCUSTOM CHAR(1) default 'Y' NOT NULL,
+    REQUIRED CHAR(1) default 'N' NOT NULL,
+    FILTERFIELD CHAR(1) default 'N',
+    DESCRIPTION VARCHAR(10000),
+    OWNER INTEGER,
+    PROJECTTYPE INTEGER,
+    PROJECT INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TFIELDINDEX1 ON TFIELD (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TFIELDCONFIG
+-----------------------------------------------------------------------------
+-- DROP TABLE TFIELDCONFIG CASCADE;
+
+
+
+CREATE TABLE TFIELDCONFIG
+(
+    OBJECTID INTEGER NOT NULL,
+    FIELDKEY INTEGER NOT NULL,
+    LABEL VARCHAR(255) NOT NULL,
+    TOOLTIP VARCHAR(255),
+    REQUIRED CHAR(1) default 'N' NOT NULL,
+    HISTORY CHAR(1) default 'N' NOT NULL,
+    ISSUETYPE INTEGER,
+    PROJECTTYPE INTEGER,
+    PROJECT INTEGER,
+    DESCRIPTION VARCHAR(10000),
+    GROOVYSCRIPT INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TFIELDCONFIGINDEX1 ON TFIELDCONFIG (TPUUID);
+
+
+COMMENT ON COLUMN TFIELDCONFIG.GROOVYSCRIPT IS 'script for calculated fields';
+
+
+-----------------------------------------------------------------------------
+-- TROLEFIELD
+-----------------------------------------------------------------------------
+-- DROP TABLE TROLEFIELD CASCADE;
+
+
+
+CREATE TABLE TROLEFIELD
+(
+    OBJECTID INTEGER NOT NULL,
+    ROLEKEY INTEGER NOT NULL,
+    FIELDKEY INTEGER NOT NULL,
+    ACCESSRIGHT INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TROLEFIELDINDEX1 ON TROLEFIELD (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TCONFIGOPTIONSROLE
+-----------------------------------------------------------------------------
+-- DROP TABLE TCONFIGOPTIONSROLE CASCADE;
+
+
+
+CREATE TABLE TCONFIGOPTIONSROLE
+(
+    OBJECTID INTEGER NOT NULL,
+    CONFIGKEY INTEGER NOT NULL,
+    ROLEKEY INTEGER NOT NULL,
+    OPTIONKEY INTEGER NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TCONFIGOPTINDEX1 ON TCONFIGOPTIONSROLE (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TTEXTBOXSETTINGS
+-----------------------------------------------------------------------------
+-- DROP TABLE TTEXTBOXSETTINGS CASCADE;
+
+
+
+CREATE TABLE TTEXTBOXSETTINGS
+(
+    OBJECTID INTEGER NOT NULL,
+    CONFIG INTEGER NOT NULL,
+    REQUIRED VARCHAR(1) default 'N' NOT NULL,
+    DEFAULTTEXT VARCHAR(255),
+    DEFAULTINTEGER INTEGER,
+    DEFAULTDOUBLE DOUBLE PRECISION,
+    DEFAULTDATE TIMESTAMP,
+    DEFAULTCHAR CHAR(1),
+    DATEISWITHTIME CHAR(1) default 'N',
+    DEFAULTOPTION INTEGER,
+    MINOPTION INTEGER,
+    MAXOPTION INTEGER,
+    MINTEXTLENGTH INTEGER,
+    MAXTEXTLENGTH INTEGER,
+    MINDATE TIMESTAMP,
+    MAXDATE TIMESTAMP,
+    MININTEGER INTEGER,
+    MAXINTEGER INTEGER,
+    MINDOUBLE DOUBLE PRECISION,
+    MAXDOUBLE DOUBLE PRECISION,
+    MAXDECIMALDIGIT INTEGER,
+    PARAMETERCODE INTEGER,
+    VALIDVALUE INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TTEXTBOXCONFINDEX1 ON TTEXTBOXSETTINGS (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TGENERALSETTINGS
+-----------------------------------------------------------------------------
+-- DROP TABLE TGENERALSETTINGS CASCADE;
+
+
+
+CREATE TABLE TGENERALSETTINGS
+(
+    OBJECTID INTEGER NOT NULL,
+    CONFIG INTEGER NOT NULL,
+    INTEGERVALUE INTEGER,
+    DOUBLEVALUE DOUBLE PRECISION,
+    TEXTVALUE VARCHAR(255),
+    DATEVALUE TIMESTAMP,
+    CHARACTERVALUE CHAR(1),
+    PARAMETERCODE INTEGER,
+    VALIDVALUE INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TGENERALCONFINDEX1 ON TGENERALSETTINGS (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TLIST
+-----------------------------------------------------------------------------
+-- DROP TABLE TLIST CASCADE;
+
+
+
+CREATE TABLE TLIST
+(
+    OBJECTID INTEGER NOT NULL,
+    NAME VARCHAR(255) NOT NULL,
+    DESCRIPTION VARCHAR(255),
+    TAGLABEL VARCHAR(50),
+    PARENTLIST INTEGER,
+    LISTTYPE INTEGER,
+    CHILDNUMBER INTEGER,
+    DELETED CHAR(1) default 'N',
+    REPOSITORYTYPE INTEGER,
+    PROJECT INTEGER,
+    OWNER INTEGER,
+    MOREPROPS VARCHAR(10000),
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TLISTINDEX1 ON TLIST (TPUUID);
+
+
+COMMENT ON COLUMN TLIST.TAGLABEL IS 'A user defined tag used for filtering/grouping the lists';
+COMMENT ON COLUMN TLIST.MOREPROPS IS 'parameters for configuring the list import/synchronisation';
+
+
+-----------------------------------------------------------------------------
+-- TOPTION
+-----------------------------------------------------------------------------
+-- DROP TABLE TOPTION CASCADE;
+
+
+
+CREATE TABLE TOPTION
+(
+    OBJECTID INTEGER NOT NULL,
+    LIST INTEGER NOT NULL,
+    LABEL VARCHAR(255) NOT NULL,
+    TOOLTIP VARCHAR(255),
+    PARENTOPTION INTEGER,
+    SORTORDER INTEGER,
+    ISDEFAULT CHAR(1) default 'N' NOT NULL,
+    DELETED CHAR(1) default 'N',
+    SYMBOL VARCHAR(255),
+    ICONKEY INTEGER,
+    ICONCHANGED CHAR(1) default 'N',
+    CSSSTYLE VARCHAR(255),
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TOPTIONINDEX1 ON TOPTION (TPUUID);
+
+
+COMMENT ON COLUMN TOPTION.SYMBOL IS 'File name for a small graphical symbol (GIF or PNG)';
+COMMENT ON COLUMN TOPTION.CSSSTYLE IS 'CSS style for rows with this option';
+
+
+-----------------------------------------------------------------------------
+-- TOPTIONSETTINGS
+-----------------------------------------------------------------------------
+-- DROP TABLE TOPTIONSETTINGS CASCADE;
+
+
+
+CREATE TABLE TOPTIONSETTINGS
+(
+    OBJECTID INTEGER NOT NULL,
+    LIST INTEGER NOT NULL,
+    CONFIG INTEGER NOT NULL,
+    PARAMETERCODE INTEGER,
+    MULTIPLE CHAR(1) default 'N',
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TOPTIONCONFINDEX1 ON TOPTIONSETTINGS (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TATTRIBUTEVALUE
+-----------------------------------------------------------------------------
+-- DROP TABLE TATTRIBUTEVALUE CASCADE;
+
+
+
+CREATE TABLE TATTRIBUTEVALUE
+(
+    OBJECTID INTEGER NOT NULL,
+    FIELDKEY INTEGER NOT NULL,
+    WORKITEM INTEGER NOT NULL,
+    TEXTVALUE VARCHAR(255),
+    INTEGERVALUE INTEGER,
+    DOUBLEVALUE DOUBLE PRECISION,
+    DATEVALUE TIMESTAMP,
+    CHARACTERVALUE CHAR(1),
+    LONGTEXTVALUE VARCHAR(32000),
+    SYSTEMOPTIONID INTEGER,
+    SYSTEMOPTIONTYPE INTEGER,
+    CUSTOMOPTIONID INTEGER,
+    PARAMETERCODE INTEGER,
+    VALIDVALUE INTEGER,
+    LASTEDIT TIMESTAMP,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TATTVALUEINDEX1 ON TATTRIBUTEVALUE (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TSCREEN
+-----------------------------------------------------------------------------
+-- DROP TABLE TSCREEN CASCADE;
+
+
+
+CREATE TABLE TSCREEN
+(
+    OBJECTID INTEGER NOT NULL,
+    NAME VARCHAR(255) NOT NULL,
+    LABEL VARCHAR(255),
+    TAGLABEL VARCHAR(50),
+    DESCRIPTION VARCHAR(10000),
+    OWNER INTEGER,
+    PROJECTTYPE INTEGER,
+    PROJECT INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TSCREENINDEX1 ON TSCREEN (TPUUID);
+
+
+COMMENT ON COLUMN TSCREEN.TAGLABEL IS 'A user defined tag used for filtering/grouping the screens';
+
+
+-----------------------------------------------------------------------------
+-- TSCREENTAB
+-----------------------------------------------------------------------------
+-- DROP TABLE TSCREENTAB CASCADE;
+
+
+
+CREATE TABLE TSCREENTAB
+(
+    OBJECTID INTEGER NOT NULL,
+    NAME VARCHAR(255) NOT NULL,
+    LABEL VARCHAR(255),
+    DESCRIPTION VARCHAR(10000),
+    SORTORDER INTEGER,
+    PARENT INTEGER NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TSCREENTABINDEX1 ON TSCREENTAB (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TSCREENPANEL
+-----------------------------------------------------------------------------
+-- DROP TABLE TSCREENPANEL CASCADE;
+
+
+
+CREATE TABLE TSCREENPANEL
+(
+    OBJECTID INTEGER NOT NULL,
+    NAME VARCHAR(255) NOT NULL,
+    LABEL VARCHAR(255),
+    DESCRIPTION VARCHAR(10000),
+    SORTORDER INTEGER,
+    ROWSNO INTEGER NOT NULL,
+    COLSNO INTEGER NOT NULL,
+    PARENT INTEGER NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TSCREENPANELINDEX1 ON TSCREENPANEL (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TSCREENFIELD
+-----------------------------------------------------------------------------
+-- DROP TABLE TSCREENFIELD CASCADE;
+
+
+
+CREATE TABLE TSCREENFIELD
+(
+    OBJECTID INTEGER NOT NULL,
+    NAME VARCHAR(255) NOT NULL,
+    DESCRIPTION VARCHAR(10000),
+    SORTORDER INTEGER,
+    COLINDEX INTEGER,
+    ROWINDEX INTEGER,
+    COLSPAN INTEGER,
+    ROWSPAN INTEGER,
+    LABELHALIGN INTEGER NOT NULL,
+    LABELVALIGN INTEGER NOT NULL,
+    VALUEHALIGN INTEGER NOT NULL,
+    VALUEVALIGN INTEGER NOT NULL,
+    ISEMPTY CHAR(1) default 'N' NOT NULL,
+    PARENT INTEGER NOT NULL,
+    FIELDKEY INTEGER,
+    HIDELABEL CHAR(1) default 'N',
+    ICONRENDERING INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TSCREENFIELDINDEX1 ON TSCREENFIELD (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TACTION
+-----------------------------------------------------------------------------
+-- DROP TABLE TACTION CASCADE;
+
+
+
+CREATE TABLE TACTION
+(
+    OBJECTID INTEGER NOT NULL,
+    NAME VARCHAR(255) NOT NULL,
+    LABEL VARCHAR(255),
+    DESCRIPTION VARCHAR(10000),
+    ACTIONTYPE INTEGER,
+    ICONKEY INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TACTIONINDEX1 ON TACTION (TPUUID);
+
+
+COMMENT ON COLUMN TACTION.ACTIONTYPE IS 'whether it is a workflow action or a general item action (used in screen assignments)';
+
+
+-----------------------------------------------------------------------------
+-- TSCREENCONFIG
+-----------------------------------------------------------------------------
+-- DROP TABLE TSCREENCONFIG CASCADE;
+
+
+
+CREATE TABLE TSCREENCONFIG
+(
+    OBJECTID INTEGER NOT NULL,
+    NAME VARCHAR(255),
+    DESCRIPTION VARCHAR(10000),
+    SCREEN INTEGER,
+    ISSUETYPE INTEGER,
+    PROJECTTYPE INTEGER,
+    PROJECT INTEGER,
+    ACTIONKEY INTEGER NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TSCREENCONFINDEX1 ON TSCREENCONFIG (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TINITSTATE
+-----------------------------------------------------------------------------
+-- DROP TABLE TINITSTATE CASCADE;
+
+
+
+CREATE TABLE TINITSTATE
+(
+    OBJECTID INTEGER NOT NULL,
+    PROJECT INTEGER NOT NULL,
+    LISTTYPE INTEGER NOT NULL,
+    STATEKEY INTEGER NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TINITSTATEINDEX1 ON TINITSTATE (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TEVENT
+-----------------------------------------------------------------------------
+-- DROP TABLE TEVENT CASCADE;
+
+
+
+CREATE TABLE TEVENT
+(
+    OBJECTID INTEGER NOT NULL,
+    EVENTNAME VARCHAR(255),
+    EVENTTYPE INTEGER NOT NULL,
+    PROJECTTYPE INTEGER,
+    PROJECT INTEGER,
+    EVENTSCRIPT INTEGER NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TEVENTINDEX1 ON TEVENT (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TCLOB
+-----------------------------------------------------------------------------
+-- DROP TABLE TCLOB CASCADE;
+
+
+
+CREATE TABLE TCLOB
+(
+    OBJECTID INTEGER NOT NULL,
+    CLOBVALUE TEXT,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TCLOBINDEX1 ON TCLOB (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TNOTIFYFIELD
+-----------------------------------------------------------------------------
+-- DROP TABLE TNOTIFYFIELD CASCADE;
+
+
+
+CREATE TABLE TNOTIFYFIELD
+(
+    OBJECTID INTEGER NOT NULL,
+    FIELD INTEGER,
+    ACTIONTYPE INTEGER NOT NULL,
+    FIELDTYPE INTEGER,
+    NOTIFYTRIGGER INTEGER NOT NULL,
+    ORIGINATOR CHAR(1) default 'N',
+    MANAGER CHAR(1) default 'N',
+    RESPONSIBLE CHAR(1) default 'N',
+    CONSULTANT CHAR(1) default 'N',
+    INFORMANT CHAR(1) default 'N',
+    OBSERVER CHAR(1) default 'N',
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TNOTIFYFIELDINDEX1 ON TNOTIFYFIELD (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TNOTIFYTRIGGER
+-----------------------------------------------------------------------------
+-- DROP TABLE TNOTIFYTRIGGER CASCADE;
+
+
+
+CREATE TABLE TNOTIFYTRIGGER
+(
+    OBJECTID INTEGER NOT NULL,
+    LABEL VARCHAR(255),
+    PERSON INTEGER,
+    ISSYSTEM CHAR(1) default 'N',
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TNOTIFYTRIGGERINDEX1 ON TNOTIFYTRIGGER (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TNOTIFYSETTINGS
+-----------------------------------------------------------------------------
+-- DROP TABLE TNOTIFYSETTINGS CASCADE;
+
+
+
+CREATE TABLE TNOTIFYSETTINGS
+(
+    OBJECTID INTEGER NOT NULL,
+    PERSON INTEGER,
+    PROJECT INTEGER,
+    NOTIFYTRIGGER INTEGER,
+    NOTIFYFILTER INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TNOTIFYCONFINDEX1 ON TNOTIFYSETTINGS (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TQUERYREPOSITORY
+-----------------------------------------------------------------------------
+-- DROP TABLE TQUERYREPOSITORY CASCADE;
+
+
+
+CREATE TABLE TQUERYREPOSITORY
+(
+    OBJECTID INTEGER NOT NULL,
+    PERSON INTEGER,
+    PROJECT INTEGER,
+    LABEL VARCHAR(100),
+    QUERYTYPE INTEGER NOT NULL,
+    REPOSITORYTYPE INTEGER NOT NULL,
+    QUERYKEY INTEGER NOT NULL,
+    MENUITEM CHAR(1) default 'N',
+    CATEGORYKEY INTEGER,
+    SORTORDER INTEGER,
+    VIEWID VARCHAR(255),
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TQUERYREPINDEX1 ON TQUERYREPOSITORY (TPUUID);
+CREATE INDEX TQUERYREPINDEX2 ON TQUERYREPOSITORY (SORTORDER);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TLOCALIZEDRESOURCES
+-----------------------------------------------------------------------------
+-- DROP TABLE TLOCALIZEDRESOURCES CASCADE;
+
+
+
+CREATE TABLE TLOCALIZEDRESOURCES
+(
+    OBJECTID INTEGER NOT NULL,
+    TABLENAME VARCHAR(255),
+    PRIMARYKEYVALUE INTEGER,
+    FIELDNAME VARCHAR(255) NOT NULL,
+    LOCALIZEDTEXT VARCHAR(2000),
+    LOCALE VARCHAR(20),
+    TEXTCHANGED CHAR(1) default 'N',
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TLOCALRESINDEX1 ON TLOCALIZEDRESOURCES (TPUUID);
+
+
+COMMENT ON COLUMN TLOCALIZEDRESOURCES.TABLENAME IS 'Not used at this time';
+COMMENT ON COLUMN TLOCALIZEDRESOURCES.PRIMARYKEYVALUE IS 'for this field name, the actual object';
+COMMENT ON COLUMN TLOCALIZEDRESOURCES.FIELDNAME IS 'field.systemSelect.4., field.tooltip, etc.)';
+
+
+-----------------------------------------------------------------------------
+-- TLINKTYPE
+-----------------------------------------------------------------------------
+-- DROP TABLE TLINKTYPE CASCADE;
+
+
+
+CREATE TABLE TLINKTYPE
+(
+    OBJECTID INTEGER NOT NULL,
+    NAME VARCHAR(255) NOT NULL,
+    REVERSENAME VARCHAR(255),
+    LEFTTORIGHTFIRST VARCHAR(255),
+    LEFTTORIGHTLEVEL VARCHAR(255),
+    LEFTTORIGHTALL VARCHAR(255),
+    RIGHTTOLEFTFIRST VARCHAR(255),
+    RIGHTTOLEFTLEVEL VARCHAR(255),
+    RIGHTTOLEFTALL VARCHAR(255),
+    LINKDIRECTION INTEGER,
+    OUTWARDICONKEY INTEGER,
+    INWARDICONKEY INTEGER,
+    LINKTYPEPLUGIN VARCHAR(255),
+    MOREPROPS VARCHAR(10000),
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TLINKTYPEINDEX1 ON TLINKTYPE (TPUUID);
+
+
+COMMENT ON COLUMN TLINKTYPE.MOREPROPS IS 'This is a multi-purpose field. It contains a text in .properties format with a number of additional attributes.';
+
+
+-----------------------------------------------------------------------------
+-- TWORKITEMLINK
+-----------------------------------------------------------------------------
+-- DROP TABLE TWORKITEMLINK CASCADE;
+
+
+
+CREATE TABLE TWORKITEMLINK
+(
+    OBJECTID INTEGER NOT NULL,
+    LINKISCROSSPROJECT CHAR(1) default 'N',
+    LINKPRED INTEGER NOT NULL,
+    LINKSUCC INTEGER,
+    LINKTYPE INTEGER NOT NULL,
+    LINKDIRECTION INTEGER,
+    SORTORDER INTEGER,
+    LINKLAG DOUBLE PRECISION,
+    LINKLAGFORMAT INTEGER,
+    STRINGVALUE1 VARCHAR(255),
+    STRINGVALUE2 VARCHAR(255),
+    STRINGVALUE3 VARCHAR(255),
+    INTEGERVALUE1 INTEGER,
+    INTEGERVALUE2 INTEGER,
+    INTEGERVALUE3 INTEGER,
+    DATEVALUE TIMESTAMP,
+    DESCRIPTION VARCHAR(10000),
+    EXTERNALLINK VARCHAR(255),
+    CHANGEDBY INTEGER,
+    LASTEDIT TIMESTAMP,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TWORKITEMLINKINDEX1 ON TWORKITEMLINK (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TLOGGINGLEVEL
+-----------------------------------------------------------------------------
+-- DROP TABLE TLOGGINGLEVEL CASCADE;
+
+
+
+CREATE TABLE TLOGGINGLEVEL
+(
+    OBJECTID INTEGER NOT NULL,
+    THECLASSNAME VARCHAR(255) NOT NULL,
+    LOGLEVEL VARCHAR(10) NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TLOGLEVELINDEX1 ON TLOGGINGLEVEL (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TWORKITEMLOCK
+-----------------------------------------------------------------------------
+-- DROP TABLE TWORKITEMLOCK CASCADE;
+
+
+
+CREATE TABLE TWORKITEMLOCK
+(
+    WORKITEM INTEGER NOT NULL,
+    PERSON INTEGER NOT NULL,
+    HTTPSESSION VARCHAR(255) NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (WORKITEM)
+);
+CREATE INDEX TWORKITEMLOCKINDEX1 ON TWORKITEMLOCK (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TEXPORTTEMPLATE
+-----------------------------------------------------------------------------
+-- DROP TABLE TEXPORTTEMPLATE CASCADE;
+
+
+
+CREATE TABLE TEXPORTTEMPLATE
+(
+    OBJECTID INTEGER NOT NULL,
+    NAME VARCHAR(255) NOT NULL,
+    REPORTTYPE VARCHAR(255) NOT NULL,
+    EXPORTFORMAT VARCHAR(255) NOT NULL,
+    REPOSITORYTYPE INTEGER NOT NULL,
+    DESCRIPTION VARCHAR(10000),
+    PROJECT INTEGER,
+    PERSON INTEGER NOT NULL,
+    CATEGORYKEY INTEGER,
+    PARENT INTEGER,
+    SORTORDER INTEGER,
+    DELETED CHAR(1) default 'N',
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TEXPOPRTTEMPINDEX1 ON TEXPORTTEMPLATE (TPUUID);
+CREATE INDEX TEXPOPRTTEMPINDEX2 ON TEXPORTTEMPLATE (SORTORDER);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TEMAILPROCESSED
+-----------------------------------------------------------------------------
+-- DROP TABLE TEMAILPROCESSED CASCADE;
+
+
+
+CREATE TABLE TEMAILPROCESSED
+(
+    OBJECTID INTEGER NOT NULL,
+    PROCESSEDDATE TIMESTAMP NOT NULL,
+    MESSAGEUID VARCHAR(255) NOT NULL,
+    RECEIVEDAT VARCHAR(255) NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TEMAILPROCINDEX1 ON TEMAILPROCESSED (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TAPPLICATIONCONTEXT
+-----------------------------------------------------------------------------
+-- DROP TABLE TAPPLICATIONCONTEXT CASCADE;
+
+
+
+CREATE TABLE TAPPLICATIONCONTEXT
+(
+    OBJECTID INTEGER NOT NULL,
+    LOGGEDFULLUSERS INTEGER,
+    LOGGEDLIMITEDUSERS INTEGER,
+    REFRESHCONFIGURATION INTEGER default 0 NOT NULL,
+    FIRSTTIME INTEGER default 0 NOT NULL,
+    MOREPROPS VARCHAR(10000),
+    PRIMARY KEY (OBJECTID)
+);
+
+
+COMMENT ON COLUMN TAPPLICATIONCONTEXT.REFRESHCONFIGURATION IS 'In case of configuration change, this is set to the number of nodes. As each node updates its configuration, the count is decremented.';
+COMMENT ON COLUMN TAPPLICATIONCONTEXT.FIRSTTIME IS 'When this is the first start after a version upgrade, go to site configuration';
+COMMENT ON COLUMN TAPPLICATIONCONTEXT.MOREPROPS IS 'This is a multi-purpose field. It contains a text in .properties format with a number of additional attributes.';
+
+
+-----------------------------------------------------------------------------
+-- TLOGGEDINUSERS
+-----------------------------------------------------------------------------
+-- DROP TABLE TLOGGEDINUSERS CASCADE;
+
+
+
+CREATE TABLE TLOGGEDINUSERS
+(
+    OBJECTID INTEGER NOT NULL,
+    NODEADDRESS INTEGER,
+    SESSIONID VARCHAR(255),
+    LOGGEDUSER INTEGER NOT NULL,
+    USERLEVEL INTEGER,
+    LASTUPDATE TIMESTAMP,
+    MOREPROPS VARCHAR(10000),
+    PRIMARY KEY (OBJECTID)
+);
+
+
+COMMENT ON COLUMN TLOGGEDINUSERS.OBJECTID IS 'This helps with the bookkeeping of logged in users';
+COMMENT ON COLUMN TLOGGEDINUSERS.NODEADDRESS IS 'The ip address of the node which counts these numbers';
+COMMENT ON COLUMN TLOGGEDINUSERS.SESSIONID IS 'The session id under which this user was logged';
+COMMENT ON COLUMN TLOGGEDINUSERS.LOGGEDUSER IS 'Foreign key reference to TPERSON';
+COMMENT ON COLUMN TLOGGEDINUSERS.USERLEVEL IS 'Indicates a full or limited user';
+COMMENT ON COLUMN TLOGGEDINUSERS.LASTUPDATE IS 'This enables to clean the table in case of a crash';
+COMMENT ON COLUMN TLOGGEDINUSERS.MOREPROPS IS 'This is a multi-purpose field. It contains a text in .properties format with a number of additional attributes.';
+
+
+-----------------------------------------------------------------------------
+-- CLUSTERNODE
+-----------------------------------------------------------------------------
+-- DROP TABLE CLUSTERNODE CASCADE;
+
+
+
+CREATE TABLE CLUSTERNODE
+(
+    OBJECTID INTEGER NOT NULL,
+    NODEADDRESS VARCHAR(40),
+    NODEURL VARCHAR(255),
+    LASTUPDATE TIMESTAMP,
+    MASTERNODE INTEGER default 0,
+    RELOADCONFIG INTEGER default 0,
+    RELOADCHANGES VARCHAR(255),
+    PRIMARY KEY (OBJECTID)
+);
+
+COMMENT ON TABLE CLUSTERNODE IS 'This table holds properties for each node in the cluster';
+
+COMMENT ON COLUMN CLUSTERNODE.NODEADDRESS IS 'The ip address of this node';
+COMMENT ON COLUMN CLUSTERNODE.NODEURL IS 'The URL where the managing instance of this node can be reached';
+COMMENT ON COLUMN CLUSTERNODE.LASTUPDATE IS 'This enables to clean the table in case of a crash';
+COMMENT ON COLUMN CLUSTERNODE.MASTERNODE IS 'If this is the master node, this value is > 0';
+COMMENT ON COLUMN CLUSTERNODE.RELOADCONFIG IS 'If this is not 0, reload the configuration from TSITE';
+COMMENT ON COLUMN CLUSTERNODE.RELOADCHANGES IS 'A comma separated string representing entity types to reload';
+
+
+-----------------------------------------------------------------------------
+-- TENTITYCHANGES
+-----------------------------------------------------------------------------
+-- DROP TABLE TENTITYCHANGES CASCADE;
+
+
+
+CREATE TABLE TENTITYCHANGES
+(
+    OBJECTID INTEGER NOT NULL,
+    ENTITYKEY INTEGER,
+    ENTITYTYPE INTEGER NOT NULL,
+    CLUSTERNODE INTEGER,
+    LIST INTEGER,
+    CHANGETYPE INTEGER,
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX ENTITYCHANGESINDEX1 ON TENTITYCHANGES (ENTITYTYPE);
+CREATE INDEX ENTITYCHANGESINDEX2 ON TENTITYCHANGES (CLUSTERNODE);
+
+COMMENT ON TABLE TENTITYCHANGES IS 'This table holds the changed entities for updating the full text search index in each clusternode';
+
+COMMENT ON COLUMN TENTITYCHANGES.LIST IS 'the system list field ID if entity type is system list';
+COMMENT ON COLUMN TENTITYCHANGES.CHANGETYPE IS 'add/update/updat cache/delete';
+
+
+-----------------------------------------------------------------------------
+-- TSUMMARYMAIL
+-----------------------------------------------------------------------------
+-- DROP TABLE TSUMMARYMAIL CASCADE;
+
+
+
+CREATE TABLE TSUMMARYMAIL
+(
+    OBJECTID INTEGER NOT NULL,
+    WORKITEM INTEGER NOT NULL,
+    PERSONFROM INTEGER NOT NULL,
+    FROMADDRESS VARCHAR(255),
+    MAILSUBJECT VARCHAR(255),
+    WORKITEMLINK VARCHAR(255),
+    PERSONTO INTEGER NOT NULL,
+    LASTEDIT TIMESTAMP,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TSUMMARYMAILINDEX1 ON TSUMMARYMAIL (WORKITEM);
+CREATE INDEX TSUMMARYMAILINDEX2 ON TSUMMARYMAIL (PERSONFROM);
+CREATE INDEX TSUMMARYMAILINDEX3 ON TSUMMARYMAIL (PERSONTO);
+CREATE INDEX TSUMMARYMAILINDEX4 ON TSUMMARYMAIL (TPUUID);
+
+COMMENT ON TABLE TSUMMARYMAIL IS 'This table holds the summary mail parts before they are sent';
+
+
+
+-----------------------------------------------------------------------------
+-- TOUTLINECODE
+-----------------------------------------------------------------------------
+-- DROP TABLE TOUTLINECODE CASCADE;
+
+
+
+CREATE TABLE TOUTLINECODE
+(
+    OBJECTID INTEGER NOT NULL,
+    PARENTID INTEGER,
+    LEVELNO INTEGER NOT NULL,
+    LEVELCODE VARCHAR(50) NOT NULL,
+    FULLCODE VARCHAR(255) NOT NULL,
+    ENTITYID INTEGER NOT NULL,
+    OUTLINETEMPLATE INTEGER NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TOUTLINECODEINDEX1 ON TOUTLINECODE (PARENTID);
+CREATE INDEX TOUTLINECODEINDEX2 ON TOUTLINECODE (ENTITYID);
+CREATE INDEX TOUTLINECODEINDEX3 ON TOUTLINECODE (TPUUID);
+
+COMMENT ON TABLE TOUTLINECODE IS 'Holds the outline codes';
+
+
+
+-----------------------------------------------------------------------------
+-- TOUTLINETEMPLATEDEF
+-----------------------------------------------------------------------------
+-- DROP TABLE TOUTLINETEMPLATEDEF CASCADE;
+
+
+
+CREATE TABLE TOUTLINETEMPLATEDEF
+(
+    OBJECTID INTEGER NOT NULL,
+    LEVELNO INTEGER NOT NULL,
+    SEQUENCETYPE INTEGER NOT NULL,
+    LISTID INTEGER,
+    SEQUENCELENGTH INTEGER NOT NULL,
+    SEPARATORCHAR VARCHAR(10) NOT NULL,
+    OUTLINETEMPLATE INTEGER NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TOUTLINETEMPLATEDEFINDEX1 ON TOUTLINETEMPLATEDEF (TPUUID);
+
+COMMENT ON TABLE TOUTLINETEMPLATEDEF IS 'defines the parts of an outline code';
+
+
+
+-----------------------------------------------------------------------------
+-- TOUTLINETEMPLATE
+-----------------------------------------------------------------------------
+-- DROP TABLE TOUTLINETEMPLATE CASCADE;
+
+
+
+CREATE TABLE TOUTLINETEMPLATE
+(
+    OBJECTID INTEGER NOT NULL,
+    LABEL VARCHAR(255) NOT NULL,
+    ENTITYTYPE INTEGER NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TOUTLINETEMPLATEINDEX1 ON TOUTLINETEMPLATE (TPUUID);
+
+COMMENT ON TABLE TOUTLINETEMPLATE IS 'Holds the association between the entity and the outline template';
+
+
+
+-----------------------------------------------------------------------------
+-- THISTORYTRANSACTION
+-----------------------------------------------------------------------------
+-- DROP TABLE THISTORYTRANSACTION CASCADE;
+
+
+
+CREATE TABLE THISTORYTRANSACTION
+(
+    OBJECTID INTEGER NOT NULL,
+    WORKITEM INTEGER NOT NULL,
+    CHANGEDBY INTEGER NOT NULL,
+    LASTEDIT TIMESTAMP,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX THISTORYTRANSINDEX1 ON THISTORYTRANSACTION (WORKITEM);
+CREATE INDEX THISTORYTRANSINDEX2 ON THISTORYTRANSACTION (CHANGEDBY);
+CREATE INDEX THISTORYTRANSINDEX3 ON THISTORYTRANSACTION (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TFIELDCHANGE
+-----------------------------------------------------------------------------
+-- DROP TABLE TFIELDCHANGE CASCADE;
+
+
+
+CREATE TABLE TFIELDCHANGE
+(
+    OBJECTID INTEGER NOT NULL,
+    FIELDKEY INTEGER NOT NULL,
+    HISTORYTRANSACTION INTEGER NOT NULL,
+    NEWTEXTVALUE VARCHAR(255),
+    OLDTEXTVALUE VARCHAR(255),
+    NEWINTEGERVALUE INTEGER,
+    OLDINTEGERVALUE INTEGER,
+    NEWDOUBLEVALUE DOUBLE PRECISION,
+    OLDDOUBLEVALUE DOUBLE PRECISION,
+    NEWDATEVALUE TIMESTAMP,
+    OLDDATEVALUE TIMESTAMP,
+    NEWCHARACTERVALUE CHAR(1),
+    OLDCHARACTERVALUE CHAR(1),
+    NEWLONGTEXTVALUE TEXT,
+    OLDLONGTEXTVALUE TEXT,
+    NEWSYSTEMOPTIONID INTEGER,
+    OLDSYSTEMOPTIONID INTEGER,
+    SYSTEMOPTIONTYPE INTEGER,
+    NEWCUSTOMOPTIONID INTEGER,
+    OLDCUSTOMOPTIONID INTEGER,
+    PARAMETERCODE INTEGER,
+    VALIDVALUE INTEGER,
+    PARENTCOMMENT INTEGER,
+    TIMESEDITED INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TFIELDCHANGE1 ON TFIELDCHANGE (FIELDKEY);
+CREATE INDEX TFIELDCHANGE2 ON TFIELDCHANGE (HISTORYTRANSACTION);
+CREATE INDEX TFIELDCHANGE3 ON TFIELDCHANGE (VALIDVALUE);
+CREATE INDEX TFIELDCHANGE4 ON TFIELDCHANGE (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TSCRIPTS
+-----------------------------------------------------------------------------
+-- DROP TABLE TSCRIPTS CASCADE;
+
+
+
+CREATE TABLE TSCRIPTS
+(
+    OBJECTID INTEGER NOT NULL,
+    CHANGEDBY INTEGER,
+    LASTEDIT TIMESTAMP,
+    SCRIPTVERSION INTEGER,
+    ORIGINALVERSION INTEGER,
+    PROJECTTYPE INTEGER,
+    PROJECT INTEGER,
+    SCRIPTTYPE INTEGER,
+    SCRIPTROLE INTEGER,
+    CLAZZNAME VARCHAR(253),
+    SOURCECODE VARCHAR(32000),
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TSCRIPTINDEX1 ON TSCRIPTS (CLAZZNAME);
+CREATE INDEX TSCRIPTINDEX2 ON TSCRIPTS (PROJECTTYPE);
+CREATE INDEX TSCRIPTINDEX3 ON TSCRIPTS (PROJECT);
+CREATE INDEX TSCRIPTINDEX4 ON TSCRIPTS (TPUUID);
+
+COMMENT ON TABLE TSCRIPTS IS 'Contains Groovy scripts';
+
+COMMENT ON COLUMN TSCRIPTS.SCRIPTTYPE IS 'groowy or javascript';
+COMMENT ON COLUMN TSCRIPTS.SCRIPTROLE IS 'from where to use it: from field config, workflow etc.';
+
+
+-----------------------------------------------------------------------------
+-- TREVISION
+-----------------------------------------------------------------------------
+-- DROP TABLE TREVISION CASCADE;
+
+
+
+CREATE TABLE TREVISION
+(
+    OBJECTID INTEGER NOT NULL,
+    FILENAME VARCHAR(255) NOT NULL,
+    AUTHORNAME VARCHAR(255) NOT NULL,
+    CHANGEDESCRIPTION VARCHAR(10000),
+    REVISIONDATE TIMESTAMP NOT NULL,
+    REVISIONNUMBR VARCHAR(255) NOT NULL,
+    REPOSITORYKEY INTEGER NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TREVISIONINDEX1 ON TREVISION (TPUUID);
+
+COMMENT ON TABLE TREVISION IS 'Comments from the version control system';
+
+
+
+-----------------------------------------------------------------------------
+-- TREVISIONWORKITEMS
+-----------------------------------------------------------------------------
+-- DROP TABLE TREVISIONWORKITEMS CASCADE;
+
+
+
+CREATE TABLE TREVISIONWORKITEMS
+(
+    OBJECTID INTEGER NOT NULL,
+    WORKITEMKEY INTEGER NOT NULL,
+    REVISIONKEY INTEGER NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TREVISIONWORKITEMSINDEX1 ON TREVISIONWORKITEMS (WORKITEMKEY);
+CREATE INDEX TREVISIONWORKITEMSINDEX2 ON TREVISIONWORKITEMS (TPUUID);
+
+COMMENT ON TABLE TREVISIONWORKITEMS IS 'Comments from the version control system';
+
+
+
+-----------------------------------------------------------------------------
+-- TREPOSITORY
+-----------------------------------------------------------------------------
+-- DROP TABLE TREPOSITORY CASCADE;
+
+
+
+CREATE TABLE TREPOSITORY
+(
+    OBJECTID INTEGER NOT NULL,
+    REPOSITORYTYPE VARCHAR(255) NOT NULL,
+    REPOSITORYURL VARCHAR(255) NOT NULL,
+    STARTDATE TIMESTAMP,
+    ENDDATE TIMESTAMP,
+    STATUSKEY INTEGER NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TREPOSITORYINDEX1 ON TREPOSITORY (TPUUID);
+
+COMMENT ON TABLE TREPOSITORY IS 'Version control repositiories defined';
+
+
+
+-----------------------------------------------------------------------------
+-- TTEMPLATEPERSON
+-----------------------------------------------------------------------------
+-- DROP TABLE TTEMPLATEPERSON CASCADE;
+
+
+
+CREATE TABLE TTEMPLATEPERSON
+(
+    OBJECTID INTEGER NOT NULL,
+    REPORTTEMPLATE INTEGER NOT NULL,
+    PERSON INTEGER NOT NULL,
+    RIGHTFLAG INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TTEMPLATEPERSONINDEX1 ON TTEMPLATEPERSON (TPUUID);
+
+COMMENT ON TABLE TTEMPLATEPERSON IS 'The persons who can or can not run a report template';
+
+COMMENT ON COLUMN TTEMPLATEPERSON.RIGHTFLAG IS 'whether the right is added or revoked';
+
+
+-----------------------------------------------------------------------------
+-- TBLOB
+-----------------------------------------------------------------------------
+-- DROP TABLE TBLOB CASCADE;
+
+
+
+CREATE TABLE TBLOB
+(
+    OBJECTID INTEGER NOT NULL,
+    BLOBVALUE BYTEA,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TBLOBINDEX1 ON TBLOB (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TRECURRENCEPATTERN
+-----------------------------------------------------------------------------
+-- DROP TABLE TRECURRENCEPATTERN CASCADE;
+
+
+
+CREATE TABLE TRECURRENCEPATTERN
+(
+    OBJECTID INTEGER NOT NULL,
+    RECURRENCEPERIOD INTEGER NOT NULL,
+    PARAM1 INTEGER,
+    PARAM2 INTEGER,
+    PARAM3 INTEGER,
+    DAYS VARCHAR(255),
+    DATEISABSOLUTE CHAR(1) default 'Y',
+    STARTDATE TIMESTAMP,
+    ENDDATE TIMESTAMP,
+    OCCURENCETYPE INTEGER,
+    NOOFOCCURENCES INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TRECURRENCEPATTERNINDEX1 ON TRECURRENCEPATTERN (TPUUID);
+
+
+COMMENT ON COLUMN TRECURRENCEPATTERN.RECURRENCEPERIOD IS 'daily, weekly, monthly or yearly';
+COMMENT ON COLUMN TRECURRENCEPATTERN.DAYS IS 'the weekdays by weekly pattern';
+COMMENT ON COLUMN TRECURRENCEPATTERN.DATEISABSOLUTE IS 'by monthly and yearly an absolute date';
+
+
+-----------------------------------------------------------------------------
+-- TREPORTPERSONSETTINGS
+-----------------------------------------------------------------------------
+-- DROP TABLE TREPORTPERSONSETTINGS CASCADE;
+
+
+
+CREATE TABLE TREPORTPERSONSETTINGS
+(
+    OBJECTID INTEGER NOT NULL,
+    PERSON INTEGER NOT NULL,
+    REPORTTEMPLATE INTEGER NOT NULL,
+    PARAMSETTINGS VARCHAR(10000),
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TREPORTPERSONSETTINGSINDEX1 ON TREPORTPERSONSETTINGS (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TREPORTPARAMETER
+-----------------------------------------------------------------------------
+-- DROP TABLE TREPORTPARAMETER CASCADE;
+
+
+
+CREATE TABLE TREPORTPARAMETER
+(
+    OBJECTID INTEGER NOT NULL,
+    NAME VARCHAR(255) NOT NULL,
+    PARAMVALUE VARCHAR(10000),
+    REPORTPERSONSETTINGS INTEGER NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TREPORTPARAMETERINDEX1 ON TREPORTPARAMETER (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TMSPROJECTTASK
+-----------------------------------------------------------------------------
+-- DROP TABLE TMSPROJECTTASK CASCADE;
+
+
+
+CREATE TABLE TMSPROJECTTASK
+(
+    OBJECTID INTEGER NOT NULL,
+    WORKITEM INTEGER NOT NULL,
+    UNIQUEID INTEGER NOT NULL,
+    TASKTYPE INTEGER NOT NULL,
+    CONTACT VARCHAR(100),
+    WBS VARCHAR(100),
+    OUTLINENUMBER VARCHAR(100),
+    DURATION VARCHAR(100),
+    DURATIONFORMAT INTEGER,
+    ESTIMATED CHAR(1) default 'N',
+    MILESTONE CHAR(1) default 'N',
+    SUMMARY CHAR(1) default 'N',
+    ACTUALDURATION VARCHAR(100),
+    REMAININGDURATION VARCHAR(100),
+    CONSTRAINTTYPE INTEGER,
+    CONSTRAINTDATE TIMESTAMP,
+    DEADLINE TIMESTAMP,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TMSPROJECTTASKINDEX1 ON TMSPROJECTTASK (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TMSPROJECTEXCHANGE
+-----------------------------------------------------------------------------
+-- DROP TABLE TMSPROJECTEXCHANGE CASCADE;
+
+
+
+CREATE TABLE TMSPROJECTEXCHANGE
+(
+    OBJECTID INTEGER NOT NULL,
+    EXCHANGEDIRECTION INTEGER NOT NULL,
+    ENTITYID INTEGER NOT NULL,
+    ENTITYTYPE INTEGER NOT NULL,
+    FILENAME VARCHAR(255),
+    FILECONTENT TEXT,
+    CHANGEDBY INTEGER,
+    LASTEDIT TIMESTAMP,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TMSPROJECTEXCHANGEINDEX1 ON TMSPROJECTEXCHANGE (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TFILTERCATEGORY
+-----------------------------------------------------------------------------
+-- DROP TABLE TFILTERCATEGORY CASCADE;
+
+
+
+CREATE TABLE TFILTERCATEGORY
+(
+    OBJECTID INTEGER NOT NULL,
+    LABEL VARCHAR(255) NOT NULL,
+    REPOSITORY INTEGER NOT NULL,
+    FILTERTYPE INTEGER NOT NULL,
+    CREATEDBY INTEGER NOT NULL,
+    PROJECT INTEGER,
+    PARENTID INTEGER,
+    SORTORDER INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TFILTERCATEGORYINDEX1 ON TFILTERCATEGORY (TPUUID);
+CREATE INDEX TFILTERCATEGORYINDEX2 ON TFILTERCATEGORY (SORTORDER);
+
+COMMENT ON TABLE TFILTERCATEGORY IS 'Hierarchical categorization of the queries';
+
+
+
+-----------------------------------------------------------------------------
+-- TREPORTCATEGORY
+-----------------------------------------------------------------------------
+-- DROP TABLE TREPORTCATEGORY CASCADE;
+
+
+
+CREATE TABLE TREPORTCATEGORY
+(
+    OBJECTID INTEGER NOT NULL,
+    LABEL VARCHAR(255) NOT NULL,
+    REPOSITORY INTEGER NOT NULL,
+    CREATEDBY INTEGER NOT NULL,
+    PROJECT INTEGER,
+    PARENTID INTEGER,
+    SORTORDER INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TREPORTCATEGORYINDEX1 ON TREPORTCATEGORY (TPUUID);
+CREATE INDEX TREPORTCATEGORYINDEX2 ON TREPORTCATEGORY (SORTORDER);
+
+COMMENT ON TABLE TREPORTCATEGORY IS 'Hierarchical categorization of the reports';
+
+
+
+-----------------------------------------------------------------------------
+-- TMENUITEMQUERY
+-----------------------------------------------------------------------------
+-- DROP TABLE TMENUITEMQUERY CASCADE;
+
+
+
+CREATE TABLE TMENUITEMQUERY
+(
+    OBJECTID INTEGER NOT NULL,
+    PERSON INTEGER NOT NULL,
+    QUERYKEY INTEGER NOT NULL,
+    INCLUDEINMENU CHAR(1) default 'N',
+    CSSSTYLEFIELD INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TMENUITEMQUERYINDEX1 ON TMENUITEMQUERY (TPUUID);
+
+COMMENT ON TABLE TMENUITEMQUERY IS 'Describes which queries are included in the person menu';
+
+
+
+-----------------------------------------------------------------------------
+-- TCHILDISSUETYPE
+-----------------------------------------------------------------------------
+-- DROP TABLE TCHILDISSUETYPE CASCADE;
+
+
+
+CREATE TABLE TCHILDISSUETYPE
+(
+    OBJECTID INTEGER NOT NULL,
+    ISSUETYPEPARENT INTEGER NOT NULL,
+    ISSUETYPECHILD INTEGER NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TCHILDISSUETYPEINDEX1 ON TCHILDISSUETYPE (TPUUID);
+
+COMMENT ON TABLE TCHILDISSUETYPE IS 'Describes that a parent item issue type which issue types can have as child';
+
+
+
+-----------------------------------------------------------------------------
+-- TPERSONBASKET
+-----------------------------------------------------------------------------
+-- DROP TABLE TPERSONBASKET CASCADE;
+
+
+
+CREATE TABLE TPERSONBASKET
+(
+    OBJECTID INTEGER NOT NULL,
+    BASKET INTEGER NOT NULL,
+    WORKITEM INTEGER NOT NULL,
+    PERSON INTEGER,
+    REMINDERDATE TIMESTAMP,
+    DELEGATETEXT TEXT,
+    MOREPROPS TEXT,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TPERSONBASKETINDEX1 ON TPERSONBASKET (PERSON);
+CREATE INDEX TPERSONBASKETINDEX2 ON TPERSONBASKET (TPUUID);
+
+COMMENT ON TABLE TPERSONBASKET IS 'WorkItem baskets for persons';
+
+
+
+-----------------------------------------------------------------------------
+-- TBASKET
+-----------------------------------------------------------------------------
+-- DROP TABLE TBASKET CASCADE;
+
+
+
+CREATE TABLE TBASKET
+(
+    OBJECTID INTEGER NOT NULL,
+    LABEL VARCHAR(255) NOT NULL,
+    DIVISIBLE CHAR(1) default 'N',
+    PARENTBASKET INTEGER,
+    PERSON INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TBASKETINDEX1 ON TBASKET (TPUUID);
+
+COMMENT ON TABLE TBASKET IS 'WorkItem baskets for persons';
+
+COMMENT ON COLUMN TBASKET.DIVISIBLE IS 'Whether to basked can be further divided in user defined basket branches';
+COMMENT ON COLUMN TBASKET.PARENTBASKET IS 'Some baskets can be further divided in branches: like the Reference basket';
+COMMENT ON COLUMN TBASKET.PERSON IS 'The person who created this user defined basket branch or private basket branch';
+
+
+-----------------------------------------------------------------------------
+-- TMAILTEMPLATECONFIG
+-----------------------------------------------------------------------------
+-- DROP TABLE TMAILTEMPLATECONFIG CASCADE;
+
+
+
+CREATE TABLE TMAILTEMPLATECONFIG
+(
+    OBJECTID INTEGER NOT NULL,
+    MAILTEMPLATE INTEGER NOT NULL,
+    ISSUETYPE INTEGER,
+    PROJECTTYPE INTEGER,
+    PROJECT INTEGER,
+    EVENTKEY INTEGER NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TMAILTEMPLATECONFIGINDEX1 ON TMAILTEMPLATECONFIG (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TMAILTEMPLATE
+-----------------------------------------------------------------------------
+-- DROP TABLE TMAILTEMPLATE CASCADE;
+
+
+
+CREATE TABLE TMAILTEMPLATE
+(
+    OBJECTID INTEGER NOT NULL,
+    TEMPLATETYPE INTEGER,
+    NAME VARCHAR(255),
+    DESCRIPTION VARCHAR(255),
+    TAGLABEL VARCHAR(255),
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TMAILTEMPLATEINDEX1 ON TMAILTEMPLATE (TPUUID);
+
+COMMENT ON TABLE TMAILTEMPLATE IS 'Locale independent template names for notification emails';
+
+COMMENT ON COLUMN TMAILTEMPLATE.TEMPLATETYPE IS 'filter for event types like: single edit, mass edit, reminder, new user ';
+COMMENT ON COLUMN TMAILTEMPLATE.TAGLABEL IS 'A user defined tag used for filtering/grouping the templates';
+
+
+-----------------------------------------------------------------------------
+-- TMAILTEMPLATEDEF
+-----------------------------------------------------------------------------
+-- DROP TABLE TMAILTEMPLATEDEF CASCADE;
+
+
+
+CREATE TABLE TMAILTEMPLATEDEF
+(
+    OBJECTID INTEGER NOT NULL,
+    MAILTEMPLATE INTEGER NOT NULL,
+    MAILSUBJECT VARCHAR(255),
+    MAILBODY TEXT,
+    THELOCALE VARCHAR(20),
+    PLAINEMAIL CHAR(1) default 'N',
+    TEMPLATECHANGED CHAR(1) default 'N',
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TMAILTEMPLATEDEFINDEX1 ON TMAILTEMPLATEDEF (TPUUID);
+
+COMMENT ON TABLE TMAILTEMPLATEDEF IS 'Locale and e-mail type specific template definitions for notification emails';
+
+
+
+-----------------------------------------------------------------------------
+-- TLASTVISITEDITEM
+-----------------------------------------------------------------------------
+-- DROP TABLE TLASTVISITEDITEM CASCADE;
+
+
+
+CREATE TABLE TLASTVISITEDITEM
+(
+    OBJECTID INTEGER NOT NULL,
+    WORKITEM INTEGER NOT NULL,
+    PERSON INTEGER NOT NULL,
+    LASTVISITEDDATE TIMESTAMP,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TLASTVISITEDITEMINDEX1 ON TLASTVISITEDITEM (PERSON);
+CREATE INDEX TLASTVISITEDITEMINDEX2 ON TLASTVISITEDITEM (TPUUID);
+
+COMMENT ON TABLE TLASTVISITEDITEM IS 'WorkItems last visited by a person';
+
+
+
+-----------------------------------------------------------------------------
+-- TWORKFLOWDEF
+-----------------------------------------------------------------------------
+-- DROP TABLE TWORKFLOWDEF CASCADE;
+
+
+
+CREATE TABLE TWORKFLOWDEF
+(
+    OBJECTID INTEGER NOT NULL,
+    NAME VARCHAR(255) NOT NULL,
+    DESCRIPTION VARCHAR(255),
+    TAGLABEL VARCHAR(255),
+    OWNER INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TWORKFLOWDEFINDEX1 ON TWORKFLOWDEF (TPUUID);
+
+
+COMMENT ON COLUMN TWORKFLOWDEF.TAGLABEL IS 'A user defined tag used for filtering/grouping the workflows';
+
+
+-----------------------------------------------------------------------------
+-- TWORKFLOWTRANSITION
+-----------------------------------------------------------------------------
+-- DROP TABLE TWORKFLOWTRANSITION CASCADE;
+
+
+
+CREATE TABLE TWORKFLOWTRANSITION
+(
+    OBJECTID INTEGER NOT NULL,
+    STATIONFROM INTEGER,
+    STATIONTO INTEGER,
+    ACTIONKEY INTEGER,
+    WORKFLOW INTEGER NOT NULL,
+    TEXTPOSITIONX INTEGER,
+    TEXTPOSITIONY INTEGER,
+    TRANSITIONTYPE INTEGER,
+    CONTROLPOINTS VARCHAR(255),
+    ELAPSEDTIME INTEGER,
+    TIMEUNIT INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TWORKFLOWTRANSITIONINDEX1 ON TWORKFLOWTRANSITION (WORKFLOW);
+CREATE INDEX TWORKFLOWTRANSITIONINDEX2 ON TWORKFLOWTRANSITION (TPUUID);
+
+
+COMMENT ON COLUMN TWORKFLOWTRANSITION.ELAPSEDTIME IS 'time elapsed in minutes';
+COMMENT ON COLUMN TWORKFLOWTRANSITION.TIMEUNIT IS 'how to render the time unit in wofkflow config: minute, hour, day';
+
+
+-----------------------------------------------------------------------------
+-- TWORKFLOWSTATION
+-----------------------------------------------------------------------------
+-- DROP TABLE TWORKFLOWSTATION CASCADE;
+
+
+
+CREATE TABLE TWORKFLOWSTATION
+(
+    OBJECTID INTEGER NOT NULL,
+    NAME VARCHAR(255),
+    STATUS INTEGER,
+    WORKFLOW INTEGER,
+    NODEX INTEGER,
+    NODEY INTEGER,
+    STATIONTYPE INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TWORKFLOWSTATIONINDEX1 ON TWORKFLOWSTATION (STATUS);
+CREATE INDEX TWORKFLOWSTATIONINDEX2 ON TWORKFLOWSTATION (WORKFLOW);
+CREATE INDEX TWORKFLOWSTATIONINDEX3 ON TWORKFLOWSTATION (TPUUID);
+
+
+COMMENT ON COLUMN TWORKFLOWSTATION.NAME IS 'if name is not specified the status label should be taken';
+COMMENT ON COLUMN TWORKFLOWSTATION.WORKFLOW IS 'workflow might have importance temporarily, in design mode (when no TWORKFLOWTRANSITION is linked yet with this station)';
+COMMENT ON COLUMN TWORKFLOWSTATION.NODEX IS 'the x coordinate of this node';
+COMMENT ON COLUMN TWORKFLOWSTATION.NODEY IS 'the y coordinate of this node';
+COMMENT ON COLUMN TWORKFLOWSTATION.STATIONTYPE IS 'whether the station is backed by a status or is a pseudo station (like not existing/deleted)';
+
+
+-----------------------------------------------------------------------------
+-- TWORKFLOWACTIVITY
+-----------------------------------------------------------------------------
+-- DROP TABLE TWORKFLOWACTIVITY CASCADE;
+
+
+
+CREATE TABLE TWORKFLOWACTIVITY
+(
+    OBJECTID INTEGER NOT NULL,
+    TRANSITIONACTIVITY INTEGER,
+    STATIONENTRYACTIVITY INTEGER,
+    STATIONEXITACTIVITY INTEGER,
+    STATIONDOACTIVITY INTEGER,
+    ACTIVITYTYPE INTEGER NOT NULL,
+    ACTIVITYPARAMS TEXT,
+    GROOVYSCRIPT INTEGER,
+    NEWMAN INTEGER,
+    NEWRESP INTEGER,
+    FIELDSETTERRELATION INTEGER,
+    PARAMNAME VARCHAR(255),
+    FIELDSETMODE INTEGER,
+    SORTORDER INTEGER,
+    SLA INTEGER,
+    SCREEN INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TWORKFLOWACTIVITYINDEX1 ON TWORKFLOWACTIVITY (TRANSITIONACTIVITY);
+CREATE INDEX TWORKFLOWACTIVITYINDEX2 ON TWORKFLOWACTIVITY (STATIONENTRYACTIVITY);
+CREATE INDEX TWORKFLOWACTIVITYINDEX3 ON TWORKFLOWACTIVITY (STATIONEXITACTIVITY);
+CREATE INDEX TWORKFLOWACTIVITYINDEX4 ON TWORKFLOWACTIVITY (STATIONDOACTIVITY);
+CREATE INDEX TWORKFLOWACTIVITYINDEX5 ON TWORKFLOWACTIVITY (TPUUID);
+
+
+COMMENT ON COLUMN TWORKFLOWACTIVITY.ACTIVITYTYPE IS 'whether it is GroovyScript, new man, new resp, escalation, create child issue, send e-mail etc.';
+COMMENT ON COLUMN TWORKFLOWACTIVITY.ACTIVITYPARAMS IS 'parameters for some activity types: like for sending e-mail';
+COMMENT ON COLUMN TWORKFLOWACTIVITY.PARAMNAME IS 'an intuitive name for parameter settings by workflow assignment';
+COMMENT ON COLUMN TWORKFLOWACTIVITY.FIELDSETMODE IS 'default value or enforced value';
+COMMENT ON COLUMN TWORKFLOWACTIVITY.SORTORDER IS 'executing the activities in a certain order might be important';
+
+
+-----------------------------------------------------------------------------
+-- TWFACTIVITYCONTEXTPARAMS
+-----------------------------------------------------------------------------
+-- DROP TABLE TWFACTIVITYCONTEXTPARAMS CASCADE;
+
+
+
+CREATE TABLE TWFACTIVITYCONTEXTPARAMS
+(
+    OBJECTID INTEGER NOT NULL,
+    WORKFLOWACTIVITY INTEGER NOT NULL,
+    ISSUETYPE INTEGER,
+    PROJECTTYPE INTEGER,
+    PROJECT INTEGER,
+    SETTERORPARTID INTEGER,
+    ACTIVITYPARAMS TEXT,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TWFACTIVITYCONTEXTPARAMSINDEX1 ON TWFACTIVITYCONTEXTPARAMS (WORKFLOWACTIVITY);
+CREATE INDEX TWFACTIVITYCONTEXTPARAMSINDEX2 ON TWFACTIVITYCONTEXTPARAMS (ISSUETYPE);
+CREATE INDEX TWFACTIVITYCONTEXTPARAMSINDEX3 ON TWFACTIVITYCONTEXTPARAMS (PROJECTTYPE);
+CREATE INDEX TWFACTIVITYCONTEXTPARAMSINDEX4 ON TWFACTIVITYCONTEXTPARAMS (PROJECT);
+CREATE INDEX TWFACTIVITYCONTEXTPARAMSINDEX5 ON TWFACTIVITYCONTEXTPARAMS (TPUUID);
+
+
+COMMENT ON COLUMN TWFACTIVITYCONTEXTPARAMS.SETTERORPARTID IS 'defines either the field setter or the parameter the ActivityParams refers to (parameterized part(s) of an email)';
+COMMENT ON COLUMN TWFACTIVITYCONTEXTPARAMS.ACTIVITYPARAMS IS 'parameters for some activity types: like for sending e-mail';
+
+
+-----------------------------------------------------------------------------
+-- TWORKFLOWGUARD
+-----------------------------------------------------------------------------
+-- DROP TABLE TWORKFLOWGUARD CASCADE;
+
+
+
+CREATE TABLE TWORKFLOWGUARD
+(
+    OBJECTID INTEGER NOT NULL,
+    GUARDTYPE INTEGER NOT NULL,
+    GUARDPARAMS TEXT,
+    WORKFLOWTRANSITION INTEGER NOT NULL,
+    ROLEKEY INTEGER,
+    GROOVYSCRIPT INTEGER,
+    PERSON INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TWORKFLOWGUARDINDEX1 ON TWORKFLOWGUARD (WORKFLOWTRANSITION);
+CREATE INDEX TWORKFLOWGUARDINDEX2 ON TWORKFLOWGUARD (TPUUID);
+
+
+COMMENT ON COLUMN TWORKFLOWGUARD.GUARDTYPE IS 'whether the role or the groovyscript or the person is the guard';
+COMMENT ON COLUMN TWORKFLOWGUARD.GUARDPARAMS IS 'parameters for guards';
+
+
+-----------------------------------------------------------------------------
+-- TWORKFLOWCONNECT
+-----------------------------------------------------------------------------
+-- DROP TABLE TWORKFLOWCONNECT CASCADE;
+
+
+
+CREATE TABLE TWORKFLOWCONNECT
+(
+    OBJECTID INTEGER NOT NULL,
+    WORKFLOW INTEGER NOT NULL,
+    ISSUETYPE INTEGER,
+    PROJECTTYPE INTEGER,
+    PROJECT INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TWORKFLOWCONNECTINDEX1 ON TWORKFLOWCONNECT (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TWORKFLOWCOMMENT
+-----------------------------------------------------------------------------
+-- DROP TABLE TWORKFLOWCOMMENT CASCADE;
+
+
+
+CREATE TABLE TWORKFLOWCOMMENT
+(
+    OBJECTID INTEGER NOT NULL,
+    DESCRIPTION TEXT,
+    WORKFLOW INTEGER,
+    NODEX INTEGER,
+    NODEY INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TWORKFLOWCOMMENTINDEX1 ON TWORKFLOWCOMMENT (WORKFLOW);
+CREATE INDEX TWORKFLOWCOMMENTINDEX2 ON TWORKFLOWCOMMENT (TPUUID);
+
+
+COMMENT ON COLUMN TWORKFLOWCOMMENT.NODEX IS 'the x coordinate of this node';
+COMMENT ON COLUMN TWORKFLOWCOMMENT.NODEY IS 'the y coordinate of this node';
+
+
+-----------------------------------------------------------------------------
+-- TSLA
+-----------------------------------------------------------------------------
+-- DROP TABLE TSLA CASCADE;
+
+
+
+CREATE TABLE TSLA
+(
+    OBJECTID INTEGER NOT NULL,
+    NAME VARCHAR(255) NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TSLAINDEX1 ON TSLA (TPUUID);
+
+COMMENT ON TABLE TSLA IS 'service level agreement';
+
+
+
+-----------------------------------------------------------------------------
+-- TESCALATIONENTRY
+-----------------------------------------------------------------------------
+-- DROP TABLE TESCALATIONENTRY CASCADE;
+
+
+
+CREATE TABLE TESCALATIONENTRY
+(
+    OBJECTID INTEGER NOT NULL,
+    SLA INTEGER NOT NULL,
+    PRIORITY INTEGER,
+    ESCALATETO INTEGER,
+    SPARAMETERS TEXT,
+    NLEVEL INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TESCALATIONENTRYINDEX1 ON TESCALATIONENTRY (SLA);
+CREATE INDEX TESCALATIONENTRYINDEX2 ON TESCALATIONENTRY (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TESCALATIONSTATE
+-----------------------------------------------------------------------------
+-- DROP TABLE TESCALATIONSTATE CASCADE;
+
+
+
+CREATE TABLE TESCALATIONSTATE
+(
+    OBJECTID INTEGER NOT NULL,
+    ESCALATIONENTRY INTEGER NOT NULL,
+    STATUS INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TESCALATIONSTATEINDEX1 ON TESCALATIONSTATE (ESCALATIONENTRY);
+CREATE INDEX TESCALATIONSTATEINDEX2 ON TESCALATIONSTATE (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TORGPROJECTSLA
+-----------------------------------------------------------------------------
+-- DROP TABLE TORGPROJECTSLA CASCADE;
+
+
+
+CREATE TABLE TORGPROJECTSLA
+(
+    OBJECTID INTEGER NOT NULL,
+    DEPARTMENT INTEGER NOT NULL,
+    PROJECT INTEGER NOT NULL,
+    SLA INTEGER NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TORGPROJECTSLAINDEX1 ON TORGPROJECTSLA (TPUUID);
+
+COMMENT ON TABLE TORGPROJECTSLA IS 'service level agreement for a customer in a project';
+
+
+
+-----------------------------------------------------------------------------
+-- TREADISSUE
+-----------------------------------------------------------------------------
+-- DROP TABLE TREADISSUE CASCADE;
+
+
+
+CREATE TABLE TREADISSUE
+(
+    OBJECTID INTEGER NOT NULL,
+    WORKITEM INTEGER NOT NULL,
+    FIELDKEY INTEGER,
+    PERSON INTEGER NOT NULL,
+    READTYPE INTEGER,
+    LASTEDIT TIMESTAMP,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TREADISSUEINDEX1 ON TREADISSUE (PERSON);
+CREATE INDEX TREADISSUEINDEX2 ON TREADISSUE (WORKITEM);
+CREATE INDEX TREADISSUEINDEX3 ON TREADISSUE (TPUUID);
+CREATE INDEX TREADISSUEINDEX4 ON TREADISSUE (FIELDKEY);
+
+COMMENT ON TABLE TREADISSUE IS 'Mark issues as unread if it is missing from this table';
+
+COMMENT ON COLUMN TREADISSUE.FIELDKEY IS 'null for the entire item, but could be comment, attachment';
+
+
+-----------------------------------------------------------------------------
+-- TLASTEXECUTEDQUERY
+-----------------------------------------------------------------------------
+-- DROP TABLE TLASTEXECUTEDQUERY CASCADE;
+
+
+
+CREATE TABLE TLASTEXECUTEDQUERY
+(
+    OBJECTID INTEGER NOT NULL,
+    PERSON INTEGER NOT NULL,
+    QUERYTYPE INTEGER NOT NULL,
+    QUERYCLOB INTEGER,
+    QUERYKEY INTEGER,
+    LASTEXECUTEDTIME TIMESTAMP,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TLASTEXECUTEDQUERYINDEX1 ON TLASTEXECUTEDQUERY (PERSON);
+CREATE INDEX TLASTEXECUTEDQUERYINDEX2 ON TLASTEXECUTEDQUERY (TPUUID);
+
+COMMENT ON TABLE TLASTEXECUTEDQUERY IS 'store the last n executed queries with all data needed to execute them again';
+
+COMMENT ON COLUMN TLASTEXECUTEDQUERY.PERSON IS 'executed by this person';
+COMMENT ON COLUMN TLASTEXECUTEDQUERY.QUERYTYPE IS 'can be dashboard link, saved/parametersized/instant tree query/tql query';
+COMMENT ON COLUMN TLASTEXECUTEDQUERY.QUERYCLOB IS 'the query key in TCLOB for saved but parameterized/instant queries and dashboard links:     the clob value contains either the xml (tree queries) or the properties (dashboard links)';
+COMMENT ON COLUMN TLASTEXECUTEDQUERY.QUERYKEY IS 'key in queryRepositoryID or projectID or releaseID or basketID';
+
+
+-----------------------------------------------------------------------------
+-- TGLOBALCSSSTYLE
+-----------------------------------------------------------------------------
+-- DROP TABLE TGLOBALCSSSTYLE CASCADE;
+
+
+
+CREATE TABLE TGLOBALCSSSTYLE
+(
+    OBJECTID INTEGER NOT NULL,
+    STYLEFOR INTEGER NOT NULL,
+    CSSSTYLE VARCHAR(255),
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TGLOBALCSSSTYLEINDEX1 ON TGLOBALCSSSTYLE (TPUUID);
+
+COMMENT ON TABLE TGLOBALCSSSTYLE IS 'application wide css styles for in time, overdue, overbudget etc. issues';
+
+
+
+-----------------------------------------------------------------------------
+-- TREPORTSUBSCRIBE
+-----------------------------------------------------------------------------
+-- DROP TABLE TREPORTSUBSCRIBE CASCADE;
+
+
+
+CREATE TABLE TREPORTSUBSCRIBE
+(
+    OBJECTID INTEGER NOT NULL,
+    PERSON INTEGER NOT NULL,
+    RECURRENCEPATTERN INTEGER,
+    REPORTTEMPLATE INTEGER NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TREPORTSUBSCRIBEINDEX1 ON TREPORTSUBSCRIBE (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TGRIDLAYOUT
+-----------------------------------------------------------------------------
+-- DROP TABLE TGRIDLAYOUT CASCADE;
+
+
+
+CREATE TABLE TGRIDLAYOUT
+(
+    OBJECTID INTEGER NOT NULL,
+    PERSON INTEGER,
+    LAYOUTKEY INTEGER NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TGRIDLAYOUTINDEX1 ON TGRIDLAYOUT (PERSON);
+CREATE INDEX TGRIDLAYOUTINDEX2 ON TGRIDLAYOUT (LAYOUTKEY);
+CREATE INDEX TGRIDLAYOUTINDEX3 ON TGRIDLAYOUT (TPUUID);
+
+COMMENT ON TABLE TGRIDLAYOUT IS 'layout for grids';
+
+COMMENT ON COLUMN TGRIDLAYOUT.LAYOUTKEY IS 'a hardcoded key to identify the grid';
+
+
+-----------------------------------------------------------------------------
+-- TGRIDFIELD
+-----------------------------------------------------------------------------
+-- DROP TABLE TGRIDFIELD CASCADE;
+
+
+
+CREATE TABLE TGRIDFIELD
+(
+    OBJECTID INTEGER NOT NULL,
+    GRIDLAYOUT INTEGER NOT NULL,
+    GRIDFIELD INTEGER NOT NULL,
+    FIELDPOSITION INTEGER NOT NULL,
+    FIELDWIDTH INTEGER NOT NULL,
+    FILTERSTRING VARCHAR(255),
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TGRIDFIELDINDEX1 ON TGRIDFIELD (GRIDLAYOUT);
+CREATE INDEX TGRIDFIELDINDEX2 ON TGRIDFIELD (TPUUID);
+
+COMMENT ON TABLE TGRIDFIELD IS 'fields in grids';
+
+
+
+-----------------------------------------------------------------------------
+-- TGRIDGROUPINGSORTING
+-----------------------------------------------------------------------------
+-- DROP TABLE TGRIDGROUPINGSORTING CASCADE;
+
+
+
+CREATE TABLE TGRIDGROUPINGSORTING
+(
+    OBJECTID INTEGER NOT NULL,
+    GRIDLAYOUT INTEGER NOT NULL,
+    GRIDFIELD INTEGER NOT NULL,
+    SORTPOSITION INTEGER NOT NULL,
+    ISGROUPING CHAR(1) default 'N',
+    ISDESCENDING CHAR(1) default 'N',
+    ISCOLLAPSED CHAR(1) default 'N',
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TGRIDGROUPINGSORTINGINDEX1 ON TGRIDGROUPINGSORTING (GRIDLAYOUT);
+CREATE INDEX TGRIDGROUPINGSORTINGINDEX2 ON TGRIDGROUPINGSORTING (TPUUID);
+
+COMMENT ON TABLE TGRIDGROUPINGSORTING IS 'grouping and sorting in grids';
+
+
+
+-----------------------------------------------------------------------------
+-- TNAVIGATORLAYOUT
+-----------------------------------------------------------------------------
+-- DROP TABLE TNAVIGATORLAYOUT CASCADE;
+
+
+
+CREATE TABLE TNAVIGATORLAYOUT
+(
+    OBJECTID INTEGER NOT NULL,
+    PERSON INTEGER,
+    FILTERID INTEGER,
+    FILTERTYPE INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TNAVIGATORLAYOUTINDEX1 ON TNAVIGATORLAYOUT (PERSON);
+CREATE INDEX TNAVIGATORLAYOUTINDEX2 ON TNAVIGATORLAYOUT (TPUUID);
+
+COMMENT ON TABLE TNAVIGATORLAYOUT IS 'layout for item navigator';
+
+COMMENT ON COLUMN TNAVIGATORLAYOUT.PERSON IS 'person is null for the global default layout';
+COMMENT ON COLUMN TNAVIGATORLAYOUT.FILTERID IS 'specified for filter specific layout, null for default layout';
+COMMENT ON COLUMN TNAVIGATORLAYOUT.FILTERTYPE IS 'specifies the type of the filter: dashboard, tree filter, etc.';
+
+
+-----------------------------------------------------------------------------
+-- TNAVIGATORCOLUMN
+-----------------------------------------------------------------------------
+-- DROP TABLE TNAVIGATORCOLUMN CASCADE;
+
+
+
+CREATE TABLE TNAVIGATORCOLUMN
+(
+    OBJECTID INTEGER NOT NULL,
+    NAVIGATORLAYOUT INTEGER NOT NULL,
+    FIELD INTEGER NOT NULL,
+    FIELDPOSITION INTEGER NOT NULL,
+    FIELDWIDTH INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TNAVIGATORCOLUMNINDEX1 ON TNAVIGATORCOLUMN (NAVIGATORLAYOUT);
+CREATE INDEX TNAVIGATORCOLUMNINDEX2 ON TNAVIGATORCOLUMN (TPUUID);
+
+COMMENT ON TABLE TNAVIGATORCOLUMN IS 'column in item navigator';
+
+
+
+-----------------------------------------------------------------------------
+-- TNAVIGATORGROUPINGSORTING
+-----------------------------------------------------------------------------
+-- DROP TABLE TNAVIGATORGROUPINGSORTING CASCADE;
+
+
+
+CREATE TABLE TNAVIGATORGROUPINGSORTING
+(
+    OBJECTID INTEGER NOT NULL,
+    NAVIGATORLAYOUT INTEGER NOT NULL,
+    FIELD INTEGER NOT NULL,
+    SORTPOSITION INTEGER,
+    ISGROUPING CHAR(1) default 'N',
+    ISDESCENDING CHAR(1) default 'N',
+    ISCOLLAPSED CHAR(1) default 'N',
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TNAVIGATORGROUPINGSORTINGIDX1 ON TNAVIGATORGROUPINGSORTING (NAVIGATORLAYOUT);
+CREATE INDEX TNAVIGATORGROUPINGSORTINGIDX2 ON TNAVIGATORGROUPINGSORTING (TPUUID);
+
+COMMENT ON TABLE TNAVIGATORGROUPINGSORTING IS 'grouping and sorting in item navigator';
+
+
+
+-----------------------------------------------------------------------------
+-- TCARDGROUPINGFIELD
+-----------------------------------------------------------------------------
+-- DROP TABLE TCARDGROUPINGFIELD CASCADE;
+
+
+
+CREATE TABLE TCARDGROUPINGFIELD
+(
+    OBJECTID INTEGER NOT NULL,
+    NAVIGATORLAYOUT INTEGER NOT NULL,
+    CARDFIELD INTEGER NOT NULL,
+    ISACTIV CHAR(1) default 'N',
+    SORTFIELD INTEGER,
+    ISDESCENDING CHAR(1) default 'N',
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TCARDGROUPINGFIELDINDEX1 ON TCARDGROUPINGFIELD (NAVIGATORLAYOUT);
+CREATE INDEX TCARDGROUPINGFIELDINDEX2 ON TCARDGROUPINGFIELD (TPUUID);
+
+COMMENT ON TABLE TCARDGROUPINGFIELD IS 'grouping field for card';
+
+
+
+-----------------------------------------------------------------------------
+-- TCARDFIELDOPTION
+-----------------------------------------------------------------------------
+-- DROP TABLE TCARDFIELDOPTION CASCADE;
+
+
+
+CREATE TABLE TCARDFIELDOPTION
+(
+    OBJECTID INTEGER NOT NULL,
+    GROUPINGFIELD INTEGER NOT NULL,
+    OPTIONID INTEGER NOT NULL,
+    OPTIONPOSITION INTEGER NOT NULL,
+    OPTIONWIDTH INTEGER NOT NULL,
+    MAXNUMBER INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TCARDFIELDOPTIONINDEX1 ON TCARDFIELDOPTION (GROUPINGFIELD);
+CREATE INDEX TCARDFIELDOPTIONINDEX2 ON TCARDFIELDOPTION (TPUUID);
+
+COMMENT ON TABLE TCARDFIELDOPTION IS 'fields for card';
+
+
+
+-----------------------------------------------------------------------------
+-- TCARDPANEL
+-----------------------------------------------------------------------------
+-- DROP TABLE TCARDPANEL CASCADE;
+
+
+
+CREATE TABLE TCARDPANEL
+(
+    OBJECTID INTEGER NOT NULL,
+    PERSON INTEGER,
+    ROWSNO INTEGER NOT NULL,
+    COLSNO INTEGER NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TCARDPANELINDEX1 ON TCARDPANEL (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TCARDFIELD
+-----------------------------------------------------------------------------
+-- DROP TABLE TCARDFIELD CASCADE;
+
+
+
+CREATE TABLE TCARDFIELD
+(
+    OBJECTID INTEGER NOT NULL,
+    NAME VARCHAR(255),
+    COLINDEX INTEGER,
+    ROWINDEX INTEGER,
+    COLSPAN INTEGER,
+    ROWSPAN INTEGER,
+    LABELHALIGN INTEGER NOT NULL,
+    LABELVALIGN INTEGER NOT NULL,
+    VALUEHALIGN INTEGER NOT NULL,
+    VALUEVALIGN INTEGER NOT NULL,
+    CARDPANEL INTEGER NOT NULL,
+    FIELDKEY INTEGER,
+    HIDELABEL CHAR(1) default 'Y',
+    ICONRENDERING INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TCARDFIELDINDEX1 ON TCARDFIELD (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TVIEWPARAM
+-----------------------------------------------------------------------------
+-- DROP TABLE TVIEWPARAM CASCADE;
+
+
+
+CREATE TABLE TVIEWPARAM
+(
+    OBJECTID INTEGER NOT NULL,
+    NAVIGATORLAYOUT INTEGER NOT NULL,
+    PARAMNAME VARCHAR(255) NOT NULL,
+    PARAMVALUE VARCHAR(10000),
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TVIEWPARAMINDEX1 ON TVIEWPARAM (NAVIGATORLAYOUT);
+CREATE INDEX TVIEWPARAMINDEX2 ON TVIEWPARAM (TPUUID);
+
+COMMENT ON TABLE TVIEWPARAM IS 'general parameters for a view';
+
+
+
+-----------------------------------------------------------------------------
+-- TGENERALPARAM
+-----------------------------------------------------------------------------
+-- DROP TABLE TGENERALPARAM CASCADE;
+
+
+
+CREATE TABLE TGENERALPARAM
+(
+    OBJECTID INTEGER NOT NULL,
+    PARAMNAME VARCHAR(255) NOT NULL,
+    PARAMVALUE VARCHAR(10000),
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TGENERALPARAMINDEX1 ON TGENERALPARAM (TPUUID);
+
+COMMENT ON TABLE TGENERALPARAM IS 'general parameters for the system';
+
+
+
+-----------------------------------------------------------------------------
+-- TVERSIONCONTROL
+-----------------------------------------------------------------------------
+-- DROP TABLE TVERSIONCONTROL CASCADE;
+
+
+
+CREATE TABLE TVERSIONCONTROL
+(
+    OBJECTID INTEGER NOT NULL,
+    VCTYPE INTEGER NOT NULL,
+    REPOSITORYBROWSER INTEGER NOT NULL,
+    CHANGESETLINK VARCHAR(255),
+    ADDEDFILESLINK VARCHAR(255),
+    MODIFIEDEDFILESLINK VARCHAR(255),
+    REPLACEDFILESLINK VARCHAR(255),
+    DELETEDFILESLINK VARCHAR(255),
+    CONNECTIONTYPE INTEGER NOT NULL,
+    SERVERNAME VARCHAR(255) NOT NULL,
+    REPOSITORYPATH VARCHAR(255) NOT NULL,
+    DEFAULTSEVERPORT CHAR(1) default 'Y',
+    SEVERPORT INTEGER,
+    AUTHENTICATIONMODE INTEGER NOT NULL,
+    USERNAME VARCHAR(100),
+    PASSWORD VARCHAR(255),
+    PRIVATEKEY TEXT,
+    PASSPHRASE VARCHAR(255),
+    PARENT INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TVERSIONCONTROLINDEX1 ON TVERSIONCONTROL (TPUUID);
+
+COMMENT ON TABLE TVERSIONCONTROL IS 'configuration for version control server';
+
+
+
+-----------------------------------------------------------------------------
+-- TSHORTCUT
+-----------------------------------------------------------------------------
+-- DROP TABLE TSHORTCUT CASCADE;
+
+
+
+CREATE TABLE TSHORTCUT
+(
+    OBJECTID INTEGER NOT NULL,
+    SHORTCUTKEY INTEGER,
+    CTRLKEY CHAR(1) default 'N',
+    SHIFTKEY CHAR(1) default 'N',
+    ALTKEY CHAR(1) default 'N',
+    MENUITEMKEY INTEGER,
+    MENUCONTEXT INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TSHORTCUTSINDEX1 ON TSHORTCUT (TPUUID);
+
+COMMENT ON TABLE TSHORTCUT IS 'shortcut  definitions for menu items';
+
+COMMENT ON COLUMN TSHORTCUT.MENUCONTEXT IS 'main menu, item navigator context menu etc.';
+
+
+-----------------------------------------------------------------------------
+-- TMAILTEXTBLOCK
+-----------------------------------------------------------------------------
+-- DROP TABLE TMAILTEXTBLOCK CASCADE;
+
+
+
+CREATE TABLE TMAILTEXTBLOCK
+(
+    OBJECTID INTEGER NOT NULL,
+    PERSON INTEGER,
+    BLOCKTITLE VARCHAR(255),
+    BLOCKCONTENT TEXT,
+    TAGLABEL VARCHAR(100),
+    REPOSITORYTYPE INTEGER,
+    PROJECT INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TMAILTEXTBLOCKINDEX1 ON TMAILTEXTBLOCK (PERSON);
+CREATE INDEX TMAILTEXTBLOCKINDEX2 ON TMAILTEXTBLOCK (TPUUID);
+
+COMMENT ON TABLE TMAILTEXTBLOCK IS 'predefined text blocks to edit an mail';
+
+COMMENT ON COLUMN TMAILTEXTBLOCK.TAGLABEL IS 'user defined tag/category used for filtering/grouping the blocks';
+
+
+-----------------------------------------------------------------------------
+-- TPROLE
+-----------------------------------------------------------------------------
+-- DROP TABLE TPROLE CASCADE;
+
+
+
+CREATE TABLE TPROLE
+(
+    OBJECTID INTEGER NOT NULL,
+    PROJECTTYPE INTEGER,
+    ROLEKEY INTEGER,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TPROLEINDEX1 ON TPROLE (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TCHILDPROJECTTYPE
+-----------------------------------------------------------------------------
+-- DROP TABLE TCHILDPROJECTTYPE CASCADE;
+
+
+
+CREATE TABLE TCHILDPROJECTTYPE
+(
+    OBJECTID INTEGER NOT NULL,
+    PROJECTTYPEPARENT INTEGER NOT NULL,
+    PROJECTTYPECHILD INTEGER NOT NULL,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TCHILDPROJECTTYPEINDEX1 ON TCHILDPROJECTTYPE (TPUUID);
+
+COMMENT ON TABLE TCHILDPROJECTTYPE IS 'Describes which project type can have a child project depending on the a project type of parent project';
+
+
+
+-----------------------------------------------------------------------------
+-- TDOMAIN
+-----------------------------------------------------------------------------
+-- DROP TABLE TDOMAIN CASCADE;
+
+
+
+CREATE TABLE TDOMAIN
+(
+    OBJECTID INTEGER NOT NULL,
+    LABEL VARCHAR(255),
+    DESCRIPTION TEXT,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TDOMAININDEX1 ON TDOMAIN (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TPERSONINDOMAIN
+-----------------------------------------------------------------------------
+-- DROP TABLE TPERSONINDOMAIN CASCADE;
+
+
+
+CREATE TABLE TPERSONINDOMAIN
+(
+    OBJECTID INTEGER NOT NULL,
+    PERSONKEY INTEGER NOT NULL,
+    DOMAINKEY INTEGER NOT NULL,
+    DESCRIPTION TEXT,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TPERSONINDOMAININDEX1 ON TPERSONINDOMAIN (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TATTACHMENTVERSION
+-----------------------------------------------------------------------------
+-- DROP TABLE TATTACHMENTVERSION CASCADE;
+
+
+
+CREATE TABLE TATTACHMENTVERSION
+(
+    OBJECTID INTEGER NOT NULL,
+    WORKITEM INTEGER NOT NULL,
+    CHANGEDBY INTEGER,
+    DOCUMENTSTATE INTEGER,
+    FILENAME VARCHAR(256) NOT NULL,
+    ISURL CHAR(1) default 'N',
+    FILESIZE VARCHAR(20),
+    MIMETYPE VARCHAR(15),
+    LASTEDIT TIMESTAMP,
+    VERSION VARCHAR(20),
+    DESCRIPTION VARCHAR(10000),
+    CRYPTKEY VARCHAR(4096),
+    ISENCRYPTED CHAR(1) default 'N',
+    ISDELETED CHAR(1) default 'N',
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TATTACHMENTVERSIONINDEX1 ON TATTACHMENTVERSION (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TUSERLEVEL
+-----------------------------------------------------------------------------
+-- DROP TABLE TUSERLEVEL CASCADE;
+
+
+
+CREATE TABLE TUSERLEVEL
+(
+    OBJECTID INTEGER NOT NULL,
+    LABEL VARCHAR(255),
+    DESCRIPTION TEXT,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TUSERLEVELINDEX1 ON TUSERLEVEL (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TUSERLEVELSETTING
+-----------------------------------------------------------------------------
+-- DROP TABLE TUSERLEVELSETTING CASCADE;
+
+
+
+CREATE TABLE TUSERLEVELSETTING
+(
+    OBJECTID INTEGER NOT NULL,
+    USERLEVEL INTEGER NOT NULL,
+    ACTIONKEY INTEGER NOT NULL,
+    ISACTIVE CHAR(1) default 'N',
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TUSERLEVELSETTINGINDEX1 ON TUSERLEVELSETTING (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TUSERFEATURE
+-----------------------------------------------------------------------------
+-- DROP TABLE TUSERFEATURE CASCADE;
+
+
+
+CREATE TABLE TUSERFEATURE
+(
+    OBJECTID INTEGER NOT NULL,
+    FEATURENAME VARCHAR(255) NOT NULL,
+    PERSON INTEGER,
+    ISACTIVE CHAR(1) default 'N',
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TUSERFEATUREINDEX1 ON TUSERFEATURE (TPUUID);
+
+
+
+
+-----------------------------------------------------------------------------
+-- TITEMTRANSITION
+-----------------------------------------------------------------------------
+-- DROP TABLE TITEMTRANSITION CASCADE;
+
+
+
+CREATE TABLE TITEMTRANSITION
+(
+    OBJECTID INTEGER NOT NULL,
+    WORKITEM INTEGER NOT NULL,
+    TRANSITION INTEGER NOT NULL,
+    TRANSITIONTIME TIMESTAMP,
+    TPUUID VARCHAR(36),
+    PRIMARY KEY (OBJECTID)
+);
+CREATE INDEX TITEMTRANSITIONINDEX1 ON TITEMTRANSITION (WORKITEM);
+CREATE INDEX TITEMTRANSITIONINDEX2 ON TITEMTRANSITION (TRANSITION);
+CREATE INDEX TITEMTRANSITIONINDEX3 ON TITEMTRANSITION (TPUUID);
+
+
+
+
+----------------------------------------------------------------------
+-- TITEMTRANSITION
+----------------------------------------------------------------------
+
+
+ALTER TABLE TACL
+    ADD CONSTRAINT TACL_FK_1 FOREIGN KEY (PERSONKEY)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TACL
+    ADD CONSTRAINT TACL_FK_2 FOREIGN KEY (ROLEKEY)
+    REFERENCES TROLE (PKEY)
+;
+ALTER TABLE TACL
+    ADD CONSTRAINT TACL_FK_3 FOREIGN KEY (PROJKEY)
+    REFERENCES TPROJECT (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TACL
+----------------------------------------------------------------------
+
+
+ALTER TABLE TBASELINE
+    ADD CONSTRAINT TBASELINE_FK_1 FOREIGN KEY (WORKITEMKEY)
+    REFERENCES TWORKITEM (WORKITEMKEY)
+;
+ALTER TABLE TBASELINE
+    ADD CONSTRAINT TBASELINE_FK_2 FOREIGN KEY (CHANGEDBY)
+    REFERENCES TPERSON (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TBASELINE
+----------------------------------------------------------------------
+
+
+ALTER TABLE TCATEGORY
+    ADD CONSTRAINT TCATEGORY_FK_1 FOREIGN KEY (ICONKEY)
+    REFERENCES TBLOB (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TCATEGORY
+----------------------------------------------------------------------
+
+
+ALTER TABLE TCLASS
+    ADD CONSTRAINT TCLASS_FK_1 FOREIGN KEY (PROJKEY)
+    REFERENCES TPROJECT (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TCLASS
+----------------------------------------------------------------------
+
+
+ALTER TABLE TDEPARTMENT
+    ADD CONSTRAINT TDEPARTMENT_FK_1 FOREIGN KEY (COSTCENTER)
+    REFERENCES TCOSTCENTER (OBJECTID)
+;
+ALTER TABLE TDEPARTMENT
+    ADD CONSTRAINT TDEPARTMENT_FK_2 FOREIGN KEY (DOMAINKEY)
+    REFERENCES TDOMAIN (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TDEPARTMENT
+----------------------------------------------------------------------
+
+
+ALTER TABLE TNOTIFY
+    ADD CONSTRAINT TNOTIFY_FK_1 FOREIGN KEY (PROJCATKEY)
+    REFERENCES TPROJCAT (PKEY)
+;
+ALTER TABLE TNOTIFY
+    ADD CONSTRAINT TNOTIFY_FK_2 FOREIGN KEY (STATEKEY)
+    REFERENCES TSTATE (PKEY)
+;
+ALTER TABLE TNOTIFY
+    ADD CONSTRAINT TNOTIFY_FK_3 FOREIGN KEY (PERSONKEY)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TNOTIFY
+    ADD CONSTRAINT TNOTIFY_FK_4 FOREIGN KEY (WORKITEM)
+    REFERENCES TWORKITEM (WORKITEMKEY)
+;
+
+----------------------------------------------------------------------
+-- TNOTIFY
+----------------------------------------------------------------------
+
+
+ALTER TABLE TPERSON
+    ADD CONSTRAINT TPERSON_FK_1 FOREIGN KEY (DEPKEY)
+    REFERENCES TDEPARTMENT (PKEY)
+;
+ALTER TABLE TPERSON
+    ADD CONSTRAINT TPERSON_FK_2 FOREIGN KEY (MYDEFAULTREPORT)
+    REFERENCES TPRIVATEREPORTREPOSITORY (PKEY)
+;
+ALTER TABLE TPERSON
+    ADD CONSTRAINT TPERSON_FK_3 FOREIGN KEY (ICONKEY)
+    REFERENCES TBLOB (OBJECTID)
+;
+ALTER TABLE TPERSON
+    ADD CONSTRAINT TPERSON_FK_4 FOREIGN KEY (SUBSTITUTEKEY)
+    REFERENCES TPERSON (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TPERSON
+----------------------------------------------------------------------
+
+
+ALTER TABLE TPRIORITY
+    ADD CONSTRAINT TPRIORITY_FK_1 FOREIGN KEY (ICONKEY)
+    REFERENCES TBLOB (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TPRIORITY
+----------------------------------------------------------------------
+
+
+ALTER TABLE TPPRIORITY
+    ADD CONSTRAINT TPPRIORITY_FK_1 FOREIGN KEY (PRIORITY)
+    REFERENCES TPRIORITY (PKEY)
+;
+ALTER TABLE TPPRIORITY
+    ADD CONSTRAINT TPPRIORITY_FK_2 FOREIGN KEY (PROJECTTYPE)
+    REFERENCES TPROJECTTYPE (OBJECTID)
+;
+ALTER TABLE TPPRIORITY
+    ADD CONSTRAINT TPPRIORITY_FK_3 FOREIGN KEY (LISTTYPE)
+    REFERENCES TCATEGORY (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TPPRIORITY
+----------------------------------------------------------------------
+
+
+ALTER TABLE TPROJCAT
+    ADD CONSTRAINT TPROJCAT_FK_1 FOREIGN KEY (PROJKEY)
+    REFERENCES TPROJECT (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TPROJCAT
+----------------------------------------------------------------------
+
+
+ALTER TABLE TPROJECT
+    ADD CONSTRAINT TPROJECT_FK_1 FOREIGN KEY (DEFOWNER)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TPROJECT
+    ADD CONSTRAINT TPROJECT_FK_2 FOREIGN KEY (DEFMANAGER)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TPROJECT
+    ADD CONSTRAINT TPROJECT_FK_3 FOREIGN KEY (DEFINITSTATE)
+    REFERENCES TSTATE (PKEY)
+;
+ALTER TABLE TPROJECT
+    ADD CONSTRAINT TPROJECT_FK_4 FOREIGN KEY (PROJECTTYPE)
+    REFERENCES TPROJECTTYPE (OBJECTID)
+;
+ALTER TABLE TPROJECT
+    ADD CONSTRAINT TPROJECT_FK_5 FOREIGN KEY (STATUS)
+    REFERENCES TSYSTEMSTATE (OBJECTID)
+;
+ALTER TABLE TPROJECT
+    ADD CONSTRAINT TPROJECT_FK_6 FOREIGN KEY (PARENT)
+    REFERENCES TPROJECT (PKEY)
+;
+ALTER TABLE TPROJECT
+    ADD CONSTRAINT TPROJECT_FK_7 FOREIGN KEY (DOMAINKEY)
+    REFERENCES TDOMAIN (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TPROJECT
+----------------------------------------------------------------------
+
+
+ALTER TABLE TRELEASE
+    ADD CONSTRAINT TRELEASE_FK_1 FOREIGN KEY (PROJKEY)
+    REFERENCES TPROJECT (PKEY)
+;
+ALTER TABLE TRELEASE
+    ADD CONSTRAINT TRELEASE_FK_2 FOREIGN KEY (STATUS)
+    REFERENCES TSYSTEMSTATE (OBJECTID)
+;
+ALTER TABLE TRELEASE
+    ADD CONSTRAINT TRELEASE_FK_3 FOREIGN KEY (PARENT)
+    REFERENCES TRELEASE (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TRELEASE
+----------------------------------------------------------------------
+
+
+ALTER TABLE TROLE
+    ADD CONSTRAINT TROLE_FK_1 FOREIGN KEY (PROJECTTYPE)
+    REFERENCES TPROJECTTYPE (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TROLE
+----------------------------------------------------------------------
+
+
+ALTER TABLE TSEVERITY
+    ADD CONSTRAINT TSEVERITY_FK_1 FOREIGN KEY (ICONKEY)
+    REFERENCES TBLOB (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TSEVERITY
+----------------------------------------------------------------------
+
+
+ALTER TABLE TPSEVERITY
+    ADD CONSTRAINT TPSEVERITY_FK_1 FOREIGN KEY (SEVERITY)
+    REFERENCES TSEVERITY (PKEY)
+;
+ALTER TABLE TPSEVERITY
+    ADD CONSTRAINT TPSEVERITY_FK_2 FOREIGN KEY (PROJECTTYPE)
+    REFERENCES TPROJECTTYPE (OBJECTID)
+;
+ALTER TABLE TPSEVERITY
+    ADD CONSTRAINT TPSEVERITY_FK_3 FOREIGN KEY (LISTTYPE)
+    REFERENCES TCATEGORY (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TPSEVERITY
+----------------------------------------------------------------------
+
+
+ALTER TABLE TSTATE
+    ADD CONSTRAINT TSTATE_FK_1 FOREIGN KEY (ICONKEY)
+    REFERENCES TBLOB (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TSTATE
+----------------------------------------------------------------------
+
+
+ALTER TABLE TSTATECHANGE
+    ADD CONSTRAINT TSTATECHANGE_FK_1 FOREIGN KEY (CHANGEDBY)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TSTATECHANGE
+    ADD CONSTRAINT TSTATECHANGE_FK_2 FOREIGN KEY (CHANGEDTO)
+    REFERENCES TSTATE (PKEY)
+;
+ALTER TABLE TSTATECHANGE
+    ADD CONSTRAINT TSTATECHANGE_FK_3 FOREIGN KEY (WORKITEMKEY)
+    REFERENCES TWORKITEM (WORKITEMKEY)
+;
+
+----------------------------------------------------------------------
+-- TSTATECHANGE
+----------------------------------------------------------------------
+
+
+ALTER TABLE TTRAIL
+    ADD CONSTRAINT TTRAIL_FK_1 FOREIGN KEY (WORKITEMKEY)
+    REFERENCES TWORKITEM (WORKITEMKEY)
+;
+ALTER TABLE TTRAIL
+    ADD CONSTRAINT TTRAIL_FK_2 FOREIGN KEY (CHANGEDBY)
+    REFERENCES TPERSON (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TTRAIL
+----------------------------------------------------------------------
+
+
+ALTER TABLE TWORKITEM
+    ADD CONSTRAINT TWORKITEM_FK_1 FOREIGN KEY (OWNER)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TWORKITEM
+    ADD CONSTRAINT TWORKITEM_FK_2 FOREIGN KEY (CHANGEDBY)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TWORKITEM
+    ADD CONSTRAINT TWORKITEM_FK_3 FOREIGN KEY (ORIGINATOR)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TWORKITEM
+    ADD CONSTRAINT TWORKITEM_FK_4 FOREIGN KEY (RESPONSIBLE)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TWORKITEM
+    ADD CONSTRAINT TWORKITEM_FK_5 FOREIGN KEY (PROJCATKEY)
+    REFERENCES TPROJCAT (PKEY)
+;
+ALTER TABLE TWORKITEM
+    ADD CONSTRAINT TWORKITEM_FK_6 FOREIGN KEY (CATEGORYKEY)
+    REFERENCES TCATEGORY (PKEY)
+;
+ALTER TABLE TWORKITEM
+    ADD CONSTRAINT TWORKITEM_FK_7 FOREIGN KEY (CLASSKEY)
+    REFERENCES TCLASS (PKEY)
+;
+ALTER TABLE TWORKITEM
+    ADD CONSTRAINT TWORKITEM_FK_8 FOREIGN KEY (PRIORITYKEY)
+    REFERENCES TPRIORITY (PKEY)
+;
+ALTER TABLE TWORKITEM
+    ADD CONSTRAINT TWORKITEM_FK_9 FOREIGN KEY (SEVERITYKEY)
+    REFERENCES TSEVERITY (PKEY)
+;
+ALTER TABLE TWORKITEM
+    ADD CONSTRAINT TWORKITEM_FK_10 FOREIGN KEY (RELNOTICEDKEY)
+    REFERENCES TRELEASE (PKEY)
+;
+ALTER TABLE TWORKITEM
+    ADD CONSTRAINT TWORKITEM_FK_11 FOREIGN KEY (RELSCHEDULEDKEY)
+    REFERENCES TRELEASE (PKEY)
+;
+ALTER TABLE TWORKITEM
+    ADD CONSTRAINT TWORKITEM_FK_12 FOREIGN KEY (STATE)
+    REFERENCES TSTATE (PKEY)
+;
+ALTER TABLE TWORKITEM
+    ADD CONSTRAINT TWORKITEM_FK_13 FOREIGN KEY (PROJECTKEY)
+    REFERENCES TPROJECT (PKEY)
+;
+ALTER TABLE TWORKITEM
+    ADD CONSTRAINT TWORKITEM_FK_14 FOREIGN KEY (SUPERIORWORKITEM)
+    REFERENCES TWORKITEM (WORKITEMKEY)
+;
+
+----------------------------------------------------------------------
+-- TWORKITEM
+----------------------------------------------------------------------
+
+
+ALTER TABLE TCOMPUTEDVALUES
+    ADD CONSTRAINT TCOMPUTEDVALUES_FK_1 FOREIGN KEY (WORKITEMKEY)
+    REFERENCES TWORKITEM (WORKITEMKEY)
+;
+ALTER TABLE TCOMPUTEDVALUES
+    ADD CONSTRAINT TCOMPUTEDVALUES_FK_2 FOREIGN KEY (PERSON)
+    REFERENCES TPERSON (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TCOMPUTEDVALUES
+----------------------------------------------------------------------
+
+
+ALTER TABLE TPRIVATEREPORTREPOSITORY
+    ADD CONSTRAINT TPRIVATEREPORTREPOSITORY_FK_1 FOREIGN KEY (OWNER)
+    REFERENCES TPERSON (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TPRIVATEREPORTREPOSITORY
+----------------------------------------------------------------------
+
+
+ALTER TABLE TPUBLICREPORTREPOSITORY
+    ADD CONSTRAINT TPUBLICREPORTREPOSITORY_FK_1 FOREIGN KEY (OWNER)
+    REFERENCES TPERSON (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TPUBLICREPORTREPOSITORY
+----------------------------------------------------------------------
+
+
+ALTER TABLE TPROJECTREPORTREPOSITORY
+    ADD CONSTRAINT TPROJECTREPORTREPOSITORY_FK_1 FOREIGN KEY (PROJECT)
+    REFERENCES TPROJECT (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TPROJECTREPORTREPOSITORY
+----------------------------------------------------------------------
+
+
+ALTER TABLE TACCOUNT
+    ADD CONSTRAINT TACCOUNT_FK_1 FOREIGN KEY (STATUS)
+    REFERENCES TSYSTEMSTATE (OBJECTID)
+;
+ALTER TABLE TACCOUNT
+    ADD CONSTRAINT TACCOUNT_FK_2 FOREIGN KEY (COSTCENTER)
+    REFERENCES TCOSTCENTER (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TACCOUNT
+----------------------------------------------------------------------
+
+
+ALTER TABLE TATTACHMENT
+    ADD CONSTRAINT TATTACHMENT_FK_1 FOREIGN KEY (WORKITEM)
+    REFERENCES TWORKITEM (WORKITEMKEY)
+;
+ALTER TABLE TATTACHMENT
+    ADD CONSTRAINT TATTACHMENT_FK_2 FOREIGN KEY (CHANGEDBY)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TATTACHMENT
+    ADD CONSTRAINT TATTACHMENT_FK_3 FOREIGN KEY (DOCUMENTSTATE)
+    REFERENCES TDOCSTATE (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TATTACHMENT
+----------------------------------------------------------------------
+
+
+ALTER TABLE TCOST
+    ADD CONSTRAINT TCOST_FK_1 FOREIGN KEY (ACCOUNT)
+    REFERENCES TACCOUNT (OBJECTID)
+;
+ALTER TABLE TCOST
+    ADD CONSTRAINT TCOST_FK_2 FOREIGN KEY (PERSON)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TCOST
+    ADD CONSTRAINT TCOST_FK_3 FOREIGN KEY (WORKITEM)
+    REFERENCES TWORKITEM (WORKITEMKEY)
+;
+ALTER TABLE TCOST
+    ADD CONSTRAINT TCOST_FK_4 FOREIGN KEY (EFFORTTYPE)
+    REFERENCES TEFFORTTYPE (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TCOST
+----------------------------------------------------------------------
+
+
+ALTER TABLE TEFFORTTYPE
+    ADD CONSTRAINT TEFFORTTYPE_FK_1 FOREIGN KEY (EFFORTUNIT)
+    REFERENCES TEFFORTUNIT (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TEFFORTTYPE
+----------------------------------------------------------------------
+
+
+
+----------------------------------------------------------------------
+-- TEFFORTUNIT
+----------------------------------------------------------------------
+
+
+ALTER TABLE TDOCSTATE
+    ADD CONSTRAINT TDOCSTATE_FK_1 FOREIGN KEY (PROJECTTYPE)
+    REFERENCES TPROJECTTYPE (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TDOCSTATE
+----------------------------------------------------------------------
+
+
+ALTER TABLE TDISABLEFIELD
+    ADD CONSTRAINT TDISABLEFIELD_FK_1 FOREIGN KEY (LISTTYPE)
+    REFERENCES TCATEGORY (PKEY)
+;
+ALTER TABLE TDISABLEFIELD
+    ADD CONSTRAINT TDISABLEFIELD_FK_2 FOREIGN KEY (PROJECTTYPE)
+    REFERENCES TPROJECTTYPE (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TDISABLEFIELD
+----------------------------------------------------------------------
+
+
+ALTER TABLE TPLISTTYPE
+    ADD CONSTRAINT TPLISTTYPE_FK_1 FOREIGN KEY (PROJECTTYPE)
+    REFERENCES TPROJECTTYPE (OBJECTID)
+;
+ALTER TABLE TPLISTTYPE
+    ADD CONSTRAINT TPLISTTYPE_FK_2 FOREIGN KEY (CATEGORY)
+    REFERENCES TCATEGORY (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TPLISTTYPE
+----------------------------------------------------------------------
+
+
+
+----------------------------------------------------------------------
+-- TPROJECTTYPE
+----------------------------------------------------------------------
+
+
+ALTER TABLE TPSTATE
+    ADD CONSTRAINT TPSTATE_FK_1 FOREIGN KEY (STATE)
+    REFERENCES TSTATE (PKEY)
+;
+ALTER TABLE TPSTATE
+    ADD CONSTRAINT TPSTATE_FK_2 FOREIGN KEY (PROJECTTYPE)
+    REFERENCES TPROJECTTYPE (OBJECTID)
+;
+ALTER TABLE TPSTATE
+    ADD CONSTRAINT TPSTATE_FK_3 FOREIGN KEY (LISTTYPE)
+    REFERENCES TCATEGORY (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TPSTATE
+----------------------------------------------------------------------
+
+
+
+----------------------------------------------------------------------
+-- TSITE
+----------------------------------------------------------------------
+
+
+ALTER TABLE TWORKFLOW
+    ADD CONSTRAINT TWORKFLOW_FK_1 FOREIGN KEY (STATEFROM)
+    REFERENCES TSTATE (PKEY)
+;
+ALTER TABLE TWORKFLOW
+    ADD CONSTRAINT TWORKFLOW_FK_2 FOREIGN KEY (STATETO)
+    REFERENCES TSTATE (PKEY)
+;
+ALTER TABLE TWORKFLOW
+    ADD CONSTRAINT TWORKFLOW_FK_3 FOREIGN KEY (PROJECTTYPE)
+    REFERENCES TPROJECTTYPE (OBJECTID)
+;
+ALTER TABLE TWORKFLOW
+    ADD CONSTRAINT TWORKFLOW_FK_4 FOREIGN KEY (RESPONSIBLE)
+    REFERENCES TPERSON (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TWORKFLOW
+----------------------------------------------------------------------
+
+
+ALTER TABLE TWORKFLOWROLE
+    ADD CONSTRAINT TWORKFLOWROLE_FK_1 FOREIGN KEY (WORKFLOW)
+    REFERENCES TWORKFLOW (OBJECTID)
+;
+ALTER TABLE TWORKFLOWROLE
+    ADD CONSTRAINT TWORKFLOWROLE_FK_2 FOREIGN KEY (MAYCHANGEROLE)
+    REFERENCES TROLE (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TWORKFLOWROLE
+----------------------------------------------------------------------
+
+
+ALTER TABLE TWORKFLOWCATEGORY
+    ADD CONSTRAINT TWORKFLOWCATEGORY_FK_1 FOREIGN KEY (WORKFLOW)
+    REFERENCES TWORKFLOW (OBJECTID)
+;
+ALTER TABLE TWORKFLOWCATEGORY
+    ADD CONSTRAINT TWORKFLOWCATEGORY_FK_2 FOREIGN KEY (CATEGORY)
+    REFERENCES TCATEGORY (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TWORKFLOWCATEGORY
+----------------------------------------------------------------------
+
+
+ALTER TABLE TROLELISTTYPE
+    ADD CONSTRAINT TROLELISTTYPE_FK_1 FOREIGN KEY (PROLE)
+    REFERENCES TROLE (PKEY)
+;
+ALTER TABLE TROLELISTTYPE
+    ADD CONSTRAINT TROLELISTTYPE_FK_2 FOREIGN KEY (LISTTYPE)
+    REFERENCES TCATEGORY (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TROLELISTTYPE
+----------------------------------------------------------------------
+
+
+ALTER TABLE TISSUEATTRIBUTEVALUE
+    ADD CONSTRAINT TISSUEATTRIBUTEVALUE_FK_1 FOREIGN KEY (PERSON)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TISSUEATTRIBUTEVALUE
+    ADD CONSTRAINT TISSUEATTRIBUTEVALUE_FK_2 FOREIGN KEY (ISSUE)
+    REFERENCES TWORKITEM (WORKITEMKEY)
+;
+ALTER TABLE TISSUEATTRIBUTEVALUE
+    ADD CONSTRAINT TISSUEATTRIBUTEVALUE_FK_3 FOREIGN KEY (ATTRIBUTEID)
+    REFERENCES TATTRIBUTE (OBJECTID)
+;
+ALTER TABLE TISSUEATTRIBUTEVALUE
+    ADD CONSTRAINT TISSUEATTRIBUTEVALUE_FK_4 FOREIGN KEY (OPTIONID)
+    REFERENCES TATTRIBUTEOPTION (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TISSUEATTRIBUTEVALUE
+----------------------------------------------------------------------
+
+
+ALTER TABLE TATTRIBUTEOPTION
+    ADD CONSTRAINT TATTRIBUTEOPTION_FK_1 FOREIGN KEY (ATTRIBUTEID)
+    REFERENCES TATTRIBUTE (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TATTRIBUTEOPTION
+----------------------------------------------------------------------
+
+
+
+----------------------------------------------------------------------
+-- TATTRIBUTECLASS
+----------------------------------------------------------------------
+
+
+ALTER TABLE TATTRIBUTETYPE
+    ADD CONSTRAINT TATTRIBUTETYPE_FK_1 FOREIGN KEY (ATTRIBUTECLASS)
+    REFERENCES TATTRIBUTECLASS (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TATTRIBUTETYPE
+----------------------------------------------------------------------
+
+
+ALTER TABLE TATTRIBUTE
+    ADD CONSTRAINT TATTRIBUTE_FK_1 FOREIGN KEY (REQUIREDOPTION)
+    REFERENCES TATTRIBUTEOPTION (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TATTRIBUTE
+----------------------------------------------------------------------
+
+
+ALTER TABLE TREPORTLAYOUT
+    ADD CONSTRAINT TREPORTLAYOUT_FK_1 FOREIGN KEY (PROJECTTYPE)
+    REFERENCES TPROJECTTYPE (OBJECTID)
+;
+ALTER TABLE TREPORTLAYOUT
+    ADD CONSTRAINT TREPORTLAYOUT_FK_2 FOREIGN KEY (PROJECT)
+    REFERENCES TPROJECT (PKEY)
+;
+ALTER TABLE TREPORTLAYOUT
+    ADD CONSTRAINT TREPORTLAYOUT_FK_3 FOREIGN KEY (PERSON)
+    REFERENCES TPERSON (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TREPORTLAYOUT
+----------------------------------------------------------------------
+
+
+ALTER TABLE TSCHEDULER
+    ADD CONSTRAINT TSCHEDULER_FK_1 FOREIGN KEY (PERSON)
+    REFERENCES TPERSON (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TSCHEDULER
+----------------------------------------------------------------------
+
+
+ALTER TABLE TPROJECTACCOUNT
+    ADD CONSTRAINT TPROJECTACCOUNT_FK_1 FOREIGN KEY (PROJECT)
+    REFERENCES TPROJECT (PKEY)
+;
+ALTER TABLE TPROJECTACCOUNT
+    ADD CONSTRAINT TPROJECTACCOUNT_FK_2 FOREIGN KEY (ACCOUNT)
+    REFERENCES TACCOUNT (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TPROJECTACCOUNT
+----------------------------------------------------------------------
+
+
+ALTER TABLE TGROUPMEMBER
+    ADD CONSTRAINT TGROUPMEMBER_FK_1 FOREIGN KEY (THEGROUP)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TGROUPMEMBER
+    ADD CONSTRAINT TGROUPMEMBER_FK_2 FOREIGN KEY (PERSON)
+    REFERENCES TPERSON (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TGROUPMEMBER
+----------------------------------------------------------------------
+
+
+ALTER TABLE TBUDGET
+    ADD CONSTRAINT TBUDGET_FK_1 FOREIGN KEY (WORKITEMKEY)
+    REFERENCES TWORKITEM (WORKITEMKEY)
+;
+ALTER TABLE TBUDGET
+    ADD CONSTRAINT TBUDGET_FK_2 FOREIGN KEY (CHANGEDBY)
+    REFERENCES TPERSON (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TBUDGET
+----------------------------------------------------------------------
+
+
+ALTER TABLE TACTUALESTIMATEDBUDGET
+    ADD CONSTRAINT TACTUALESTIMATEDBUDGET_FK_1 FOREIGN KEY (WORKITEMKEY)
+    REFERENCES TWORKITEM (WORKITEMKEY)
+;
+ALTER TABLE TACTUALESTIMATEDBUDGET
+    ADD CONSTRAINT TACTUALESTIMATEDBUDGET_FK_2 FOREIGN KEY (CHANGEDBY)
+    REFERENCES TPERSON (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TACTUALESTIMATEDBUDGET
+----------------------------------------------------------------------
+
+
+ALTER TABLE TSYSTEMSTATE
+    ADD CONSTRAINT TSYSTEMSTATE_FK_1 FOREIGN KEY (ICONKEY)
+    REFERENCES TBLOB (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TSYSTEMSTATE
+----------------------------------------------------------------------
+
+
+
+----------------------------------------------------------------------
+-- TCOSTCENTER
+----------------------------------------------------------------------
+
+
+
+----------------------------------------------------------------------
+-- TMOTD
+----------------------------------------------------------------------
+
+
+ALTER TABLE TDASHBOARDSCREEN
+    ADD CONSTRAINT TDASHBOARDSCREEN_FK_1 FOREIGN KEY (PERSONPKEY)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TDASHBOARDSCREEN
+    ADD CONSTRAINT TDASHBOARDSCREEN_FK_2 FOREIGN KEY (PROJECT)
+    REFERENCES TPROJECT (PKEY)
+;
+ALTER TABLE TDASHBOARDSCREEN
+    ADD CONSTRAINT TDASHBOARDSCREEN_FK_3 FOREIGN KEY (OWNER)
+    REFERENCES TPERSON (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TDASHBOARDSCREEN
+----------------------------------------------------------------------
+
+
+ALTER TABLE TDASHBOARDTAB
+    ADD CONSTRAINT TDASHBOARDTAB_FK_1 FOREIGN KEY (PARENT)
+    REFERENCES TDASHBOARDSCREEN (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TDASHBOARDTAB
+----------------------------------------------------------------------
+
+
+ALTER TABLE TDASHBOARDPANEL
+    ADD CONSTRAINT TDASHBOARDPANEL_FK_1 FOREIGN KEY (PARENT)
+    REFERENCES TDASHBOARDTAB (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TDASHBOARDPANEL
+----------------------------------------------------------------------
+
+
+ALTER TABLE TDASHBOARDFIELD
+    ADD CONSTRAINT TDASHBOARDFIELD_FK_1 FOREIGN KEY (PARENT)
+    REFERENCES TDASHBOARDPANEL (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TDASHBOARDFIELD
+----------------------------------------------------------------------
+
+
+ALTER TABLE TDASHBOARDPARAMETER
+    ADD CONSTRAINT TDASHBOARDPARAMETER_FK_1 FOREIGN KEY (DASHBOARDFIELD)
+    REFERENCES TDASHBOARDFIELD (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TDASHBOARDPARAMETER
+----------------------------------------------------------------------
+
+
+ALTER TABLE TVERSIONCONTROLPARAMETER
+    ADD CONSTRAINT TVERSIONCONTROLPARAMETER_FK_1 FOREIGN KEY (PROJECT)
+    REFERENCES TPROJECT (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TVERSIONCONTROLPARAMETER
+----------------------------------------------------------------------
+
+
+ALTER TABLE TFIELD
+    ADD CONSTRAINT TFIELD_FK_1 FOREIGN KEY (OWNER)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TFIELD
+    ADD CONSTRAINT TFIELD_FK_2 FOREIGN KEY (PROJECTTYPE)
+    REFERENCES TPROJECTTYPE (OBJECTID)
+;
+ALTER TABLE TFIELD
+    ADD CONSTRAINT TFIELD_FK_3 FOREIGN KEY (PROJECT)
+    REFERENCES TPROJECT (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TFIELD
+----------------------------------------------------------------------
+
+
+ALTER TABLE TFIELDCONFIG
+    ADD CONSTRAINT TFIELDCONFIG_FK_1 FOREIGN KEY (FIELDKEY)
+    REFERENCES TFIELD (OBJECTID)
+;
+ALTER TABLE TFIELDCONFIG
+    ADD CONSTRAINT TFIELDCONFIG_FK_2 FOREIGN KEY (ISSUETYPE)
+    REFERENCES TCATEGORY (PKEY)
+;
+ALTER TABLE TFIELDCONFIG
+    ADD CONSTRAINT TFIELDCONFIG_FK_3 FOREIGN KEY (PROJECTTYPE)
+    REFERENCES TPROJECTTYPE (OBJECTID)
+;
+ALTER TABLE TFIELDCONFIG
+    ADD CONSTRAINT TFIELDCONFIG_FK_4 FOREIGN KEY (PROJECT)
+    REFERENCES TPROJECT (PKEY)
+;
+ALTER TABLE TFIELDCONFIG
+    ADD CONSTRAINT TFIELDCONFIG_FK_5 FOREIGN KEY (GROOVYSCRIPT)
+    REFERENCES TSCRIPTS (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TFIELDCONFIG
+----------------------------------------------------------------------
+
+
+ALTER TABLE TROLEFIELD
+    ADD CONSTRAINT TROLEFIELD_FK_1 FOREIGN KEY (ROLEKEY)
+    REFERENCES TROLE (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TROLEFIELD
+----------------------------------------------------------------------
+
+
+ALTER TABLE TCONFIGOPTIONSROLE
+    ADD CONSTRAINT TCONFIGOPTIONSROLE_FK_1 FOREIGN KEY (CONFIGKEY)
+    REFERENCES TFIELDCONFIG (OBJECTID)
+;
+ALTER TABLE TCONFIGOPTIONSROLE
+    ADD CONSTRAINT TCONFIGOPTIONSROLE_FK_2 FOREIGN KEY (ROLEKEY)
+    REFERENCES TROLE (PKEY)
+;
+ALTER TABLE TCONFIGOPTIONSROLE
+    ADD CONSTRAINT TCONFIGOPTIONSROLE_FK_3 FOREIGN KEY (OPTIONKEY)
+    REFERENCES TOPTION (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TCONFIGOPTIONSROLE
+----------------------------------------------------------------------
+
+
+ALTER TABLE TTEXTBOXSETTINGS
+    ADD CONSTRAINT TTEXTBOXSETTINGS_FK_1 FOREIGN KEY (CONFIG)
+    REFERENCES TFIELDCONFIG (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TTEXTBOXSETTINGS
+----------------------------------------------------------------------
+
+
+ALTER TABLE TGENERALSETTINGS
+    ADD CONSTRAINT TGENERALSETTINGS_FK_1 FOREIGN KEY (CONFIG)
+    REFERENCES TFIELDCONFIG (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TGENERALSETTINGS
+----------------------------------------------------------------------
+
+
+ALTER TABLE TLIST
+    ADD CONSTRAINT TLIST_FK_1 FOREIGN KEY (PARENTLIST)
+    REFERENCES TLIST (OBJECTID)
+;
+ALTER TABLE TLIST
+    ADD CONSTRAINT TLIST_FK_2 FOREIGN KEY (PROJECT)
+    REFERENCES TPROJECT (PKEY)
+;
+ALTER TABLE TLIST
+    ADD CONSTRAINT TLIST_FK_3 FOREIGN KEY (OWNER)
+    REFERENCES TPERSON (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TLIST
+----------------------------------------------------------------------
+
+
+ALTER TABLE TOPTION
+    ADD CONSTRAINT TOPTION_FK_1 FOREIGN KEY (LIST)
+    REFERENCES TLIST (OBJECTID)
+;
+ALTER TABLE TOPTION
+    ADD CONSTRAINT TOPTION_FK_2 FOREIGN KEY (ICONKEY)
+    REFERENCES TBLOB (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TOPTION
+----------------------------------------------------------------------
+
+
+ALTER TABLE TOPTIONSETTINGS
+    ADD CONSTRAINT TOPTIONSETTINGS_FK_1 FOREIGN KEY (LIST)
+    REFERENCES TLIST (OBJECTID)
+;
+ALTER TABLE TOPTIONSETTINGS
+    ADD CONSTRAINT TOPTIONSETTINGS_FK_2 FOREIGN KEY (CONFIG)
+    REFERENCES TFIELDCONFIG (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TOPTIONSETTINGS
+----------------------------------------------------------------------
+
+
+ALTER TABLE TATTRIBUTEVALUE
+    ADD CONSTRAINT TATTRIBUTEVALUE_FK_1 FOREIGN KEY (FIELDKEY)
+    REFERENCES TFIELD (OBJECTID)
+;
+ALTER TABLE TATTRIBUTEVALUE
+    ADD CONSTRAINT TATTRIBUTEVALUE_FK_2 FOREIGN KEY (WORKITEM)
+    REFERENCES TWORKITEM (WORKITEMKEY)
+;
+
+----------------------------------------------------------------------
+-- TATTRIBUTEVALUE
+----------------------------------------------------------------------
+
+
+ALTER TABLE TSCREEN
+    ADD CONSTRAINT TSCREEN_FK_1 FOREIGN KEY (OWNER)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TSCREEN
+    ADD CONSTRAINT TSCREEN_FK_2 FOREIGN KEY (PROJECTTYPE)
+    REFERENCES TPROJECTTYPE (OBJECTID)
+;
+ALTER TABLE TSCREEN
+    ADD CONSTRAINT TSCREEN_FK_3 FOREIGN KEY (PROJECT)
+    REFERENCES TPROJECT (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TSCREEN
+----------------------------------------------------------------------
+
+
+ALTER TABLE TSCREENTAB
+    ADD CONSTRAINT TSCREENTAB_FK_1 FOREIGN KEY (PARENT)
+    REFERENCES TSCREEN (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TSCREENTAB
+----------------------------------------------------------------------
+
+
+ALTER TABLE TSCREENPANEL
+    ADD CONSTRAINT TSCREENPANEL_FK_1 FOREIGN KEY (PARENT)
+    REFERENCES TSCREENTAB (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TSCREENPANEL
+----------------------------------------------------------------------
+
+
+ALTER TABLE TSCREENFIELD
+    ADD CONSTRAINT TSCREENFIELD_FK_1 FOREIGN KEY (PARENT)
+    REFERENCES TSCREENPANEL (OBJECTID)
+;
+ALTER TABLE TSCREENFIELD
+    ADD CONSTRAINT TSCREENFIELD_FK_2 FOREIGN KEY (FIELDKEY)
+    REFERENCES TFIELD (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TSCREENFIELD
+----------------------------------------------------------------------
+
+
+ALTER TABLE TACTION
+    ADD CONSTRAINT TACTION_FK_1 FOREIGN KEY (ICONKEY)
+    REFERENCES TBLOB (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TACTION
+----------------------------------------------------------------------
+
+
+ALTER TABLE TSCREENCONFIG
+    ADD CONSTRAINT TSCREENCONFIG_FK_1 FOREIGN KEY (SCREEN)
+    REFERENCES TSCREEN (OBJECTID)
+;
+ALTER TABLE TSCREENCONFIG
+    ADD CONSTRAINT TSCREENCONFIG_FK_2 FOREIGN KEY (ISSUETYPE)
+    REFERENCES TCATEGORY (PKEY)
+;
+ALTER TABLE TSCREENCONFIG
+    ADD CONSTRAINT TSCREENCONFIG_FK_3 FOREIGN KEY (PROJECTTYPE)
+    REFERENCES TPROJECTTYPE (OBJECTID)
+;
+ALTER TABLE TSCREENCONFIG
+    ADD CONSTRAINT TSCREENCONFIG_FK_4 FOREIGN KEY (PROJECT)
+    REFERENCES TPROJECT (PKEY)
+;
+ALTER TABLE TSCREENCONFIG
+    ADD CONSTRAINT TSCREENCONFIG_FK_5 FOREIGN KEY (ACTIONKEY)
+    REFERENCES TACTION (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TSCREENCONFIG
+----------------------------------------------------------------------
+
+
+ALTER TABLE TINITSTATE
+    ADD CONSTRAINT TINITSTATE_FK_1 FOREIGN KEY (PROJECT)
+    REFERENCES TPROJECT (PKEY)
+;
+ALTER TABLE TINITSTATE
+    ADD CONSTRAINT TINITSTATE_FK_2 FOREIGN KEY (LISTTYPE)
+    REFERENCES TCATEGORY (PKEY)
+;
+ALTER TABLE TINITSTATE
+    ADD CONSTRAINT TINITSTATE_FK_3 FOREIGN KEY (STATEKEY)
+    REFERENCES TSTATE (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TINITSTATE
+----------------------------------------------------------------------
+
+
+ALTER TABLE TEVENT
+    ADD CONSTRAINT TEVENT_FK_1 FOREIGN KEY (PROJECTTYPE)
+    REFERENCES TPROJECTTYPE (OBJECTID)
+;
+ALTER TABLE TEVENT
+    ADD CONSTRAINT TEVENT_FK_2 FOREIGN KEY (PROJECT)
+    REFERENCES TPROJECT (PKEY)
+;
+ALTER TABLE TEVENT
+    ADD CONSTRAINT TEVENT_FK_3 FOREIGN KEY (EVENTSCRIPT)
+    REFERENCES TCLOB (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TEVENT
+----------------------------------------------------------------------
+
+
+
+----------------------------------------------------------------------
+-- TCLOB
+----------------------------------------------------------------------
+
+
+ALTER TABLE TNOTIFYFIELD
+    ADD CONSTRAINT TNOTIFYFIELD_FK_1 FOREIGN KEY (NOTIFYTRIGGER)
+    REFERENCES TNOTIFYTRIGGER (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TNOTIFYFIELD
+----------------------------------------------------------------------
+
+
+ALTER TABLE TNOTIFYTRIGGER
+    ADD CONSTRAINT TNOTIFYTRIGGER_FK_1 FOREIGN KEY (PERSON)
+    REFERENCES TPERSON (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TNOTIFYTRIGGER
+----------------------------------------------------------------------
+
+
+ALTER TABLE TNOTIFYSETTINGS
+    ADD CONSTRAINT TNOTIFYSETTINGS_FK_1 FOREIGN KEY (PERSON)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TNOTIFYSETTINGS
+    ADD CONSTRAINT TNOTIFYSETTINGS_FK_2 FOREIGN KEY (PROJECT)
+    REFERENCES TPROJECT (PKEY)
+;
+ALTER TABLE TNOTIFYSETTINGS
+    ADD CONSTRAINT TNOTIFYSETTINGS_FK_3 FOREIGN KEY (NOTIFYTRIGGER)
+    REFERENCES TNOTIFYTRIGGER (OBJECTID)
+;
+ALTER TABLE TNOTIFYSETTINGS
+    ADD CONSTRAINT TNOTIFYSETTINGS_FK_4 FOREIGN KEY (NOTIFYFILTER)
+    REFERENCES TQUERYREPOSITORY (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TNOTIFYSETTINGS
+----------------------------------------------------------------------
+
+
+ALTER TABLE TQUERYREPOSITORY
+    ADD CONSTRAINT TQUERYREPOSITORY_FK_1 FOREIGN KEY (PERSON)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TQUERYREPOSITORY
+    ADD CONSTRAINT TQUERYREPOSITORY_FK_2 FOREIGN KEY (PROJECT)
+    REFERENCES TPROJECT (PKEY)
+;
+ALTER TABLE TQUERYREPOSITORY
+    ADD CONSTRAINT TQUERYREPOSITORY_FK_3 FOREIGN KEY (QUERYKEY)
+    REFERENCES TCLOB (OBJECTID)
+;
+ALTER TABLE TQUERYREPOSITORY
+    ADD CONSTRAINT TQUERYREPOSITORY_FK_4 FOREIGN KEY (CATEGORYKEY)
+    REFERENCES TFILTERCATEGORY (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TQUERYREPOSITORY
+----------------------------------------------------------------------
+
+
+
+----------------------------------------------------------------------
+-- TLOCALIZEDRESOURCES
+----------------------------------------------------------------------
+
+
+ALTER TABLE TLINKTYPE
+    ADD CONSTRAINT TLINKTYPE_FK_1 FOREIGN KEY (OUTWARDICONKEY)
+    REFERENCES TBLOB (OBJECTID)
+;
+ALTER TABLE TLINKTYPE
+    ADD CONSTRAINT TLINKTYPE_FK_2 FOREIGN KEY (INWARDICONKEY)
+    REFERENCES TBLOB (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TLINKTYPE
+----------------------------------------------------------------------
+
+
+ALTER TABLE TWORKITEMLINK
+    ADD CONSTRAINT TWORKITEMLINK_FK_1 FOREIGN KEY (LINKPRED)
+    REFERENCES TWORKITEM (WORKITEMKEY)
+;
+ALTER TABLE TWORKITEMLINK
+    ADD CONSTRAINT TWORKITEMLINK_FK_2 FOREIGN KEY (LINKSUCC)
+    REFERENCES TWORKITEM (WORKITEMKEY)
+;
+ALTER TABLE TWORKITEMLINK
+    ADD CONSTRAINT TWORKITEMLINK_FK_3 FOREIGN KEY (LINKTYPE)
+    REFERENCES TLINKTYPE (OBJECTID)
+;
+ALTER TABLE TWORKITEMLINK
+    ADD CONSTRAINT TWORKITEMLINK_FK_4 FOREIGN KEY (CHANGEDBY)
+    REFERENCES TPERSON (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TWORKITEMLINK
+----------------------------------------------------------------------
+
+
+
+----------------------------------------------------------------------
+-- TLOGGINGLEVEL
+----------------------------------------------------------------------
+
+
+ALTER TABLE TWORKITEMLOCK
+    ADD CONSTRAINT TWORKITEMLOCK_FK_1 FOREIGN KEY (WORKITEM)
+    REFERENCES TWORKITEM (WORKITEMKEY)
+;
+ALTER TABLE TWORKITEMLOCK
+    ADD CONSTRAINT TWORKITEMLOCK_FK_2 FOREIGN KEY (PERSON)
+    REFERENCES TPERSON (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TWORKITEMLOCK
+----------------------------------------------------------------------
+
+
+ALTER TABLE TEXPORTTEMPLATE
+    ADD CONSTRAINT TEXPORTTEMPLATE_FK_1 FOREIGN KEY (PERSON)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TEXPORTTEMPLATE
+    ADD CONSTRAINT TEXPORTTEMPLATE_FK_2 FOREIGN KEY (PROJECT)
+    REFERENCES TPROJECT (PKEY)
+;
+ALTER TABLE TEXPORTTEMPLATE
+    ADD CONSTRAINT TEXPORTTEMPLATE_FK_3 FOREIGN KEY (CATEGORYKEY)
+    REFERENCES TREPORTCATEGORY (OBJECTID)
+;
+ALTER TABLE TEXPORTTEMPLATE
+    ADD CONSTRAINT TEXPORTTEMPLATE_FK_4 FOREIGN KEY (PARENT)
+    REFERENCES TEXPORTTEMPLATE (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TEXPORTTEMPLATE
+----------------------------------------------------------------------
+
+
+
+----------------------------------------------------------------------
+-- TEMAILPROCESSED
+----------------------------------------------------------------------
+
+
+
+----------------------------------------------------------------------
+-- TAPPLICATIONCONTEXT
+----------------------------------------------------------------------
+
+
+ALTER TABLE TLOGGEDINUSERS
+    ADD CONSTRAINT TLOGGEDINUSERS_FK_1 FOREIGN KEY (LOGGEDUSER)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TLOGGEDINUSERS
+    ADD CONSTRAINT TLOGGEDINUSERS_FK_2 FOREIGN KEY (NODEADDRESS)
+    REFERENCES CLUSTERNODE (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TLOGGEDINUSERS
+----------------------------------------------------------------------
+
+
+
+----------------------------------------------------------------------
+-- CLUSTERNODE
+----------------------------------------------------------------------
+
+
+ALTER TABLE TENTITYCHANGES
+    ADD CONSTRAINT TENTITYCHANGES_FK_1 FOREIGN KEY (CLUSTERNODE)
+    REFERENCES CLUSTERNODE (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TENTITYCHANGES
+----------------------------------------------------------------------
+
+
+ALTER TABLE TSUMMARYMAIL
+    ADD CONSTRAINT TSUMMARYMAIL_FK_1 FOREIGN KEY (WORKITEM)
+    REFERENCES TWORKITEM (WORKITEMKEY)
+;
+ALTER TABLE TSUMMARYMAIL
+    ADD CONSTRAINT TSUMMARYMAIL_FK_2 FOREIGN KEY (PERSONFROM)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TSUMMARYMAIL
+    ADD CONSTRAINT TSUMMARYMAIL_FK_3 FOREIGN KEY (PERSONTO)
+    REFERENCES TPERSON (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TSUMMARYMAIL
+----------------------------------------------------------------------
+
+
+ALTER TABLE TOUTLINECODE
+    ADD CONSTRAINT TOUTLINECODE_FK_1 FOREIGN KEY (OUTLINETEMPLATE)
+    REFERENCES TOUTLINETEMPLATE (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TOUTLINECODE
+----------------------------------------------------------------------
+
+
+ALTER TABLE TOUTLINETEMPLATEDEF
+    ADD CONSTRAINT TOUTLINETEMPLATEDEF_FK_1 FOREIGN KEY (OUTLINETEMPLATE)
+    REFERENCES TOUTLINETEMPLATE (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TOUTLINETEMPLATEDEF
+----------------------------------------------------------------------
+
+
+
+----------------------------------------------------------------------
+-- TOUTLINETEMPLATE
+----------------------------------------------------------------------
+
+
+ALTER TABLE THISTORYTRANSACTION
+    ADD CONSTRAINT THISTORYTRANSACTION_FK_1 FOREIGN KEY (WORKITEM)
+    REFERENCES TWORKITEM (WORKITEMKEY)
+;
+ALTER TABLE THISTORYTRANSACTION
+    ADD CONSTRAINT THISTORYTRANSACTION_FK_2 FOREIGN KEY (CHANGEDBY)
+    REFERENCES TPERSON (PKEY)
+;
+
+----------------------------------------------------------------------
+-- THISTORYTRANSACTION
+----------------------------------------------------------------------
+
+
+ALTER TABLE TFIELDCHANGE
+    ADD CONSTRAINT TFIELDCHANGE_FK_1 FOREIGN KEY (HISTORYTRANSACTION)
+    REFERENCES THISTORYTRANSACTION (OBJECTID)
+;
+ALTER TABLE TFIELDCHANGE
+    ADD CONSTRAINT TFIELDCHANGE_FK_2 FOREIGN KEY (PARENTCOMMENT)
+    REFERENCES TFIELDCHANGE (OBJECTID)
+;
+ALTER TABLE TFIELDCHANGE
+    ADD CONSTRAINT TFIELDCHANGE_FK_3 FOREIGN KEY (NEWCUSTOMOPTIONID)
+    REFERENCES TOPTION (OBJECTID)
+;
+ALTER TABLE TFIELDCHANGE
+    ADD CONSTRAINT TFIELDCHANGE_FK_4 FOREIGN KEY (OLDCUSTOMOPTIONID)
+    REFERENCES TOPTION (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TFIELDCHANGE
+----------------------------------------------------------------------
+
+
+ALTER TABLE TSCRIPTS
+    ADD CONSTRAINT TSCRIPTS_FK_1 FOREIGN KEY (CHANGEDBY)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TSCRIPTS
+    ADD CONSTRAINT TSCRIPTS_FK_2 FOREIGN KEY (PROJECTTYPE)
+    REFERENCES TPROJECTTYPE (OBJECTID)
+;
+ALTER TABLE TSCRIPTS
+    ADD CONSTRAINT TSCRIPTS_FK_3 FOREIGN KEY (PROJECT)
+    REFERENCES TPROJECT (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TSCRIPTS
+----------------------------------------------------------------------
+
+
+ALTER TABLE TREVISION
+    ADD CONSTRAINT TREVISION_FK_1 FOREIGN KEY (REPOSITORYKEY)
+    REFERENCES TREPOSITORY (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TREVISION
+----------------------------------------------------------------------
+
+
+ALTER TABLE TREVISIONWORKITEMS
+    ADD CONSTRAINT TREVISIONWORKITEMS_FK_1 FOREIGN KEY (REVISIONKEY)
+    REFERENCES TREVISION (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TREVISIONWORKITEMS
+----------------------------------------------------------------------
+
+
+
+----------------------------------------------------------------------
+-- TREPOSITORY
+----------------------------------------------------------------------
+
+
+ALTER TABLE TTEMPLATEPERSON
+    ADD CONSTRAINT TTEMPLATEPERSON_FK_1 FOREIGN KEY (PERSON)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TTEMPLATEPERSON
+    ADD CONSTRAINT TTEMPLATEPERSON_FK_2 FOREIGN KEY (REPORTTEMPLATE)
+    REFERENCES TEXPORTTEMPLATE (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TTEMPLATEPERSON
+----------------------------------------------------------------------
+
+
+
+----------------------------------------------------------------------
+-- TBLOB
+----------------------------------------------------------------------
+
+
+
+----------------------------------------------------------------------
+-- TRECURRENCEPATTERN
+----------------------------------------------------------------------
+
+
+ALTER TABLE TREPORTPERSONSETTINGS
+    ADD CONSTRAINT TREPORTPERSONSETTINGS_FK_1 FOREIGN KEY (PERSON)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TREPORTPERSONSETTINGS
+    ADD CONSTRAINT TREPORTPERSONSETTINGS_FK_2 FOREIGN KEY (REPORTTEMPLATE)
+    REFERENCES TEXPORTTEMPLATE (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TREPORTPERSONSETTINGS
+----------------------------------------------------------------------
+
+
+ALTER TABLE TREPORTPARAMETER
+    ADD CONSTRAINT TREPORTPARAMETER_FK_1 FOREIGN KEY (REPORTPERSONSETTINGS)
+    REFERENCES TREPORTPERSONSETTINGS (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TREPORTPARAMETER
+----------------------------------------------------------------------
+
+
+ALTER TABLE TMSPROJECTTASK
+    ADD CONSTRAINT TMSPROJECTTASK_FK_1 FOREIGN KEY (WORKITEM)
+    REFERENCES TWORKITEM (WORKITEMKEY)
+;
+
+----------------------------------------------------------------------
+-- TMSPROJECTTASK
+----------------------------------------------------------------------
+
+
+ALTER TABLE TMSPROJECTEXCHANGE
+    ADD CONSTRAINT TMSPROJECTEXCHANGE_FK_1 FOREIGN KEY (CHANGEDBY)
+    REFERENCES TPERSON (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TMSPROJECTEXCHANGE
+----------------------------------------------------------------------
+
+
+ALTER TABLE TFILTERCATEGORY
+    ADD CONSTRAINT TFILTERCATEGORY_FK_1 FOREIGN KEY (PROJECT)
+    REFERENCES TPROJECT (PKEY)
+;
+ALTER TABLE TFILTERCATEGORY
+    ADD CONSTRAINT TFILTERCATEGORY_FK_2 FOREIGN KEY (CREATEDBY)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TFILTERCATEGORY
+    ADD CONSTRAINT TFILTERCATEGORY_FK_3 FOREIGN KEY (PARENTID)
+    REFERENCES TFILTERCATEGORY (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TFILTERCATEGORY
+----------------------------------------------------------------------
+
+
+ALTER TABLE TREPORTCATEGORY
+    ADD CONSTRAINT TREPORTCATEGORY_FK_1 FOREIGN KEY (PROJECT)
+    REFERENCES TPROJECT (PKEY)
+;
+ALTER TABLE TREPORTCATEGORY
+    ADD CONSTRAINT TREPORTCATEGORY_FK_2 FOREIGN KEY (CREATEDBY)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TREPORTCATEGORY
+    ADD CONSTRAINT TREPORTCATEGORY_FK_3 FOREIGN KEY (PARENTID)
+    REFERENCES TREPORTCATEGORY (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TREPORTCATEGORY
+----------------------------------------------------------------------
+
+
+ALTER TABLE TMENUITEMQUERY
+    ADD CONSTRAINT TMENUITEMQUERY_FK_1 FOREIGN KEY (PERSON)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TMENUITEMQUERY
+    ADD CONSTRAINT TMENUITEMQUERY_FK_2 FOREIGN KEY (QUERYKEY)
+    REFERENCES TQUERYREPOSITORY (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TMENUITEMQUERY
+----------------------------------------------------------------------
+
+
+ALTER TABLE TCHILDISSUETYPE
+    ADD CONSTRAINT TCHILDISSUETYPE_FK_1 FOREIGN KEY (ISSUETYPEPARENT)
+    REFERENCES TCATEGORY (PKEY)
+;
+ALTER TABLE TCHILDISSUETYPE
+    ADD CONSTRAINT TCHILDISSUETYPE_FK_2 FOREIGN KEY (ISSUETYPECHILD)
+    REFERENCES TCATEGORY (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TCHILDISSUETYPE
+----------------------------------------------------------------------
+
+
+ALTER TABLE TPERSONBASKET
+    ADD CONSTRAINT TPERSONBASKET_FK_1 FOREIGN KEY (BASKET)
+    REFERENCES TBASKET (OBJECTID)
+;
+ALTER TABLE TPERSONBASKET
+    ADD CONSTRAINT TPERSONBASKET_FK_2 FOREIGN KEY (WORKITEM)
+    REFERENCES TWORKITEM (WORKITEMKEY)
+;
+ALTER TABLE TPERSONBASKET
+    ADD CONSTRAINT TPERSONBASKET_FK_3 FOREIGN KEY (PERSON)
+    REFERENCES TPERSON (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TPERSONBASKET
+----------------------------------------------------------------------
+
+
+ALTER TABLE TBASKET
+    ADD CONSTRAINT TBASKET_FK_1 FOREIGN KEY (PERSON)
+    REFERENCES TPERSON (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TBASKET
+----------------------------------------------------------------------
+
+
+ALTER TABLE TMAILTEMPLATECONFIG
+    ADD CONSTRAINT TMAILTEMPLATECONFIG_FK_1 FOREIGN KEY (MAILTEMPLATE)
+    REFERENCES TMAILTEMPLATE (OBJECTID)
+;
+ALTER TABLE TMAILTEMPLATECONFIG
+    ADD CONSTRAINT TMAILTEMPLATECONFIG_FK_2 FOREIGN KEY (ISSUETYPE)
+    REFERENCES TCATEGORY (PKEY)
+;
+ALTER TABLE TMAILTEMPLATECONFIG
+    ADD CONSTRAINT TMAILTEMPLATECONFIG_FK_3 FOREIGN KEY (PROJECTTYPE)
+    REFERENCES TPROJECTTYPE (OBJECTID)
+;
+ALTER TABLE TMAILTEMPLATECONFIG
+    ADD CONSTRAINT TMAILTEMPLATECONFIG_FK_4 FOREIGN KEY (PROJECT)
+    REFERENCES TPROJECT (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TMAILTEMPLATECONFIG
+----------------------------------------------------------------------
+
+
+
+----------------------------------------------------------------------
+-- TMAILTEMPLATE
+----------------------------------------------------------------------
+
+
+ALTER TABLE TMAILTEMPLATEDEF
+    ADD CONSTRAINT TMAILTEMPLATEDEF_FK_1 FOREIGN KEY (MAILTEMPLATE)
+    REFERENCES TMAILTEMPLATE (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TMAILTEMPLATEDEF
+----------------------------------------------------------------------
+
+
+ALTER TABLE TLASTVISITEDITEM
+    ADD CONSTRAINT TLASTVISITEDITEM_FK_1 FOREIGN KEY (WORKITEM)
+    REFERENCES TWORKITEM (WORKITEMKEY)
+;
+ALTER TABLE TLASTVISITEDITEM
+    ADD CONSTRAINT TLASTVISITEDITEM_FK_2 FOREIGN KEY (PERSON)
+    REFERENCES TPERSON (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TLASTVISITEDITEM
+----------------------------------------------------------------------
+
+
+ALTER TABLE TWORKFLOWDEF
+    ADD CONSTRAINT TWORKFLOWDEF_FK_1 FOREIGN KEY (OWNER)
+    REFERENCES TPERSON (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TWORKFLOWDEF
+----------------------------------------------------------------------
+
+
+ALTER TABLE TWORKFLOWTRANSITION
+    ADD CONSTRAINT TWORKFLOWTRANSITION_FK_1 FOREIGN KEY (STATIONFROM)
+    REFERENCES TWORKFLOWSTATION (OBJECTID)
+;
+ALTER TABLE TWORKFLOWTRANSITION
+    ADD CONSTRAINT TWORKFLOWTRANSITION_FK_2 FOREIGN KEY (STATIONTO)
+    REFERENCES TWORKFLOWSTATION (OBJECTID)
+;
+ALTER TABLE TWORKFLOWTRANSITION
+    ADD CONSTRAINT TWORKFLOWTRANSITION_FK_3 FOREIGN KEY (ACTIONKEY)
+    REFERENCES TACTION (OBJECTID)
+;
+ALTER TABLE TWORKFLOWTRANSITION
+    ADD CONSTRAINT TWORKFLOWTRANSITION_FK_4 FOREIGN KEY (WORKFLOW)
+    REFERENCES TWORKFLOWDEF (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TWORKFLOWTRANSITION
+----------------------------------------------------------------------
+
+
+ALTER TABLE TWORKFLOWSTATION
+    ADD CONSTRAINT TWORKFLOWSTATION_FK_1 FOREIGN KEY (STATUS)
+    REFERENCES TSTATE (PKEY)
+;
+ALTER TABLE TWORKFLOWSTATION
+    ADD CONSTRAINT TWORKFLOWSTATION_FK_2 FOREIGN KEY (WORKFLOW)
+    REFERENCES TWORKFLOWDEF (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TWORKFLOWSTATION
+----------------------------------------------------------------------
+
+
+ALTER TABLE TWORKFLOWACTIVITY
+    ADD CONSTRAINT TWORKFLOWACTIVITY_FK_1 FOREIGN KEY (TRANSITIONACTIVITY)
+    REFERENCES TWORKFLOWTRANSITION (OBJECTID)
+;
+ALTER TABLE TWORKFLOWACTIVITY
+    ADD CONSTRAINT TWORKFLOWACTIVITY_FK_2 FOREIGN KEY (STATIONENTRYACTIVITY)
+    REFERENCES TWORKFLOWSTATION (OBJECTID)
+;
+ALTER TABLE TWORKFLOWACTIVITY
+    ADD CONSTRAINT TWORKFLOWACTIVITY_FK_3 FOREIGN KEY (STATIONEXITACTIVITY)
+    REFERENCES TWORKFLOWSTATION (OBJECTID)
+;
+ALTER TABLE TWORKFLOWACTIVITY
+    ADD CONSTRAINT TWORKFLOWACTIVITY_FK_4 FOREIGN KEY (STATIONDOACTIVITY)
+    REFERENCES TWORKFLOWSTATION (OBJECTID)
+;
+ALTER TABLE TWORKFLOWACTIVITY
+    ADD CONSTRAINT TWORKFLOWACTIVITY_FK_5 FOREIGN KEY (GROOVYSCRIPT)
+    REFERENCES TSCRIPTS (OBJECTID)
+;
+ALTER TABLE TWORKFLOWACTIVITY
+    ADD CONSTRAINT TWORKFLOWACTIVITY_FK_6 FOREIGN KEY (NEWMAN)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TWORKFLOWACTIVITY
+    ADD CONSTRAINT TWORKFLOWACTIVITY_FK_7 FOREIGN KEY (NEWRESP)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TWORKFLOWACTIVITY
+    ADD CONSTRAINT TWORKFLOWACTIVITY_FK_8 FOREIGN KEY (SLA)
+    REFERENCES TSLA (OBJECTID)
+;
+ALTER TABLE TWORKFLOWACTIVITY
+    ADD CONSTRAINT TWORKFLOWACTIVITY_FK_9 FOREIGN KEY (SCREEN)
+    REFERENCES TSCREEN (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TWORKFLOWACTIVITY
+----------------------------------------------------------------------
+
+
+ALTER TABLE TWFACTIVITYCONTEXTPARAMS
+    ADD CONSTRAINT TWFACTIVITYCONTEXTPARAMS_FK_1 FOREIGN KEY (WORKFLOWACTIVITY)
+    REFERENCES TWORKFLOWACTIVITY (OBJECTID)
+;
+ALTER TABLE TWFACTIVITYCONTEXTPARAMS
+    ADD CONSTRAINT TWFACTIVITYCONTEXTPARAMS_FK_2 FOREIGN KEY (ISSUETYPE)
+    REFERENCES TCATEGORY (PKEY)
+;
+ALTER TABLE TWFACTIVITYCONTEXTPARAMS
+    ADD CONSTRAINT TWFACTIVITYCONTEXTPARAMS_FK_3 FOREIGN KEY (PROJECTTYPE)
+    REFERENCES TPROJECTTYPE (OBJECTID)
+;
+ALTER TABLE TWFACTIVITYCONTEXTPARAMS
+    ADD CONSTRAINT TWFACTIVITYCONTEXTPARAMS_FK_4 FOREIGN KEY (PROJECT)
+    REFERENCES TPROJECT (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TWFACTIVITYCONTEXTPARAMS
+----------------------------------------------------------------------
+
+
+ALTER TABLE TWORKFLOWGUARD
+    ADD CONSTRAINT TWORKFLOWGUARD_FK_1 FOREIGN KEY (WORKFLOWTRANSITION)
+    REFERENCES TWORKFLOWTRANSITION (OBJECTID)
+;
+ALTER TABLE TWORKFLOWGUARD
+    ADD CONSTRAINT TWORKFLOWGUARD_FK_2 FOREIGN KEY (ROLEKEY)
+    REFERENCES TROLE (PKEY)
+;
+ALTER TABLE TWORKFLOWGUARD
+    ADD CONSTRAINT TWORKFLOWGUARD_FK_3 FOREIGN KEY (GROOVYSCRIPT)
+    REFERENCES TSCRIPTS (OBJECTID)
+;
+ALTER TABLE TWORKFLOWGUARD
+    ADD CONSTRAINT TWORKFLOWGUARD_FK_4 FOREIGN KEY (PERSON)
+    REFERENCES TPERSON (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TWORKFLOWGUARD
+----------------------------------------------------------------------
+
+
+ALTER TABLE TWORKFLOWCONNECT
+    ADD CONSTRAINT TWORKFLOWCONNECT_FK_1 FOREIGN KEY (WORKFLOW)
+    REFERENCES TWORKFLOWDEF (OBJECTID)
+;
+ALTER TABLE TWORKFLOWCONNECT
+    ADD CONSTRAINT TWORKFLOWCONNECT_FK_2 FOREIGN KEY (ISSUETYPE)
+    REFERENCES TCATEGORY (PKEY)
+;
+ALTER TABLE TWORKFLOWCONNECT
+    ADD CONSTRAINT TWORKFLOWCONNECT_FK_3 FOREIGN KEY (PROJECTTYPE)
+    REFERENCES TPROJECTTYPE (OBJECTID)
+;
+ALTER TABLE TWORKFLOWCONNECT
+    ADD CONSTRAINT TWORKFLOWCONNECT_FK_4 FOREIGN KEY (PROJECT)
+    REFERENCES TPROJECT (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TWORKFLOWCONNECT
+----------------------------------------------------------------------
+
+
+ALTER TABLE TWORKFLOWCOMMENT
+    ADD CONSTRAINT TWORKFLOWCOMMENT_FK_1 FOREIGN KEY (WORKFLOW)
+    REFERENCES TWORKFLOWDEF (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TWORKFLOWCOMMENT
+----------------------------------------------------------------------
+
+
+
+----------------------------------------------------------------------
+-- TSLA
+----------------------------------------------------------------------
+
+
+ALTER TABLE TESCALATIONENTRY
+    ADD CONSTRAINT TESCALATIONENTRY_FK_1 FOREIGN KEY (SLA)
+    REFERENCES TSLA (OBJECTID)
+;
+ALTER TABLE TESCALATIONENTRY
+    ADD CONSTRAINT TESCALATIONENTRY_FK_2 FOREIGN KEY (PRIORITY)
+    REFERENCES TPRIORITY (PKEY)
+;
+ALTER TABLE TESCALATIONENTRY
+    ADD CONSTRAINT TESCALATIONENTRY_FK_3 FOREIGN KEY (ESCALATETO)
+    REFERENCES TPERSON (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TESCALATIONENTRY
+----------------------------------------------------------------------
+
+
+ALTER TABLE TESCALATIONSTATE
+    ADD CONSTRAINT TESCALATIONSTATE_FK_1 FOREIGN KEY (ESCALATIONENTRY)
+    REFERENCES TESCALATIONENTRY (OBJECTID)
+;
+ALTER TABLE TESCALATIONSTATE
+    ADD CONSTRAINT TESCALATIONSTATE_FK_2 FOREIGN KEY (STATUS)
+    REFERENCES TSTATE (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TESCALATIONSTATE
+----------------------------------------------------------------------
+
+
+ALTER TABLE TORGPROJECTSLA
+    ADD CONSTRAINT TORGPROJECTSLA_FK_1 FOREIGN KEY (DEPARTMENT)
+    REFERENCES TDEPARTMENT (PKEY)
+;
+ALTER TABLE TORGPROJECTSLA
+    ADD CONSTRAINT TORGPROJECTSLA_FK_2 FOREIGN KEY (PROJECT)
+    REFERENCES TPROJECT (PKEY)
+;
+ALTER TABLE TORGPROJECTSLA
+    ADD CONSTRAINT TORGPROJECTSLA_FK_3 FOREIGN KEY (SLA)
+    REFERENCES TSLA (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TORGPROJECTSLA
+----------------------------------------------------------------------
+
+
+ALTER TABLE TREADISSUE
+    ADD CONSTRAINT TREADISSUE_FK_1 FOREIGN KEY (WORKITEM)
+    REFERENCES TWORKITEM (WORKITEMKEY)
+;
+ALTER TABLE TREADISSUE
+    ADD CONSTRAINT TREADISSUE_FK_2 FOREIGN KEY (PERSON)
+    REFERENCES TPERSON (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TREADISSUE
+----------------------------------------------------------------------
+
+
+ALTER TABLE TLASTEXECUTEDQUERY
+    ADD CONSTRAINT TLASTEXECUTEDQUERY_FK_1 FOREIGN KEY (PERSON)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TLASTEXECUTEDQUERY
+    ADD CONSTRAINT TLASTEXECUTEDQUERY_FK_2 FOREIGN KEY (QUERYCLOB)
+    REFERENCES TCLOB (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TLASTEXECUTEDQUERY
+----------------------------------------------------------------------
+
+
+
+----------------------------------------------------------------------
+-- TGLOBALCSSSTYLE
+----------------------------------------------------------------------
+
+
+ALTER TABLE TREPORTSUBSCRIBE
+    ADD CONSTRAINT TREPORTSUBSCRIBE_FK_1 FOREIGN KEY (PERSON)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TREPORTSUBSCRIBE
+    ADD CONSTRAINT TREPORTSUBSCRIBE_FK_2 FOREIGN KEY (RECURRENCEPATTERN)
+    REFERENCES TRECURRENCEPATTERN (OBJECTID)
+;
+ALTER TABLE TREPORTSUBSCRIBE
+    ADD CONSTRAINT TREPORTSUBSCRIBE_FK_3 FOREIGN KEY (REPORTTEMPLATE)
+    REFERENCES TEXPORTTEMPLATE (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TREPORTSUBSCRIBE
+----------------------------------------------------------------------
+
+
+ALTER TABLE TGRIDLAYOUT
+    ADD CONSTRAINT TGRIDLAYOUT_FK_1 FOREIGN KEY (PERSON)
+    REFERENCES TPERSON (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TGRIDLAYOUT
+----------------------------------------------------------------------
+
+
+ALTER TABLE TGRIDFIELD
+    ADD CONSTRAINT TGRIDFIELD_FK_1 FOREIGN KEY (GRIDLAYOUT)
+    REFERENCES TGRIDLAYOUT (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TGRIDFIELD
+----------------------------------------------------------------------
+
+
+ALTER TABLE TGRIDGROUPINGSORTING
+    ADD CONSTRAINT TGRIDGROUPINGSORTING_FK_1 FOREIGN KEY (GRIDLAYOUT)
+    REFERENCES TGRIDLAYOUT (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TGRIDGROUPINGSORTING
+----------------------------------------------------------------------
+
+
+ALTER TABLE TNAVIGATORLAYOUT
+    ADD CONSTRAINT TNAVIGATORLAYOUT_FK_1 FOREIGN KEY (PERSON)
+    REFERENCES TPERSON (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TNAVIGATORLAYOUT
+----------------------------------------------------------------------
+
+
+ALTER TABLE TNAVIGATORCOLUMN
+    ADD CONSTRAINT TNAVIGATORCOLUMN_FK_1 FOREIGN KEY (NAVIGATORLAYOUT)
+    REFERENCES TNAVIGATORLAYOUT (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TNAVIGATORCOLUMN
+----------------------------------------------------------------------
+
+
+ALTER TABLE TNAVIGATORGROUPINGSORTING
+    ADD CONSTRAINT TNAVIGATORGROUPINGSORTING_FK_1 FOREIGN KEY (NAVIGATORLAYOUT)
+    REFERENCES TNAVIGATORLAYOUT (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TNAVIGATORGROUPINGSORTING
+----------------------------------------------------------------------
+
+
+ALTER TABLE TCARDGROUPINGFIELD
+    ADD CONSTRAINT TCARDGROUPINGFIELD_FK_1 FOREIGN KEY (NAVIGATORLAYOUT)
+    REFERENCES TNAVIGATORLAYOUT (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TCARDGROUPINGFIELD
+----------------------------------------------------------------------
+
+
+ALTER TABLE TCARDFIELDOPTION
+    ADD CONSTRAINT TCARDFIELDOPTION_FK_1 FOREIGN KEY (GROUPINGFIELD)
+    REFERENCES TCARDGROUPINGFIELD (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TCARDFIELDOPTION
+----------------------------------------------------------------------
+
+
+
+----------------------------------------------------------------------
+-- TCARDPANEL
+----------------------------------------------------------------------
+
+
+ALTER TABLE TCARDFIELD
+    ADD CONSTRAINT TCARDFIELD_FK_1 FOREIGN KEY (CARDPANEL)
+    REFERENCES TCARDPANEL (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TCARDFIELD
+----------------------------------------------------------------------
+
+
+ALTER TABLE TVIEWPARAM
+    ADD CONSTRAINT TVIEWPARAM_FK_1 FOREIGN KEY (NAVIGATORLAYOUT)
+    REFERENCES TNAVIGATORLAYOUT (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TVIEWPARAM
+----------------------------------------------------------------------
+
+
+
+----------------------------------------------------------------------
+-- TGENERALPARAM
+----------------------------------------------------------------------
+
+
+ALTER TABLE TVERSIONCONTROL
+    ADD CONSTRAINT TVERSIONCONTROL_FK_1 FOREIGN KEY (PARENT)
+    REFERENCES TVERSIONCONTROL (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TVERSIONCONTROL
+----------------------------------------------------------------------
+
+
+
+----------------------------------------------------------------------
+-- TSHORTCUT
+----------------------------------------------------------------------
+
+
+ALTER TABLE TMAILTEXTBLOCK
+    ADD CONSTRAINT TMAILTEXTBLOCK_FK_1 FOREIGN KEY (PERSON)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TMAILTEXTBLOCK
+    ADD CONSTRAINT TMAILTEXTBLOCK_FK_2 FOREIGN KEY (PROJECT)
+    REFERENCES TPROJECT (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TMAILTEXTBLOCK
+----------------------------------------------------------------------
+
+
+ALTER TABLE TPROLE
+    ADD CONSTRAINT TPROLE_FK_1 FOREIGN KEY (PROJECTTYPE)
+    REFERENCES TPROJECTTYPE (OBJECTID)
+;
+ALTER TABLE TPROLE
+    ADD CONSTRAINT TPROLE_FK_2 FOREIGN KEY (ROLEKEY)
+    REFERENCES TROLE (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TPROLE
+----------------------------------------------------------------------
+
+
+ALTER TABLE TCHILDPROJECTTYPE
+    ADD CONSTRAINT TCHILDPROJECTTYPE_FK_1 FOREIGN KEY (PROJECTTYPEPARENT)
+    REFERENCES TPROJECTTYPE (OBJECTID)
+;
+ALTER TABLE TCHILDPROJECTTYPE
+    ADD CONSTRAINT TCHILDPROJECTTYPE_FK_2 FOREIGN KEY (PROJECTTYPECHILD)
+    REFERENCES TPROJECTTYPE (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TCHILDPROJECTTYPE
+----------------------------------------------------------------------
+
+
+
+----------------------------------------------------------------------
+-- TDOMAIN
+----------------------------------------------------------------------
+
+
+ALTER TABLE TPERSONINDOMAIN
+    ADD CONSTRAINT TPERSONINDOMAIN_FK_1 FOREIGN KEY (PERSONKEY)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TPERSONINDOMAIN
+    ADD CONSTRAINT TPERSONINDOMAIN_FK_2 FOREIGN KEY (DOMAINKEY)
+    REFERENCES TDOMAIN (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TPERSONINDOMAIN
+----------------------------------------------------------------------
+
+
+ALTER TABLE TATTACHMENTVERSION
+    ADD CONSTRAINT TATTACHMENTVERSION_FK_1 FOREIGN KEY (WORKITEM)
+    REFERENCES TWORKITEM (WORKITEMKEY)
+;
+ALTER TABLE TATTACHMENTVERSION
+    ADD CONSTRAINT TATTACHMENTVERSION_FK_2 FOREIGN KEY (CHANGEDBY)
+    REFERENCES TPERSON (PKEY)
+;
+ALTER TABLE TATTACHMENTVERSION
+    ADD CONSTRAINT TATTACHMENTVERSION_FK_3 FOREIGN KEY (DOCUMENTSTATE)
+    REFERENCES TDOCSTATE (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TATTACHMENTVERSION
+----------------------------------------------------------------------
+
+
+
+----------------------------------------------------------------------
+-- TUSERLEVEL
+----------------------------------------------------------------------
+
+
+ALTER TABLE TUSERLEVELSETTING
+    ADD CONSTRAINT TUSERLEVELSETTING_FK_1 FOREIGN KEY (USERLEVEL)
+    REFERENCES TUSERLEVEL (OBJECTID)
+;
+
+----------------------------------------------------------------------
+-- TUSERLEVELSETTING
+----------------------------------------------------------------------
+
+
+ALTER TABLE TUSERFEATURE
+    ADD CONSTRAINT TUSERFEATURE_FK_1 FOREIGN KEY (PERSON)
+    REFERENCES TPERSON (PKEY)
+;
+
+----------------------------------------------------------------------
+-- TUSERFEATURE
+----------------------------------------------------------------------
+
+
+ALTER TABLE TITEMTRANSITION
+    ADD CONSTRAINT TITEMTRANSITION_FK_1 FOREIGN KEY (WORKITEM)
+    REFERENCES TWORKITEM (WORKITEMKEY)
+;
+ALTER TABLE TITEMTRANSITION
+    ADD CONSTRAINT TITEMTRANSITION_FK_2 FOREIGN KEY (TRANSITION)
+    REFERENCES TWORKFLOWTRANSITION (OBJECTID)
+;

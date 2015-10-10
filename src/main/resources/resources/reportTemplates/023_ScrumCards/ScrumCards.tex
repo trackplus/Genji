@@ -1,0 +1,141 @@
+% Template for Scrum cards
+% Copyright 2015 Steinbeis GmbH & Co. KG - Task Management Solutions
+%
+% $id:$
+%‚
+\documentclass[10pt,a5paper]{article}
+\pagestyle{plain}
+
+\usepackage{fontspec} % Font selection for XeLaTeX; see fontspec.pdf for documentation
+\defaultfontfeatures{Mapping=tex-text} % to support TeX conventions like ``---''
+\usepackage{xunicode} % Unicode support for LaTeX character names (accents, European chars, etc)
+\usepackage{xltxtra} % Extra customizations for XeLaTeX
+\setmainfont{Helvetica} % set the main body font (\textrm), assumes Charis SIL is installed
+\setsansfont{Helvetica}
+
+\usepackage{eurosym}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{pstricks}
+\usepackage{tabularx}
+\usepackage{verbatim}
+\usepackage{wrapfig}
+\usepackage{alltt}
+\usepackage{longtable}
+\usepackage{fancyhdr}
+\usepackage[absolute]{textpos}
+\usepackage[colorlinks=true,
+            linkcolor=blue,
+            urlcolor=blue,
+            citecolor=blue,
+            anchorcolor=blue,
+            bookmarks=true]{hyperref}
+\usepackage{float}
+\usepackage[breakwords]{truncate}
+
+% %%TP <#if (locale)?has_content && locale=="de">
+% %%TP \usepackage[ngerman]{babel}
+% %%TP  <#else>
+% %%TP  \usepackage[british]{babel}
+% %%TP </#if>
+\usepackage[nodayofweek]{datetime}
+\usepackage{fullpage}
+\usepackage{xcolor,colortbl}
+\usepackage{eso-pic, rotating}
+
+\usepackage[margin=1.5cm,landscape]{geometry}
+\usepackage{enumitem}
+
+\usepackage{pgfpages}                                 
+\pgfpagesuselayout{2 on 1}[a4paper,border shrink=5mm] 
+
+
+\usepackage{blindtext}
+
+\newcommand\StrIssueNoHeader{PlaceHolder}
+
+\setlength{\textwidth}{180mm}
+\setlength{\textheight}{115mm}
+\setlength{\parindent}{0mm}
+\setlength{\parskip}{8pt plus 1pt minus 2pt}
+
+\definecolor{tpred}{RGB}{214,20,22}
+\definecolor{Gray}{gray}{0.85}
+\pagestyle{fancy}
+\fancyhead{} % clear all fields
+\rhead{\includegraphics[width=20mm]{trackLogo.jpg}}
+\lhead{\hspace{0mm}\Huge\color{tpred}\truncate{140mm}{\StrIssueNoHeader}}
+\setlength\headheight{40pt}
+\fancyfoot[C]{Daily Scrum \today  \hspace{8mm}  [\thepage]}
+\fancyfoot[R]{}
+\setlength{\voffset}{-15.0mm}
+\setlength{\headsep}{5mm}
+\renewcommand{\headrulewidth}{0pt}
+
+\renewcommand{\familydefault}{\sfdefault}
+\let\margin\marginpar
+\newcommand\myMargin[1]{\margin{\raggedright\scriptsize #1}}
+\renewcommand{\marginpar}[1]{\myMargin{#1}}
+\newcommand{\action}[3]{\marginpar{#1 [#2]}}
+\newcommand\Vl{\vrule width 0.75pt}
+\newcommand\htpline{\noalign{\hrule height 0.75pt}}
+
+\newcommand\StrItem{Item}
+\newcommand\StrItemType{Item type}
+\newcommand\StrStoryPoints{Story points}
+\newcommand\StrOwner{Owner}
+\newcommand\StrPriority{Priority}
+\newcommand\StrStatus{Status}
+\newcommand\StrPage{Page}
+\newcommand\StrBusinessValue{Business Value}
+\newcommand\StrCustomer{Customer}
+\newcommand\StrNoData{Your selection did not contain any items.}
+
+
+\AddToShipoutPictureBG{\put(25,-5){\includegraphics[height=120mm, width=195mm]{yellow.png}}}
+\AddToShipoutPicture{\put(10,20){\rotatebox{90}{\scalebox{0.8}{Copyright © \the\year \ \${licenseHolder}, All rights reserved}}}}
+\AddToShipoutPicture{\put(0,-60){\mbox{\color{gray}\rule[1mm]{210mm}{0.5pt}}}}
+
+\begin{document}
+% %%TP <#if (locale)?has_content && locale=="de">
+% %%TP \renewcommand\StrItem{Vorgang}
+% %%TP \renewcommand\StrItemType{Vorgangstyp}
+% %%TP \renewcommand\StrStoryPoints{Story points}
+% %%TP \renewcommand\StrOwner{Owner}
+% %%TP \renewcommand\StrPriority{Priorität}
+% %%TP \renewcommand\StrStatus{Status}
+% %%TP \renewcommand\StrPage{Seite}
+% %%TP \renewcommand\StrBusinessValue{Wert}
+% %%TP \renewcommand\StrCustomer{Kunde}
+% %%TP \renewcommand\StrNoData{Ihre Auswahl enthält leider keine Vorgänge.}
+% %%TP </#if>
+
+% %%TP <#macro makeCards items>
+% %%TP <#if !items?has_content>{\LARGE\StrNoData}</#if>     
+% %%TP <#list items as topic>
+% %%TP <#if (topic.ProjectSpecificIssueNo)?has_content><#assign ino=topic.ProjectSpecificIssueNo><#else><#assign ino=topic.IssueNo></#if> 
+% %%TP <#if topic["StoryPoints"]??><#assign stp=topic.StoryPoints><#else><#assign stp=""></#if> 
+% %%TP <#if topic["BusinessValue"]??><#assign bv=topic.BusinessValue><#else><#assign bv=""></#if>
+% %%TP <#if topic["Customer"]??><#assign cust=topic.Customer><#else><#assign cust=""></#if> 
+% %%TP  \renewcommand\StrIssueNoHeader{[${ino}] ${topic.title}}	
+% %%TP {\Large
+% %%TP \begin{tabularx}{\textwidth}{p{30mm}Xp{30mm}} \htpline
+% %%TP %\rowcolor{Gray} 
+% %%TP {\color{tpred} \small \StrStatus} &
+% %%TP {\color{tpred} \small \StrOwner}  & 
+% %%TP {\color{tpred} \small \StrItemType}  \\
+% %%TP ${topic.Status} & ${topic.Responsible} & ${topic.IssueType}\\  
+% %%TP {\color{tpred} \small \StrStoryPoints}  &  {\color{tpred} \small \StrBusinessValue} & {\color{tpred} \small \StrCustomer}\\  
+% %%TP ${stp}  & ${bv}  & ${cust}\\ \htpline  
+% %%TP \end{tabularx}
+% %%TP } 
+% %%TP \mbox{\rule[0mm]{0pt}{8mm}}{\large \textbf{${topic.title}}
+% %%TP
+% %%TP ${topic.Description}}
+% %%TP \clearpage
+% %%TP </#list>
+% %%TP </#macro>
+
+% %%TP <@makeCards items/>
+
+\end{document}

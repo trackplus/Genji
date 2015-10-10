@@ -1,0 +1,124 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="In Genji you can define any number of forms that are used for creating items, editing items, changing item state, adding comments to items, and moving items to new projects or item types. Forms ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="concept"/><meta name="DC.Title" content="Custom forms, actions, and fields"/><meta name="abstract" content="In Genji you can define any number of forms that are used for creating items, editing items, changing item state, adding comments to items, and moving items to new projects or item types."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="In Genji you can define any number of forms that are used for creating items, editing items, changing item state, adding comments to items, and moving items to new projects or item types."/><meta name="indexterms" content="custom form, form, input mask, actions, form, action, form, overview, custom form, overview"/><meta name="DC.subject" content="custom form, form, input mask, actions, action, overview"/><meta name="keywords" content="custom form, form, input mask, actions, action, overview"/><meta name="DC.Relation" scheme="URI" content="../../../Topics/05ForConfigManagers/forms/cCustomForms.html"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="id31fieldTypes"/><link rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Custom forms, actions, and fields</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()" id="id31fieldTypes">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../../Topics/05ForConfigManagers/forms/cCustomForms.html" title="You can layout and design your own input masks, specific for each action type, like create, edit, add comment, and so on. You can assign forms you have created globally, or for each item type, project type, or even project. For example, you can have a very simple form for items of type „mile stone“, and a complex mask for items of type „problem report“."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Customizing forms</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../../Topics/05ForConfigManagers/forms/../../../Topics/05ForConfigManagers/Chapter5Wrapper.html" title="Customizing Genji">Customizing Genji</a> / <a class="navheader_parent_path" href="../../../Topics/05ForConfigManagers/forms/cCustomForms.html" title="You can layout and design your own input masks, specific for each action type, like create, edit, add comment, and so on. You can assign forms you have created globally, or for each item type, project type, or even project. For example, you can have a very simple form for items of type „mile stone“, and a complex mask for items of type „problem report“.">Customizing forms</a></td></tr></tbody></table>
+
+    <h1 class="title topictitle1">Custom forms, actions, and fields</h1>
+
+    
+    
+    <div class="body conbody"><p class="shortdesc">In <span class="ph"><span class="ph">Genji</span></span> you can
+        define any number of forms that are used for creating items, editing items, changing item
+        state, adding comments to items, and moving items to new projects or item types.</p>
+
+        <p class="p">Forms contain system properties and custom properties, and forms are associated with the
+            actions mentioned above, like creating items. These associations can be configured</p>
+
+        <ul class="ul">
+            <li class="li">globally</li>
+
+            <li class="li">item type specific</li>
+
+            <li class="li">project type and item type specific</li>
+
+            <li class="li">project and item type specific</li>
+
+        </ul>
+
+        <p class="p">This approach supports configuration efficiency while preserving flexibility.</p>
+
+        <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/formOverview.png" height="177" width="222"/></div><br/>
+            
+        </div>
+
+        <p class="p">Each form consists of</p>
+
+        <ul class="ul">
+            <li class="li">tabs</li>
+
+            <li class="li">panels</li>
+
+            <li class="li">properties</li>
+
+        </ul>
+
+        <p class="p">The procedure to create and use a new form is</p>
+
+        <ol class="ol">
+            <li class="li">Create the new form, using the interactive form designer</li>
+
+            <li class="li">Assign this form to the desired action, either globally or at a more specific
+                level.</li>
+
+        </ol>
+
+        <p class="p">You can modify forms any time.</p>
+
+        <div class="section"><h2 class="title sectiontitle">Tabs</h2><p class="p">Each form consists of at least one tab. Tabs contain panels,
+                and panels contain properties. The figure here shows a form with three tabs. The
+                first tab can be designed any way you like. The other two tabs have been
+                automatically added to this form because the respective feature (watch lists and
+                accounting) have been enabled for this project. These tabs are predefined by the
+                system, they cannot be modified interactively.</p>
+<div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/formOverviewTabs.png" height="245" width="391"/></div><br/>
+                
+            </div>
+<p class="p">There is only a practical limit on the number of custom tabs you can add to
+                your form. You can specify the tab label to whatever you like.</p>
+</div>
+
+        <div class="section"><h2 class="title sectiontitle">Panels</h2><p class="p">Tabs
+                contain panels. All properties are placed on panels. A panel is made up of rows and
+                columns. A panel organizes the space for properties in a grid.</p>
+<div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/formOverviewPanel.png" height="245" width="391"/></div><br/>
+                
+            </div>
+<p class="p">Grid positions not used are specifically marked in the form designer, and are
+                left empty in the rendered form.</p>
+<p class="p">There is only a practical limit on the number
+                of panels you can use. You can move panels any time using drag and drop
+                techniques.</p>
+</div>
+
+        <div class="section"><h2 class="title sectiontitle">Actions</h2><p class="p">In
+                    <span class="ph"><span class="ph">Genji</span></span>, forms are associated with actions.
+                For example, you may want to keep the form to <em class="ph i">create</em> an item as simple as
+                possible, while <em class="ph i">editing</em> an item should reveal all item properties available.
+                    <em class="ph i">Adding a comment</em> should only involve a comment description field, and
+                nothing else. <em class="ph i">Changing a state</em> oftentimes coincides with a change in the
+                responsible person, so this action would require a comment field, the state field,
+                and the responsible field.</p>
+<p class="p"><span class="ph"><span class="ph">Genji</span></span>currently
+                knows of the following actions:</p>
+<ul class="ul">
+                <li class="li">Create item</li>
+
+                <li class="li">Edit or modify item</li>
+
+                <li class="li">move item to new project or item type</li>
+
+                <li class="li">add comment to item</li>
+
+                <li class="li">change item state</li>
+
+                <li class="li">add child item to existing item</li>
+
+            </ul>
+<p class="p">To each of these action a specific form can be assigned.</p>
+</div>
+
+    </div>
+
+<div class="related-links"/>
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../../Topics/05ForConfigManagers/forms/cCustomForms.html" title="You can layout and design your own input masks, specific for each action type, like create, edit, add comment, and so on. You can assign forms you have created globally, or for each item type, project type, or even project. For example, you can have a very simple form for items of type „mile stone“, and a complex mask for items of type „problem report“."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Customizing forms</span></a></span>  </div>
+</body>
+</html>

@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+"http://struts.apache.org/dtds/struts-2.0.dtd ">
+<struts> 
+	<package name="struts-navigator" extends="struts-track-base">
+
+		<default-interceptor-ref name="default" />
+
+		<action name="item" class="com.aurel.track.item.ItemAction">
+			<result name="input">/tiles/layouts/BorderLayout.jsp</result>
+			<!-- <result name="wizard" type="tiles">item.wizard</result> -->
+			<!--<result name="wizard" type="tiles">${wizardTemplate}</result> -->
+			<interceptor-ref name="editNoAuth" />
+		</action>
+		<action name="itemSave" class="com.aurel.track.item.ItemSaveAction">
+			<interceptor-ref name="paramsPrepareParams" />
+		</action>
+
+		<action name="editItemInline" class="com.aurel.track.item.ItemAction"
+			method="editItemInline">
+			<interceptor-ref name="editStack" />
+		</action>
+		<action name="richTextPreview" class="com.aurel.track.item.ItemAction"
+			method="richTextPreview">
+			<result name="success">/tiles/pages/item/richTextPreview.jsp</result>
+			<interceptor-ref name="defaultNoAuth" />
+		</action>
+
+		<action name="printItem" class="com.aurel.track.item.ItemAction"
+			method="printItem">
+			<result name="input">/tiles/layouts/BorderLayout.jsp</result>
+			<!-- the authentication is made in the action because of setting the post
+				login forward after login -->
+			<interceptor-ref name="editStack" />
+		</action>
+
+
+
+		<action name="addScreenshot" class="com.aurel.track.item.AddScreenshotAction">
+			<!-- the authentication is made in the action because of setting the post
+				login forward after login -->
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="saveScreenshot" class="com.aurel.track.item.AddScreenshotAction"
+			method="saveScreenshot">
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="itemFirstStepTemplate" class="com.aurel.track.item.ItemAction"
+			method="itemFirstStepTemplate">
+			<result name="success" type="freemarker">${firstPageTemplate}</result>
+			<interceptor-ref name="editStack" />
+		</action>
+
+
+		<action name="editConsultants" class="com.aurel.track.item.consInf.ConsInfAction">
+			<result name="ok" type="freemarker">template/ok.ftl</result>
+			<interceptor-ref name="paramsPrepareParams" />
+		</action>
+
+
+		<action name="issuePicker" class="com.aurel.track.item.IssuePickerAction">
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="addRaciRole" class="com.aurel.track.item.consInf.RaciRoleAction">
+			<result name="success" type="freemarker">template/ok.ftl</result>
+			<interceptor-ref name="paramsPrepareParams" />
+		</action>
+		<action name="itemFieldRefresh" class="com.aurel.track.item.ItemFieldRefreshAction">
+		</action>
+		<action name="remoteFiltering" class="com.aurel.track.item.RemoteFilteringAction">
+		</action>
+		<action name="addAttachment" class="com.aurel.track.attachment.AttachmentAction">
+			<interceptor-ref name="editStack" />
+		</action>
+		<!-- Download attachments -->
+		<action name="downloadAttachment" class="com.aurel.track.attachment.AttachmentAction"
+			method="download">
+			<interceptor-ref name="defaultNoAuth" />
+		</action>
+		<action name="thumbnailAttachment" class="com.aurel.track.attachment.AttachmentAction"
+			method="thumbnail">
+			<interceptor-ref name="defaultNoAuth" />
+		</action>
+		<action name="itemNavigator"
+			class="com.aurel.track.itemNavigator.ItemNavigatorAction">
+			<result name="success">/tiles/layouts/BorderLayout.jsp</result>
+			<result name="lite">/tiles/layouts/BorderLayout.jsp</result>
+			<result name="failure">cockpit</result>
+			<interceptor-ref name="editStackItemNavigator" />
+		</action>
+		
+		<action name="reportDatasource"
+			class="com.aurel.track.admin.customize.category.report.execute.ReportExecuteAction">
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="itemDetail" class="com.aurel.track.item.ItemDetailAction">
+			<result name="failure">logoff.do</result>
+			<!-- the authentication is made in the action because of setting the post
+				login forward after login -->
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="itemWatcher" class="com.aurel.track.item.ItemDetailAction"
+			method="doGetWatcher">
+			<result name="failure">logoff.do</result>
+			<!-- the authentication is made in the action because of setting the post
+				login forward after login -->
+			<interceptor-ref name="editStack" />
+		</action>
+		<action name="itemVersionControl" class="com.aurel.track.item.ItemDetailAction"
+			method="doGetVersionControl">
+			<result name="failure">logoff.do</result>
+			<!-- the authentication is made in the action because of setting the post
+				login forward after login -->
+			<interceptor-ref name="editStack" />
+		</action>
+		<action name="itemLink" class="com.aurel.track.item.link.ItemLinkAction">
+			<interceptor-ref name="editStack" />
+		</action>
+		<!-- <action name="saveItemLink" class="com.aurel.track.item.ItemLinkAction"
+			method="saveItemLink"> <interceptor-ref name="paramsPrepareParams"/> </action> -->
+
+		<!-- <action name="itemLinkParameters" class="com.aurel.track.item.ItemLinkParametersAction">
+			<result name="input" type="freemarker">${forwardUrl}</result> <interceptor-ref
+			name="paramsPrepareParams"/> </action> -->
+		<action name="itemComments" class="com.aurel.track.item.ItemDetailAction"
+			method="doGetComments">
+			<result name="failure">logoff.do</result>
+			<result name="success">tiles/pages/item/commentsXml.jsp</result>
+			<!-- the authentication is made in the action because of setting the post
+				login forward after login -->
+			<interceptor-ref name="editStack" />
+		</action>
+		<action name="saveGridConfig" class="com.aurel.track.item.ItemDetailAction"
+			method="saveGridConfig">
+			<result name="failure">logoff.do</result>
+			<result name="ok" type="freemarker">template/ok.ftl</result>
+			<!-- the authentication is made in the action because of setting the post
+				login forward after login -->
+			<interceptor-ref name="editStack" />
+		</action>
+		<action name="saveComment" class="com.aurel.track.item.ItemDetailAction"
+			method="saveComment">
+			<result name="success" type="freemarker">template/ok.ftl</result>
+			<interceptor-ref name="paramsPrepareParams" />
+		</action>
+		<action name="deleteComments" class="com.aurel.track.item.ItemDetailAction"
+			method="deleteComments">
+			<result name="failure">logoff.do</result>
+			<!-- the authentication is made in the action because of setting the post
+				login forward after login -->
+			<interceptor-ref name="editStack" />
+		</action>
+		<action name="saveAttachment" class="com.aurel.track.attachment.AttachmentAction"
+			method="save">
+			<result name="success" type="freemarker">template/ok.ftl</result>
+			<interceptor-ref name="editStack" />
+		</action>
+		<action name="editAttachment" class="com.aurel.track.attachment.AttachmentAction"
+			method="edit">
+			<result name="failure">logoff.do</result>
+			<result name="success" type="freemarker">template/ok.ftl</result>
+			<!-- the authentication is made in the action because of setting the post
+				login forward after login -->
+			<interceptor-ref name="editStack" />
+		</action>
+		<action name="deletedAttachments" class="com.aurel.track.attachment.AttachmentAction"
+			method="deleted">
+			<!-- the authentication is made in the action because of setting the post
+				login forward after login -->
+			<interceptor-ref name="editStack" />
+		</action>
+		<action name="deleteWatchers" class="com.aurel.track.item.ItemDetailAction"
+			method="deleteWatchers">
+			<result name="failure">logoff.do</result>
+			<!-- the authentication is made in the action because of setting the post
+				login forward after login -->
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="itemHistory" class="com.aurel.track.item.ItemDetailAction"
+			method="doGetHistory">
+			<result name="failure">logoff.do</result>
+			<!-- <result name="success">sheldon.xml</result> -->
+			<!-- <result name="success" type="freemarker">template/sheldon.ftl</result> -->
+			<!-- the authentication is made in the action because of setting the post
+				login forward after login -->
+			<interceptor-ref name="editNoAuth" />
+		</action>
+
+		<action name="printItem2" class="com.aurel.track.item.PrintItemAction">
+			<result name="input">/tiles/pages/item/printItem.jsp</result>
+			<!-- the authentication is made in the action because of setting the post
+				login forward after login -->
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="printItemWithChildren" class="com.aurel.track.item.PrintItemAction"
+			method="printItemWithChildren">
+			<result name="input">/tiles/pages/item/printItemWithChildren.jsp</result>
+			<!-- the authentication is made in the action because of setting the post
+				login forward after login -->
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="children" class="com.aurel.track.item.PrintItemAction"
+			method="children">
+			<result name="input">/tiles/pages/item/children.jsp</result>
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="flatHistory" class="com.aurel.track.item.PrintItemAction"
+			method="flatHistory">
+			<result name="success">/tiles/pages/item/flatHistory.jsp</result>
+			<interceptor-ref name="editStack" />
+		</action>
+		<action name="itemDetailHistory" class="com.aurel.track.item.PrintItemAction"
+			method="itemDetailHistory">
+			<result name="success" type="freemarker">/template/itemDetailHistory.ftl</result>
+			<interceptor-ref name="editNoAuth" />
+		</action>
+		<action name="itemDetailVersionControl" class="com.aurel.track.item.ItemDetailAction"
+			method="itemDetailVersionControl">
+			<result name="success" type="freemarker">/template/itemDetailversionControl.ftl</result>
+			<interceptor-ref name="editNoAuth" />
+		</action>
+
+		<action name="flatExpense" class="com.aurel.track.item.PrintItemAction"
+			method="flatExpense">
+			<result name="success">/tiles/pages/item/flatValues.jsp</result>
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="flatAttachment" class="com.aurel.track.item.PrintItemAction"
+			method="flatAttachment">
+			<result name="success">/tiles/pages/item/flatValues.jsp</result>
+			<interceptor-ref name="editStack" />
+		</action>
+
+
+		<action name="itemAttachments" class="com.aurel.track.item.ItemDetailAction"
+			method="doGetAttachments">
+			<result name="failure">logoff.do</result>
+			<interceptor-ref name="editNoAuth" />
+		</action>
+
+		<action name="versionControlConfig"
+			class="com.aurel.track.vc.action.VersionControlConfigAction">
+			<result name="configTemplate" type="freemarker">${templateName}</result>
+			<result name="browserList" type="freemarker">template/vcBrowserList.ftl</result>
+		</action>
+
+		<!-- Print action items from search input field with key -->
+		<action name="searchItem" class="com.aurel.track.item.SearchItemAction">
+			<result type="chain">
+				<param name="actionName">cockpit</param>
+			</result>
+			<!-- <result name="printItem" type="redirectAction">printItem?key=${workItemID}</result> -->
+			<result name="report" type="redirectAction">reportItem</result>
+		</action>
+
+		<action name="massOperationEdit"
+			class="com.aurel.track.item.massOperation.MassOperationAction">
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="massOperationFieldSetterAction"
+			class="com.aurel.track.item.massOperation.MassOperationFieldSetterAction">
+			<interceptor-ref name="editStack" />
+		</action>
+		<action name="cardScreenEdit"
+			class="com.aurel.track.screen.card.action.CardScreenEditAction">
+			<result name="success">/tiles/layouts/BorderLayout.jsp</result>
+			<interceptor-ref name="editStack"/>
+		</action>
+		<action name="cardPanel"
+			class="com.aurel.track.screen.card.action.CardPanelAction" method="reload">
+			<interceptor-ref name="editStack" />
+		</action>
+		<action name="updateCardPanelProperty"
+			class="com.aurel.track.screen.card.action.CardPanelAction" method="updateProperty">
+			<interceptor-ref name="paramsPrepareParams" />
+		</action>
+		<action name="cardField"
+			class="com.aurel.track.screen.card.action.CardFieldAction" method="reload">
+			<interceptor-ref name="editStack" />
+		</action>
+		<action name="updateCardFieldProperty"
+			class="com.aurel.track.screen.card.action.CardFieldAction" method="updateProperty">
+			<interceptor-ref name="paramsPrepareParams" />
+		</action>
+
+		<action name="layoutGrouping"
+			class="com.aurel.track.itemNavigator.layout.group.LayoutGroupsAction">
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="layoutSorting"
+			class="com.aurel.track.itemNavigator.layout.sort.LayoutSortAction">
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="layoutColumns"
+			class="com.aurel.track.itemNavigator.layout.column.LayoutColumnsAction">
+			<interceptor-ref name="editStack" />
+		</action>
+		<action name="possibleFieldOptions"
+			class="com.aurel.track.item.possibleOptions.PossibleFieldOptionsAction">
+			<interceptor-ref name="editStack" />
+		</action>
+
+		<action name="macroIssueAction" class="com.aurel.track.macro.MacroIssueAction">
+			<interceptor-ref name="editStack" />
+		</action>
+	
+	</package>
+	 <package name="struts-navigator-rest" extends="struts-track-base" namespace="/rest">
+			<action name="report" class="com.aurel.track.admin.customize.category.report.execute.ReportExecuteAction">
+			<interceptor-ref name="rest" />
+		</action>
+	</package>
+</struts>

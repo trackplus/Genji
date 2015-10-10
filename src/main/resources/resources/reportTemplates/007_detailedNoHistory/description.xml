@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Description file for a Track+ report template. This file is read by 
+	Track+ and used for presentation of the report template for selection by 
+	the users. -->
+<reportTemplate>
+	<name>RTDetailedPortrait</name>
+	<locale value="en">
+		<listing>Detailed report without history</listing>
+	    <tool-tip>Detailed report without history, portrait A4</tool-tip>
+	    <description>
+		A detailed report including cost and budgets, no history.
+	    </description>
+	</locale>
+	<locale value="de">
+		<listing>Detaillierter Bericht ohne Änderungshistorie</listing>
+	    <tool-tip>Detaillierter Bericht ohne Änderungshistorie, A4-Querformat</tool-tip>
+	    <description>
+		Ein detaillierter Bericht einschließlich Planwerten und Aufwänden, ohne Änderungsverlauf.
+	    </description>
+	</locale>	
+
+	<!-- The icon should be in GIF format and have a size (width x height) of 
+		at most 150 x 100 -->
+	<icon-gif>icon.gif</icon-gif>
+	<size>A4 landscape</size>
+	<!-- The preview should be in GIF format and have a size of at most 800 
+		x 600 -->
+	<preview-gif>preview.png</preview-gif>
+	<!-- Type of report: Jasper Report or FOP Report -->
+	<type>Jasper Report</type>
+	<!-- Format of report: pdf, rtf, xml, xsl, png etc -->
+	<format>pdf</format>
+	<!-- The compiled master report template file -->
+	<masterFile>TrackReportDetailed.jasper</masterFile>
+</reportTemplate>

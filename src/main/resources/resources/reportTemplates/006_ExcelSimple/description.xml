@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Description file for a Track+ report template. This file is read by 
+	Track+ and used for presentation of the report template for selection by 
+	the users. -->
+<reportTemplate>
+	<name>ExcelSimple</name>
+	<locale value="en">
+		<description>
+		Excel report without change history
+	    </description>
+		<listing>Excel worksheet</listing>
+	    <tool-tip>Excel worksheet, no history</tool-tip>
+	</locale>
+	<locale value="de">
+		<description>
+		Excel-Tabelle ohne Änderungshistorie
+	    </description>
+		<listing>Bericht in Excel-Tabellenform</listing>
+	    <tool-tip>Excel-Tabelle</tool-tip>
+	</locale>
+	<!-- The icon should be in GIF format and have a size (width x height) of 
+		at most 150 x 100 -->
+	<icon-gif>icon.gif</icon-gif>
+	<size>A4 landscape</size>
+	<!-- The preview should be in GIF format and have a size of at most 800 
+		x 600 -->
+	<preview-gif>preview.gif</preview-gif>
+	<!-- Type of report: Jasper Report or FOP Report -->
+	<type>Jasper Report</type>
+	<!-- Format of report: pdf, rtf, xls etc -->
+	<format>xls</format>
+	<!-- The compiled master report template file -->
+	<masterFile>TrackReportExcel.jasper</masterFile>
+</reportTemplate>

@@ -1,0 +1,142 @@
+.sch-ganttpanel .x-grid-cell {
+    height       : 30px;
+    border-bottom-color :#ededed !important;
+}
+
+.sch-ganttpanel .x-grid-inner-locked .x-column-header-last,
+.sch-ganttpanel .x-grid-inner-locked .x-grid-cell-last
+{
+    border-right:0 none !important;
+}
+
+.sch-ganttpanel .x-grid-row.row-selected .x-grid-cell
+{
+    background-color : rgba(219, 216, 222, 0.5);
+}
+
+.sch-ganttpanel .x-splitter-vertical {
+    background-color: #fff;
+    border-right: 1px solid #99bce8;
+}
+
+.sch-gantt-parenttask-bar {
+    background   : #efaf90;
+    border-color : #efaf90;
+    box-shadow   : 1px 1px 2px rgba(150, 150, 150, 0.1);
+    height       : 45%;
+    top          : 20%;
+}
+
+.sch-gantt-parenttask-arrow {
+    border-color : #efaf90;
+}
+
+.sch-gantt-task-bar {
+    border-radius : 0;
+    background    : rgb(90, 156, 261);
+    border        : 0 none;
+}
+
+.sch-gantt-parenttask-bar .sch-gantt-progress-bar {
+    background : transparent;
+}
+
+.sch-gantt-progress-bar {
+    background : #82BAF7;
+}
+
+.sch-gantt-milestone-diamond {
+    border     : 0 none;
+    background : rgb(90, 156, 261);
+}
+
+.x-grid-cell-inner-treecolumn {
+    padding-top : 6px;
+}
+
+.sch-header-row-bottom {
+    display : none;
+}
+
+.sch-column-header {
+    padding : 10px 0;
+}
+
+.x-grid-header-ct,
+.sch-column-header,
+.x-column-header {
+    background : #fff none !important;
+    font       : 300 13px/1.525 "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.sch-ganttpanel .x-grid-row:nth-child(odd) td,
+.sch-zone {
+    background-image:none;
+    background-color : rgba(239, 246, 252, 0.5);
+}
+
+.taskTip strong {
+    font-weight  : bold;
+    margin-right : 5px;
+}
+
+.taskTip li {
+    padding-bottom : 3px;
+}
+
+.icon-add {
+    background : url(images/add.png) no-repeat left center !important;
+}
+
+.x-tree-node-text {
+    text-transform : uppercase;
+    color          : #686868;
+    font           : 300 13px/1.525 "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.Johnny {
+    background-color : LightGreen;
+}
+
+.Johnny .sch-gantt-progress-bar {
+}
+
+.Sencha .sch-gantt-label-left {
+    background   : url(images/sencha.png) no-repeat left center !important;
+    padding-left : 20px;
+    font-weight  : bold;
+    color        : navy;
+}
+
+.Sencha .sch-gantt-parenttask-bar {
+}
+
+.Sencha .sch-gantt-progress-bar {
+}
+
+.Bryntum .sch-gantt-label-left {
+    background   : url(images/bryntum.jpg) no-repeat left center !important;
+    padding-left : 20px;
+    font-weight  : bold;
+    color        : navy;
+}
+
+.x-tree-icon {
+    background : url(images/arrow.png) no-repeat 2px 5px !important;
+}
+
+.Sencha .x-tree-icon {
+    background : url(images/sencha.png) no-repeat left center !important;
+    color      : navy;
+}
+
+.ExtJS .x-tree-icon {
+    background : url(images/extjs.png) no-repeat left center !important;
+    color      : navy;
+}
+
+.Bryntum .x-tree-icon {
+    background : url(images/bryntum.jpg) no-repeat left center !important;
+    color      : navy;
+}
+

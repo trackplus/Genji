@@ -1,0 +1,389 @@
+<?xml version='1.0' encoding='utf-8'?>
+<job-scheduling-data xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_1_8.xsd"
+  version="1.8">
+
+    <pre-processing-commands>
+        <delete-jobs-in-group>*</delete-jobs-in-group>  <!-- clear all jobs in scheduler -->
+        <delete-triggers-in-group>*</delete-triggers-in-group> <!-- clear all triggers in scheduler -->
+    </pre-processing-commands>
+    
+    <processing-directives>
+        <!-- if there are any jobs/trigger in scheduler of same name (as in this file), overwrite them -->
+        <overwrite-existing-data>true</overwrite-existing-data>
+        <!-- if there are any jobs/trigger in scheduler of same name (as in this file), and over-write is false, ignore them rather then generating an error -->
+        <ignore-duplicates>false</ignore-duplicates> 
+    </processing-directives>
+    
+    <schedule>
+	    <job>
+            <name>EmailReminderJob</name>
+            <group>DefaultJobGroup</group>
+            <description>Email Reminder</description>
+            <!-- description not more than 120 characters!!! -->
+            <job-class>com.aurel.track.dbase.jobs.EmailReminderJob</job-class>
+            <job-data-map>
+                <entry>
+                    <key>dummyParam1</key>
+                    <value>dummyValue</value>
+                </entry>
+                <entry>
+                    <key>dummyParam2</key>
+                    <value>list,of,values</value>
+                </entry>
+            </job-data-map>
+		</job>
+        <trigger>
+            <cron>
+                <name>halfHourTrigger</name>
+                <group>DefaultTriggerGroup</group>
+                <job-name>EmailReminderJob</job-name>
+                <job-group>DefaultJobGroup</job-group>
+                <cron-expression>0 0/1 * * * ?</cron-expression>
+                <!-- This fires every 30 minutes -->
+				<!-- Some more examples...
+				Seconds Minutes Hours Day   Month DayOfWeek       (Year)
+				0-59    0-59    0-23  1-31	1-12  1-7 or SUN-SAT  1970-2099
+                0 0 12 * * ? 		Fire at 12pm (noon) every day
+				0 15 10 ? * * 		Fire at 10:15am every day
+				0 15 10 * * ? 		Fire at 10:15am every day
+				0 15 10 * * ? * 	Fire at 10:15am every day
+				0 15 10 * * ? 2007 	Fire at 10:15am every day during the year 2007
+				0 * 14 * * ? 		Fire every minute starting at 2pm and ending at 2:59pm, every day
+				0 0/5 14 * * ? 		Fire every 5 minutes starting at 2pm and ending at 2:55pm, every day
+				0 0/5 14,18 * * ? 	Fire every 5 minutes starting at 2pm and ending at 2:55pm, AND fire every 5 minutes starting at 6pm and ending at 6:55pm, every day
+				0 0-5 14 * * ? 		Fire every minute starting at 2pm and ending at 2:05pm, every day
+				0 10,44 14 ? 3 WED 	Fire at 2:10pm and at 2:44pm every Wednesday in the month of March.
+				0 15 10 ? * MON-FRI Fire at 10:15am every Monday, Tuesday, Wednesday, Thursday and Friday
+				0 15 10 15 * ? 		Fire at 10:15am on the 15th day of every month
+				0 15 10 L * ? 		Fire at 10:15am on the last day of every month
+				0 15 10 ? * 6L 		Fire at 10:15am on the last Friday of every month
+				0 15 10 ? * 6L 		Fire at 10:15am on the last Friday of every month
+				0 15 10 ? * 6L 2005-2007 	Fire at 10:15am on every last Friday of every month during the years 2005, 2006, and 2007
+				0 15 10 ? * 6#3 	Fire at 10:15am on the third Friday of every month
+				0 0 12 1/5 * ? 		Fire at 12pm (noon) every 5 days every month, starting on the first day of the month.
+				0 11 11 11 11 ? 	Fire every November 11th at 11:11am.
+				-->
+            </cron>
+        </trigger>
+
+        <job>
+            <name>EmailListenerJob</name>
+            <group>DefaultJobGroup</group>
+            <description>Email Listener</description>
+            <!-- description not more than 120 characters!!! -->
+            <job-class>com.aurel.track.dbase.jobs.EmailListenerJob</job-class>
+        </job>
+        <trigger>
+            <cron>
+                <name>EmailListenerTrigger</name>
+                <group>DefaultTriggerGroup</group>
+                <job-name>EmailListenerJob</job-name>
+                <job-group>DefaultJobGroup</job-group>
+                <cron-expression>0 0/1 * * * ?</cron-expression>
+                <!-- This fires every 5 minutes -->
+            </cron>
+        </trigger>
+
+		<job>
+            <name>WorkflowExecuterJob</name>
+            <group>DefaultJobGroup</group>
+            <description>Executes workflow activities after a configured time</description>
+            <!-- description not more than 120 characters!!! -->
+            <job-class>com.aurel.track.dbase.jobs.WorkflowExecuterJob</job-class>
+        </job>
+        <trigger>
+            <cron>
+                <name>WorkflowExecuterTrigger</name>
+                <group>DefaultTriggerGroup</group>
+                <job-name>WorkflowExecuterJob</job-name>
+                <job-group>DefaultJobGroup</job-group>
+                <cron-expression>0 0/30 * * * ?</cron-expression>
+                <!-- This fires every 5 minutes -->
+            </cron>
+        </trigger>
+	
+		 <!--
+		 * The period after which the server has to perform an update of the node
+		 * table. If the node table is not updated, it is being deleted because
+		 * it is assumed that the server is not running any more.
+		 * Please note that in the worst case during this timeout period the full
+		 * text search index may not be updated. However, no update events get
+		 * lost, this is just a matter of actuality.
+	     -->
+
+        <job>
+            <name>ClusterGuardianJob</name>
+            <group>DefaultJobGroup</group>
+            <description>Watches this instance if it is part of a server cluster</description>
+            <!-- description not more than 120 characters!!! -->
+            <job-class>com.aurel.track.dbase.jobs.ClusterGuardianJob</job-class>
+        </job>
+        <trigger>
+            <cron>
+                <name>ClusterGuardianTrigger</name>
+                <group>DefaultTriggerGroup</group>
+                <job-name>ClusterGuardianJob</job-name>
+                <job-group>DefaultJobGroup</job-group>
+                <cron-expression>0 0/5 * * * ?</cron-expression>
+                <!-- This fires every 5 minutes -->
+            </cron>
+        </trigger>
+
+	    
+	     <!--
+		 * This manages the ban of clients that have repeatedly tried to 
+		 * authenticate themselves with bad user/password combinations.
+		 * After some time the bans are removed, and these clients can try
+		 * again.
+	     -->
+
+        <job>
+            <name>BanUpdateJob</name>
+            <group>DefaultJobGroup</group>
+            <description>Updates the ban table of bad authentications</description>
+            <!-- description not more than 120 characters!!! -->
+            <job-class>com.aurel.track.dbase.jobs.BanUpdateJob</job-class>
+            <job-data-map>
+                 <entry>
+                    <!--  Enable ban processor -->
+                    <key>enabled</key>
+                    <value>true</value>
+                </entry>
+                <entry>
+                    <!--  ban time in minutes -->
+                    <key>banTime</key>
+                    <value>10</value>
+                </entry>
+                <entry>
+                    <key>noOfBadAttempts</key>
+                    <value>10</value>
+                </entry>
+            </job-data-map>            
+        </job>
+        <trigger>
+            <cron>
+                <name>BanUpdateTrigger</name>
+                <group>DefaultTriggerGroup</group>
+                <job-name>BanUpdateJob</job-name>
+                <job-group>DefaultJobGroup</job-group>
+                <cron-expression>0 0/10 * * * ?</cron-expression>
+                <!-- This fires every 10 minutes -->
+            </cron>
+        </trigger>
+
+        <job>
+            <name>VersionControlLogFetcherJob</name>
+            <group>DefaultJobGroup</group>
+            <description>VC Logfile Reader</description>
+            <!-- description not more than 120 characters!!! -->
+            <job-class>com.aurel.track.dbase.jobs.VersionControlLogFetcherJob</job-class>
+            <job-data-map>
+                <entry>
+                    <!-- this will set the delay until the next fetch.
+                         To set the next trigger time, the time for
+                         executing the fetch is measured. The new trigger
+                         time is set to the current time plus this factor
+                         times the measured execution time.
+                    -->
+                    <key>dutyCycle</key>
+                    <value>25</value>
+                </entry>
+                <entry>
+                    <key>prefixIssueNumber</key>
+                    <value>#</value>
+                    <!--
+                    <key>prefixIssueNumber</key>
+                    <value>Issue</value>
+                    -->
+                </entry>
+            </job-data-map>
+        </job>
+        <trigger>
+            <cron>
+                <name>VersionControlInitialTrigger</name>
+                <group>DefaultTriggerGroup</group>
+                <job-name>VersionControlLogFetcherJob</job-name>
+                <job-group>DefaultJobGroup</job-group>
+                <cron-expression>0 0/10 * * * ?</cron-expression>
+                <!-- This fires every 10 minutes. However, be aware
+                 that this will be changed by the application after
+                 each log fetch to the execution time of the fetch
+                 times the delayFactor -->
+           </cron>
+        </trigger>
+
+
+        <job>
+            <name>DatabaseBackupJob</name>
+            <group>DefaultJobGroup</group>
+            <description>Create a database and attachments backup</description>
+            <!-- description not more than 120 characters!!! -->
+            <job-class>com.aurel.track.dbase.jobs.DatabaseBackupJob</job-class>
+            <job-data-map>
+                <entry>       <!-- Include the attachment in the backup process   -->
+                    <key>includeAttachments</key>
+                    <value>true</value>
+                </entry>
+                <entry>       <!-- How many backups to keep -->
+                    <key>backupNumber</key>
+                    <value>5</value>
+                </entry>
+                <entry>       <!-- Keep all backups -->
+                    <key>keepAllBackups</key>
+                    <value>false</value>
+			    </entry>
+            </job-data-map>
+        </job>
+        <trigger>
+            <cron>
+                <name>DatabaseBackupJobInitialTrigger</name>
+                <group>DefaultTriggerGroup</group>
+                <job-name>DatabaseBackupJob</job-name>
+                <job-group>DefaultJobGroup</job-group>
+                <cron-expression>0 15 23 ? * MON-FRI</cron-expression>
+                <!-- 0 15 23 ? * MON-FRI Fire at 23:15 every Monday, Tuesday, Wednesday, Thursday and Friday -->
+           </cron>
+        </trigger>
+
+        <job>
+            <name>CheckForUpdateJob</name>
+            <group>DefaultJobGroup</group>
+            <description>Check for software updates</description>
+            <!-- description not more than 120 characters!!! -->
+            <job-class>com.aurel.track.dbase.jobs.CheckForUpdateJob</job-class>
+            <job-data-map>
+                <entry>     <!--  Run this or not --> 
+                    <key>enabled</key>
+                    <value>true</value>
+                </entry>
+                <entry>     <!--  Update URL -->
+                    <key>updateUrl</key>
+                    <value>files/downloads/software/CheckForUpdate.php</value>
+                </entry>
+                <entry>
+                    <key>server</key>
+                    <value>http://www.trackplus.com</value>
+                </entry>
+            </job-data-map>
+        </job>
+        <trigger>
+            <simple>
+                <name>CheckForUpdateJobTrigger</name>
+                <group>DefaultTriggerGroup</group>
+                <job-name>CheckForUpdateJob</job-name>
+                <job-group>DefaultJobGroup</job-group>
+                <!-- Do this forever -->
+                <repeat-count>-1</repeat-count>
+                <!-- Update interval in milliseconds -->
+                <!-- 604800000 == 7 days -->
+                <!-- 86400000 == 1 day -->
+                <repeat-interval>86400000</repeat-interval>
+            </simple>
+        </trigger>
+        
+        <job>
+            <name>LdapSynchronizerJob</name>
+            <group>DefaultJobGroup</group>
+            <description>Synchronizes a Track+ user database with an LDAP directory</description>
+            <!-- description not more than 120 characters!!! -->
+            <job-class>com.aurel.track.dbase.jobs.LdapSynchronizerJob</job-class>
+            <job-data-map>
+                <entry>  
+                    <!--  Enable regular automatic synchronization with LDAP -->
+                    <key>enabled</key>
+                    <value>false</value>
+                </entry>
+                <entry>  
+                    <!--  Enable user synchronization with LDAP -->
+                    <key>enabledUserSync</key>
+                    <value>true</value>
+                </entry>
+                <entry>  
+                    <!--  Enable group and group users synchronization with LDAP -->
+                    <key>enabledGroupSync</key>
+                    <value>true</value>
+                </entry>
+                <entry>  
+                    <!--  BaseDN for group synchronization -->
+                    <key>baseDnGroup</key>
+                    <value></value>
+                </entry>
+                <entry>  
+                    <!--  Deactivate users unknown in LDAP -->
+                    <key>deactivateUnknown</key>
+                    <value>true</value>
+                </entry>
+                <entry>
+                    <!--  LDAP filter expression for users-->
+                    <key>ldapFilter</key>
+                    <value>*</value>
+                </entry>
+                <entry>
+                    <!--  LDAP filter expression for groups-->
+                    <key>ldapFilterGroups</key>
+                    <value>(objectClass=groupOfNames)</value>
+                </entry>
+                <entry>
+                    <key>firstName</key>
+                    <value>gn</value>
+                </entry>
+                <entry>
+                    <key>lastName</key>
+                    <value>sn</value>
+                </entry>
+                <entry>
+                    <key>email</key>
+                    <value>mail</value>
+                </entry>
+                <entry>
+                    <key>phone</key>
+                    <value>phone</value>
+                </entry>
+                <entry>
+                    <key>groupName</key>
+                    <value>cn</value>
+                </entry>
+                <entry>
+                    <key>groupMember</key>
+                    <value>member</value>
+                </entry> 
+            </job-data-map>            
+        </job>
+        <trigger>
+            <cron>
+                <name>LdapSynchronizerTrigger</name>
+                <group>DefaultTriggerGroup</group>
+                <job-name>LdapSynchronizerJob</job-name>
+                <job-group>DefaultJobGroup</job-group>
+                <cron-expression>0 0/30 * * * ?</cron-expression>
+                <!-- This fires every 30 minutes -->
+            </cron>
+        </trigger>
+        
+        <job>
+            <name>RegistrationPasswordCleanerJob</name>
+            <group>DefaultJobGroup</group>
+            <description>Remove unconfirmed users and password reset requests</description>
+            <job-class>com.aurel.track.dbase.jobs.RegistrationPasswordCleanerJob</job-class>
+            <job-data-map>
+                <entry>
+                    <key>dummyParam1</key>
+                    <value>dummyValue</value>
+                </entry>
+            </job-data-map>
+		</job>
+        <trigger>
+            <cron>
+                <name>RegistrationPasswordCleanerTrigger</name>
+                <group>DefaultTriggerGroup</group>
+                <job-name>RegistrationPasswordCleanerJob</job-name>
+                <job-group>DefaultJobGroup</job-group>
+                <cron-expression>00 15 10 ? * *</cron-expression>
+                <!-- This fires every 30 minutes -->
+            </cron>
+        </trigger>
+
+     </schedule>
+</job-scheduling-data>

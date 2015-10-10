@@ -1,0 +1,33 @@
+1.Instal DB2 and create a new database (for example named  TRACK).
+	-	The schema name should be the same as the user name      
+	-	You should have enough Table Spaces (default is 4 k, choose 32K) (If the space is not sufficient the scripts will not run)
+  
+2.Run Scripts: .../dbase/DB2/id-table-schema.sql, .../dbase/DB2/track-schema.sql, .../dbase/populate.sql
+
+	-	Before running the scrips be sure that the curent schema is that created with the same user name. 
+	-	The populate.sql must be with the right format for time: YYYY-MM-DD hh:mm:ss.nnnnn
+   		(set the dates in the two INSERT INTO TPERSON statements to the time pattern above, 
+		or delete the two date fields (TOKENEXPDATE and EMAILLASTREMINDED) from these insert statemenets at all)
+
+3.The JDBC driver for DB2
+	-	Be sure that you have a DB2 JDBC driver (for example db2java.jar) in your track/WEB-INF/lib. 
+
+4.Change Torque.properties to map to db2
+
+torque.dsfactory.track.connection.user = yourDB2Username
+torque.dsfactory.track.connection.password = yourDB2Password
+
+#DB2
+torque.database.track.adapter=db2app
+torque.dsfactory.track.connection.driver =COM.ibm.db2.jdbc.app.DB2Driver
+torque.dsfactory.track.connection.url =jdbc:db2:TRACK
+
+
+
+
+
+
+
+
+
+

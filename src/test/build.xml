@@ -1,0 +1,35 @@
+<!-- This is the ANT build file for Track+. The following targets are
+     useful:
+     - compile: compiles the application 
+     - clean:   cleans the output directory
+     - dist:    builds the war and src distribution files
+     
+     $Id: build.xml,v 1.52 2008-06-11 15:25:00 friedj Exp $
+-->
+
+
+<project name="com.trackplus.core" default="compile" basedir="./..">
+
+	<property file="com.trackplus/build.properties"/>
+
+	<target name="clean">
+		<echo>not implement yet!</echo>
+	</target>
+	
+	<target name="prepare">
+		<echo>not implement yet!</echo>
+	</target>
+
+	<target name="compile">
+		<echo>not implement yet!</echo>
+	</target>
+
+	<target name="dist" depends="clean,prepare,compile">
+		<echo>not implement yet!</echo>
+	</target>
+	
+	<target name="deploy">
+		<echo>not implement yet!</echo>
+	</target>
+</project>
+

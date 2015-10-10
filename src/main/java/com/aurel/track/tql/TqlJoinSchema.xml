@@ -1,0 +1,427 @@
+<join-schema>
+	<torque-persist-package>com.aurel.track.persist</torque-persist-package>
+
+
+	<entity>
+		<alias>ItemNo</alias>
+		<field>TWorkItemPeer.WORKITEMKEY</field>
+	</entity>
+
+
+	<entity>
+		<alias>ManagerLastname</alias>
+		<field>TPersonPeer.LASTNAME</field>
+		<join-parameter>
+			<join>
+				<left>TWorkItemPeer.OWNER</left>
+				<right>TPersonPeer.PKEY</right>
+			</join>
+		</join-parameter>
+	</entity>
+
+
+	<entity>
+		<alias>ManagerFirstname</alias>
+		<field>TPersonPeer.FIRSTNAME</field>
+		<join-parameter>
+			<join>
+				<left>TWorkItemPeer.OWNER</left>
+				<right>TPersonPeer.PKEY</right>
+			</join>
+		</join-parameter>
+	</entity>
+
+
+	<entity>
+		<alias>ChangedByLastname</alias>
+		<field>TPersonPeer.LASTNAME</field>
+		<join-parameter>
+			<join>
+				<left>TWorkItemPeer.CHANGEDBY</left>
+				<right>TPersonPeer.PKEY</right>
+			</join>
+		</join-parameter>
+	</entity>
+
+
+	<entity>
+		<alias>ChangedByFirstname</alias>
+		<field>TPersonPeer.FIRSTNAME</field>
+		<join-parameter>
+			<join>
+				<left>TWorkItemPeer.CHANGEDBY</left>
+				<right>TPersonPeer.PKEY</right>
+			</join>
+		</join-parameter>
+	</entity>
+
+
+	<entity>
+		<alias>OriginatorLastname</alias>
+		<field>TPersonPeer.LASTNAME</field>
+		<join-parameter>
+			<join>
+				<left>TWorkItemPeer.ORIGINATOR</left>
+				<right>TPersonPeer.PKEY</right>
+			</join>
+		</join-parameter>
+	</entity>
+
+
+	<entity>
+		<alias>OriginatorFirstname</alias>
+		<field>TPersonPeer.FIRSTNAME</field>
+		<join-parameter>
+			<join>
+				<left>TWorkItemPeer.ORIGINATOR</left>
+				<right>TPersonPeer.PKEY</right>
+			</join>
+		</join-parameter>
+	</entity>
+
+
+	<entity>
+		<alias>ResponsibleLastname</alias>
+		<field>TPersonPeer.LASTNAME</field>
+		<join-parameter>
+			<join>
+				<left>TWorkItemPeer.RESPONSIBLE</left>
+				<right>TPersonPeer.PKEY</right>
+			</join>
+		</join-parameter>
+	</entity>
+
+
+	<entity>
+		<alias>ResponsibleFirstname</alias>
+		<field>TPersonPeer.FIRSTNAME</field>
+		<join-parameter>
+			<join>
+				<left>TWorkItemPeer.RESPONSIBLE</left>
+				<right>TPersonPeer.PKEY</right>
+			</join>
+		</join-parameter>
+	</entity>
+
+
+	<entity>
+		<alias>Project</alias>
+		<field>TProjectPeer.LABEL</field>
+		<join-parameter>
+			<join>
+				<left>TWorkItemPeer.PROJCATKEY</left>
+				<right>TProjectCategoryPeer.PKEY</right>
+			</join>
+			<join>
+				<left>TProjectCategoryPeer.PROJKEY</left>
+				<right>TProjectPeer.PKEY</right>
+			</join>
+		</join-parameter>
+	</entity>
+
+
+	<!-- TCATEGORY -->
+	<entity>
+		<alias>List</alias>
+		<field>TListTypePeer.PKEY</field>
+		<!-- SystemFields.ISSUETYPE -->
+		<localization-bean-identifier>2</localization-bean-identifier>
+		<!-- <localization-bean-identifier>TCATEGORY</localization-bean-identifier> -->
+		<join-parameter>
+			<join>
+				<left>TWorkItemPeer.CATEGORYKEY</left>
+				<right>TListTypePeer.PKEY</right>
+			</join>
+		</join-parameter>
+	</entity>
+
+
+	<entity>
+		<alias>Class</alias>
+		<field>TClassPeer.LABEL</field>
+		<join-parameter>
+			<join>
+				<left>TWorkItemPeer.CLASSKEY</left>
+				<right>TClassPeer.PKEY</right>
+			</join>
+		</join-parameter>
+	</entity>
+
+
+	<entity>
+		<alias>Priority</alias>
+		<field>TPriorityPeer.PKEY</field>
+		<!-- SystemFields.PRIORITY -->
+		<localization-bean-identifier>10</localization-bean-identifier>
+		<!-- <localization-bean-identifier>TPRIORITY</localization-bean-identifier>  -->
+		<join-parameter>
+			<join>
+				<left>TWorkItemPeer.PRIORITYKEY</left>
+				<right>TPriorityPeer.PKEY</right>
+			</join>
+		</join-parameter>
+	</entity>
+
+
+	<entity>
+		<alias>Subsystem</alias>
+		<field>TProjectCategoryPeer.LABEL</field>
+		<join-parameter>
+			<join>
+				<left>TWorkItemPeer.PROJCATKEY</left>
+				<right>TProjectCategoryPeer.PKEY</right>
+			</join>
+		</join-parameter>
+	</entity>
+
+
+	<entity>
+		<alias>Severity</alias>
+		<field>TSeverityPeer.PKEY</field>
+		<!-- SystemFields.SEVERITY -->
+		<localization-bean-identifier>11</localization-bean-identifier>
+		<!-- <localization-bean-identifier>TSEVERITY</localization-bean-identifier>  -->
+		<join-parameter>
+			<join>
+				<left>TWorkItemPeer.SEVERITYKEY</left>
+				<right>TSeverityPeer.PKEY</right>
+			</join>
+		</join-parameter>
+	</entity>
+
+
+	<entity>
+		<alias>Synopsis</alias>
+		<field>TWorkItemPeer.PACKAGESYNOPSYS</field>
+	</entity>
+
+
+	<entity>
+		<alias>Description</alias>
+		<field>TWorkItemPeer.PACKAGEDESCRIPTION</field>
+	</entity>
+
+
+	<entity>
+		<alias>Lastedit</alias>
+		<field>TWorkItemPeer.LASTEDIT</field>
+	</entity>
+
+
+	<entity>
+		<alias>ReleaseScheduled</alias>
+		<field>TReleasePeer.LABEL</field>
+		<join-parameter>
+			<join>
+				<left>TWorkItemPeer.RELSCHEDULEDKEY</left>
+				<right>TReleasePeer.PKEY</right>
+			</join>
+		</join-parameter>
+	</entity>
+
+
+	<entity>
+		<alias>ReleaseNoticed</alias>
+		<field>TReleasePeer.LABEL</field>
+		<join-parameter>
+			<join>
+				<left>TWorkItemPeer.RELNOTICEDKEY</left>
+				<right>TReleasePeer.PKEY</right>
+			</join>
+		</join-parameter>
+	</entity>
+
+
+	<entity>
+		<alias>Build</alias>
+		<field>TWorkItemPeer.BUILD</field>
+	</entity>
+
+
+	<entity>
+		<alias>State</alias>
+		<field>TStatePeer.PKEY</field>
+		<!-- SystemFields.STATE -->
+		<localization-bean-identifier>4</localization-bean-identifier>
+		<!-- <localization-bean-identifier>TSTATE</localization-bean-identifier>  -->
+		<join-parameter>
+			<join>
+				<left>TWorkItemPeer.STATE</left>
+				<right>TStatePeer.PKEY</right>
+			</join>
+		</join-parameter>
+	</entity>
+
+
+	<entity>
+		<alias>StartDate</alias>
+		<field>TWorkItemPeer.STARTDATE</field>
+	</entity>
+
+
+	<entity>
+		<alias>EndDate</alias>
+		<field>TWorkItemPeer.ENDDATE</field>
+	</entity>
+
+
+	<entity>
+		<alias>Created</alias>
+		<field>TWorkItemPeer.CREATED</field>
+	</entity>
+	
+
+<!-- Interface for the report configuration GUI -->
+<!-- This GUI just tranlates into TQL           -->
+
+	<entity>
+		<alias>TPRJ</alias>
+		<field>TProjectPeer.PKEY</field>
+		<join-parameter>
+			<join>
+				<left>TWorkItemPeer.PROJCATKEY</left>
+				<right>TProjectCategoryPeer.PKEY</right>
+			</join>
+			<join>
+				<left>TProjectCategoryPeer.PROJKEY</left>
+				<right>TProjectPeer.PKEY</right>
+			</join>
+		</join-parameter>
+	</entity>
+
+
+	<entity>
+		<alias>TPRJC</alias>
+		<field>TProjectCategoryPeer.PKEY</field>
+		<join-parameter>
+			<join>
+				<left>TWorkItemPeer.PROJCATKEY</left>
+				<right>TProjectCategoryPeer.PKEY</right>
+			</join>
+		</join-parameter>
+	</entity>
+
+
+	<entity>
+		<alias>TCL</alias>
+		<field>TClassPeer.PKEY</field>
+		<join-parameter>
+			<join>
+				<left>TWorkItemPeer.CLASSKEY</left>
+				<right>TClassPeer.PKEY</right>
+			</join>
+		</join-parameter>
+	</entity>
+
+
+   	<entity>
+		<alias>TOW</alias>
+		<field>TPersonPeer.PKEY</field>
+		<join-parameter>
+			<join>
+				<left>TWorkItemPeer.OWNER</left>
+				<right>TPersonPeer.PKEY</right>
+			</join>
+		</join-parameter>
+	</entity>
+
+
+   	<entity>
+		<alias>TRE</alias>
+		<field>TPersonPeer.PKEY</field>
+		<join-parameter>
+			<join>
+				<left>TWorkItemPeer.RESPONSIBLE</left>
+				<right>TPersonPeer.PKEY</right>
+			</join>
+		</join-parameter>
+	</entity>
+
+
+	<entity>
+		<alias>TOR</alias>
+		<field>TPersonPeer.PKEY</field>
+		<join-parameter>
+			<join>
+				<left>TWorkItemPeer.ORIGINATOR</left>
+				<right>TPersonPeer.PKEY</right>
+			</join>
+		</join-parameter>
+	</entity>
+
+
+	<entity>
+		<alias>TCAT</alias>
+		<field>TListTypePeer.PKEY</field>
+		<localization-bean-identifier>TCATEGORY</localization-bean-identifier>
+		<join-parameter>
+			<join>
+				<left>TWorkItemPeer.CATEGORYKEY</left>
+				<right>TListTypePeer.PKEY</right>
+			</join>
+		</join-parameter>
+	</entity>
+
+
+	<entity>
+		<alias>TST</alias>
+		<field>TStatePeer.PKEY</field>
+		<localization-bean-identifier>TSTATE</localization-bean-identifier>
+		<join-parameter>
+			<join>
+				<left>TWorkItemPeer.STATE</left>
+				<right>TStatePeer.PKEY</right>
+			</join>
+		</join-parameter>
+	</entity>
+
+	<entity>
+		<alias>TPRIO</alias>
+		<field>TPriorityPeer.PKEY</field>
+		<localization-bean-identifier>TPRIORITY</localization-bean-identifier>
+		<join-parameter>
+			<join>
+				<left>TWorkItemPeer.PRIORITYKEY</left>
+				<right>TPriorityPeer.PKEY</right>
+			</join>
+		</join-parameter>
+	</entity>
+
+
+	<entity>
+		<alias>TREL</alias>
+		<field>TReleasePeer.PKEY</field>
+		<join-parameter>
+			<join>
+				<left>TWorkItemPeer.RELSCHEDULEDKEY</left>
+				<right>TReleasePeer.PKEY</right>
+			</join>
+		</join-parameter>
+	</entity>
+
+
+	<entity>
+		<alias>TRELNOTICED</alias>
+		<field>TReleasePeer.PKEY</field>
+		<join-parameter>
+			<join>
+				<left>TWorkItemPeer.RELNOTICEDKEY</left>
+				<right>TReleasePeer.PKEY</right>
+			</join>
+		</join-parameter>
+	</entity>
+
+
+	<entity>
+		<alias>TSEV</alias>
+		<field>TSeverityPeer.PKEY</field>
+		<localization-bean-identifier>TSEVERITY</localization-bean-identifier>
+		<join-parameter>
+			<join>
+				<left>TWorkItemPeer.SEVERITYKEY</left>
+				<right>TSeverityPeer.PKEY</right>
+			</join>
+		</join-parameter>
+	</entity>
+ 
+</join-schema>

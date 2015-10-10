@@ -1,0 +1,119 @@
+/*
+This css is a clone of file:
+	js\dojo\src\widget\templates\Tree.css  
+*/
+ 
+/*
+Style for all contain of tree config: screen config or fieldconfig
+*/
+.treeConfigWrapper{
+	width: 100%;
+	/* the height is important because of using dojo controls like SplitPane and LayoutContainer*/
+	height: 650px;
+	overflow: hidden;		
+}
+
+/*From here is similar with js\dojo\src\widget\templates\Tree.css */
+
+.dojoTree {
+	/*font: caption;
+	font-size: 11px;
+	font-weight: normal;*/
+	
+}
+
+/* common attributes for all nodes */
+.dojoTreeNode{
+	font-size: 11px;
+	font-style: normal;
+	font-weight: normal;
+}
+
+.dojoTreeNodeLabelTitle {
+	padding: 1px;
+	color: WindowText;
+	font-weight: normal;
+}
+
+.dojoTreeNodeLabel {
+	cursor:hand;
+	cursor:pointer;
+	font-weight: normal;
+}
+
+.dojoTreeNodeLabelTitle:hover {
+	color: #BF2128;	
+}
+
+.dojoTreeNodeLabelSelected {
+	background-color: #BF2128;	
+	color: #ffffff;
+}
+
+.dojoTreeNodeLabelSelected:hover {
+	background-color: #BF2128;	
+	color: #fff;
+}
+
+.dojoTree div {
+	white-space: nowrap;
+	font-weight: normal;
+}
+
+.dojoTree img{
+	vertical-align: middle;
+}
+
+.dojoTreeNodeLabel img {
+	vertical-align: middle;
+	width: 50px;
+	height: 24px;
+}
+
+.treePanel{
+	padding: 5px;
+	margin: 0px;
+	overflow: auto;
+	border: 1px dotted #77787b;
+	background: #eef0f5;
+}
+
+.field{
+
+}
+
+
+.issueType{
+
+}
+
+
+.projectType{
+
+}
+
+
+.project{
+
+}
+
+.configItem:hover{
+
+}
+
+.configItemUnChanged{
+	color: #909090;
+}
+
+.configItemUnChanged:hover{
+	color: #BF2128;
+	background-color: #EEF0F5;
+}
+
+.action{
+   font-weight: bold;
+}
+
+.formName{
+
+}

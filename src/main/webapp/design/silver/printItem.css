@@ -1,0 +1,15 @@
+.printItemCell{
+    padding: 1px;
+}
+.fieldLabel{
+    color: #6B6B6B
+}
+#contentPrintItem .flatValueLabel{
+    font-weight: bold;
+    font-size: 12px;
+}
+
+td.dataName{
+}
+td.dataValue{
+}

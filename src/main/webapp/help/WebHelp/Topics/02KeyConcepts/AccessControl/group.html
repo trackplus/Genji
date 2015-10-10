@@ -1,0 +1,53 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="You can organize users in groups. Groups help you managing large number of users. Users can belong to many groups. In most respects, groups are treated just like users, e. g. they can be assigned ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="concept"/><meta name="DC.Title" content="Groups"/><meta name="abstract" content="You can organize users in groups. Groups help you managing large number of users."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="You can organize users in groups. Groups help you managing large number of users."/><meta name="DC.Relation" scheme="URI" content="../../../Topics/02KeyConcepts/AccessControl/accessControl.html"/><meta name="DC.Creator" content="Steinbeis Technical Documentation"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="id12BRB0GM0B0"/><link rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Groups</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()" id="id12BRB0GM0B0">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../../Topics/02KeyConcepts/AccessControl/accessControl.html" title="In Genji you can control who can access which items and even what information within an item. The access control system in Genji organizes items in spaces. Permissions are tied to roles and define what a user in this role may do with items within a space. Beyond these space-specific roles there are item-specific roles structured according to the RACI method. User groups make it easy to manage large numbers of spaces and roles."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Access control</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../../Topics/02KeyConcepts/AccessControl/../../../Topics/02KeyConcepts/Chapter2Wrapper.html" title="Key concepts">Key concepts</a> / <a class="navheader_parent_path" href="../../../Topics/02KeyConcepts/AccessControl/accessControl.html" title="In Genji you can control who can access which items and even what information within an item. The access control system in Genji organizes items in spaces. Permissions are tied to roles and define what a user in this role may do with items within a space. Beyond these space-specific roles there are item-specific roles structured according to the RACI method. User groups make it easy to manage large numbers of spaces and roles.">Access control</a></td></tr></tbody></table>
+
+    <h1 class="title topictitle1">Groups</h1>
+
+    
+    
+    <div class="body conbody"><p class="shortdesc">You can organize users in groups. Groups help you managing large number of
+        users.</p>
+
+        <p class="p">Users can belong to many groups. In most
+            respects, groups are treated just like users, e. g. they can be assigned roles, they can
+            have an e-mail address, and they can be assigned to items.</p>
+
+        <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/groupMembers.png" height="159" width="401"/></div><br/>
+            
+        </div>
+
+        <p class="p">Users that belong to a group inherit the roles this group is assigned to. </p>
+
+        <p class="p">Groups can be configured such that access permissions are automatically transferred
+            between members of that group. The transfer only takes places for permissions associated
+            with RACI roles. If for example a group member is „responsible“ for an item, all other
+            members of the same group would have the permissions just as if they themselves were the
+            „responsible“ for that item.</p>
+
+        <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/grouptransfer.png" height="153" width="389"/></div><br/>
+            
+        </div>
+
+        <p class="p">It is good practice defining groups and then assigning groups to roles, rather than
+            single persons. This reduces the maintenance work when people come and go, since you
+            have to make the modifications in one place only.</p>
+
+        <p class="p">You can synchronize groups with an LDAP directory (see <a class="xref" href="../../07ForSystemAdmins/serverConfiguration/tabLDAP.html" title="If you want to use always the same password on your Genji account as on your other computers, you can connect Genji to a directory server (LDAP server, Active Directory). If you have several applications all running on the same server, you can provide a single login to that server and have Genji use the authentication of that login process.">LDAP and SSO configuration</a>).</p>
+
+    </div>
+
+<div class="related-links"/>
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../../Topics/02KeyConcepts/AccessControl/accessControl.html" title="In Genji you can control who can access which items and even what information within an item. The access control system in Genji organizes items in spaces. Permissions are tied to roles and define what a user in this role may do with items within a space. Beyond these space-specific roles there are item-specific roles structured according to the RACI method. User groups make it easy to manage large numbers of spaces and roles."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Access control</span></a></span>  </div>
+</body>
+</html>
