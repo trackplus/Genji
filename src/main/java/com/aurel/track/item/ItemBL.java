@@ -433,7 +433,7 @@ public class ItemBL {
 					String label = projectBean.getLabel();
 					projectFound = projectID;
 					String projectPrefix = projectBean.getPrefix();
-					if (projectPrefix==null || "".equals(projectPrefix)) {
+					if (projectPrefix==null || "".equals(projectPrefix) || !projectSpecificID.startsWith(projectPrefix)) {
 						try {
 							//because the project is identified we can deal also with the error prone case when no project prefix is specified
 							idNumberFound = Integer.parseInt(projectSpecificID);
@@ -442,7 +442,7 @@ public class ItemBL {
 						}
 					} else {
 						String intStr = projectSpecificID.substring(projectPrefix.length());
-						if (intStr!=null) {
+						if (intStr!=null && projectSpecificID.startsWith(projectPrefix)) {
 							try {
 								idNumberFound = Integer.parseInt(intStr.trim());
 							} catch(Exception e) {

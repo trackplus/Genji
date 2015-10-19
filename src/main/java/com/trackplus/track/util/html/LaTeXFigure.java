@@ -83,6 +83,10 @@ public class LaTeXFigure {
 //			\end{figure} 
 	
 	public String getLaTeX() {
+		
+		if (fileName == null || "".equals(fileName)) {
+			return "";
+		}
 		StringBuilder sb = new StringBuilder();
 
 		double scalex = 0;
