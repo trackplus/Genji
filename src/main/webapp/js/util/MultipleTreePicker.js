@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -26,29 +26,31 @@ Ext.define("com.trackplus.util.MultipleTreePicker",{
 	valueField:'id',
 	createStore:function(){
 		var me=this;
+		var options=me.getOptions();
 		return  Ext.create("Ext.data.TreeStore", {
 			fields: [
 				{name : "id", mapping : "id", type: "string"},
 				{name : "text", mapping : "text", type: "string"},
 				{name : "leaf", mapping : "leaf", type: "boolean"},
 				{name : "iconCls", mapping : "iconCls", type: "string"},
-				{name: "selectable", mapping: "selectable", type: "boolean", useNull: true}
+				{name: "selectable", mapping: "selectable", type: "boolean", allowNull: true}
 			],
 			root: {
 				expanded: true,
-				children:(me.data==null?[]:me.data)
+				children:(CWHF.isNull(options)?[]:options)
 			},
-			originalData:me.data==null?[]:me.data
+			originalData:CWHF.isNull(options)?[]:options
 		});
 	},
-	updateData:function(data){
+	updateMyOptions:function(options){
 		var me=this;
-		me.data=Ext.clone(data);
-		if(me.store!=null){
+		var newOptions=Ext.clone(options);
+		me.setOptions(newOptions);
+		if(me.store){
 			var rootNode=me.store.getRootNode();
 			rootNode.removeAll(false);
-			if(me.data!=null&&me.data.length>0){
-				rootNode.appendChild(me.data);
+			if(newOptions&&newOptions.length>0){
+				rootNode.appendChild(newOptions);
 			}
 		}
 	},
@@ -75,14 +77,17 @@ Ext.define("com.trackplus.util.MultipleTreePicker",{
 		var me=this;
 		me.boundList.addListener('checkchange',me.treeCheckChange,me);
 		me.boundList.on('afterrender',me.onListRefresh,me);
+		me.boundList.on('beforeselect',me.onBeforeselect,me);
 	},
 	findRecord: function(field, value) {
 		var me=this;
-		if(me.store==null){
-			me.store=me.createStore();
+		var store =me.getStore();
+		if(CWHF.isNull(store)){
+			store=me.createStore();
+			me.setStore(store);
 		}
-		var nodeToSelect=me.store.getNodeById(value);
-		if(nodeToSelect!=null){
+		var nodeToSelect=store.getNodeById(value);
+		if(nodeToSelect){
 			return nodeToSelect;
 		}else{
 			return false;
@@ -97,20 +102,28 @@ Ext.define("com.trackplus.util.MultipleTreePicker",{
 	syncSelection: function() {
 		var me = this;
 		var values=new Array();
-		if(me.valueModels!=null){
+		if(me.valueModels){
 			for(var i=0;i<me.valueModels.length;i++){
 				values.push(me.getRecordValue(me.valueModels[i]));
 			}
 		}
-		if(this.boundList!=null){
+		if(this.boundList){
 			this.boundList.getRootNode().cascadeBy(function(){
-				if(this.get('checked')!=undefined){
+				var checked=this.get('checked');
+				if(!CWHF.isNull(checked)){
 					this.set( 'checked', Ext.Array.contains(values, this.data.id));
 				}
 			});
 		}
 	},
-
+	onBeforeselect:function(rowModel, record, index, eOpts){
+		var me=this;
+		var selectable=record.data['selectable'];
+		if(selectable===false){
+			return false;
+		}
+		return true;
+	},
 	treeCheckChange: function(node, checked, options) {
 		var me=this;
 		var records = this.boundList.getView().getChecked();
@@ -119,9 +132,9 @@ Ext.define("com.trackplus.util.MultipleTreePicker",{
 	selectAll:function(){
 		var me=this;
 		var value=new Array();
-		if (me.boundList!=null) {
+		if (me.boundList) {
 			this.boundList.getRootNode().cascadeBy(function(){
-				if(this.get('checked')!=undefined){
+				if(this.get('checked')!==undefined){
 					this.set( 'checked', true);
 					value.push(this);
 				}
@@ -133,9 +146,9 @@ Ext.define("com.trackplus.util.MultipleTreePicker",{
 	getSelectableItemsCount:function(){
 		var me=this;
 		var count=0;
-		if (me.boundList!=null) {
+		if (me.boundList) {
 			this.boundList.getRootNode().cascadeBy(function(){
-				if(this.get('checked')!=undefined){
+				if(this.get('checked')!==undefined){
 					count++;
 				}
 			});
@@ -144,15 +157,15 @@ Ext.define("com.trackplus.util.MultipleTreePicker",{
 	},
 	clearSelection:function(){
 		var me=this;
-        if (me.boundList!=null) {
+        if (me.boundList) {
             this.boundList.getRootNode().cascadeBy(function(){
-                if(this.get('checked')!=undefined){
+                if(this.get('checked')!==undefined){
                     this.set( 'checked', false );
                 }
             });
         }
 		me.setValue(null);
-        if (me.searchField!=null) {
+        if (me.searchField) {
 		    me.searchField.setValue(null);
         }
 	},
@@ -222,7 +235,7 @@ Ext.define('TreeFilter', {
 
 		Ext.each(matches, function (item, i, arr) {                         // loop through all matching leaf nodes
 			root.cascadeBy(function (node) {                                // find each parent node containing the node from the matches array
-				if (node.contains(item) == true) {
+				if (node.contains(item) === true) {
 					visibleNodes.push(node);                                // if it's an ancestor of the evaluated node add it to the visibleNodes  array
 				}
 			});

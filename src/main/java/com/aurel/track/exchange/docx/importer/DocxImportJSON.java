@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -80,7 +80,6 @@ public class DocxImportJSON {
 		static final String INVALID_VALUE_HANDLING_VALUE = "invalidValueHandlingValue";
 		
 
-		//static final String ERROR_MESSAGES = "errorMessages";
 		static final String GRID_ERRORS = "gridErrors";
 		static final String ROW_ERRORS = "rowErrors";
 		static final String LOCATION_LIST = "locationList";
@@ -129,7 +128,6 @@ public class DocxImportJSON {
 		sb.append("{");
 		JSONUtility.appendBooleanValue(sb, JSONUtility.JSON_FIELDS.SUCCESS, true);
 		sb.append(JSONUtility.JSON_FIELDS.DATA).append(":{");
-		//JSONUtility.appendJSONValue(sb, JSON_FIELDS.FILE_NAME, fileName);
 		JSONUtility.appendStringValue(sb, JSON_FIELDS.ITEM_NO, itemNo);
 		JSONUtility.appendStringValue(sb, JSON_FIELDS.ITEM_TITLE, itemTitle);
 		JSONUtility.appendIntegerValue(sb, JSON_FIELDS.WORKITEM_ID, workItemID, true);
@@ -149,10 +147,8 @@ public class DocxImportJSON {
 		StringBuilder sb=new StringBuilder();
 		sb.append("{");
 		JSONUtility.appendBooleanValue(sb, JSONUtility.JSON_FIELDS.SUCCESS, true);
-		//sb.append(JSONUtility.JSON_FIELDS.DATA).append(":{");
 		JSONUtility.appendStringValue(sb, JSON_FIELDS.FILE_NAME, fileName);
 		JSONUtility.appendJSONValue(sb, JSON_FIELDS.PROJECT_RELEASE_TREE, projectReleaseTree, true);
-		//sb.append("}");
 		sb.append("}");
 		return sb.toString();
 	}

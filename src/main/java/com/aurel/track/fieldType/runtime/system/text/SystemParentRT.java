@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -27,6 +27,7 @@ package com.aurel.track.fieldType.runtime.system.text;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -95,6 +96,7 @@ public class SystemParentRT extends SystemInputBaseRT {
 	 * Should be a @ValueType constant 
 	 * @return
 	 */
+	@Override
 	public int getValueType() {
 		return ValueType.SYSTEMOPTION;
 	}	
@@ -150,6 +152,7 @@ public class SystemParentRT extends SystemInputBaseRT {
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public IActivityConfig getFieldChangeConfig(Integer fieldID) {
 		return new ParentFieldChangeConfig(fieldID);
 	}
@@ -159,6 +162,7 @@ public class SystemParentRT extends SystemInputBaseRT {
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public IActivityExecute getFieldChangeApply(Integer fieldID) {
 		return new ParentFieldChangeApply(fieldID);
 	}
@@ -168,6 +172,7 @@ public class SystemParentRT extends SystemInputBaseRT {
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public IValueConverter getFieldValueConverter(Integer fieldID) {
 		return new ParentSetterConverter(fieldID);
 	}
@@ -180,12 +185,14 @@ public class SystemParentRT extends SystemInputBaseRT {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public String getShowValue(Object value, Locale locale) {
 		Integer optionID = null;
 		try {
 			optionID = (Integer)value;
 		} catch (Exception e) {
-			LOGGER.error("Converting the value to integer failed with " + e.getMessage(), e);
+			LOGGER.error("Converting the value to integer failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		if (optionID!=null) {
 			if (ApplicationBean.getInstance().getSiteBean().getProjectSpecificIDsOn()) {
@@ -216,13 +223,15 @@ public class SystemParentRT extends SystemInputBaseRT {
 	 * @param locale 
 	 * @return
 	 */
+	@Override
 	public String getShowValue(Integer fieldID, Integer parameterCode, Object value, 
 			Integer workItemID, LocalLookupContainer localLookupContainer, Locale locale) {
 		Integer optionID = null;
 		try {
 			optionID = (Integer)value;
 		} catch (Exception e) {
-			LOGGER.error("Converting the value to integer failed with " + e.getMessage(), e);
+			LOGGER.error("Converting the value to integer failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		if (optionID!=null) {
 			TWorkItemBean parentWorkItemBean = null;
@@ -245,7 +254,8 @@ public class SystemParentRT extends SystemInputBaseRT {
 						beansMap.put(optionID, parentWorkItemBean);
 					}
 				} catch (ItemLoaderException e) {
-					LOGGER.debug("Loading the parentID " + optionID + " failed with " + e.getMessage(), e);
+					LOGGER.debug("Loading the parentID " + optionID + " failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 			}
 			if (parentWorkItemBean!=null) {
@@ -287,13 +297,15 @@ public class SystemParentRT extends SystemInputBaseRT {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public String getShowISOValue(Integer fieldID, Integer parameterCode, Object value, 
 			Integer workItemID, LocalLookupContainer localLookupContainer, Locale locale) {
 		Integer optionID = null;
 		try {
 			optionID = (Integer)value;
 		} catch (Exception e) {
-			LOGGER.error("Converting the value to integer failed with " + e.getMessage(), e);
+			LOGGER.error("Converting the value to integer failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		if (optionID!=null) {
 			return optionID.toString();
@@ -328,6 +340,7 @@ public class SystemParentRT extends SystemInputBaseRT {
 	 * Whether the field should be stored
 	 * @return
 	 */
+	@Override
 	public int getLuceneStored() {
 		return LuceneUtil.STORE.NO;
 	}
@@ -336,6 +349,7 @@ public class SystemParentRT extends SystemInputBaseRT {
 	 * Whether the field should be tokenized
 	 * @return
 	 */
+	@Override
 	public int getLuceneTokenized() {
 		return LuceneUtil.TOKENIZE.NO;
 	}
@@ -344,6 +358,7 @@ public class SystemParentRT extends SystemInputBaseRT {
 	 * Returns the lookup entity type related to the fieldType
 	 * @return
 	 */
+	@Override
 	public int getLookupEntityType() {
 		return LuceneUtil.LOOKUPENTITYTYPES.DIRECTINTEGER;
 	}

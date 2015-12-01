@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -37,7 +37,7 @@ Ext.define('js.ext.com.track.dashboard.AverageTimeToCloseItemConfig',{
 		var me=this;
 		var items=me.callParent();
 		var projectID=null;
-		if(typeof(me.projectID) !== 'undefined' && me.projectID != null) {
+		if(typeof(me.projectID) !== 'undefined' && me.projectID ) {
 			projectID=me.projectID;
 		}
 
@@ -46,16 +46,16 @@ Ext.define('js.ext.com.track.dashboard.AverageTimeToCloseItemConfig',{
 			me.chnageTitleCompSettings(titleComp);
 		}
 
-		if(projectID==null){
+		if(CWHF.isNull(projectID)){
 			var dataSourceType=com.trackplus.dashboard.createRadioGroupConfig(getText('common.datasource'),
 				'params.selectedDatasourceType',me.jsonData.datasourceTypes,me.jsonData.selectedDatasourceType,me.datasourceTypeChanged,me);
 
 			me.cmbProjects=com.trackplus.dashboard.createReleasePickerCfg("common.datasource.projectRelease",
 				'params.selectedProjectOrRelease',me.jsonData.selectedProjectOrRelease);
-			me.cmbProjects.setDisabled(me.jsonData.selectedDatasourceType!=1);
+			me.cmbProjects.setDisabled(me.jsonData.selectedDatasourceType!==1);
 
 			me.cmbQueries=com.trackplus.dashboard.createFilterPickerCfg("common.datasource.filter",'params.selectedQueryID',me.jsonData.selectedQueryID);
-			me.cmbQueries.setDisabled(me.jsonData.selectedDatasourceType==1);
+			me.cmbQueries.setDisabled(me.jsonData.selectedDatasourceType===1);
 
 			dsFieldSetItems = [dataSourceType, me.cmbProjects, me.cmbQueries];
 			me.chnageComponentsWidth(dsFieldSetItems);
@@ -109,7 +109,7 @@ Ext.define('js.ext.com.track.dashboard.AverageTimeToCloseItemConfig',{
 	chnageComponentsWidth: function(items) {
 		var me = this;
 		for(var i in items){
-			if(items[i] != null) {
+			if(items[i] ) {
 				items[i].labelWidth = me.labelWidth;
 				items[i].width= me.componentWidth;
 			}
@@ -120,12 +120,12 @@ Ext.define('js.ext.com.track.dashboard.AverageTimeToCloseItemConfig',{
 		var me=this;
 		var checkedArr = radioGroup.getChecked();
 		var checkedRadio;
-		if (checkedArr.length==1) {
+		if (checkedArr.length===1) {
 			checkedRadio = checkedArr[0];
 			var value=checkedRadio.getSubmitValue();
 			//project=1,query=2
-			me.cmbProjects.setDisabled(value!=1);
-			me.cmbQueries.setDisabled(value==1);
+			me.cmbProjects.setDisabled(value!==1);
+			me.cmbQueries.setDisabled(value===1);
 		}
 	},
 
@@ -133,13 +133,13 @@ Ext.define('js.ext.com.track.dashboard.AverageTimeToCloseItemConfig',{
 		var me=this;
 		var checkedArr = radioGroup.getChecked();
 		var checkedRadio;
-		if (checkedArr.length==1) {
+		if (checkedArr.length===1) {
 			checkedRadio = checkedArr[0];
 			var value=checkedRadio.getSubmitValue();
 			//fromTo=1,dateFrom=2
-			me.dateFrom.setDisabled(value!=1);
-			me.dateTo.setDisabled(value!=1);
-			me.txtDaysBefore.setDisabled(value==1);
+			me.dateFrom.setDisabled(value!==1);
+			me.dateTo.setDisabled(value!==1);
+			me.txtDaysBefore.setDisabled(value===1);
 		}
 	},
 
@@ -162,7 +162,7 @@ Ext.define('js.ext.com.track.dashboard.AverageTimeToCloseItemConfig',{
 
 	chnageTitleCompSettings: function(titleComp) {
 		var me = this;
-		if(titleComp != null) {
+		if(titleComp ) {
 			titleComp.anchor = null;
 			titleComp.labelWidt = me.labelWidth;
 			titleComp.labelAlign = me.labelAlign;
@@ -217,9 +217,9 @@ Ext.define('js.ext.com.track.dashboard.AverageTimeToCloseItemConfig',{
 				'params.reportingInterval', me.jsonData.reportingInterval, me.jsonData.selectedReportingInterval);
 		items.push(me.cmbselRepInt);
 		//fromTo=1,dateFrom=2
-		me.dateFrom.setDisabled(me.jsonData.selectedPeriodType!=1);
-		me.dateTo.setDisabled(me.jsonData.selectedPeriodType!=1);
-		me.txtDaysBefore.setDisabled(me.jsonData.selectedPeriodType==1);
+		me.dateFrom.setDisabled(me.jsonData.selectedPeriodType!==1);
+		me.dateTo.setDisabled(me.jsonData.selectedPeriodType!==1);
+		me.txtDaysBefore.setDisabled(me.jsonData.selectedPeriodType===1);
 		return items;
 	},
 
@@ -246,7 +246,7 @@ Ext.define('js.ext.com.track.dashboard.AverageTimeToCloseItemConfig',{
 			labelStyle: me.labelStyle,
 			labelSeparator: me.labelSeparator,
 			name: 'params.responseTimeLimitValue',
-			value: me.jsonData.responseTimeLimitValue != null ? me.jsonData.responseTimeLimitValue : 10
+			value: me.jsonData.responseTimeLimitValue  ? me.jsonData.responseTimeLimitValue : 10
 		});
 
 		items.push(me.timeFormatCheckBox);
@@ -273,13 +273,13 @@ Ext.define('js.ext.com.track.dashboard.AverageTimeToCloseItemConfig',{
 	        	name: 'params.timeFormat',
 	        	inputValue: 0,
 	            id: 'radio1',
-	            checked: me.jsonData.selectedTimeFormat == 0
+	            checked: me.jsonData.selectedTimeFormat === 0
 	          },{
 	        	  boxLabel: getText('averageTimeToCloseItem.tooltip.time.format.working.hours'),
 	        	  name: 'params.timeFormat',
 	        	  inputValue: 1,
 	        	  id: 'radio2',
-	        	  checked: me.jsonData.selectedTimeFormat == 1
+	        	  checked: me.jsonData.selectedTimeFormat === 1
 
 	          }]
 		};

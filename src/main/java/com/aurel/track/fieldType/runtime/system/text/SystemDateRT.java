@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -89,6 +90,7 @@ public class SystemDateRT extends SystemTextBoxBaseRT {
 	 * @param fieldSettings
 	 * @return a COMPUTE_PARENT_OPTIONS value
 	 */
+	@Override
 	public int getHierarchicalBehavior(Integer fieldID, TFieldConfigBean fieldConfigBean, Object fieldSettings) {
 		if (fieldSettings==null) {
 			//no field settings fall back to previous behavior
@@ -131,6 +133,7 @@ public class SystemDateRT extends SystemTextBoxBaseRT {
 	 * @param fieldSettings
 	 * @return true if parent value was really modified
 	 */
+	@Override
 	public boolean setBottomUpParentValue(TWorkItemBean parentWorkItem, Integer fieldID,
 			Object childValueNew, Object childValueOriginal, TFieldConfigBean fieldConfigBean, Object fieldSettings) {
 		if (getHierarchicalBehavior(fieldID, fieldConfigBean, fieldSettings)==HIERARCHICAL_BEHAVIOR_OPTIONS.COMPUTE_BOTTOM_UP) {
@@ -143,53 +146,6 @@ public class SystemDateRT extends SystemTextBoxBaseRT {
 				return true;
 			}
 			return false;
-			/*Date parentDate = (Date)parentWorkItem.getAttribute(fieldID);
-			Date childDate = (Date)childValueNew;
-			Date childDateOriginal = (Date)childValueOriginal;
-			if (childDate!=null) {
-				if (parentDate==null || (earliest && parentDate.after(childDate)) || (!earliest && parentDate.before(childDate))) {
-					//1. parent date was null
-					//2. the childDate start date was moved before the parent's start date -> move parent start date backward
-					//3. the childDate end date was moved after the parent's end date -> move parent end date forward 
-					parentWorkItem.setAttribute(fieldID, childDate);
-					return true;
-				} else {
-					if (!childDate.equals(parentDate)) {
-						//derive new parent date only if differs (otherwise no change is needed)
-						Date outermostChildDate = getOutermostChildDate(parentID, fieldID, earliest);
-						if (outermostChildDate==null) {
-							parentWorkItem.setAttribute(fieldID, null);
-						} else {
-							if ((earliest && parentDate.before(outermostChildDate)) || (!earliest && parentDate.after(outermostChildDate))) {
-								//move parent start date forward to the next earliest child
-								//the childDate start date was moved before the parent's start date -> move parent start date backward
-								//the childDate end date was moved after the parent's end date -> move parent end date forward 
-								parentWorkItem.setAttribute(fieldID, outermostChildDate);
-							}
-							return true;
-						}
-					}
-				}
-			} else {
-				//child date was set to null 
-				//if the parent date was derived from this child
-				if (parentDate!=null && childDateOriginal!=null && parentDate.equals(childDateOriginal)) {
-					//if the parentDate used to be derived from the childDateOriginal get the outermost from all children
-					//get the earliest from all children
-					Date outermostChildDate = getOutermostChildDate(parentID, fieldID, earliest);
-					if (outermostChildDate!=null && !outermostChildDate.equals(parentDate)) {
-						//earliestStartDate might be null
-						parentWorkItem.setAttribute(fieldID, outermostChildDate);
-						return true;
-					} else {
-						if (outermostChildDate==null) {
-							//the last child with date was removed
-							parentWorkItem.setAttribute(fieldID, null);
-							return true;
-						}
-					}
-				}
-			}*/
 		}
 		return false;
 	}
@@ -222,6 +178,7 @@ public class SystemDateRT extends SystemTextBoxBaseRT {
 	 * Should be a @ValueType constant
 	 * @return
 	 */
+	@Override
 	public int getValueType() {
 		return ValueType.DATE;
 	}
@@ -242,7 +199,8 @@ public class SystemDateRT extends SystemTextBoxBaseRT {
 			} catch (Exception e) {
 				LOGGER.error("Converting the new value of type " + 
 						newValue.getClass().getName() +
-						" to Date failed with " + e.getMessage(), e);
+						" to Date failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		Date dateOld = null;
@@ -252,7 +210,8 @@ public class SystemDateRT extends SystemTextBoxBaseRT {
 			} catch (Exception e) {
 				LOGGER.error("Converting the old value of type " + 
 						newValue.getClass().getName() +  
-						" to Boolean failed with " + e.getMessage(), e);
+						" to Boolean failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		//StartDate and EndDate contain typically no time value only date value
@@ -297,6 +256,7 @@ public class SystemDateRT extends SystemTextBoxBaseRT {
 	 * @param locale 
 	 * @return
 	 */
+	@Override
 	public String getShowValue(Integer fieldID, Integer parameterCode, Object value, 
 			Integer workItemID, LocalLookupContainer localLookupContainer, Locale locale) {
 		return getShowValue(value, locale);
@@ -314,7 +274,8 @@ public class SystemDateRT extends SystemTextBoxBaseRT {
 			} catch (Exception e) {
 				//it can happen when the value is an Integer (days relative in treeQueries)
 				if (LOGGER.isDebugEnabled()) {
-					LOGGER.debug("Getting the showValue for date " + value + " failed with " + e.getMessage(), e);
+					LOGGER.debug("Getting the showValue for date " + value + " failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 				return value.toString();
 			}
@@ -334,6 +295,7 @@ public class SystemDateRT extends SystemTextBoxBaseRT {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public String getShowISOValue(Integer fieldID, Integer parameterCode, Object value, 
 			Integer workItemID, LocalLookupContainer localLookupContainer, Locale locale) {
 		if (value!=null) {
@@ -424,7 +386,6 @@ public class SystemDateRT extends SystemTextBoxBaseRT {
 			validatorsList.add(dateHierarchyValidator);
 		}
 		CalendarValidator calendarValidator = new CalendarValidator();
-		//calendarValidator.setPersonID(personID);
 		validatorsList.add(calendarValidator);
 		return validatorsMap;
 	}
@@ -472,6 +433,7 @@ public class SystemDateRT extends SystemTextBoxBaseRT {
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public IActivityConfig getFieldChangeConfig(Integer fieldID) {
 		return new DateFieldChangeConfig(fieldID);
 	}
@@ -481,6 +443,7 @@ public class SystemDateRT extends SystemTextBoxBaseRT {
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public IActivityExecute getFieldChangeApply(Integer fieldID) {
 		return new DateFieldChangeApply(fieldID);
 	}
@@ -490,6 +453,7 @@ public class SystemDateRT extends SystemTextBoxBaseRT {
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public IValueConverter getFieldValueConverter(Integer fieldID) {
 		return new DateSetterConverter(fieldID);
 	}
@@ -502,6 +466,7 @@ public class SystemDateRT extends SystemTextBoxBaseRT {
 	 * @param personBean
 	 * @param locale
 	 */
+	@Override
 	public void loadFieldChangeDatasourceAndValue(WorkflowContext workflowContext,
 			FieldChangeValue fieldChangeValue, 
 			Integer parameterCode, TPersonBean personBean, Locale locale) {
@@ -524,15 +489,6 @@ public class SystemDateRT extends SystemTextBoxBaseRT {
 				}
 			}
 			fieldChangeValue.setPossibleValues(dateFieldsList);
-			/*Integer itemTypeID = workflowContext.getItemTypeID();
-			Integer projectID = workflowContext.getProjectID();
-			Integer projectTypeID = workflowContext.getProjectTypeID();
-			if (projectTypeID==null && projectID!=null) {
-				TProjectBean projectBean = LookupContainer.getProjectBean(projectID);
-				if (projectBean!=null) {
-					projectTypeID = projectBean.getProjectType();
-				}
-			}*/
 			/*if (!dateFieldsList.isEmpty()) {
 				Integer actualFieldID = null;
 				if (fieldChangeValue.getValue()!=null) {
@@ -560,18 +516,12 @@ public class SystemDateRT extends SystemTextBoxBaseRT {
 	 * to be interpreted correctly according to the reports's locale  
 	 * @return
 	 */
-	/*public boolean isDate() {
-		return true;
-	}*/
 	
 	/**
 	 * Whether the field should appear in the groupable fields list
 	 * Typically fields which are typically unique should not be groupable   
 	 * @return
 	 */
-	/*public boolean isGroupable() {
-		return false;
-	}*/
 	
 	/**
 	 * Gets the string value to be stored by lucene
@@ -579,6 +529,7 @@ public class SystemDateRT extends SystemTextBoxBaseRT {
 	 * @param workItemBean the lucene value might depend on other fields of the workItem
 	 * @return
 	 */
+	@Override
 	public String getLuceneValue(Object value, TWorkItemBean workItemBean) {
 		return LuceneUtil.getLuceneDateValue(value);
 	}
@@ -587,6 +538,7 @@ public class SystemDateRT extends SystemTextBoxBaseRT {
 	 * Whether the field should be stored
 	 * @return
 	 */
+	@Override
 	public int getLuceneStored() {
 		return LuceneUtil.STORE.NO;
 	}
@@ -595,6 +547,7 @@ public class SystemDateRT extends SystemTextBoxBaseRT {
 	 * Whether the field should be tokenized
 	 * @return
 	 */
+	@Override
 	public int getLuceneTokenized() {
 		return LuceneUtil.TOKENIZE.NO;
 	}
@@ -603,6 +556,7 @@ public class SystemDateRT extends SystemTextBoxBaseRT {
 	 * Returns the lookup entity type related to the fieldType
 	 * @return
 	 */
+	@Override
 	public int getLookupEntityType() {
 		return LuceneUtil.LOOKUPENTITYTYPES.DIRECTDATE;
 	}

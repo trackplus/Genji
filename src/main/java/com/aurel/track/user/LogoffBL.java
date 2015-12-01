@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -101,9 +101,6 @@ public class LogoffBL {
 				/*httpSession.invalidate();
 				 httpSession = request.getSession(true);*/
 //		        if (SecurityContextHolder.getContext() != null
-//		            	&& SecurityContextHolder.getContext().getAuthentication() != null) {
-//		        	SecurityContextHolder.getContext().setAuthentication(null);
-//		        }
 			}
 		} catch (Exception e) {
 			accessLogger.error("Exception thrown when logging off: " + e.getMessage(), e);
@@ -158,14 +155,14 @@ public class LogoffBL {
 
 		TSiteBean siteBean = DAOFactory.getFactory().getSiteDAO().load1();
 
-		//if (ApplicationBean.getApplicationBean().getOpState().equals(ApplicationBean.OPSTATE_MAINTENNANCE)) {
+		//if (ApplicationBean.getInstance().getOpState().equals(ApplicationBean.OPSTATE_MAINTENNANCE)) {
 		if (ApplicationBean.OPSTATE_MAINTENNANCE.endsWith(siteBean.getOpState())) {
 			String msg = null;
-			//if (ApplicationBean.getApplicationBean().getHasUserMsg()){
+			//if (ApplicationBean.getInstance().getHasUserMsg()){
 			String userMessage = siteBean.getUserMessage();
 			Boolean userMessageActiv = siteBean.getUserMessageActiv();
 			if (userMessageActiv!=null && userMessageActiv.booleanValue() &&  userMessage!=null && !"".equals(userMessage)) {
-				msg = userMessage; /*ApplicationBean.getApplicationBean().getUserMsg();*/
+				msg = userMessage; /*ApplicationBean.getInstance().getUserMsg();*/
 			} else {
 				msg = LocalizeUtil.getLocalizedTextFromApplicationResources("admin.server.status.opstate.infoHeader", locale);;
 			}
@@ -184,8 +181,8 @@ public class LogoffBL {
 			JSONUtility.appendStringValue(sb, "motd", "" );
 		}
 		JSONUtility.appendBooleanValue(sb, "maybeMobile", mayBeMobile);
-		JSONUtility.appendStringValue(sb, "serverVersion", ApplicationBean.getApplicationBean().getVersion());
-		JSONUtility.appendIntegerValue(sb, "serverVersionNo", ApplicationBean.getApplicationBean().getVersionNo());
+		JSONUtility.appendStringValue(sb, "serverVersion", ApplicationBean.getInstance().getVersion());
+		JSONUtility.appendIntegerValue(sb, "serverVersionNo", ApplicationBean.getInstance().getVersionNo());
 		JSONUtility.appendIntegerValue(sb, "clientCompatibility", MobileBL.checkClientCompatibility(mobileApplicationVersionNo, true), true);
 		sb.append("}");
 		return sb;

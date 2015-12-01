@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -123,6 +123,7 @@ public class TProjectPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TProjectBean loadByPrimaryKey(Integer objectID) {
 		TProject tProject = null;
 		try {
@@ -142,6 +143,7 @@ public class TProjectPeer
 	 * @param label
 	 * @return
 	 */
+	@Override
 	public TProjectBean loadByLabel(String label) {
 		List<TProject> torqueList = null;
 		Criteria crit = new Criteria();
@@ -149,7 +151,7 @@ public class TProjectPeer
 		try {
 			torqueList =  doSelect(crit);
 		} catch (Exception e) {
-			LOGGER.error("Loading the project by label " + label +  " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the project by label " + label +  " failed with " + e.getMessage());
 			return null;
 		}
 		if (torqueList==null || torqueList.isEmpty()) {
@@ -163,13 +165,14 @@ public class TProjectPeer
 	 * @param prefix
 	 * @return
 	 */
+	@Override
 	public List<TProjectBean> loadByPrefix(String prefix) {
 		Criteria crit = new Criteria();
 		crit.add(PREFIX, prefix);
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (Exception e) {
-			LOGGER.error("Loading the project by prefix " + prefix +  " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the project by prefix " + prefix +  " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -179,6 +182,7 @@ public class TProjectPeer
 	 * @param personID
 	 * @return
 	 */
+	@Override
 	public boolean hasPrivateProject(Integer personID) {
 		List<TProject> torqueList = null;
 		Criteria crit = new Criteria();
@@ -188,7 +192,7 @@ public class TProjectPeer
 		try {
 			torqueList = doSelect(crit);
 		} catch (Exception e) {
-			LOGGER.error("Loading the private project for person " + personID +  " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the private project for person " + personID +  " failed with " + e.getMessage());
 			return true;
 		}
 		return torqueList!=null && !torqueList.isEmpty();
@@ -200,6 +204,7 @@ public class TProjectPeer
 	 * @param personID
 	 * @return
 	 */
+	@Override
 	public List<TProjectBean> getPrivateProject(Integer personID) {
 		Criteria crit = new Criteria();
 		//the negative projectType is for private projects
@@ -208,7 +213,7 @@ public class TProjectPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (Exception e) {
-			LOGGER.error("Loading the private project for person " + personID +  " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the private project for person " + personID +  " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -218,6 +223,7 @@ public class TProjectPeer
 	 * @param uuids
 	 * @return
 	 */
+	@Override
 	public List<TProjectBean> loadByUUIDs(List<String> uuids) {
 		return loadByFieldValues(uuids, TPUUID);
 	}
@@ -228,6 +234,7 @@ public class TProjectPeer
 	 * @param projectTypeID
 	 * @return
 	 */
+	@Override
 	public List<TProjectBean> loadByProjectType(Integer projectTypeID) {
 		Criteria crit = new Criteria();
 		crit.add(PROJECTTYPE, projectTypeID);
@@ -235,7 +242,7 @@ public class TProjectPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (Exception e) {
-			LOGGER.error("Loading of projects by project type " + projectTypeID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading of projects by project type " + projectTypeID + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -246,6 +253,7 @@ public class TProjectPeer
 	 * @param mainProjects: if all is false whether to count the main- or the sub-projects
 	 * @return
 	 */	
+	@Override
 	public int count(boolean all, boolean mainProjects) {
 		String COUNT = "count(" + PKEY + ")";
 		Criteria crit = new Criteria();
@@ -260,7 +268,7 @@ public class TProjectPeer
 		try {
 			return ((Record) doSelectVillageRecords(crit).get(0)).getValue(1).asInt();
 		} catch (Exception e) {
-			LOGGER.error("Counting the projects all " + all + " mainProjects " + mainProjects +  " failed with " + e.getMessage(), e);
+			LOGGER.error("Counting the projects all " + all + " mainProjects " + mainProjects +  " failed with " + e.getMessage());
 			return 0;
 		}
 	} 
@@ -270,6 +278,7 @@ public class TProjectPeer
 	 * @param labels
 	 * @return
 	 */
+	@Override
 	public List<TProjectBean> loadByLabels(List<String> labels) {
 		return loadByFieldValues(labels, LABEL);
 	}	
@@ -311,6 +320,7 @@ public class TProjectPeer
 	 * @param projectIDs
 	 * @return
 	 */
+	@Override
 	public List<TProjectBean> loadByProjectIDs(List<Integer> projectIDs) {
 		if (projectIDs==null || projectIDs.isEmpty()) {
 			LOGGER.info("No projectIDs specified " + projectIDs);
@@ -322,7 +332,7 @@ public class TProjectPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (Exception e) {
-			LOGGER.error("Loading of projects by IDs failed with " + e.getMessage(), e);
+			LOGGER.error("Loading of projects by IDs failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -331,6 +341,7 @@ public class TProjectPeer
 	 * Loads all projects
 	 * @return
 	 */
+	@Override
 	public List<TProjectBean> loadAll() {
 		List<TProject> torqueList = null;
 		Criteria crit = new Criteria();		
@@ -340,7 +351,7 @@ public class TProjectPeer
 			torqueList =  doSelect(crit);
 		}
 		catch (Exception e) {
-			LOGGER.error("Loading of all projects failed with " + e.getMessage(), e);
+			LOGGER.error("Loading of all projects failed with " + e.getMessage());
 			return null;
 		}
 		return convertTorqueListToBeanList(torqueList);
@@ -352,6 +363,7 @@ public class TProjectPeer
 	 * Loads all main projects (those without parent project)
 	 * @return
 	 */
+	@Override
 	public List<TProjectBean> loadAllMainProjects() {
 		Criteria crit = new Criteria();		
 		crit.addAscendingOrderByColumn(LABEL);
@@ -361,7 +373,7 @@ public class TProjectPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (Exception e) {
-			LOGGER.error("Loading of all main projects failed with " + e.getMessage(), e);
+			LOGGER.error("Loading of all main projects failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -371,6 +383,7 @@ public class TProjectPeer
 	 * @param states
 	 * @return
 	 */
+	@Override
 	public List<TProjectBean> loadMainProjectsByStates(int[] states) {
 		Criteria crit = new Criteria();
 		crit.add(PKEY, 0, Criteria.GREATER_THAN);
@@ -383,7 +396,7 @@ public class TProjectPeer
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (Exception e) {
 			if (states != null) {
-				LOGGER.error("Loading the main projects with states " + states.length + " failed with " + e.getMessage(), e);
+				LOGGER.error("Loading the main projects with states " + states.length + " failed with " + e.getMessage());
 			}
 			return null;
 		}
@@ -395,6 +408,7 @@ public class TProjectPeer
 	 * @param projectID
 	 * @return
 	 */
+	@Override
 	public List<TProjectBean> loadSubrojects(Integer projectID) {
 		Criteria crit = new Criteria();		
 		crit.addAscendingOrderByColumn(LABEL);
@@ -402,7 +416,7 @@ public class TProjectPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (Exception e) {
-			LOGGER.error("Loading of all subprojects of the project " + projectID +  " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading of all subprojects of the project " + projectID +  " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -413,6 +427,7 @@ public class TProjectPeer
 	 * @param states
 	 * @return
 	 */
+	@Override
 	public List<TProjectBean> loadSubprojectsByParentsAndStates(List<Integer> projectIDs, int[] states) {
 		List<TProjectBean> projectBeans = new LinkedList<TProjectBean>();
 		if (projectIDs==null || projectIDs.isEmpty()) {
@@ -434,7 +449,7 @@ public class TProjectPeer
 			try {
 				projectBeans.addAll(convertTorqueListToBeanList(doSelect(criteria)));
 			} catch(Exception e) {
-				LOGGER.error("Loading the projectBeans by parent IDs " + projectIDs.size() + " and states " + states + "  failed with " + e.getMessage(), e);
+				LOGGER.error("Loading the projectBeans by parent IDs " + projectIDs.size() + " and states " + states + "  failed with " + e.getMessage());
 			}
 		}
 		return projectBeans;
@@ -447,6 +462,7 @@ public class TProjectPeer
 	 * @param states
 	 * @return
 	 */
+	@Override
 	public List<TProjectBean> loadSubprojectsByParentAndStates(Integer projectID, int[] states) {
 		Criteria crit = new Criteria();
 		crit.add(PARENT, projectID);
@@ -457,7 +473,7 @@ public class TProjectPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (Exception e) {
-			LOGGER.error("Loading of all subprojects of the project " + projectID +  " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading of all subprojects of the project " + projectID +  " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -468,6 +484,7 @@ public class TProjectPeer
 	 * Should be called only be system admin
 	 * @return
 	 */
+	@Override
 	public List<TProjectBean> loadProjectsByStateIDs(int[] stateIDs) {
 		Criteria crit = new Criteria();
 		//states only when specified
@@ -479,7 +496,7 @@ public class TProjectPeer
 		try { 
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch(Exception e) {
-			LOGGER.error("Loading the active and inactive projects failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the active and inactive projects failed with " + e.getMessage());
 			return null;
 		}
 		
@@ -493,6 +510,7 @@ public class TProjectPeer
 	 * @param nonPrivate verify only the non private projects
 	 * @return
 	 */
+	@Override
 	public boolean projectNameExists(String name, Integer parentProjectID, Integer exceptProjectID, boolean nonPrivate) {
 		List<TProject> torqueList = null;
 		Criteria crit = new Criteria();
@@ -512,7 +530,7 @@ public class TProjectPeer
 		try {
 			torqueList = doSelect(crit);
 		} catch (Exception e) {
-			LOGGER.error("Loading the projects by name " + name + " and parentProject " + parentProjectID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the projects by name " + name + " and parentProject " + parentProjectID + " failed with " + e.getMessage());
 		}
 		return torqueList!=null && !torqueList.isEmpty();
 	}
@@ -525,15 +543,11 @@ public class TProjectPeer
 	 * @param nonPrivate verify only the non private projects
 	 * @return
 	 */
+	@Override
 	public boolean projectPrefixExists(String prefix, Integer parentProjectID, Integer exceptProjectID, boolean nonPrivate) {
 		List<TProject> torqueList = null;
 		Criteria crit = new Criteria();
 		crit.add(PREFIX, prefix);
-//		if (parentProjectID==null) {
-//			crit.add(PARENT, (Object)null, Criteria.EQUAL);
-//		} else {
-//			crit.add(PARENT, parentProjectID, Criteria.EQUAL);
-//		}
 		if (exceptProjectID!=null) {
 			crit.add(PKEY, exceptProjectID, Criteria.NOT_EQUAL);
 		}
@@ -544,7 +558,7 @@ public class TProjectPeer
 		try {
 			torqueList = doSelect(crit);
 		} catch (Exception e) {
-			LOGGER.error("Loading the projects by prefix " + prefix + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the projects by prefix " + prefix + " failed with " + e.getMessage());
 		}
 		return torqueList!=null && !torqueList.isEmpty();
 	}
@@ -554,6 +568,7 @@ public class TProjectPeer
 	 * @param workItemKeys
 	 * @return
 	 */
+	@Override
 	public List<TProjectBean> loadByWorkItemKeys(int[] workItemIDs) {
 		List<TProject> projects = new ArrayList<TProject>();
 		if (workItemIDs==null || workItemIDs.length==0) {
@@ -573,7 +588,7 @@ public class TProjectPeer
 			try {
 				projects.addAll(doSelect(criteria));
 			} catch(Exception e) {
-				LOGGER.error("Loading the projectBeans by workItemKeys failed with " + e.getMessage(), e);
+				LOGGER.error("Loading the projectBeans by workItemKeys failed with " + e.getMessage());
 			}
 		}
 		//remove duplicate projects
@@ -595,6 +610,7 @@ public class TProjectPeer
 	 * @param workItemIDs
 	 * @return
 	 */
+	@Override
 	public TProjectBean loadByWorkItemKey(Integer workItemID) {
 		List projects = null;
 		Criteria criteria = new Criteria();
@@ -603,7 +619,7 @@ public class TProjectPeer
 		try {
 			projects = doSelect(criteria);
 		} catch(Exception e) {
-			LOGGER.error("Loading the projectBean by workItemID failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the projectBean by workItemID failed with " + e.getMessage());
 		}
 		if (projects==null || projects.isEmpty()) {
 			return null;
@@ -619,6 +635,7 @@ public class TProjectPeer
 	 * @param states
 	 * @return
 	 */
+	@Override
 	public List<TProjectBean> loadByUserAndRightAndState(List<Integer> personIDs, int[] right, int[] states) {
 		if (personIDs==null || personIDs.isEmpty()) {
 			return new LinkedList<TProjectBean>();
@@ -637,7 +654,7 @@ public class TProjectPeer
 		try { 
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch(Exception e) {
-			LOGGER.error("Loading the projects by " + personIDs.size() + " user and right " + right + " and states failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the projects by " + personIDs.size() + " user and right " + right + " and states failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -650,6 +667,7 @@ public class TProjectPeer
 	 * @param states
 	 * @return
 	 */
+	@Override
 	public List<TProjectBean> loadSubprojectsByUserAndRightAndState( 
 			List<Integer> personIDs, Integer parentProjectID, int[] right, int[] states) {
 		Criteria crit = new Criteria();
@@ -678,6 +696,7 @@ public class TProjectPeer
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public List<TProjectBean> getProjectsWithField(Integer fieldID) {
 		Criteria crit = new Criteria();
 		crit.add(TAttributeValuePeer.FIELDKEY, fieldID);
@@ -700,6 +719,7 @@ public class TProjectPeer
 	 * @param personID
 	 * @return
 	 */
+	@Override
 	public List<TProjectBean> loadByOwnOrDefaultNotifySettings(Integer personID) {
 		Criteria criteria = new Criteria();
 		criteria.addJoin(PKEY, BaseTNotifySettingsPeer.PROJECT);
@@ -711,7 +731,7 @@ public class TProjectPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading of projects with notify assignments either as default or by person " + personID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading of projects with notify assignments either as default or by person " + personID + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -720,6 +740,7 @@ public class TProjectPeer
 	 * Loads a list of projectBeans which has default notificationSettings set
 	 * @return
 	 */
+	@Override
 	public List<TProjectBean> loadByDefaultNotifySettings() {
 		Criteria criteria = new Criteria();
 		criteria.addJoin(PKEY, BaseTNotifySettingsPeer.PROJECT);
@@ -728,7 +749,7 @@ public class TProjectPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading of the projects having default notify assignments failed with " + e.getMessage(), e);
+			LOGGER.error("Loading of the projects having default notify assignments failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -738,13 +759,14 @@ public class TProjectPeer
 	 * @param projectBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TProjectBean projectBean) {
 		try {
 			TProject tProject = BaseTProject.createTProject(projectBean);
 			tProject.save();
 			return tProject.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Simple saving of a project failed with " + e.getMessage(), e);
+			LOGGER.error("Simple saving of a project failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -754,6 +776,7 @@ public class TProjectPeer
 	 * @param projectID
 	 * @return
 	 */
+	@Override
 	public void deleteDependencies(Integer projectID) {
 		ReflectionHelper.delete(deletePeerClasses, deleteFields, projectID);
 	}
@@ -762,6 +785,7 @@ public class TProjectPeer
 	 * @param projectID primary key of a project
 	 * @throws Exception
 	 */
+	@Override
 	public void delete(Integer projectID) {
 		LOGGER.fatal("Project with ID " +  projectID + " is deleted...");
 		Criteria  criteria = new Criteria();
@@ -769,7 +793,7 @@ public class TProjectPeer
 		try {
 			doDelete(criteria);
 		} catch (TorqueException e) {
-			LOGGER.error("Deleting the project " + projectID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Deleting the project " + projectID + " failed with " + e.getMessage());
 		}
 	}	
 	
@@ -781,6 +805,7 @@ public class TProjectPeer
 	 * @param deep
 	 * @return
 	 */
+	@Override
 	public TProjectBean copy(TProjectBean projectOriginal, boolean deep) {
 		TProjectBean tProjectCopy = null;
 		if (projectOriginal!=null) {
@@ -793,7 +818,7 @@ public class TProjectPeer
 				} else {
 					copyMode = "Shallow";
 				}
-				LOGGER.error(copyMode + " copy failed with " + e.getMessage(), e);
+				LOGGER.error(copyMode + " copy failed with " + e.getMessage());
 			}
 		}
 		return tProjectCopy;
@@ -805,6 +830,7 @@ public class TProjectPeer
 	 * @param projectStates
 	 * @return
 	 */
+	@Override
 	public Set<Integer> filterProjectsIDsByStates(Set<Integer> projectIDs, int[] projectStates) {
 		Set<Integer> filteredProjectIDs = new HashSet<Integer>();
 		if (projectIDs==null || projectIDs.isEmpty()) {
@@ -825,7 +851,7 @@ public class TProjectPeer
 			try {
 				filteredProjectIDs.addAll(getProjectIDs(criteria));
 			} catch(Exception e) {
-				LOGGER.error("Loading the projectBeans by projectIDs " + projectIDs.size() + " and states " + projectStates + "  failed with " + e.getMessage(), e);
+				LOGGER.error("Loading the projectBeans by projectIDs " + projectIDs.size() + " and states " + projectStates + "  failed with " + e.getMessage());
 			}
 		}
 		return filteredProjectIDs;
@@ -854,12 +880,12 @@ public class TProjectPeer
 							}
 						}
 					} catch (DataSetException e) {
-						LOGGER.error("Getting the projectID failed with " + e.getMessage(), e);
+						LOGGER.error("Getting the projectID failed with " + e.getMessage());
 					}
 				}
 			}
 		} catch (TorqueException e) {
-			LOGGER.error("Loading of projectIDs failed with " + e.getMessage(), e);
+			LOGGER.error("Loading of projectIDs failed with " + e.getMessage());
 		}
 		return projectIDs;
 	}
@@ -883,6 +909,7 @@ public class TProjectPeer
 	 * @param projectIDs
 	 * @return
 	 */
+	@Override
 	public Set<Integer> getClosedProjectIDs(List<Integer> projectIDs) {
 		Set<Integer> closedProjectIDs = new HashSet<Integer>();
 		if (projectIDs==null || projectIDs.isEmpty()) {
@@ -896,7 +923,7 @@ public class TProjectPeer
 		try {
 			projects = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Filtering the closed projects failed with " + e.getMessage(), e);
+			LOGGER.error("Filtering the closed projects failed with " + e.getMessage());
 		}
 		Iterator iterator = projects.iterator();
 		while (iterator.hasNext()) {
@@ -923,6 +950,7 @@ public class TProjectPeer
 	 * @param workItemIDs
 	 * @return
 	 */
+	@Override
 	public List<TProjectBean> loadHistoryProjects(int[] workItemIDs) {
 		List<TProjectBean> projectBeanList = new ArrayList<TProjectBean>();
 		List<int[]> workItemIDChunksList = GeneralUtils.getListOfChunks(workItemIDs);
@@ -935,14 +963,14 @@ public class TProjectPeer
 				try {
 					projectBeanList.addAll(convertTorqueListToBeanList(doSelect(criteria)));
 				} catch(Exception e) {
-					LOGGER.error("Loading the new history projectBeans  for workItems and personID failed with " + e.getMessage(), e);
+					LOGGER.error("Loading the new history projectBeans  for workItems and personID failed with " + e.getMessage());
 				}
 				criteria = HistoryDropdownContainerLoader.prepareHistorySystemOptionCriteria(
 						workItemIDChunk, false, PKEY, SystemFields.PROJECT);
 				try {
 					projectBeanList.addAll(convertTorqueListToBeanList(doSelect(criteria)));
 				} catch(Exception e) {
-					LOGGER.error("Loading the old history projectBeans for workItems failed with " + e.getMessage(), e);
+					LOGGER.error("Loading the old history projectBeans for workItems failed with " + e.getMessage());
 				}
 			}
 		}

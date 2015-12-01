@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -59,7 +59,7 @@ Ext.define('js.ext.com.track.dashboard.CalendarDash',{
 	},
 	createChildren:function(){
 		var me=this;
-		if(me.jsonData.tooManyItems==true){
+		if(me.jsonData.tooManyItems===true){
 			return [me.createErrorCmp(getText('cockpit.err.tooManyItems'))];
 		}
 		me.calendarView=me.jsonData.calendarView;
@@ -67,7 +67,7 @@ Ext.define('js.ext.com.track.dashboard.CalendarDash',{
 		me.markedDay=me.jsonData.markedDay;
 		me.today=me.jsonData.today;
 		var viewMode;
-		if(me.calendarView=="week"){
+		if(me.calendarView==="week"){
 			viewMode=me.createWeekComponent();
 		}else{
 			viewMode=me.createMonthComponent();
@@ -105,10 +105,10 @@ Ext.define('js.ext.com.track.dashboard.CalendarDash',{
 
 		for(var i=0;i<7;i++){
 			var dayCmp=me.createWeekDay(me.week.days[i]);
-			if(i==3||i==4){
+			if(i===3||i===4){
 				// dayCmp.rowspan=2;
 			}
-			if(i==5||i==6){
+			if(i===5||i===6){
 				dayCmp.style['background-color']='#e8e8e8';
 			}
 			items.push(dayCmp);
@@ -146,7 +146,7 @@ Ext.define('js.ext.com.track.dashboard.CalendarDash',{
 		var me=this;
 		var htmlStr='&nbsp';
 		var issues=day.issues;
-		if(issues!=null&&issues.length>0){
+		if(issues&&issues.length>0){
 			htmlStr=me.createHtmlIssues(issues,day.value);
 		}
 		var bodyStyle={
@@ -169,7 +169,7 @@ Ext.define('js.ext.com.track.dashboard.CalendarDash',{
 				'margin': '0',
 				'padding': '7px 0 7px 0'
 		};
-		if(day.value==me.today){
+		if(day.value===me.today){
 			bodyStyle['border']='1px solid #ff0000';
 			bodyStyle['border-left']="1px solid #ff0000";
 			bodyStyle['border-right']="2px solid #ff0000";
@@ -177,7 +177,7 @@ Ext.define('js.ext.com.track.dashboard.CalendarDash',{
 			headStyle['padding-top']='6px';
 			headStyle['height']='29px';
 		}
-		if(day.value==me.markedDay){
+		if(day.value===me.markedDay){
 			htmlStr+=" markedDay";
 		}
 		var header={
@@ -214,7 +214,7 @@ Ext.define('js.ext.com.track.dashboard.CalendarDash',{
 	createHtmlIssues:function(issues,day){
 		var me=this;
 		var htmlStr="";
-		if(issues!=null){
+		if(issues){
 			for(var i=0;i<issues.length;i++){
 				var issue=issues[i];
 				var htmlIssue="";
@@ -270,43 +270,43 @@ Ext.define('js.ext.com.track.dashboard.CalendarDash',{
 	getType:function(issue,day){
 		var me=this;
 		var startDate=0;
-		if(issue.startDate!=null){
+		if(issue.startDate){
 			startDate=parseInt(issue.startDate+"");
 		}
 		var endDate=0;
-		if(issue.endDate!=null){
+		if(issue.endDate){
 			endDate=parseInt(issue.endDate+"");
 		}
 		var currentDate=parseInt(day+"");
 
 		var type=-1;
-		if(startDate==currentDate){
-			if(endDate==currentDate){
+		if(startDate===currentDate){
+			if(endDate===currentDate){
 				type=me.TYPE_DATE_DOT;
 			}else{
 				type=me.TYPE_DATE_START;
 
 			}
-		}else if(endDate==currentDate){
+		}else if(endDate===currentDate){
 			type=me.TYPE_DATE_STOP;
 		}
-		if(type==-1){
+		if(type===-1){
 			startDate=0;
-			if(issue.topDownStartDate!=null){
+			if(issue.topDownStartDate){
 				startDate=parseInt(issue.topDownStartDate+"");
 			}
 			endDate=0;
-			if(issue.topDownEndDate!=null){
+			if(issue.topDownEndDate){
 				endDate=parseInt(issue.topDownEndDate+"");
 			}
-			if(startDate==currentDate){
-				if(endDate==currentDate){
+			if(startDate===currentDate){
+				if(endDate===currentDate){
 					type=me.TYPE_TOP_DOWN_DATE_DOT;
 				}else{
 					type=me.TYPE_TOP_DOWN_DATE_START;
 
 				}
-			}else if(endDate==currentDate){
+			}else if(endDate===currentDate){
 				type=me.TYPE_TOP_DOWN_DATE_STOP;
 			}
 		}
@@ -378,14 +378,14 @@ Ext.define('js.ext.com.track.dashboard.CalendarDash',{
 				if(j<days[i].length-2){
 					dayCmp.rowspan=2;
 					dayCmp.style['minHeight']='81px';
-					if(days[i][j].issues==null||days[i][j].issues.length==0){
+					if(CWHF.isNull(days[i][j].issues)||days[i][j].issues.length===0){
 						dayCmp.html=dayCmp.html+"&nbsp";
 					}
 				}else{
 					dayCmp.style['background-color']= '#e7e7e7';
 					dayCmp.style['minHeight']='40px';
 				}
-				if(days[i][j].value==me.today){
+				if(days[i][j].value===me.today){
 					dayCmp.style['border']='2px solid #BF2128;';  // today
 
 				}
@@ -439,7 +439,7 @@ Ext.define('js.ext.com.track.dashboard.CalendarDash',{
 	doWeekMonth:function(){
 		var me=this;
 		var linkNo;
-		if(me.calendarView=='week'){
+		if(me.calendarView==='week'){
 			linkNo=12; //monthButton in week view
 			me.btnWeekMonth.setText(getText('CalendarDash.weekBtn'));
 		}else{
@@ -451,7 +451,7 @@ Ext.define('js.ext.com.track.dashboard.CalendarDash',{
 	doToday:function(){
 		var me=this;
 		var linkNo;
-		if(me.calendarView=='week'){
+		if(me.calendarView==='week'){
 			linkNo=11;
 		}else{
 			linkNo=31;

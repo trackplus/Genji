@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -29,7 +29,7 @@
 Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 	extend:'com.trackplus.admin.customize.treeConfig.TreeConfig',
 	config: {
-		rootID:''
+		rootID:'_'
 	},
 	allowMultipleSelections:true,//for delete
 	textFieldWidth: 350,
@@ -46,9 +46,8 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 
 	constructor: function(config) {
 		var config = config || {};
-		this.initialConfig = config;
-		Ext.apply(this, config);
-		this.init();
+		this.initConfig(config);
+		this.initBase();
 	},
 
 
@@ -164,7 +163,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 	getGridContextMenuActions: function(selectedRecord, selectionIsSimple) {
 		if (selectionIsSimple) {
 			var selectedTreeNode = this.getSingleSelectedRecord(true);
-			if (selectedTreeNode!=null && selectedTreeNode.isLeaf()) {
+			if (selectedTreeNode && selectedTreeNode.isLeaf()) {
 				return [this.actionApply, this.actionEdit, this.actionCopy, this.actionDelete, this.actionDesign];
 			} else {
 				return [this.actionEdit, this.actionCopy, this.actionDelete, this.actionDesign];
@@ -179,7 +178,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 	 */
 	saveAssignment: function(draggedObjectID, droppedNodeID) {
 		Ext.Ajax.request({
-			url: this.baseAction + '!save.action',
+			url: this.getBaseAction() + '!save.action',
 			params: {
 				assignedID: draggedObjectID,
 				node: droppedNodeID
@@ -188,7 +187,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 			disableCaching:true,
 			success: function(response){
 				var responseJson = Ext.decode(response.responseText);
-				if (responseJson.success == true) {
+				if (responseJson.success === true) {
 					this.refreshAfterSaveSuccess(responseJson);
 				} else {
 					com.trackplus.util.showError(responseJson);
@@ -203,7 +202,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 
 	treeNodeSelect: function(rowModel, node, index) {
 		var record = this.grid.getStore().getById(node.data['assignedID']);
-		if (record!=null) {
+		if (record) {
 			this.selectGridRow(record);
 		}
 		this.getToolbarActionChangesForTreeNodeSelect(node);
@@ -241,7 +240,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 		var me=this;
 		me.dropZone = Ext.create('com.trackplus.util.TreeDropZone', {
 			view: me.tree.view,
-			ddGroup: this.baseAction,
+			ddGroup: this.getBaseAction(),
 			isValidNode:function(node){
 				/*var leaf =node.data["leaf"];
 				if(!leaf){
@@ -256,7 +255,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 	onDropTreeNode: function(node, data, overModel) {
 		var draggedNodeID=data.records[0].data['id'];
 		var droppedNodeID=overModel.data['id'];
-		if (draggedNodeID!=null && droppedNodeID!=null) {
+		if (draggedNodeID && droppedNodeID) {
 			this.saveAssignment(draggedNodeID, droppedNodeID);
 		}
 		return true;
@@ -271,24 +270,32 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 	},
 
 	getGridColumns: function() {
-		return [{header: getText('common.lbl.name'), flex:1,
+		return [{text: getText('common.lbl.name'), flex:1,
 			dataIndex: 'name',id:'name',sortable:true,
-			filterable: true},
-		{header: getText('common.lbl.tagLabel'), flex:1,
+			filter: {
+	            type: "string"
+	        }},
+		{text: getText('common.lbl.tagLabel'), flex:1,
 			dataIndex: 'tagLabel',id:'tagLabel',sortable:true,
-			filter: {}},
-		{header: getText('common.lbl.description'),flex:1,
+			filter: {
+	            type: "string"
+	        }},
+		{text: getText('common.lbl.description'),flex:1,
 			dataIndex: 'description',id:'description',sortable:true,
-			filterable: false},
-		{header: getText('admin.customize.form.config.owner'),flex:1,
+			filter: {
+	            type: "string"
+	        }},
+		{text: getText('admin.customize.form.config.owner'),flex:1,
 			dataIndex: 'owner',id:'owner',sortable:true,
-			filterable: false}]
+			filter: {
+	            type: "string"
+	        }}]
 	},
 
 	getSelectedObjectIDs: function() {
 		var selectedObjectIDs = new Array();
 		var selectedRecordsArr = this.getSelection();
-		if (selectedRecordsArr!=null) {
+		if (selectedRecordsArr) {
 			Ext.Array.forEach(selectedRecordsArr, function(record, index, allItems)
 					{selectedObjectIDs.push(record.data['id']);}, this);
 		}
@@ -331,12 +338,6 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 	 * Shows the grid according to the selected node
 	 */
 	showGrid: function() {
-		var modelName = this.baseAction + "GridModel";
-		Ext.define(modelName, {
-			extend: 'Ext.data.Model',
-			fields: this.getGridFields(),
-			idProperty: 'id'
-		});
 		var store = Ext.create('Ext.data.Store', {
 			proxy: {
 				type: 'ajax',
@@ -345,7 +346,8 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 					type: 'json'
 				}
 			},
-			model: modelName,
+			fields: this.getGridFields(),
+			idProperty: 'id',
 			autoLoad: true
 		});
 		var gridConfig = {
@@ -353,31 +355,17 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 				store: store,
 				selModel: Ext.create('Ext.selection.CheckboxModel', {mode:"MULTI"}), //for screen export
 				columns: this.getGridColumns(),
+				plugins: ["gridfilters"],
 				autoWidth: true,
 				border: false,
 				bodyBorder:false,
 				cls:'gridNoBorder',
 				stripeRows: true
 			};
-		gridConfig.features = [{
-			ftype: 'filters',
-			encode: false, // json encode the filter query
-			local: true,// defaults to false (remote filtering)
-			filters: [{
-					type: 'string',
-					dataIndex: 'tagLabel',
-					disabled: false
-				},{
-					type: 'string',
-					dataIndex: 'name',
-					disabled: false
-				}
-			]
-		}];
 		gridConfig.viewConfig = {
 			plugins: {
 				ptype: 'gridviewdragdrop',
-				ddGroup: this.baseAction,
+				ddGroup: this.getBaseAction(),
 				enableDrag: true,
 				enableDrop: false
 			}/*,
@@ -404,7 +392,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 	onGridSelectionChange: function (view, selections) {
 		this.enableDisableToolbarButtons(view, selections);
 		var selectedRow = null;
-		if (selections!=null && selections.length>0) {
+		if (selections && selections.length>0) {
 			selectedRow = selections[0];
 		}
 		this.adjustToolbarButtonsTooltip(selectedRow, false);
@@ -422,7 +410,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 	 * Enable/disable actions based on the actual selection
 	 */
 	enableDisableToolbarButtons: function (view, selections) {
-		if (selections==null || selections.length==0) {
+		if (CWHF.isNull(selections) || selections.length===0) {
 			this.actionEdit.setDisabled(true);
 			this.actionApply.setDisabled(true);
 			this.actionCopy.setDisabled(true);
@@ -434,9 +422,9 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 			var isLeaf = selectedRecord.data['leaf'];
 			this.actionDelete.setDisabled(false);
 			this.actionExport.setDisabled(false);
-			if (selections.length==1) {
+			if (selections.length===1) {
 				var selectedTreeNode = this.getSingleSelectedRecord(true);
-				if (selectedTreeNode!=null && this.isAssignable(selectedTreeNode)/*selectedTreeNode.isLeaf()*/) {
+				if (selectedTreeNode && this.isAssignable(selectedTreeNode)/*selectedTreeNode.isLeaf()*/) {
 					this.actionApply.setDisabled(false);
 				}
 				this.actionEdit.setDisabled(false);
@@ -469,7 +457,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 	onApply: function() {
 		var selectedTreeNode = this.getSingleSelectedRecord(true);
 		var selectedGridRow = this.getSingleSelectedRecord(false);
-		if (selectedTreeNode!=null && selectedGridRow!=null) {
+		if (selectedTreeNode && selectedGridRow) {
 			this.saveAssignment(selectedGridRow.data['id'], selectedTreeNode.data['id']);
 		}
 	},
@@ -520,9 +508,9 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 	getEditParams: function(copy) {
 		var params = {copy:copy};
 		var recordData = this.getSingleSelectedRecordData(false);
-		if (recordData!=null) {
+		if (recordData) {
 			var objectID = recordData['id'];
-			if (objectID!=null) {
+			if (objectID) {
 				params[this.getObjectIDName()] = objectID;
 			}
 		}
@@ -575,7 +563,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 
 	onDelete: function() {
 		var selectedRecords = this.getSelectedRecords(false);
-		if (selectedRecords!=null) {
+		if (selectedRecords) {
 			this.deleteHandler(selectedRecords);
 		}
 	},
@@ -587,7 +575,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 	onConfig:function(){
 		var me=this;
 		var recordData=me.getSingleSelectedRecordData();
-		if(recordData==null){
+		if(CWHF.isNull(recordData)){
 			return false;
 		}
 		var id=recordData.id;
@@ -624,7 +612,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 			fileUpload: true,
 			items: [CWHF.createCheckbox('common.lbl.overwriteExisting', 'overwriteExisting', {labelWidth:200}),
 					CWHF.createFileField(this.getUploadFileLabel(), 'uploadFile',
-					{allowBlank:false, labelWidth:200})]
+					{itemId:"uploadFile", allowBlank:false, labelWidth:200})]
 		});
 		return this.formPanel;
 	},
@@ -660,7 +648,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 		var nodeIdToSelect = result.node;
 		var node = this.tree.getStore().getNodeById(nodeIdToSelect);
 		var parentNode = null;
-		if (node!=null) {
+		if (node) {
 			parentNode = node.parentNode;
 		}
 		if (refreshTree) {

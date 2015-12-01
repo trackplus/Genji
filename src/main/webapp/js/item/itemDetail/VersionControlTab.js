@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -37,7 +37,7 @@ Ext.define('com.aurel.trackplus.itemDetail.VersionControlTab',{
 		//	getText('common.history.lbl.flatHistory.tlt'));
 		var btnGridView=me.createViewButton('gridHistory','gridHistory',getText('common.history.lbl.gridHistory'),
 			getText('common.history.lbl.gridHistory.tlt'));
-		if(me.showFlat==true){
+		if(me.showFlat===true){
 			btnGridView.pressed=false;
 		}else{
 			btnGridView.pressed=true;
@@ -55,11 +55,11 @@ Ext.define('com.aurel.trackplus.itemDetail.VersionControlTab',{
 	createChildren:function(){
 		var me=this;
 		var items=[];
-		if(me.showFlat==true){
+		if(me.showFlat===true){
 			me.initFlatPanel();
 			items.push(me.flatPanel);
 		}else{
-			if(me.gridConfig!=null&&me.jsonData!=null&&me.jsonData.gridLayoutData!=null){
+			if(me.gridConfig&&me.jsonData&&me.jsonData.gridLayoutData){
 				var someGrid=me.createGrid.call(me,me.gridConfig,me.jsonData.gridLayoutData);
 				me.gridConfig.grid=someGrid;
 				items.push(someGrid);
@@ -70,7 +70,7 @@ Ext.define('com.aurel.trackplus.itemDetail.VersionControlTab',{
 	createVersionConfig:function(){
 		var me=this;
 		var versionControlRevNoType='string';
-		if(me.jsonData!=null){
+		if(me.jsonData){
 			me.readOnly=me.jsonData.readOnly;
 			versionControlRevNoType=me.jsonData.versionControlRevNoType;
 			me.showFlat=this.jsonData.showFlat;
@@ -109,9 +109,9 @@ Ext.define('com.aurel.trackplus.itemDetail.VersionControlTab',{
 	changeViewMode:function(id){
 		var me=this;
 
-		if(me.showFlat==false){
+		if(me.showFlat===false){
 			me.showFlat=true;
-			if(me.gridConfig.grid!=null){
+			if(me.gridConfig.grid){
 				me.remove(me.gridConfig.grid,true);
 				me.gridConfig.grid=null;
 			}
@@ -120,7 +120,7 @@ Ext.define('com.aurel.trackplus.itemDetail.VersionControlTab',{
 			me.refreshFlat();
 		}else{
 			me.showFlat=false;
-			if(me.flatPanel!=null){
+			if(me.flatPanel){
 				me.remove(me.flatPanel);
 				me.flatPanel=null;
 			}
@@ -142,7 +142,7 @@ Ext.define('com.aurel.trackplus.itemDetail.VersionControlTab',{
 	},
 	refresh:function(){
 		var me=this;
-		if(me.showFlat==true){
+		if(me.showFlat===true){
 			me.refreshFlat();
 		}else{
 			me.callParent();
@@ -150,7 +150,7 @@ Ext.define('com.aurel.trackplus.itemDetail.VersionControlTab',{
 	},
 	refreshFlat:function(){
 		var me=this;
-		if(me.flatPanel!=null){
+		if(me.flatPanel){
 			me.flatPanel.setLoading(true);
 		}
 		//var urlStr='itemHistory.action?workItemID='+me.workItemID+"&projectID="+me.projectID+"&issueTypeID"+me.issueTypeID;
@@ -162,7 +162,7 @@ Ext.define('com.aurel.trackplus.itemDetail.VersionControlTab',{
 				//var responseJson = Ext.decode(response.responseText);
 				//var jsonData=responseJson;
 				me.flatData=response.responseText;
-				if(me.flatPanel!=null){
+				if(me.flatPanel){
 					me.flatPanel.setLoading(false);
 				}
 				me.initFlatPanel();
@@ -177,10 +177,10 @@ Ext.define('com.aurel.trackplus.itemDetail.VersionControlTab',{
 	initFlatPanel:function(){
 		var me=this;
 		var html="";
-		if(me.flatData!=null/*&&me.flatData.length>0*/){
+		if(me.flatData/*&&me.flatData.length>0*/){
 			html=me.flatData;
 		}
-		if(me.flatPanel==null){
+		if(CWHF.isNull(me.flatPanel)){
 			me.flatPanel=Ext.create('Ext.panel.Panel',{
 				style:{
 					borderTop:'1px solid #D0D0D0'

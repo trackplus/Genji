@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -57,8 +57,8 @@ Ext.define("js.ext.com.track.datasource.Meeting",{
 	initComponent: function() {
 		var me = this;
 		this.callParent();
-		if (this.templateID!=null) {
-			this.add(CWHF.createHiddenField("templateID", {value:this.templateID}));
+		if (this.templateID) {
+			this.add(CWHF.createHiddenField("templateID", {itemId:"templateID",value:this.templateID}));
 		}
 		this.meetingsCombo = CWHF.createCombo("meeting.prompt.meeting", this.meetingName, {value: this.meeting,
 			data: this.meetingOptions,
@@ -98,7 +98,7 @@ Ext.define("js.ext.com.track.datasource.Meeting",{
 				var bottomToolbar = windowPanel.getDockedItems('toolbar[dock="bottom"]')[0];
 				me.createReportBtn = bottomToolbar.items.items[0];
 				me.xmlDataSourceBtn = bottomToolbar.items.items[1];
-				if(me.meetingOptions.length == 0) {
+				if(me.meetingOptions.length === 0) {
 					me.createReportBtn.setDisabled(true);
 					me.xmlDataSourceBtn.setDisabled(true);
 				}
@@ -119,16 +119,16 @@ Ext.define("js.ext.com.track.datasource.Meeting",{
 			success: function(response) {
 				var responseJson = Ext.decode(response.responseText);
 				this.meetingsCombo.getStore().removeAll();
-				if(responseJson.meetingOptions != null) {
+				if(responseJson.meetingOptions ) {
 					this.meetingsCombo.getStore().loadData(responseJson["meetingOptions"]);
 				}
-				if(responseJson[this.meetingName] != null) {
+				if(responseJson[this.meetingName] ) {
 					this.meetingsCombo.setValue(responseJson[this.meetingName]);
 				}else {
 					this.meetingsCombo.setValue('');
 				}
 				var btnDisabled = false;
-				if(responseJson.meetingOptions == null) {
+				if(CWHF.isNull(responseJson.meetingOptions)) {
 					btnDisabled = true;
 				}
 				me.createReportBtn.setDisabled(btnDisabled);

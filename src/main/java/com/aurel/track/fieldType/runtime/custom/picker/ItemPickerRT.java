@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -32,6 +32,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -100,6 +101,7 @@ public class ItemPickerRT extends CustomTreePickerRT {
 	 * @param selectContext
 	 * @return
 	 */
+	@Override
 	public List loadEditDataSource(SelectContext selectContext)	{
 		TPersonBean personBean = LookupContainer.getPersonBean(selectContext.getPersonID());
 		TWorkItemBean workItemBean = selectContext.getWorkItemBean();
@@ -132,6 +134,7 @@ public class ItemPickerRT extends CustomTreePickerRT {
 	 * @param selectContext
 	 * @return
 	 */
+	@Override
 	public List loadCreateDataSource(SelectContext selectContext) {
 		TPersonBean personBean = LookupContainer.getPersonBean(selectContext.getPersonID());
 		ReportBeans reportBeans = null;
@@ -157,6 +160,7 @@ public class ItemPickerRT extends CustomTreePickerRT {
 	 * @param localLookupContainer
 	 * @return
 	 */
+	@Override
 	public Comparable getSortOrderValue(Integer fieldID, Integer parameterCode, Object value,
 			Integer workItemID, LocalLookupContainer localLookupContainer) {
 		Integer[] optionIDs = CustomSelectUtil.getSelectedOptions(value);
@@ -174,6 +178,7 @@ public class ItemPickerRT extends CustomTreePickerRT {
 	 * @param personID
 	 * @return
 	 */
+	@Override
 	public List<ILabelBean> getFlatDataSource(Integer personID) {
 		return null;
 	}
@@ -194,12 +199,6 @@ public class ItemPickerRT extends CustomTreePickerRT {
 	 * @param locale
 	 * @return
 	 */
-	/*protected List<ILabelBean> getSelelectedLabelBeans(Integer[] optionIDs, Locale locale) {
-		if (optionIDs==null || optionIDs.length==0) {
-			return new LinkedList<ILabelBean>();
-		}
-		return (List)ItemBL2.loadByWorkItemKeys(GeneralUtils.createIntArrFromIntegerArr(optionIDs));
-	}*/
 
 	/**
 	 * Gets the label bean for an objectID
@@ -207,6 +206,7 @@ public class ItemPickerRT extends CustomTreePickerRT {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	protected ILabelBean lookupLabelBean(Integer objectID, Locale locale) {
 		//actually never called because getShowValue is overridden
 		try {
@@ -226,6 +226,7 @@ public class ItemPickerRT extends CustomTreePickerRT {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public String getShowValue(Integer fieldID, Integer parameterCode, Object value,
 			Integer workItemID, LocalLookupContainer localLookupContainer, Locale locale) {
 		return getShowValue(value, locale);
@@ -287,6 +288,7 @@ public class ItemPickerRT extends CustomTreePickerRT {
 	 * @param parameterCode for composite selects
 	 * @return the datasource (list or tree)
 	 */
+	@Override
 	public Object getMatcherDataSource(IMatcherValue matcherValue, MatcherDatasourceContext matcherDatasourceContext, Integer parameterCode) {
 		TPersonBean personBean = matcherDatasourceContext.getPersonBean();
 		Integer projectID = null;
@@ -334,6 +336,7 @@ public class ItemPickerRT extends CustomTreePickerRT {
 	 * Loads the IBulkSetter object for configuring the bulk operation
 	 * @param fieldID
 	 */
+	@Override
 	public IBulkSetter getBulkSetterDT(Integer fieldID) {
 		return new ItemPickerBulkSetter(fieldID);
 	}
@@ -364,6 +367,7 @@ public class ItemPickerRT extends CustomTreePickerRT {
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public IActivityConfig getFieldChangeConfig(Integer fieldID) {
 		return new ItemPickerFieldChangeConfig(fieldID);
 	}
@@ -373,6 +377,7 @@ public class ItemPickerRT extends CustomTreePickerRT {
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public IActivityExecute getFieldChangeApply(Integer fieldID) {
 		return new MultipleTreeFieldChangeApply(fieldID);
 	}
@@ -382,6 +387,7 @@ public class ItemPickerRT extends CustomTreePickerRT {
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public IValueConverter getFieldValueConverter(Integer fieldID) {
 		return new ItemPickerSetterConverter(fieldID);
 	}
@@ -394,6 +400,7 @@ public class ItemPickerRT extends CustomTreePickerRT {
 	 * @param personBean
 	 * @param locale
 	 */
+	@Override
 	public void loadFieldChangeDatasourceAndValue(WorkflowContext workflowContext,
 			FieldChangeValue fieldChangeValue,
 			Integer parameterCode, TPersonBean personBean, Locale locale) {
@@ -411,7 +418,8 @@ public class ItemPickerRT extends CustomTreePickerRT {
 		try {
 			return ItemBL.loadWorkItem(optionID);
 		} catch (ItemLoaderException e) {
-			LOGGER.info("Loading the label bean failed with " + e.getMessage(), e);
+			LOGGER.info("Loading the label bean failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			return null;
 		}
 	}
@@ -429,6 +437,7 @@ public class ItemPickerRT extends CustomTreePickerRT {
 	 * Creates a new empty serializableLabelBean
 	 * @return
 	 */
+	@Override
 	public ISerializableLabelBean getNewSerializableLabelBean() {
 		return new TWorkItemBean();
 	}
@@ -438,6 +447,7 @@ public class ItemPickerRT extends CustomTreePickerRT {
 	 * Typically fields which are typically unique should not be groupable
 	 * @return
 	 */
+	@Override
 	public boolean isGroupable() {
 		return false;
 	}
@@ -453,6 +463,7 @@ public class ItemPickerRT extends CustomTreePickerRT {
 	 * @param componentPartsMap
 	 * @return
 	 */
+	@Override
 	public Integer getLookupIDByLabel(Integer fieldID,
 			Integer projectID, Integer issueTypeID,
 			Locale locale, String label,
@@ -472,15 +483,18 @@ public class ItemPickerRT extends CustomTreePickerRT {
 						try {
 							workItemBean = ItemBL.loadWorkItemByProjectSpecificID(idString);
 						} catch (ItemLoaderException e) {
-							LOGGER.debug("Loading the workitem " + idString + " failed with " + e.getMessage(), e);
+							LOGGER.debug("Loading the workitem " + idString + " failed with " + e.getMessage());
+							LOGGER.debug(ExceptionUtils.getStackTrace(e));
 						}
 					} else {
 						try {
 							workItemBean = ItemBL.loadWorkItem(Integer.decode(idString));
 						} catch (NumberFormatException e) {
-							LOGGER.debug("Parsing the item no " + idString + " failed with " + e.getMessage(), e);
+							LOGGER.debug("Parsing the item no " + idString + " failed with " + e.getMessage());
+							LOGGER.debug(ExceptionUtils.getStackTrace(e));
 						} catch (ItemLoaderException e) {
-							LOGGER.debug("Loading the workitem " + idString + " failed with " + e.getMessage(), e);
+							LOGGER.debug("Loading the workitem " + idString + " failed with " + e.getMessage());
+							LOGGER.debug(ExceptionUtils.getStackTrace(e));
 						}
 					}
 					if (workItemBean!=null) {
@@ -502,6 +516,7 @@ public class ItemPickerRT extends CustomTreePickerRT {
 	 * @param serializableBeanAllowedContext
 	 * @return
 	 */
+	@Override
 	public boolean lookupBeanAllowed(Integer objectID,
 			SerializableBeanAllowedContext serializableBeanAllowedContext) {
 		return true;
@@ -512,10 +527,10 @@ public class ItemPickerRT extends CustomTreePickerRT {
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public List<ILabelBean> getDataSource(Integer fieldID) {
 		//Initialize with an empty list. Important to be not null.
 		//but not all items are loaded because it would be a very big amount of data in memory (all items)
-		//The lookup map will be loaded one by one only for the needed items by getLabelBean();
 		return new ArrayList<ILabelBean>();
 	}
 

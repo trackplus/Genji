@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -290,8 +290,8 @@ public class SiteConfigBL {
 				FileUtil.copyDirectory(source, target);
 				FileUtil.deltree(source);
 			}catch (Exception e) {
-				LOGGER.error("Error moving db Backup dir from " + originalDbBackupDir + " to " + newDbBackupDir + " failed with " + e.getMessage(), e);
-				LOGGER.error(Support.readStackTrace(e));
+				LOGGER.error("Error moving db Backup dir from " + originalDbBackupDir + " to " + newDbBackupDir + " failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 
@@ -315,7 +315,6 @@ public class SiteConfigBL {
 
 		siteBean.setIsVersionReminderOn(otherSiteConfigTO.isVersionReminder());
 
-		//String theGraphvizExe = otherSiteConfigTO.getGraphvizPath();
 		//siteBean.setExecutable1(otherSiteConfigTO.getGraphvizPath());
 
 		siteBean.setIsWSOn(otherSiteConfigTO.isWebserviceEnabled());
@@ -327,8 +326,8 @@ public class SiteConfigBL {
 
 		boolean oldSummaryItemsBehavior = siteBean.getSummaryItemsBehavior();
 		boolean newSummaryItemsBehavior;
-		if (ApplicationBean.getApplicationBean().isGenji() ||
-				ApplicationBean.getApplicationBean().getAppType()==ApplicationBean.APPTYPE_DESK) {
+		if (ApplicationBean.getInstance().isGenji() ||
+				ApplicationBean.getInstance().getAppType()==ApplicationBean.APPTYPE_DESK) {
 			newSummaryItemsBehavior = true;
 		} else {
 			newSummaryItemsBehavior = otherSiteConfigTO.isSummaryItemsBehavior();
@@ -385,7 +384,6 @@ public class SiteConfigBL {
 		SiteConfigBL.validateOtherSiteConfig(siteApp, otherSiteConfigTo, errors, locale);
 
 		if(!errors.isEmpty()){
-			return  errors;
 		}
 		//we allow to save if license is invalid
 
@@ -455,18 +453,18 @@ public class SiteConfigBL {
 				//lucene was activated or analyzer changed when lucene was active
 				if ((!luceneBeforeActiv && luceneAfterActiv) ||
 						(luceneAfterActiv && !analyzerBeforeName.equals(analyzerAfterName))) {
-					LuceneIndexer luceneIndexer = ApplicationBean.getApplicationBean().getLuceneIndexer(); //(LuceneIndexer)application.get(LuceneUtil.LUCENEINDEXER);
+					LuceneIndexer luceneIndexer = ApplicationBean.getInstance().getLuceneIndexer(); //(LuceneIndexer)application.get(LuceneUtil.LUCENEINDEXER);
 					if (luceneIndexer == null) {
 						luceneIndexer = new LuceneIndexer();
 						//application.put(LuceneUtil.LUCENEINDEXER, luceneIndexer);
-						ApplicationBean.getApplicationBean().setLuceneIndexer(luceneIndexer);
+						ApplicationBean.getInstance().setLuceneIndexer(luceneIndexer);
 					}
 					if (ClusterBL.isSharedLuceneIndex()) {
 						if (ClusterBL.getIAmTheMaster()) {
 							if (luceneIndexer.isFinished()) {
 								//is finished means not yet run or already finished indexing
 								//reindex in a new thread (the modifiers are initialized inside run)
-								ApplicationBean.getApplicationBean().getExecutor().execute(luceneIndexer);
+								ApplicationBean.getInstance().getExecutor().execute(luceneIndexer);
 								// Thread indexerThread = new Thread(luceneIndexer);
 								// indexerThread.start();
 							}
@@ -477,7 +475,7 @@ public class SiteConfigBL {
 					} else {
 						if (luceneIndexer.isFinished()) {
 							//is finished means not yet run or already finished indexing
-							ApplicationBean.getApplicationBean().getExecutor().execute(luceneIndexer);
+							ApplicationBean.getInstance().getExecutor().execute(luceneIndexer);
 						}
 						//mark full reindex for the other cluster nodes
 						ClusterMarkChangesBL.markReindex();
@@ -563,7 +561,7 @@ public class SiteConfigBL {
 
 
 	private static void copyAttach(final String orginalDir, final String newDir, final boolean move){
-		ApplicationBean.getApplicationBean().getExecutor().execute(new Runnable() {
+		ApplicationBean.getInstance().getExecutor().execute(new Runnable() {
 				public void run() {
 					String[] dirsToCopy=new String[]{HandleHome.DATA_DIR,//attachments
 							//HandleHome.DB_BACKUP_DIR,//database backups
@@ -583,7 +581,7 @@ public class SiteConfigBL {
 							}
 						}catch (Exception e) {
 							LOGGER.error("Error moving dir:"+dirsToCopy[i]);
-							LOGGER.error(Support.readStackTrace(e));
+							LOGGER.error(e);
 						}
 					}
 					String[] filesToCopy = new String[] {
@@ -607,27 +605,10 @@ public class SiteConfigBL {
 			}
 		);
 
-//		new Thread(new Runnable() {
-//			public void run() {
 //				String[] dirsToCopy=new String[]{AttachBL.DataName,//attachments
 //						DatabaseBackupBL.DB_BACKUP_DIR,//database backups
 //						Constants.TEMPLATE_DIR//reports
 //				};
-//				for (int i = 0; i < dirsToCopy.length; i++) {
-//					try{
-//						File source=new File(orginalDir+File.separator+dirsToCopy[i]);
-//						File target=new File(newDir+File.separator+dirsToCopy[i]);
-//						FileUtil.copyDirectory(source, target);
-//						if(move){
-//							FileUtil.deltree(source);
-//						}
-//					}catch (Exception e) {
-//						LOGGER.error("Error moving dir:"+dirsToCopy[i]);
-//						LOGGER.error(Support.readStackTrace(e));
-//					}
-//				}
-//			}
-//		}).start();
 	}
 
 

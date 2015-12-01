@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -89,14 +89,15 @@ public final class ResetPasswordAction extends ActionSupport implements Preparab
 	private String layoutCls="com.trackplus.layout.ResetPasswordLayout";
 	private String pageTitle="logon.resetPassword.title";
 
+	@Override
 	public void prepare() throws Exception {
 	}
 
+	@Override
 	public String execute(){
 		List<TPersonBean> personList = null;
-		//HttpServletRequest request = org.apache.struts2.ServletActionContext.getRequest();
 		//HttpSession httpSession = request.getSession();
-		ApplicationBean appBean = ApplicationBean.getApplicationBean();
+		ApplicationBean appBean = ApplicationBean.getInstance();
 		if(appBean == null) {
 			LOGGER.error("No ApplicationBean found, this should never happen");
 			return null;
@@ -141,7 +142,6 @@ public final class ResetPasswordAction extends ActionSupport implements Preparab
 				addFieldError("newpassword",getText("logon.newpassword.error.email.missing"));
 				haveErrors=true;
 				errorsMessage.append(getText("logon.newpassword.error.email.missing")+"\n");
-				//return INPUT;
 			}
 			if (loginnameArray.size() > 0 && !isldap){
 				// send password to the user
@@ -157,7 +157,6 @@ public final class ResetPasswordAction extends ActionSupport implements Preparab
 		}
 		catch (Exception e) {
 			LOGGER.debug(e.getMessage(), e);
-			// LOGGER.error(org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(e));
 			LOGGER.error("Cannot mail new password.");
 			addFieldError("newpassword",getText("logon.err.noDataBase"));
 			errorsMessage.append(getText("logon.err.noDataBase")+"\n");
@@ -175,7 +174,6 @@ public final class ResetPasswordAction extends ActionSupport implements Preparab
 				LOGGER.error(ExceptionUtils.getStackTrace(e));
 			}
 			return null;
-			//return "failure";
 		}
 		else {
 			LOGGER.debug(" Forwarding to welcome");
@@ -195,7 +193,6 @@ public final class ResetPasswordAction extends ActionSupport implements Preparab
 				LOGGER.error(ExceptionUtils.getStackTrace(e));
 			}
 			return null;
-			//return "welcome";
 		}
 	}
 
@@ -325,9 +322,9 @@ public final class ResetPasswordAction extends ActionSupport implements Preparab
 			return false;
 		}
 
-		TSiteBean siteBean = ApplicationBean.getApplicationBean().getSiteBean();
+		TSiteBean siteBean = ApplicationBean.getInstance().getSiteBean();
 		//The path starts with a "/" character but does not end with a "/"
-		String contextPath=ApplicationBean.getApplicationBean().getServletContext().getContextPath();
+		String contextPath=ApplicationBean.getInstance().getServletContext().getContextPath();
 		String siteURL=siteBean.getServerURL();
 		if(siteURL==null){
 			siteURL="";
@@ -347,7 +344,7 @@ public final class ResetPasswordAction extends ActionSupport implements Preparab
 		try {
 			template.process(root, w);
 		} catch (Exception e) {
-			LOGGER.error("Processing registration template " + template.getName() + " failed with " + e.getMessage(), e);
+			LOGGER.error("Processing registration template " + template.getName() + " failed with " + e.getMessage());
 		}
 		w.flush();
 		String messageBody = w.toString();
@@ -378,6 +375,7 @@ public final class ResetPasswordAction extends ActionSupport implements Preparab
 		return session;
 	}
 
+	@Override
 	public void setSession(Map<String, Object> session) {
 		this.session = session;
 	}

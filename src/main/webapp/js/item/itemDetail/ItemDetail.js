@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -79,7 +79,7 @@ com.trackplus.itemDetail.ItemDetailComponent.prototype.tabs=null;
 com.trackplus.itemDetail.ItemDetailComponent.prototype.activeTab=1;
 com.trackplus.itemDetail.ItemDetailComponent.prototype.tabPanel=null;
 com.trackplus.itemDetail.ItemDetailComponent.prototype.getTabID=function(tabName){
-	return "tabItemDetail."+this.instanceID+tabName;
+	return "tabItemDetail_"+this.instanceID+tabName;
 };
 com.trackplus.itemDetail.ItemDetailComponent.prototype.createComponent=function(){
 	var me=this;
@@ -96,7 +96,7 @@ com.trackplus.itemDetail.ItemDetailComponent.prototype.createComponent=function(
 			lastModified:me.lastModified,
 			jsonData:aTab.jsonData
 		});
-		if(me.fireEventFunction!=null){
+		if(me.fireEventFunction){
 			tab.addListener('itemChange',function(){
 				me.fireEventFunction.call(me.fireEventScope,'itemChange',arguments);
 			},me);
@@ -109,6 +109,7 @@ com.trackplus.itemDetail.ItemDetailComponent.prototype.createComponent=function(
 	};
 	this.tabPanel=Ext.create('Ext.tab.Panel',{
 		cls:'itemDetailTabPanel',
+		bodyCls:'itemDetailTabPanel-body',
 		margin: '0 0 0 0',
 		autoHeight:true,
 		plain:true,
@@ -125,11 +126,21 @@ com.trackplus.itemDetail.ItemDetailComponent.prototype.createComponent=function(
 	});
 	return this.tabPanel;
 };
+
+com.trackplus.itemDetail.ItemDetailComponent.prototype.refreshAttachments=function(){
+	var me=this;
+	var attachmentTabID=3;
+	var tabID=me.getTabID(attachmentTabID);
+	var attachmentTabCmp=me.tabPanel.getComponent(tabID);
+	if(attachmentTabCmp){
+		attachmentTabCmp.refresh();
+	}
+}
 com.trackplus.itemDetail.ItemDetailComponent.prototype.activateTab=function(tab){
 	var me=this;
 	var tabNo=tab.tabNo;
 	var idx = me.tabPanel.items.indexOf(tab);
-	/*if(me.activeTab==idx){
+	/*if(me.activeTab===idx){
 		return;
 	}*/
 	me.activeTab=idx;
@@ -210,7 +221,7 @@ com.trackplus.itemDetail.DialogConfig.prototype.successHandler=function(){
 };
 com.trackplus.itemDetail.DialogConfig.prototype.failureHandler=function(form, action){
 	var msg=action.result.errorMessage;
-	if(msg==null||msg==''){
+	if(CWHF.isNull(msg)||msg===''){
 		msg=getText('common.err.failure.validate');
 	}
 	CWHF.showMsgError(msg);
@@ -219,7 +230,7 @@ com.trackplus.itemDetail.DialogConfig.prototype.failureHandler=function(form, ac
 com.trackplus.itemDetail.enterOnForm=function(e){
 	var  dialogCfg=this;
 	var target = e.getTarget();
-	if(target['type']=='textarea'){
+	if(target['type']==='textarea'){
 		return;
 	}
 	dialogCfg.okHandler.call(dialogCfg);
@@ -229,17 +240,17 @@ com.trackplus.itemDetail.enterOnForm=function(e){
  * Open a modal dialog for a DialogConfig
  */
 com.trackplus.itemDetail.openDialog=function(dialogCfg){
-	if(com.trackplus.itemDetail.modalDialog!=null){
+	if(com.trackplus.itemDetail.modalDialog){
 		com.trackplus.itemDetail.modalDialog.destroy();
 	}
 	var width=dialogCfg.w;
 	var height=dialogCfg.h;
 	var minHeight=null;
 	var minWidth=null;
-	if(dialogCfg.minw!=null){
+	if(dialogCfg.minw){
 		minWidth=dialogCfg.minw;
 	}
-	if(dialogCfg.minh!=null){
+	if(dialogCfg.minh){
 		minHeight=dialogCfg.minh;
 	}
 	var size=borderLayout.ensureSize(width,height);
@@ -284,11 +295,11 @@ com.trackplus.itemDetail.openDialog=function(dialogCfg){
 				handler  : function(){
 					dialogCfg.formPanel.getForm().reset();
 					var ckeditors=CKEDITOR.instances;
-					if(ckeditors!=null){
+					if(ckeditors){
 						for(var x in ckeditors){
 							var ckEditor=ckeditors[x];
 							var txtArea=document.getElementById(x);
-							if(txtArea!=null&& ckEditor.checkDirty()){
+							if(txtArea&& ckEditor.checkDirty()){
 								ckEditor.setData(txtArea.value);
 							}
 						}

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -53,6 +53,7 @@ public class TNotifySettingsPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TNotifySettingsBean loadByPrimaryKey(Integer objectID) {
 		TNotifySettings tNotifySettings = null;
 		try {
@@ -72,6 +73,7 @@ public class TNotifySettingsPeer
 	 * @param personID 
 	 * @return
 	 */
+	@Override
 	public List<TNotifySettingsBean> loadOwnSettings(Integer personID) {
 		Criteria criteria = new Criteria();
 		criteria.add(PERSON, personID, Criteria.EQUAL);
@@ -80,7 +82,7 @@ public class TNotifySettingsPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading of the notificationSettings by person " + personID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading of the notificationSettings by person " + personID + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -89,6 +91,7 @@ public class TNotifySettingsPeer
 	 * Loads all default projectAssignments
 	 * @return
 	 */
+	@Override
 	public List<TNotifySettingsBean> loadAllDefaultAssignments() {
 		Criteria criteria = new Criteria();
 		criteria.add(PERSON, (Object)null, Criteria.ISNULL);
@@ -97,7 +100,7 @@ public class TNotifySettingsPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading of the default notificationSettings failed with " + e.getMessage(), e);
+			LOGGER.error("Loading of the default notificationSettings failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -109,6 +112,7 @@ public class TNotifySettingsPeer
 	 * @param projectIDs: assignments for all projectAdmin projects   
 	 * @return
 	 */
+	@Override
 	public List<TNotifySettingsBean> loadDefaultsByProjects(List<Integer> projectIDs) {
 		List<TNotifySettingsBean> notifySettingsBeans = new LinkedList<TNotifySettingsBean>();
 		List<int[]> projectIDChunksList = GeneralUtils.getListOfChunks(projectIDs);
@@ -126,7 +130,7 @@ public class TNotifySettingsPeer
 			try {
 				notifySettingsBeans.addAll(convertTorqueListToBeanList(doSelect(criteria)));
 			} catch (TorqueException e) {
-				LOGGER.error("Loading of the default notificationSettings failed with " + e.getMessage(), e);
+				LOGGER.error("Loading of the default notificationSettings failed with " + e.getMessage());
 				return null;
 			}
 		}	
@@ -138,13 +142,14 @@ public class TNotifySettingsPeer
 	 * @param projectID
 	 * @return
 	 */
+	@Override
 	public List<TNotifySettingsBean> loadAllByProject(Integer projectID) {
 		Criteria criteria = new Criteria();
 		criteria.add(PROJECT, projectID);
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading of the default notificationSettings for project " + projectID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading of the default notificationSettings for project " + projectID + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -155,6 +160,7 @@ public class TNotifySettingsPeer
 	 * @param projectID
 	 * @return
 	 */
+	@Override
 	public TNotifySettingsBean loadDefaultByProject(Integer projectID) {
 		List<TNotifySettings> notifySettingsList = new LinkedList<TNotifySettings>();
 		Criteria criteria;
@@ -164,7 +170,7 @@ public class TNotifySettingsPeer
 		try {
 			notifySettingsList = doSelect(criteria);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading of the default notificationSettings for project " + projectID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading of the default notificationSettings for project " + projectID + " failed with " + e.getMessage());
 		}
 		if (notifySettingsList==null || notifySettingsList.isEmpty()) {
 			return null; 
@@ -180,6 +186,7 @@ public class TNotifySettingsPeer
 	 * @param projectID
 	 * @return
 	 */
+	@Override
 	public TNotifySettingsBean loadOwnByPersonAndProject(Integer personID, Integer projectID) {
 		List<TNotifySettings> notifySettingsList = new LinkedList<TNotifySettings>();
 		Criteria criteria;
@@ -205,6 +212,7 @@ public class TNotifySettingsPeer
 	 * @param notifyTriggerBean 
 	 * @return
 	 */
+	@Override
 	public Integer save(TNotifySettingsBean notifySettingsBean) {
 		TNotifySettings tNotifySettings;
 		try {
@@ -212,7 +220,7 @@ public class TNotifySettingsPeer
 			tNotifySettings.save();
 			return tNotifySettings.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a notificationSettings failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a notificationSettings failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -222,6 +230,7 @@ public class TNotifySettingsPeer
 	 * @param objectID 
 	 * @return
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		Criteria crit = new Criteria();
 		crit.add(OBJECTID, objectID);

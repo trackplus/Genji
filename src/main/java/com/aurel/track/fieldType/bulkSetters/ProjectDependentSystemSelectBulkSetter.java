@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -31,6 +31,8 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import com.aurel.track.beans.TPersonBean;
+
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -72,7 +74,7 @@ public class ProjectDependentSystemSelectBulkSetter extends SystemSelectBulkSett
 	}
 	
 	/**
-	 * Builds the name of the client side controls for submit
+	 * Builds the name of the ext js controls for submit
 	 * @param baseName
 	 * @param fieldID
 	 * @return
@@ -80,6 +82,18 @@ public class ProjectDependentSystemSelectBulkSetter extends SystemSelectBulkSett
 	protected static String getProjectSpecificName(String baseName, Integer fieldID, Integer projectID) {
 		StringBuilder stringBuilder = new StringBuilder();
 		return stringBuilder.append(baseName).append(".").append(encodeProjectSpecificKey(fieldID, projectID)).toString();
+	}
+	
+	/**
+	 * Builds the itemId of the ext js controls
+	 * @param baseName
+	 * @param fieldID
+	 * @param projectID
+	 * @return
+	 */
+	protected static String getProjectSpecificItemId(String baseName, Integer fieldID, Integer projectID) {
+		StringBuilder stringBuilder = new StringBuilder();
+		return stringBuilder.append(baseName).append(encodeProjectSpecificKey(fieldID, projectID)).toString();
 	}
 	
 	private static String encodeProjectSpecificKey(Integer fieldID, Integer projectID) {
@@ -108,7 +122,6 @@ public class ProjectDependentSystemSelectBulkSetter extends SystemSelectBulkSett
 		Map<Integer, Integer> projectSpecificValueMap = (Map<Integer, Integer>)value;
 		Map<Integer, List<ILabelBean>> projectSpecificDataSourceMap = (Map<Integer, List<ILabelBean>>)dataSource;
 		JSONUtility.appendFieldName(stringBuilder, "projectJson").append(":[");
-		//stringBuilder.append("projectJson:[");
 		for (Iterator<Integer> iterator = dataSourceMap.keySet().iterator(); iterator.hasNext();) {
 			Integer projectID = iterator.next();
 			stringBuilder.append("{");
@@ -119,8 +132,9 @@ public class ProjectDependentSystemSelectBulkSetter extends SystemSelectBulkSett
 			if (labelMap!=null) {
 				JSONUtility.appendStringValue(stringBuilder, JSONUtility.JSON_FIELDS.LABEL, labelMap.get(projectID));
 			}
-			JSONUtility.appendStringValue(stringBuilder, JSONUtility.JSON_FIELDS.NAME, getProjectSpecificName(baseName, fieldID, projectID));
-			JSONUtility.appendILabelBeanList(stringBuilder, JSONUtility.JSON_FIELDS.DATA_SOURCE, projectSpecificDataSourceMap.get(projectID), true);
+			JSONUtility.appendILabelBeanList(stringBuilder, JSONUtility.JSON_FIELDS.DATA_SOURCE, projectSpecificDataSourceMap.get(projectID));
+			 JSONUtility.appendStringValue(stringBuilder, JSONUtility.JSON_FIELDS.ITEMID, getProjectSpecificItemId(baseName, fieldID, projectID));
+			JSONUtility.appendStringValue(stringBuilder, JSONUtility.JSON_FIELDS.NAME, getProjectSpecificName(baseName, fieldID, projectID), true);
 			stringBuilder.append("}");
 			if (iterator.hasNext()) {
 				stringBuilder.append(",");
@@ -156,7 +170,8 @@ public class ProjectDependentSystemSelectBulkSetter extends SystemSelectBulkSett
 								actualValuesMap.put(projectID, intValue);
 							} catch (Exception e) {
 								LOGGER.warn("Converting the " + displayStringMapValue + " for fieldID " + getFieldID() +
-									" and project " + projectID +  " to Integer from display string failed with " + e.getMessage(), e);
+									" and project " + projectID +  " to Integer from display string failed with " + e.getMessage());
+								LOGGER.debug(ExceptionUtils.getStackTrace(e));
 							}
 						}
 					}
@@ -189,7 +204,8 @@ public class ProjectDependentSystemSelectBulkSetter extends SystemSelectBulkSett
 		try {
 			newProjectDependentMap = (Map<Integer, Integer>)value;
 		} catch (Exception e) {
-			LOGGER.debug("Getting the map value for " + value +  " failed with " + e.getMessage(), e);
+			LOGGER.info("Getting the map value for " + value +  " failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		} 	
 		switch (getRelation()) {
 		case BulkRelations.SET_TO: 
@@ -199,7 +215,8 @@ public class ProjectDependentSystemSelectBulkSetter extends SystemSelectBulkSett
 			try {
 				newProjectValue = (Integer)workItemBean.getAttribute(SystemFields.INTEGER_PROJECT);
 			} catch (Exception e) {
-				LOGGER.debug("Getting the new project value for failed with " + e.getMessage(), e);
+				LOGGER.info("Getting the new project value for failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 			Integer newValue = null; 
 			if (newProjectValue!=null && newProjectDependentMap!=null) {

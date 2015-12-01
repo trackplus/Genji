@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -98,6 +98,7 @@ public class EarnedValueDatasource extends TimeIntervalWithStatusDatasource {
 	 * @return
 	 * @throws TooManyItemsToLoadException
 	 */
+	@Override
 	public Object getDatasource(Map<String, String[]> parameters, DatasourceDescriptor datasourceDescriptor,
 			Map<String, Object> contextMap, Map<String, Object> templateDescriptionMap,
 			Integer templateID, TPersonBean personBean, Locale locale) throws TooManyItemsToLoadException {
@@ -174,6 +175,7 @@ public class EarnedValueDatasource extends TimeIntervalWithStatusDatasource {
 	/**
 	 * Serializes the datasource in an XML file
 	 */
+	@Override
 	public void serializeDatasource(OutputStream outputStream,
 			Object datasource) {
 		ReportBeansToXML.convertToXml(outputStream, (Document)datasource);
@@ -184,6 +186,7 @@ public class EarnedValueDatasource extends TimeIntervalWithStatusDatasource {
 	 * @param paramSettings
 	 * @return
 	 */
+	@Override
 	protected Map<String, Object> loadParamObjectsFromPropertyStrings(String paramSettings) {
 		Map<String, Object> paramsMap = super.loadParamObjectsFromPropertyStrings(paramSettings);
 		if (paramSettings!=null) {
@@ -203,6 +206,7 @@ public class EarnedValueDatasource extends TimeIntervalWithStatusDatasource {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	protected String getTimeIntervalExtraParams(Map<String, Object> savedParamsMap,
 			DatasourceDescriptor datasourceDescriptor,
 			TPersonBean personBean, Locale locale) {

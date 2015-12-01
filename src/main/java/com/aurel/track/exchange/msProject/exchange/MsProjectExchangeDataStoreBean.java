@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -343,13 +343,6 @@ public class MsProjectExchangeDataStoreBean {
 	 * So there is no any reason to export/import the workFormat
 	 * @author Tamas	 
 	 */
-	/*public interface WORK_FORMAT {
-		public static int m = 1;
-		public static int h = 2;
-		public static int d = 3;
-		public static int w = 4;
-		public static int mo = 5;	
-	}*/
 	
 	/**
 	 * The possible lag formats or duration formats shown to the user

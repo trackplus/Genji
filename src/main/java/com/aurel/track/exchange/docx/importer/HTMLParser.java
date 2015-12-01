@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -129,7 +129,6 @@ public class HTMLParser extends DefaultHandler2 {
 	}
 	
 	public HTMLContent parseDocument(String fileName, Locale locale){
-		//stack = new Stack<QNode>();
 		parse(fileName, locale);
 		LOGGER.info("Main chapters found:");
 		List<ItemNode> mainChapters = htmlContent.getChapters();
@@ -158,17 +157,17 @@ public class HTMLParser extends DefaultHandler2 {
 			InputSource is = new InputSource(fileReader);
 			sp.parse(is, this);
 		}catch(SAXException se) {
-			LOGGER.error("Parsing failed with " + se.getMessage(), se);
+			LOGGER.error("Parsing failed with " + se.getMessage());
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.error(ExceptionUtils.getStackTrace(se));
 			}
 		}catch(ParserConfigurationException pce) {
-			LOGGER.error("Parsing failed with " + pce.getMessage(), pce);
+			LOGGER.error("Parsing failed with " + pce.getMessage());
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.error(ExceptionUtils.getStackTrace(pce));
 			}
 		}catch (IOException ie) {
-			LOGGER.error("Reading failed with " + ie.getMessage(), ie);
+			LOGGER.error("Reading failed with " + ie.getMessage());
 			LOGGER.error(ExceptionUtils.getStackTrace(ie));
 		}
 	}
@@ -181,7 +180,6 @@ public class HTMLParser extends DefaultHandler2 {
 		try {
 			//get a new instance of parser
 			SAXParser sp = spf.newSAXParser();
-			//spf.setNamespaceAware(true);
 		    //spf.setValidating(true);
 			XMLReader xmlReader = sp.getXMLReader();
 			xmlReader.setErrorHandler(new MyErrorHandler(System.err));
@@ -190,25 +188,27 @@ public class HTMLParser extends DefaultHandler2 {
 			//InputSource is=new InputSource(new StringReader(xml));
 			xmlReader.parse(convertToFileURL(fileName));
 		}catch(SAXException se) {
-			LOGGER.error("Parsing the file " + fileName + " failed with " + se.getMessage(), se);
+			LOGGER.error("Parsing the file " + fileName + " failed with " + se.getMessage());
 			LOGGER.debug(ExceptionUtils.getStackTrace(se));
 		}catch(ParserConfigurationException pce) {
-			LOGGER.error("Parsing the file " + fileName + " failed with " + pce.getMessage(), pce);
+			LOGGER.error("Parsing the file " + fileName + " failed with " + pce.getMessage());
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.error(ExceptionUtils.getStackTrace(pce));
 			}
 		}catch (IOException ie) {
-			LOGGER.error("Reading the file " + fileName + " failed with " + ie.getMessage(), ie);
+			LOGGER.error("Reading the file " + fileName + " failed with " + ie.getMessage());
 			LOGGER.error(ExceptionUtils.getStackTrace(ie));
 		}
 		
 	}
 	
+	 @Override
 	 public void startDocument() throws SAXException {
 		 htmlContent = new HTMLContent();
 		 stack = new Stack<ItemNode>();
 	 }
 
+	 @Override
 	 public void endDocument() throws SAXException {
 		 //add the description of the last item
 		currentNode.setDescription(contentBuffer.toString());
@@ -362,6 +362,7 @@ public class HTMLParser extends DefaultHandler2 {
 		contentBuffer.append(new String(ch, start, length));
 	}
 	
+	@Override
 	public void comment(char[] ch,
             int start,
             int length)

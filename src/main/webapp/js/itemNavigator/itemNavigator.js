@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -124,7 +124,7 @@ com.trackplus.itemNavigator.ItemNavigatorFacade=Ext.define('com.trackplus.itemNa
 		},
 		createIssueListViewDescriptors:function(issueListViews){
 			var issueListViewDescriptors=[];
-			if(issueListViews!=null){
+			if(issueListViews){
 				for(var i=0;i<issueListViews.length;i++){
 					var ilw=issueListViews[i];
 					issueListViewDescriptors.push(Ext.create('com.trackplus.itemNavigator.IssueListViewDescriptor',ilw));
@@ -133,18 +133,18 @@ com.trackplus.itemNavigator.ItemNavigatorFacade=Ext.define('com.trackplus.itemNa
 			return issueListViewDescriptors;
 		},
 		createQueryContext:function(queryContextJSON){
-			if(queryContextJSON==null){
+			if(CWHF.isNull(queryContextJSON)){
 				queryContextJSON={};
 			}
 			return Ext.create('com.trackplus.itemNavigator.QueryContext',queryContextJSON);
 		},
 		updateCssRules:function(fieldListID,cssRules){
 			var me=this;
-			if(me.oldCss!=null){
+			if(me.oldCss){
 				Ext.util.CSS.removeStyleSheet(me.oldCss);
 				me.oldCss=null;
 			}
-			if(cssRules!=null){
+			if(cssRules){
 				var cssTxt='';
 				var clsName;
 				for(var i=0;i<cssRules.length;i++){
@@ -165,7 +165,8 @@ com.trackplus.itemNavigator.ItemNavigatorFacade=Ext.define('com.trackplus.itemNa
 		var config = cfg || {};
 		me.initialConfig = config;
 		Ext.apply(me, config);
-		me.controller=Ext.create('com.trackplus.itemNavigator.ItemNavigatorController',{
+		this.initConfig(config);
+		me.itemNavigatorController=Ext.create('com.trackplus.itemNavigator.ItemNavigatorController',{
 			model:me.model,
 			useLastQuery:me.useLastQuery,
 			baseAction:me.baseAction,
@@ -178,15 +179,15 @@ com.trackplus.itemNavigator.ItemNavigatorFacade=Ext.define('com.trackplus.itemNa
 	},
 	createView:function(model){
 		var me=this;
-		return me.controller.createView.call(me.controller);
+		return me.itemNavigatorController.createView.call(me.itemNavigatorController);
 	},
 	createNavigator:function(){
 		var me=this;
-		return me.controller.createNavigator.call(me.controller);
+		return me.itemNavigatorController.createNavigator.call(me.itemNavigatorController);
 	},
 	createToolbar:function(){
 		var me=this;
-		return me.controller.createToolbar.call(me.controller);
+		return me.itemNavigatorController.createToolbar.call(me.itemNavigatorController);
 	}
 });
 
@@ -205,7 +206,10 @@ Ext.define('com.trackplus.layout.ItemNavigatorLayout',{
 		me.itemNavigatorFacade=Ext.create('com.trackplus.itemNavigator.ItemNavigatorFacade',{
 			model:model,
 			workItemID:me.initData.workItemID,
+			baseAction:'itemNavigator',
 			actionID:me.initData.actionID,
+			useLastQuery:true,
+			skipEmptyNodeType:false,
 			settingsVisible:me.initData.settingsVisible,
 			filterEditVisible:me.initData.filterEditVisible
 		});
@@ -214,14 +218,14 @@ Ext.define('com.trackplus.layout.ItemNavigatorLayout',{
 			var data=me.initData;
 			var toolbar=me.itemNavigatorFacade.createToolbar();
 			me.borderLayoutController.setActiveToolbarList(toolbar);
-			me.itemNavigatorFacade.controller.issueListFacade.addOrRemoveSaveButton(me.borderLayoutController.getActiveToolbarList());
+			me.itemNavigatorFacade.itemNavigatorController.issueListFacade.addOrRemoveSaveButton(me.borderLayoutController.getActiveToolbarList());
 
-			if(me.initData.actionID!=null){
-				var ctrl=me.itemNavigatorFacade.controller;
+			if(me.initData.actionID){
+				var ctrl=me.itemNavigatorFacade.itemNavigatorController;
 				var issueListFacade=ctrl.issueListFacade;
 				var nodeDataArray=issueListFacade.listViewPlugin.selectItem(me.initData.workItemID);
 				var workItemIndex=null;
-				if(nodeDataArray!=null&&nodeDataArray.length>0){
+				if(nodeDataArray&&nodeDataArray.length>0){
 					workItemIndex=nodeDataArray[0]['workItemIndex'];
 				}
 				ctrl.executeItemAction.call(ctrl,me.initData.workItemID,me.initData.actionID,null,ctrl.navigate,ctrl,workItemIndex);
@@ -238,6 +242,6 @@ Ext.define('com.trackplus.layout.ItemNavigatorLayout',{
 	},
 	refresh:function(){
 		var me=this;
-		me.itemNavigatorFacade.controller.refresh();
+		me.itemNavigatorFacade.itemNavigatorController.refresh();
 	}
 });

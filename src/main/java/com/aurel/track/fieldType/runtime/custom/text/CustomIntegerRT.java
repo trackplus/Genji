@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -74,6 +74,7 @@ public class CustomIntegerRT extends CustomTextBoxBaseRT {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public String getShowISOValue(Integer fieldID, Integer parameterCode, Object value, 
 			Integer workItemID, LocalLookupContainer localLookupContainer, Locale locale) {
 		if (value!=null) {
@@ -115,6 +116,7 @@ public class CustomIntegerRT extends CustomTextBoxBaseRT {
 	/**
 	 * The value type of a textbox for integer 
 	 */
+	@Override
 	public int getValueType() {
 		return ValueType.INTEGER;
 	}
@@ -186,6 +188,7 @@ public class CustomIntegerRT extends CustomTextBoxBaseRT {
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public IActivityConfig getFieldChangeConfig(Integer fieldID) {
 		return new IntegerFieldChangeConfig(fieldID);
 	}
@@ -195,6 +198,7 @@ public class CustomIntegerRT extends CustomTextBoxBaseRT {
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public IActivityExecute getFieldChangeApply(Integer fieldID) {
 		return new IntegerFieldChangeApply(fieldID);
 	}
@@ -204,6 +208,7 @@ public class CustomIntegerRT extends CustomTextBoxBaseRT {
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public IValueConverter getFieldValueConverter(Integer fieldID) {
 		return new IntegerSetterConverter(fieldID);
 	}
@@ -212,6 +217,7 @@ public class CustomIntegerRT extends CustomTextBoxBaseRT {
 	 * Whether the field should be stored
 	 * @return
 	 */
+	@Override
 	public int getLuceneStored() {
 		return LuceneUtil.STORE.NO;
 	}
@@ -220,6 +226,7 @@ public class CustomIntegerRT extends CustomTextBoxBaseRT {
 	 * Whether the field should be tokenized
 	 * @return
 	 */
+	@Override
 	public int getLuceneTokenized() {
 		return LuceneUtil.TOKENIZE.NO;
 	}
@@ -228,6 +235,7 @@ public class CustomIntegerRT extends CustomTextBoxBaseRT {
 	 * Returns the lookup entity type related to the fieldType
 	 * @return
 	 */
+	@Override
 	public int getLookupEntityType() {
 		return LuceneUtil.LOOKUPENTITYTYPES.DIRECTINTEGER;
 	}

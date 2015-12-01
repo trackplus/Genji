@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -24,28 +24,20 @@
 package com.aurel.track.prop.actions;
 
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 
-
-
-
-
-
-import com.aurel.track.Constants;
 import com.aurel.track.admin.user.person.PersonBL;
 import com.aurel.track.beans.TMotdBean;
 import com.aurel.track.beans.TPersonBean;
@@ -59,13 +51,11 @@ import com.opensymphony.xwork2.Preparable;
 /**
  * Implementation of <strong>Action</strong> that validates a user logon.
  * @author Joerg Friedrich <joerg.friedrich@computer.org>
- * @version $Revision: 1418 $ $Date: 2015-09-23 17:06:40 +0200 (Wed, 23 Sep 2015) $
+ * @version $Revision: 1695 $ $Date: 2015-10-29 08:06:44 +0100 (Thu, 29 Oct 2015) $
  */
 //@ParentPackage("struts-track-base")
-//@InterceptorRefs({
 //	@InterceptorRef("editNoAuth")
 //})
-//@Results({
 //    @Result(name="loading", location="logon.jsp"),
 //	@Result(name="admin", type="redirect", location="admin.action"),
 //	@Result(name="banned", type="redirect", location="banned.action"),
@@ -98,12 +88,11 @@ public final class LogonAction extends ActionSupport implements Preparable/*, Se
 	private TMotdBean motd;
 
 
-	private ArrayList<LabelValueBean> errors = new ArrayList<LabelValueBean>();
+	private List<LabelValueBean> errors = new ArrayList<LabelValueBean>();
 
 	private Boolean isMobileApplication = false;
 	private Integer mobileApplicationVersionNo;
 
-	//private Enumeration browserLocales = null;
 
 	private boolean hasInitData=true;
 	private String initData;
@@ -114,6 +103,7 @@ public final class LogonAction extends ActionSupport implements Preparable/*, Se
 	 * This method is called automatically by the framework
 	 * before any other method is called.
 	 */
+	@Override
 	public void prepare() throws Exception {
 	}
 
@@ -137,7 +127,6 @@ public final class LogonAction extends ActionSupport implements Preparable/*, Se
 				 String decodedString = null;
 				 value = value.replaceAll("Basic ", "");
 				 decodedString = new String(Base64.decodeBase64(value), StandardCharsets.UTF_8);
-//				 String userAndPass = new String(bytesEncoded);
 				if(decodedString != null && decodedString.split(":").length > 0) {
 					 String[] userPassArr = decodedString.split(":");
 					 userName = userPassArr[0];
@@ -155,9 +144,9 @@ public final class LogonAction extends ActionSupport implements Preparable/*, Se
 	 */
 
 //	@Override
-//	@Actions({
 //		@Action("/logon"),
 //	})
+	@Override
 	public String execute(){
 		// if Container Based Authentication is enabled and we can get a remote
 		// user we use that one, no more questions asked. However, a local login
@@ -180,7 +169,6 @@ public final class LogonAction extends ActionSupport implements Preparable/*, Se
 			usingContainerBasedAuthentication = true;
 			httpSession.setAttribute("containerBasedAuthentication", true);
 			try {
-//				TPersonBean personBean=(TPersonBean)httpSession.getAttribute(Constants.USER_KEY);
 				TPersonBean personBean = PersonBL.loadByLoginName(cbaUserName);
 				LoginBL.login(null, false, username, true, null, null, false, null, getLocale());
 				String homePage = null;
@@ -222,11 +210,11 @@ public final class LogonAction extends ActionSupport implements Preparable/*, Se
 		StringBuilder sb = new StringBuilder();
 		sb.append("{");
 		sb.append("\"data\":{");
-		boolean selfReg = ApplicationBean.getApplicationBean().getSiteBean().getIsSelfRegisterAllowedBool();
+		boolean selfReg = ApplicationBean.getInstance().getSiteBean().getIsSelfRegisterAllowedBool();
 	    JSONUtility.appendBooleanValue(sb, "selfRegistration", selfReg);
-	    boolean isLDAPOn = ApplicationBean.getApplicationBean().getSiteBean().getIsLDAPOnBool();
+	    boolean isLDAPOn = ApplicationBean.getInstance().getSiteBean().getIsLDAPOnBool();
 	    JSONUtility.appendBooleanValue(sb, "isLDAPOn", isLDAPOn);
-	    boolean isForceLDAP =  ApplicationBean.getApplicationBean().getSiteBean().getIsForceLdap();
+	    boolean isForceLDAP =  ApplicationBean.getInstance().getSiteBean().getIsForceLdap();
 	    JSONUtility.appendBooleanValue(sb, "isForceLDAP", isForceLDAP, true);
 		sb.append("}");
 		sb.append("}");
@@ -234,13 +222,7 @@ public final class LogonAction extends ActionSupport implements Preparable/*, Se
 	}
 
 
-	/*public Map getSession() {
-		return session;
-	}*/
 
-	/*public void setSession(Map session) {
-		this.session = session;
-	}*/
 
 	public String getPassword() {
 		return password;

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -29,6 +29,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -67,10 +68,13 @@ public class SystemDateBulkSetter extends DateBulkSetter {
 	 * the name of the adjust checkbox if the setter relation is either
 	 * BulkRelations.SET_EARLIEST_STARTING_FROM or BulkRelations.SET_LATEST_ENDING_AT
 	 */
+	private static String DATE_ITEM_ID = "dateItemId";
 	private static String ADJUST_CHECKBBOX_NAME = "adjustCheckboxName";
+	private static String ADJUST_CHECKBBOX_ITEM_ID = "adjustCheckboxItemId";
 	private static String ADJUST_CHECKBBOX_VALUE = "adjustCheckboxValue";
-	private static String OPPOSITE_FIELD = "oppositeField";
 	private static String ADJUST_CHECKBOX_LABEL = "adjustCheckboxLabel";
+	private static String OPPOSITE_FIELD = "oppositeField";
+	
 	
 	
 	/**
@@ -104,27 +108,26 @@ public class SystemDateBulkSetter extends DateBulkSetter {
 		return stringBuilder.append(baseName).append(".").append(getAdjustCheckBoxKey(fieldID)).toString();
 	}
 	
-	private static String getAdjustCheckBoxKey(Integer fieldID) {
-		StringBuilder stringBuilder = new StringBuilder();
-		return stringBuilder.append(ADJUST_CHECKBBOX_NAME).append(fieldID).toString();
-	}
-	
-	
 	/**
-	 * Builds the name of the date field
+	 * Builds the itemId of the adjust checkbox
 	 * @param baseName
 	 * @param fieldID
 	 * @return
 	 */
-	/*protected static String getDateFieldName(String baseName, Integer fieldID) {
+	private static String getAdjustCheckBoxItemId(String baseName, Integer fieldID) {
 		StringBuilder stringBuilder = new StringBuilder();
-		return stringBuilder.append(baseName).append("[").append(getDateFieldKey(fieldID)).append("]").toString();
-	}*/
+		return stringBuilder.append(baseName).append(getAdjustCheckBoxKey(fieldID)).toString();
+	}
 	
-	/*private static String getDateFieldKey(Integer fieldID) {
+	/**
+	 * The map key for adjust ckeckbox
+	 * @param fieldID
+	 * @return
+	 */
+	private static String getAdjustCheckBoxKey(Integer fieldID) {
 		StringBuilder stringBuilder = new StringBuilder();
-		return stringBuilder.append(DATE_FIELD_NAME).append(fieldID).toString();
-	}*/
+		return stringBuilder.append(ADJUST_CHECKBBOX_NAME).append(fieldID).toString();
+	}
 	
 	/**
 	 * The JSON configuration object for configuring the js control(s) containing the value
@@ -142,6 +145,7 @@ public class SystemDateBulkSetter extends DateBulkSetter {
 		Object dataSource, Map<Integer, String> labelMap, boolean disabled, TPersonBean personBean, Locale locale) {
 		StringBuilder stringBuilder = new StringBuilder("{");
 		JSONUtility.appendStringValue(stringBuilder, JSONUtility.JSON_FIELDS.NAME, getName(baseName));
+		JSONUtility.appendStringValue(stringBuilder, DATE_ITEM_ID, getItemId(baseName));
 			switch (getRelation()) {
 			case BulkRelations.MOVE_BY_DAYS:
 				Map<Integer, Object> daysAndCheckbox = null;
@@ -154,8 +158,8 @@ public class SystemDateBulkSetter extends DateBulkSetter {
 				}
 				if (SystemFields.INTEGER_STARTDATE.equals(fieldID) || SystemFields.INTEGER_ENDDATE.equals(fieldID) ||
 						SystemFields.INTEGER_TOP_DOWN_START_DATE.equals(fieldID) || SystemFields.INTEGER_TOP_DOWN_END_DATE.equals(fieldID)) {
-					String adjustCheckboxName = getAdjustCheckBoxName(baseName, fieldID);
-					JSONUtility.appendStringValue(stringBuilder, ADJUST_CHECKBBOX_NAME, adjustCheckboxName);
+					JSONUtility.appendStringValue(stringBuilder, ADJUST_CHECKBBOX_NAME, getAdjustCheckBoxName(baseName, fieldID));
+					JSONUtility.appendStringValue(stringBuilder, ADJUST_CHECKBBOX_ITEM_ID, getAdjustCheckBoxItemId(baseName, fieldID));
 					if (daysAndCheckbox!=null) {
 						JSONUtility.appendBooleanValue(stringBuilder, ADJUST_CHECKBBOX_VALUE, (Boolean)daysAndCheckbox.get(Integer.valueOf(1)));
 					}
@@ -256,7 +260,8 @@ public class SystemDateBulkSetter extends DateBulkSetter {
 			} catch (Exception e) {
 				//remove the value with the wrong type (if for example the old value, according the old relation was a Date)
 				displayStringMap.clear();
-				LOGGER.debug("Converting the " + value +  " to Integer from display string failed with " + e.getMessage(), e);
+				LOGGER.info("Converting the " + value +  " to Integer from display string failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 			daysAndCheckbox.put(Integer.valueOf(0), intValue);
 			Boolean adjustByDays = Boolean.FALSE;
@@ -330,7 +335,8 @@ public class SystemDateBulkSetter extends DateBulkSetter {
 				dateWithAdjustBothDates = (Map<Integer, Object>)value;
 			} catch (Exception e) {
 				LOGGER.warn("Converting the " + value +  
-						" to Map for setting the attribute failed with " + e.getMessage(), e);
+						" to Map for setting the attribute failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 			if (dateWithAdjustBothDates==null) {
 				return null;
@@ -341,13 +347,15 @@ public class SystemDateBulkSetter extends DateBulkSetter {
 				value = dateWithAdjustBothDates.get(Integer.valueOf(0));
 			} catch (Exception e) {
 				LOGGER.warn("Converting the " + dateWithAdjustBothDates.get(Integer.valueOf(0)) +
-						" to Date for setting the attribute failed with " + e.getMessage(), e);
+						" to Date for setting the attribute failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 			try {
 				adjustBothDates = (Boolean)dateWithAdjustBothDates.get(Integer.valueOf(1));
 			} catch (Exception e) {
 				LOGGER.warn("Converting the " + dateWithAdjustBothDates.get(Integer.valueOf(1)) +
-						" to Boolean for setting the attribute failed with " + e.getMessage(), e);
+						" to Boolean for setting the attribute failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		
@@ -375,7 +383,8 @@ public class SystemDateBulkSetter extends DateBulkSetter {
 					try {
 						moveByDays = (Integer)value;
 					} catch (Exception e) {
-						LOGGER.warn("Converting the move by days " + value +  " to Integer failed with " + e.getMessage(), e);
+						LOGGER.warn("Converting the move by days " + value +  " to Integer failed with " + e.getMessage());
+						LOGGER.debug(ExceptionUtils.getStackTrace(e));
 					}
 					if (moveByDays!=null) {
 						//start dates already shifted: now shift also end dates but with the same offset as the one for start dates
@@ -387,7 +396,8 @@ public class SystemDateBulkSetter extends DateBulkSetter {
 						try {
 							originalDate = (Date)originalValue;
 						} catch (Exception e) {
-							LOGGER.warn("Converting the original value " + originalValue +  " to Date failed with " + e.getMessage(), e);
+							LOGGER.warn("Converting the original value " + originalValue +  " to Date failed with " + e.getMessage());
+							LOGGER.debug(ExceptionUtils.getStackTrace(e));
 						}
 						workItemBean.setAttribute(oppositeDate, parameterCode, 
 								shiftByDays(originalDate, moveByDays));

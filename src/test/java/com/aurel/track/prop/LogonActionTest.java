@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -37,7 +37,7 @@ import com.opensymphony.xwork2.ActionProxy;
  *
  * @generatedBy CodePro at 05.01.15 23:18, using the Struts generator
  * @author friedj
- * @version $Revision: 1.0 $
+ * @version $Revision: 1661 $
  */
 public class LogonActionTest extends StrutsTestCase{
 	
@@ -201,8 +201,6 @@ public class LogonActionTest extends StrutsTestCase{
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
-//		resourceLoader = new FileSystemResourceLoader();
-//		initServletMockObjects();
 
 		// add additional set up code here
 		

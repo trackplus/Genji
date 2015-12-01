@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -33,12 +33,12 @@ Ext.define('js.ext.com.track.dashboard.ReportsAndFilters',{
 	},
 	createChildren:function(){
 		var me=this;
-		if(me.jsonData.tooManyItems==true){
+		if(me.jsonData.tooManyItems===true){
 			return [me.createErrorCmp(getText('cockpit.err.tooManyItems'))];
 		}
 		var items=[];
 		var gridData=[];
-		if(me.jsonData.selectedReports!=null&&me.jsonData.selectedReports.length>0){
+		if(me.jsonData.selectedReports&&me.jsonData.selectedReports.length>0){
 			var reportsData=me.jsonData.selectedReports;
 			gridData.push({id:null,report:false,label:getText('reportsAndFilters.reports')});
 			for(var i=0;i<reportsData.length;i++){
@@ -52,7 +52,7 @@ Ext.define('js.ext.com.track.dashboard.ReportsAndFilters',{
 				});
 			}
 		}
-		if(me.jsonData.filters!=null&&me.jsonData.filters.length>0){
+		if(me.jsonData.filters&&me.jsonData.filters.length>0){
 			var filtersData=me.jsonData.filters;
 			gridData.push({id:null,report:false,label:getText('reportsAndFilters.filters')});
 			gridData=me.addAll(gridData,filtersData);
@@ -60,7 +60,7 @@ Ext.define('js.ext.com.track.dashboard.ReportsAndFilters',{
 		if(gridData.length>0){
 			items.push(me.createReportsAndFiltersGrid(gridData));
 		}
-		if(me.jsonData.results!=null&&me.jsonData.results.length>0){
+		if(me.jsonData.results&&me.jsonData.results.length>0){
 			items.push(me.createOpenedIssuesPanel(me.jsonData));
 		}
 		return items;
@@ -112,11 +112,11 @@ Ext.define('js.ext.com.track.dashboard.ReportsAndFilters',{
 		});
 	},
 	isLabelLink:function(value,metaData,record,rowIndex,colIndex,store,view){
-		return (record.data.id!=null);
+		return (record.data.id);
 	},
 	postProcessRendererLabel:function(value,metaData,record,rowIndex,colIndex,store,view){
 		var htmlStr='';
-		if(record.data.id==null){
+		if(CWHF.isNull(record.data.id)){
 			htmlStr+='<h2>'+value+'</h2>';
 		}else{
 			htmlStr=value;
@@ -134,12 +134,12 @@ Ext.define('js.ext.com.track.dashboard.ReportsAndFilters',{
 		var entityFlag=null;
 		var reportProjectOrRelease = record.data["projectID"];
 		//overwrite projectID and entity type if dashboard is in browse projects page
-		if(me.jsonData!=null&&me.jsonData.projectID!=null){
+		if(me.jsonData&&me.jsonData.projectID){
 			projectID=me.jsonData.projectID;
 			entityFlag=me.jsonData.entityType;
 			reportProjectOrRelease = -projectID;
 		}
-		if(me.jsonData!=null&&me.jsonData.releaseID!=null){
+		if(me.jsonData&&me.jsonData.releaseID){
 			projectID=me.jsonData.releaseID;
 			entityFlag=me.jsonData.entityType;
 			reportProjectOrRelease = projectID;
@@ -157,7 +157,7 @@ Ext.define('js.ext.com.track.dashboard.ReportsAndFilters',{
 				'queryID':me.jsonData.dashboardID,
 				'dashboardParams.dashboardID':me.jsonData.dashboardID
 			};
-			if(projectID!=null){
+			if(projectID){
 				params['dashboardParams.projectID']=projectID;
 				params['dashboardParams.entityFlag']=entityFlag;
 			}

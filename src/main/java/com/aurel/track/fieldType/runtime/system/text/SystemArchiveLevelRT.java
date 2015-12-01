@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -25,6 +25,7 @@ package com.aurel.track.fieldType.runtime.system.text;
 
 import java.util.Locale;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -55,6 +56,7 @@ public class SystemArchiveLevelRT  extends SystemOutputBaseRT {
 	 * Here not really meaningful because this field will be never historized
 	 * @return
 	 */
+	@Override
 	public int getValueType() {
 		return ValueType.INTEGER;
 	}
@@ -73,6 +75,7 @@ public class SystemArchiveLevelRT  extends SystemOutputBaseRT {
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public IActivityConfig getFieldChangeConfig(Integer fieldID) {
 		return new ArchiveLevelFieldChangeConfig(fieldID);
 	}
@@ -82,6 +85,7 @@ public class SystemArchiveLevelRT  extends SystemOutputBaseRT {
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public IActivityExecute getFieldChangeApply(Integer fieldID) {
 		return new ArchiveLevelFieldChangeApply(fieldID);
 	}
@@ -91,6 +95,7 @@ public class SystemArchiveLevelRT  extends SystemOutputBaseRT {
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public IValueConverter getFieldValueConverter(Integer fieldID) {
 		return new IntegerSetterConverter(fieldID);
 	}
@@ -105,6 +110,7 @@ public class SystemArchiveLevelRT  extends SystemOutputBaseRT {
 	 * @param locale 
 	 * @return
 	 */
+	@Override
 	public String getShowValue(Integer fieldID, Integer parameterCode, Object value, 
 			Integer workItemID, LocalLookupContainer localLookupContainer, Locale locale) {
 		return getShowValue(value, locale);
@@ -127,7 +133,8 @@ public class SystemArchiveLevelRT  extends SystemOutputBaseRT {
 			intValue = (Integer)value;
 		} catch (Exception e) {
 			LOGGER.warn("Casting the value type " + value.getClass().getName() +
-					" to Integer failed with " + e.getMessage(), e);
+					" to Integer failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		if (intValue!=null) {
 			if (TWorkItemBean.ARCHIVE_LEVEL_ARCHIVED.equals(intValue)) {
@@ -147,6 +154,7 @@ public class SystemArchiveLevelRT  extends SystemOutputBaseRT {
 		return "";
 	}
 	
+	@Override
 	public boolean isoDiffersFromLocaleSpecific() {
 		return true;
 	}
@@ -162,6 +170,7 @@ public class SystemArchiveLevelRT  extends SystemOutputBaseRT {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public String getShowISOValue(Integer fieldID, Integer parameterCode, Object value, 
 			Integer workItemID, LocalLookupContainer localLookupContainer, Locale locale) {
 		if (value==null) {
@@ -172,7 +181,8 @@ public class SystemArchiveLevelRT  extends SystemOutputBaseRT {
 			intValue = (Integer)value;
 		} catch (Exception e) {
 			LOGGER.error("Casting the value type " + value.getClass().getName() +
-					" to Integer failed with " + e.getMessage(), e);
+					" to Integer failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		if (intValue==null) {
 			return null;
@@ -216,6 +226,7 @@ public class SystemArchiveLevelRT  extends SystemOutputBaseRT {
 	 * Whether the field might be matched in for an excel column
 	 * @return
 	 */
+	@Override
 	public boolean mightMatchExcelColumn() {
 		return false;
 	}
@@ -224,6 +235,7 @@ public class SystemArchiveLevelRT  extends SystemOutputBaseRT {
 	 * Whether the field should be stored
 	 * @return
 	 */
+	@Override
 	public int getLuceneStored() {
 		return LuceneUtil.STORE.YES;
 	}
@@ -232,10 +244,12 @@ public class SystemArchiveLevelRT  extends SystemOutputBaseRT {
 	 * Whether the field should be tokenized
 	 * @return
 	 */
+	@Override
 	public int getLuceneTokenized() {
 		return LuceneUtil.TOKENIZE.NO;
 	}
 	
+	@Override
 	public int getLookupEntityType() {
 		return LuceneUtil.LOOKUPENTITYTYPES.DIRECTINTEGER;
 	}

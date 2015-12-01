@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -98,17 +98,17 @@ public class ExportReportTemplateBL {
 		}
 		catch (FactoryConfigurationError e)
 		{
-			LOGGER.error("Creating the DOM document failed with FactoryConfigurationError:" + e.getMessage(), e);
+			LOGGER.error("Creating the DOM document failed with FactoryConfigurationError:" + e.getMessage());
 			return;
 		} 
 		catch (ParserConfigurationException e)
 		{
-			LOGGER.error("Creating the DOM document failed with ParserConfigurationException: " + e.getMessage(), e);
+			LOGGER.error("Creating the DOM document failed with ParserConfigurationException: " + e.getMessage());
 			return;
 		}
 		catch (Exception e)
 		{
-			LOGGER.error("Error: " + e.getMessage(), e);
+			LOGGER.error("Error: " + e.getMessage());
 		}
 	}
 	
@@ -170,7 +170,7 @@ public class ExportReportTemplateBL {
 	       }
 		}
 		catch (Exception e) {
-			LOGGER.warn("Error = "+e.getMessage(), e);
+			LOGGER.warn("Error = "+e.getMessage());
 			return null;
 		}
 		return tmpElement;
@@ -227,21 +227,21 @@ public class ExportReportTemplateBL {
 			
 		}catch (TransformerConfigurationException e)
 		{
-			LOGGER.error ("Creating the transformer failed with TransformerConfigurationException: " + e.getMessage(), e);
+			LOGGER.error ("Creating the transformer failed with TransformerConfigurationException: " + e.getMessage());
 			return null;
 		}
 		catch (TransformerException e){
-			LOGGER.error ("Transform failed with TransformerException: " + e.getMessage(), e);
+			LOGGER.error ("Transform failed with TransformerException: " + e.getMessage());
 			return null;
 		}
 		catch (FileNotFoundException e)
 		{
-			LOGGER.error("Error: " +e.getMessage(), e);
+			LOGGER.error("Error: " +e.getMessage());
 			return null;
 		}
 		catch (IOException e)
 		{
-			LOGGER.error("Error: " +e.getMessage(), e);
+			LOGGER.error("Error: " +e.getMessage());
 			return null;
 		}
 		return zipOut;

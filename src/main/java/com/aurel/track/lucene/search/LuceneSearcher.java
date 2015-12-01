@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -35,6 +35,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
@@ -163,14 +164,15 @@ public class LuceneSearcher {
 				//initialize the query with all direct fields as default field
 				query = MultiFieldQueryParser.parse(LuceneUtil.VERSION, preprocessedQueryString, fieldNamesArr, orFlags, analyzer);
 			} catch (ParseException e) {
-				LOGGER.error("Parsing without explicit field for workItem fields (MultiFieldQueryParser) failed with " + e.getMessage(), e);
+				LOGGER.error("Parsing without explicit field for workItem fields (MultiFieldQueryParser) failed with " + e.getMessage());
 				throw e;
 			}*/
 			QueryParser queryParser = new QueryParser(LuceneUtil.getFieldName(SystemFields.ISSUENO), analyzer);
 			try {
 				query = queryParser.parse(preprocessedQueryString);
 			} catch (ParseException e) {
-				LOGGER.warn("Parsing explicit field  for " + preprocessedQueryString + " field failed with " + e.getMessage(), e);
+				LOGGER.warn("Parsing explicit field  for " + preprocessedQueryString + " field failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				throw e;
 			}
 			if (query!=null && LOGGER.isDebugEnabled()) {
@@ -228,7 +230,8 @@ public class LuceneSearcher {
 				indexSearcher.search(query, collector);
 				scoreDocs = collector.topDocs().scoreDocs;
 			} catch (IOException e) {
-				LOGGER.warn("Getting the workitem search results failed with failed with " + e.getMessage(), e);
+				LOGGER.warn("Getting the workitem search results failed with failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				return hitIDs;
 			}
 			if (LOGGER.isDebugEnabled()) {
@@ -236,7 +239,6 @@ public class LuceneSearcher {
 				LOGGER.debug("Found " + scoreDocs.length + " document(s) (in " + (end - start) + " milliseconds) that matched the user query '" +
 					userQueryString + "' the preprocessed query '" + preprocessedQueryString + "' and the query.toString() '" + query.toString() + "'");
 			}
-			//String titleField = LuceneUtil.normalizeFieldName(FieldBL.loadByPrimaryKey(SystemFields.INTEGER_SYNOPSIS).getName());
 			QueryScorer queryScorer = new QueryScorer(query/*, LuceneUtil.HIGHLIGHTER_FIELD*/);
 	        Fragmenter fragmenter = new SimpleSpanFragmenter(queryScorer);
 	        Highlighter highlighter = new Highlighter(queryScorer); // Set the best scorer fragments
@@ -248,7 +250,8 @@ public class LuceneSearcher {
 				try {
 					doc = indexSearcher.doc(docID);
 				} catch (IOException e) {
-					LOGGER.error("Getting the workitem documents failed with " + e.getMessage(), e);
+					LOGGER.error("Getting the workitem documents failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 				if (doc!=null) {
 					Integer itemID = Integer.valueOf(doc.get(LuceneUtil.getFieldName(SystemFields.ISSUENO)));
@@ -274,10 +277,12 @@ public class LuceneSearcher {
 			}
 			return hitIDs;
 		} catch (BooleanQuery.TooManyClauses e) {
-			LOGGER.error("Searching the query resulted in too many clauses. Try to narrow the query results. " + e.getMessage(), e);
+			LOGGER.error("Searching the query resulted in too many clauses. Try to narrow the query results. " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			throw e;
 		} catch(Exception e) {
-			LOGGER.error("Searching the workitems failed with " + e.getMessage(), e);
+			LOGGER.error("Searching the workitems failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			return hitIDs;
 		} finally {
 			closeIndexSearcherAndUnderlyingIndexReader(indexSearcher, "workItem");
@@ -388,10 +393,6 @@ public class LuceneSearcher {
 		if (userQueryString==null) {
 			return false;
 		}
-		//Map<String, Integer> compositeFieldIDByFieldName = new HashMap<String, Integer>();
-		//Map<String, String> fieldLabelToFieldNameMap = new HashMap<String, String>();
-		//List<String> fieldNames = getAllFieldNames(compositeFieldIDByFieldName, fieldLabelToFieldNameMap, locale);
-		
 		fieldNames.add(LuceneUtil.ATTACHMENT);
 		fieldNames.add(LuceneUtil.EXPENSE);
 		fieldNames.add(LuceneUtil.BUDGET_PLAN);
@@ -460,7 +461,8 @@ public class LuceneSearcher {
 							}
 						}
 					} catch (Exception e) {
-						LOGGER.warn("Getting the field names for external lookup " + fieldID + " failed with " + e.getMessage(), e);
+						LOGGER.warn("Getting the field names for external lookup " + fieldID + " failed with " + e.getMessage());
+						LOGGER.debug(ExceptionUtils.getStackTrace(e));
 					}
 				}
 			} else {
@@ -755,7 +757,8 @@ public class LuceneSearcher {
 			compositeFieldTypeRT = (CustomCompositeBaseRT)fieldTypeRT;
 		} catch (Exception e) {
 			LOGGER.error("Casting the runtime field type " + fieldTypeRT.getClass().getName() +
-					" to CustomCompositeFieldTypeRT failed with " + e.getMessage(), e);
+					" to CustomCompositeFieldTypeRT failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		if (compositeFieldTypeRT==null) {
 			return fieldValue;
@@ -863,10 +866,12 @@ public class LuceneSearcher {
 		try {
 			workItemDirectQuery = MultiFieldQueryParser.parse(toBeProcessedString, fieldNamesArr, orFlags, analyzer);
 		} catch (ParseException e) {
-			LOGGER.warn("Parsing without explicit field for workItem fields (MultiFieldQueryParser) failed with " + e.getMessage(), e);
+			LOGGER.warn("Parsing without explicit field for workItem fields (MultiFieldQueryParser) failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			throw e;
 		} catch (Exception e) {
-			LOGGER.warn("Parsing without explicit field for workItem fields (MultiFieldQueryParser) failed with throwable " + e.getMessage(), e);
+			LOGGER.warn("Parsing without explicit field for workItem fields (MultiFieldQueryParser) failed with throwable " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		//combine with or all occurrences LOOKUPENTITYTYPES
 		if (workItemDirectQuery!=null) {
@@ -911,7 +916,8 @@ public class LuceneSearcher {
 			try {
 				itemTypeQuery = queryParser.parse(orDividedIDs);
 			} catch (ParseException e) {
-				LOGGER.warn("Parsing item types field  for " + orDividedIDs + " field failed with " + e.getMessage(), e);
+				LOGGER.warn("Parsing item types field  for " + orDividedIDs + " field failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				throw e;
 			}
 		}
@@ -1142,7 +1148,8 @@ public class LuceneSearcher {
 			IndexReader indexReader = DirectoryReader.open(indexDir);
 			is = new IndexSearcher(indexReader);
 		} catch (IOException e) {
-			LOGGER.warn("Initializing the IndexSearcher for index " + index + " failed with " + e.getMessage(), e);
+			LOGGER.warn("Initializing the IndexSearcher for index " + index + " failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		return is;
 	}
@@ -1157,11 +1164,6 @@ public class LuceneSearcher {
 			} catch (IOException e1) {
 				LOGGER.error("Closing the " + index + " IndexReader failed with " + e1.getMessage());
 			}
-			/*try {
-				indexSearcher.close();
-			} catch(Exception e) {
-				LOGGER.error("Closing the " + index + " IndexSearcher failed with " + e.getMessage(), e);
-			}*/
 		}
 	}
 	
@@ -1189,7 +1191,6 @@ public class LuceneSearcher {
 					Integer objectID = iterator.next();
 					if (objectID!=null && objectID.intValue()<0) {
 						//FIXME: escape the - sign if negative, but \\ does not work. As fix a range query is used: within [ ] the minus sign works
-						//stringBuilder.append("\\"+objectID);
 						stringBuilder.append("["+objectID + " TO " + objectID + "]");
 					} else {
 						stringBuilder.append(objectID);

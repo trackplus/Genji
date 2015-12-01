@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -22,7 +22,6 @@
 
 Ext.define('js.ext.com.track.dashboard.QuickSearch',{
 	extend:'js.ext.com.track.dashboard.DashboardRenderer',
-	bodyPadding:'5 5 5 5',
 	initComponent : function(){
 		var me=this;
 		me.items=me.createChildren();
@@ -31,33 +30,13 @@ Ext.define('js.ext.com.track.dashboard.QuickSearch',{
 	createChildren:function(){
 		var me=this;
 		var projectID=null;
-		if(typeof(me.jsonData.projectID) !== 'undefined' && me.jsonData.projectID != null) {
+		if(typeof(me.jsonData.projectID) !== 'undefined' && me.jsonData.projectID ) {
 			projectID=me.jsonData.projectID;
 		}
 		var items=[];
-		if(projectID==null){
-			/*var dummyData=[
-				{id:'1',text:'aa',leaf:true,selectable:true,checked:false},
-				{id:'2',text:'bb',leaf:false,selectable:true,checked:false,
-					children:[
-						{id:'10',text:'bb-000',leaf:true,selectable:true,checked:false},
-						{id:'11',text:'bb-111',leaf:true,selectable:true,checked:false},
-						{id:'12',text:'bb-222',leaf:true}
-					]
-				},
-				{id:'3',text:'cc',leaf:true},
-				{id:'4',text:'dd',leaf:true,selectable:true,checked:false},
-				{id:'101',text:'sfswf',leaf:true,selectable:true,checked:false},
-				{id:'102',text:'asdfsda',leaf:true,selectable:true,checked:false},
-				{id:'103',text:'asdfa',leaf:true,selectable:true,checked:false},
-				{id:'104',text:'sfsdfaa',leaf:true,selectable:true,checked:false},
-				{id:'105',text:'asdfsdfa',leaf:true,selectable:true,checked:false},
-				{id:'106',text:'asdfsda',leaf:true,selectable:true,checked:false},
-				{id:'107',text:'asdfa',leaf:true,selectable:true,checked:false},
-				{id:'108',text:'asdfsdfa',leaf:true,selectable:true,checked:false}
-			]; */
+		if(CWHF.isNull(projectID)){
 			me.projectPicker=Ext.create('com.trackplus.util.MultipleTreePicker',{
-				data:me.jsonData.projects,
+				options:me.jsonData.projects,
 				margin:'0 5 0 0',
 				width:250,
 				matchFieldWidth:false,
@@ -70,7 +49,7 @@ Ext.define('js.ext.com.track.dashboard.QuickSearch',{
 		}
 
 		me.issueTypeSelect= Ext.create('com.trackplus.util.MultipleSelectPicker',{
-			data:me.jsonData.issueTypes,
+			options:me.jsonData.issueTypes,
 			width:200,
 			margin:'0 5 0 0',
 			name:'issueType',
@@ -81,7 +60,7 @@ Ext.define('js.ext.com.track.dashboard.QuickSearch',{
 		items.push(me.issueTypeSelect);
 
 		me.statusSelect= Ext.create('com.trackplus.util.MultipleSelectPicker',{
-			data:me.jsonData.states,
+			options:me.jsonData.states,
 			margin:'0 5 0 0',
 			width:200,
 			name:'status',
@@ -93,6 +72,7 @@ Ext.define('js.ext.com.track.dashboard.QuickSearch',{
 		items.push(me.statusSelect);
 		var btnExecute=Ext.create('Ext.Button', {
 			text: getText('common.btn.execute'),
+			margin:'0 0 0 10',
 			scope: me,
 			scale: 'small',
 			iconCls:'filter-ticon',
@@ -101,9 +81,9 @@ Ext.define('js.ext.com.track.dashboard.QuickSearch',{
 			}
 		});
 		items.push(btnExecute);
-		var panel=Ext.create('Ext.panel.Panel', {
-			border:	false,
-			margin:"0 0 0 0",
+		var panel=Ext.create('Ext.container.Container', {
+			border:false,
+			padding:"10 5 10 5",
 			region:'center',
 			layout:'column',
 			items:items
@@ -127,15 +107,15 @@ Ext.define('js.ext.com.track.dashboard.QuickSearch',{
 		//overwrite projectID and entity type if dashboard is in browse projects page
 		var projectID=null;
 		var entityFlag=null;
-		if(me.jsonData.projectID!=null){
+		if(me.jsonData.projectID){
 			projectID=me.jsonData.projectID;
 			entityFlag=me.jsonData.entityType;
 		}
-		if(me.jsonData!=null&&me.jsonData.releaseID!=null){
+		if(me.jsonData&&me.jsonData.releaseID){
 			projectID=me.jsonData.releaseID;
 			entityFlag=me.jsonData.entityType;
 		}
-		if(projectID!=null){
+		if(projectID){
 			params['dashboardParams.projectID']=projectID;
 			params['dashboardParams.entityFlag']=entityFlag;
 		}
@@ -151,7 +131,7 @@ Ext.define('js.ext.com.track.dashboard.QuickSearch',{
 	doRefresh:function(jsonData){
 		var me=this;
 		me.jsonData=jsonData;
-		if(jsonData['refreshProject']==true){
+		if(jsonData['refreshProject']===true){
 			me.issueTypeSelect.store.loadData(me.jsonData.issueTypes);
 			me.issueTypeSelect.setValue(me.jsonData.selectedIssueTypes);
 

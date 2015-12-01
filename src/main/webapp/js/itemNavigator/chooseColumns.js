@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -28,13 +28,13 @@ Ext.define('com.trackplus.itemNavigator.ChooseColumns',{
 		filterID:null,
 		includeLongFields:false
 	},
-	controller:null,
+	ccController:null,
 	constructor : function(cfg) {
 		var me = this;
 		var config = cfg || {};
 		me.initialConfig = config;
 		Ext.apply(me, config);
-		me.controller=Ext.create('com.trackplus.itemNavigator.ChooseColumnsController',{
+		me.ccController=Ext.create('com.trackplus.itemNavigator.ChooseColumnsController',{
 			itemNavigatorController:me.itemNavigatorController,
 			filterType:me.filterType,
 			filterID:me.filterID,
@@ -43,17 +43,17 @@ Ext.define('com.trackplus.itemNavigator.ChooseColumns',{
 	},
 	setIncludeLongFields:function(includeLongFields){
 		this.includeLongFields=includeLongFields;
-		this.controller.includeLongFields=includeLongFields;
+		this.ccController.includeLongFields=includeLongFields;
 	},
 	showDialog:function(){
 		var me=this;
-		me.controller.showDialog.call(me.controller);
+		me.ccController.showDialog.call(me.ccController);
 	},
 	destroyMe:function(){
 	   var me=this;
-		if(me.controller!=null){
-			me.controller.destroyMe.call(me.controller);
-			me.controller=null;
+		if(me.ccController){
+			me.ccController.destroyMe.call(me.ccController);
+			me.ccController=null;
 		}
 	}
 });
@@ -74,7 +74,7 @@ Ext.define('com.trackplus.itemNavigator.ChooseColumnsController',{
 	},
 	destroyMe:function(){
 		var me=this;
-		if(me.win!=null){
+		if(me.win){
 			me.win.destroy();
 		}
 	},
@@ -148,7 +148,7 @@ Ext.define('com.trackplus.itemNavigator.ChooseColumnsController',{
 				padding:'10px 10px 5px 10px'
 			}
 		});
-		if(me.win!=null){
+		if(me.win){
 			me.win.destroy();
 		}
 		me.win = Ext.create('Ext.window.Window',{
@@ -206,10 +206,10 @@ Ext.define('com.trackplus.itemNavigator.ChooseColumnsController',{
 			col=allColumns[i];
 			var longField=col.reportLayout.renderAsLong;
 
-			if(longField==false&&(col.reportLayout.reportField==-1005||
-				col.reportLayout.reportField==-1007||
-				col.reportLayout.reportField==-1008||
-				col.reportLayout.reportField==23)){
+			if(longField===false&&(col.reportLayout.reportField===-1005||
+				col.reportLayout.reportField===-1007||
+				col.reportLayout.reportField===-1008||
+				col.reportLayout.reportField===23)){
 				longField=true;
 			}
 			if(col.reportLayout.reportField<0){
@@ -218,14 +218,14 @@ Ext.define('com.trackplus.itemNavigator.ChooseColumnsController',{
 				name='selectedColumnsMap.f'+col.reportLayout.reportField;
 			}
 			var hidden=false;
-			if(me.includeLongFields==false){
-				hidden=(longField==true);
+			if(me.includeLongFields===false){
+				hidden=(longField===true);
 			}
 			if(!hidden){
 				idx++;
 			}
 			var cls="";
-			if(idx%2==1){
+			if(idx%2===1){
 				cls='checkColumnOdd';
 			}
 			items.push({
@@ -241,7 +241,7 @@ Ext.define('com.trackplus.itemNavigator.ChooseColumnsController',{
 			});
 		}
 		me.formPanel.add(items);
-		me.formPanel.doLayout();
+		me.formPanel.updateLayout();
 	},*/
 	/*saveColumnsLayout:function() {
 		var me=this;

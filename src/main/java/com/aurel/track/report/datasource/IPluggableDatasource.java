@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -57,7 +57,6 @@ public interface IPluggableDatasource {
 		
 		static String USE_PROJETC_SPECIFIC_ID = "useProjectSpecificID";
 		static String FROM_ISSUE_NAVIGATOR = "fromIssueNavigator";
-		//static String WORKITEMID = "workItemID";
 		static String WORKITEMIDS = "workItemIDs";
 		
 		//the ID of the dashboard the report was executed from
@@ -95,14 +94,12 @@ public interface IPluggableDatasource {
 		public static String PROJECT_OR_RELEASE_NAME_FIELD = PROJECT_OR_RELEASE_ID + NAME_SUFFIX;
 		public static String PROJECT_OR_RELEASE_NAME_VALUE = MAP_PREFIX + PROJECT_OR_RELEASE_ID;
 		//used when the project/release picker is limited (not all "used" projects are allowed), for. ex. projects having special rights
-		//public static String SELECTABLE_BASE_PROJECTS = "selectableBaseProjectIDs";
         public static String PROJECT_RELEASE_TREE = "projectReleaseTree";
 		
 		/**
 		 * The selected filter
 		 */
 		public static String FILTER_ID = "filterID";
-		//public static String FILTER_LABEL = "filterLabel";
 		public static String FILTER_NAME_FIELD = FILTER_ID + NAME_SUFFIX;
 		public static String FILTER_NAME_VALUE = MAP_PREFIX + FILTER_ID;
         public static String FILTER_TREE = "filterTree";

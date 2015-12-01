@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -154,6 +154,7 @@ public class AverageTimeToCloseItem extends TimePeriodDashboardView{
         static String TIME_FORMAT_WORKING_HOURS = "averageTimeToCloseItem.tooltip.time.format.working.hours";
     }
 
+    @Override
     protected boolean isUseConfig(){
         return true;
     }
@@ -256,12 +257,10 @@ public class AverageTimeToCloseItem extends TimePeriodDashboardView{
     public String encodeJSONExtraDataConfig(Map<String,String> parameters, TPersonBean user, Integer entityId, Integer entityType){
         StringBuilder sb=new StringBuilder();
         Locale locale = user.getLocale();
-        //DateTimeUtils dateTimeUtils = DateTimeUtils.getInstance();
         DashboardDescriptor dashboardDescriptor = getDescriptor();
         String bundleName = dashboardDescriptor.getBundleName();
 
         sb.append(getDatasourceConfig(parameters, entityId, entityType, locale));
-        //DataSourceDashboardBL.appendJSONExtraDataConfig_DataSource(sb,dashboardDescriptor,parameters,user,entityId,entityType);
         sb.append(getTimePeriodConfig(parameters, locale));
 
         JSONUtility.appendILabelBeanList(sb,CONFIGURATION_PARAMETERS.STATUSES, StatusBL.loadAll(locale));
@@ -651,7 +650,7 @@ public class AverageTimeToCloseItem extends TimePeriodDashboardView{
 						integerValues[i]=new Integer(strArr[i]);
 					} catch (Exception e) {
 						LOGGER.info("Converting the " + strArr[i] + " as the " + i + "th parameter to Integer failed with " + e.getMessage(), e);
-						LOGGER.error(ExceptionUtils.getStackTrace(e),e);
+						LOGGER.error(ExceptionUtils.getStackTrace(e));
 					}
 				}
 			}

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -116,6 +116,7 @@ public class TProjectTypePeer extends com.aurel.track.persist.BaseTProjectTypePe
 	
 	
 
+	@Override
 	public void replaceAndDelete(Integer oldOID, Integer newOID){
 		if (newOID!=null) {
 			List<TFieldBean> projectTypeSpecificFields = DAOFactory.getFactory().getFieldDAO().loadByProjectType(oldOID);
@@ -146,6 +147,7 @@ public class TProjectTypePeer extends com.aurel.track.persist.BaseTProjectTypePe
 	 * is used in other tables in the database.
 	 * @param oldOID object identifier of list type to be replaced
 	 */
+	@Override
 	public boolean hasDependentData(Integer oldOID){
 		return ReflectionHelper.hasDependentData(replacePeerClasses, replaceFields, oldOID);
 	}
@@ -155,6 +157,7 @@ public class TProjectTypePeer extends com.aurel.track.persist.BaseTProjectTypePe
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TProjectTypeBean loadByPrimaryKey(Integer objectID) {
 		TProjectType tProjectType = null;
 		try {
@@ -174,6 +177,7 @@ public class TProjectTypePeer extends com.aurel.track.persist.BaseTProjectTypePe
 	 * Loads all projectTypes
 	 * @return
 	 */
+	@Override
 	public List<TProjectTypeBean> loadAll() {
 		Criteria crit = new Criteria();
 		crit.addAscendingOrderByColumn(LABEL);
@@ -181,7 +185,7 @@ public class TProjectTypePeer extends com.aurel.track.persist.BaseTProjectTypePe
 			return convertTorqueListToBeanList(doSelect(crit));
 		}
 		catch (Exception e) {
-			LOGGER.error("Loading of all projectTypes failed with " + e.getMessage(), e);
+			LOGGER.error("Loading of all projectTypes failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -192,6 +196,7 @@ public class TProjectTypePeer extends com.aurel.track.persist.BaseTProjectTypePe
 	 * Loads all non private projectTypeBeans 
 	 * @return 
 	 */
+	@Override
 	public List<TProjectTypeBean> loadNonPrivate() {
 		Criteria crit = new Criteria();
 		crit.add(OBJECTID, 0, Criteria.GREATER_EQUAL);
@@ -200,7 +205,7 @@ public class TProjectTypePeer extends com.aurel.track.persist.BaseTProjectTypePe
 			return convertTorqueListToBeanList(doSelect(crit));
 		}
 		catch (Exception e) {
-			LOGGER.error("Loading non private projectTypes failed with " + e.getMessage(), e);
+			LOGGER.error("Loading non private projectTypes failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -209,6 +214,7 @@ public class TProjectTypePeer extends com.aurel.track.persist.BaseTProjectTypePe
 	 * Loads all private projectTypeBeans 
 	 * @return 
 	 */
+	@Override
 	public List<TProjectTypeBean> loadPrivate() {
 		Criteria crit = new Criteria();
 		crit.add(OBJECTID, 0, Criteria.LESS_THAN);
@@ -217,7 +223,7 @@ public class TProjectTypePeer extends com.aurel.track.persist.BaseTProjectTypePe
 			return convertTorqueListToBeanList(doSelect(crit));
 		}
 		catch (Exception e) {
-			LOGGER.error("Loading private projectTypes failed with " + e.getMessage(), e);
+			LOGGER.error("Loading private projectTypes failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -227,6 +233,7 @@ public class TProjectTypePeer extends com.aurel.track.persist.BaseTProjectTypePe
 	 * @param projectTypeIDs
 	 * @return
 	 */
+	@Override
 	public List<TProjectTypeBean> loadByProjectTypeIDs(List<Integer> projectTypeIDs) {
 		if (projectTypeIDs==null || projectTypeIDs.isEmpty()) {
 			LOGGER.warn("No projectTypeIDs specified " + projectTypeIDs);
@@ -239,7 +246,7 @@ public class TProjectTypePeer extends com.aurel.track.persist.BaseTProjectTypePe
 			return convertTorqueListToBeanList(doSelect(crit));
 		}
 		catch (Exception e) {
-			LOGGER.error("Loading of project types by IDs failed with " + e.getMessage(), e);
+			LOGGER.error("Loading of project types by IDs failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -249,6 +256,7 @@ public class TProjectTypePeer extends com.aurel.track.persist.BaseTProjectTypePe
 	 * @param projectTypeIDs
 	 * @return
 	 */
+	@Override
 	public boolean allHaveIssueTypeRestrictions(Object[] projectTypeIDs) {
 		List torqueList = null;
 		if (projectTypeIDs==null || projectTypeIDs.length==0) {
@@ -262,7 +270,7 @@ public class TProjectTypePeer extends com.aurel.track.persist.BaseTProjectTypePe
 			torqueList =  doSelect(crit);
 		}
 		catch (Exception e) {
-			LOGGER.error("Loading projectTypes which have issue type restrictions failed with " + e.getMessage(), e);
+			LOGGER.error("Loading projectTypes which have issue type restrictions failed with " + e.getMessage());
 			return false;
 		}
 		return projectTypeIDs.length==torqueList.size();
@@ -273,6 +281,7 @@ public class TProjectTypePeer extends com.aurel.track.persist.BaseTProjectTypePe
 	 * @param projectType
 	 * @return
 	 */
+	@Override
 	public Integer save(TProjectTypeBean projectTypeBean) {
 		TProjectType tProjectType;		
 		try {
@@ -280,10 +289,11 @@ public class TProjectTypePeer extends com.aurel.track.persist.BaseTProjectTypePe
 			tProjectType.save();
 			return tProjectType.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of projectType failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of projectType failed with " + e.getMessage());
 			return null;
 		}	
 	}
+	@Override
 	public void delete(Integer objectID){
 		replaceAndDelete(objectID,null);
 	}

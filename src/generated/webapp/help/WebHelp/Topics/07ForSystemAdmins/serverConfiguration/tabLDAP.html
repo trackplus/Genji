@@ -1,0 +1,377 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en" lang="en">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="If you want to use always the same password on your Track+ account as on your other computers, you can connect Track+ to a directory server (LDAP server, Active Directory). If you have several ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="concept"/><meta name="DC.Title" content="LDAP and SSO configuration"/><meta name="abstract" content="If you want to use always the same password on your Track+ account as on your other computers, you can connect Track+ to a directory server (LDAP server, Active Directory). If you have several applications all running on the same server, you can provide a single login to that server and have Track+ use the authentication of that login process."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="If you want to use always the same password on your Track+ account as on your other computers, you can connect Track+ to a directory server (LDAP server, Active Directory). If you have several applications all running on the same server, you can provide a single login to that server and have Track+ use the authentication of that login process."/><meta name="DC.Relation" scheme="URI" content="../../../Topics/07ForSystemAdmins/serverConfiguration/serverConfig.html"/><meta name="DC.Relation" scheme="URI" content="http://tomcat.apache.org/tomcat-7.0-doc/realm-howto.html"/><meta name="DC.Relation" scheme="URI" content="http://tomcat.apache.org/tomcat-7.0-doc/config/host.html#Single%20Sign%20On"/><meta name="DC.Relation" scheme="URI" content="http://shibboleth.net"/><meta name="DC.Relation" scheme="URI" content="http://www.jasig.org/cas"/><meta name="DC.Relation" scheme="URI" content="../../05ForConfigManagers/scripts/scripts.html#id132LEB003DA/ldapsyncscript"/><meta name="DC.Creator" content="Steinbeis Technical Documentation"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="idLdapConfig"/><meta name="DC.Language" content="en"/><link rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>LDAP and SSO configuration</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()" id="idLdapConfig">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../../Topics/07ForSystemAdmins/serverConfiguration/serverConfig.html" title="There are a number of parameters that need to be configured before Track+ can run in a meaningful way. This section describes these basic system settings."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Server configuration</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../../Topics/07ForSystemAdmins/serverConfiguration/../../../Topics/07ForSystemAdmins/Chapter7Wrapper.html" title="Administering the server">Administering the server</a> / <a class="navheader_parent_path" href="../../../Topics/07ForSystemAdmins/serverConfiguration/serverConfig.html" title="There are a number of parameters that need to be configured before Track+ can run in a meaningful way. This section describes these basic system settings.">Server configuration</a></td></tr></tbody></table>
+
+    <h1 class="title topictitle1">LDAP and SSO configuration</h1>
+
+    
+    
+    <div class="body conbody"><p class="shortdesc">If you want to use always the same password on your <span class="ph"><span class="ph">Track+</span></span> account as on your other
+        computers, you can connect <span class="ph"><span class="ph">Track+</span></span> to
+        a directory server (LDAP server, Active Directory). If you have several
+        applications all running on the same server, you can provide a single
+        login to that server and have <span class="ph"><span class="ph">Track+</span></span>
+        use the authentication of that login process.</p>
+
+        <div class="section"><h2 class="title sectiontitle">LDAP configuration</h2>
+            
+            <p class="p"><span class="ph"><span class="ph">Track+</span></span> can be configured to
+                use a directory server based on LDAP to authenticate users
+                during login. This simplifies the handling of login names and
+                passwords for <span class="ph"><span class="ph">Track+</span></span>
+                users.</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/tabLdapSSO.png" height="180" width="357"/></div><br/>
+                
+            </div>
+
+            <div class="p">To allow users to use LDAP-authentication you have to activate
+                the LDAP-settings in the site configuration page. The LDAP
+                server URL is of the
+                form<pre class="pre codeblock">
+ldap://ldapserver/ou=Main,o=People
+</pre>
+</div>
+
+            <div class="p">and the LDAP login property of the
+                form<pre class="pre codeblock">
+uid
+</pre>
+</div>
+
+            <p class="p">If searching in LDAP can be done with anonymous bind, keep the
+                LDAP-bind DN field and LDAP-bind password field empty. Otherwise
+                provide the distinguished name (DN) used for searching and the
+                password for the DN.</p>
+
+            <p class="p">LDAP-authentication is disabled by default. When
+                LDAP-authentication is enabled for your <span class="ph"><span class="ph">Track+</span></span> installation, every
+                user can choose to use it or not by setting the appropriate
+                switch in his personal profile. If you set the option „Force
+                central password“, users will not be able to choose a specific
+                    <span class="ph"><span class="ph">Track+</span></span> password but must
+                rather use their central Windows/Unix password.</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/ldapExplorer.png" height="189" width="329"/></div><br/>
+                
+            </div>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Force central password</h2> When you mark this box a
+            regular user cannot choose any more between using the central
+            password and the local password with <span class="ph"><span class="ph">Track+</span></span>. Only a system manager or
+            administrator can enable local passwords for a user.</div>
+
+        <div class="section" id="idLdapConfig__idSyncLdap"><h2 class="title sectiontitle">Synchronizing <span class="ph"><span class="ph">Track+</span></span> with
+                an LDAP directory</h2>
+            
+            <p class="p">You can synchronize your <span class="ph"><span class="ph">Track+</span></span> list of users with your LDAP directory. Entries found in the
+                LDAP directory but not in <span class="ph"><span class="ph">Track+</span></span> are created in <span class="ph"><span class="ph">Track+</span></span>. Entries found in <span class="ph"><span class="ph">Track+</span></span> but not in your LDAP
+                directory can be automatically deactivated in <span class="ph"><span class="ph">Track+</span></span> (set parameter
+                    <samp class="ph codeph">deactivateUnknown=true</samp>). </p>
+
+            <p class="p">You can configure <span class="ph"><span class="ph">Track+</span></span> to
+                perform the synchronization automatically on a regular basis, or
+                initiate the synchronization manually from the user
+                administration interface.</p>
+
+            <p class="p">By default, automatic synchronization is disabled. To enable it
+                you need to modify some entries in file
+                    <samp class="ph codeph">webapps/track/WEB-INF/quartz-jobs.xml</samp>. </p>
+
+            <p class="p">The relevant sections looks like this:</p>
+
+            <pre class="pre codeblock" id="idLdapConfig__id1319999">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;job&gt;
+    &lt;name&gt;LdapSynchronizerJob&lt;/name&gt;
+    &lt;group&gt;DefaultJobGroup&lt;/group&gt;
+    &lt;description&gt;
+       Synchronizes a <span class="ph"><span class="ph">Track+</span></span> user database with 
+       an LDAP directory
+    &lt;/description&gt;
+    &lt;!-- description not more than 120 characters!!! --&gt;
+    &lt;job-class&gt;
+      com.aurel.track.dbase.jobs.LdapSynchronizerJob
+    &lt;/job-class&gt;
+    &lt;job-data-map&gt; 
+               &lt;entry&gt;  
+                    &lt;!--  Enable synchronization with LDAP --&gt;
+                    &lt;key&gt;enabled&lt;/key&gt;
+                    &lt;value&gt;false&lt;/value&gt;
+                &lt;/entry&gt;
+                &lt;entry&gt;  
+                    &lt;!--  Enable user synchronization with LDAP --&gt;
+                    &lt;key&gt;enabledUserSync&lt;/key&gt;
+                    &lt;value&gt;true&lt;/value&gt;
+                &lt;/entry&gt;
+                &lt;entry&gt;  
+                    &lt;!--  Enable group and group users synchronization with LDAP --&gt;
+                    &lt;key&gt;enabledGroupSync&lt;/key&gt;
+                    &lt;value&gt;true&lt;/value&gt;
+                &lt;/entry&gt;
+                &lt;entry&gt;  
+                    &lt;!--  BaseDN for group synchronization --&gt;
+                    &lt;key&gt;baseDnGroup&lt;/key&gt;
+                    &lt;value&gt;dc=itk-engineering,dc=de&lt;/value&gt;
+                &lt;/entry&gt;
+                &lt;entry&gt;  
+                    &lt;!--  Deactivate users unknown in LDAP --&gt;
+                    &lt;key&gt;deactivateUnknown&lt;/key&gt;
+                    &lt;value&gt;true&lt;/value&gt;
+                &lt;/entry&gt;
+                &lt;entry&gt;
+                    &lt;!--  LDAP filter expression for users--&gt;
+                    &lt;key&gt;ldapFilter&lt;/key&gt;
+                    &lt;value&gt;*&lt;/value&gt;
+                &lt;/entry&gt;
+                &lt;entry&gt;
+                    &lt;!--  LDAP filter expression for groups--&gt;
+                    &lt;key&gt;ldapFilterGroups&lt;/key&gt;
+                    &lt;value&gt;(objectClass=groupOfNames)&lt;/value&gt;
+                &lt;/entry&gt;
+                &lt;entry&gt;
+                    &lt;key&gt;firstName&lt;/key&gt;
+                    &lt;value&gt;gn&lt;/value&gt;
+                &lt;/entry&gt;
+                &lt;entry&gt;
+                    &lt;key&gt;lastName&lt;/key&gt;
+                    &lt;value&gt;sn&lt;/value&gt;
+                &lt;/entry&gt;
+                &lt;entry&gt;
+                    &lt;key&gt;email&lt;/key&gt;
+                    &lt;value&gt;mail&lt;/value&gt;
+                &lt;/entry&gt;
+                &lt;entry&gt;
+                    &lt;key&gt;phone&lt;/key&gt;
+                    &lt;value&gt;phone&lt;/value&gt;
+                &lt;/entry&gt;
+                &lt;entry&gt;
+                    &lt;key&gt;groupName&lt;/key&gt;
+                    &lt;value&gt;cn&lt;/value&gt;
+                &lt;/entry&gt;
+    &lt;/job-data-map&gt;
+&lt;/job&gt;
+</pre>
+
+            <p class="p">You enable all automatic synchronization by setting key „enabled“ to „true“. You may
+                have to modify the mapping of LDAP properties to <span class="ph"><span class="ph">Track+</span></span>properties. The <span class="ph"><span class="ph">Track+</span></span> properties are the keys and must not be
+                modified. The LDAP properties are the values and you may have to change them to the
+                values you use in your directory.</p>
+
+            <div class="p">
+                
+<div class="tablenoborder"><table cellpadding="4" cellspacing="0" summary="" id="idLdapConfig__table_mkq_lyf_bn" class="table" frame="border" border="1" rules="all"><caption><span class="tablecap">Table 1. LDAP synchronizer parameterss</span></caption>
+                        
+                        
+                        <thead class="thead" align="left">
+                            <tr class="row">
+                                <th class="entry" valign="top" width="50%" id="d59945e180">Property in quartz-jobs.xml</th>
+
+                                <th class="entry" valign="top" width="50%" id="d59945e183">Description</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry" valign="top" width="50%" headers="d59945e180 ">enabled</td>
+
+                                <td class="entry" valign="top" width="50%" headers="d59945e183 ">True if users and groups shall be regularly synchronized with
+                                    your LDAP directory. If False, properties "enabledUserSync" and
+                                    "enabledGroupSync" have no effect.</td>
+
+                            </tr>
+
+                            <tr class="row">
+                                <td class="entry" valign="top" width="50%" headers="d59945e180 ">enabledUserSync</td>
+
+                                <td class="entry" valign="top" width="50%" headers="d59945e183 ">True if users shall be regularly synchronized with your LDAP
+                                    directory</td>
+
+                            </tr>
+
+                            <tr class="row">
+                                <td class="entry" valign="top" width="50%" headers="d59945e180 ">enabledGroupSync</td>
+
+                                <td class="entry" valign="top" width="50%" headers="d59945e183 ">True if groups and the users assigned to them shall be
+                                    regularly synchronized with your LDAP directory</td>
+
+                            </tr>
+
+                            <tr class="row">
+                                <td class="entry" valign="top" width="50%" headers="d59945e180 ">baseDnGroup</td>
+
+                                <td class="entry" valign="top" width="50%" headers="d59945e183 ">The LDAP base DN under which your groups are defined. Search
+                                    is based on the "member" property of the groups.</td>
+
+                            </tr>
+
+                            <tr class="row">
+                                <td class="entry" valign="top" width="50%" headers="d59945e180 ">deactivateUnknown</td>
+
+                                <td class="entry" valign="top" width="50%" headers="d59945e183 ">True if users not found during the synchronization process
+                                    shall be deactivated. The "admin" and "guest" users are
+                                    exempted.</td>
+
+                            </tr>
+
+                            <tr class="row">
+                                <td class="entry" valign="top" width="50%" headers="d59945e180 ">ldapFilter</td>
+
+                                <td class="entry" valign="top" width="50%" headers="d59945e183 ">The LDAP filter expression for user synchronization. Can be
+                                    any valid LDAP filter term like
+                                    "(&amp;(objectClass=inetOrgPerson)(ou=Trackplus))"</td>
+
+                            </tr>
+
+                            <tr class="row">
+                                <td class="entry" valign="top" width="50%" headers="d59945e180 ">ldapFilterGroups</td>
+
+                                <td class="entry" valign="top" width="50%" headers="d59945e183 ">The LDAP filter expression for group synchronization. Can be
+                                    any valid LDAP filter term like
+                                    "(&amp;(objectClass=group)(ou=Groups))"</td>
+
+                            </tr>
+
+                            <tr class="row">
+                                <td class="entry" valign="top" width="50%" headers="d59945e180 ">firstName</td>
+
+                                <td class="entry" valign="top" width="50%" headers="d59945e183 ">The LDAP property name for users first name</td>
+
+                            </tr>
+
+                            <tr class="row">
+                                <td class="entry" valign="top" width="50%" headers="d59945e180 ">lastName</td>
+
+                                <td class="entry" valign="top" width="50%" headers="d59945e183 ">The LDAP property name for users last name</td>
+
+                            </tr>
+
+                            <tr class="row">
+                                <td class="entry" valign="top" width="50%" headers="d59945e180 ">email</td>
+
+                                <td class="entry" valign="top" width="50%" headers="d59945e183 ">The LDAP property name for users email</td>
+
+                            </tr>
+
+                            <tr class="row">
+                                <td class="entry" valign="top" width="50%" headers="d59945e180 ">phone</td>
+
+                                <td class="entry" valign="top" width="50%" headers="d59945e183 ">The LDAP property name for users phone number</td>
+
+                            </tr>
+
+                            <tr class="row">
+                                <td class="entry" valign="top" width="50%" headers="d59945e180 ">groupName</td>
+
+                                <td class="entry" valign="top" width="50%" headers="d59945e183 ">The LDAP property name for the group name</td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+</div>
+
+            </div>
+
+            <p class="p">After you have modified this file save it and restart the Tomcat
+                server.</p>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Providing your own LDAP synchronizer</h2>
+            
+            <p class="p">There are many ways to set up an LDAP server. If you want to synchronize groups and
+                roles you can provide your own code to replace the standard <span class="ph"><span class="ph">Track+</span></span> LDAP synchronizer. See <a class="xref" href="../../05ForConfigManagers/scripts/scripts.html#id132LEB003DA__ldapsyncscript">Managing
+                    scripts</a> for an example custom LDAP synchronizer.</p>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">LDAP via SSL</h2>
+            
+            <p class="p"><span class="ph"><span class="ph">Track+</span></span> also supports the secure ldaps protocol. To
+                use ldaps you have to deploy the ldaps keystore file under the name
+                    „<samp class="ph codeph">trackplus.ks</samp>“ in the attachment root directory, subdirectory
+                    „<samp class="ph codeph">keystore</samp>“ as described in "<a class="xref" href="../usingEncryption.html" title="You can use encrypted connections between Track+ and your e-mail server to prevent passwords from being transmitted clear text across your network.">Using SSL and TLS encryption on e-mail and LDAP connections</a>". The LDAP server needs to be configured for
+                LDAPS as well. </p>
+
+            <p class="p">As an example, for the Apache Directory Server there is a good
+                description how to enable LDAPS under
+                    <samp class="ph codeph">http://directory.apache.org/apacheds/1.5/33-how-to-enable-ssl.html</samp>. </p>
+
+            <div class="p">For a Windows server, we had to modify the ApacheDS configuration
+                file as
+                follows:<pre class="pre codeblock">
+&lt;!-- SSL properties --&gt;    
+&lt;property name="enableLdaps" value="true" /&gt;    
+&lt;property name="ldapsPort" value="10636" /&gt;    
+&lt;property name="ldapsCertificateFile" 
+          value="C:\jdk1.5.0\bin\zanzibar.ks" /&gt;    
+&lt;property name="ldapsCertificatePassword" value="secret" /&gt; 
+&lt;bean id="configuration" 
+      class="org.apache.directory.server.\
+             configuration.MutableServerStartupConfiguration"&gt;
+</pre>
+
+                and
+                <pre class="pre codeblock">
+&lt;property name="workingDirectory" value="example.com" /&gt;     
+&lt;!-- SSL properties --&gt;    
+&lt;property name="enableLdaps" value="true" /&gt;    
+&lt;property name="ldapsPort" value="10636" /&gt;    
+&lt;property name="ldapsCertificateFile"         
+          value="C:\jdk1.6.0\bin\zanzibar.ks" /&gt;    
+&lt;property name="ldapsCertificatePassword" value="secret" /&gt;
+</pre>
+</div>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Container based
+                authentication</h2><p class="p">If
+                you run several applications on the same web server, you might
+                prefer to log in once for all applications on that server rather
+                than authenticating yourself for each application separately.
+                The web server or „container“ becomes responsible for
+                authentication („container based authentication“), and you only
+                need to sign on once („single sign on“).</p>
+When you enable <span class="ph"><span class="ph">Track+</span></span> for container based
+            authentication, <span class="ph"><span class="ph">Track+</span></span> will try
+            to retrieve the user name and authentication token from the server.
+            If this attempt is successful and the user is known to <span class="ph"><span class="ph">Track+</span></span>, the user will be directly
+            granted access to the application. <p class="p">If the user is unknown to <span class="ph"><span class="ph">Track+</span></span>, the regular login
+                page is displayed and <span class="ph"><span class="ph">Track+</span></span>
+                authentication has to be used.</p>
+</div>
+
+        <div class="section">The standard configuration file web.xml that comes with <span class="ph"><span class="ph">Track+</span></span> contains a commented
+            section that configures a Tomcat web container realm for container
+            based authentication.</div>
+
+    </div>
+
+    <div class="related-links">
+<div class="linklist linklist">
+<div><a class="navheader_parent_path" href="http://tomcat.apache.org/tomcat-7.0-doc/realm-howto.html" target="_blank" title="Tomcat Realm Howto">Tomcat Realm Howto</a></div>
+<div><a class="navheader_parent_path" href="http://tomcat.apache.org/tomcat-7.0-doc/config/host.html#Single%20Sign%20On" target="_blank" title="Tomcat Single Sign On">Tomcat Single Sign On</a></div>
+<div><a class="navheader_parent_path" href="http://shibboleth.net" target="_blank" title="Shibboleth Single Sign On">Shibboleth Single Sign On</a></div>
+<div><a class="navheader_parent_path" href="http://www.jasig.org/cas" target="_blank" title="Central Authentication Project">Central Authentication Project</a></div>
+<div><a class="navheader_parent_path" href="../../05ForConfigManagers/scripts/scripts.html#id132LEB003DA__ldapsyncscript" title="Managing scripts">Managing scripts</a></div></div>
+</div>
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../../Topics/07ForSystemAdmins/serverConfiguration/serverConfig.html" title="There are a number of parameters that need to be configured before Track+ can run in a meaningful way. This section describes these basic system settings."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Server configuration</span></a></span>  </div>
+</body>
+</html>

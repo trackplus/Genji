@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -64,6 +64,7 @@ public class FieldExpressionAction extends ActionSupport implements Preparable, 
 	//whether the matcher change comes from a simple or an "in tree" filter expression
 	private boolean inTree;
 	
+	@Override
 	public void prepare() throws Exception {
 		locale = (Locale)session.get(Constants.LOCALE_KEY);
 		personBean = ((TPersonBean) session.get(Constants.USER_KEY));
@@ -86,17 +87,20 @@ public class FieldExpressionAction extends ActionSupport implements Preparable, 
 	 */
 	public String selectMatcher() {
 		String baseValueName;
+		String baseValueItemId;
 		Integer indexValue;
 		//the name differs: simple are fieldID based, the "in tree"s are index based
 		if (inTree) {
 			baseValueName = FieldExpressionBL.IN_TREE + FieldExpressionBL.VALUE_BASE_NAME;
+			baseValueItemId = FieldExpressionBL.IN_TREE + FieldExpressionBL.VALUE_BASE_ITEM_ID;
 			indexValue = index;
 		} else {
 			baseValueName = FieldExpressionBL.SIMPLE + FieldExpressionBL.VALUE_BASE_NAME;
+			baseValueItemId = FieldExpressionBL.SIMPLE + FieldExpressionBL.VALUE_BASE_ITEM_ID;
 			indexValue = fieldID;
 		}
 		JSONUtility.encodeJSON(servletResponse,  FieldExpressionBL.selectMatcher(
-				projectIDs, itemTypeIDs, baseValueName, indexValue, stringValue, fieldID, matcherID, true, personBean, locale));
+				projectIDs, itemTypeIDs, baseValueName, baseValueItemId, indexValue, stringValue, fieldID, matcherID, true, personBean, locale));
 		return null;
 	}
 	
@@ -105,10 +109,11 @@ public class FieldExpressionAction extends ActionSupport implements Preparable, 
 	 * This can be called only from an "in tree" filter expression
 	 */
 	public String selectField() {
-		//stringValue null instead of submitted stringValue: it could be initialized with an optionID if field 
+		//stringValue parameter is null instead of submitted stringValue: it could be initialized with an optionID if field 
 		//is changed form a select type to an integer type which is not the expected behavior
-		String baseValueName = FieldExpressionBL.IN_TREE + FieldExpressionBL.VALUE_BASE_NAME; //+ "[" + index + "]";
-		String expessionJSON = FieldExpressionBL.selectField(projectIDs, itemTypeIDs, baseValueName, index,  null,
+		String baseValueName = FieldExpressionBL.IN_TREE + FieldExpressionBL.VALUE_BASE_NAME;
+		String baseValueItemId = FieldExpressionBL.IN_TREE + FieldExpressionBL.VALUE_BASE_ITEM_ID;
+		String expessionJSON = FieldExpressionBL.selectField(projectIDs, itemTypeIDs, baseValueName, baseValueItemId, index,  null,
 				fieldID, matcherID, true, personBean, locale, withParameter);
 		JSONUtility.encodeJSON(servletResponse,  expessionJSON);
 		return null;
@@ -126,6 +131,7 @@ public class FieldExpressionAction extends ActionSupport implements Preparable, 
 		return null;
 	}	
 
+	@Override
 	public void setSession(Map<String, Object> session) {
 		this.session = session;
 	}
@@ -142,6 +148,7 @@ public class FieldExpressionAction extends ActionSupport implements Preparable, 
 		this.fieldID = fieldID;
 	}
 
+	@Override
 	public void setServletResponse(HttpServletResponse servletResponse) {
 		this.servletResponse = servletResponse;
 	}

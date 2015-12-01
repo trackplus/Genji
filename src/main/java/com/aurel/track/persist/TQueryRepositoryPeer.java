@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -97,6 +97,7 @@ public class TQueryRepositoryPeer
 	/**
 	 * Loads a queryRepositoryBean by primary key
 	 */
+	@Override
 	public TQueryRepositoryBean loadByPrimaryKey(Integer objectID) {
 		TQueryRepository tQueryRepository = null;
 		try {
@@ -116,6 +117,7 @@ public class TQueryRepositoryPeer
 	 * @param objectIDs
 	 * @return
 	 */
+	@Override
 	public List<TQueryRepositoryBean> loadByPrimaryKeys(List<Integer> objectIDs) {
 		List<TQueryRepositoryBean> filterBeansList = new ArrayList<TQueryRepositoryBean>();
 		if (objectIDs==null || objectIDs.isEmpty()) {
@@ -144,13 +146,14 @@ public class TQueryRepositoryPeer
 	 * Loads the hardcoded filters
 	 * @return
 	 */
+	@Override
 	public List<TQueryRepositoryBean> loadHardcodedFilters() {
 		Criteria criteria = new Criteria();
 		criteria.add(OBJECTID, 0, Criteria.LESS_THAN);
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch(Exception e) {
-			LOGGER.error("Getting the hardcoded filters failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the hardcoded filters failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -165,6 +168,7 @@ public class TQueryRepositoryPeer
 	 * @param label
 	 * @return
 	 */
+	@Override
 	public List<TQueryRepositoryBean> loadByLabel(Integer repository,Integer categoryID,
 			Integer projectID, Integer personID, Integer queryType, String label) {
 		List<TQueryRepository> categories = null;
@@ -202,6 +206,7 @@ public class TQueryRepositoryPeer
 	 * @param queryTypes
 	 * @return
 	 */
+	@Override
 	public List<TQueryRepositoryBean> loadRootFilters(Integer repository, Integer projectID, Integer personID, List<Integer> queryTypes) {		
 		Criteria criteria = new Criteria();		
 		criteria.add(REPOSITORYTYPE, repository);
@@ -233,6 +238,7 @@ public class TQueryRepositoryPeer
 	 * @param queryTypes
 	 * @return
 	 */
+	@Override
 	public List<TQueryRepositoryBean> loadProjectRootFilters(List<Integer> projectIDs, List<Integer> queryTypes) {
 		List<TQueryRepositoryBean> filters = new LinkedList<TQueryRepositoryBean>();	
 		if (projectIDs==null || projectIDs.isEmpty()) {
@@ -267,6 +273,7 @@ public class TQueryRepositoryPeer
 	 * @param categoryID
 	 * @return
 	 */
+	@Override
 	public List<TQueryRepositoryBean> loadByCategory(Integer categoryID) {
 		List<TQueryRepository> queries = null;
 		Criteria criteria = new Criteria();
@@ -285,6 +292,7 @@ public class TQueryRepositoryPeer
 	 * @param categoryIDs
 	 * @return
 	 */
+	@Override
 	public List<TQueryRepositoryBean> loadByCategories(List<Integer> categoryIDs) {
 		List<TQueryRepositoryBean> filters = new LinkedList<TQueryRepositoryBean>();
 		if (categoryIDs==null || categoryIDs.isEmpty()) {
@@ -316,6 +324,7 @@ public class TQueryRepositoryPeer
 	 * @param entityID a personID or a projectID depending on the repository type
 	 * @return
 	 */
+	@Override
 	public List<TQueryRepositoryBean> loadQueries(Integer queryType, Integer repositoryType, Integer entityID) {
 		List queries = new ArrayList();
 		if (queryType == null || repositoryType == null)
@@ -350,6 +359,7 @@ public class TQueryRepositoryPeer
 	 * Loads a list of private queryRepositoryBean report tree queries which are included in menus 
 	 * @return
 	 */
+	@Override
 	public List<TQueryRepositoryBean> loadPrivateReportQueriesInMenu() {
 		List queries = new ArrayList();
 		Criteria criteria = new Criteria();
@@ -359,12 +369,13 @@ public class TQueryRepositoryPeer
 		try {
 			queries = doSelect(criteria);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the private report tree queries failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the private report tree queries failed with " + e.getMessage());
 		}
 		return convertTorqueListToBeanList(queries);
 	}
 	
 	
+	@Override
 	public List<TQueryRepositoryBean> loadMenuitemQueries(Integer personID, int[] queryTypes, boolean sorted) {
 		Criteria criteria = new Criteria();
 		criteria.addIn(QUERYTYPE, queryTypes);
@@ -377,7 +388,7 @@ public class TQueryRepositoryPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the menuitem queries failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the menuitem queries failed with " + e.getMessage());
 			return null;
 		}		
 	}
@@ -388,6 +399,7 @@ public class TQueryRepositoryPeer
 	 * @param personID
 	 * @return
 	 */
+	@Override
 	public List<TQueryRepositoryBean> loadByOwnOrDefaultNotifySettings(Integer personID) {
 		Criteria criteria = new Criteria();
 		criteria.addJoin(OBJECTID, BaseTNotifySettingsPeer.NOTIFYFILTER);
@@ -409,6 +421,7 @@ public class TQueryRepositoryPeer
 	 * which is not linked to any person (default)
 	 * @return
 	 */
+	@Override
 	public List<TQueryRepositoryBean> loadByDefaultNotifySettings() {
 		Criteria criteria = new Criteria();
 		criteria.addJoin(OBJECTID, BaseTNotifySettingsPeer.NOTIFYFILTER);
@@ -428,6 +441,7 @@ public class TQueryRepositoryPeer
 	 * @param queryRepositoryBean 
 	 * @return
 	 */
+	@Override
 	public Integer save(TQueryRepositoryBean queryRepositoryBean) {
 		TQueryRepository tQueryRepository;
 		try {
@@ -435,7 +449,7 @@ public class TQueryRepositoryPeer
 			tQueryRepository.save();
 			return tQueryRepository.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a query failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a query failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -446,6 +460,7 @@ public class TQueryRepositoryPeer
 	 * @param objectID 
 	 * @return
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		Criteria crit = new Criteria();
 		crit.add(OBJECTID, objectID);
@@ -456,6 +471,7 @@ public class TQueryRepositoryPeer
 	 * Delete all private tree queries of a person
 	 * @param personID
 	 */
+	@Override
 	public void deletePrivateTreeQueries(Integer personID) {
 		Criteria criteria = new Criteria();
 		criteria.add(PERSON, personID);
@@ -473,7 +489,7 @@ public class TQueryRepositoryPeer
 		try {
 			list = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the list of TQueryRepositorys to be deleted failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the list of TQueryRepositorys to be deleted failed with " + e.getMessage());
 		}
 		if (list == null || list.size() < 1) {
 			return;
@@ -492,6 +508,7 @@ public class TQueryRepositoryPeer
 	 * @param objectID 
 	 * @return
 	 */
+	@Override
 	public boolean hasDependentData(Integer objectID) {
 		return ReflectionHelper.hasDependentData(replacePeerClasses, replaceFields, objectID); 
 	}
@@ -502,6 +519,7 @@ public class TQueryRepositoryPeer
 	 * @param newID
 	 * @return
 	 */
+	@Override
 	public void replaceAndDelete(Integer oldID, Integer  newID) {
 		if (newID!=null) {
 			ReflectionHelper.replace(replacePeerClasses, replaceFields, oldID, newID);

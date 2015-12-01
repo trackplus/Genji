@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -59,6 +59,7 @@ public class TProjectTypeBean
 	}
 	private static ProjectTypeDAO projectTypeDAO = DAOFactory.getFactory().getProjectTypeDAO();
 	
+	@Override
 	public Map<String, String> serializeBean() {
 		Map<String, String> attributesMap = new HashMap<String, String>();
 		attributesMap.put("objectID", getObjectID().toString());
@@ -77,6 +78,7 @@ public class TProjectTypeBean
 	 * @param attributes
 	 * @return
 	 */
+	@Override
 	public  ISerializableLabelBean deserializeBean(Map<String, String> attributes) {
 		TProjectTypeBean projectTypeBean = new TProjectTypeBean();
 		String strObjectID = attributes.get("objectID");
@@ -100,6 +102,7 @@ public class TProjectTypeBean
 	 * 						value: map of already mapped external vs. internal objectIDs 
 	 * @return
 	 */
+	@Override
 	public boolean considerAsSame(ISerializableLabelBean serializableLabelBean, 
 			Map<String, Map<Integer, Integer>> matchesMap) {
 		if (serializableLabelBean==null) {
@@ -122,11 +125,13 @@ public class TProjectTypeBean
 	 * @param matchesMap
 	 * @return
 	 */
+	@Override
 	public Integer saveBean(ISerializableLabelBean serializableLabelBean, 
 			Map<String, Map<Integer, Integer>> matchesMap) {		
 		return projectTypeDAO.save((TProjectTypeBean)serializableLabelBean);
 	}
 	
+	@Override
 	public void setMoreProps(String _moreProps) {
 		moreProperties = PropertiesHelper.getProperties(_moreProps);
 		super.setMoreProps(_moreProps);
@@ -185,7 +190,6 @@ public class TProjectTypeBean
 	}
 
 	public void setUseAccounting(Boolean useAccounts) {
-		//String useStr=(useAccounts==null?"false":useAccounts.toString());
 		setMoreProps(PropertiesHelper.setBooleanProperty(getMoreProps(), TProjectTypeBean.MOREPPROPS.USE_ACCOUNTS, useAccounts));
 	}
 	

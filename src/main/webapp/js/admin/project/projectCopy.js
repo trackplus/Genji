@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -23,7 +23,7 @@
 Ext.define('com.trackplus.admin.project.ProjectCopyController',{
 	extend:'Ext.Base',
 	config: {
-		model:null,
+		dataModel: null,
 		projectConfig: null,
 		actionTarget:null
 	},
@@ -40,13 +40,12 @@ Ext.define('com.trackplus.admin.project.ProjectCopyController',{
 
 	constructor : function(config) {
 		var config = config || {};
-		this.initialConfig = config;
-		Ext.apply(this, config);
-		this.projectID=this.model.projectID;
+		this.initConfig(config);
+		this.projectID=this.getDataModel().projectID;
 	},
 
 	getTitle: function() {
-		switch(this.actionTarget) {
+		switch(this.getActionTarget()) {
 		    case this.COPY_ACTION_COPY_WP:
 		    	return getText('admin.project.copy.title');
 		        break;
@@ -65,7 +64,7 @@ Ext.define('com.trackplus.admin.project.ProjectCopyController',{
 	},
 
 	getSaveLabel: function() {
-		switch(this.actionTarget) {
+		switch(this.getActionTarget()) {
 		    case this.COPY_ACTION_COPY_WP:
 		    case this.COPY_ACTION_COPY_TPL:
 		    	return getText('common.btn.copy');
@@ -95,9 +94,9 @@ Ext.define('com.trackplus.admin.project.ProjectCopyController',{
 	showDialog: function() {
 		var width = 500;
 		var height = 600;
-		var loadParams = {projectID:this.projectID, actionTarget:this.actionTarget};
+		var loadParams = {projectID:this.projectID, actionTarget:this.getActionTarget()};
 		var load = {loadUrl:"projectCopy.action", loadUrlParams:loadParams};
-		var submitParams = {projectID:this.projectID, actionTarget:this.actionTarget};
+		var submitParams = {projectID:this.projectID, actionTarget:this.getActionTarget()};
 
 		var submit = {submitUrl:"projectCopy!copy.action",
 					submitUrlParams:submitParams,
@@ -123,7 +122,7 @@ Ext.define('com.trackplus.admin.project.ProjectCopyController',{
 					border:true,
 					html: helpText
 				},
-				CWHF.createTextField("admin.project.copy.lbl.projectName", "projectName",{allowBlank:false, maxLength:255, padding: '5 5 5 5'})],
+				CWHF.createTextField("admin.project.copy.lbl.projectName", "projectName",{itemId:'projectName', allowBlank:false, maxLength:255, padding: '5 5 5 5'})],
 			postDataProcess:postDataProcess};
 		var windowConfig = Ext.create('com.trackplus.util.WindowConfig', windowParameters);
 		windowConfig.showWindowByConfig(this);
@@ -134,13 +133,13 @@ Ext.define('com.trackplus.admin.project.ProjectCopyController',{
 	},
 
 	reload: function(reloadParameters, result) {
-		this.projectConfig.reloadAfterApplyingTemplate(result, this.actionTarget);
+		this.getProjectConfig().reloadAfterApplyingTemplate(result, this.getActionTarget());
 	},
 
 	populateProjectCopyControls: function(scope, projectCopyMainPanel, data) {
 		var customLists = data["customLists"];
 		var projectCopyControls = [];
-		if (projectCopyMainPanel!=null) {
+		if (projectCopyMainPanel) {
 			var showAsSibling = data['showAsSibling'];
 			if (showAsSibling) {
 				projectCopyControls.push(CWHF.createCheckbox("admin.project.copy.lbl.copyAsSiblingProject",
@@ -162,17 +161,17 @@ Ext.define('com.trackplus.admin.project.ProjectCopyController',{
 					items:[CWHF.createCheckbox("admin.project.copy.lbl.copyOpenItems", "copyOpenItems", null,
 							{change: {fn: this.changeCopyItems, scope:this,
 								panel:projectCopyMainPanel, customLists:customLists}}),
-							CWHF.createCheckbox("admin.project.copy.lbl.copyAttachments", "copyAttachments", {disabled:true})
+							CWHF.createCheckbox("admin.project.copy.lbl.copyAttachments", "copyAttachments", {itemId:"copyAttachments",disabled:true})
 					       ]});
 				}
 		}
 		var showCopyReleases = data["showCopyReleases"];
-		if (showCopyReleases || (customLists!=null && customLists.length>0)) {
+		if (showCopyReleases || (customLists && customLists.length>0)) {
 			var items = [];
 			if (showCopyReleases) {
-				items.push(CWHF.createCheckbox("admin.project.copy.lbl.releases", "copyReleases"));
+				items.push(CWHF.createCheckbox("admin.project.copy.lbl.releases", "copyReleases"),{itemId:"copyReleases"});
 			}
-			if (customLists!=null && customLists.length>0) {
+			if (customLists && customLists.length>0) {
 				Ext.Array.forEach(customLists, function(expression) {
 					var expressionPanel = CWHF.createCheckbox(expression["entityLabel"],
 							expression["entityName"], {labelIsLocalized:true});
@@ -182,17 +181,11 @@ Ext.define('com.trackplus.admin.project.ProjectCopyController',{
 			projectCopyControls.push({xtype:"fieldset",
 				itemId:"fsLists",
 				title: getText("admin.project.copy.lbl.customLists"),
-				//collapsible: false,
-				//defaults: {anchor: '100%'},
-				//layout: 'anchor',
 				items:items});
-
-			//projectCopyControls.push(CWHF.createCheckbox("admin.project.copy.lbl.releases", "copyReleases"));
-
 		}
 
 		var associatedEntities = data["associatedEntities"];
-		if (associatedEntities!=null) {
+		if (associatedEntities) {
 			var items = [];
 			Ext.Array.forEach(associatedEntities, function(expression) {
 				var expressionPanel = CWHF.createCheckbox(expression["entityLabel"],
@@ -216,24 +209,24 @@ Ext.define('com.trackplus.admin.project.ProjectCopyController',{
 	changeCopyItems: function(checkboxField, newValue, oldValue, options) {
 		var mainPanel = options.panel;
 		var copyAttachmentsCheckBox =  CWHF.getControl.apply(mainPanel, ["fsItems", "copyAttachments"]);
-		if (copyAttachmentsCheckBox!=null) {
+		if (copyAttachmentsCheckBox) {
 			copyAttachmentsCheckBox.setDisabled(!newValue);
 			if (!newValue) {
 				copyAttachmentsCheckBox.setValue(false);
 			}
 		}
 		var copyReleasesCheckbox = CWHF.getControl.apply(mainPanel, ["fsLists", "copyReleases"]);
-		if (copyReleasesCheckbox!=null) {
+		if (copyReleasesCheckbox) {
 			copyReleasesCheckbox.setDisabled(newValue);
 			if (newValue) {
 				copyReleasesCheckbox.setValue(true);
 			}
 		}
 		var customLists = options.customLists;
-		if (customLists!=null && customLists.length>0) {
+		if (customLists && customLists.length>0) {
 			Ext.Array.forEach(customLists, function(expression) {
 				var customListCheckBox = CWHF.getControl.apply(mainPanel, ["fsLists", expression["entityName"]]);
-				if (customListCheckBox!=null) {
+				if (customListCheckBox) {
 					customListCheckBox.setDisabled(newValue);
 					if (newValue) {
 						customListCheckBox.setValue(newValue);
@@ -242,7 +235,7 @@ Ext.define('com.trackplus.admin.project.ProjectCopyController',{
 			}, this);
 		}
 		var projectFieldConfigsCheckbox = CWHF.getControl.apply(mainPanel, ["fsAssociated", "associatedEntitiyMap[5]"]);
-		if (projectFieldConfigsCheckbox!=null) {
+		if (projectFieldConfigsCheckbox) {
 			projectFieldConfigsCheckbox.setDisabled(newValue);
 			if (newValue) {
 				projectFieldConfigsCheckbox.setValue(true);
@@ -251,7 +244,7 @@ Ext.define('com.trackplus.admin.project.ProjectCopyController',{
 	},
 
 	getWindowTopHelpText: function() {
-		switch(this.actionTarget) {
+		switch(this.getActionTarget()) {
 		    case this.COPY_ACTION_COPY_WP:
 		    	return getText('admin.project.copy.lbl.message');
 		        break;

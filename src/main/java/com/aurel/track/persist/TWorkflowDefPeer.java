@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -65,6 +65,7 @@ public class TWorkflowDefPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TWorkflowDefBean loadByPrimaryKey(Integer objectID) {
 		TWorkflowDef tobject = null;
 		try{
@@ -84,22 +85,24 @@ public class TWorkflowDefPeer
 	 * Loads all workflows 
 	 * @return 
 	 */
+	@Override
 	public List<TWorkflowDefBean> loadAll() {
 		Criteria crit = new Criteria();
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all workflows failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all workflows failed with " + e.getMessage());
 			return null;
 		}
 	}
+	@Override
 	public List<TWorkflowDefBean> loadByIDs(List<Integer> ids) {
 		Criteria crit = new Criteria();
 		crit.addIn(OBJECTID, ids);
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading mail templates failed with " + e.getMessage(), e);
+			LOGGER.error("Loading mail templates failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -110,13 +113,14 @@ public class TWorkflowDefPeer
 	 * @param workflowDefBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TWorkflowDefBean workflowDefBean) {
 		try {
 			TWorkflowDef tobject = TWorkflowDef.createTWorkflowDef(workflowDefBean);
 			tobject.save();
 			return tobject.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a workflow failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a workflow failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -126,6 +130,7 @@ public class TWorkflowDefPeer
 	 * Is deletable should return true before calling this method
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		ReflectionHelper.delete(deletePeerClasses, deleteFields, objectID);
 	}

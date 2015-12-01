@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -51,11 +52,6 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.appender.RollingFileAppender;
-import org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy;
-import org.apache.logging.log4j.core.appender.rolling.SizeBasedTriggeringPolicy;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.torque.Torque;
 import org.apache.torque.TorqueException;
@@ -132,15 +128,15 @@ public final class ApplicationStarter implements Runnable {
 	public static final String PROGRESS_TEXT = "PROGRESS_TEXT";
 	public static final String READY = "READY";
 
-	public static String DB_SCHEMA_UPGRADE_SCRIPT_TEXT = "Executing script "; // "starter.dbSchemaScript";
-	public static String DB_SCHEMA_UPGRADE_READY_TEXT = "Database schema is up to date";// "starter.dbSchema";
-	public static String INIT_DB_DATA_TEXT = "Initialize database data";// "starter.initData";
-	public static String RESOURCE_UPGRADE_LOCALE_TEXT = "Loading resource for locale ";// "starter.resourceForLocale";
-	public static String RESOURCE_UPGRADE_DEFAULT_LOCALE_TEXT = "Loading resources for default locale";// "starter.resourceForDefaultLocale";
-	public static String RESOURCE_UPGRADE_READY_TEXT = "Localized resources are loaded ";// "starter.resource";
-	public static String DATA_UPGRADE_TO_TEXT = "Migrating data to ";// "starter.dbDataUpgradeTo";
-	public static String DATA_UPGRADE_READY_TEXT = "Migrating data ready";// "starter.dbDataUpgrade";
-	public static String REPORT_COPY_READY_TEXT = "Copying report templates...";// "starter.reportTemplates";
+	public static String DB_SCHEMA_UPGRADE_SCRIPT_TEXT = "Executing script ";
+	public static String DB_SCHEMA_UPGRADE_READY_TEXT = "Database schema is up to date";// "starter.dbSchema"
+	public static String INIT_DB_DATA_TEXT = "Initialize database data";// "starter.initData"
+	public static String RESOURCE_UPGRADE_LOCALE_TEXT = "Loading resource for locale ";// "starter.resourceForLocale"
+	public static String RESOURCE_UPGRADE_DEFAULT_LOCALE_TEXT = "Loading resources for default locale";// "starter.resourceForDefaultLocale"
+	public static String RESOURCE_UPGRADE_READY_TEXT = "Localized resources are loaded ";// "starter.resource"
+	public static String DATA_UPGRADE_TO_TEXT = "Migrating data to ";// "starter.dbDataUpgradeTo"
+	public static String DATA_UPGRADE_READY_TEXT = "Migrating data ready";// "starter.dbDataUpgrade"
+	public static String REPORT_COPY_READY_TEXT = "Copying report templates...";// "starter.reportTemplates"
 	public static String READY_TEXT = "starter.ready";
 	public static String PLEASE_TEXT = "Please give us a moment...";
 	public static String WAIT_TEXT = "to initialize the system. This can take a few minutes.";
@@ -171,7 +167,7 @@ public final class ApplicationStarter implements Runnable {
 
 	/**
 	 * Get a singleton instance of this class.
-	 * 
+	 *
 	 * @return the one and only ApplicationStarter instance of this JVM.
 	 */
 	public static ApplicationStarter getInstance() {
@@ -183,15 +179,15 @@ public final class ApplicationStarter implements Runnable {
 
 	/**
 	 * Initialize before use.
-	 * 
+	 *
 	 * @param scfg
 	 *            the servlet configuration
 	 * @param _executor
 	 *            the executor running everything in its own thread.
 	 */
-	public void init(ServletConfig scfg, ExecutorService _executor) {
+	public void init(ServletConfig scfg, ExecutorService pexecutor) {
 		setServletConfig(scfg);
-		executor = _executor;
+		this.executor = pexecutor;
 	}
 
 	/*
@@ -210,16 +206,17 @@ public final class ApplicationStarter implements Runnable {
 		setLoaderResourceBundleMessages();
 		ServletContext servletContext = getServletConfig().getServletContext();
 		appBean = initApplicationBeanStep1(servletContext);
-		
+
 		LOGGER.info("-------------------------------------------------------------");
-		LOGGER.info(ApplicationBean.getInstance().getAppTypeString() + ": System initializaton for version " + appBean.getVersion() + " build " + appBean.getBuild() + " started...");
+		LOGGER.info(ApplicationBean.getInstance().getAppTypeString() + ": System initializaton for version " + appBean.getVersion() + " build "
+				+ appBean.getBuild() + " started...");
 		LOGGER.info("TRACKPLUS_HOME set to " + HandleHome.getTrackplus_Home());
-		
+
 		updateOrCreateDbSchema(servletContext);
 		TSiteBean site = initDatabaseAndAdjustHome(appBean.getVersion(), servletContext);
-		
+
 		initExtraLoggers(servletContext);
-		
+
 		printSystemInfo();
 		Support.loadLastURIs();
 		try {
@@ -238,7 +235,7 @@ public final class ApplicationStarter implements Runnable {
 		initLDAP();
 		initWebService();
 		// Update the versions of the application and database scheme.
-		updateVersions(/* site, */servletContext);
+		updateVersions(servletContext);
 		LuceneUtil.initLuceneParameters();
 
 		site = siteDAO.load1();
@@ -258,10 +255,10 @@ public final class ApplicationStarter implements Runnable {
 		servletContext.setAttribute(Constants.APPLICATION_BEAN, appBean);
 
 		initJobs(servletContext);
-	
+
 		getDesignPaths(servletContext);
 		servletContext.setAttribute("FirstTime", "FT");
-		
+
 		initLucene(myIp);
 
 		EventPublisher evp = EventPublisher.getInstance();
@@ -272,23 +269,6 @@ public final class ApplicationStarter implements Runnable {
 			events.add(Integer.valueOf(IEventSubscriber.EVENT_POST_SYSTEM_STARTED));
 			evp.notify(events, site);
 		}
-
-		// --------------------------------------------------------------
-		// Here we provide a chance to do some neat stuff after the
-		// system initialization is complete
-		// binding = new Binding();
-		// binding.setVariable("site", site);
-		// binding.setVariable("servletContext", servletContext);
-		// try {
-		// Constants.getGroovyScriptEngine().run("system/initOnExit.groovy",
-		// binding);
-		// LOGGER.info("Groovy test: TRACKPLUS_HOME variable set to " +
-		// binding.getVariable("output"));
-		// }
-		// catch (Exception ge) {
-		// LOGGER.warn("Could not read Groovy exit script at " +
-		// Constants.getGroovyURL());
-		// }
 
 		//
 		// Verify the reportTemplates
@@ -334,16 +314,18 @@ public final class ApplicationStarter implements Runnable {
 			lock.delete();
 		}
 		try {
-			DetectorFactory.loadProfile(HandleHome.getTrackplus_Home()+File.separator+"LanguageDetectionProfiles");
+			DetectorFactory.loadProfile(HandleHome.getTrackplus_Home() + File.separator + "LanguageDetectionProfiles");
 		} catch (Exception e) {
 			LOGGER.warn("Unable to load language profiles: " + e.getMessage());
 		}
 	}
-	
-	// -------------------- End of startup, details follow----------------------------- //
+
+	// -------------------- End of startup, details
+	// follow----------------------------- //
 
 	/**
 	 * This method updates the percent complete bar shown during system startup
+	 *
 	 * @param percentComplete
 	 * @param progressText
 	 */
@@ -355,6 +337,7 @@ public final class ApplicationStarter implements Runnable {
 
 	/**
 	 * Get the progress text shown during system initialization in the browser
+	 *
 	 * @return
 	 */
 	public String getProgressText() {
@@ -380,47 +363,38 @@ public final class ApplicationStarter implements Runnable {
 		// request not available yet
 		ResourceBundle rb = ResourceBundle.getBundle(ResourceBundleManager.LOADER_RESOURCES, Locale.getDefault()); // getLoaderResourceBundle
 																													// ResourceBundle.getBundle("resources/UserInterface/LoaderResources",
-																													// locale);
-		DB_SCHEMA_UPGRADE_SCRIPT_TEXT = rb.getString("DB_SCHEMA_UPGRADE_SCRIPT_TEXT"); // "Executing
-																						// script
-																						// ";
-		// //"starter.dbSchemaScript";
-		DB_SCHEMA_UPGRADE_READY_TEXT = rb.getString("DB_SCHEMA_UPGRADE_READY_TEXT"); // "Database
-																						// schema
-																						// is
-																						// actual";//"starter.dbSchema";
-		INIT_DB_DATA_TEXT = rb.getString("INIT_DB_DATA_TEXT"); // "Initialize
-																// database
-																// data";//"starter.initData";
-		RESOURCE_UPGRADE_LOCALE_TEXT = rb.getString("RESOURCE_UPGRADE_LOCALE_TEXT"); // "Loading
-																						// resource
-																						// for
-																						// locale
-																						// ";//"starter.resourceForLocale";
-		RESOURCE_UPGRADE_DEFAULT_LOCALE_TEXT = rb.getString("RESOURCE_UPGRADE_DEFAULT_LOCALE_TEXT"); // "Loading
-																										// resources
-																										// for
-																										// default
-																										// locale";//"starter.resourceForDefaultLocale";
-		RESOURCE_UPGRADE_READY_TEXT = rb.getString("RESOURCE_UPGRADE_READY_TEXT"); // "Localized
-																					// resources
-																					// are
-																					// loaded
-																					// ";//"starter.resource";
-		DATA_UPGRADE_TO_TEXT = rb.getString("DATA_UPGRADE_TO_TEXT"); // "Migrating
-																		// data
-																		// to
-																		// ";//"starter.dbDataUpgradeTo";
-		DATA_UPGRADE_READY_TEXT = rb.getString("DATA_UPGRADE_READY_TEXT"); // "Migrating
-																			// data
-																			// ready";//"starter.dbDataUpgrade";
-		REPORT_COPY_READY_TEXT = rb.getString("REPORT_COPY_READY_TEXT"); // "Copying
-																			// report
-																			// templates...";//"starter.reportTemplates";
-		READY_TEXT = rb.getString("READY_TEXT"); // "starter.ready";
-		PLEASE_TEXT = rb.getString("please"); // "starter.ready";
-		WAIT_TEXT = rb.getString("waitMinutes"); // "starter.ready";
-		TITLE = rb.getString("title"); // "starter.ready";
+																													// locale)
+		DB_SCHEMA_UPGRADE_SCRIPT_TEXT = rb.getString("DB_SCHEMA_UPGRADE_SCRIPT_TEXT");
+		// Executing script starter.dbSchemaScript
+
+		DB_SCHEMA_UPGRADE_READY_TEXT = rb.getString("DB_SCHEMA_UPGRADE_READY_TEXT");
+		// "Database schema is up to date
+
+		INIT_DB_DATA_TEXT = rb.getString("INIT_DB_DATA_TEXT");
+		// Initialize database data starter.initData
+
+		RESOURCE_UPGRADE_LOCALE_TEXT = rb.getString("RESOURCE_UPGRADE_LOCALE_TEXT");
+		// Loading resource for locale tarter.resourceForLocale
+
+		RESOURCE_UPGRADE_DEFAULT_LOCALE_TEXT = rb.getString("RESOURCE_UPGRADE_DEFAULT_LOCALE_TEXT");
+		// Loading resources for default locale starter.resourceForDefaultLocale
+
+		RESOURCE_UPGRADE_READY_TEXT = rb.getString("RESOURCE_UPGRADE_READY_TEXT");
+		// Localized resources are loaded starter.resource
+
+		DATA_UPGRADE_TO_TEXT = rb.getString("DATA_UPGRADE_TO_TEXT");
+		// Migrating data to starter.dbDataUpgradeTo
+
+		DATA_UPGRADE_READY_TEXT = rb.getString("DATA_UPGRADE_READY_TEXT");
+		// Migrating data ready starter.dbDataUpgrade
+
+		REPORT_COPY_READY_TEXT = rb.getString("REPORT_COPY_READY_TEXT");
+		// Copying report templates... starter.reportTemplates
+
+		READY_TEXT = rb.getString("READY_TEXT"); // "starter.ready"
+		PLEASE_TEXT = rb.getString("please"); // "starter.ready"
+		WAIT_TEXT = rb.getString("waitMinutes"); // "starter.ready"
+		TITLE = rb.getString("title"); // "starter.ready"
 	}
 
 	public Boolean isServerReady() {
@@ -472,8 +446,10 @@ public final class ApplicationStarter implements Runnable {
 	 * Initializes the logging system
 	 */
 	private void initExtraLoggers(ServletContext servletContext) {
-		try {			
-			Configurator.initialize(null, HandleHome.getTrackplus_Home()+File.separator+HandleHome.LOG4J2_FILE);	
+		try {
+			String log4j2FileAbsPath = HandleHome.getTrackplus_Home()+File.separator+HandleHome.LOG4J2_FILE;
+			log4j2FileAbsPath = URLEncoder.encode(log4j2FileAbsPath, "UTF-8");
+			Configurator.initialize(null, log4j2FileAbsPath);
 		} catch (Exception e) {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
@@ -484,15 +460,14 @@ public final class ApplicationStarter implements Runnable {
 	 */
 	private void initGeneralLogging(ServletContext servletContext) {
 		try {
-			
+
 			TLoggingLevelPeer.load(); // make sure the database settings prevail
 			LOGGER.info("Loaded logging settings from database");
-			
+
 		} catch (Exception e) {
-			LOGGER.error("Logging initialization failed: " + e.getMessage(), e);
+			LOGGER.error("Logging initialization failed: " + e.getMessage());
 		}
 	}
-
 
 	private ApplicationBean initApplicationBeanStep1(ServletContext servletContext) {
 		ApplicationBean applicationBean = ApplicationBean.getInstance();
@@ -734,7 +709,7 @@ public final class ApplicationStarter implements Runnable {
 	}
 
 	private void updateVersions(ServletContext servletContext) {
-		
+
 		try {
 			LabelValueBean versionBean = new LabelValueBean(appBean.getVersion(), "");
 			LabelValueBean versionDateBean = new LabelValueBean(appBean.getVersionDate(), "");
@@ -885,6 +860,7 @@ public final class ApplicationStarter implements Runnable {
 				if (descSize <= 0) {
 					// MySQL bug (MySql 5.0.26 for linux returns -1)
 					System.err.println("Incorrect maximum description length retrieved: " + descSize);
+					LOGGER.debug("Incorrect maximum description length retrieved: " + descSize);
 					descSize = sizeMySQL;
 				}
 				rs.close();
@@ -895,10 +871,12 @@ public final class ApplicationStarter implements Runnable {
 				if (cSize <= 0) {
 					// MySQL bug (MySql 5.0.26 for linux returns -1)
 					System.err.println("Incorrect maximum comment length retrieved: " + cSize);
+					LOGGER.debug("Incorrect maximum comment length retrieved: " + cSize);
 					cSize = sizeMySQL;
 				}
 			}
 		} catch (Exception e) {
+			LOGGER.debug(e);
 			System.err.println("Could not retrieve column sizes from database: " + e.getMessage());
 		} finally {
 			if (rs != null) {
@@ -946,8 +924,8 @@ public final class ApplicationStarter implements Runnable {
 		LOGGER.error("");
 		LOGGER.error("For your information, your settings in Torque.properties are: ");
 		LOGGER.error("Database user name: " + pc.getProperty("torque.dsfactory.track.connection.user"));
-		String password = (String)pc.getProperty("torque.dsfactory.track.connection.password");
-		if (password!=null) {
+		String password = (String) pc.getProperty("torque.dsfactory.track.connection.password");
+		if (password != null) {
 			password = password.replaceAll(".", "*");
 			LOGGER.error("Database password:  " + password + "(see Torque.properties file)");
 		}
@@ -957,11 +935,11 @@ public final class ApplicationStarter implements Runnable {
 		LOGGER.error("Exiting...");
 		LOGGER.error("");
 		LOGGER.error("");
-		LOGGER.error(ExceptionUtils.getStackTrace(e), e);
+		LOGGER.error(ExceptionUtils.getStackTrace(e));
 	}
 
-	private ArrayList<String> createInstallProblemMessage(Exception e) {
-		ArrayList<String> msg = new ArrayList<String>();
+	private List<String> createInstallProblemMessage(Exception e) {
+		List<String> msg = new ArrayList<String>();
 		try {
 			PropertiesConfiguration pc = ApplicationBean.getInstance().getDbConfig();
 			msg.add("Database user name: (see Torque.properties file)");
@@ -971,6 +949,7 @@ public final class ApplicationStarter implements Runnable {
 			msg.add("Database connection URL: " + pc.getProperty("torque.dsfactory.track.connection.url"));
 			msg.add("The system gives this error message: " + e.getMessage());
 		} catch (Exception ex) {
+			LOGGER.debug(ex);
 			// Nothing to be done about this here
 		}
 		return msg;
@@ -995,7 +974,7 @@ public final class ApplicationStarter implements Runnable {
 				HandleHome.copyTorquePropertiesToHome(servletContext);
 			}
 		} catch (Exception e) {
-			LOGGER.error("Problem creating or updating database schema: " + e.getMessage(), e);
+			LOGGER.error("Problem creating or updating database schema: " + e.getMessage());
 		}
 	}
 
@@ -1035,7 +1014,7 @@ public final class ApplicationStarter implements Runnable {
 			siteDAO.save(site);
 		}
 	}
-	
+
 	public void initLucene(String myIp) {
 		// --------------------------------------------------------------------
 		// Initialize Lucene indexing system.

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -85,7 +85,7 @@ public class ColumnFieldsBL {
 	public static boolean hasAccounting(Integer personID) {
 		boolean hasAccounting = false;
 		if (personID!=null) {
-			if (!ApplicationBean.getApplicationBean().isGenji()) {
+			if (!ApplicationBean.getInstance().isGenji()) {
 				int[] arrRights = new int[] {
 						AccessFlagIndexes.READANYTASK,
 						AccessFlagIndexes.PROJECTADMIN};
@@ -115,9 +115,9 @@ public class ColumnFieldsBL {
 	public static Map<Integer, Boolean> getVisisblePseudoFields(Integer personID, boolean hasAccounting) {
 		Map<Integer, Boolean> pseudoFieldsVisible = new HashMap<Integer, Boolean>();
 		//budget/expense fields are needed?
-		boolean budgetActive = ApplicationBean.getApplicationBean().getBudgetActive();
+		boolean budgetActive = ApplicationBean.getInstance().getBudgetActive();
 		List<Integer> fieldIDs = new LinkedList<Integer>();
-		if (!ApplicationBean.getApplicationBean().isGenji()) {
+		if (!ApplicationBean.getInstance().isGenji()) {
 			if (budgetActive) {
 				fieldIDs.add(FieldsRestrictionsToRoleBL.PSEUDO_COLUMNS.BUDGET);
 			}
@@ -127,35 +127,29 @@ public class ColumnFieldsBL {
 		}
 		fieldIDs.add(FieldsRestrictionsToRoleBL.PSEUDO_COLUMNS.WATCHERS);
 		Map<Integer, Integer> fieldRestrictions = AccessBeans.getFieldRestrictions(personID, null, null, fieldIDs, false);
-		if (!ApplicationBean.getApplicationBean().isGenji()) {
+		if (!ApplicationBean.getInstance().isGenji()) {
 			if (budgetActive) {
 				Integer budgetFlag = fieldRestrictions.get(FieldsRestrictionsToRoleBL.PSEUDO_COLUMNS.BUDGET);
 				if (budgetFlag==null || budgetFlag.intValue()!=TRoleFieldBean.ACCESSFLAG.NOACCESS) {
-					//budgetVisible = hasAccounting;
 					pseudoFieldsVisible.put(FieldsRestrictionsToRoleBL.PSEUDO_COLUMNS.BUDGET, hasAccounting);
 				}
 			}
 			Integer planFlag = fieldRestrictions.get(FieldsRestrictionsToRoleBL.PSEUDO_COLUMNS.PLAN);
 			if (planFlag==null || planFlag.intValue()!=TRoleFieldBean.ACCESSFLAG.NOACCESS) {
-				//planVisible = hasAccounting;
 				pseudoFieldsVisible.put(FieldsRestrictionsToRoleBL.PSEUDO_COLUMNS.PLAN, hasAccounting);
 			}
 			Integer myExpenseFlag = fieldRestrictions.get(FieldsRestrictionsToRoleBL.PSEUDO_COLUMNS.MY_EXPENSES);
 			if (myExpenseFlag==null || myExpenseFlag.intValue()!=TRoleFieldBean.ACCESSFLAG.NOACCESS) {
-				//ownExpense = hasAccounting;
 				pseudoFieldsVisible.put(FieldsRestrictionsToRoleBL.PSEUDO_COLUMNS.MY_EXPENSES, hasAccounting);
 			}
 			Integer totalExpenseFlag = fieldRestrictions.get(FieldsRestrictionsToRoleBL.PSEUDO_COLUMNS.ALL_EXPENSES);
 			if (totalExpenseFlag==null || totalExpenseFlag.intValue()!=TRoleFieldBean.ACCESSFLAG.NOACCESS) {
-				//ownExpense = hasAccounting;
 				pseudoFieldsVisible.put(FieldsRestrictionsToRoleBL.PSEUDO_COLUMNS.MY_EXPENSES, hasAccounting);
-				//viewAllExpenses = hasAccounting;
 				pseudoFieldsVisible.put(FieldsRestrictionsToRoleBL.PSEUDO_COLUMNS.ALL_EXPENSES, hasAccounting);
 			}
 		}
 		Integer watchersFlag = fieldRestrictions.get(FieldsRestrictionsToRoleBL.PSEUDO_COLUMNS.WATCHERS);
 		if (watchersFlag==null || watchersFlag.intValue()!=TRoleFieldBean.ACCESSFLAG.NOACCESS) {
-			//watcherFieldsAllowed = true;
 			pseudoFieldsVisible.put(FieldsRestrictionsToRoleBL.PSEUDO_COLUMNS.WATCHERS, true);
 		}
 		return pseudoFieldsVisible;
@@ -172,67 +166,6 @@ public class ColumnFieldsBL {
 	public static List<ColumnFieldTO> loadAvailableColumnFields(Integer personID, Locale locale, boolean excludeHistory) {
 		boolean hasAccounting = hasAccounting(personID);
 		Map<Integer, Boolean> pseudoFieldsVisible = getVisisblePseudoFields(personID, hasAccounting);
-		/*boolean budgetVisible = false;
-		boolean planVisible = false;
-		boolean ownExpense = false;
-		boolean viewAllExpenses = false;
-		boolean watcherFieldsAllowed = false;
-		if (personID!=null) {
-			if (!ApplicationBean.getApplicationBean().isGenji()) {
-				int[] arrRights = new int[] {
-						AccessFlagIndexes.READANYTASK,
-						AccessFlagIndexes.PROJECTADMIN};
-				//all projects the user has budget/expense role in
-				List<TProjectBean> projectBeans = ProjectBL.loadActiveInactiveProjectsByRights(personID, arrRights);
-				if (projectBeans!=null) {
-					for (TProjectBean projectBean : projectBeans) {
-						ProjectAccountingTO projectAccountingTO = ProjectBL.getProjectAccountingTO(projectBean.getObjectID());
-						if (projectAccountingTO.isWorkTracking() || projectAccountingTO.isCostTracking()) {
-							hasAccounting = true;
-							break;
-						}
-					}
-				}
-			}
-			//budget/expense fields are needed?
-			boolean budgetActive = ApplicationBean.getApplicationBean().getBudgetActive();
-			List<Integer> fieldIDs = new LinkedList<Integer>();
-			if (!ApplicationBean.getApplicationBean().isGenji()) {
-				if (budgetActive) {
-					fieldIDs.add(FieldsRestrictionsToRoleBL.PSEUDO_COLUMNS.BUDGET);
-				}
-				fieldIDs.add(FieldsRestrictionsToRoleBL.PSEUDO_COLUMNS.PLAN);
-				fieldIDs.add(FieldsRestrictionsToRoleBL.PSEUDO_COLUMNS.MY_EXPENSES);
-				fieldIDs.add(FieldsRestrictionsToRoleBL.PSEUDO_COLUMNS.ALL_EXPENSES);
-			}
-			fieldIDs.add(FieldsRestrictionsToRoleBL.PSEUDO_COLUMNS.WATCHERS);
-			Map<Integer, Integer> fieldRestrictions = AccessBeans.getFieldRestrictions(personID, null, null, fieldIDs, false);
-			if (!ApplicationBean.getApplicationBean().isGenji()) {
-				if (budgetActive) {
-					Integer budgetFlag = fieldRestrictions.get(FieldsRestrictionsToRoleBL.PSEUDO_COLUMNS.BUDGET);
-					if (budgetFlag==null || budgetFlag.intValue()!=TRoleFieldBean.ACCESSFLAG.NOACCESS) {
-						budgetVisible = hasAccounting;
-					}
-				}
-				Integer planFlag = fieldRestrictions.get(FieldsRestrictionsToRoleBL.PSEUDO_COLUMNS.PLAN);
-				if (planFlag==null || planFlag.intValue()!=TRoleFieldBean.ACCESSFLAG.NOACCESS) {
-					planVisible = hasAccounting;
-				}
-				Integer myExpenseFlag = fieldRestrictions.get(FieldsRestrictionsToRoleBL.PSEUDO_COLUMNS.MY_EXPENSES);
-				if (myExpenseFlag==null || myExpenseFlag.intValue()!=TRoleFieldBean.ACCESSFLAG.NOACCESS) {
-					ownExpense = hasAccounting;
-				}
-				Integer totalExpenseFlag = fieldRestrictions.get(FieldsRestrictionsToRoleBL.PSEUDO_COLUMNS.ALL_EXPENSES);
-				if (totalExpenseFlag==null || totalExpenseFlag.intValue()!=TRoleFieldBean.ACCESSFLAG.NOACCESS) {
-					ownExpense = hasAccounting;
-					viewAllExpenses = hasAccounting;
-				}
-			}
-			Integer watchersFlag = fieldRestrictions.get(FieldsRestrictionsToRoleBL.PSEUDO_COLUMNS.WATCHERS);
-			if (watchersFlag==null || watchersFlag.intValue()!=TRoleFieldBean.ACCESSFLAG.NOACCESS) {
-				watcherFieldsAllowed = true;
-			}
-		}*/
 		Set<Integer> realFieldIDs = getAvailableRealFieldIDs(personID);
 		List<ColumnFieldTO> columnFieldsList = loadRealFields(realFieldIDs, null, locale);
 		columnFieldsList.addAll(loadAvailableCustomListIconColumns(realFieldIDs, locale));

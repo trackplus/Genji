@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -25,6 +25,7 @@ package com.aurel.track.lucene.index.listFields;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.lucene.document.Document;
@@ -97,6 +98,7 @@ public abstract class AbstractListFieldIndexer implements ILookupFieldIndexer {
 	/**
 	 * Reindexes all
 	 */
+	@Override
 	public synchronized void reIndexAll() {
 		List<Integer> fieldIDs = getFieldIDs();
 		IndexWriter indexWriter = null;
@@ -108,7 +110,8 @@ public abstract class AbstractListFieldIndexer implements ILookupFieldIndexer {
 					addToListFieldToIndex(indexWriter, fieldTypeRT, fieldID);
 				}
 			} catch (Exception e) {
-				LOGGER.error("Reindexing system lists failed with " + e.getMessage(), e);
+				LOGGER.error("Reindexing system lists failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			} finally {
 				LuceneIndexer.initWriter(false, getIndexWriterID());
 			}
@@ -121,7 +124,8 @@ public abstract class AbstractListFieldIndexer implements ILookupFieldIndexer {
 					addCustomListToIndex(indexWriter, listBean);
 				}
 			} catch (Exception e) {
-				LOGGER.error("Reindexing custom lists failed with " + e.getMessage(), e);
+				LOGGER.error("Reindexing custom lists failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			} finally {
 				LuceneIndexer.initWriter(false, getIndexWriterID());
 			}
@@ -150,7 +154,8 @@ public abstract class AbstractListFieldIndexer implements ILookupFieldIndexer {
 						indexWriter.addDocument(document);
 					} catch (IOException e) {
 						LOGGER.error("Adding a list option document for field " +
-							fieldID + " failed with " + e.getMessage(), e);
+							fieldID + " failed with " + e.getMessage());
+						LOGGER.debug(ExceptionUtils.getStackTrace(e));
 					}
 				}
 			}
@@ -187,7 +192,8 @@ public abstract class AbstractListFieldIndexer implements ILookupFieldIndexer {
 						indexWriter.addDocument(document);
 					} catch (IOException e) {
 						LOGGER.error("Adding a list option document for custom list " +
-								listLabel + " with ID " + listID + " failed with " + e.getMessage(), e);
+								listLabel + " with ID " + listID + " failed with " + e.getMessage());
+						LOGGER.debug(ExceptionUtils.getStackTrace(e));
 					}
 				}
 			}
@@ -221,13 +227,15 @@ public abstract class AbstractListFieldIndexer implements ILookupFieldIndexer {
 				indexWriter.deleteDocuments(keyTerm);
 			} catch (IOException e) {
 				LOGGER.error("Removing the list option " + objectID +
-						" type " + type + " failed with " + e.getMessage(), e);
+						" type " + type + " failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 			try {
 				indexWriter.commit();
 			} catch (IOException e) {
 				LOGGER.error("Flushing list option removal for list option " + objectID +
-						" type " + type + " failed with " + e.getMessage(), e);
+						" type " + type + " failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 	}

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -71,10 +71,11 @@ public class TWorkflowActivityPeer
 				ReflectionHelper.delete(deletePeerClasses, deleteFields, tWorkflowActivity.getObjectID());
 			}
 		} catch (TorqueException e) {
-			LOGGER.error("Deleting the workflow activities by criteria " + crit.toString() + " failed with " + e.getMessage(), e);
+			LOGGER.error("Deleting the workflow activities by criteria " + crit.toString() + " failed with " + e.getMessage());
 		}
 	}
 	
+	@Override
 	public TWorkflowActivityBean loadByPrimaryKey(Integer objectID) {
 		TWorkflowActivity tobject = null;
 		try{
@@ -90,12 +91,13 @@ public class TWorkflowActivityPeer
 		return null;
 	}
 
+	@Override
 	public List<TWorkflowActivityBean> loadAll() {
 		Criteria crit = new Criteria();
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all workflow activities failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all workflow activities failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -105,6 +107,7 @@ public class TWorkflowActivityPeer
 	 * @param stationID
 	 * @return
 	 */
+	@Override
 	public List<TWorkflowActivityBean> loadByStationEntry(Integer stationID) {
 		Criteria crit = new Criteria();
 		crit.add(TWorkflowActivityPeer.STATIONENTRYACTIVITY, stationID);
@@ -112,7 +115,7 @@ public class TWorkflowActivityPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading station entry activities by station:"+stationID+" failed with " + e.getMessage(), e);
+			LOGGER.error("Loading station entry activities by station:"+stationID+" failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -122,6 +125,7 @@ public class TWorkflowActivityPeer
 	 * @param stationID
 	 * @return
 	 */
+	@Override
 	public List<TWorkflowActivityBean> loadByStationExit(Integer stationID) {
 		Criteria crit = new Criteria();
 		crit.add(TWorkflowActivityPeer.STATIONEXITACTIVITY, stationID);
@@ -129,7 +133,7 @@ public class TWorkflowActivityPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading station exit activities by station:"+stationID+" failed with " + e.getMessage(), e);
+			LOGGER.error("Loading station exit activities by station:"+stationID+" failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -139,6 +143,7 @@ public class TWorkflowActivityPeer
 	 * @param stationID
 	 * @return
 	 */
+	@Override
 	public List<TWorkflowActivityBean> loadByStationDo(Integer stationID) {
 		Criteria crit = new Criteria();
 		crit.add(TWorkflowActivityPeer.STATIONDOACTIVITY, stationID);
@@ -146,11 +151,12 @@ public class TWorkflowActivityPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading station do activities by station:"+stationID+" failed with " + e.getMessage(), e);
+			LOGGER.error("Loading station do activities by station:"+stationID+" failed with " + e.getMessage());
 			return null;
 		}
 	}
 	
+	@Override
 	public List<TWorkflowActivityBean> loadByStation(Integer stationID) {
 		Criteria crit = new Criteria();
 		Criteria.Criterion criterionEntry = crit.getNewCriterion(TWorkflowActivityPeer.STATIONENTRYACTIVITY, stationID, Criteria.EQUAL);
@@ -161,7 +167,7 @@ public class TWorkflowActivityPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading workflow activities by station:"+stationID+" failed with " + e.getMessage(), e);
+			LOGGER.error("Loading workflow activities by station:"+stationID+" failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -169,6 +175,7 @@ public class TWorkflowActivityPeer
 	/**
 	 * Load transition activities
 	 */
+	@Override
 	public List<TWorkflowActivityBean> loadByTransition(Integer transitionID) {
 		Criteria crit = new Criteria();
 		crit.add(TRANSITIONACTIVITY,transitionID);
@@ -176,7 +183,7 @@ public class TWorkflowActivityPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading workflow activities by transition:"+transitionID+" failed with " + e.getMessage(), e);
+			LOGGER.error("Loading workflow activities by transition:"+transitionID+" failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -185,6 +192,7 @@ public class TWorkflowActivityPeer
 	 * Whether the worklflow has parameterized transition activity
 	 * @param workflowID
 	 */
+	@Override
 	public boolean hasTransitionActivityWithParam(Integer workflowID) {
 		Criteria crit = new Criteria();
 		crit.addJoin(TRANSITIONACTIVITY, TWorkflowTransitionPeer.OBJECTID);
@@ -194,7 +202,7 @@ public class TWorkflowActivityPeer
 			List<TWorkflowActivity> list = doSelect(crit);
 			return list!=null && !list.isEmpty();
 		} catch (TorqueException e) {
-			LOGGER.error("Loading parameterized transaction activities by workflow:" + workflowID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading parameterized transaction activities by workflow:" + workflowID + " failed with " + e.getMessage());
 			return false;
 		}
 	}
@@ -203,6 +211,7 @@ public class TWorkflowActivityPeer
 	 * Gets the parameterized transition activities for workflow
 	 * @param workflowID
 	 */
+	@Override
 	public List<TWorkflowActivityBean> getTransitionActivityWithParam(Integer workflowID) {
 		Criteria crit = new Criteria();
 		crit.addJoin(TRANSITIONACTIVITY, TWorkflowTransitionPeer.OBJECTID);
@@ -213,7 +222,7 @@ public class TWorkflowActivityPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading parameterized transaction activities by workflow:" + workflowID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading parameterized transaction activities by workflow:" + workflowID + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -222,6 +231,7 @@ public class TWorkflowActivityPeer
 	 * Whether the worklflow has parameterized station entry activity
 	 * @param workflowID
 	 */
+	@Override
 	public boolean hasStationEntryActivityWithParam(Integer workflowID) {
 		Criteria crit = new Criteria();
 		crit.addJoin(STATIONENTRYACTIVITY, TWorkflowStationPeer.OBJECTID);
@@ -231,7 +241,7 @@ public class TWorkflowActivityPeer
 			List<TWorkflowActivity> list = doSelect(crit);
 			return list!=null && !list.isEmpty();
 		} catch (TorqueException e) {
-			LOGGER.error("Loading parameterized station entry activities by workflow:" + workflowID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading parameterized station entry activities by workflow:" + workflowID + " failed with " + e.getMessage());
 			return false;
 		}
 	}
@@ -242,6 +252,7 @@ public class TWorkflowActivityPeer
 	 * Gets the parameterized station entry activities for workflow
 	 * @param workflowID
 	 */
+	@Override
 	public List<TWorkflowActivityBean> getStationEntryActivityWithParam(Integer workflowID) {
 		Criteria crit = new Criteria();
 		crit.addJoin(STATIONENTRYACTIVITY, TWorkflowStationPeer.OBJECTID);
@@ -252,7 +263,7 @@ public class TWorkflowActivityPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading parameterized station entry activities by workflow:" + workflowID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading parameterized station entry activities by workflow:" + workflowID + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -262,6 +273,7 @@ public class TWorkflowActivityPeer
 	 * Whether the worklflow has parameterized station exit activity
 	 * @param workflowID
 	 */
+	@Override
 	public boolean hasStationExitActivityWithParam(Integer workflowID) {
 		Criteria crit = new Criteria();
 		crit.addJoin(STATIONEXITACTIVITY, TWorkflowStationPeer.OBJECTID);
@@ -271,7 +283,7 @@ public class TWorkflowActivityPeer
 			List<TWorkflowActivity> list = doSelect(crit);
 			return list!=null && !list.isEmpty();
 		} catch (TorqueException e) {
-			LOGGER.error("Loading parameterized station exit activities by workflow:" + workflowID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading parameterized station exit activities by workflow:" + workflowID + " failed with " + e.getMessage());
 			return false;
 		}
 	}
@@ -280,6 +292,7 @@ public class TWorkflowActivityPeer
 	 * Gets the parameterized station exit activities for workflow
 	 * @param workflowID
 	 */
+	@Override
 	public List<TWorkflowActivityBean> getStationExitActivityWithParam(Integer workflowID) {
 		Criteria crit = new Criteria();
 		crit.addJoin(STATIONEXITACTIVITY, TWorkflowStationPeer.OBJECTID);
@@ -290,22 +303,24 @@ public class TWorkflowActivityPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading parameterized station exit activities by workflow:" + workflowID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading parameterized station exit activities by workflow:" + workflowID + " failed with " + e.getMessage());
 			return null;
 		}
 	}
 	
+	@Override
 	public Integer save(TWorkflowActivityBean workflowActivityBean) {
 		try {
 			TWorkflowActivity tobject = TWorkflowActivity.createTWorkflowActivity(workflowActivityBean);
 			tobject.save();
 			return tobject.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a workflow activity failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a workflow activity failed with " + e.getMessage());
 			return null;
 		}
 	}
 
+	@Override
 	public void delete(Integer objectID) {
 		ReflectionHelper.delete(deletePeerClasses, deleteFields, objectID);
 	}

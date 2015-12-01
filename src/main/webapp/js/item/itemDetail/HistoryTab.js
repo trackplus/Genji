@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -40,7 +40,7 @@ Ext.define('com.aurel.trackplus.itemDetail.HistoryTab',{
 		//	getText('common.history.lbl.flatHistory.tlt'));
 		var btnGridHistory=me.createViewButton('gridHistory','gridHistory',getText('common.history.lbl.gridHistory'),
 			getText('common.history.lbl.gridHistory.tlt'));
-		if(me.showFlatHistory==true){
+		if(me.showFlatHistory===true){
 			btnGridHistory.pressed=false;
 		}else{
 			btnGridHistory.pressed=true;
@@ -94,11 +94,11 @@ Ext.define('com.aurel.trackplus.itemDetail.HistoryTab',{
 	createChildren:function(){
 		var me=this;
 		var items=[];
-		if(me.showFlatHistory==true){
+		if(me.showFlatHistory===true){
 			me.initFlatPanel();
 			items.push(me.flatPanel);
 		}else{
-			if(me.gridConfig!=null&&me.jsonData!=null&&me.jsonData.gridLayoutData!=null){
+			if(me.gridConfig&&me.jsonData&&me.jsonData.gridLayoutData){
 				var someGrid=me.createGrid.call(me,me.gridConfig,me.jsonData.gridLayoutData);
 				me.gridConfig.grid=someGrid;
 				items.push(someGrid);
@@ -107,7 +107,7 @@ Ext.define('com.aurel.trackplus.itemDetail.HistoryTab',{
 		return items;
 	},
 	createHistoryConfig:function(){
-		if(this.jsonData!=null){
+		if(this.jsonData){
 			this.historyFull=this.jsonData.historyFull;
 			this.showCommentsHistory=this.jsonData.showCommentsHistory;
 			this.showFlatHistory=this.jsonData.showFlatHistory;
@@ -155,9 +155,9 @@ Ext.define('com.aurel.trackplus.itemDetail.HistoryTab',{
 	changeViewMode:function(id){
 		var me=this;
 
-		if(me.showFlatHistory==false){
+		if(me.showFlatHistory===false){
 			me.showFlatHistory=true;
-			if(me.gridConfig.grid!=null){
+			if(me.gridConfig.grid){
 				me.remove(me.gridConfig.grid,true);
 				me.gridConfig.grid=null;
 			}
@@ -166,7 +166,7 @@ Ext.define('com.aurel.trackplus.itemDetail.HistoryTab',{
 			me.refreshFlatHistory();
 		}else{
 			me.showFlatHistory=false;
-			if(me.flatPanel!=null){
+			if(me.flatPanel){
 				me.remove(me.flatPanel);
 				me.flatPanel=null;
 			}
@@ -181,7 +181,7 @@ Ext.define('com.aurel.trackplus.itemDetail.HistoryTab',{
 	},
 	refreshFlatHistory:function(){
 		var me=this;
-		if(me.flatPanel!=null){
+		if(me.flatPanel){
 			me.flatPanel.setLoading(true);
 		}
 		Ext.suspendLayouts();
@@ -195,7 +195,7 @@ Ext.define('com.aurel.trackplus.itemDetail.HistoryTab',{
 				//var responseJson = Ext.decode(response.responseText);
 				//var jsonData=responseJson;
 				me.flatData=response.responseText;
-				if(me.flatPanel!=null){
+				if(me.flatPanel){
 					me.flatPanel.setLoading(false);
 				}
 				me.initFlatPanel();
@@ -213,26 +213,26 @@ Ext.define('com.aurel.trackplus.itemDetail.HistoryTab',{
 		var me=this;
 		var row=grid.getStore().getAt(rowIndex);
 		var dataIndex = grid.getHeaderCt().getHeaderAtIndex(cellIndex).dataIndex;
-		if (dataIndex=="oldValues"&&row.data.oldValuesFull!=null&&row.data.oldValuesFull.length>0){
+		if (dataIndex==="oldValues"&&row.data.oldValuesFull&&row.data.oldValuesFull.length>0){
 			me.showHtmlDetail(getText("common.history.lbl.oldValue"),row.data.oldValuesFull);
 		}
-		if (dataIndex=="newValues"&&
-			row.data['newValuesFull']!=null&&row.data['newValuesFull'].length>0){
+		if (dataIndex==="newValues"&&
+			row.data['newValuesFull']&&row.data['newValuesFull'].length>0){
 			me.showHtmlDetail(getText("common.history.lbl.newValue"),row.data.newValuesFull);
 		}
-		if (dataIndex=="comment"&&
-			row.data.commentFull!=null&&row.data.commentFull.length>0){
+		if (dataIndex==="comment"&&
+			row.data.commentFull&&row.data.commentFull.length>0){
 			me.showHtmlDetail(getText("common.history.lbl.comment"),row.data.commentFull);
 		}
-		if (dataIndex=="diff"&&
-			row.data.diffFull!=null&&row.data.diffFull.length>0){
+		if (dataIndex==="diff"&&
+			row.data.diffFull&&row.data.diffFull.length>0){
 			me.showHtmlDetail(getText("common.history.lbl.comment"),row.data.diffFull);
 		}
 	},
 	win:null,
 	showHtmlDetail:function(title,htmlContent){
 		var me=this;
-		if(me.win!=null){
+		if(me.win){
 			me.win.destroy();
 		}
 		htmlDinamicContent=htmlContent;
@@ -315,7 +315,7 @@ Ext.define('com.aurel.trackplus.itemDetail.HistoryTab',{
 	},
 	refresh:function(){
 		var me=this;
-		if(me.showFlatHistory==true){
+		if(me.showFlatHistory===true){
 			me.refreshFlatHistory();
 		}else{
 			me.callParent();
@@ -323,7 +323,7 @@ Ext.define('com.aurel.trackplus.itemDetail.HistoryTab',{
 	},
 	refreshCallback:function(r,options,success){
 		var me=this;
-		if(success==false){
+		if(success===false){
 			return;
 		}
 		if(me.historyFull){
@@ -353,10 +353,10 @@ Ext.define('com.aurel.trackplus.itemDetail.HistoryTab',{
 	initFlatPanel:function(){
 		var me=this;
 		var html="";
-		if(me.flatData!=null/*&&me.flatData.length>0*/){
+		if(me.flatData/*&&me.flatData.length>0*/){
 			html=me.flatData;
 		}
-		if(me.flatPanel==null){
+		if(CWHF.isNull(me.flatPanel)){
 			me.flatPanel=Ext.create('Ext.Component',{
 				style:{
 					borderTop:'1px solid #D0D0D0'

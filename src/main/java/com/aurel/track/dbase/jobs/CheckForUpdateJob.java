@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -55,6 +55,7 @@ public class CheckForUpdateJob implements Job{
 
 	private static Properties updateProps = new Properties();
 	
+	@Override
 	public void execute(JobExecutionContext context) {
 		LOGGER.debug("execute CheckForUpdateJob...");
 		if (!ClusterBL.getIAmTheMaster()) {
@@ -73,7 +74,7 @@ public class CheckForUpdateJob implements Job{
 				server = server + "/";
 			}
 			String updateUrl = server + jobDataMap.getString("updateUrl") 
-			                   +"?p=" + URLEncoder.encode(ApplicationBean.getApplicationBean().getProperties(), "UTF-8");
+			                   +"?p=" + URLEncoder.encode(ApplicationBean.getInstance().getProperties(), "UTF-8");
 
 			URL url = new URL(updateUrl);
 			URLConnection conn = url.openConnection();
@@ -101,15 +102,14 @@ public class CheckForUpdateJob implements Job{
 			}
 			updateProps = props;
 
-			ApplicationBean.getApplicationBean().setMostActualVersionString(updateProps.getProperty("version"));
-			ApplicationBean.getApplicationBean().setMostActualVersion(new Integer(updateProps.getProperty("app.version")));
+			ApplicationBean.getInstance().setMostActualVersionString(updateProps.getProperty("version"));
+			ApplicationBean.getInstance().setMostActualVersion(new Integer(updateProps.getProperty("app.version")));
 
 		}
 		catch (Exception ex) {
 			LOGGER.info("Could not establish connection to update server. No problem.");
 		}
 		
-		// System.err.println(updateProps.get("versionString"));
 	}
 	
 	public static Properties getUpdateProperties() {

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -65,6 +65,7 @@ public class TWorkItemLinkPeer
 	 * @param objectID
 	 * @return 
 	 */
+	@Override
 	public TWorkItemLinkBean loadByPrimaryKey(Integer objectID){
 		TWorkItemLink link = null;
 		try {
@@ -83,6 +84,7 @@ public class TWorkItemLinkPeer
 	 * Loads all workItemLinkBeans
 	 * @return 
 	 */
+	@Override
 	public List<TWorkItemLinkBean> loadAllIndexable(){
 		Criteria crit = new Criteria();
 		Criterion emptyStringCriterion = crit.getNewCriterion(DESCRIPTION, "", Criteria.NOT_EQUAL);
@@ -91,7 +93,7 @@ public class TWorkItemLinkPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch(Exception e) {
-			LOGGER.error("Loading all links failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all links failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -103,6 +105,7 @@ public class TWorkItemLinkPeer
 	 * @param linkDirection
 	 * @return 
 	 */
+	@Override
 	public List<TWorkItemLinkBean> loadByLinkTypeAndDirection(List<Integer> linkTypeIDs, Integer linkDirection) {
 		if (linkTypeIDs!=null && !linkTypeIDs.isEmpty()) {
 			Criteria criteria = new Criteria();
@@ -122,6 +125,7 @@ public class TWorkItemLinkPeer
 	 * Load all successors for an workItem
 	 * @return 
 	 */
+	@Override
 	public List<TWorkItemLinkBean> loadByWorkItemPred(Integer itemID){
 		Criteria crit = new Criteria();
 		crit.add(LINKPRED, itemID);
@@ -131,7 +135,7 @@ public class TWorkItemLinkPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch(Exception e) {
-			LOGGER.error("Loading links from predecessor item " + itemID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading links from predecessor item " + itemID + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -139,6 +143,7 @@ public class TWorkItemLinkPeer
 	/**
 	 * Load all predecessors for an workItem
 	 */
+	@Override
 	public List<TWorkItemLinkBean> loadByWorkItemSucc(Integer itemID){
 		Criteria crit = new Criteria();
 		crit.add(LINKSUCC, itemID);
@@ -148,7 +153,7 @@ public class TWorkItemLinkPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch(Exception e) {
-			LOGGER.error("Loading all links to successor item "  + itemID + "  failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all links to successor item "  + itemID + "  failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -159,6 +164,7 @@ public class TWorkItemLinkPeer
 	 * @param linkType
 	 * @return
 	 */
+	@Override
 	public List<TWorkItemLinkBean> loadByPredAndLinkType(Integer itemID, Integer linkType, Integer direction) {
 		Criteria crit = new Criteria();
 		crit.add(LINKPRED, itemID);
@@ -170,7 +176,7 @@ public class TWorkItemLinkPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch(Exception e) {
-			LOGGER.error("Loading links from predecessor item " + itemID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading links from predecessor item " + itemID + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -181,6 +187,7 @@ public class TWorkItemLinkPeer
 	 * @param linkType
 	 * @return
 	 */
+	@Override
 	public List<TWorkItemLinkBean> loadBySuccAndLinkType(Integer itemID, Integer linkType, Integer direction) {
 		Criteria crit = new Criteria();
 		crit.add(LINKSUCC, itemID);
@@ -192,11 +199,12 @@ public class TWorkItemLinkPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch(Exception e) {
-			LOGGER.error("Loading all links to successor item "  + itemID + "  failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all links to successor item "  + itemID + "  failed with " + e.getMessage());
 			return null;
 		}
 	}
 	
+	@Override
 	public int countByWorkItem(Integer itemID){
 		return countByWorkItemPred(itemID)+countByWorkItemSucc(itemID);
 	}
@@ -212,7 +220,7 @@ public class TWorkItemLinkPeer
 		try {
 			return ((Record) doSelectVillageRecords(crit).get(0)).getValue(1).asInt();
 		} catch (Exception e) {
-			LOGGER.error("Counting links by workItemID " + itemID +  " failed with " + e.getMessage(), e);
+			LOGGER.error("Counting links by workItemID " + itemID +  " failed with " + e.getMessage());
 			return 0;
 		}
 	}
@@ -228,7 +236,7 @@ public class TWorkItemLinkPeer
 		try {
 			return ((Record) doSelectVillageRecords(crit).get(0)).getValue(1).asInt();
 		} catch (Exception e) {
-			LOGGER.error("Counting links by workItemID " + itemID +  " failed with " + e.getMessage(), e);
+			LOGGER.error("Counting links by workItemID " + itemID +  " failed with " + e.getMessage());
 			return 0;
 		}
 	}
@@ -241,6 +249,7 @@ public class TWorkItemLinkPeer
 	 * @param linkTypeIDs
 	 * @return
 	 */
+	@Override
 	public List<TWorkItemLinkBean> loadLinksOfWorkItems(Integer worItemLinkID,
 			Integer linkPred, Integer linkSucc, List<Integer> linkTypeIDs) {
 		List<TWorkItemLink> itemLinks = new ArrayList<TWorkItemLink>();
@@ -256,36 +265,12 @@ public class TWorkItemLinkPeer
 				itemLinks = doSelect(crit);
 			}
 			catch(Exception e) {
-				LOGGER.error("Loading all links failed with " + e.getMessage(), e);
+				LOGGER.error("Loading all links failed with " + e.getMessage());
 			}
 		}
 		return convertTorqueListToBeanList(itemLinks);
 	}
 	
-	/*public List<TWorkItemLinkBean> getWorkItemLinks(Integer workItemID, Integer[] linkType, Integer direction) {
-		if (linkType!=null && linkType.length>0) {
-			Criteria criteria = new Criteria();
-			criteria.addIn(LINKTYPE, linkType);
-			String column;
-			if (direction==LINK_DIRECTION.LEFT_TO_RIGHT) {
-				column = LINKPRED;
-				criteria.addJoin(LINKSUCC, TWorkItemPeer.WORKITEMKEY);
-			} else {
-				column = LINKSUCC;
-				criteria.addJoin(LINKPRED, TWorkItemPeer.WORKITEMKEY);
-			}
-			CriteriaUtil.addArchivedDeletedFilter(criteria);
-			criteria.add(column, workItemID);
-			criteria.add(LINKDIRECTION, direction);
-			try {
-				return convertTorqueListToBeanList(doSelect(criteria));
-			} catch(Exception e) {
-				LOGGER.error("Loading the workItemLinkBeans by workItemID  " + workItemID + " linkType length " + linkType.length + 
-						" field " + column + " and direction " + direction +  " failed with " + e.getMessage(), e);
-			}
-		}
-		return null;
-	}*/
 	
 	/**
 	 * Load the directly linked workItems
@@ -297,6 +282,7 @@ public class TWorkItemLinkPeer
 	 * @param deleted
 	 * @return
 	 */
+	@Override
 	public List<TWorkItemLinkBean> getWorkItemsOfDirection(int[] workItemIDChunk, 
 			List<Integer> linkTypes, boolean workItemsArePred, Integer direction, Integer archived, Integer deleted) {
 		Criteria criteria = new Criteria();
@@ -332,6 +318,7 @@ public class TWorkItemLinkPeer
 	 * @param direction
 	 * @return
 	 */
+	@Override
 	public List<TWorkItemLinkBean> getLinkedItems(int[] predChunk, int[] succChunk, Integer linkType, Integer direction) {
 		Criteria criteria = new Criteria();
 		if (predChunk==null || predChunk.length==0 || succChunk==null || succChunk.length==0) {
@@ -355,6 +342,7 @@ public class TWorkItemLinkPeer
 	 * @param workItemIDs base set of workItemIDs 
 	 * @return
 	 */
+	@Override
 	public List<TWorkItemLinkBean> loadByWorkItems(int[] workItemIDs) {
 		List<TWorkItemLinkBean> workItemLinksList = new ArrayList<TWorkItemLinkBean>();
 		if (workItemIDs==null || workItemIDs.length==0) {
@@ -420,6 +408,7 @@ public class TWorkItemLinkPeer
 	 * @param personID
 	 * @return
 	 */
+	@Override
 	public List<TWorkItemLinkBean> loadTreeFilterLinks(FilterUpperTO filterUpperTO, RACIBean raciBean, Integer personID) {
 		Integer[] selectedProjects = filterUpperTO.getSelectedProjects();
 		if (selectedProjects==null  || selectedProjects.length==0) {
@@ -431,7 +420,7 @@ public class TWorkItemLinkPeer
 		try {
 			return getFilterLinks(critPred, critSucc);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the links for tree filter failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the links for tree filter failed with " + e.getMessage());
 			return new ArrayList<TWorkItemLinkBean>();
 		}
 	}
@@ -444,13 +433,14 @@ public class TWorkItemLinkPeer
 	 * @param errors
 	 * @return
 	 */
+	@Override
 	public List<TWorkItemLinkBean> loadTQLFilterLinks(String tqlExpression, TPersonBean personBean, Locale locale, List<ErrorData> errors) {
 		Criteria critPred = TqlBL.createCriteria(tqlExpression, personBean, locale, errors);
 		Criteria critSucc = TqlBL.createCriteria(tqlExpression, personBean, locale, errors);
 		try {
 			return getFilterLinks(critPred, critSucc);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the links for TQL filter " + tqlExpression + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the links for TQL filter " + tqlExpression + " failed with " + e.getMessage());
 			return new ArrayList<TWorkItemLinkBean>();
 		}
 	}
@@ -474,7 +464,7 @@ public class TWorkItemLinkPeer
 			try {
 				workItemLinksBeanList.addAll(convertTorqueListToBeanList(doSelect(crit)));
 			} catch (TorqueException e) {
-				LOGGER.error("Error while getting link beans: " + e.getMessage(), e);
+				LOGGER.error("Error while getting link beans: " + e.getMessage());
 			}
 		}
 		return workItemLinksBeanList;
@@ -484,6 +474,7 @@ public class TWorkItemLinkPeer
 	 * Gets the sort order column name 
 	 * @return
 	 */
+	@Override
 	public String getSortOrderColumn() {
 		return "SORTORDER";
 	}
@@ -492,6 +483,7 @@ public class TWorkItemLinkPeer
 	 * Returns the table name
 	 * @return
 	 */
+	@Override
 	public String getTableName() {
 		return TABLE_NAME;
 	}
@@ -501,6 +493,7 @@ public class TWorkItemLinkPeer
 	 * @param workItemLinkBean
 	 * @return the created optionID
 	 */
+	@Override
 	public Integer save(TWorkItemLinkBean workItemLinkBean){
 		try {
 			TWorkItemLink tWorkItemLink = BaseTWorkItemLink.createTWorkItemLink(workItemLinkBean);
@@ -509,7 +502,7 @@ public class TWorkItemLinkPeer
 			workItemLinkBean.setObjectID(objectID);
 			return objectID;
 		} catch (Exception e) {
-			LOGGER.error("Saving of a link failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a link failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -518,6 +511,7 @@ public class TWorkItemLinkPeer
 	 * Deletes a workItemLinkBean
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID){
 		Criteria crit = new Criteria();
 		crit.add(OBJECTID, objectID);

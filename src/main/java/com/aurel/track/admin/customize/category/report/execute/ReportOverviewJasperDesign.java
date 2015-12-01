@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -37,6 +37,7 @@ import java.util.Set;
 import javax.servlet.ServletException;
 
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -232,7 +233,6 @@ public class ReportOverviewJasperDesign {
 		LayoutTO layoutTO = NavigatorLayoutBL.loadLayout(personBean, locale, queryType,	queryID, true);
 		List<ColumnFieldTO> columnFields = layoutTO.getColumnFields();
 		List<GroupFieldTO> groupFields = layoutTO.getGroupFields();	
-		//SortFieldTO sortField = layoutTO.getSortField();
 		String viewID = NavigatorLayoutBL.getSavedItemFilterView(queryID, queryType);
 		if (viewID==null || "".equals(viewID)) {
 			viewID = personBean.getLastSelectedView();
@@ -389,16 +389,12 @@ public class ReportOverviewJasperDesign {
 				}
 			}
 		}
-		/*if (sortField != null) {
-			layoutFields.add(sortField);
-		}*/
 		addFields(layoutFields, jasperDesign, isGrid);
 		// add the groups, group variables and group bands
 		addGroupsWithVariablesAndBands(groupFields, locale, jasperDesign, isGrid);
 		// add the other bands
 		addBands(columnFields, jasperDesign, isGrid, locale);
 		// the data source should be already sorted because sorting them here in report would destroy the item hierarchy
-		//addSortOrder(jasperDesign, sortField);
 		// set report query
 		JRDesignQuery query = new JRDesignQuery();
 		query.setLanguage("xPath");
@@ -431,7 +427,8 @@ public class ReportOverviewJasperDesign {
 			try {
 				jasperDesign.addSortField(new JRDesignSortField(sortFieldName, SortFieldTypeEnum.FIELD, sortOrderEnum));
 			} catch (JRException e) {
-				LOGGER.warn("Adding the sort field " + sortFieldName + " for sorting failed with " + e.getMessage(), e);
+				LOGGER.warn("Adding the sort field " + sortFieldName + " for sorting failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 	}
@@ -444,157 +441,177 @@ public class ReportOverviewJasperDesign {
 	private static void loadSizesFromFile() {
 		PropertiesConfiguration properties= null;
 		try {
-			properties = HandleHome.getProperties(HandleHome.PDF_EXCEL_EXPORT_FILE, ApplicationBean.getApplicationBean().getServletContext());
+			properties = HandleHome.getProperties(HandleHome.PDF_EXCEL_EXPORT_FILE, ApplicationBean.getInstance().getServletContext());
 		} catch (ServletException e) {
 			LOGGER.info("Getting the " + HandleHome.PDF_EXCEL_EXPORT_FILE + " configutartions failed with " + e.getMessage());
 		}
-		/*Properties properties = new Properties();
-		InputStream inputStream = ReportOverviewJasperDesign.class.getResourceAsStream("ReportOverviewJasperDesign.properties");
-		try {
-			properties.load(inputStream);
-		} catch (IOException e) {
-			LOGGER.warn("Loading the ReportOverviewJasperDesign.properties from classpath failed with " + e.getMessage(), e);
-			return;
-		}*/
 		try {
 			pageWidth = properties.getInt("pageWidth", 842);
 		} catch (Exception e) {
-			LOGGER.warn("Loading the pageWidth failed with " + e.getMessage(), e);
+			LOGGER.warn("Loading the pageWidth failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		try {
 			pageHeight = properties.getInt("pageHeight", 585);
 		} catch (Exception e) {
-			LOGGER.warn("Loading the pageHeight failed with " + e.getMessage(), e);
+			LOGGER.warn("Loading the pageHeight failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		try {
 			leftMargin = properties.getInt("leftMargin", 30);
 		} catch (Exception e) {
-			LOGGER.warn("Loading the leftMargin failed with " + e.getMessage(), e);
+			LOGGER.warn("Loading the leftMargin failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		try {
 			rightMargin = properties.getInt("rightMargin", 30);
 		} catch (Exception e) {
-			LOGGER.warn("Loading the rightMargin failed with " + e.getMessage(), e);
+			LOGGER.warn("Loading the rightMargin failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		columnWidth = pageWidth - leftMargin - rightMargin;
 		try {
 			topMargin = properties.getInt("topMargin", 20);
 		} catch (Exception e) {
-			LOGGER.warn("Loading the topMargin failed with " + e.getMessage(), e);
+			LOGGER.warn("Loading the topMargin failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		try {
 			bottomMargin = properties.getInt("bottomMargin", 20);
 		} catch (Exception e) {
-			LOGGER.warn("Loading the bottomMargin failed with " + e.getMessage(), e);
+			LOGGER.warn("Loading the bottomMargin failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 
 		try {
 			groupTextFirstLeftPadding = properties.getInt("groupTextFirstLeftPadding", 5);
 		} catch (Exception e) {
-			LOGGER.warn("Loading the groupTextFirstLeftPadding failed with " + e.getMessage(), e);
+			LOGGER.warn("Loading the groupTextFirstLeftPadding failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		try {
 			groupTextLeftPaddingPace = properties.getInt("groupTextLeftPaddingPace", 20);
 		} catch (Exception e) {
-			LOGGER.warn("Loading the groupTextLeftPaddingPace failed with " + e.getMessage(), e);
+			LOGGER.warn("Loading the groupTextLeftPaddingPace failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		try {
 			imageTopPadding = properties.getInt("imageTopPadding", 2);
 		} catch (Exception e) {
-			LOGGER.warn("Loading the imageTopPadding failed with " + e.getMessage(), e);
+			LOGGER.warn("Loading the imageTopPadding failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		try {
 			imageBottomPadding = properties.getInt("imageBottomPadding", 2);
 		} catch (Exception e) {
-			LOGGER.warn("Loading the imageBottomPadding failed with " + e.getMessage(), e);
+			LOGGER.warn("Loading the imageBottomPadding failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		try {
 			textLeftPadding = properties.getInt("textLeftPadding", 3);
 		} catch (Exception e) {
-			LOGGER.warn("Loading the textLeftPadding failed with " + e.getMessage(), e);
+			LOGGER.warn("Loading the textLeftPadding failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		try {
 			textRightPadding = properties.getInt("textRightPadding", 0);
 		} catch (Exception e) {
-			LOGGER.warn("Loading the textRightPadding failed with " + e.getMessage(), e);
+			LOGGER.warn("Loading the textRightPadding failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 
 		try {
 			issueOverdueIconWidth = properties.getInt("issueOverdueIconWidth", 35);
 		} catch (Exception e) {
-			LOGGER.warn("Loading the issueOverdueIconWidth failed with " + e.getMessage(), e);
+			LOGGER.warn("Loading the issueOverdueIconWidth failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		try {
 			budgetExpenseUnitWidth = properties.getInt("budgetExpenseUnitWidth", 35);
 		} catch (Exception e) {
-			LOGGER.warn("Loading the budgetExpenseUnitWidth failed with " + e.getMessage(), e);
+			LOGGER.warn("Loading the budgetExpenseUnitWidth failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 
 		try {
 			detailBandHeight = properties.getInt("detailBandHeight", 13);
 		} catch (Exception e) {
-			LOGGER.warn("Loading the detailBandHeight failed with " + e.getMessage(), e);
+			LOGGER.warn("Loading the detailBandHeight failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		try {
 			groupBandHeight = properties.getInt("groupBandHeight", 13);
 		} catch (Exception e) {
-			LOGGER.warn("Loading the groupBandHeight failed with " + e.getMessage(), e);
+			LOGGER.warn("Loading the groupBandHeight failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		try {
 			pageHeaderBandHeight = properties.getInt("pageHeaderBandHeight", 13);
 		} catch (Exception e) {
-			LOGGER.warn("Loading the pageHeaderBandHeight failed with " + e.getMessage(), e);
+			LOGGER.warn("Loading the pageHeaderBandHeight failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		try {
 			detailFontSize = properties.getInt("detailFontSize", 9);
 		} catch (Exception e) {
-			LOGGER.warn("Loading the detailFontSize failed with " + e.getMessage(), e);
+			LOGGER.warn("Loading the detailFontSize failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		try {
 			groupFontSize = properties.getInt("groupFontSize", 9);
 		} catch (Exception e) {
-			LOGGER.warn("Loading the groupFontSize failed with " + e.getMessage(), e);
+			LOGGER.warn("Loading the groupFontSize failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		try {
 			pageHeaderFontSize = properties.getInt("pageHeaderFontSize", 9);
 		} catch (Exception e) {
-			LOGGER.warn("Loading the pageHeaderFontSize failed with " + e.getMessage(), e);
+			LOGGER.warn("Loading the pageHeaderFontSize failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 
 		try {
 			scalingFactor = properties.getDouble("scalingFactor", 0.85);
 		} catch (Exception e) {
-			LOGGER.warn("Loading the scalingFactor failed with " + e.getMessage(), e);
+			LOGGER.warn("Loading the scalingFactor failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		try {
 			longFieldWidthGrid = properties.getInt("longFieldWidthGrid", 500);
 		} catch (Exception e) {
-			LOGGER.warn("Loading the longFieldWidthGrid failed with " + e.getMessage(), e);
+			LOGGER.warn("Loading the longFieldWidthGrid failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		try {
 			longFieldIsPlain = properties.getBoolean("longFieldIsPlain", true);
 		} catch (Exception e) {
-			LOGGER.warn("Loading the longFieldIsPlain failed with " + e.getMessage(), e);
+			LOGGER.warn("Loading the longFieldIsPlain failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		try {
 			defaultFieldWidth = properties.getInt("defaultFieldWidth", 150);
 		} catch (Exception e) {
-			LOGGER.warn("Loading the defaultFieldWidth failed with " + e.getMessage(), e);
+			LOGGER.warn("Loading the defaultFieldWidth failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		try {
 			showImageInGrid = properties.getBoolean("showImageInGrid", false);
 		} catch (Exception e) {
-			LOGGER.warn("Loading the showImageInGrid failed with " + e.getMessage(), e);
+			LOGGER.warn("Loading the showImageInGrid failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		try {
 			showAllFieldsInGrid = properties.getBoolean("showAllFieldsInGrid", false);
 		} catch (Exception e) {
-			LOGGER.warn("Loading the showAllFieldsInGrid failed with " + e.getMessage(), e);
+			LOGGER.warn("Loading the showAllFieldsInGrid failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		try {
 			logo = properties.getString("logo", "trackLogo.png").trim();
 		} catch (Exception e) {
-			LOGGER.warn("Loading the logo failed with " + e.getMessage(), e);
+			LOGGER.warn("Loading the logo failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
+			
 		}
 	}
 
@@ -682,7 +699,8 @@ public class ReportOverviewJasperDesign {
 		try {
 			jasperDesign.addParameter(parameter);
 		} catch (JRException e) {
-			LOGGER.error("Adding the parameter BASE_URL to jasperDesign failed with " + e.getMessage(), e);
+			LOGGER.error("Adding the parameter BASE_URL to jasperDesign failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		parameter = new JRDesignParameter();
 		parameter.setName(JasperReportExporter.REPORT_PARAMETERS.DYNAMIC_ICONS_URL);
@@ -690,7 +708,8 @@ public class ReportOverviewJasperDesign {
 		try {
 			jasperDesign.addParameter(parameter);
 		} catch (JRException e) {
-			LOGGER.error("Adding the parameter DYNAMIC_ICONS_URL to jasperDesign failed with " + e.getMessage(), e);
+			LOGGER.error("Adding the parameter DYNAMIC_ICONS_URL to jasperDesign failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		parameter = new JRDesignParameter();
 		parameter.setName(JasperReportExporter.REPORT_PARAMETERS.LOGO_FOLDER_URL);
@@ -698,7 +717,8 @@ public class ReportOverviewJasperDesign {
 		try {
 			jasperDesign.addParameter(parameter);
 		} catch (JRException e) {
-			LOGGER.error("Adding the parameter LOGO_FOLDER to jasperDesign failed with " + e.getMessage(), e);
+			LOGGER.error("Adding the parameter LOGO_FOLDER to jasperDesign failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 	}
 
@@ -727,7 +747,8 @@ public class ReportOverviewJasperDesign {
 				try {
 					jasperDesign.addField(unitField);
 				} catch (JRException e) {
-					LOGGER.error("Adding the unit field for " + fieldID + " to jasperDesign failed with " + e.getMessage(), e);
+					LOGGER.error("Adding the unit field for " + fieldID + " to jasperDesign failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 			} else {
 				jsDesignfield.setDescription(fieldName);
@@ -735,7 +756,8 @@ public class ReportOverviewJasperDesign {
 			try {
 				jasperDesign.addField(jsDesignfield);
 			} catch (JRException e) {
-				LOGGER.error("Adding the field " + fieldID + " to jasperDesign failed with " + e.getMessage(), e);
+				LOGGER.error("Adding the field " + fieldID + " to jasperDesign failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 			if (ReportBeansToXML.hasExtraSortField(fieldID)) {
 				JRDesignField jsDesignFieldSortOrder = new JRDesignField();
@@ -746,7 +768,8 @@ public class ReportOverviewJasperDesign {
 				try {
 					jasperDesign.addField(jsDesignFieldSortOrder);
 				} catch (JRException e) {
-					LOGGER.error("Adding the sort field for " + fieldID + " to jasperDesign failed with " + e.getMessage(), e);
+					LOGGER.error("Adding the sort field for " + fieldID + " to jasperDesign failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 			}
 		}
@@ -760,7 +783,8 @@ public class ReportOverviewJasperDesign {
 		try {
 			jasperDesign.addField(jsDesignField);
 		} catch (JRException e) {
-			LOGGER.error("Adding the field " + TReportLayoutBean.PSEUDO_COLUMN_NAMES.COMMITTED_DATE_CONFLICT + " to jasperDesign failed with " + e.getMessage(), e);
+			LOGGER.error("Adding the field " + TReportLayoutBean.PSEUDO_COLUMN_NAMES.COMMITTED_DATE_CONFLICT + " to jasperDesign failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		// target date conflict
 		jsDesignField = new JRDesignField();
@@ -770,7 +794,8 @@ public class ReportOverviewJasperDesign {
 		try {
 			jasperDesign.addField(jsDesignField);
 		} catch (JRException e) {
-			LOGGER.error("Adding the field " + TReportLayoutBean.PSEUDO_COLUMN_NAMES.TARGET_DATE_CONFLICT + " to jasperDesign failed with " + e.getMessage(), e);
+			LOGGER.error("Adding the field " + TReportLayoutBean.PSEUDO_COLUMN_NAMES.TARGET_DATE_CONFLICT + " to jasperDesign failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		// planned value conflict
 		jsDesignField = new JRDesignField();
@@ -780,7 +805,8 @@ public class ReportOverviewJasperDesign {
 		try {
 			jasperDesign.addField(jsDesignField);
 		} catch (JRException e) {
-			LOGGER.error("Adding the field " + TReportLayoutBean.PSEUDO_COLUMN_NAMES.PLANNED_VALUE_CONFLICT + " to jasperDesign failed with " + e.getMessage(), e);
+			LOGGER.error("Adding the field " + TReportLayoutBean.PSEUDO_COLUMN_NAMES.PLANNED_VALUE_CONFLICT + " to jasperDesign failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		// budget conflict
 		jsDesignField = new JRDesignField();
@@ -790,7 +816,8 @@ public class ReportOverviewJasperDesign {
 		try {
 			jasperDesign.addField(jsDesignField);
 		} catch (JRException e) {
-			LOGGER.error("Adding the field " + TReportLayoutBean.PSEUDO_COLUMN_NAMES.BUDGET_CONFLICT + " to jasperDesign failed with " + e.getMessage(), e);
+			LOGGER.error("Adding the field " + TReportLayoutBean.PSEUDO_COLUMN_NAMES.BUDGET_CONFLICT + " to jasperDesign failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		// status flag
 		jsDesignField = new JRDesignField();
@@ -800,7 +827,8 @@ public class ReportOverviewJasperDesign {
 		try {
 			jasperDesign.addField(jsDesignField);
 		} catch (JRException e) {
-			LOGGER.error("Adding the field " + TReportLayoutBean.PSEUDO_COLUMN_NAMES.STATUS_FLAG + " to jasperDesign failed with " + e.getMessage(), e);
+			LOGGER.error("Adding the field " + TReportLayoutBean.PSEUDO_COLUMN_NAMES.STATUS_FLAG + " to jasperDesign failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		// archived flag
 		jsDesignField = new JRDesignField();
@@ -810,10 +838,10 @@ public class ReportOverviewJasperDesign {
 		try {
 			jasperDesign.addField(jsDesignField);
 		} catch (JRException e) {
-			LOGGER.error("Adding the field " + TReportLayoutBean.PSEUDO_COLUMN_NAMES.ARCHIVE_LEVEL + " to jasperDesign failed with " + e.getMessage(), e);
+			LOGGER.error("Adding the field " + TReportLayoutBean.PSEUDO_COLUMN_NAMES.ARCHIVE_LEVEL + " to jasperDesign failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		// if issueNumber is present we need also indent level
-		// if (layoutAndGroupFieldIDs.contains(SystemFields.INTEGER_ISSUENO)) {
 		// indent level
 		jsDesignField = new JRDesignField();
 		jsDesignField.setName(TReportLayoutBean.PSEUDO_COLUMN_NAMES.INDENT_LEVEL);
@@ -822,7 +850,8 @@ public class ReportOverviewJasperDesign {
 		try {
 			jasperDesign.addField(jsDesignField);
 		} catch (JRException e) {
-			LOGGER.error("Adding the field " + TReportLayoutBean.PSEUDO_COLUMN_NAMES.INDENT_LEVEL + " to jasperDesign failed with " + e.getMessage(), e);
+			LOGGER.error("Adding the field " + TReportLayoutBean.PSEUDO_COLUMN_NAMES.INDENT_LEVEL + " to jasperDesign failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 	}
 
@@ -901,7 +930,8 @@ public class ReportOverviewJasperDesign {
 				try {
 					jasperDesign.addGroup(group);
 				} catch (JRException e) {
-					LOGGER.error("Adding the group " + fieldName + " failed with " + e.getMessage(), e);
+					LOGGER.error("Adding the group " + fieldName + " failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 			}
 		}
@@ -1092,7 +1122,7 @@ public class ReportOverviewJasperDesign {
 		Calendar calendar = new GregorianCalendar();
 		calendar.setTime(new Date());
 		rightExpression.setText("\" (C) " + calendar.get(Calendar.YEAR) + " \" + $R{" +
-		ApplicationBean.getApplicationBean().getLicenseHolder() + " - " + RESOURCE_KEYS.RIGHTS + "}");
+		ApplicationBean.getInstance().getLicenseHolder() + " - " + RESOURCE_KEYS.RIGHTS + "}");
 		rightText.setExpression(rightExpression);
 		band.addElement(rightText);
 		JRDesignTextField pageText = new JRDesignTextField();
@@ -1424,7 +1454,8 @@ public class ReportOverviewJasperDesign {
 			}
 			jasperDesign.addStyle(headerStyle);
 		} catch (Exception e) {
-			LOGGER.error("Adding the JRDesignStyles failed with " + e.getMessage(), e);
+			LOGGER.error("Adding the JRDesignStyles failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 	}
 }

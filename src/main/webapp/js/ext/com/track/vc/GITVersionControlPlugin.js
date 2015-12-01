@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -71,8 +71,8 @@ Ext.define("js.ext.com.track.vc.GITVersionControlPlugin",{
 			bodyBorder:false,
 			bodyPadding:'0 0 5 0'
 		});
-		if(authentication!="anonymus"){
-			if(authentication=="password"){
+		if(authentication!=="anonymus"){
+			if(authentication==="password"){
 				me.panelAccess.add(me.txtPassword);
 			}else{
 				me.panelAccess.add(me.panelPpk);
@@ -116,13 +116,13 @@ Ext.define("js.ext.com.track.vc.GITVersionControlPlugin",{
 		var me=this;
 		var checkedArr = radioGroup.getChecked();
 		var checkedRadio;
-		if (checkedArr.length==1) {
+		if (checkedArr.length===1) {
 			checkedRadio = checkedArr[0];
 			var value=checkedRadio.getSubmitValue();
-			var usingAnonymus=(value=='anonymus');
+			var usingAnonymus=(value==='anonymus');
 			me.panelAccess.removeAll();
 			if(!usingAnonymus){
-				var usingPassword = (value=='password');
+				var usingPassword = (value==='password');
 				if(usingPassword){
 					me.initTxtPassword();
 					me.panelAccess.add(me.txtPassword);
@@ -131,20 +131,20 @@ Ext.define("js.ext.com.track.vc.GITVersionControlPlugin",{
 					me.panelAccess.add(me.panelPpk);
 				}
 			}
-			me.panelAccess.doLayout();
+			me.panelAccess.updateLayout();
 		}
 	},
 	postProcessDataLoad:function(data){
 		var me=this;
 		me.callParent(arguments);
 		var authentication=data['vcmap.authentication'];
-		var usingPassword = (authentication=='password');
+		var usingPassword = (authentication==='password');
 		if(usingPassword){
 			me.txtPassword.setValue(data['vcmap.password']);
 		}else{
 			me.txtPassphrase.setValue(data['vcmap.passphrase']);
 			me.txtPpk.setValue(data['vcmap.privateKey']);
 		}
-		me.panelAccess.doLayout();
+		me.panelAccess.updateLayout();
 	}
 });

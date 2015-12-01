@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -21,16 +21,16 @@
 /* $Id:$ */
 
 
-Ext.define('com.trackplus.admin.customize.ReportConfig',
-	{
+Ext.define('com.trackplus.admin.customize.ReportConfig', {
 	    extend : 'com.trackplus.admin.TreeDetail',
-	    config : {},
-	    baseAction : 'reportConfig',
+	    config : {
+	    	repCfgLayout: null
+	    },
+	    baseAction : "reportConfig",
 	    folderAction : "categoryConfig",
 	    btnExecute : null,
 	    confirmDeleteEntity : true,
 	    confirmDeleteNotEmpty : true,
-	    leafDetailUrl : null,
 	    entityID : 'node',
 	    folderEditWidth : 400,
 	    folderEditHeight : 115,
@@ -58,11 +58,10 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 	    statics : {},
 
 	    constructor : function(config) {
-	        var config = config || {};
-	        this.initialConfig = config;
-	        Ext.apply(this, config);
+	        var cfg = config || {};
+			this.initConfig(cfg);
 	        this.btnExecute = "common.btn.executeReport";
-	        this.init();
+	        this.initBase();
 	    },
 
 	    initActions : function() {
@@ -133,14 +132,13 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 	    getDataViewPanelData : function(parameters) {
 	        var me = this;
 	        Ext.Ajax.request({
-	            url : this.getStrutsBaseAction({
+	            url : this.getNodeBaseAction({
 	                isLeaf : false
 	            }) + '!loadList.action',
 	            params : this.params,
 	            success : function(result) {
 	                var jsonData = Ext.decode(result.responseText);
 	                me.centerDataViewDataArrived(jsonData);
-
 	            },
 	            failure : function() {
 	            },
@@ -211,19 +209,19 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 	        var mosaicTmpl = new Ext.XTemplate(
 	                '<tpl for=".">',
 	                '<div class="mosaicDiv">',
-	                '<tpl if="leaf==true">',
+	                '<tpl if="leaf===true">',
 	                '<a class="example-image-link" href="reportDatasource!showPreviewImage.action?templateID={templateID}&leaf={leaf}&iconCls={iconCls}" data-lightbox="example-set">',
 	                '<img class = "mosaicImageReport" src="reportDatasource!showPreviewImage.action?templateID={templateID}&leaf={leaf}" />',
 	                '<p class = "titeLabel" >{text}/{typeLabel}</p>',
 	                '</a>',
 	                '</tpl>',
 
-	                '<tpl if="leaf==false">',
-	                '<tpl if="iconCls==\'projects-ticon\'">',
+	                '<tpl if="leaf===false">',
+	                '<tpl if="iconCls===\'projects-ticon\'">',
 	                '<img class = "mosaicImageFolder" src="reportDatasource!showPreviewImage.action?templateID={templateID}&leaf={leaf}&iconCls={iconCls}" />',
 	                '<p class = "titeLabel">{text}</p>',
 	                '</tpl>',
-	                '<tpl if="iconCls==\'folder\'">',
+	                '<tpl if="iconCls===\'folder\'">',
 	                '<img class = "mosaicImageFolder" src="reportDatasource!showPreviewImage.action?templateID={templateID}&leaf={leaf}&iconCls={iconCls}" />',
 	                '<p class = "titeLabel">{text}</p>', '</tpl>', '</tpl>', '</div>', '</tpl>',
 	                '<div class="x-clear"></div>');
@@ -256,12 +254,17 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 	        me.initDraDrop();
 
 	        this.centerPanel = this.dataView;
-	        if (this.replaceCenterPanel != null) {
+	        if (this.replaceCenterPanel) {
 	            this.replaceCenterPanel.call(this, this.centerPanel);
 	        } else {
 	            this.mainPanel.add(this.centerPanel);
 	        }
 	    },
+
+		replaceCenterPanel:function(centerPanel){
+			var me = this;
+			me.getRepCfgLayout().borderLayoutController.setCenterContent.call(me.getRepCfgLayout().borderLayoutController, centerPanel);
+		},
 
 	    initDraDrop : function() {
 	        var me = this;
@@ -352,7 +355,7 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 	    },
 
 	    dataViewDropIsAllowed : function(nodeFrom, nodeTo) {
-	        if (nodeTo.leaf || nodeTo.node == nodeFrom.node) {
+	        if (nodeTo.leaf || nodeTo.node === nodeFrom.node) {
 	            return false;
 	        }
 	        return true;
@@ -364,7 +367,7 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 	    onDataViewChange : function(view, selections) {
 	        this.enableDisableToolbarButtons(view, selections);
 	        var selectedRow = null;
-	        if (selections != null && selections.length > 0) {
+	        if (selections  && selections.length > 0) {
 	            selectedRow = selections[0];
 	            this.selectedRecord = selections[0];
 	            this.selectedRecords = selections;
@@ -377,10 +380,10 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 		 */
 	    onTreeNodeLoad : function(treeStore, node) {
 	        var me = this;
-	        if (node.isRoot() && this.projectID == null) {
+	        if (node.isRoot() && CWHF.isNull(this.projectID)) {
 	            for ( var ind in node.childNodes) {
 	                // Load and expand public reports
-	                if (node.childNodes[ind].data.id == "report_2") {
+	                if (node.childNodes[ind].data.id === "report_2") {
 	                    treeStore.load({
 	                        node : node.childNodes[ind],
 	                        callback : function() {
@@ -397,13 +400,13 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 	    },
 
 	    enableDisableToolbarButtons : function(view, arrSelections) {
-	        if (arrSelections == null || arrSelections.length == 0) {
+	        if (CWHF.isNull(arrSelections) || arrSelections.length === 0) {
 	            this.actionDeleteGridRow.setDisabled(true);
 	            this.actionEditGridRow.setDisabled(true);
 	            this.actionExecuteGridRow.setDisabled(true);
 	            this.actionDownloadGridRow.setDisabled(true);
 	        } else {
-	            if (arrSelections.length == 1) {
+	            if (arrSelections.length === 1) {
 	                var selectedRecord = arrSelections[0];
 	                var isLeaf = selectedRecord.data.leaf;
 	                var modifiable = selectedRecord.data.modifiable;
@@ -490,7 +493,7 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 		 */
 	    onTreeNodeDblClick : function(view, record) {
 	        var readOnly = record.data['readOnly'];
-	        if (readOnly == null || readOnly == false) {
+	        if (CWHF.isNull(readOnly) || readOnly === false) {
 	            this.onEditTreeNode();
 	        }
 	    },
@@ -508,7 +511,7 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 	    onAddEdit : function(title, record, operation, isLeaf, add, fromTree, loadParams, submitParams,
 	            refreshParams, refreshParamsFromResult) {
 	        var recordData = null;
-	        if (record != null) {
+	        if (record ) {
 	            recordData = record.data;
 	        }
 	        var width = this.getEditWidth(recordData, isLeaf, add, fromTree, operation);
@@ -533,14 +536,10 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 	        var preSubmitProcess = this.getEditPreSubmitProcess(recordData, isLeaf, add);
 	        var items = this.getPanelItems(recordData, isLeaf, add, fromTree, operation);
 	        var additionalActions = this.getAdditionalActions(recordData, submitParams, operation, items);
-	        if (additionalActions != null) {
+	        if (additionalActions ) {
 	            additionalActions.push(submit);
 	            submit = additionalActions;
 	        }
-
-	        // TODO do we need?
-	        // this.formEdit = this.createEditForm(recordData,
-			// operation);
 	        var windowParameters = {
 	            title : title,
 	            width : width,
@@ -552,7 +551,7 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 	            preSubmitProcess : preSubmitProcess
 	        };
 	        var extraWindowParameters = this.getExtraWindowParameters(recordData, operation);
-	        if (extraWindowParameters != null) {
+	        if (extraWindowParameters ) {
 	            for (propertyName in extraWindowParameters) {
 	                windowParameters[propertyName] = extraWindowParameters[propertyName];
 	            }
@@ -585,7 +584,7 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 	        var reloadParams = this.getAddReloadParamsAfterSave(false);
 	        var reloadParamsFromResult = this.getAddSelectionAfterSaveFromResult();
 	        var selectedRecord = this.getSingleSelectedRecord(true);
-	        if (selectedRecord == null) {
+	        if (CWHF.isNull(selectedRecord)) {
 	            selectedRecord = this.tree.getRootNode();
 	        }
 	        return this.onAddEdit(title, selectedRecord, operation, false, true, true, loadParams,
@@ -606,7 +605,7 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 	        var reloadParams = this.getAddReloadParamsAfterSave(true);
 	        var reloadParamsFromResult = this.getAddSelectionAfterSaveFromResult();
 	        var selectedRecord = this.getSingleSelectedRecord(true);
-	        if (selectedRecord == null) {
+	        if (CWHF.isNull(selectedRecord)) {
 	            selectedRecord = this.tree.getRootNode();
 	        }
 	        return this.onAddEdit(title, selectedRecord, operation, true, true, true, loadParams,
@@ -626,18 +625,18 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 	    downloadReport : function(fromTree) {
 	        if (fromTree) {
 	            var recordData = this.getSingleSelectedRecordData(fromTree);
-	            if (recordData != null) {
+	            if (recordData ) {
 	                var leaf = this.selectedIsLeaf(fromTree);
 	                var node = this.getRecordID(recordData, {
 	                    fromTree : fromTree
 	                });
-	                attachmentURI = this.baseAction + '!download.action?node=' + node;
+	                attachmentURI = this.getBaseAction() + '!download.action?node=' + node;
 	                window.open(attachmentURI);
 	            }
 	        } else {
 	            var leaf = this.selectedRecord.data.leaf;
 	            var node = this.selectedRecord.data.templateIDLong;
-	            attachmentURI = this.baseAction + '!download.action?node=' + node;
+	            attachmentURI = this.getBaseAction() + '!download.action?node=' + node;
 	            window.open(attachmentURI);
 	        }
 	    },
@@ -648,7 +647,7 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 		getDeleteUrlBase: function(extraConfig) {
 			return "categoryConfig";
 		},
-		
+
 	    /**
 		 * Delete handler for deleting from the tree
 		 */
@@ -675,7 +674,7 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 	            obj.data = this.selectedRecords[0];
 	            selectedRecords = this.selectedRecords;
 	        }
-	        if (selectedRecords != null) {
+	        if (selectedRecords ) {
 	            var isLeaf = this.selectedIsLeaf(fromTree);
 	            var extraConfig = {
 	                fromTree : fromTree,
@@ -719,7 +718,7 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 	        var selectionIsSimple = this.selectionIsSimple(false);
 	        var actions = this.getContextMenuActions(record, selectionIsSimple, false);
 
-	        if (actions != null && actions.length > 0) {
+	        if (actions  && actions.length > 0) {
 	            var treeNodeCtxMenu = this.createContextMenu(record, actions);
 	            this.adjustContextMenuText(treeNodeCtxMenu, record, false);
 	            treeNodeCtxMenu.showAt(evtObj.getXY());
@@ -771,7 +770,7 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 	    onExecute : function(fromTree) {
 	        if (fromTree) {
 	            var recordData = this.getSingleSelectedRecordData(fromTree);
-	            if (recordData != null) {
+	            if (recordData ) {
 	                var leaf = this.selectedIsLeaf(fromTree);
 	                var node = this.getRecordID(recordData, {
 	                    fromTree : fromTree
@@ -801,7 +800,7 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 	    getEntityLabel : function(extraConfig) {
 	        var entityLabel = null;
 	        var isLeaf = true;
-	        if (extraConfig != null) {
+	        if (extraConfig ) {
 	            isLeaf = extraConfig.isLeaf;
 	        }
 	        if (isLeaf) {
@@ -815,7 +814,7 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 		 * The label for the save button
 		 */
 	    getSaveLabel : function(operation) {
-	        if (operation == "instant") {
+	        if (operation === "instant") {
 	            return getText(this.btnExecute);
 	        } else {
 	            return getText('common.btn.save');
@@ -828,7 +827,7 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 		 * the config
 		 */
 	    getLeafDetailUrl : function() {
-	        return this.folderAction + '!leafDetail.action';
+	        return this.getFolderAction() + '!leafDetail.action';
 	    },
 
 	    /**
@@ -919,7 +918,7 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 			 * , fromIssueNavigator:this.fromIssueNavigator
 			 */
 	        };
-	        if (this.projectID != null) {
+	        if (this.projectID ) {
 	            // in project configuration
 	            extraParams["projectID"] = this.projectID;
 	        }
@@ -959,8 +958,8 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 		 */
 	    getToolbarActionChangesForTreeNodeSelect : function(selectedNode) {
 	        var canAddChild = false;
-	        if (selectedNode != null) {
-	            if (this.projectID != null && selectedNode.isRoot()) {
+	        if (selectedNode ) {
+	            if (this.projectID  && selectedNode.isRoot()) {
 	                // after initializing the project specific
 					// branch for issue filter and report:
 	                // although in the filter/report tree no node is
@@ -1012,7 +1011,7 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 
 	    selectedIsLeaf : function(fromTree) {
 	        var lastSelectedRecord = this.getLastSelected(fromTree);
-	        if (lastSelectedRecord != null) {
+	        if (lastSelectedRecord ) {
 	            if (fromTree) {
 	                return lastSelectedRecord.isLeaf();
 	            } else {
@@ -1026,19 +1025,19 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 		 * Get the refresh parameters after delete
 		 */
 	    getReloadParamsAfterDelete : function(selectedRecords, extraConfig, responseJson) {
-	        if (selectedRecords != null) {
+	        if (selectedRecords ) {
 	            // we suppose that only one selection is allowed in
 				// tree
 	            var selNode = selectedRecords;
-	            if (selNode != null) {
+	            if (selNode ) {
 	                var parentNode = null;
 	                var parentNodeID = null;
-	                if (extraConfig != null) {
+	                if (extraConfig ) {
 	                    fromTree = extraConfig.fromTree;
 	                    if (fromTree) {
 		                    // delete from tree
 		                    parentNode = selNode.parentNode;
-		                    if (parentNode != null) {
+		                    if (parentNode ) {
 			                    parentNodeID = parentNode.data.id;
 			                    // select the parent of the deleted
 								// node for reload and select
@@ -1057,7 +1056,7 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 								// parent of the selected tree node
 								// should be reloaded
 			                    var parentNode = this.selectedNode.parentNode;
-			                    if (parentNode != null) {
+			                    if (parentNode ) {
 				                    // the parent of the edited node
 									// should be reloaded
 				                    return {
@@ -1084,12 +1083,12 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 		 * Get the node to reload after save after add operation
 		 */
 	    /* protected */getAddReloadParamsAfterSave : function(addLeaf) {
-	        if (this.selectedNode != null) {
+	        if (this.selectedNode ) {
 	            var leaf = this.selectedNode.data['leaf'];
 	            if (leaf) {
 	                // selected node is leaf: add to a leaf
 	                var parentNode = this.selectedNode.parentNode;
-	                if (parentNode != null) {
+	                if (parentNode ) {
 	                    if (addLeaf) {
 		                    // add leaf to a leaf -> means add
 							// sibling -> the parent of the
@@ -1105,7 +1104,7 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 		                    // (from tree context menu it is not
 							// possible, only from toolbar)
 		                    var parentNode = parentNode.parentNode;
-		                    if (parentNode != null) {
+		                    if (parentNode ) {
 			                    return {
 				                    nodeIDToReload : parentNode.data['id']
 			                    };
@@ -1122,7 +1121,7 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 					 * } else { //add folder when a folder is
 					 * selected var parentNode =
 					 * this.selectedNode.parentNode; if
-					 * (parentNode!=null) { return {nodeIDToReload:
+					 * (parentNode) { return {nodeIDToReload:
 					 * parentNode.data['id']}; } }
 					 */
 	            }
@@ -1160,7 +1159,7 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 		 * based on the structure of the "node")
 		 */
 	    getEditUrl : function(isLeaf) {
-	        return this.getStrutsBaseAction({
+	        return this.getNodeBaseAction({
 	            isLeaf : isLeaf
 	        }) + '!edit.action';
 	    },
@@ -1169,18 +1168,18 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 		 * Url for saving of an entity
 		 */
 	    getSaveUrl : function(isLeaf) {
-	        return this.getStrutsBaseAction({
+	        return this.getNodeBaseAction({
 	            isLeaf : isLeaf
 	        }) + '!save.action';
 	    },
 
 	    getEditPreSubmitProcess : function(recordData, isLeaf, add) {
 	        if (isLeaf) {
-	            if (this.getEditLeafPreSubmitProcess != null) {
+	            if (this.getEditLeafPreSubmitProcess ) {
 	                return this.getEditLeafPreSubmitProcess(recordData, add);
 	            }
 	        } else {
-	            if (this.getEditFolderPreSubmitProcess != null) {
+	            if (this.getEditFolderPreSubmitProcess ) {
 	                return this.getEditFolderPreSubmitProcess(recordData, add);
 	            }
 	        }
@@ -1211,7 +1210,7 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 		 * "leaf" but for more leaf types it can be customized
 		 */
 	    getExtraWindowParameters : function(recordData, operation) {
-	        if (operation == "addLeaf") {
+	        if (operation === "addLeaf") {
 	            // only by add (by edit no upload)
 	            return {
 	                fileUpload : true,
@@ -1271,7 +1270,8 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 	                    "reportFile", {
 	                        disabled : !modifiable,
 	                        allowBlank : false,
-	                        labelWidth : this.labelWidth
+	                        labelWidth : this.labelWidth,
+	                        itemId     : "reportFile"
 	                    }));
 	        }
 	        return windowItems;
@@ -1303,11 +1303,11 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 		 * Get the node to reload after save after edit operation
 		 */
 	    getEditReloadParamsAfterSave : function(fromTree) {
-	        if (this.selectedNode != null) {
+	        if (this.selectedNode ) {
 	            if (fromTree) {
 	                // edited/copied from tree
 	                var parentNode = this.selectedNode.parentNode;
-	                if (parentNode != null) {
+	                if (parentNode ) {
 	                    // the parent of the edited node should be
 						// reloaded
 	                    return {
@@ -1321,7 +1321,7 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 						// selected tree node should be reloaded
 
 	                    var parentNode = this.selectedNode.parentNode;
-	                    if (parentNode != null) {
+	                    if (parentNode ) {
 		                    // the parent of the edited node should
 							// be reloaded
 		                    return {
@@ -1404,7 +1404,7 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 	                }
 	                actions.push(this.actionCopyTreeNode);
 	            }
-	            if (canAddChild && this.cutCopyNode != null) {
+	            if (canAddChild && this.cutCopyNode ) {
 	                actions.push(this.actionPasteTreeNode);
 	            }
 	        }
@@ -1431,7 +1431,7 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 		 */
 	    getRecordID : function(recordData, extraConfig) {
 	        var fromTree = null;
-	        if (extraConfig != null) {
+	        if (extraConfig ) {
 	            fromTree = extraConfig.fromTree;
 	        }
 	        if (fromTree) {
@@ -1463,7 +1463,7 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 	    },
 
 	    getDragDropBaseAction : function(draggedNodeIsLeaf) {
-	        return this.folderAction;
+	        return this.getFolderAction();
 	    },
 
 	    /**
@@ -1486,13 +1486,13 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 	            disableCaching : true,
 	            success : function(response) {
 	                var responseJson = Ext.decode(response.responseText);
-	                if (responseJson.success == true) {
+	                if (responseJson.success === true) {
 	                    me.reload({
 	                        nodeIDToReload : nodeTo.data["id"],
 	                        nodeIDToSelect : nodeTo.data["id"]
 	                    });
 	                } else {
-	                    if (responseJson.errorMessage != null) {
+	                    if (responseJson.errorMessage ) {
 	                        // no right to delete
 	                        Ext.MessageBox.alert(this.failureTitle, responseJson.errorMessage)
 	                    }
@@ -1503,6 +1503,10 @@ Ext.define('com.trackplus.admin.customize.ReportConfig',
 	            },
 	            method : "POST"
 	        });
+	    },
+
+	    isTreeSplitOn: function() {
+	    	return false;
 	    }
 
 	});

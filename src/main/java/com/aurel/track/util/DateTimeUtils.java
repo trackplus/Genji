@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -28,7 +28,7 @@
 //
 // Author: Joerg Friedrich <joerg.friedrich@computer.org>
 //
-// $Id: DateTimeUtils.java 1359 2015-09-15 16:15:32Z tamas $
+// $Id: DateTimeUtils.java 1795 2015-11-12 12:07:18Z friedric $
 
 package com.aurel.track.util;
 
@@ -58,7 +58,6 @@ import org.joda.time.Days;
  * @author Joerg Friedrich <joerg.friedrich@computer.org>
  * @author tamas ruff <tamas.ruff@ambo.ro> heavily refactorized to
  * cache the DateFormats and avoid the expensive  locale specific fetching all the time
- * @version $Revision: 1359 $ $Date: 2014-05-19 12:25:38 +0200 (Mo, 19 Mai 2014) $
  */
 public class DateTimeUtils implements Serializable {
 
@@ -77,14 +76,6 @@ public class DateTimeUtils implements Serializable {
 
 	private static final Logger LOGGER = LogManager.getLogger(DateTimeUtils.class);
 
-//	static {
-//		gmtCalendar = Calendar.getInstance();
-//		gmtCalendar.set(Calendar.ZONE_OFFSET, 0);
-//		isoDateTimeFormat = new SimpleDateFormat(ISO_DATE_TIME_FORMAT);
-//		isoDateTimeFormat.setCalendar(gmtCalendar);
-//		isoDateFormat = new SimpleDateFormat(ISO_DATE_FORMAT);
-//		isoDateFormat.setCalendar(gmtCalendar);
-//	}
 
 	//the singleton instance
 	private static DateTimeUtils instance;
@@ -137,7 +128,6 @@ public class DateTimeUtils implements Serializable {
 			// at the GUI, present local times respecting time zone of Server
 			// of course, would be better to respect time zone of current
 			// user, but this would have to be configured for each user
-			// this.currentLocale = cLocale;
 			TimeZone tzone = TimeZone.getDefault();
 			Calendar calendar = Calendar.getInstance(tzone, locale);
 			DateFormat guiDateTimeFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.LONG, locale);
@@ -280,7 +270,7 @@ public class DateTimeUtils implements Serializable {
 			dateFormatsBean = getDateFormatsByLocale(locale);
 			date = dateFormatsBean.getShortDateTimeFormat().parse(guiDateTime);
 		} catch (Exception e) {
-			LOGGER.warn(e.getMessage(), e);
+			LOGGER.warn(e.getMessage());
 			LOGGER.warn("Pattern should be " + dateFormatsBean.getShortDateTimeFormat().format(new Date()));
 		}
 		return date;
@@ -611,7 +601,6 @@ public class DateTimeUtils implements Serializable {
 	 */
 	private static String javaToExtJsMonths(String s) {
 		s = s.replaceAll("MM", "m");
-		//s = s.replaceAll("M", "n");
 		s = s.replaceAll("M", "m");
 		return s;
 	}
@@ -625,7 +614,6 @@ public class DateTimeUtils implements Serializable {
 	 */
 	private static String javaToExtJsDays(String s) {
 		s = s.replaceAll("dd", "d");
-		//s = s.replaceAll("d", "j");
 		s = s.replaceAll("d", "d");
 		return s;
 	}
@@ -643,7 +631,6 @@ public class DateTimeUtils implements Serializable {
 	private static String javaToExtJsHours(String s) {
 		s = s.replaceAll("hh", "H");//
 		s = s.replaceAll("HH", "H");
-		//s = s.replaceAll("h(.)", "G"+"$1");
 		s = s.replaceAll("h", "H");
 		return s;
 	}
@@ -807,7 +794,6 @@ public class DateTimeUtils implements Serializable {
 		DateTime dateTime2 = new DateTime(getZeroTimeDate(endDateParam));
 		int i=0;
 		if (onlyWorkdays) {
-			//boolean isFirst = true;
 			while (dateTime1.isBefore(dateTime2)) {
 				dateTime1 = dateTime1.plusDays(1);
 				int dayOfWeek = dateTime1.getDayOfWeek();
@@ -825,22 +811,7 @@ public class DateTimeUtils implements Serializable {
 		        			i = i+2;
 		        		}
 		        	}
-		        	/*if (isFirst) {
-						dayOfWeek = dateTime1.getDayOfWeek();
-						//start on Saturday or Sunday
-						if (dayOfWeek==1 || dayOfWeek==6) {
-							i++;
-							dateTime1 = dateTime1.plusDays(1);
-							if (dateTime1.isBefore(dateTime2)) {
-								i++;
-							}
-						} else {
-							//start on Sunday
-							i++;
-						}
-					}*/
 		        }
-				//isFirst = false;
 			}
 			return i;
 		} else {

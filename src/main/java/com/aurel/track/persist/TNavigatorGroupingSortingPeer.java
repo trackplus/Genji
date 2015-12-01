@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -52,6 +52,7 @@ public class TNavigatorGroupingSortingPeer
 	 * @param navigatorLayoutID
 	 * @return
 	 */
+	@Override
 	public List<TNavigatorGroupingSortingBean> loadByLayout(Integer navigatorLayoutID) {
 		Criteria crit = new Criteria();
 		crit.add(NAVIGATORLAYOUT, navigatorLayoutID);
@@ -59,7 +60,7 @@ public class TNavigatorGroupingSortingPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading grouping/sorting for layout "+ navigatorLayoutID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading grouping/sorting for layout "+ navigatorLayoutID + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -68,6 +69,7 @@ public class TNavigatorGroupingSortingPeer
 	 * @param navigatorLayoutID
 	 * @return
 	 */
+	@Override
 	public List<TNavigatorGroupingSortingBean> loadSortingByLayout(Integer navigatorLayoutID) {
 		Criteria crit = new Criteria();
 		crit.add(NAVIGATORLAYOUT, navigatorLayoutID);
@@ -75,7 +77,7 @@ public class TNavigatorGroupingSortingPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading sorting for layout "+ navigatorLayoutID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading sorting for layout "+ navigatorLayoutID + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -85,6 +87,7 @@ public class TNavigatorGroupingSortingPeer
 	 * @param navigatorGroupingSortingBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TNavigatorGroupingSortingBean navigatorGroupingSortingBean) {
 		try {
 			TNavigatorGroupingSorting navigatorGroupingSorting = BaseTNavigatorGroupingSorting.createTNavigatorGroupingSorting(navigatorGroupingSortingBean);
@@ -104,6 +107,7 @@ public class TNavigatorGroupingSortingPeer
 	 * @param  objectID
 	 * @return
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		Criteria crit = new Criteria();
 		crit.add(OBJECTID, objectID);
@@ -119,6 +123,7 @@ public class TNavigatorGroupingSortingPeer
 	 * @param layoutID
 	 * @return
 	 */
+	@Override
 	public void deleteByLayout(Integer layoutID) {
 		Criteria crit = new Criteria();
 		crit.add(NAVIGATORLAYOUT, layoutID);

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -26,6 +26,7 @@ package com.aurel.track.fieldType.bulkSetters;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -52,6 +53,7 @@ public class ParentBulkSetter extends AbstractBulkSetter {
 	 * the control for rendering the bulk value
 	 * @return
 	 */
+	@Override
 	public String getSetterValueControlClass() {
 		switch (relation) {
 		case BulkRelations.SET_TO:
@@ -84,6 +86,7 @@ public class ParentBulkSetter extends AbstractBulkSetter {
 		return stringBuilder.toString();
 	}
 
+	@Override
 	public Object fromDisplayString(Map<String, String> displayStringMap, Locale locale) {
 		if (displayStringMap == null) {
 			return null;
@@ -97,7 +100,6 @@ public class ParentBulkSetter extends AbstractBulkSetter {
 				} catch (NumberFormatException ex) {
 					LOGGER.info("Parsing the parentID " + displayString + " failed with ");
 				}
-				//displayString = StringEscapeUtils.escapeXml(displayString);
 			}
 		}
 		return null;
@@ -122,7 +124,8 @@ public class ParentBulkSetter extends AbstractBulkSetter {
 		try {
 			parentID = (Integer)value;
 		} catch (Exception e) {
-			LOGGER.debug("Getting the string value for " + value +  " failed with " + e.getMessage(), e);
+			LOGGER.info("Getting the string value for " + value +  " failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		switch (getRelation()) {
 		case BulkRelations.SET_TO:
@@ -148,26 +151,4 @@ public class ParentBulkSetter extends AbstractBulkSetter {
 	 * @param strValue
 	 * @return
 	 */
-	/*private static Integer getFirstNumber(String strValue) {
-		if (strValue==null || "".equals(strValue)) {
-			return null;
-		}
-		StringBuffer strBuff = new StringBuffer();
-		char c;
-		for (int i = 0; i < strValue.length() ; i++) {
-			c = strValue.charAt(i);
-			if (Character.isDigit(c)) {
-				strBuff.append(c); 
-			} else {
-				break;
-			}
-		}
-		if (strBuff.length()>0) {
-			try {
-				return Integer.valueOf(strBuff.toString());
-			} catch (Exception e) {
-			}
-		} 
-		return null;
-	}*/
 }

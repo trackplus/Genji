@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -38,7 +38,7 @@ import com.opensymphony.xwork2.ActionSupport;
 
 /**
  * Implementation of <strong>Action</strong> that processes errors before login.
- * $Id: LogonErrorAction.java 1229 2015-08-15 10:23:23Z friedric $
+ * $Id: LogonErrorAction.java 1669 2015-10-26 07:41:25Z friedric $
  */
 public final class LogonErrorAction extends ActionSupport implements
 		SessionAware {
@@ -80,6 +80,7 @@ public final class LogonErrorAction extends ActionSupport implements
 		return session;
 	}
 
+	@Override
 	public void setSession(Map session) {
 		this.session = session;
 	}

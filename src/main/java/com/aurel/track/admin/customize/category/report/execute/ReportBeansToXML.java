@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -42,6 +42,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.DOMException;
@@ -98,13 +99,15 @@ public class ReportBeansToXML {
 			transformer.setOutputProperty (OutputKeys.ENCODING,"UTF-8");
 			transformer.setOutputProperty ("{http://xml.apache.org/xslt}indent-amount", "4");
 		} catch (TransformerConfigurationException e){
-			LOGGER.error ("Creating the transformer failed with TransformerConfigurationException: " + e.getMessage(), e);
+			LOGGER.error ("Creating the transformer failed with TransformerConfigurationException: " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			return;
 		}
 		try{
 			transformer.transform (new DOMSource(dom), new StreamResult(outputStream));
 		} catch (TransformerException e){
-			LOGGER.error ("Transform failed with TransformerException: " + e.getMessage(), e);
+			LOGGER.error ("Transform failed with TransformerException: " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 	}
 
@@ -112,17 +115,19 @@ public class ReportBeansToXML {
 
 	public Document convertToDOM(List<ReportBean> items, boolean withHistory, Locale locale, 
 			String personName, String filterName, String filterExpression, boolean useProjectSpecificID) {
-		boolean budgetActive = ApplicationBean.getApplicationBean().getBudgetActive();
+		boolean budgetActive = ApplicationBean.getInstance().getBudgetActive();
 		Document dom = null;
 		try{
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder ();
 			dom = builder.newDocument ();	
 		}catch (FactoryConfigurationError e){
-			LOGGER.error ("Creating the DOM document failed with FactoryConfigurationError:" + e.getMessage(), e);
+			LOGGER.error ("Creating the DOM document failed with FactoryConfigurationError:" + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			return null;
 		}catch (ParserConfigurationException e){
-			LOGGER.error ("Creating the DOM document failed with ParserConfigurationException: " + e.getMessage(), e);
+			LOGGER.error ("Creating the DOM document failed with ParserConfigurationException: " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			return null;
 		}
 		Element root = dom.createElement ("track-report");
@@ -427,7 +432,8 @@ public class ReportBeansToXML {
 			}
 		} catch (Exception e) {
 			LOGGER.error("Adding the computed value for " + elementName + 
-					" and value " + valueAndMeasurementUnit + " failed with " + e.getMessage(), e);
+					" and value " + valueAndMeasurementUnit + " failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 	}
 	

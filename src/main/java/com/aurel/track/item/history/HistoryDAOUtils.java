@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -72,7 +72,6 @@ public class HistoryDAOUtils {
 	 * @param valueType
 	 */
 	public static Integer updateFieldChange(TFieldChangeBean fieldChangeBean, Object newValue, int valueType) throws ItemPersisterException {
-		//if (fieldChangeID!=null) {
 			//TFieldChangeBean fieldChangeBean = FieldChangeBL.loadByPrimaryKey(fieldChangeID);
 			if (fieldChangeBean!=null) {
 				Object oldValue = getSpecificNewAttribute(fieldChangeBean, valueType);
@@ -89,7 +88,6 @@ public class HistoryDAOUtils {
 					return FieldChangeBL.save(fieldChangeBean);
 				}
 			}	
-		//}
 		return null;
 	}
 	
@@ -212,7 +210,7 @@ public class HistoryDAOUtils {
 			try {
 				newBooleanAttribute = (Boolean)newValue;
 			} catch (Exception e) {
-				LOGGER.warn("Wrong attribute type for new boolean " + e.getMessage(), e);
+				LOGGER.warn("Wrong attribute type for new boolean " + e.getMessage());
 			}		
 			if (newBooleanAttribute!=null && newBooleanAttribute.booleanValue()==true) {
 				fieldChangeBean.setNewCharacterValue(BooleanFields.TRUE_VALUE);			
@@ -223,7 +221,7 @@ public class HistoryDAOUtils {
 			try {
 				oldBooleanAttribute = (Boolean)oldValue;
 			} catch (Exception e) {
-				LOGGER.warn("Wrong attribute type for old boolean " + e.getMessage(), e);
+				LOGGER.warn("Wrong attribute type for old boolean " + e.getMessage());
 			}		
 			if (oldBooleanAttribute!=null && oldBooleanAttribute.booleanValue()==true) {
 				fieldChangeBean.setOldCharacterValue(BooleanFields.TRUE_VALUE);			
@@ -236,14 +234,14 @@ public class HistoryDAOUtils {
 			try {
 				newCustomOptionAttribute = (Integer)newValue;
 			} catch (Exception e) {
-				LOGGER.warn("Wrong attribute type for new custom option " + e.getMessage(), e);
+				LOGGER.warn("Wrong attribute type for new custom option " + e.getMessage());
 			}		
 			fieldChangeBean.setNewCustomOptionID(newCustomOptionAttribute);
 			Integer oldCustomOptionAttribute = null;
 			try {
 				oldCustomOptionAttribute = (Integer)oldValue;
 			} catch (Exception e) {
-				LOGGER.warn("Wrong attribute type for old custom option " + e.getMessage(), e);
+				LOGGER.warn("Wrong attribute type for old custom option " + e.getMessage());
 			}		
 			fieldChangeBean.setOldCustomOptionID(oldCustomOptionAttribute);
 			break;
@@ -253,14 +251,14 @@ public class HistoryDAOUtils {
 			try {
 				newDateAttribute = (Date)newValue;
 			} catch (Exception e) {
-				LOGGER.warn("Wrong attribute type for new date option " + e.getMessage(), e);
+				LOGGER.warn("Wrong attribute type for new date option " + e.getMessage());
 			}		
 			fieldChangeBean.setNewDateValue(newDateAttribute);
 			Date oldDateAttribute = null;
 			try {
 				oldDateAttribute = (Date)oldValue;
 			} catch (Exception e) {
-				LOGGER.warn("Wrong attribute type for old date option " + e.getMessage(), e);
+				LOGGER.warn("Wrong attribute type for old date option " + e.getMessage());
 			}		
 			fieldChangeBean.setOldDateValue(oldDateAttribute);
 			break;
@@ -269,14 +267,14 @@ public class HistoryDAOUtils {
 			try {
 				newDoubleAttribute = (Double)newValue;
 			} catch (Exception e) {
-				LOGGER.warn("Wrong attribute type for new double option " + e.getMessage(), e);
+				LOGGER.warn("Wrong attribute type for new double option " + e.getMessage());
 			}
 			fieldChangeBean.setNewDoubleValue(newDoubleAttribute);
 			Double oldDoubleAttribute = null;
 			try {
 				oldDoubleAttribute = (Double)oldValue;
 			} catch (Exception e) {
-				LOGGER.warn("Wrong attribute type for old double option " + e.getMessage(), e);
+				LOGGER.warn("Wrong attribute type for old double option " + e.getMessage());
 			}
 			fieldChangeBean.setOldDoubleValue(oldDoubleAttribute);
 			break;
@@ -287,7 +285,7 @@ public class HistoryDAOUtils {
 				newIntegerAttribute = (Integer)newValue;
 			}	
 			catch (Exception e) {
-				LOGGER.warn("Wrong attribute type for new integer option " + e.getMessage(), e);
+				LOGGER.warn("Wrong attribute type for new integer option " + e.getMessage());
 			}
 			fieldChangeBean.setNewIntegerValue(newIntegerAttribute);
 			Integer oldIntegerAttribute = null;
@@ -295,7 +293,7 @@ public class HistoryDAOUtils {
 				oldIntegerAttribute = (Integer)oldValue;
 			}	
 			catch (Exception e) {
-				LOGGER.warn("Wrong attribute type for old integer option " + e.getMessage(), e);
+				LOGGER.warn("Wrong attribute type for old integer option " + e.getMessage());
 			}
 			fieldChangeBean.setOldIntegerValue(oldIntegerAttribute);
 			break;
@@ -305,7 +303,7 @@ public class HistoryDAOUtils {
 			try {
 				newLongTextAttribute = (String)newValue;
 			} catch (Exception e) {
-				LOGGER.warn("Wrong attribute type new longTextAttribute " + e.getMessage(), e);
+				LOGGER.warn("Wrong attribute type new longTextAttribute " + e.getMessage());
 			}
 			if (newLongTextAttribute!=null && newLongTextAttribute.length()>maximalLength) {
 				LOGGER.debug("New long text is of length " + newLongTextAttribute.length() + " and will be cut to length " + maximalLength);				
@@ -316,7 +314,7 @@ public class HistoryDAOUtils {
 			try {
 				oldLongTextAttribute = (String)oldValue;
 			} catch (Exception e) {
-				LOGGER.warn("Wrong attribute type old longTextAttribute " + e.getMessage(), e);
+				LOGGER.warn("Wrong attribute type old longTextAttribute " + e.getMessage());
 			}
 			if (oldLongTextAttribute!=null && oldLongTextAttribute.length()>maximalLength) {
 				LOGGER.debug("Old long text is of length " + oldLongTextAttribute.length() + " and will be cut to length " + maximalLength);
@@ -329,14 +327,14 @@ public class HistoryDAOUtils {
 			try {
 				newSystemOptionAttribute = (Integer)newValue;
 			} catch (Exception e) {
-				LOGGER.warn("Wrong attribute type for new system option " + e.getMessage(), e);
+				LOGGER.warn("Wrong attribute type for new system option " + e.getMessage());
 			}		
 			fieldChangeBean.setNewSystemOptionID(newSystemOptionAttribute);
 			Integer oldSystemOptionAttribute = null;
 			try {
 				oldSystemOptionAttribute = (Integer)oldValue;
 			} catch (Exception e) {
-				LOGGER.warn("Wrong attribute type for old system option " + e.getMessage(), e);
+				LOGGER.warn("Wrong attribute type for old system option " + e.getMessage());
 			}		
 			fieldChangeBean.setOldSystemOptionID(oldSystemOptionAttribute);
 			break;
@@ -345,7 +343,7 @@ public class HistoryDAOUtils {
 			try {
 				newShortTextAttribute = (String)newValue;
 			} catch (Exception e) {
-				LOGGER.warn("Wrong attribute type new shortTextAttribute " + e.getMessage(), e);
+				LOGGER.warn("Wrong attribute type new shortTextAttribute " + e.getMessage());
 			}
 			if (newShortTextAttribute!=null && newShortTextAttribute.length()>255) {
 				LOGGER.debug("New short text is of length " + newShortTextAttribute.length() + " and will be cut to length " + 255);
@@ -356,7 +354,7 @@ public class HistoryDAOUtils {
 			try {
 				oldShortTextAttribute = (String)oldValue;
 			} catch (Exception e) {
-				LOGGER.warn("Wrong attribute type old shortTextAttribute " + e.getMessage(), e);
+				LOGGER.warn("Wrong attribute type old shortTextAttribute " + e.getMessage());
 			}
 			if (oldShortTextAttribute!=null && oldShortTextAttribute.length()>255) {
 				LOGGER.debug("Old short text is of length " + oldShortTextAttribute.length() + " and will be cut to length " + 255);
@@ -367,12 +365,5 @@ public class HistoryDAOUtils {
 		}
 	}
 
-	/*public static Integer saveHistoryTransaction(Integer workItemID, Integer personID) {
-		THistoryTransactionBean historyTransactionBean = new THistoryTransactionBean();
-		historyTransactionBean.setWorkItem(workItemID);
-		historyTransactionBean.setChangedByID(personID);
-		historyTransactionBean.setLastEdit(new Date());
-		return HistorySaverBL.historyTransactionDAO.save(historyTransactionBean);
-	}*/
 
 }

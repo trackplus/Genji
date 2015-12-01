@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -52,9 +52,11 @@ public class AuthenticationItemNavigator
 	private static final long serialVersionUID = 340L;
 	private static final Logger LOGGER = LogManager.getLogger(AuthenticationItemNavigator.class);
 
+	@Override
 	public void destroy() {
 	}
 
+	@Override
 	public void init() {
 	}
 	
@@ -65,6 +67,7 @@ public class AuthenticationItemNavigator
 	 *	In case of a CLIENT user from Teamgeist the procedure is allowed
 	 * 
 	 */
+	@Override
 	public String intercept(ActionInvocation actionInvocation) throws Exception {
 		//get the actual request
 		HttpServletRequest request = ServletActionContext.getRequest();
@@ -80,7 +83,7 @@ public class AuthenticationItemNavigator
 			ActionContext.getContext().setSession(session);
 		}
 		TPersonBean personBean = (TPersonBean) session.get(Constants.USER_KEY);
-		if (personBean == null&& ApplicationBean.getApplicationBean().getSiteBean()!=null) {
+		if (personBean == null&& ApplicationBean.getInstance().getSiteBean()!=null) {
 			if (!BypassLoginHelper.loginAsGuest(request, session)) {
 				boolean fromAjax=false;
 				try {

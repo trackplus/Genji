@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -120,25 +120,21 @@ public class MyItemsBL {
 		}
 		List<ReportBean> responsibleItems = null;
 		if (showResponsibles) {
-			//responsibleItems = PredefinedQueryBL.getReportBeans(personBean, PredefinedQueryBL.PREDEFINED_QUERY.RESPONSIBLES_ITEMS, projectOrReleaseID, entityFlag, locale);
 			responsibleItems = FilterExecuterFacade.getSavedFilterReportBeanList(PredefinedQueryBL.PREDEFINED_QUERY.RESPONSIBLES_ITEMS,
 					locale, personBean, false, new LinkedList<ErrorData>(), projectOrReleaseID, entityFlag, false, false, false, true, true, true, false, false, false);
 		}
 		List<ReportBean> managerItems = null;
 		if (showManager) {
-			//managerItems = PredefinedQueryBL.getReportBeans(personBean, PredefinedQueryBL.PREDEFINED_QUERY.MANAGERS_ITEMS, projectOrReleaseID, entityFlag, locale);
 			managerItems = FilterExecuterFacade.getSavedFilterReportBeanList(PredefinedQueryBL.PREDEFINED_QUERY.MANAGERS_ITEMS,
 					locale, personBean, false, new LinkedList<ErrorData>(), projectOrReleaseID, entityFlag, false, false, false, true, true, true, false, false, false);
 		}
 		List<ReportBean> authorItems = null;
 		if (showOriginator) {
-			//authorItems = PredefinedQueryBL.getReportBeans(personBean, PredefinedQueryBL.PREDEFINED_QUERY.AUTHOR_ITEMS, projectOrReleaseID, entityFlag, locale);
 			authorItems = FilterExecuterFacade.getSavedFilterReportBeanList(PredefinedQueryBL.PREDEFINED_QUERY.AUTHOR_ITEMS,
 					locale, personBean, false, new LinkedList<ErrorData>(), projectOrReleaseID, entityFlag, false, false, false, true, true, true, false, false, false);
 		}
 		List<ReportBean> watcherItems = null;
 		if (showWatchers) {
-			//watcherItems = PredefinedQueryBL.getReportBeans(personBean, PredefinedQueryBL.PREDEFINED_QUERY.WATCHER_ITEMS, projectOrReleaseID, entityFlag, locale);
 			watcherItems = FilterExecuterFacade.getSavedFilterReportBeanList(PredefinedQueryBL.PREDEFINED_QUERY.WATCHER_ITEMS,
 					locale, personBean, false, new LinkedList<ErrorData>(), projectOrReleaseID, entityFlag, false, false, false, true, true, true, false, false, false);
 		}
@@ -342,10 +338,6 @@ public class MyItemsBL {
 	 * @param releaseID
 	 * @return
 	 */
-	/*private static List<ReportBean> getWatcherIssues(Integer personID, Locale locale, Integer projectID, Integer releaseID) {
-		List<TWorkItemBean> workItems= ItemBL2.loadConsInfWorkItems(personID, projectID, releaseID);
-		return LoadItemIDListItems.getReportBeansByWorkItemsList(workItems, personID, locale);
-	}*/
 	
 	public List<MyItemsProjSummaryBean> getProjResponsibleItemsSum() {
 		return projResponsibleItemsSum;

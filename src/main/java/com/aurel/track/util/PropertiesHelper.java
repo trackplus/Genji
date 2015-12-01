@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -51,7 +51,7 @@ public class PropertiesHelper {
 						propertiesString.getBytes()));
 			}
 			catch (Exception e) {
-				LOGGER.warn("Loading the propertiesString " + propertiesString + " failed with " + e.getMessage(), e);
+				LOGGER.warn("Loading the propertiesString " + propertiesString + " failed with " + e.getMessage());
 			}
 		}
 		return properties;
@@ -123,7 +123,7 @@ public class PropertiesHelper {
 		try {
 			return Integer.valueOf(strProperty);
 		} catch(Exception e) {
-			LOGGER.warn("Converting the property " + strProperty + " to integer failed with " + e.getMessage(), e);
+			LOGGER.warn("Converting the property " + strProperty + " to integer failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -261,21 +261,7 @@ public class PropertiesHelper {
 	public static String setProperty(String propertiesString, String thePropertyName, String thePropertyValue) {
 		Properties properties = getProperties(propertiesString);
 		setProperty(properties, thePropertyName, thePropertyValue);
-		/*if(thePropertyValue==null){
-			properties.remove(thePropertyName);
-		}else{
-			properties.setProperty(thePropertyName, thePropertyValue);
-		}*/
 		return serializeProperties(properties);
-		/*try {
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			properties.store(bos,"Genji Preferences");
-			propertiesString = bos.toString();
-		}
-		catch (Exception e) {
-			LOGGER.warn("problem with saving preferences " + e.getMessage(), e);
-		}
-		return propertiesString;*/
 	}
 	
 	/**
@@ -291,7 +277,7 @@ public class PropertiesHelper {
 			propertiesString = bos.toString();
 		}
 		catch (Exception e) {
-			LOGGER.warn("problem with saving preferences " + e.getMessage(), e);
+			LOGGER.warn("problem with saving preferences " + e.getMessage());
 		}
 		return propertiesString;
 	}
@@ -405,7 +391,7 @@ public class PropertiesHelper {
 			propertiesString = bos.toString();
 		}
 		catch (Exception e) {
-			LOGGER.warn("problem with saving preferences " + e.getMessage(), e);
+			LOGGER.warn("problem with saving preferences " + e.getMessage());
 		}
 		return propertiesString;
 	}

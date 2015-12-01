@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -32,6 +32,7 @@ import java.util.SortedMap;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -163,6 +164,7 @@ public abstract class CustomCompositeBaseRT extends AbstractFieldTypeRT implemen
 	 * 			- key: fieldID_parameterCode
 	 * 			- value: attributeValueBean or list of attributeValueBeans (for multiple selects) 	
 	 */
+	@Override
 	public void processLoad(Integer fieldID, Integer parameterCode, TWorkItemBean workItemBean, Map<String, Object> attributeValueMap) {
 		ICustomFieldTypeRT customFieldTypeRT;
 		Integer localParameterCode;	
@@ -230,6 +232,7 @@ public abstract class CustomCompositeBaseRT extends AbstractFieldTypeRT implemen
 	 * @param workItemBeanOriginal
 	 * @param fieldChangeBean the existing TFieldChange entry (for editing/deleting comments, and updating history changes in the last x minutes)
 	 */
+	@Override
 	public void processHistorySave(Integer fieldID, Integer parameterCode, Integer historyTransactionID,
 			TWorkItemBean workItemBean, TWorkItemBean workItemBeanOriginal, TFieldChangeBean fieldChangeBean) {
 		ICustomFieldTypeRT customFieldTypeRT;
@@ -272,6 +275,7 @@ public abstract class CustomCompositeBaseRT extends AbstractFieldTypeRT implemen
 	 * @param parameterCode for composite selects
 	 * @return the datasource (list or tree)
 	 */	
+	@Override
 	public Object getMatcherDataSource(IMatcherValue matcherValue, MatcherDatasourceContext matcherDatasourceContext, Integer parameterCode) {
 		SortedMap<Integer, List<ILabelBean>> matcherDatasourceLists =
 			new TreeMap<Integer, List<ILabelBean>>(); 
@@ -283,7 +287,8 @@ public abstract class CustomCompositeBaseRT extends AbstractFieldTypeRT implemen
 			try {
 				actualValuesMap = (SortedMap)matcherValue.getValue();
 			} catch (Exception e) {
-				LOGGER.warn("Matcher datasource: converting the value to SortedMap failed with " + e.getMessage(), e);
+				LOGGER.warn("Matcher datasource: converting the value to SortedMap failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}		
 			if (actualValuesMap==null) {
 				actualValuesMap = new TreeMap<Integer, Object>();
@@ -332,7 +337,8 @@ public abstract class CustomCompositeBaseRT extends AbstractFieldTypeRT implemen
 		try {
 			actualValuesMap = (Map<Integer, Map<Integer, Integer[]>>)massOperationValue.getValue();
 		} catch (Exception e) {
-			LOGGER.warn("Mass operation datasource: converting the value to SortedMap failed with " + e.getMessage(), e);
+			LOGGER.warn("Mass operation datasource: converting the value to SortedMap failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}		
 		if (actualValuesMap==null) {
 			actualValuesMap = new TreeMap<Integer, Map<Integer, Integer[]>>();
@@ -361,6 +367,7 @@ public abstract class CustomCompositeBaseRT extends AbstractFieldTypeRT implemen
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public IActivityConfig getFieldChangeConfig(Integer fieldID) {
 		return new CompositeSelectFieldChangeConfig(fieldID);
 	}
@@ -379,6 +386,7 @@ public abstract class CustomCompositeBaseRT extends AbstractFieldTypeRT implemen
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public IValueConverter getFieldValueConverter(Integer fieldID) {
 		return new CompositeSelectSetterConverter(fieldID);
 	}
@@ -400,7 +408,8 @@ public abstract class CustomCompositeBaseRT extends AbstractFieldTypeRT implemen
 		try {
 			actualValuesMap = (Map<Integer, Map<Integer, Integer[]>>)fieldChangeValue.getValue();
 		} catch (Exception e) {
-			LOGGER.warn("Mass operation datasource: converting the value to SortedMap failed with " + e.getMessage(), e);
+			LOGGER.warn("Mass operation datasource: converting the value to SortedMap failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}		
 		if (actualValuesMap==null) {
 			actualValuesMap = new TreeMap<Integer, Map<Integer, Integer[]>>();
@@ -462,13 +471,15 @@ public abstract class CustomCompositeBaseRT extends AbstractFieldTypeRT implemen
 		try {
 			newValuesMap = (Map)newValue;
 		} catch (Exception e) {
-			LOGGER.warn("ValueModified: converting the new values to map failed with " + e.getMessage(), e);
+			LOGGER.warn("ValueModified: converting the new values to map failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		Map<Integer, Object> oldValuesMap = null;
 		try {
 			oldValuesMap = (Map)oldValue;
 		} catch (Exception e) {
-			LOGGER.warn("ValueModified: converting the old values to map failed with " + e.getMessage(), e);
+			LOGGER.warn("ValueModified: converting the old values to map failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		
 		if (newValuesMap==null) {
@@ -485,12 +496,14 @@ public abstract class CustomCompositeBaseRT extends AbstractFieldTypeRT implemen
 			try {
 				newSingleValue = newValuesMap.get(parameterCode);
 			} catch (Exception e) {
-				LOGGER.debug("Getting the new value part " + i+1 + " failed with " + e.getMessage(), e);
+				LOGGER.info("Getting the new value part " + i+1 + " failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 			try {
 				oldSingleValue = oldValuesMap.get(parameterCode);
 			} catch (Exception e) {
-				LOGGER.debug("Getting the old value part " + i+1 + " failed with " + e.getMessage(), e);
+				LOGGER.info("Getting the old value part " + i+1 + " failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 			if (customFieldTypeRT.valueModified(newSingleValue, oldSingleValue)) {
 				return true;
@@ -519,7 +532,8 @@ public abstract class CustomCompositeBaseRT extends AbstractFieldTypeRT implemen
 		try {
 			valueMap = (Map)value;
 		} catch (Exception e) {
-			LOGGER.warn("SortOrderValue: converting the value to map failed with " + e.getMessage(), e);
+			LOGGER.warn("SortOrderValue: converting the value to map failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		Map<Integer, Comparable> sortValuesMap = new HashMap<Integer, Comparable>();
 		if (valueMap!=null && !valueMap.isEmpty()) {
@@ -533,7 +547,8 @@ public abstract class CustomCompositeBaseRT extends AbstractFieldTypeRT implemen
 								fieldID, localParameterCode, partValue, workItemID, localLookupContainer);
 						sortValuesMap.put(localParameterCode, sortOrderValue);
 					} catch (Exception e) {
-						LOGGER.debug("Getting the sortOrderValue for part " + i+1 + " failed with " + e.getMessage(), e);
+						LOGGER.info("Getting the sortOrderValue for part " + i+1 + " failed with " + e.getMessage());
+						LOGGER.debug(ExceptionUtils.getStackTrace(e));
 					}
 				}
 			}
@@ -552,6 +567,7 @@ public abstract class CustomCompositeBaseRT extends AbstractFieldTypeRT implemen
 	 * 
 	 * @return
 	 */
+	@Override
 	public String getShowValue(Integer fieldID, Integer parameterCode, Object value, 
 			Integer workItemID, LocalLookupContainer localLookupContainer, Locale locale) {
 		ICustomFieldTypeRT customFieldTypeRT;
@@ -561,7 +577,8 @@ public abstract class CustomCompositeBaseRT extends AbstractFieldTypeRT implemen
 		try {
 			objectMap = (Map)value;
 		} catch (Exception e) {
-			LOGGER.warn("ShowValue dd: getting the map value for fieldID " + fieldID + " failed with " + e.getMessage(), e);
+			LOGGER.warn("ShowValue dd: getting the map value for fieldID " + fieldID + " failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}		
 		if (objectMap!=null) {
 			boolean atLeastOnePartNotEmpty = false;
@@ -571,7 +588,8 @@ public abstract class CustomCompositeBaseRT extends AbstractFieldTypeRT implemen
 				try {
 					object = objectMap.get(localParameterCode);
 				} catch (Exception e) {
-					LOGGER.warn("ShowValue dd: getting object value for parameterCode " + i+1 + " of the field " + fieldID + " failed with " + e.getMessage(), e);
+					LOGGER.warn("ShowValue dd: getting object value for parameterCode " + i+1 + " of the field " + fieldID + " failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 					object=null;
 				}
 				String partShowValue = customFieldTypeRT.getShowValue(
@@ -608,7 +626,8 @@ public abstract class CustomCompositeBaseRT extends AbstractFieldTypeRT implemen
 		try {
 			objectMap = (Map)value;
 		} catch (Exception e) {
-			LOGGER.warn("ShowValue: getting the map value  failed with " + e.getMessage(), e);
+			LOGGER.warn("ShowValue: getting the map value  failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		if (objectMap!=null) {
 			boolean atLeastOnePartNotEmpty = false;
@@ -617,7 +636,8 @@ public abstract class CustomCompositeBaseRT extends AbstractFieldTypeRT implemen
 				try {
 					object = objectMap.get(Integer.valueOf(i+1));
 				} catch (Exception e) {
-					LOGGER.warn("ShowValue: getting the value for parameterCode " + i+1 + " failed with " + e.getMessage(), e);
+					LOGGER.warn("ShowValue: getting the value for parameterCode " + i+1 + " failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 					object=null;
 				}
 				String partShowValue = customFieldTypeRT.getShowValue(object, locale);
@@ -653,7 +673,8 @@ public abstract class CustomCompositeBaseRT extends AbstractFieldTypeRT implemen
 		try {
 			objectMap = (Map)value;
 		} catch (Exception e) {
-			LOGGER.warn("MtcherShowValue: getting the map value  failed with " + e.getMessage(), e);
+			LOGGER.warn("MtcherShowValue: getting the map value  failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		if (objectMap!=null) {
 			boolean atLeastOnePartNotEmpty = false;
@@ -662,7 +683,8 @@ public abstract class CustomCompositeBaseRT extends AbstractFieldTypeRT implemen
 				try {
 					object = objectMap.get(Integer.valueOf(i+1));
 				} catch (Exception e) {
-					LOGGER.warn("MtcherShowValue: getting the value for parameterCode " + i+1 + " failed with " + e.getMessage(), e);
+					LOGGER.warn("MtcherShowValue: getting the value for parameterCode " + i+1 + " failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 					object=null;
 				}
 				String partShowValue = customFieldTypeRT.getMatcherShowValue(fieldID, object, locale);
@@ -736,6 +758,7 @@ public abstract class CustomCompositeBaseRT extends AbstractFieldTypeRT implemen
 	 * The custom composite itself has no value type
 	 * (only his parts) 
 	 */
+	@Override
 	public int getValueType()
 	{
 		return ValueType.NOSTORE;
@@ -756,6 +779,7 @@ public abstract class CustomCompositeBaseRT extends AbstractFieldTypeRT implemen
 	 * Whether the field should be tokenized
 	 * @return
 	 */
+	@Override
 	public int getLuceneTokenized() {
 		return LuceneUtil.TOKENIZE.NO;
 	}
@@ -764,6 +788,7 @@ public abstract class CustomCompositeBaseRT extends AbstractFieldTypeRT implemen
 	 * Returns the lookup entity type related to the fieldType
 	 * @return
 	 */
+	@Override
 	public int getLookupEntityType() {
 		return LuceneUtil.LOOKUPENTITYTYPES.COMPOSITE;
 	}
@@ -788,13 +813,15 @@ public abstract class CustomCompositeBaseRT extends AbstractFieldTypeRT implemen
 	 * @param value
 	 * @return
 	 */
+	@Override
 	public String convertToString(Object value){
 		StringBuffer stringValue = new StringBuffer();
 		Map objectMap = null;
 		try {
 			objectMap = (Map)value;
 		} catch (Exception e) {
-			LOGGER.warn("stringValue: getting the map value  failed with " + e.getMessage(), e);
+			LOGGER.warn("stringValue: getting the map value  failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		if (objectMap!=null) {
 			boolean atLeastOnePartNotEmpty = false;
@@ -804,7 +831,8 @@ public abstract class CustomCompositeBaseRT extends AbstractFieldTypeRT implemen
 				try {
 					object = objectMap.get(new Integer(i+1));
 				} catch (Exception e) {
-					LOGGER.warn("stringValue: getting the value for parameterCode " + i + " failed with " + e.getMessage(), e);
+					LOGGER.warn("stringValue: getting the value for parameterCode " + i + " failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 					object=null;
 				}
 				String partStringValue = customFieldTypeRT.convertToString(object);
@@ -828,6 +856,7 @@ public abstract class CustomCompositeBaseRT extends AbstractFieldTypeRT implemen
 	 * @param value
 	 * @return
 	 */
+	@Override
 	public Object convertFromString(String value){
 		ICustomFieldTypeRT customFieldTypeRT;
 		Map<Integer,Object> objectMap =null;

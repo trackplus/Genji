@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -84,6 +84,7 @@ public class TOptionPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TOptionBean loadByPrimaryKey(Integer objectID) {
 		TOption tOption = null;
 		try {
@@ -105,6 +106,7 @@ public class TOptionPeer
 	 * @param label
 	 * @return
 	 */
+	@Override
 	public List<TOptionBean> loadByLabel(Integer list, Integer parentID, String label) {
 		Criteria crit = new Criteria();
 		crit.add(LIST, list);
@@ -130,29 +132,13 @@ public class TOptionPeer
 	 * @param excludeObjectID
 	 * @return
 	 */
-	/*public List<TOptionBean> loadBySymbol(Integer listID, String symbol, Integer excludeObjectID) {
-		List torqueList = null;
-		Criteria crit = new Criteria();
-		crit.add(LIST, listID);
-		crit.add(SYMBOL, symbol);
-		if (excludeObjectID!=null) {
-			crit.add(OBJECTID, excludeObjectID, Criteria.NOT_EQUAL);
-		}
-		try {
-			torqueList = doSelect(crit);
-		} catch (Exception e) {
-			LOGGER.error("Loading the option by icon " + listID + 
-					" and icon " + symbol +  " failed with " + e.getMessage(), e);
-			return null;
-		}
-		return convertTorqueListToBeanList(torqueList);
-	}*/
 	
 	/**
 	 * Gets the optionBeans by uuid list
 	 * @param uuids
 	 * @return
 	 */
+	@Override
 	public List<TOptionBean> loadByUUIDs(List<String> uuids) {
 		List<TOptionBean> optionBeanList = new LinkedList<TOptionBean>();
 		if (uuids==null || uuids.isEmpty()) {
@@ -184,12 +170,13 @@ public class TOptionPeer
 	 * Load all options
 	 * @return
 	 */
+	@Override
 	public List<TOptionBean> loadAll() {
 		Criteria crit = new Criteria();
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all custom options failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all custom options failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -199,6 +186,7 @@ public class TOptionPeer
 	 * @param objectIDs
 	 * @return
 	 */
+	@Override
 	public List<TOptionBean> loadByKeys(Integer[] objectIDs) {
 		if (objectIDs==null || objectIDs.length==0) {
 			return new LinkedList<TOptionBean>();
@@ -219,10 +207,9 @@ public class TOptionPeer
 	 * @param listBean
 	 * @return the created optionID
 	 */
+	@Override
 	public Integer save(TOptionBean optionBean) {
-		//boolean isNew = false;			
 		try {
-			//isNew = (optionBean.getObjectID() == null);
 			if (optionBean.getIsDefault() == null) {
 				optionBean.setIsDefault("N");
 			}
@@ -232,21 +219,14 @@ public class TOptionPeer
 			TOption tOption = BaseTOption.createTOption(optionBean);
 			tOption.save();
 			return tOption.getObjectID();
-			/*if (isNew) {
-				optionBean.setObjectID(objectID);
-				LuceneIndexer.addToLocalizedLookupIndex(optionBean,
-					  LuceneUtil.LOOKUPENTITYTYPES.CUSTOMOPTION);
-			} else {
-				LuceneIndexer.updateLocalizedLookupIndex(optionBean,
-					  LuceneUtil.LOOKUPENTITYTYPES.CUSTOMOPTION);
-			}*/
 			//return objectID;
 		} catch (Exception e) {
-			LOGGER.error("Saving of an option failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of an option failed with " + e.getMessage());
 			return null;
 		}
 	}
 	
+	@Override
 	public boolean hasDependentData(Integer pkey) {
 		return ReflectionHelper.hasDependentData(dependentPeerClasses, dependentFields, pkey);
 	}
@@ -255,6 +235,7 @@ public class TOptionPeer
 	 * Deletes an option by primary key
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		List<Integer> customSelectFieldIDs = FieldBL.getCustomSelectFieldIDs();
 		if (customSelectFieldIDs!=null) {
@@ -269,6 +250,7 @@ public class TOptionPeer
 	 * Deletes all the optionBeans belonging to a list from TOption table
 	 * @param objectID
 	 */
+	@Override
 	public void deleteByList(Integer listID) {
 		Criteria crit = new Criteria();
 		crit.add(LIST, listID);
@@ -285,6 +267,7 @@ public class TOptionPeer
 	 * @param listID
 	 * @return
 	 */
+	@Override
 	public List<TOptionBean> loadActiveByListOrderedBySortorder(Integer listID) {
 		Criteria crit = new Criteria();
 		crit.add(LIST, listID);
@@ -306,6 +289,7 @@ public class TOptionPeer
 	 * @param parentID
 	 * @return
 	 */
+	@Override
 	public List<TOptionBean> loadActiveByListAndParentOrderedBySortorder(Integer listID, Integer parentID) {
 		Criteria crit = new Criteria();
 		crit.add(LIST, listID);
@@ -328,6 +312,7 @@ public class TOptionPeer
 	 * @param ascending
 	 * @return
 	 */
+	@Override
 	public List<TOptionBean> loadActiveByListOrderedByLabel(Integer listID, boolean ascending) {
 		Criteria crit = new Criteria();
 		crit.add(LIST, listID);
@@ -354,6 +339,7 @@ public class TOptionPeer
 	 * @param ascending
 	 * @return
 	 */
+	@Override
 	public List<TOptionBean> loadActiveByListAndParentOrderedByLabel(Integer listID, Integer parentID, boolean ascending) {
 		Criteria crit = new Criteria();
 		crit.add(LIST, listID);
@@ -381,6 +367,7 @@ public class TOptionPeer
 	 * @param listID
 	 * @return
 	 */
+	@Override
 	public Integer getNextSortOrder(Integer listID) {
 		Integer sortOrder = null;
 		String max = "max(" + SORTORDER + ")";
@@ -405,6 +392,7 @@ public class TOptionPeer
 	 * @param parentID
 	 * @return
 	 */
+	@Override
 	public Integer getNextSortOrder(Integer listID, Integer parentID) {
 		Integer sortOrder = null;
 		String max = "max(" + SORTORDER + ")";
@@ -429,6 +417,7 @@ public class TOptionPeer
 	 * @param parentID
 	 * @return
 	 */
+	@Override
 	public List<TOptionBean> getOptionsByParent(Integer parentID) {
 		Criteria crit = new Criteria();
 		crit.add(PARENTOPTION, parentID);
@@ -445,6 +434,7 @@ public class TOptionPeer
 	 * @param listID
 	 * @return
 	 */
+	@Override
 	public Integer[] loadDefaultIDsForList(Integer listID){
 		Integer[] optionIDs = new Integer[0];
 		List<TOption> optionRecordList = null;
@@ -476,6 +466,7 @@ public class TOptionPeer
 	 * @param parentIDs
 	 * @return
 	 */
+	@Override
 	public Integer[] loadDefaultIDsForListAndParents(Integer listID, Integer[] parentIDs) {
 		Integer[] optionIDs = new Integer[0];
 		if (listID!=null && parentIDs!=null && parentIDs.length>0) {
@@ -508,6 +499,7 @@ public class TOptionPeer
 	 * @param listID
 	 * @return
 	 */
+	@Override
 	public List<TOptionBean> loadDataSourceByList(Integer listID) {
 		Criteria crit = new Criteria();
 		crit.add(LIST, listID);
@@ -527,6 +519,7 @@ public class TOptionPeer
 	 * @param parentIDs
 	 * @return
 	 */
+	@Override
 	public List<TOptionBean> loadCreateDataSourceByListAndParents(Integer listID, Integer[] parentIDs) {
 		if (listID!=null && parentIDs!=null && parentIDs.length>0) {
 			Criteria crit = new Criteria();
@@ -551,6 +544,7 @@ public class TOptionPeer
 	 * @param objectIDs
 	 * @return
 	 */
+	@Override
 	public List<TOptionBean> loadEditDataSourceByListAndParents(Integer listID, Integer[] parentIDs, Integer[] objectIDs) {
 		if (listID!=null && parentIDs!=null && parentIDs.length>0) {
 			Criteria crit = new Criteria();
@@ -596,104 +590,41 @@ public class TOptionPeer
 	 * @param projectID
 	 * @return
 	 */
-	/*public List<TOptionBean> loadProjectOptions(Integer projectID) {
-		Criteria crit = ReportBeanLoader.prepareProjectCriteria(projectID);
-		try {
-			return getReportOptions(crit);
-		} catch (TorqueException e) {
-			LOGGER.error("Loading the options for project " + projectID + " failed with " + e.getMessage(), e);
-			return new LinkedList<TOptionBean>();
-		}	
-	}*/
 	
 	/**
 	 * Get the optionBeans associated with workItems from a release
 	 * @return
 	 */
-	/*public List<TOptionBean> loadReleaseOptions(Integer releaseID) {
-		Criteria crit = ReportBeanLoader.prepareReleaseCriteria(releaseID);
-		try {
-			return getReportOptions(crit);
-		} catch (TorqueException e) {
-			LOGGER.error("Loading the options for release " + releaseID + " failed with " + e.getMessage(), e);
-			return new LinkedList<TOptionBean>();
-		}	
-	}*/
 	
 	/**
 	 * Get the optionBeans associated with workItems the person is manager for
 	 * @param personID
 	 * @return
 	 */
-	/*public List<TOptionBean> loadManagerOptions(Integer personID) {
-		Criteria crit = ReportBeanLoader.prepareManagerCriteria(personID);
-		try {
-			return getReportOptions(crit);
-		} catch (TorqueException e) {
-			LOGGER.error("Loading the manager options for person " + personID + " failed with " + e.getMessage(), e);
-			return new LinkedList<TOptionBean>();
-		}
-	}*/
 
 	/**
 	 * Get the optionBeans associated with workItems the person is responsible for
 	 * @param personID
 	 * @return
 	 */
-	/*public List<TOptionBean> loadResponsibleOptions(Integer personID) {
-		Criteria crit = ReportBeanLoader.prepareResponsibleCriteria(personID);
-		try {
-			return getReportOptions(crit);
-		} catch (TorqueException e) {
-			LOGGER.error("Loading the responsible options for person " + personID + " failed with " + e.getMessage(), e);
-			return new LinkedList<TOptionBean>();
-		}		
-	}*/
 	
 	/**
 	 * Get the optionBeans associated with workItems the person is originator for
 	 * @param personID
 	 * @return
 	 */
-	/*public List<TOptionBean> loadReporterOptions(Integer personID) {
-		Criteria crit = ReportBeanLoader.prepareReporterCriteria(personID);
-		try {
-			return getReportOptions(crit);
-		} catch (TorqueException e) {
-			LOGGER.error("Loading the reporter options for person " + personID + " failed with " + e.getMessage(), e);
-			return new LinkedList<TOptionBean>();
-		}
-	}*/
 	
 	/**
 	 * Get the optionBeans associated with workItems the person is manager or responsible or owner for
 	 * @param personID 
 	 * @return
 	 */
-	/*public List<TOptionBean> loadMyOptions(Integer personID) {
-		Criteria crit = ReportBeanLoader.prepareMyCriteria(personID);
-		try {
-			return getReportOptions(crit);
-		} catch (TorqueException e) {
-			LOGGER.error("Loading the my options for person " + personID + " failed with " + e.getMessage(), e);
-			return new LinkedList<TOptionBean>();
-		}
-	}*/
 		
 	/**
 	 * Get the optionBeans filtered by the FilterSelectsTO
 	 * @param filterSelectsTO
 	 * @return
 	 */
-	/*public List<TOptionBean> loadCustomReportOptions(FilterUpperTO filterSelectsTO) {
-		Criteria crit = ReportBeanLoader.prepareCustomReportCriteria(filterSelectsTO);
-		try {
-			return getReportOptions(crit);
-		} catch (TorqueException e) {
-			LOGGER.error("Loading the options for custom report failed with " + e.getMessage(), e);
-			return new LinkedList<TOptionBean>();
-		}	
-	}*/
 	
 	/**
 	 * Get the optionBeans filtered by a TQL expression
@@ -703,20 +634,13 @@ public class TOptionPeer
 	 * @param tqlCriteria
 	 * @return
 	 */
-	/*public static List<TOptionBean> loadTQLReportOptions(Criteria tqlCriteria) {
-		try {
-			return getReportOptions(tqlCriteria);
-		} catch (TorqueException e) {
-			LOGGER.error("Loading the options for TQL report failed with " + e.getMessage(), e);
-			return new LinkedList<TOptionBean>();
-		}	
-	}*/
 	
 	/**
 	 * Get the optionBeans for an array of workItemIDs 
 	 * @param workItemIDs
 	 * @return
 	 */
+	@Override
 	public List<TOptionBean> loadLuceneOptions(int[] workItemIDs) {
 		List<TOptionBean> attributeValueBeansList = new LinkedList<TOptionBean>();
 		if (workItemIDs==null || workItemIDs.length==0) {
@@ -735,7 +659,7 @@ public class TOptionPeer
 			try {
 				attributeValueBeansList.addAll(getReportOptions(criteria));
 			} catch(Exception e) {
-				LOGGER.error("Loading the optionBeans by workItemIDs failed with " + e.getMessage(), e);
+				LOGGER.error("Loading the optionBeans by workItemIDs failed with " + e.getMessage());
 			}
 		}
 		return attributeValueBeansList;
@@ -747,6 +671,7 @@ public class TOptionPeer
 	 * @param personID
 	 * @return
 	 */
+	@Override
 	public Map<Integer, TOptionBean> loadHistoryOptions(int[] workItemIDs) {
 		List<TOption> torqueList = new LinkedList<TOption>();
 		List<int[]> workItemIDChunksList = GeneralUtils.getListOfChunks(workItemIDs);
@@ -759,13 +684,13 @@ public class TOptionPeer
 				try {
 					torqueList.addAll(doSelect(criteria));
 				} catch(Exception e) {
-					LOGGER.error("Loading the new history optionBeans for workItems failed with " + e.getMessage(), e);
+					LOGGER.error("Loading the new history optionBeans for workItems failed with " + e.getMessage());
 				}
 				criteria = HistoryDropdownContainerLoader.prepareHistoryCustomOptionCriteria(workItemIDChunk, false);
 				try {
 					torqueList.addAll(doSelect(criteria));
 				} catch(Exception e) {
-					LOGGER.error("Loading the old history optionBeans for workItems failed with " + e.getMessage(), e);
+					LOGGER.error("Loading the old history optionBeans for workItems failed with " + e.getMessage());
 				}
 				
 			}
@@ -777,6 +702,7 @@ public class TOptionPeer
 	 * Returns the sort order column name
 	 * @return
 	 */
+	@Override
 	public String getSortOrderColumn() {
 		return "SORTORDER";
 	}
@@ -785,6 +711,7 @@ public class TOptionPeer
 	 * Returns the table name
 	 * @return
 	 */
+	@Override
 	public String getTableName() {
 		return TABLE_NAME;
 	}
@@ -813,6 +740,7 @@ public class TOptionPeer
 	 * @param newValue
 	 * @return
 	 */
+	@Override
 	public boolean isListAssignedToHistoryEntry(Integer listID, boolean newValue) {
 		List childLists = null;
 		Criteria criteria = new Criteria();
@@ -826,7 +754,7 @@ public class TOptionPeer
 			childLists = doSelect(criteria);
 		}
 		catch (TorqueException e) {
-			LOGGER.error("Is assigned to history entry for list " + listID + " newValue " + newValue + " failed with " + e.getMessage(), e);		
+			LOGGER.error("Is assigned to history entry for list " + listID + " newValue " + newValue + " failed with " + e.getMessage());		
 		}
 		return (childLists!=null && !childLists.isEmpty());
 	}
@@ -836,6 +764,7 @@ public class TOptionPeer
 	 * @param listObjectId
 	 * @return
 	 */
+	@Override
 	public List<TOptionBean> loadByListID(Integer listObjectId) {
 		Criteria crit = new Criteria();
 		crit.add(LIST, listObjectId);
@@ -853,6 +782,7 @@ public class TOptionPeer
 	 * @param parentID
 	 * @return 
 	 */
+		@Override
 		public List<TOptionBean> getChildren(Integer parentID){
 			Criteria crit = new Criteria();
 			if (parentID == null) {
@@ -864,7 +794,7 @@ public class TOptionPeer
 				return convertTorqueListToBeanList(doSelect(crit));
 			}
 			catch(TorqueException e){
-				LOGGER.error("Loading the custom fields failed with:" + e.getMessage(), e);
+				LOGGER.error("Loading the custom fields failed with:" + e.getMessage());
 				return null;
 			}
 		}
@@ -874,13 +804,14 @@ public class TOptionPeer
 		 * @param listIds
 		 * @return
 		 */
+		@Override
 		public List<TOptionBean> loadForListIDs(List<Integer> listIDs){
 			Criteria crit = new Criteria();
 			crit.addIn(LIST,listIDs);
 			try	{
 				return convertTorqueListToBeanList(doSelect(crit));
 			} catch(TorqueException e){
-				LOGGER.error("Loading the custom fields failed with:" + e.getMessage(), e);
+				LOGGER.error("Loading the custom fields failed with:" + e.getMessage());
 				return null;
 			}
 		}

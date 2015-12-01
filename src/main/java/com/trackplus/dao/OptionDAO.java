@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -229,7 +229,6 @@ public interface OptionDAO {
 	 * @return
 	 */
 	// List loadAssignedOptionsForFieldAndParent(Integer fieldID, Integer
-	// parameterCode, Integer parentID);
 
 	/**
 	 * Get the optionBeans associated with workItems from a project
@@ -237,20 +236,17 @@ public interface OptionDAO {
 	 * @param projectID
 	 * @return
 	 */
-	// List<Toption> loadProjectOptions(Integer projectID);
 	/**
 	 * Get the optionBeans associated with workItems from a release
 	 * 
 	 * @return
 	 */
-	// List<Toption> loadReleaseOptions(Integer releaseID);
 	/**
 	 * Get the optionBeans associated with workItems the person is manager for
 	 * 
 	 * @param personID
 	 * @return
 	 */
-	// List<Toption> loadManagerOptions(Integer personID);
 	/**
 	 * Get the optionBeans associated with workItems the person is responsible
 	 * for
@@ -258,7 +254,6 @@ public interface OptionDAO {
 	 * @param personID
 	 * @return
 	 */
-	// List<Toption> loadResponsibleOptions(Integer personID);
 	/**
 	 * Get the optionBeans associated with workItems the person is originator
 	 * for
@@ -266,7 +261,6 @@ public interface OptionDAO {
 	 * @param personID
 	 * @return
 	 */
-	// List<Toption> loadReporterOptions(Integer personID);
 	/**
 	 * Get the optionBeans associated with workItems the person is manager or
 	 * responsible or owner for
@@ -274,14 +268,12 @@ public interface OptionDAO {
 	 * @param personID
 	 * @return
 	 */
-	// List<Toption> loadMyOptions(Integer personID);
 	/**
 	 * Get the optionBeans filtered by the FilterSelectsTO
 	 * 
 	 * @param filterSelectsTO
 	 * @return
 	 */
-	// List<Toption> loadCustomReportOptions(FilterUpperTO filterSelectsTO);
 	/**
 	 * Get the optionBeans for an array of workItemIDs
 	 * 

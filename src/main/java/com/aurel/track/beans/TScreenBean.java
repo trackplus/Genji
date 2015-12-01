@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -55,6 +55,7 @@ public class TScreenBean
 	/**
 	 * @return the tabs
 	 */
+	@Override
 	public List<ITab> getTabs() {
 		return tabs;
 	}
@@ -62,14 +63,17 @@ public class TScreenBean
 	/**
 	 * @param tabs the tabs to set
 	 */
+	@Override
 	public void setTabs(List<ITab> tabs) {
 		this.tabs = tabs;
 	}
 
+	@Override
 	public Integer getPersonID() {
 		return getOwner();
 	}
 
+	@Override
 	public void setPersonID(Integer personID) {
 		setOwner(personID);
 	}
@@ -93,6 +97,7 @@ public class TScreenBean
 	 * @param attributes
 	 * @return
 	 */
+	@Override
 	public Map<String, String> serializeBean() {
 		Map<String, String> attributesMap = new HashMap<String, String>();
 		attributesMap.put("objectID", getObjectID().toString());
@@ -108,10 +113,6 @@ public class TScreenBean
 			attributesMap.put("tagLabel", tagLabel);
 		}
 		//the persons are by field match not yet available
-		/*Integer owner = getOwner();
-		if (owner!=null ) {
-			attributesMap.put("owner", owner.toString());
-		}	*/	
 		attributesMap.put("uuid", getUuid());
 		return attributesMap;
 	}
@@ -121,6 +122,7 @@ public class TScreenBean
 	 * @param attributes
 	 * @return
 	 */
+	@Override
 	public ISerializableLabelBean deserializeBean(Map<String, String> attributes) {
 		String strObjectID = attributes.get("objectID");
 		if (strObjectID!=null) {
@@ -136,10 +138,6 @@ public class TScreenBean
 		
 		this.setDescription(attributes.get("description"));
 		//the persons are by field match not yet available
-		/*String strOwner = attributes.get("owner");
-		if (strOwner!=null) {
-			fieldBean.setOwner(new Integer(strOwner));
-		}*/	
 		this.setUuid(attributes.get("uuid"));
 		return this;
 	}
@@ -147,6 +145,7 @@ public class TScreenBean
 	
 	
 	//
+	@Override
 	public boolean considerAsSame(ISerializableLabelBean serializableLabelBean,
 									Map<String, Map<Integer, Integer>> matchesMap) {
 		if (serializableLabelBean==null) {
@@ -168,6 +167,7 @@ public class TScreenBean
 	}
 	
 	//
+	@Override
 	public Integer saveBean(ISerializableLabelBean serializableLabelBean,
 			Map<String, Map<Integer, Integer>> matchesMap) {
 		TScreenBean screenBean = (TScreenBean)serializableLabelBean;

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -26,7 +26,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,7 +38,6 @@ import com.aurel.track.admin.project.ProjectBL;
 import com.aurel.track.beans.TBudgetBean;
 import com.aurel.track.beans.TCostBean;
 import com.aurel.track.beans.TPersonBean;
-import com.aurel.track.beans.TProjectBean;
 import com.aurel.track.beans.TReportLayoutBean;
 import com.aurel.track.beans.TStateBean;
 import com.aurel.track.beans.TWorkItemBean;
@@ -47,7 +45,6 @@ import com.aurel.track.exchange.msProject.importer.LinkLagBL;
 import com.aurel.track.fieldType.constants.SystemFields;
 import com.aurel.track.fieldType.constants.ValueType;
 import com.aurel.track.fieldType.runtime.base.IFieldTypeRT;
-import com.aurel.track.fieldType.runtime.base.LookupContainer;
 import com.aurel.track.fieldType.runtime.renderer.TypeRendererRT;
 import com.aurel.track.fieldType.types.FieldType;
 import com.aurel.track.fieldType.types.FieldTypeManager;
@@ -230,7 +227,7 @@ public class ReportItemJSON {
 			Map<Object, Date> groupValueToTopDownEndDate,
 			boolean useIssueTypeIcon) {
 		StringBuilder sb = new StringBuilder();
-		Set<Integer> editableProjectsSet = null;
+		//Set<Integer> editableProjectsSet = null;
 		sb.append("[");
 		if (nodes != null) {
 			for (Iterator<ItemTreeNode> iterator = nodes.iterator(); iterator.hasNext();) {
@@ -244,7 +241,7 @@ public class ReportItemJSON {
 					Object sortOrder = null;
 					boolean isTreeField = groupLimitBean.isTreeField();
 					if (isTreeField) {
-						if (SystemFields.INTEGER_PROJECT.equals(groupLimitBean.getGroupField())) {
+						/*if (SystemFields.INTEGER_PROJECT.equals(groupLimitBean.getGroupField())) {
 							if (editableProjectsSet==null) {
 								editableProjectsSet = new HashSet<Integer>();
 								List<TProjectBean> editableProjects = ProjectBL.loadProjectsWithModifyIssueRight(personBean.getObjectID());
@@ -257,9 +254,8 @@ public class ReportItemJSON {
 							Integer projectID = (Integer)groupLimitBean.getGroupValue();
 							if (projectID!=null) {
 								editable = editableProjectsSet.contains(projectID);
-								TProjectBean projectBean = LookupContainer.getProjectBean(projectID);
 							}
-						}
+						}*/
 						// sort order below the tree field: for a cleaner
 						// rendering the items (leafs)
 						// or possible subgroups should precede the the tree
@@ -485,6 +481,7 @@ public class ReportItemJSON {
 		return sb.toString();
 	}
 
+
 	/**
 	 * Add one day to end dates because the Gantt chart takes the end date as
 	 * exclusive while Genji as inclusive
@@ -577,20 +574,16 @@ public class ReportItemJSON {
 				appendField(reportBean, useProjectSpecificID, sb, fieldID);
 			}
 			if (!hasStartDate) {
-				appendField(reportBean, useProjectSpecificID, sb,
-						SystemFields.INTEGER_STARTDATE);
+				appendField(reportBean, useProjectSpecificID, sb, SystemFields.INTEGER_STARTDATE);
 			}
 			if (!hasEndDate) {
-				appendField(reportBean, useProjectSpecificID, sb,
-						SystemFields.INTEGER_ENDDATE);
+				appendField(reportBean, useProjectSpecificID, sb, SystemFields.INTEGER_ENDDATE);
 			}
 			if (!hasTopDownStartDate) {
-				appendField(reportBean, useProjectSpecificID, sb,
-						SystemFields.INTEGER_TOP_DOWN_START_DATE);
+				appendField(reportBean, useProjectSpecificID, sb, SystemFields.INTEGER_TOP_DOWN_START_DATE);
 			}
 			if (!hasTopDownEndDate) {
-				appendField(reportBean, useProjectSpecificID, sb,
-						SystemFields.INTEGER_TOP_DOWN_END_DATE);
+				appendField(reportBean, useProjectSpecificID, sb, SystemFields.INTEGER_TOP_DOWN_END_DATE);
 			}
 
 		}

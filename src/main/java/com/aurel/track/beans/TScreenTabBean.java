@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -52,13 +52,16 @@ public class TScreenTabBean
 	private static final long serialVersionUID = -8369548353898699655L;
 	private List<IPanel> panels;
 	private static ScreenTabDAO screenTabDAO = DAOFactory.getFactory().getScreenTabDAO();	
+	@Override
 	public List<IPanel> getPanels() {
 		return panels;
 	}
 
+	@Override
 	public void setPanels(List<IPanel> panels) {
 		this.panels = panels;
 	}
+	@Override
 	public ITab cloneMe(){
 		TScreenTabBean tabBean=new TScreenTabBean();
 		tabBean.setDescription(this.getDescription());
@@ -84,6 +87,7 @@ public class TScreenTabBean
 	 * Serialize the labelBean 
 	 * @return
 	 */
+	@Override
 	public Map<String, String> serializeBean() {
 		Map<String, String> attributesMap = new HashMap<String, String>();
 		
@@ -106,6 +110,7 @@ public class TScreenTabBean
 	 * @param attributes
 	 * @return
 	 */
+	@Override
 	public ISerializableLabelBean deserializeBean(Map<String, String> attributes) {			
 		String strObjectID = attributes.get("objectID");
 		if (strObjectID!=null) {
@@ -121,6 +126,7 @@ public class TScreenTabBean
 		return this;
 	}
 	
+	@Override
 	public boolean considerAsSame(ISerializableLabelBean serializableLabelBean,
 			Map<String, Map<Integer, Integer>> matchesMap) {
 		if (serializableLabelBean==null) {
@@ -134,22 +140,11 @@ public class TScreenTabBean
 			return true;
 		}
 		
-		/*String externalName = getName();
-		String internalName = internalScreenTabBean.getName();	
-		Integer externalParent = getParent();
-		Integer internalParent = internalScreenTabBean.getParent();
-		Map<Integer, Integer> parentMatches = matchesMap.get(ExchangeFieldNames.SCREEN);
-		
-		//a field matches if the name and the parent matches 		
-		if (externalName!=null && internalName!=null && externalParent!=null &&
-				internalParent!=null && parentMatches!=null && parentMatches.get(externalParent)!=null) {
-			return externalName.equals(internalName) && 
-					parentMatches.get(externalParent).equals(internalParent);			
-		}*/
 		return false;
 	}
 	
 	
+	@Override
 	public Integer saveBean(ISerializableLabelBean serializableLabelBean, 
 			Map<String, Map<Integer, Integer>> matchesMap) {		
 		TScreenTabBean screenTabBean = (TScreenTabBean)serializableLabelBean;		
@@ -166,11 +161,13 @@ public class TScreenTabBean
 	/**
 	 * This attribute is used with Dashboard tabs;
 	 */
+	@Override
 	public void setFieldTypes(HashSet<String>fieldTypes) {		
 	}
 	/**
 	 * This attribute is used with Dashboard tabs;
 	 */
+	@Override
 	public Set<String> getFieldTypes() {
 		return null;
 	}

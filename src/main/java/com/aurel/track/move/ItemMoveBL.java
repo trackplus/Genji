@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -78,10 +78,10 @@ public class ItemMoveBL {
 	private static Date newEndDate;
 	private static Locale locale;
 	private static TPersonBean personBean;
-	private static ArrayList<Tuple> paths;
+	private static List<Tuple> paths;
 	private static WorkItemLinkDAO workItemLinkDao = DAOFactory.getFactory().getWorkItemLinkDAO();
 	private static HashMap<Integer, TWorkItemBean> workItemIDToWorkItemBean;
-	private static ArrayList<TWorkItemLinkBean> allLinks;
+	private static List<TWorkItemLinkBean> allLinks;
 
 	private static boolean itemMoved; // true if item moved(start and end date
 										// changed); false if item resized (only
@@ -150,13 +150,6 @@ public class ItemMoveBL {
 							}
 						}
 					}
-					/*for (Tuple aTupleFromAll : paths) {
-						if(aTupleFromAll.getSource().getObjectID().equals(movedWorkItem.getObjectID()) && aTupleFromAll.getEdge().getEdgeType() == Edge.EDGE_TYPES.LINK) {
-							LOGGER.debug("Move linked item when source is a parent: " + aTupleFromAll.getTarget().getObjectID());
-							moveNonParentItem(getTupleWhereEdgeIsDurationByID(aTupleFromAll.getTarget().getObjectID()));
-
-						}
-					}*/
 				}
 			}
 		}
@@ -356,25 +349,6 @@ public class ItemMoveBL {
 	}
 
 
-//	private static void moveBelowElements(Tuple me) {
-//		if(!me.getSource().isNodeDateChanged() && !me.getTarget().isNodeDateChanged()) {
-//			if(me.getEdge().getEdgeType() == Edge.EDGE_TYPES.LINK) {
-//				LOGGER.debug("Change element where source is: " + me.getSource().getObjectID() + " Target is: " + getTupleWhereEdgeIsDurationByID(me.getTarget().getObjectID()).getSource().getObjectID());
-//				Tuple tupleTmp = getTupleWhereEdgeIsDurationByID(me.getTarget().getObjectID());
-//				moveOneTupleSourceAndTargetNodeConsideringDirection(tupleTmp);
-//				tupleTmp.getSource().setNodeDateChanged(true);
-//				tupleTmp.getTarget().setNodeDateChanged(true);
-//			}
-//		}else {
-//			LOGGER.debug("Below! Node date it was changed: " + me.getSource().getObjectID() + " " + me.getTarget().getObjectID());
-//		}
-//		ArrayList<Tuple> belowTuples = getBelowItems(me);
-//		for (Tuple belowTuple : belowTuples) {
-//			LOGGER.debug("Recursion for: " + belowTuple.getTarget().getObjectID());
-////			moveBelowElements(getTupleWhereSourceAndTargetAreSame(belowTuple.getTarget().getObjectID()));
-//			moveBelowElements(belowTuple);
-//		}
-//	}
 
 	public static void moveBelowElements(Tuple me) {
 		Tuple tupleTmp = getTupleWhereEdgeIsDurationByID(me.getTarget().getObjectID());
@@ -394,7 +368,6 @@ public class ItemMoveBL {
 
 		if(me.getEdge().getEdgeType() == Edge.EDGE_TYPES.DURATION && !tupleDatesWereChanged(tupleTmp)) {
 			LOGGER.debug("Change element where source is: " + me.getSource().getObjectID() + " Target is: " + me.getTarget().getObjectID() + " Link is: " + getEdgeTypeName(me.getEdge()));
-//			Tuple tupleTmp = getTupleWhereEdgeIsDurationByID(me.getTarget().getObjectID());
 			moveOneTupleSourceAndTargetNodeConsideringDirection(tupleTmp, numberOfWorkedDaysFromMovedDays);
 			tupleTmp.getSource().setNodeDateChanged(true);
 			tupleTmp.getTarget().setNodeDateChanged(true);
@@ -405,11 +378,8 @@ public class ItemMoveBL {
 		}
 
 
-//		ArrayList<Tuple> belowTuples = getBelowItems(me);
 		for (Tuple belowTuple : paths) {
 			if (!belowTuple.equals(me)) {
-//				if(belowTuple.getSource().getObjectID().equals(me.getTarget().getObjectID())) {
-//				if(belowTuple.getSource().equals(me.getTarget())) {
 				if(belowTuple.getSource().getObjectID().equals(me.getTarget().getObjectID())) {
 					LOGGER.debug("Recursion for: " + belowTuple.getSource().getObjectID() + "  " + belowTuple.getTarget().getObjectID());
 					moveBelowElements(belowTuple);
@@ -430,21 +400,18 @@ public class ItemMoveBL {
 				}
 			}
 		}
-		ArrayList<Tuple> aboveTuples = getAboveItems(me);
+		List<Tuple> aboveTuples = getAboveItems(me);
 		for (Tuple aboveTuple : aboveTuples) {
 			LOGGER.debug("Recursion for above: " + aboveTuple.getSource().getObjectID());
-//			moveAboveElements(getTupleWhereSourceAndTargetAreSame(aboveTuple.getSource().getObjectID()));
 			moveAboveElements(aboveTuple);
 		}
 	}
 
 
-	private static ArrayList<Tuple> getBelowItems(Tuple me) {
-		ArrayList<Tuple> belowItems = new ArrayList<Tuple>();
+	private static List<Tuple> getBelowItems(Tuple me) {
+		List<Tuple> belowItems = new ArrayList<Tuple>();
 		for (Tuple aTuple : paths) {
 			if (!aTuple.equals(me)) {
-//				LOGGER.debug("BELOW: " + me.getTarget().getObjectID() + "  " + aTuple.getSource().getObjectID());
-//				if (me.getTarget().equals(aTuple.getSource())) {
 				if (me.getTarget().getObjectID().equals(aTuple.getSource().getObjectID())) {
 					belowItems.add(aTuple);
 				}
@@ -453,12 +420,10 @@ public class ItemMoveBL {
 		return belowItems;
 	}
 
-	private static ArrayList<Tuple> getAboveItems(Tuple me) {
-		ArrayList<Tuple> aboveItems = new ArrayList<Tuple>();
+	private static List<Tuple> getAboveItems(Tuple me) {
+		List<Tuple> aboveItems = new ArrayList<Tuple>();
 		for (Tuple aTuple : paths) {
 			if (!aTuple.equals(me)) {
-//				LOGGER.debug("BELOW: " + me.getTarget().getObjectID() + "  " + aTuple.getSource().getObjectID());
-//				if (me.getTarget().equals(aTuple.getSource())) {
 				if (me.getSource().getObjectID().equals(aTuple.getTarget().getObjectID())) {
 					aboveItems.add(aTuple);
 				}
@@ -521,17 +486,6 @@ public class ItemMoveBL {
 	}
 
 
-//	public static void updateWorkItemBeanDates(Node me) {
-//		TWorkItemBean workItemBeanToChange = workItemIDToWorkItemBean.get(me.getObjectID());
-//		if(workItemBeanToChange != null) {
-//			if(me.getNodeType() == Node.NODE_TYPES.START_DATE) {
-//				setStartDate(workItemBeanToChange, me.getNodeDate());
-//			}
-//			if(me.getNodeType() == Node.NODE_TYPES.END_DATE) {
-//				setEndDate(workItemBeanToChange, me.getNodeDate());
-//			}
-//		}
-//	}
 
 	public static void saveWorkitemBean(Tuple tuple) {
 		TWorkItemBean workItemBeanToChange = workItemIDToWorkItemBean.get(tuple.getSource().getObjectID());
@@ -709,9 +663,6 @@ public class ItemMoveBL {
 	}
 
 	public static int getNrOfDaysNeededToMove(Date sourceDate, Date targetDate, int linkLagInDays) {
-//		Date sourceDate = tuple.getSource().getNodeDate();
-//		Date targetDate = tuple.getTarget().getNodeDate();
-//		TWorkItemLinkBean link = tuple.getEdge().getLink();
 		Date targetDateTmp = stepBack(targetDate, 1, true);
 
 		int nrOfDaysNeededToMove = 0;

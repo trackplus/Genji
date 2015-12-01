@@ -1,0 +1,122 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="You can configure Track+ to work together with the Jenkins or Jenkins continuous integration server. This section describes how the procedure of setting Track+ and Jenkins up properly. Overview ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="concept"/><meta name="DC.Title" content="Configuring Track+ with Jenkins"/><meta name="abstract" content="You can configure Track+ to work together with the Jenkins or Jenkins continuous integration server. This section describes how the procedure of setting Track+ and Jenkins up properly."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="You can configure Track+ to work together with the Jenkins or Jenkins continuous integration server. This section describes how the procedure of setting Track+ and Jenkins up properly."/><meta name="indexterms" content="Jenkins integration, Jenkins integration"/><meta name="DC.subject" content="Jenkins integration"/><meta name="keywords" content="Jenkins integration"/><meta name="DC.Relation" scheme="URI" content="../../../Topics/07ForSystemAdmins/Chapter7Wrapper.html"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="id32configHudson"/><link rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Configuring Track+ with Jenkins</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()" id="id32configHudson">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../../Topics/07ForSystemAdmins/Chapter7Wrapper.html" title="Administering the server"><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Administering the server</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../../Topics/07ForSystemAdmins/Chapter7Wrapper.html" title="Administering the server">Administering the server</a></td></tr></tbody></table>
+
+    <h1 class="title topictitle1">Configuring <span class="ph"><span class="ph">Track+</span></span> with
+        Jenkins</h1>
+
+    
+    
+    <div class="body conbody"><p class="shortdesc">You can configure <span class="ph"><span class="ph">Track+</span></span> to work together with the Jenkins or Jenkins continuous integration server. This section
+        describes how the procedure of setting <span class="ph"><span class="ph">Track+</span></span> and Jenkins
+        up properly.</p>
+
+        <div class="section"><h2 class="title sectiontitle">Overview</h2><p class="p">Jenkins or Jenkins are web based tools to automate continuous build processes in software
+                development projects. Continuous build processes are particularly beneficial when
+                you have automated unit or system tests that you can run with each build. These
+                tests ensure that you do not regress in functionality or software quality while you
+                are fixing defects or implementing new features.</p>
+<p class="p">Using a special Jenkins plug-in, you can integrate Jenkins with <span class="ph"><span class="ph">Track+</span></span>. For Jenkins builds, you will be able to
+                see in Jenkins which <span class="ph"><span class="ph">Track+</span></span> items were addressed
+                with a particular build. In <span class="ph"><span class="ph">Track+</span></span>, you will see
+                for each item which Jenkins build addressed that particular item, and which files
+                were affected. You get links in Jenkins and in <span class="ph"><span class="ph">Track+</span></span> which will take you to the respective
+                other application.</p>
+<div class="p">There are many ways to set up Jenkins. To integrate Jenkins with <span class="ph"><span class="ph">Track+</span></span> tightly conisder the following hints:<ul class="ul" id="id32configHudson__ul_olm_g4g_yr">
+                    <li class="li">Use the same user names and passwords on <span class="ph"><span class="ph">Track+</span></span> and Jenkins. To make this easy
+                        configure both systems to use an LDAP server (see <a class="xref" href="../serverConfiguration/tabLDAP.html" title="If you want to use always the same password on your Track+ account as on your other computers, you can connect Track+ to a directory server (LDAP server, Active Directory). If you have several applications all running on the same server, you can provide a single login to that server and have Track+ use the authentication of that login process.">LDAP and SSO configuration</a>).</li>
+
+                    <li class="li">Install the <span class="ph"><span class="ph">Track+</span></span> “portals” plug-in at
+                        <span class="ph filepath">TRACKPLUS_HOME</span> and add the URL of your Jenkins server to the
+                        <span class="ph filepath">trackplus-plugins.xml</span> file there. This will permit you to switch directly
+                        between <span class="ph"><span class="ph">Track+</span></span> and Jenkins from the <span class="ph"><span class="ph">Track+</span></span> main menu. </li>
+
+                </ul>
+</div>
+</div>
+
+        <div class="section"><h2 class="title sectiontitle">Step 1: Configure <span class="ph"><span class="ph">Track+</span></span>
+            </h2><p class="p">On your <span class="ph"><span class="ph">Track+</span></span> server enable the web service interface. To do
+                this, log in as system administrator (“admin”) and go to Administration &gt; Manage
+                server &gt; Server configuration, tab “Other”. </p>
+<div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/track-configure.png" height="297" width="515"/></div><br/>
+                
+            </div>
+</div>
+
+        <div class="section"><h2 class="title sectiontitle">Step 2: Install Jenkins Plug-In</h2><p class="p">To enable Jenkins to interact with <span class="ph"><span class="ph">Track+</span></span> you need to install
+                a plug-in for Jenkins. The plug-in consists of a single file “trackplus.hpi” which
+                you need to copy into the plug-in folder in your Jenkins installation, as shown in
+                the figure below. The Jenkins plug-in folder is located under &lt;Servlet container
+                path&gt;/webapps/Jenkins/WEB-INF, or wherever else you had installed Jenkins
+                previously. You need to restart Jenkins after copying the file.</p>
+<div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/hudson-manage.png" height="296" width="515"/></div><br/>
+                    
+            </div>
+</div>
+
+        <div class="section"><h2 class="title sectiontitle">Step 3: Configure the <span class="ph"><span class="ph">Track+</span></span> Jenkins Connector</h2><p class="p">You need to establish a connection between <span class="ph"><span class="ph">Track+</span></span> and Jenkins.
+                To this purpose you add one ore more <span class="ph"><span class="ph">Track+</span></span>
+                connectors to your Jenkins installation. From the Jenkins main page, select the
+                “Manage Jenkins” link.</p>
+<div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/hudson-manage.png" height="296" width="515"/></div><br/>
+                    
+            </div>
+
+            <p class="p">Download the <span class="ph"><span class="ph">Track+</span></span> Jenkins plug-in from the <span class="ph"><span class="ph">Track+</span></span> web site and install it in Jenkins. </p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/hpi.png" height="295" width="515"/></div><br/>
+                
+            </div>
+
+            <p class="p">On the “Manage Jenkins” page select “Configure System”.</p>
+<div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/hudson-configure-track.png" height="295" width="515"/></div><br/>
+                
+            </div>
+<p class="p">There is a section labeled “<span class="ph"><span class="ph">Track+</span></span>”. Here you can enter the
+                URL for your <span class="ph"><span class="ph">Track+</span></span> server, and a user name and
+                password which is being used to add comments to <span class="ph"><span class="ph">Track+</span></span> items affected by a Jenkins build. You
+                should leave the item prefix with “#”, since this is the value being used by the <span class="ph"><span class="ph">Track+</span></span> Subversion integration.</p>
+<p class="p">In Jenkins, you can set up a number of <span class="ph"><span class="ph">Track+</span></span> connectors, for
+                example to different <span class="ph"><span class="ph">Track+</span></span> servers, or with
+                different user names.</p>
+</div>
+
+        <div class="section"><h2 class="title sectiontitle">Step 4: Configure the Jenkins Job</h2><p class="p">In the last step, you will have to instruct Jenkins which <span class="ph"><span class="ph">Track+</span></span> connection to use for a specific job. Click on the link for that job from the
+                Jenkins main page.</p>
+<div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/hudson-main.png" height="295" width="515"/></div><br/>
+                    
+            </div>
+<p class="p">In the menu on the left, click the “Configure” link. Select the proper <span class="ph"><span class="ph">Track+</span></span> connection and save.</p>
+<div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/hudson-project-configure.png" height="296" width="550"/></div><br/>
+                        
+            </div>
+</div>
+
+        <div class="section"><h2 class="title sectiontitle">Use It!</h2><p class="p">The connection between Jenkins builds and <span class="ph"><span class="ph">Track+</span></span> items is
+                created via <span class="ph"><span class="ph">Track+</span></span> item numbers found in
+                Subversion commit comments, preceded with a hash mark, like “3009”.</p>
+<p class="p">When in the Jenkins build you click on the item number, the browser will take you to that <span class="ph"><span class="ph">Track+</span></span> item.</p>
+<div class="p">The link in the <span class="ph"><span class="ph">Track+</span></span> item comment will take you to the
+                related Jenkins build.<div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/hudson-track-comment.png" height="320" width="432"/></div><br/>
+                    
+                </div>
+</div>
+</div>
+
+    </div>
+
+<div class="related-links"/>
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../../Topics/07ForSystemAdmins/Chapter7Wrapper.html" title="Administering the server"><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Administering the server</span></a></span>  </div>
+</body>
+</html>

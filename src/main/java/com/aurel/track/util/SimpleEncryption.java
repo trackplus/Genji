@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -78,7 +78,6 @@ public class SimpleEncryption {
 		} // if
 
 		// pad $source with spaces up to $sourcelen
-		// $source = str_pad($source, $sourcelen);
 
 		StringBuffer target = new StringBuffer();
 		double factor2 = 0;
@@ -109,7 +108,6 @@ public class SimpleEncryption {
 			// append to $target string
 			target.append(char2);
 
-			//echo "char1=$char1, num1=$num1, adj= $adj, factor1= $factor1, num2=$num2, char2=$char2, factor2= $factor2<br />\n";
 
 		} // for
 
@@ -165,7 +163,6 @@ public class SimpleEncryption {
             // append to $target string
             target.append(theChar1);
 
-            //echo "char1=$char1, num1=$num1, adj= $adj, factor1= $factor1, num2=$num2, char2=$char2, factor2= $factor2<br />\n";
 
         } // for
 

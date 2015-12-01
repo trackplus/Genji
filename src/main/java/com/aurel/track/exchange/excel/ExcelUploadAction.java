@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -49,9 +49,9 @@ public class ExcelUploadAction extends ActionSupport implements Preparable, Sess
 	private String uploadFileFileName;
 	private TPersonBean personBean;
 	private Integer personID;
-	//private boolean isSysAdmin;
 	private Locale locale;
 	
+	@Override
 	public void prepare() throws Exception {
 		locale = (Locale)session.get(Constants.LOCALE_KEY);
 		personBean = (TPersonBean) session.get(Constants.USER_KEY);
@@ -75,41 +75,9 @@ public class ExcelUploadAction extends ActionSupport implements Preparable, Sess
 	 */
 	public String upload() {
 		return UploadHelper.upload(uploadFile, uploadFileFileName, AttachBL.getExcelImportDirBase() + String.valueOf(personID), locale, EXCEL_IMPORT);
-		/*InputStream inputStream;
-		try {
-			inputStream = new FileInputStream(uploadFile);
-		} catch (FileNotFoundException e) {
-			LOGGER.error("Getting the input stream for the excel file failed with " + e.getMessage(), e);
-			JSONUtility.encodeJSON(ServletActionContext.getResponse(),
-					JSONUtility.encodeJSONFailure(getText("admin.actions.importTp.err.failed")));
-			//addActionError(getText("admin.actions.importTp.err.failed"));
-			return null;
-		}
-		String excelImportDirectory = AttachBL.getExcelImportDirBase();
-		String excelImportDirectoryForPerson = excelImportDirectory + String.valueOf(personID);
-		UploadHelper.ensureDir(excelImportDirectoryForPerson);
-		File excelFile = new File(excelImportDirectoryForPerson, uploadFileFileName);
-        if (excelFile.exists())  {
-            excelFile.delete();
-        }
-		try {
-			OutputStream outputStream = new FileOutputStream(excelFile);
-			byte[] buf = new byte[1024];
-			int len;
-			while ((len = inputStream.read(buf)) > 0){
-				outputStream.write(buf, 0, len);
-			}
-			inputStream.close();
-			outputStream.close();
-		} catch (Exception e) {
-			LOGGER.error("Saving the excel to the temporary directory failed with " +e.getMessage(), e);
-			JSONUtility.encodeJSON(ServletActionContext.getResponse(),
-					JSONUtility.encodeJSONFailure(getText("admin.actions.importTp.err.failed")));
-			return null;
-		}		
-		return EXCEL_IMPORT;*/
 	}
 	
+	@Override
 	public void setSession(Map<String, Object> session) {
 		this.session = session;
 	}

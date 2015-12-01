@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -57,6 +57,7 @@ public class TCLOBPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TCLOBBean loadByPrimaryKey(Integer objectID) {
 		TCLOB tClob = null;
 		try {
@@ -76,6 +77,7 @@ public class TCLOBPeer
 	 * @param objectIDs
 	 * @return
 	 */
+	@Override
 	public List<TCLOBBean> loadByPrimaryKeys(List<Integer> objectIDs) {
 		List<TCLOBBean> clobBeansList = new ArrayList<TCLOBBean>();
 		if (objectIDs==null || objectIDs.isEmpty()) {
@@ -104,13 +106,14 @@ public class TCLOBPeer
 	 * Load all clobs
 	 * @return
 	 */
+	@Override
 	public List<TCLOBBean> loadAll() {
 		Criteria crit = new Criteria();
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		}
 		catch(Exception e) {
-			LOGGER.error("Loading all clobs failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all clobs failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -120,6 +123,7 @@ public class TCLOBPeer
 	 * @param clobBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TCLOBBean clobBean) {
 		TCLOB tClob;	
 		try {
@@ -127,7 +131,7 @@ public class TCLOBPeer
 			tClob.save();
 			return tClob.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a clob failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a clob failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -149,7 +153,7 @@ public class TCLOBPeer
 				}
 			}
 		} catch (Exception e) {
-			LOGGER.error("Copying of a clob failed with " + e.getMessage(), e);
+			LOGGER.error("Copying of a clob failed with " + e.getMessage());
 		}
 		return null;
 	}
@@ -158,6 +162,7 @@ public class TCLOBPeer
 	 * Deletes an CLOBBean by primary key
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		Criteria crit = new Criteria();
 		crit.add(OBJECTID, objectID);

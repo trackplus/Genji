@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -64,6 +64,7 @@ public class MailTemplateConfigFacade extends ConfigItemAbstract implements Conf
 	 * Expand a tree node from tree
 	 * @return
 	 */
+	@Override
 	public List<TreeConfigNodeTO> getFirstLevelNodes(TPersonBean personBean, Locale locale){
 		List<TreeConfigNodeTO> rootNodes = new ArrayList<TreeConfigNodeTO>();
 		if (personBean.isSys()) {
@@ -115,6 +116,7 @@ public class MailTemplateConfigFacade extends ConfigItemAbstract implements Conf
 	/**
 	 * Whether there are issue type specific configurations
 	 */
+	@Override
 	public boolean hasIssueTypeSpecificConfig(Integer issueType, Integer projectType, Integer project) {
 		List<TMailTemplateConfigBean> mailTemplateConfigBeans = mailTemplateCfgDAO.loadAllByIssueType(issueType, projectType, project);
 		return mailTemplateConfigBeans!=null && !mailTemplateConfigBeans.isEmpty();
@@ -123,6 +125,7 @@ public class MailTemplateConfigFacade extends ConfigItemAbstract implements Conf
 	/**
 	 * Whether there are project type specific configurations
 	 */
+	@Override
 	public boolean hasProjectTypeSpecificConfig(Integer projectType) {
 		List<TMailTemplateConfigBean> mailTemplateConfigBeans = mailTemplateCfgDAO.loadAllByProjectType(projectType);
 		return mailTemplateConfigBeans!=null && !mailTemplateConfigBeans.isEmpty();
@@ -133,6 +136,7 @@ public class MailTemplateConfigFacade extends ConfigItemAbstract implements Conf
 	 * @param projectIDs if null get all project specific configurations
 	 * @return
 	 */
+	@Override
 	public List<ConfigItem> loadAllProjectSpecificConfig(List<Integer> projectIDs) {
 		return (List)mailTemplateCfgDAO.loadAllByProjects(projectIDs);
 	}
@@ -145,6 +149,7 @@ public class MailTemplateConfigFacade extends ConfigItemAbstract implements Conf
 	 * @param isCustom
 	 * @return
 	 */
+	@Override
 	public boolean hasFieldTypeSpecificConfig(Integer issueType, Integer projectType,  Integer project, boolean isCustom) {
 		return true;
 	}
@@ -156,6 +161,7 @@ public class MailTemplateConfigFacade extends ConfigItemAbstract implements Conf
 	 * @param projectID
 	 * @return
 	 */
+	@Override
 	public ConfigItem loadForConfigRelByIssueTypeAndProject(Integer configRel, Integer itemTypeID, Integer projectID) {
 		return mailTemplateCfgDAO.loadByIssueTypeAndProject(configRel, itemTypeID, projectID);
 	}
@@ -167,6 +173,7 @@ public class MailTemplateConfigFacade extends ConfigItemAbstract implements Conf
 	 * @param projectTypeID
 	 * @return
 	 */
+	@Override
 	public ConfigItem loadForConfigRelByIssueTypeAndProjectType(Integer configRel, Integer itemTypeID, Integer projectTypeID) {
 		return mailTemplateCfgDAO.loadByIssueTypeAndProjectType(configRel, itemTypeID, projectTypeID);
 	}
@@ -177,6 +184,7 @@ public class MailTemplateConfigFacade extends ConfigItemAbstract implements Conf
 	 * @param projectID
 	 * @return
 	 */
+	@Override
 	public ConfigItem loadForConfigRelByProject(Integer configRel, Integer projectID) {
 		return mailTemplateCfgDAO.loadByProject(configRel, projectID);
 	}
@@ -187,6 +195,7 @@ public class MailTemplateConfigFacade extends ConfigItemAbstract implements Conf
 	 * @param projectTypeID
 	 * @return
 	 */
+	@Override
 	public ConfigItem loadForConfigRelByProjectType(Integer configRel, Integer projectTypeID) {
 		return mailTemplateCfgDAO.loadByProjectType(configRel, projectTypeID);
 	}
@@ -197,6 +206,7 @@ public class MailTemplateConfigFacade extends ConfigItemAbstract implements Conf
 	 * @param itemTypeID
 	 * @return
 	 */
+	@Override
 	public ConfigItem loadForConfigRelByItemType(Integer configRel, Integer itemTypeID) {
 		return mailTemplateCfgDAO.loadByIssueType(configRel, itemTypeID);
 	}
@@ -206,6 +216,7 @@ public class MailTemplateConfigFacade extends ConfigItemAbstract implements Conf
 	 * @param configRel
 	 * @return
 	 */
+	@Override
 	public ConfigItem loadForConfigRelDefault(Integer configRel) {
 		return mailTemplateCfgDAO.loadDefault(configRel);
 	}
@@ -214,6 +225,7 @@ public class MailTemplateConfigFacade extends ConfigItemAbstract implements Conf
 	 * Whether the only project or only projectTyp specific configuration can be defined
 	 * @return
 	 */
+	@Override
 	public boolean hasProjectOrProjectTypSpecificConfigs() {
 		return false;
 	}
@@ -221,6 +233,7 @@ public class MailTemplateConfigFacade extends ConfigItemAbstract implements Conf
 	 * Deletes a single configuration
 	 * @param treeConfigIDTokens
 	 */
+	@Override
 	public void deleteConfig(TreeConfigIDTokens treeConfigIDTokens) {
 		if (!(treeConfigIDTokens.getIssueTypeID()==null && treeConfigIDTokens.getProjectTypeID()==null &&
 				treeConfigIDTokens.getProjectID()==null) || !TreeConfigBL.MAIL_TEMPLATE_TYPE.equals(treeConfigIDTokens.getType())) {
@@ -256,6 +269,7 @@ public class MailTemplateConfigFacade extends ConfigItemAbstract implements Conf
 	 * @param directConfig
 	 * @param fallbackConfig
 	 */
+	@Override
 	public Integer overwriteConfig(ConfigItem directConfig, ConfigItem fallbackConfig) {
 		if (fallbackConfig==null) {
 			return null;
@@ -268,6 +282,7 @@ public class MailTemplateConfigFacade extends ConfigItemAbstract implements Conf
 	 * Whether after a reset operation a tree refresh is needed
 	 * @return
 	 */
+	@Override
 	public boolean refreshEntireTreeAfterReset() {
 		//true because the assignment info is shown in the node's label
 		return true;
@@ -278,6 +293,7 @@ public class MailTemplateConfigFacade extends ConfigItemAbstract implements Conf
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public Map<Integer, Map<Integer, ILabelBean>> getLookupMap(Locale locale) {
 		Map<Integer, Map<Integer, ILabelBean>> lookupMap = new HashMap<Integer, Map<Integer,ILabelBean>>();
 		List<MailEventBean> eventList = MailEventBL.loadAll(locale);
@@ -292,6 +308,7 @@ public class MailTemplateConfigFacade extends ConfigItemAbstract implements Conf
 	 * @param cfg
 	 * @return
 	 */
+	@Override
 	public String getTitle(ConfigItem cfg, Map<Integer, Map<Integer, ILabelBean>> lookupMap) {
 		Map<Integer, ILabelBean> eventMap = lookupMap.get(EVENT_KEY);
 		MailEventBean mailEventBean = (MailEventBean)eventMap.get(((TMailTemplateConfigBean)cfg).getEventKey());
@@ -304,6 +321,7 @@ public class MailTemplateConfigFacade extends ConfigItemAbstract implements Conf
 		return "<span class=\'event\'>"+mailEventBean.getLabel()+"</span>:" + "<span class=\'formName\'>"+ templateName+"</span>";
 	}
 
+	@Override
 	public List load(ConfigItem cfg) {
 		List<TMailTemplateConfigBean> mailTemplateConfigs =  mailTemplateCfgDAO.load((TMailTemplateConfigBean)cfg);
 		if (cfg.isDefault()) {
@@ -340,10 +358,12 @@ public class MailTemplateConfigFacade extends ConfigItemAbstract implements Conf
 		
 	}
 
+	@Override
 	public ConfigItem createConfigItem() {
 		return new TMailTemplateConfigBean();
 	}
 
+	@Override
 	public void copyExtraInfo(ConfigItem cfgSource, ConfigItem cfgTarget) {
 		TMailTemplateConfigBean newCfg=(TMailTemplateConfigBean)cfgTarget;
 		TMailTemplateConfigBean cfg=(TMailTemplateConfigBean)cfgSource;
@@ -351,10 +371,12 @@ public class MailTemplateConfigFacade extends ConfigItemAbstract implements Conf
 
 	}
 
+	@Override
 	public Integer saveConfig(ConfigItem cfg) {
 		return mailTemplateCfgDAO.save((TMailTemplateConfigBean)cfg);
 	}
 
+	@Override
 	public ConfigItem loadConfigByPk(Integer pk) {
 		return mailTemplateCfgDAO.loadByPrimaryKey(pk);
 	}

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -64,6 +64,7 @@ public class ConsInfAction extends ActionSupport implements Preparable,SessionAw
 	//has only setter
 	private String raciRole;
 	
+	@Override
 	public void prepare() throws Exception {
 		person = ((TPersonBean) session.get(Constants.USER_KEY)).getObjectID();
 		create=(workItemID==null);
@@ -107,7 +108,6 @@ public class ConsInfAction extends ActionSupport implements Preparable,SessionAw
 			me();
 		}
 		//by tab change to cons/inf tab or refresh from add consultant/informant popup
-		//return load();
 		JSONUtility.encodeJSONSuccess(ServletActionContext.getResponse());
 		return null;
 	}
@@ -143,7 +143,6 @@ public class ConsInfAction extends ActionSupport implements Preparable,SessionAw
     			(selectedConsultantGroups==null || selectedConsultantGroups.length ==0) &&
     			(selectedInformantPersons==null || selectedInformantPersons.length ==0) &&
     			(selectedInformantGroups==null || selectedInformantGroups.length ==0)) {
-    		//addActionError(getText("item.tabs.watchers.err.notSelected"));
     		return null;
     	}
     	if (create) {
@@ -247,6 +246,7 @@ public class ConsInfAction extends ActionSupport implements Preparable,SessionAw
 		this.consInfShow = consInfShow;
 	}	
 
+	@Override
 	public void setSession(Map<String, Object> session) {
 		this.session=session;
 	}

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -29,7 +29,7 @@
 Ext.define('com.trackplus.admin.customize.treeConfig.ScreenConfig',{
 	extend:'com.trackplus.admin.customize.treeConfig.AssignmentConfig',
 	config: {
-		rootID:''
+		rootID:'_'
 	},
 	baseAction: "screenConfigItemDetail",
 	/**
@@ -42,9 +42,8 @@ Ext.define('com.trackplus.admin.customize.treeConfig.ScreenConfig',{
 	editHeight:350,
 	constructor: function(config) {
 		var config = config || {};
-		this.initialConfig = config;
-		Ext.apply(this, config);
-		this.init();
+		this.initConfig(config);
+		this.initBase();
 	},
 
 	getToolbarActions: function() {
@@ -53,12 +52,12 @@ Ext.define('com.trackplus.admin.customize.treeConfig.ScreenConfig',{
 		var actions = [this.actionApply, this.actionReset, {xtype: 'tbspacer', width: 45, disabled:true},
 					this.actionEdit, this.actionDesign, this.actionImport, this.actionExport];
 		return actions;
-		
+
 	},
 
 	enableDisableToolbarButtons: function (view, selections) {
 		var sysAdmin=com.trackplus.TrackplusConfig.user.sys;
-		if (selections==null || selections.length==0) {
+		if (CWHF.isNull(selections) || selections.length===0) {
 			this.actionEdit.setDisabled(true);
 			this.actionApply.setDisabled(true);
 			this.actionDesign.setDisabled(true);
@@ -67,9 +66,9 @@ Ext.define('com.trackplus.admin.customize.treeConfig.ScreenConfig',{
 			var selectedRecord = selections[0];
 			var isLeaf = selectedRecord.data['leaf'];
 			this.actionExport.setDisabled(!sysAdmin);
-			if (selections.length==1) {
+			if (selections.length===1) {
 				var selectedTreeNode = this.getSingleSelectedRecord(true);
-				if (selectedTreeNode!=null && this.isAssignable(selectedTreeNode)/*selectedTreeNode.isLeaf()*/) {
+				if (selectedTreeNode && this.isAssignable(selectedTreeNode)/*selectedTreeNode.isLeaf()*/) {
 					this.actionApply.setDisabled(false);
 				}
 				this.actionEdit.setDisabled(!sysAdmin);
@@ -86,7 +85,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.ScreenConfig',{
 		var sysAdmin=com.trackplus.TrackplusConfig.user.sys;
 		if (selectionIsSimple) {
 			var selectedTreeNode = this.getSingleSelectedRecord(true);
-			if (selectedTreeNode!=null && selectedTreeNode.isLeaf()) {
+			if (selectedTreeNode && selectedTreeNode.isLeaf()) {
 				if (sysAdmin) {
 					var actions = [this.actionApply, this.actionEdit, this.actionDesign];
 					return actions;
@@ -104,7 +103,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.ScreenConfig',{
 			if (sysAdmin) {
 				var actions = [];
 				return actions;
-				
+
 			} else {
 				return [];
 			}
@@ -139,7 +138,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.ScreenConfig',{
 	 * Which actions to enable/disable depending on tree selection
 	 */
 	getToolbarActionChangesForTreeNodeSelect: function(node) {
-		if (node!=null ) {
+		if (node ) {
 			var inheritedConfig=node.data['inheritedConfig'];
 			var defaultConfig=node.data['defaultConfig'];
 			this.actionReset.setDisabled(inheritedConfig || defaultConfig);
@@ -161,7 +160,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.ScreenConfig',{
 			var defaultConfig = selectedRecord.data['defaultConfig'];
 			var leaf = selectedRecord.isLeaf();
 			var selectedTreeNode = this.getSingleSelectedRecord(true);
-			if (!inheritedConfig && !defaultConfig&&selectedTreeNode!=null && this.isAssignable(selectedTreeNode)) {
+			if (!inheritedConfig && !defaultConfig&&selectedTreeNode && this.isAssignable(selectedTreeNode)) {
 				actions.push(this.actionReset);
 			}
 			if (!leaf) {
@@ -188,11 +187,11 @@ Ext.define('com.trackplus.admin.customize.treeConfig.ScreenConfig',{
 	},
 
 	getImportURL: function() {
-		return this.baseAction + "!importScreens.action";
+		return this.getBaseAction() + "!importScreens.action";
 	},
 
 	getExportURL: function(selectedObjectIDs) {
-		return this.baseAction + "!export.action?selectedObjectIDs="+selectedObjectIDs;
+		return this.getBaseAction() + "!export.action?selectedObjectIDs="+selectedObjectIDs;
 	},
 
 	/**
@@ -226,7 +225,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.ScreenConfig',{
 		return  [CWHF.createTextField('common.lbl.name','name',
 					{anchor:'100%', allowBlank:false, labelWidth:this.labelWidth, width:this.textFieldWidth}),
 				CWHF.createTextField('common.lbl.tagLabel','tagLabel',
-					{anchor:'100%', labelWidth:this.labelWidth, width:this.textFieldWidth}),
+					{anchor:'100%', labelWidth:this.labelWidth, width:this.textFieldWidth,itemId:'tagLabel'}),
 				CWHF.createTextAreaField('common.lbl.description','description',
 					{anchor:'100%', labelWidth:this.labelWidth, width:this.textFieldWidth})];
 	},
@@ -236,7 +235,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.ScreenConfig',{
 	},
 
 	onImport: function() {
-		var submit = [{submitUrl:this.baseAction + "!importScreens.action",
+		var submit = [{submitUrl:this.getBaseAction() + "!importScreens.action",
 				submitButtonText:getText('common.btn.upload'),
 				validateHandler: Upload.validateUpload,
 				expectedFileType: /^.*\.(xml)$/,
@@ -253,14 +252,14 @@ Ext.define('com.trackplus.admin.customize.treeConfig.ScreenConfig',{
 	},
 
 	onExport: function() {
-		attachmentURI=this.baseAction + "!export.action?selectedScreenIDs="+this.getSelectedScreenIDs();
+		var attachmentURI=this.getBaseAction() + "!export.action?selectedScreenIDs="+this.getSelectedScreenIDs();
 		window.open(attachmentURI);
 	},
 
 	getSelectedScreenIDs:function(){
 		var selectedTemplateIDs = new Array();
 		var selectedRecordsArr = this.getSelection();
-		if (selectedRecordsArr!=null) {
+		if (selectedRecordsArr) {
 			Ext.Array.forEach(selectedRecordsArr, function(record, index, allItems)
 			{selectedTemplateIDs.push(record.data['id']);}, this);
 		}

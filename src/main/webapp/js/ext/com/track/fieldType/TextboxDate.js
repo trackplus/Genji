@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -32,22 +32,22 @@ Ext.define('js.ext.com.track.fieldType.TextboxDate', {
 				data['textBoxSettingsList[0].minOption'], inheritedConfig, true);
 		var maxValueRadioButtonItems = CWHF.getRadioButtonItems(data['dateOptions'], 'textBoxSettingsList[0].maxOption', 'id', 'label',
 				data['textBoxSettingsList[0].maxOption'], inheritedConfig, true);
-		var defaultOptionRadioGroup = CWHF.getRadioGroup("defaultOption", data['defaultOptionLabel'],
-				500, defaultValueRadioButtonItems, {labelIsLocalized:true, labelWidth:data["labelWidth"]}, {
+		var defaultOptionRadioGroup = CWHF.getRadioGroup(data['defaultOptionLabel'], 500,
+				defaultValueRadioButtonItems, {itemId:"defaultOption",labelIsLocalized:true, labelWidth:data["labelWidth"]}, {
 			change: function(radioGroup, newValue, oldValue, options) {
 				var defaulDateSelected = radioGroup.ownerCt.absoluteDateSelected(radioGroup);
 				var defaultDate = radioGroup.ownerCt.getComponent("defaultDate");
 				defaultDate.setDisabled(!defaulDateSelected);
 			}});
-		var minOptionRadioGroup = CWHF.getRadioGroup("minOption", data['minOptionLabel'],
-				500, minValueRadioButtonItems, {labelIsLocalized:true, labelWidth:data["labelWidth"]}, {
+		var minOptionRadioGroup = CWHF.getRadioGroup(data['minOptionLabel'],
+				500, minValueRadioButtonItems, {itemId:"minOption",labelIsLocalized:true, labelWidth:data["labelWidth"]}, {
 			change: function(radioGroup, newValue, oldValue, options) {
 				var defaulDateSelected = radioGroup.ownerCt.absoluteDateSelected(radioGroup);
 				var defaultDate = radioGroup.ownerCt.getComponent("minDate");
 				defaultDate.setDisabled(!defaulDateSelected);
 			}});
-		var maxOptionRadioGroup = CWHF.getRadioGroup("maxOption", data['maxOptionLabel'],
-				500, maxValueRadioButtonItems, {labelIsLocalized:true, labelWidth:data["labelWidth"]}, {
+		var maxOptionRadioGroup = CWHF.getRadioGroup(data['maxOptionLabel'],
+				500, maxValueRadioButtonItems, {itemId:"maxOption",labelIsLocalized:true, labelWidth:data["labelWidth"]}, {
 			change: function(radioGroup, newValue, oldValue, options) {
 				var defaulDateSelected = radioGroup.ownerCt.absoluteDateSelected(radioGroup);
 				var defaultDate = radioGroup.ownerCt.getComponent("maxDate");
@@ -86,7 +86,7 @@ Ext.define('js.ext.com.track.fieldType.TextboxDate', {
 		var checkedRadio;
 		if (checkedArr.length>0) {
 			checkedRadio = checkedArr[0];
-			return checkedRadio.getSubmitValue()==2;
+			return checkedRadio.getSubmitValue()===2;
 		}
 		return false;
 	}

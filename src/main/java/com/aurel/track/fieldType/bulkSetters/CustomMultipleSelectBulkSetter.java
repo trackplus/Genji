@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -34,6 +34,8 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import com.aurel.track.beans.TPersonBean;
+
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -107,7 +109,6 @@ public class CustomMultipleSelectBulkSetter extends CustomSingleSelectBulkSetter
 		if (dataSourceMap!=null) {
 			boolean allIssuesFromTheSameProject = dataSourceMap.keySet().size()==1;
 			Map<Integer, Integer[]> valueMap = (Map<Integer, Integer[]>)value;
-			//stringBuilder.append("projectJson").append(":[");
 			JSONUtility.appendFieldName(stringBuilder, "projectJson").append(":[");
 			for (Iterator<Integer> itrList = dataSourceMap.keySet().iterator(); itrList.hasNext();) {
 				Integer listID = itrList.next();
@@ -116,15 +117,15 @@ public class CustomMultipleSelectBulkSetter extends CustomSingleSelectBulkSetter
 				if (labelMap!=null && !allIssuesFromTheSameProject) {
 					JSONUtility.appendStringValue(stringBuilder, JSONUtility.JSON_FIELDS.LABEL, labelMap.get(listID));
 				}
-				JSONUtility.appendStringValue(stringBuilder, JSONUtility.JSON_FIELDS.NAME, getNameWithMergedKey(baseName, listID));
 				JSONUtility.appendILabelBeanList(stringBuilder, JSONUtility.JSON_FIELDS.DATA_SOURCE, listDataSource);
 				Integer[] listValues = null;
 				if (valueMap!=null) {
 					listValues = valueMap.get(listID);
 					if (listValues!=null) {
-						JSONUtility.appendIntegerArrayAsArray(stringBuilder, JSONUtility.JSON_FIELDS.VALUE, listValues, true);
+						JSONUtility.appendIntegerArrayAsArray(stringBuilder, JSONUtility.JSON_FIELDS.VALUE, listValues);
 					}
 				}
+				JSONUtility.appendStringValue(stringBuilder, JSONUtility.JSON_FIELDS.NAME, getNameWithMergedKey(baseName, listID), true);
 				stringBuilder.append("}");
 				if (itrList.hasNext()) {
 					stringBuilder.append(",");
@@ -195,7 +196,8 @@ public class CustomMultipleSelectBulkSetter extends CustomSingleSelectBulkSetter
 				//multiple values are loaded in the workItem as Object[], not as Integer[] !!! 
 				originalSelections = (Object[])originalValue;
 			} catch (Exception e) {
-				LOGGER.debug("Getting the original object array value for " + value +  " failed with " + e.getMessage(), e);
+				LOGGER.info("Getting the original object array value for " + value +  " failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		Set<Integer> originalSet = new HashSet<Integer>();
@@ -204,7 +206,8 @@ public class CustomMultipleSelectBulkSetter extends CustomSingleSelectBulkSetter
 				try {
 					originalSet.add((Integer)originalSelections[i]);
 				} catch (Exception e) {
-					LOGGER.debug("Transforming the original object value " + originalSelections[i] +  " to Integer failed with " + e.getMessage(), e);
+					LOGGER.info("Transforming the original object value " + originalSelections[i] +  " to Integer failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 			}
 		}

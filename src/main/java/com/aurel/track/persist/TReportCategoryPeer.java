@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -78,6 +78,7 @@ public class TReportCategoryPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TReportCategoryBean loadByPrimaryKey(Integer objectID){
 		TReportCategory reportCategory = null;
 		try {
@@ -101,6 +102,7 @@ public class TReportCategoryPeer
 	 * @param label
 	 * @return
 	 */
+	@Override
 	public List<TReportCategoryBean> loadByLabel(Integer repository,
 			Integer parentID, Integer projectID, Integer personID, String label) {
 		List<TReportCategory> categories = null;
@@ -136,6 +138,7 @@ public class TReportCategoryPeer
 	 * @param personID filter by only if set
 	 * @return
 	 */
+	@Override
 	public List<TReportCategoryBean> loadRootCategories(Integer repository, Integer projectID, Integer personID) {
 		List<TReportCategory> categories = null;
 		Criteria criteria = new Criteria();
@@ -164,6 +167,7 @@ public class TReportCategoryPeer
 	 * @param projectIDs
 	 * @return
 	 */
+	@Override
 	public List<TReportCategoryBean> loadProjectRootCategories(List<Integer> projectIDs) {
 		List<TReportCategory> categories = new ArrayList<TReportCategory>();
 		if (projectIDs==null || projectIDs.isEmpty()) {
@@ -196,6 +200,7 @@ public class TReportCategoryPeer
 	 * @param personID
 	 * @return
 	 */
+	@Override
 	public List<TReportCategoryBean> loadByRepositoryPersonProjects(
 			Integer repository, Integer personID, List<Integer> projects){
 		List<TReportCategory> categories = new ArrayList<TReportCategory>();
@@ -222,6 +227,7 @@ public class TReportCategoryPeer
 	 * @param parentID
 	 * @return
 	 */
+	@Override
 	public List<TReportCategoryBean> loadByParent(Integer parentID) {
 		List<TReportCategory> categories = new ArrayList<TReportCategory>();
 		Criteria criteria = new Criteria();
@@ -241,6 +247,7 @@ public class TReportCategoryPeer
 	 * @param parentIDs
 	 * @return
 	 */
+	@Override
 	public List<TReportCategoryBean> loadByParents(List<Integer> parentIDs) {
 		List<TReportCategory> categories = new ArrayList<TReportCategory>();
 		if (parentIDs==null || parentIDs.isEmpty()) {
@@ -270,6 +277,7 @@ public class TReportCategoryPeer
 	 * @param filterCategoryBean 
 	 * @return
 	 */
+	@Override
 	public Integer save(TReportCategoryBean reportCategoryBean) {
 		TReportCategory filterCategory;
 		try {
@@ -277,7 +285,7 @@ public class TReportCategoryPeer
 			filterCategory.save();
 			return filterCategory.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a filterCategory failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a filterCategory failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -287,6 +295,7 @@ public class TReportCategoryPeer
 	 * is used in other tables in the database.
 	 * @param oldOID object identifier of list type to be replaced
 	 */
+	@Override
 	public boolean hasDependenData(Integer oldOID) {
 		return ReflectionHelper.hasDependentData(dependentDataClasses, dependentDataFields, oldOID);					   
 	}
@@ -296,6 +305,7 @@ public class TReportCategoryPeer
 	 * @param objectID 
 	 * @return
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		ReflectionHelper.delete(deletePeerClasses, deleteFields, objectID);
 	}
@@ -311,7 +321,7 @@ public class TReportCategoryPeer
 		try {
 			list = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the list of TReportCategoryBean to be deleted failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the list of TReportCategoryBean to be deleted failed with " + e.getMessage());
 			throw e;
 		}
 		if (list!=null && !list.isEmpty()) {
@@ -328,6 +338,7 @@ public class TReportCategoryPeer
 	 * Delete all private report categories of a person
 	 * @param personID
 	 */
+	@Override
 	public void deletePrivateReportCategories(Integer personID) {
 		Criteria criteria = new Criteria();
 		criteria.add(CREATEDBY, personID);
@@ -335,7 +346,7 @@ public class TReportCategoryPeer
 		try {
 			doDelete(criteria);
 		} catch (TorqueException e) {
-			LOGGER.error("Deleting the private filter categories failed with " +e.getMessage(), e);
+			LOGGER.error("Deleting the private filter categories failed with " +e.getMessage());
 		}
 	}
 	

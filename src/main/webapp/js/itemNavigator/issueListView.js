@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -63,7 +63,7 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewPlugin',{
 	},
 	containsFields:function(fields){
 		var me=this;
-		if(fields!=null){
+		if(fields){
             //TOTAL_EXPENSE_COST = -1100
             //TOTAL_EXPENSE_TIME = -1101
             // TOTAL_PLANNED_COST = -1300;
@@ -72,7 +72,7 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewPlugin',{
             //REMAINING_PLANNED_TIME = -1401;
 			var hardCodedRefreshFields=[-1100,-1101,-1300,-1301,-1400,-1401];
 			for(var i=0;i<fields.length;i++){
-				if(Ext.Array.indexOf(hardCodedRefreshFields,fields[i])!=-1){
+				if(Ext.Array.indexOf(hardCodedRefreshFields,fields[i])!==-1){
 					return true;
 				}
 				if(me.containsOneField(fields[i])){
@@ -86,14 +86,14 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewPlugin',{
 	    var me=this;
 		var shortFields=me.model.layout.shortFields;
 		for(var i=0;i<shortFields.length;i++){
-			if(shortFields[i].reportField==fieldID){
+			if(shortFields[i].reportField===fieldID){
 				return true;
 			}
 		}
 		if(me.descriptor.useLongFields){
 			var longFields=me.model.layout.longFields;
 			for(var i=0;i<longFields.length;i++){
-				if(longFields[i].reportField==fieldID){
+				if(longFields[i].reportField===fieldID){
 					return true;
 				}
 			}
@@ -115,7 +115,6 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewPlugin',{
 			//hidden:!me.settingsVisible,
 			defaults: {
 				cls:'toolbarItemAction',
-				overCls:'toolbarItemAction-over',
 				scale:'small',
 				iconAlign: 'left',
 				enableToggle:false
@@ -129,13 +128,13 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewPlugin',{
 		items.push(btnGroup);
 		items.push(btnChooseColumns);
 		//items.push('->');
-		if (btnSaveAsStandardLayout!=null) {
+		if (btnSaveAsStandardLayout) {
 			items.push(btnSaveAsStandardLayout);
 		}
-		if (btnUseStandardLayout!=null) {
+		if (btnUseStandardLayout) {
 			items.push(btnUseStandardLayout);
 		}
-		if (btnSaveAsFilterLayout!=null) {
+		if (btnSaveAsFilterLayout) {
 			items.push(btnSaveAsFilterLayout);
 		}
 		return items;
@@ -177,65 +176,7 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewPlugin',{
 		var me = this;
 		var config = cfg || {};
 		me.initialConfig = config;
-		me.events=[];
-		this.addEvents(
-			/**
-			* @event itemclick
-			* Fires when an item is clicked.
-			* @param {com.trackplus.itemNavigator.IssueListViewPlugin} this
-			* @param {Ext.data.Model} record The record that belongs to the item
-			* @param {HTMLElement} item The item's element
-			* @param {Number} index The item's index
-			* @param {Ext.EventObject} e The raw event object
-			*/
-			'itemclick',
-
-			/**
-			* @event itemdblclick
-			* Fires when an item is double clicked.
-			* @param {com.trackplus.itemNavigator.IssueListViewPlugin} this
-			* @param {Ext.data.Model} record The record that belongs to the item
-			* @param {HTMLElement} item The item's element
-			* @param {Number} index The item's index
-			* @param {Ext.EventObject} e The raw event object
-			*/
-			'itemdblclick',
-
-			/**
-			* @event itemcontextmenu
-			* Fires when an item is right clicked.
-			* @param {com.trackplus.itemNavigator.IssueListViewPlugin} this
-			* @param {Ext.data.Model} record The record that belongs to the item
-			* @param {HTMLElement} item The item's element
-			* @param {Number} index The item's index
-			* @param {Ext.EventObject} e The raw event object
-			*/
-			'itemcontextmenu',
-
-			/**
-			* @event selectionchange
-			* Fires when the selected nodes change. Relayed event from the underlying selection model.
-			* @param {com.trackplus.itemNavigator.IssueListViewPlugin} this
-			* @param {Array} selections Array of the selected nodes
-			*/
-			'selectionchange',
-
-
-			/**
-			* @event bulkselectionchange
-			* Fires when the selected nodes change. Relayed event from the underlying selection model.
-			* @param {com.trackplus.itemNavigator.IssueListViewPlugin} this
-			* @param {Array} selections Array of the selected nodes
-			*/
-			'bulkselectionchange',
-
-			'datachange',
-			'layoutchange',
-			'sortchange',
-			'totalChange',
-			'startDragItems',
-			'afterDropItems'
-		);
+		//me.events=[];
 		this.listeners = config.listeners;
 		com.trackplus.itemNavigator.IssueListViewPlugin.superclass.constructor.call(this, config);
 	},
@@ -249,7 +190,7 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewPlugin',{
 		me.model=null;
 		me.pluginCls=null;
 		me.clearListeners();
-		if(me.view!=null){
+		if(me.view){
 			me.view.clearListeners.call(me.view);
 			me.view.removeAll.call(me.view,true);
 			me.view.destroy.call(me.view);
@@ -264,13 +205,13 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewPlugin',{
 		var sfield;
 		for(var i=0;i<shortFields.length;i++){
 			sfield=shortFields[i];
-			fields.push({name:'f'+sfield.reportField,type:sfield.extJsType,useNull:true});
+			fields.push({name:'f'+sfield.reportField,type:sfield.extJsType,allowNull:true});
 			if(sfield.so===true){
 				var type='int';
-				if(sfield.soType!=null){
+				if(sfield.soType){
 					type=sfield.soType;
 				}
-				fields.push({name:'f_so'+sfield.reportField,type:type,useNull:true});
+				fields.push({name:'f_so'+sfield.reportField,type:type,allowNull:true});
 			}
 		}
 		fields.push({name:'group',type:'boolean'});
@@ -279,12 +220,12 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewPlugin',{
 		fields.push({name:'linkable',type:'boolean'});
 		fields.push({name:'notEditableFields'});
 		fields.push({name:'leaf',type:'boolean'});
-		fields.push({name:'workItemID',type:'int',useNull:true});
+		fields.push({name:'workItemID',type:'int',allowNull:true});
 		fields.push({name:'attachmentIds'});
-		fields.push({name:'workItemIndex',type:'int',useNull:true});
+		fields.push({name:'workItemIndex',type:'int',allowNull:true});
 		fields.push({name:'projectID',type:'int'});
 		fields.push({name:'issueTypeID',type:'int'});
-		fields.push({name:'parentID',type:'int',useNull:true});
+		fields.push({name:'parentID',type:'int',allowNull:true});
 		fields.push({name:'originatorID',type:'int'});
 		fields.push({name:'projectName'});
 		fields.push({name:'longFields'});
@@ -299,33 +240,35 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewPlugin',{
 		var me=this;
 		var colType='Ext.grid.column.Column';
 		var colID='ID_'+layoutData.id;
-		if(i==0&&useTree){
+		if(i===0&&useTree){
 			colType='Ext.tree.Column';
 		}
 		var colHeader='&nbsp;';
 		var colCls=null;
 		var colResizable=true;
-		if(i==0&&useTree){
+		var align='left';
+		if(i===0&&useTree){
 			colHeader='&nbsp;<span class="expandAll" id="rowExpandAllTrg">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="collapseAll" id="rowCollapseAllTrg">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;'+layoutData.label;
 		}else{
-			if(layoutData.renderContentAsImg==true||layoutData.reportField==-1001){
-				colCls='headerIcon'+layoutData.reportField;
-				if(layoutData.reportField!=-10001){
+			if(layoutData.renderContentAsImg===true||layoutData.reportField===-1001){
+				colCls='headerIcon headerIcon'+layoutData.reportField;
+				if(layoutData.reportField!==-10001){
 					colResizable=false;
 				}
 				if (layoutData.fieldIsCustomIcon) {
-					colCls='headerIcon-customOption';
+					colCls='headerIcon headerIcon-customOption';
 					//true beacause multiple icons are possible
 					colResizable=true;
 				}
+				align='center';
 			}else{
 				colHeader=layoutData.label;
 			}
 		}
 		var colCfg={
-			header:colHeader,
-			draggable :true,//(i!=0),
-			hideable:(i!=0),
+			text:colHeader,
+			draggable :true,//(i!==0),
+			hideable:(i!==0),
 			menuDisabled:true,
 			width:layoutData.fieldWidth,
 			dataIndex:'f'+layoutData.reportField,
@@ -338,6 +281,7 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewPlugin',{
 			tdCls:'simpleTreeGridCell',
 			id:colID,
 			cls:colCls,
+			align:align,
 			resizable:colResizable
 		};
 		var col=Ext.create(colType,colCfg);
@@ -346,15 +290,15 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewPlugin',{
 				return 'f_so'+this.dataIndex.substring(1);
 			};
 		}
-		if(i==0&&me.plainGrid==true){
+		if(i===0&&me.plainGrid===true){
 			col.renderer=function(value,metaData,record,rowIndex,colIndex,store,view){
 				var iconCls=record.data.iconCls;
 				return '<img class="x-tree-icon '+iconCls+'" role="presentation" src="data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==">'+
 					'<span class="x-tree-node-text">'+value+'</span>';
 			};
 		}
-		/*if(com.trackplus.TrackplusConfig.mobile==true&&
-			layoutData.reportField==17&&i!=0){
+		/*if(com.trackplus.TrackplusConfig.mobile===true&&
+			layoutData.reportField===17&&i!==0){
 			//synopsis
 			col.renderer=function(value,metaData,record,rowIndex,colIndex,store,view){
 				var urlStr='printItem.action?key='+record.data.workItemID;
@@ -362,13 +306,13 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewPlugin',{
 				return '<a href="'+urlStr+'" class="'+synopsisClass+'" target="printItem'+record.data.workItemID+'">'+value+'</a>';
 			};
 		}*/
-		if(layoutData.reportField==-1001){//attachments
-			if(i==0){
+		if(layoutData.reportField===-1001){//attachments
+			if(i===0){
 				col.renderer = function (value, metaData, record, rowIndex, colIndex, store, view) {
-					if(record.data['group']==true) {
+					if(record.data['group']===true) {
 						return record.data['Name'];
 					}else{
-						if (value == null) {
+						if (CWHF.isNull(value)) {
 							return "";
 						}
 						return '<a href="javaScript:openAttachments(' + record.data.workItemID + ',&quot;' + record.data['attachmentIds'] + '&quot;)" class="downloadAttachments">' + value + '</a>';
@@ -376,16 +320,16 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewPlugin',{
 				};
 			}else {
 				col.renderer = function (value, metaData, record, rowIndex, colIndex, store, view) {
-					if (value == null) {
+					if (CWHF.isNull(value)) {
 						return "";
 					}
 					return '<a href="javaScript:openAttachments(' + record.data.workItemID + ',&quot;' + record.data['attachmentIds'] + '&quot;)" class="downloadAttachments">' + value + '</a>';
 				};
 			}
 		}
-		if(layoutData.renderContentAsImg==true&&i!=0){
+		if(layoutData.renderContentAsImg===true&&i!==0){
 			var fieldWidth = layoutData["fieldWidth"];
-			if (fieldWidth==null) {
+			if (CWHF.isNull(fieldWidth)) {
 				col.width=25;
 			} else {
 				col.width=fieldWidth;
@@ -398,24 +342,24 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewPlugin',{
 				}
 				var reportField=this.columns[myIndex].dataIndex.substring(1);
 				var fieldIsCustomIcon = this.columns[myIndex].fieldIsCustomIcon;
-				if (reportField==-1006 || reportField==-1010){
+				if (reportField===-1006 || reportField===-1010){
 					//private symbol
-					if (reportField==-1006) {
-						if(value!=null&&value!=''){
-							return '<img src="'+com.trackplus.TrackplusConfig.icon16Path+value+'" style="padding-top:2px;">';
+					if (reportField===-1006) {
+						if(value&&value!==''){
+							return '<img src="'+com.trackplus.TrackplusConfig.icon16Path+value+'">';
 						}else{
 							return '';
 						}
 					} else {
 						//overflow icons
-						if (reportField==-1010) {
-							if (value!=null && value.length>0) {
+						if (reportField===-1010) {
+							if (value && value.length>0) {
 								var selectedValues = value.split(",");
 								//valuesArr = value.split()
 								var outOfBoundIcons = "";
 								Ext.Array.forEach(selectedValues, function(option) {
-									if (option!=null) {
-										var srcImg='<img src="'+com.trackplus.TrackplusConfig.icon16Path+option+'" style="padding-top:2px;">';
+									if (option) {
+										var srcImg='<img src="'+com.trackplus.TrackplusConfig.icon16Path+option+'">';
 										outOfBoundIcons = outOfBoundIcons + srcImg;
 									}
 								}, this);
@@ -426,20 +370,20 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewPlugin',{
 						}
 					}
 				}else{
-					if(value!=null&&value!=''){
+					if(value&&value!==''){
 						if (fieldIsCustomIcon) {
 							var selectedValues = value.split(",");
 							var images = "";
 							Ext.Array.forEach(selectedValues, function(option) {
-								if (option!=null) {
+								if (option) {
 									var srcImg="optionIconStream.action?&optionID="+option;
-									images = images + '<img src="'+srcImg+'" style="padding-top:2px;">';
+									images = images + '<img src="'+srcImg+'">';
 								}
 							} , this);
 							return images;
 						} else {
 							var srcImg="optionIconStream.action?fieldID="+reportField+"&optionID="+value;
-							return '<img src="'+srcImg+'" style="padding-top:2px;">';
+							return '<img src="'+srcImg+'" ">';
 						}
 					}else{
 						return "";
@@ -453,7 +397,7 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewPlugin',{
 		var me=this;
 		me.useSelectionModel=me.model.layout.bulkEdit;
 		var selModel=null;
-		if(me.model.layout.bulkEdit==true){
+		if(me.model.layout.bulkEdit===true){
 			selModel=Ext.create('com.trackplus.itemNavigator.CheckboxModel',{
 				allowDeselect:true,
 				checkOnly:false,
@@ -471,7 +415,7 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewPlugin',{
 			disableCaching:true,
 			success: function(result){
 				var jsonData=Ext.decode(result.responseText);
-				if(jsonData.success==false){
+				if(jsonData.success===false){
 					var msg=getText(jsonData.errorMessage);
 					CWHF.showMsgError(msg);
 				}
@@ -500,16 +444,16 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewPlugin',{
 	getRowClass: function(record, rowIndex, rp, ds){
      	var me=this;
 		var cls="";
-		if(record.data['group']==true){//grouping
+		if(record.data['group']===true){//grouping
 			cls+=" reportsTableGrouping";
-			if(record.data['cssColorClassGroup']!=null){
+			if(record.data['cssColorClassGroup']){
 				cls+=" "+record.data['cssColorClassGroup'];
 			}
 		}
-		if(record.data['cssColorClass']!=null){
+		if(record.data['cssColorClass']){
 			cls+=" "+record.data['cssColorClass'];
 		}
-		if(me.queryFieldCSS!=null&&record.data['queryFieldCSS']!=null){
+		if(me.queryFieldCSS&&record.data['queryFieldCSS']){
 			cls+=' queryFieldCSS rowCls_'+me.queryFieldCSS+"_"+ record.data['queryFieldCSS'];
 		}
 		return cls;
@@ -541,7 +485,7 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewFacade',{
 	},
 	destroy:function(){
 		var me=this;
-		if(me.listViewPlugin!=null){
+		if(me.listViewPlugin){
 			me.listViewPlugin.destroyView.call(me.listViewPlugin);
 		}
 		me.listViewPlugin=null;
@@ -557,10 +501,10 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewFacade',{
 		me.model=model;
 
 		var pluginCls=me.descriptor.jsClass;
-		if(me.listViewPlugin!=null){
+		if(me.listViewPlugin){
 			me.listViewPlugin.destroyView.call(me.listViewPlugin);
 		}
-		if(me.listViewPlugin==null){
+		if(CWHF.isNull(me.listViewPlugin)){
 			me.listViewPlugin=Ext.create(pluginCls,{
 				descriptor:me.descriptor,
 				model:me.model,
@@ -572,10 +516,10 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewFacade',{
 		me.listView=me.listViewPlugin.createView.call(me.listViewPlugin);
 		var btnGroup=Ext.create('Ext.button.Button',{
 			//margin:'3 5 3 3',
-			id:'btnGroupBy',
+			//id:'btnGroupBy',
 			iconCls:'group',
-			itemId:'btnGroupByItemID',
-			hidden:(me.descriptor.enabledGrouping==false),
+			//itemId:'btnGroupByItemID',
+			hidden:(me.descriptor.enabledGrouping===false),
 			text:getText('itemov.lbl.groupBy'),
 			tooltip:getText('itemov.lbl.groupBy'),
 			handler:function(){
@@ -584,10 +528,10 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewFacade',{
 		 });
 		 var btnChooseColumns=Ext.create('Ext.button.Button',{
 			//margin:'3 5 3 3',
-			id:'btnChooseColumns',
+			//id:'btnChooseColumns',
 			iconCls:'column',
-			itemId:'btnChooseColumnsItemID',
-			hidden:(me.descriptor.enabledColumnChoose==false),
+			//itemId:'btnChooseColumnsItemID',
+			hidden:(me.descriptor.enabledColumnChoose===false),
 			text:getText('itemov.lbl.chooseColumns'),
 			tooltip:getText('itemov.lbl.chooseColumns'),
 			handler:function(){
@@ -626,14 +570,14 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewFacade',{
 				}
 			});
 
-		 	if (me.model.isFilterView==true) {
-		 		if (btnSaveAsStandardLayout!=null) {
+		 	if (me.model.isFilterView===true) {
+		 		if (btnSaveAsStandardLayout) {
 		 			btnSaveAsStandardLayout.setVisible(false);
 		 		}
 		 		btnUseStandardLayout.setVisible(false);
 		 		var maySaveFilterLayout=me.model.maySaveFilterLayout;
 				btnSaveAsFilterLayout.setVisible(maySaveFilterLayout/*true*/);
-				/*if(maySaveFilterLayout==true){
+				/*if(maySaveFilterLayout===true){
 					//only save as filter
 					btnSaveAsFilterLayout.setDisabled(false);
 				} else {
@@ -642,7 +586,7 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewFacade',{
 				}*/
 			} else {
 				btnSaveAsFilterLayout.setVisible(false);
-				if (btnSaveAsStandardLayout!=null) {
+				if (btnSaveAsStandardLayout) {
 		 			btnSaveAsStandardLayout.setVisible(true);
 		 		}
 				btnUseStandardLayout.setVisible(true);
@@ -707,17 +651,17 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewFacade',{
 
 	viewContainsFields:function(fields){
 		var me=this;
-		if(me.listViewPlugin!=null){
+		if(me.listViewPlugin){
 			return me.listViewPlugin.containsFields(fields);
 		}
 		return false;
 	},
 	getView:function(model){
 		var me=this;
-		if(model!=null){
+		if(model){
 			me.model=model;
 		}
-		if(me.view==null){
+		if(CWHF.isNull(me.view)){
 			me.createView(me.model);
 		}
 		return me.view;
@@ -759,9 +703,9 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewFacade',{
 	onItemContextMenu:function(data,event,grid,index,record){
 		var me=this;
 		var workItemID=data.workItemID;
-		if(workItemID!=null&&workItemID!=-1){
+		if(workItemID&&workItemID!==-1){
 			var popupMenu=me.createPopup.call(me,data,grid,index,record);
-			if(popupMenu!=null){
+			if(popupMenu){
 				popupMenu.showAt(event.getXY());
 				me.listViewPlugin.selectItem(workItemID);
 			}
@@ -770,12 +714,12 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewFacade',{
 	onItemDblClick:function(data,animateTarget){
 		var me=this;
 
-		if(me.listViewPlugin.$className != 'com.trackplus.itemNavigator.GanttViewPlugin') {
+		if(me.listViewPlugin.$className !== 'com.trackplus.itemNavigator.GanttViewPlugin') {
 			me.openEditDlg(data, animateTarget);
 		}else {
 			if(!me.listViewPlugin.isNewSelectedTask()) {
-				if(me.listViewPlugin.isChartContainsUnsavedItems()) {
-					me.listViewPlugin.showSaveDialogWarningIfChartContainsUnsavedItems(me, me.openEditDlg, null, [data, animateTarget]);
+				if(me.listViewPlugin.ganttController.isChartContainsUnsavedItems()) {
+					me.listViewPlugin.ganttController.showSaveDialogWarningIfChartContainsUnsavedItems(me, me.openEditDlg, null, [data, animateTarget]);
 				}else {
 					me.openEditDlg(data, animateTarget);
 				}
@@ -786,7 +730,7 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewFacade',{
 	openEditDlg:function(data,animateTarget){
 		var me = this;
 		var workItemID=data.workItemID;
-		if(workItemID!=null&&workItemID!=-1){
+		if(workItemID&&workItemID!==-1){
 			var workItemIndex=data['workItemIndex'];
 			var actionID=-2;//PRINT
 			me.listViewPlugin.selectItem(workItemID);
@@ -803,17 +747,17 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewFacade',{
 	onStartDragItems:function(workItems,selectedFieldIDs,extraParams){
 		var me=this;
 		var urlStr="possibleFieldOptions.action";
-		if(selectedFieldIDs==null){
+		if(CWHF.isNull(selectedFieldIDs)){
 			selectedFieldIDs=new Array();
 		}
-		if(Ext.Array.indexOf(selectedFieldIDs,4)==-1){
+		if(Ext.Array.indexOf(selectedFieldIDs,4)===-1){
 			selectedFieldIDs.push(4);//STATE
 		}
 		if(me.itemNavigatorController.filterController.subFilterVisible===true){
-			/*if(Ext.Array.indexOf(selectedFieldIDs,2)==-1){
+			/*if(Ext.Array.indexOf(selectedFieldIDs,2)===-1){
 				selectedFieldIDs.push(2);//ISSUETYPE
 			}*/
-			if(Ext.Array.indexOf(selectedFieldIDs,10)==-1){
+			if(Ext.Array.indexOf(selectedFieldIDs,10)===-1){
 				selectedFieldIDs.push(10);//PRIORITY
 			}
 		}
@@ -841,7 +785,7 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewFacade',{
 	},
 	refreshData:function(issues){
 		var me=this;
-		if(me.listViewPlugin==null){
+		if(CWHF.isNull(me.listViewPlugin)){
 			return null;
 		}
 		me.listViewPlugin.refreshData.call(me.listViewPlugin,issues);
@@ -849,7 +793,7 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewFacade',{
 	setVisibleTools:function(b){
 		var me=this;
 		var toolPanel=me.settingsPanel;
-		if(toolPanel!=null){
+		if(toolPanel){
 			var el=toolPanel.getEl();
 			var settingsHeight=me.settingsHeight;
 			var gridEl=me.listView.getEl();
@@ -870,7 +814,7 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewFacade',{
 								//useDisplay: false,
 								listeners:{
 									'afteranimate':function(){
-										me.view.ownerCt.doLayout();
+										me.view.ownerCt.updateLayout();
 									}
 								}
 							});
@@ -890,7 +834,7 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewFacade',{
 								listeners:{
 									'afteranimate':function(){
 										toolPanel.setVisible(false);
-										me.view.ownerCt.doLayout();
+										me.view.ownerCt.updateLayout();
 									}
 								}
 							});
@@ -903,22 +847,23 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewFacade',{
 	//For Gantt
 	addSaveButton: function(toolbarItemsArr) {
 		var me = this;
-		if(me.listViewPlugin!=null){
-			if(me.listViewPlugin.$className == 'com.trackplus.itemNavigator.GanttViewPlugin') {
-				me.listViewPlugin.addSaveButton(toolbarItemsArr);
+		if(me.listViewPlugin){
+			if(me.listViewPlugin.$className === 'com.trackplus.itemNavigator.GanttViewPlugin') {
+				me.listViewPlugin.ganttController.addSaveButton();
+
 			}
 		}
     },
 	//For Gantt
     addOrRemoveSaveButton: function(toolbarItems) {
     	var me = this;
-    	if(me.listViewPlugin !=null){
-			if(me.listViewPlugin.$className == 'com.trackplus.itemNavigator.GanttViewPlugin') {
+    	if(me.listViewPlugin ){
+			if(me.listViewPlugin.$className === 'com.trackplus.itemNavigator.GanttViewPlugin') {
 				var items = borderLayout.getActiveToolbarList().items.items;
 				var toolbar = borderLayout.getActiveToolbarList();
 				for(var ind in items) {
-					if(items[ind].itemId != null) {
-						if(items[ind].itemId == 'ganttSaveBtn') {
+					if(items[ind].itemId ) {
+						if(items[ind].itemId === 'ganttSaveBtn') {
 							toolbar.remove(items[ind]);
 						}
 					}
@@ -928,8 +873,8 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewFacade',{
 				var toolbar = borderLayout.getActiveToolbarList();
 				var items = borderLayout.getActiveToolbarList().items.items;
 				for(var ind in items) {
-					if(items[ind].itemId != null) {
-						if(items[ind].itemId == 'ganttSaveBtn') {
+					if(items[ind].itemId ) {
+						if(items[ind].itemId === 'ganttSaveBtn') {
 							toolbar.remove(items[ind]);
 						}
 					}
@@ -952,7 +897,7 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewFacade',{
 	},
 	selectItem:function(workItemID){
 		var me=this;
-		if(me.listViewPlugin!=null){
+		if(me.listViewPlugin){
 			return me.listViewPlugin.selectItem.call(me.listViewPlugin,workItemID);
 		}
 		return null;
@@ -964,7 +909,7 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewFacade',{
 
 	createPopup:function(rowData,grid,index,record){
 		var me=this;
-		if(me.popupMenu!=null){
+		if(me.popupMenu){
 			me.popupMenu.destroy();
 			me.popupMenu=null;
 			delete me.popupMenu;
@@ -991,16 +936,16 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewFacade',{
 		var notEditableFields=rowData["notEditableFields"];
 		var leaf = rowData["leaf"];
 		var summaryItemsBehavior = true;
-		if (me.model!=null) {
+		if (me.model) {
 			summaryItemsBehavior = me.model.summaryItemsBehavior;
 		}
 		var addExpense=(leaf || !summaryItemsBehavior)  && editable;
-		if(addExpense && notEditableFields!=null && notEditableFields.length>0){
+		if(addExpense && notEditableFields && notEditableFields.length>0){
 			//public static final int MY_EXPENSE_COST = -1200;
 			//public static final int MY_EXPENSE_TIME = -1201;
 			var idx_MY_EXPENSE_COST=Ext.Array.indexOf(notEditableFields,-1200);
 			var idx_MY_EXPENSE_TIME=Ext.Array.indexOf(notEditableFields,-1201);
-			addExpense=(idx_MY_EXPENSE_COST==-1&&idx_MY_EXPENSE_TIME==-1);
+			addExpense=(idx_MY_EXPENSE_COST===-1&&idx_MY_EXPENSE_TIME===-1);
 		}
 		if(editable){
 			items.push({
@@ -1057,7 +1002,7 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewFacade',{
 					me.itemNavigatorController.chooseParent.call(me.itemNavigatorController,rowData);
 				}
 			});
-			if(parentID!=null){
+			if(parentID){
 				items.push({
 					text: getText('common.btn.removeParent'),
 					iconCls:'itemAction_removeParent16',
@@ -1072,15 +1017,15 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewFacade',{
 				text: getText('common.btn.addLinkedItem'),
 				iconCls:'links16',
 				handler:function(){
-					addLinkFromContextMenu = {};
-					addLinkFromContextMenu.workItemName = rowData.f17;
+					/*addLinkFromContextMenu = {};
 					addLinkFromContextMenu.projectID=rowData.projectID;
-					addLinkFromContextMenu.issueTypeID=rowData.issueTypeID;
+					addLinkFromContextMenu.issueTypeID=rowData.issueTypeID;*/
+					addLinkFromContextMenu = true;
 					me.itemNavigatorController.executeItemAction.call(me.itemNavigatorController,workItemID,6,null,workItemIndex,null,null,true,addLinkFromContextMenu);
 				}
 			});
 		}
-		if(originatorID==com.trackplus.TrackplusConfig.userID){
+		if(originatorID===com.trackplus.TrackplusConfig.userID){
 			items.push({
 				text: accessLevelFlag?getText('common.btn.unlock'):getText('common.btn.lock'),
 				iconCls:'itemAction_lock16',
@@ -1107,7 +1052,7 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewFacade',{
 			}
 		});
 		var pluginMenuItems=me.listViewPlugin.getPopupMenuItems.call(me.listViewPlugin,rowData,grid,index,record);
-		if(pluginMenuItems!=null){
+		if(pluginMenuItems){
 			for(var i=0;i<pluginMenuItems.length;i++){
 				items.push(pluginMenuItems[i]);
 			}
@@ -1116,12 +1061,12 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewFacade',{
 	},
 	taskEditHandler: function(workItemID, workItemIndex) {
 		var me = this;
-		if(me.listViewPlugin.$className != 'com.trackplus.itemNavigator.GanttViewPlugin') {
+		if(me.listViewPlugin.$className !== 'com.trackplus.itemNavigator.GanttViewPlugin') {
 			me.itemNavigatorController.executeItemAction.call(me.itemNavigatorController,workItemID,2,null,workItemIndex);
 		}else{
 			if(!me.listViewPlugin.isNewSelectedTask()) {
-				if(me.listViewPlugin.isChartContainsUnsavedItems()) {
-					me.listViewPlugin.showSaveDialogWarningIfChartContainsUnsavedItems(me, me.taskEditHandler, null, [workItemID, workItemIndex]);
+				if(me.listViewPlugin.ganttController.isChartContainsUnsavedItems()) {
+					me.listViewPlugin.ganttController.showSaveDialogWarningIfChartContainsUnsavedItems(me, me.taskEditHandler, null, [workItemID, workItemIndex]);
 				}else {
 					me.itemNavigatorController.executeItemAction.call(me.itemNavigatorController,workItemID,2,null,workItemIndex);
 				}
@@ -1157,6 +1102,57 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewFacade',{
 	},
 	executeURL:function(urlStr){
 		window.location.href=urlStr;
+	}
+});
+
+
+Ext.define('com.trackplus.itemNavigator.CheckboxModel',{
+	extend: 'Ext.selection.CheckboxModel',
+	updateHeaderState: function() {
+		var me = this,
+			store = me.store,
+			storeCount = store.getCount(),
+			views = me.views,
+			hdSelectStatus = false,
+			selectedCount = 0,
+			selected, len, i;
+		var selectedGroups=0;
+		var items = me.store.getRange();
+		for(var i=0;i<items.length;i++){
+			if(items[i].get('group')===true){
+				selectedGroups++;
+			}
+		}
+
+		if (!store.buffered && storeCount > 0) {
+			selected = me.selected;
+			hdSelectStatus = true;
+			for (i = 0, len = selected.getCount(); i < len; ++i) {
+				/*if (!me.storeHasSelected(selected.getAt(i))) {
+				 break;
+				 }*/
+				++selectedCount;
+			}
+			hdSelectStatus = storeCount === selectedCount+ selectedGroups;
+		}
+
+		if (views && views.length) {
+			me.toggleUiHeader(hdSelectStatus);
+		}
+	},
+	deselectAll:function(){
+		var me=this;
+		//this.selectedGroups=0;
+		me.callParent(arguments);
+	},
+
+	listeners:{
+		beforeselect:function(selModel, record, index) {
+			return record.get('group') !== true;
+		},
+		beforedeselect:function(selModel, record, index) {
+			return record.get('group') !== true;
+		}
 	}
 });
 

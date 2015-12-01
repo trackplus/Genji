@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -114,7 +114,7 @@ public class PluginUtils {
 		try {
 			superClass = Class.forName(superClassName);
 		} catch (ClassNotFoundException e) {
-			LOGGER.error("Superclass not found " + e.getMessage(), e);
+			LOGGER.error("Superclass not found " + e.getMessage());
 			return classes;
 		}
 		if (superClass!=null)
@@ -152,7 +152,7 @@ public class PluginUtils {
 		Class tosubclass = Class.forName(tosubclassname);
 		classes = findSubclassInPackage(pckname, tosubclass, servletContext);
 	} catch (ClassNotFoundException e) {
-		LOGGER.error("Superclass not found " + e.getMessage(), e);
+		LOGGER.error("Superclass not found " + e.getMessage());
 	}
 		return classes;
 	}*/
@@ -606,6 +606,7 @@ public class PluginUtils {
 		/**
 		 * accept a file when starts and ends accordingly
 		 */
+		@Override
 		public boolean accept(File file, String fileName) {
 			/*String absolutPath = file.getAbsolutePath();
 			int index = absolutPath.lastIndexOf(File.separator);
@@ -663,7 +664,7 @@ public class PluginUtils {
 				try {
 					urlLib = servletContext.getResource(servletContextResourcePath);
 				} catch (MalformedURLException e) {
-					LOGGER.error("Getting the URL through getServletContext().getResource(path) failed with " + e.getMessage(), e);
+					LOGGER.error("Getting the URL through getServletContext().getResource(path) failed with " + e.getMessage());
 				}
 				lib = PluginUtils.getFileFromURL(urlLib);
 				foundJars = PluginUtils.getFilesFromDir(lib, filter);
@@ -733,7 +734,7 @@ public class PluginUtils {
 					file = new File(urlDest.getPath());
 				}
 			} catch (MalformedURLException e) {
-				LOGGER.error("Getting the URL through getServletContext().getResource(path) failed with " + e.getMessage(), e);
+				LOGGER.error("Getting the URL through getServletContext().getResource(path) failed with " + e.getMessage());
 			}
 		}
 		//third try to get the template dir through servletContext.getRealPath(path)
@@ -772,7 +773,7 @@ public class PluginUtils {
 					try {
 					unzipFileIntoDirectory(f, directory);
 					} catch (Exception e) {
-						LOGGER.error("Problem unzipping archive: " + e.getMessage(), e);
+						LOGGER.error("Problem unzipping archive: " + e.getMessage());
 					}
 				}
 			}
@@ -806,10 +807,6 @@ public class PluginUtils {
 				if (conf != null && conf.exists() && conf.isDirectory()) {
 					files.add(conf);
 				}
-//				File presources = new File(f.getAbsolutePath()+File.separator+"classes"+File.separator+"resources");
-//				if (presources != null && presources.exists() && presources.isDirectory()) {
-//					bundles.add("resources."+f.getName());
-//				}
 
 				File js = new File(f.getAbsolutePath()+File.separator+"js");
 				if (js != null && js.exists() && js.isDirectory()) {
@@ -991,6 +988,7 @@ public class PluginUtils {
 	        this.pattern = Pattern.compile(filter);
 		}
 
+		@Override
 		public boolean accept(File file)
 		{
 	        Matcher matcher = pattern.matcher(file.getName());

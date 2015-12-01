@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -85,13 +85,13 @@ Ext.define('js.ext.com.track.dashboard.Meetings',{
 		var projectID=null;
 		var entityFlag=null;
 		//overwrite projectID and entity type if dashboard is in browse projects page
-		if(me.jsonData!=null&&me.jsonData.projectID!=null){
+		if(me.jsonData&&me.jsonData.projectID){
 			projectID=me.jsonData.projectID;
 			entityFlag=me.jsonData.entityType;
 			baseURL+='&dashboardParams.projectID='+projectID;
 			baseURL+='&dashboardParams.entityFlag='+entityFlag;
 		}
-		if(me.jsonData!=null&&me.jsonData.releaseID!=null){
+		if(me.jsonData&&me.jsonData.releaseID){
 			projectID=me.jsonData.releaseID;
 			entityFlag=me.jsonData.entityType;
 			baseURL+='&dashboardParams.projectID='+releaseID;

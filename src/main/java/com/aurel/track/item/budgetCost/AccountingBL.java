@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -92,7 +92,7 @@ public abstract class AccountingBL {
 	 * @param parentOriginal
 	 * @param errorsList
 	 */
-	public static synchronized void actualizeAncestorValues(TWorkItemBean workItemBean,
+	public static void actualizeAncestorValues(TWorkItemBean workItemBean,
 			Integer parentID, Integer parentOriginal, Integer personID) {
 		Double hoursPerWorkingDay = ProjectBL.getHoursPerWorkingDay(workItemBean.getProjectID());
 		Integer workItemID = workItemBean.getObjectID();
@@ -111,7 +111,7 @@ public abstract class AccountingBL {
 	 * @param personID
 	 * @param hoursPerWorkingDay
 	 */
-	private static synchronized void actualizeAncestorValues(Integer workItemID,
+	private static void actualizeAncestorValues(Integer workItemID,
 			Integer parentID, Integer personID, Double hoursPerWorkingDay) {
 		if (parentID!=null) {
 			//recalculate the parent hierarchy after a change
@@ -244,10 +244,6 @@ public abstract class AccountingBL {
 			//(it doesn't make sense to add 0.0 valued efforts and costs,
 			//especially when accounting is not activated for project)
 			BudgetBL.saveBudgetOrPlanToDb(budgetBean, null, personBean, true, workItemBean, false);
-			/*if (ApplicationBean.getApplicationBean().getSiteBean().getSummaryItemsBehavior()) {
-				BudgetPlanConsistencyBL.actualizeAncestorPlannedValues(workItemBean.getSuperiorworkitem(),
-						AccountingBL.getHoursPerWorkingDay(null, workItemBean.getProjectID()));
-			}*/
 		}
 		//first save the efforts/costs
 		ExpenseBL.saveCostsToDb(accountingForm.getSessionCostBeans(), personBean, workItemBean);
@@ -262,7 +258,7 @@ public abstract class AccountingBL {
 		}
 		//actualize ancestor hierarchy
 		Integer parentID = workItemBean.getSuperiorworkitem();
-		if (parentID!=null && ApplicationBean.getApplicationBean().getSiteBean().getSummaryItemsBehavior()) {
+		if (parentID!=null && ApplicationBean.getInstance().getSiteBean().getSummaryItemsBehavior()) {
 			Double hoursPerWorkingDay = ProjectBL.getHoursPerWorkingDay(workItemBean.getProjectID());
 			actualizeAncestorValues(workItemBean.getObjectID(), parentID, personBean.getObjectID(), hoursPerWorkingDay);
 		}

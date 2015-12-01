@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -26,8 +26,7 @@
  */
 
 Ext.define('com.trackplus.admin.ScreenListGridConfig',{
-	extend:'com.trackplus.admin.GridConfig',
-	urlStore:'indexScreens.action',
+	extend:'com.trackplus.admin.GridBase',
 	fields:[
 		{name: 'id',type:'int'},
 		{name: 'name',type:'string'},
@@ -36,34 +35,22 @@ Ext.define('com.trackplus.admin.ScreenListGridConfig',{
 		{name: 'owner', type: 'string'}
 	],
 	columnModel:[
-		{header: getText('common.lbl.name'),
-			width:220,dataIndex: 'name',id:'name',sortable:true,
-			filterable: true},
-		{header: getText('common.lbl.tagLabel'),
-			width:220,dataIndex: 'tagLabel',id:'tagLabel',sortable:true,
-			filter: {}},
-		{header: getText('common.lbl.description'),flex:1,
-			dataIndex: 'description',id:'description',sortable:true,
-			filterable: false},
-		{header: getText('admin.customize.form.config.owner'),
-			width:220,dataIndex: 'owner',id:'owner',sortable:true,
-			filterable: false}
+		{text: getText('common.lbl.name'),
+			width:220, dataIndex: 'name', id:'name', sortable:true,
+			filter: {type: "string"}},
+		{text: getText('common.lbl.tagLabel'),
+			width:220, dataIndex: 'tagLabel', id:'tagLabel', sortable:true,
+			filter: {type: "string"}},
+		{text: getText('common.lbl.description'), flex:1,
+			dataIndex: 'description', id:'description', sortable:true,
+			filter: {type: "string"}},
+		{text: getText('admin.customize.form.config.owner'),
+			width:220, dataIndex: 'owner', id:'owner', sortable:true,
+			filter: {type: "string"}}
 	],
-	features: [{
-		ftype: 'filters',
-		encode: false, // json encode the filter query
-		local: true,   // defaults to false (remote filtering)
-		filters: [{
-				type: 'string',
-				dataIndex: 'tagLabel',
-				disabled: false
-			},{
-				type: 'string',
-				dataIndex: 'name',
-				disabled: false
-			}
-		]
-	}],
+	getLoadStoreUrl:function() {
+		return this.baseAction + '.action';
+	},
 	confirmDeleteEntity:true,
 	baseAction:'indexScreens',
 	entityID:'screenID',
@@ -76,7 +63,7 @@ Ext.define('com.trackplus.admin.ScreenListGridConfig',{
 	},
 	/*errorHandlerDelete:function(entityJS,errorCode,errorMessage){
 		var me=this;
-		if(errorCode==1){
+		if(errorCode===1){
 			//ERROR_NEED_REPLACE
 			me.replaceDeletedLinkType(entityJS);
 		}else{
@@ -127,7 +114,7 @@ Ext.define('com.trackplus.admin.ScreenListGridConfig',{
 	onConfig:function(){
 		var me=this;
 		var recordData=me.getSingleSelectedRecordData();
-		if(recordData==null){
+		if(CWHF.isNull(recordData)){
 			return false;
 		}
 		var id=recordData.id;

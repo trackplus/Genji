@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -29,7 +29,7 @@
 com.trackplus.util.requestFailureHandler = function(response, options) {
 	var failureTitle = getText('common.err.failure');
 	var message = "status: " + response.status + " statusText: " + response.statusText + " responseText: " + response.responseText;
-	if(response.statusText!=null&&response.statusText!=''){
+	if(response.statusText&&response.statusText!==''){
 		Ext.MessageBox.show({
 			title: getText('common.err.failure'),
 			msg: message,
@@ -55,7 +55,7 @@ com.trackplus.util.submitFailureHandler = function(form, action) {
 		break;
 	case Ext.form.action.Action.SERVER_INVALID:
 		decodedResult = action.result;
-		if (decodedResult!=null) {
+		if (decodedResult) {
 			com.trackplus.util.showError(decodedResult);
 		} else {
 			com.trackplus.util.requestFailureHandler(action.response);
@@ -68,28 +68,28 @@ com.trackplus.util.submitFailureHandler = function(form, action) {
  * result the decoded JSON result
  */
 com.trackplus.util.showError = function(result) {
-	if (result!=null) {
+	if (result) {
 		var message = "";
 		var title = result['title'];
 		var errorCode = result['errorCode'];
 		var applicationErrorInfoFound = false;
-		if (errorCode!=null) {
+		if (errorCode) {
 			applicationErrorInfoFound = true;
 			message += getText('common.err.failure.errorCode') + ": " + errorCode;
 		}
 		var errorMessage = result.errorMessage;
-		if (errorMessage!=null) {
+		if (errorMessage) {
 			applicationErrorInfoFound = true;
 			message += errorMessage;
 		}
 		var sucessMessage = result.message;
-		if (sucessMessage!=null) {
+		if (sucessMessage) {
 			applicationErrorInfoFound = true;
 			message += sucessMessage;
 		}
 
-		if (title==null) {
-			if (errorMessage!=null || errorCode!=null) {
+		if (CWHF.isNull(title)) {
+			if (errorMessage || errorCode) {
 				title = getText('common.err.failure');
 			} else {
 				title = getText('common.lbl.message');

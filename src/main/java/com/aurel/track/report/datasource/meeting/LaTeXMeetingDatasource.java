@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -65,6 +65,7 @@ public class LaTeXMeetingDatasource extends MeetingDatasource {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public Object getDatasource(Map<String, String[]> parameters, DatasourceDescriptor datasourceDescriptor, Map<String, Object> contextMap,
 			Map<String, Object> templateDescriptionMap, Integer templateID, TPersonBean personBean, Locale locale) {
 		ReportBeans reportBeans = null;
@@ -82,42 +83,6 @@ public class LaTeXMeetingDatasource extends MeetingDatasource {
 		Integer meetingID = (Integer) savedParamsMap.get(MEETING_PARAMETER_NAME.MEETING);
 		String linkType = (String) savedParamsMap.get(MEETING_PARAMETER_NAME.LINK_TYPE);
 		Boolean onlyActiveChildren = (Boolean) savedParamsMap.get(MEETING_PARAMETER_NAME.ONLY_NOT_CLOSED_CHILDREN);
-		/*Integer direction = null;
-		if (onlyActiveChildren == null || onlyActiveChildren.booleanValue()) {
-			direction = PARENT_CHILD_EXPRESSION.ALL_NOT_CLOSED_CHILDREN;
-		} else {
-			direction = PARENT_CHILD_EXPRESSION.ALL_CHILDREN;
-		}
-		List<ReportBean> reportBeanList = null;
-		if (meetingID != null) {
-			Set<Integer> linkedWorkItemIDsSet = ItemBL.getChildHierarchy(new int[] { meetingID }, direction, null, null, null);
-			linkedWorkItemIDsSet.add(meetingID);
-			List<TWorkItemBean> workItemBeanList = new LinkedList<TWorkItemBean>();
-			reportBeanList = LoadItemIDListItems.getReportBeansByWorkItemIDs(GeneralUtils.createIntArrFromIntegerCollection(linkedWorkItemIDsSet), false,
-					personBean.getObjectID(), locale, false);
-			if (reportBeanList != null) {
-				// set a hardcoded issue type for the parent meeting
-				for (ReportBean reportBean : reportBeanList) {
-					TWorkItemBean workItemBean = reportBean.getWorkItemBean();
-					WORK_ITEM_BEAN = workItemBean;
-					workItemBeanList.add(workItemBean);
-					Integer objectID = workItemBean.getObjectID();
-					if (objectID.equals(meetingID)) {
-						reportBean.getShowISOValuesMap().put(SystemFields.INTEGER_ISSUETYPE, MEETING_ISSUETYPE);
-						break;
-					}
-				}
-			}
-			if (linkType != null) {
-				int[] linkedWorkItemIDs = LoadItemLinksUtil.getLinkedWorkItemIDs(linkType, FilterUpperTO.ARCHIVED_FILTER.EXCLUDE_ARCHIVED,
-						FilterUpperTO.DELETED_FILTER.EXCLUDE_DELETED, null, workItemBeanList);
-				if (linkedWorkItemIDs != null && linkedWorkItemIDs.length > 0) {
-					List<ReportBean> linkedReportBeans = LoadItemIDListItems.getReportBeansByWorkItemIDs(linkedWorkItemIDs, false, personBean.getObjectID(),
-							locale, false);
-					reportBeanList.addAll(linkedReportBeans);
-				}
-			}
-		}*/
 		reportBeans = getReportBeans(meetingID, onlyActiveChildren, linkType, personBean, locale);/* new ReportBeans(reportBeanList, locale, null, false);*/
 		REPORT_BEANS = reportBeans;
 
@@ -145,7 +110,7 @@ public class LaTeXMeetingDatasource extends MeetingDatasource {
 						withHistory = history.booleanValue();
 					}
 				} catch (Exception e) {
-					LOGGER.warn("history should be a boolean string " + e.getMessage(), e);
+					LOGGER.warn("history should be a boolean string " + e.getMessage());
 				}
 			}
 		}

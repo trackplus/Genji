@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -30,6 +30,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -44,6 +45,7 @@ import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -83,6 +85,7 @@ public class ExcelFieldMatchAction extends ActionSupport
 	private Map<Integer, Boolean> columnIndexIsIdentifierMap;
 	private Workbook workbook;
 
+	@Override
 	public void prepare() throws Exception {
 		locale = (Locale)session.get(Constants.LOCALE_KEY);
 		personID = ((TPersonBean) session.get(Constants.USER_KEY)).getObjectID();
@@ -111,16 +114,20 @@ public class ExcelFieldMatchAction extends ActionSupport
 		Set<Integer> lastSavedIdentifierFieldIDIsSet = null;
 		try {
 			FileInputStream fis = new FileInputStream(new File(excelMappingsDirectory, mappingFileName));
+
 			ObjectInputStream objectInputStream = new ObjectInputStream(fis);
 			columNameToFieldIDMap = (Map<String,Integer>)objectInputStream.readObject();
 			lastSavedIdentifierFieldIDIsSet = (Set<Integer>)objectInputStream.readObject();
 			objectInputStream.close();
 		} catch (FileNotFoundException e) {
-			LOGGER.warn("Creating the input stream for mapping failed with " + e.getMessage(), e);
+			LOGGER.info("Creating the input stream for mapping failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		} catch (IOException e) {
-			LOGGER.warn("Saving the mapping failed with " + e.getMessage(), e);
+			LOGGER.warn("Saving the mapping failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		} catch (ClassNotFoundException e) {
-			LOGGER.warn("Class not found for  the mapping " + e.getMessage(), e);
+			LOGGER.warn("Class not found for  the mapping " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		//get the column index to header names from the excel sheet
 		SortedMap<Integer, String> columnIndexToColumNameMap = ExcelFieldMatchBL.getFirstRowHeaders(workbook, selectedSheet);
@@ -142,7 +149,6 @@ public class ExcelFieldMatchAction extends ActionSupport
 						new Boolean(lastSavedIdentifierFieldIDIsSet.contains(fieldID)));
 			}
 		}
-		//} else {
 		//if issueNo is present it is always identifier (first time it should be preselected and any time when mapped also preselected)
 		if (columnIndexToFieldIDMap.values().contains(SystemFields.INTEGER_ISSUENO)) {
 			for (Integer columnIndex : columnIndexToFieldIDMap.keySet()) {
@@ -152,7 +158,6 @@ public class ExcelFieldMatchAction extends ActionSupport
 				}
 			}
 		}
-		//}
 		List<IntegerStringBean> sheetNames = ExcelFieldMatchBL.loadSheetNames(workbook);
 		List<IntegerStringBean> matchableFieldsList = ExcelFieldMatchBL.getFieldConfigs(personID, locale);
 		Map<Integer, String> columnIndexNumericToLetter = ExcelFieldMatchBL.getFirstRowNumericToLetter(workbook, selectedSheet);
@@ -208,32 +213,17 @@ public class ExcelFieldMatchAction extends ActionSupport
 			out.writeObject(lastSavedIdentifierFieldIDIsSet);
 			out.close();
 		} catch (FileNotFoundException e) {
-			LOGGER.warn("Creating the output stream for mapping failed with " + e.getMessage(), e);
+			LOGGER.warn("Creating the output stream for mapping failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		} catch (IOException e) {
-			LOGGER.warn("Saving the mapping failed with " + e.getMessage(), e);
+			LOGGER.warn("Saving the mapping failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
-		/*Collection<Integer> matchedFieldIDs = columnIndexToFieldIDMap.values();
-		boolean projectMatched = matchedFieldIDs.contains(SystemFields.INTEGER_PROJECT);
-		boolean subProjectMatched = matchedFieldIDs.contains(SystemFields.INTEGER_SUBPROJECT);
-		if (projectMatched ^ subProjectMatched) {
-			String projectLabel = FieldRuntimeBL.getDefaultFieldConfig(SystemFields.INTEGER_PROJECT, locale).getLabel();
-			String subProjectLabel = FieldRuntimeBL.getDefaultFieldConfig(SystemFields.INTEGER_SUBPROJECT, locale).getLabel();
-			String[] parameters = null;
-			if (projectMatched && !subProjectMatched) {
-				parameters = new String[] { subProjectLabel,  projectLabel };
-			} else {
-				if (!projectMatched && subProjectMatched) {
-					parameters = new String[] { projectLabel, subProjectLabel };
-				}
-			}
-			JSONUtility.encodeJSON(servletResponse,
-					JSONUtility.encodeJSONFailure(getText("admin.actions.importExcel.fieldMatch.err.subprojectAndProject", parameters)));
-			return null;
-		}*/
 		return NEXT;
 	}
 
 
+	@Override
 	public void setSession(Map<String, Object> session) {
 		this.session = session;
 	}
@@ -272,6 +262,7 @@ public class ExcelFieldMatchAction extends ActionSupport
 		this.columnIndexIsIdentifierMap = columnIndexIsIdentifierMap;
 	}
 
+	@Override
 	public void setServletResponse(HttpServletResponse servletResponse) {
 		this.servletResponse = servletResponse;
 	}

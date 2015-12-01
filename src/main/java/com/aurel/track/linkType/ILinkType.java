@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -32,6 +32,7 @@ import com.aurel.track.beans.TPersonBean;
 import com.aurel.track.beans.TWorkItemBean;
 import com.aurel.track.beans.TWorkItemLinkBean;
 import com.aurel.track.errors.ErrorData;
+import com.aurel.track.util.ParameterMetadata;
 
 /**
  * Interface for link types
@@ -196,6 +197,21 @@ public interface ILinkType {
 	String prepareParametersOnLinkTab(TWorkItemLinkBean workItemLinkBean, Integer linkDirection, Locale locale);
 	
 	/**
+	 * Prepare the parameters map 
+	 * Used in webservice
+	 * @param workItemLinkBean
+	 * @return
+	 */
+	Map<String, String> prepareParametersMap(TWorkItemLinkBean workItemLinkBean);
+	
+	/**
+	 * Gets the parameter metadata as a list
+	 * @param locale
+	 * @return
+	 */
+	List<ParameterMetadata> getParameterMetadata(Locale locale);
+
+	/**
 	 * Gets the JavaScript class for configuring the link type specific part
 	 * @return
 	 */
@@ -218,7 +234,7 @@ public interface ILinkType {
 	 * @param locale
 	 * @return
 	 */
-	List<ErrorData> unwrapParametersBeforeSave(Map<Integer, String> parametersMap, TWorkItemLinkBean workItemLinkBean, TPersonBean personBean, Locale locale);
+	List<ErrorData> unwrapParametersBeforeSave(Map<String, String> parametersMap, TWorkItemLinkBean workItemLinkBean, TPersonBean personBean, Locale locale);
 	
 	/**
 	 * Validates the workItemLink before save

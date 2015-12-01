@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -44,12 +44,11 @@ public class InitProjectTypesBL {
 	
 	public static void addProjectTypes(String initDataDir) {
 		File directory = null;
-		directory = PluginUtils.getResourceFileFromWebAppRoot(ApplicationBean.getApplicationBean().getServletContext(),
+		directory = PluginUtils.getResourceFileFromWebAppRoot(ApplicationBean.getInstance().getServletContext(),
 				initDataDir+"/ProjectTypes");
 		if (directory !=null && directory.exists() && directory.isDirectory())
 		{
 			LOGGER.info("Retrieving project type templates from " + directory.toString());
-			/// directory = new File(urlDest.getPath());
 			File[] files = directory.listFiles(new InitProjectTypesBL.Filter());			
 			if (files == null || files.length == 0) {
 				LOGGER.error("No project types files found.");
@@ -68,7 +67,6 @@ public class InitProjectTypesBL {
 			ImportContext importContext=new ImportContext();
 			importContext.setOverrideExisting(false);
 			importContext.setOverrideOnlyNotModifiedByUser(false);
-			//importContext.setClearChildren(clearChildren);
 			EntityImporter entityImporter=new EntityImporter();
 			List<ImportResult> importResultList=entityImporter.importFile(uploadFile, importContext);
 		} catch (EntityImporterException e) {
@@ -79,6 +77,7 @@ public class InitProjectTypesBL {
 		return null;
 	}
 	static class Filter implements FileFilter{
+		@Override
 		public boolean accept(File file){
 			return file.getName().endsWith(".xml");
 		}

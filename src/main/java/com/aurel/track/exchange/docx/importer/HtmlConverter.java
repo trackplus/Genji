@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -71,31 +71,25 @@ public class HtmlConverter {
 		try {
 			wordMLPackage = Docx4J.load(new java.io.File(docxFileName));
 		} catch (Docx4JException e) {
-			LOGGER.error("Loading the wordMLPackage failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the wordMLPackage failed with " + e.getMessage());
 			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			return null;
 		}
 		LOGGER.debug(docxFileName + "loaded");
     	htmlSettings.setWmlPackage(wordMLPackage);
     	//Other settings (optional)
-//    	htmlSettings.setUserBodyTop("<H1>TOP!</H1>");
-//    	htmlSettings.setUserBodyTail("<H1>TAIL!</H1>");
 		
 		// Sample sdt tag handler (tag handlers insert specific
 		// html depending on the contents of an sdt's tag).
 		// This will only have an effect if the sdt tag contains
 		// the string @class=XXX
-//			SdtWriter.registerTagHandler("@class", new TagClass() );
 		
-//		SdtWriter.registerTagHandler(Containerization.TAG_BORDERS, new TagSingleBox() );
-//		SdtWriter.registerTagHandler(Containerization.TAG_SHADING, new TagSingleBox() );
 		
 		// output to an OutputStream.
     	
     	
 		OutputStream outputStream = null; 
 		
-		//}
 
 		// If you want XHTML output
     	Docx4jProperties.setProperty("docx4j.Convert.Out.HTML.OutputMethodXML", true);
@@ -105,43 +99,36 @@ public class HtmlConverter {
     		try {
 				outputStream = new FileOutputStream(docxFileName + ".html");
 			} catch (FileNotFoundException e) {
-				LOGGER.error("Creating the outpot stream failed with " + e.getMessage(), e);
+				LOGGER.error("Creating the outpot stream failed with " + e.getMessage());
 				LOGGER.error(ExceptionUtils.getStackTrace(e));
 			}
     		if (outputStream!=null) {
     			try {
     				Docx4J.toHTML(htmlSettings, outputStream, Docx4J.FLAG_EXPORT_PREFER_XSL);
     			} catch (Docx4JException e) {
-    				LOGGER.error("Creating the html failed with " + e.getMessage(), e);
+    				LOGGER.error("Creating the html failed with " + e.getMessage());
     				LOGGER.debug(ExceptionUtils.getStackTrace(e));
     				return null;
     			}
     			try {
 					outputStream.close();
 				} catch (IOException e) {
-					LOGGER.error("Closing the FileOutputStream failed with " + e.getMessage(), e);
+					LOGGER.error("Closing the FileOutputStream failed with " + e.getMessage());
 				}
     		}
     	}
     	outputStream = new ByteArrayOutputStream();
 		//Don't care what type of exporter you use
-//		Docx4J.toHTML(htmlSettings, os, Docx4J.FLAG_NONE);
 		//Prefer the exporter, that uses a xsl transformation
 		try {
 			Docx4J.toHTML(htmlSettings, outputStream, Docx4J.FLAG_EXPORT_PREFER_XSL);
 		} catch (Docx4JException e) {
-			LOGGER.error("Creating the html failed with " + e.getMessage(), e);
+			LOGGER.error("Creating the html failed with " + e.getMessage());
 			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			return null;
 		}
 		//Prefer the exporter, that doesn't use a xsl transformation (= uses a visitor)
-//		Docx4J.toHTML(htmlSettings, os, Docx4J.FLAG_EXPORT_PREFER_NONXSL);
 		return (ByteArrayOutputStream)outputStream;
-		/*if (save) {
-			System.out.println("Saved: " + inputfilepath + ".html ");
-		} else {
-			System.out.println( ((ByteArrayOutputStream)os).toString() );
-		}*/
 
 		}
 }

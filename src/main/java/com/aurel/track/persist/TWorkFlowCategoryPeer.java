@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -36,7 +36,7 @@ import com.aurel.track.dao.WorkflowCategoryDAO;
 /**  
  * @author Sergej Redel <sergej@schoene-hochzeit.com>
  * @author Martin Bierkoch <martin.bierkoch@gmx.de>
- * @version $Revision: 1229 $ $Date: 2013-02-26 13:08:03 +0100 (Di, 26 Feb 2013) $
+ * @version $Revision: 1795 $ $Date: 2015-11-12 13:07:18 +0100 (Thu, 12 Nov 2015) $
  */
 public class TWorkFlowCategoryPeer
     extends com.aurel.track.persist.BaseTWorkFlowCategoryPeer
@@ -121,13 +121,14 @@ public class TWorkFlowCategoryPeer
 	 * Load all workflow categories
 	 * @return
 	 */
+	@Override
 	public List<TWorkFlowCategoryBean> loadAll() {
 		try {
 			Criteria crit = new Criteria();
 			return convertTorqueListToBeanList(doSelect(crit));
 		}
 		catch (Exception e) {
-			LOGGER.error("Loading all workflow categories for migration failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all workflow categories for migration failed with " + e.getMessage());
 			return null;
 		}
 	}

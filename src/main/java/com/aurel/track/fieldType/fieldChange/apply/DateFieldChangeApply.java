@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -27,6 +27,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -71,7 +72,8 @@ public class DateFieldChangeApply extends GenericFieldChangeApply {
 			try {
 				dateValue = (Date)value;
 			} catch (Exception e) {
-				LOGGER.warn("Getting the date value for " + value +  " failed with " + e.getMessage(), e);
+				LOGGER.warn("Getting the date value for " + value +  " failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 			workItemBean.setAttribute(activityType, parameterCode, dateValue);
 			return null;
@@ -81,7 +83,8 @@ public class DateFieldChangeApply extends GenericFieldChangeApply {
 			try {
 				dateFieldID = (Integer)value;
 			} catch (Exception e) {
-				LOGGER.warn("Getting the integer value for " + value +  " failed with " + e.getMessage(), e);
+				LOGGER.warn("Getting the integer value for " + value +  " failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 			if (dateFieldID!=null) {
 				Object otherDateValue = null;
@@ -106,7 +109,8 @@ public class DateFieldChangeApply extends GenericFieldChangeApply {
 		try {
 			originalDate = (Date)originalValue;
 		} catch (Exception e) {
-			LOGGER.warn("Converting the original value " + originalValue +  " to Date failed with " + e.getMessage(), e);
+			LOGGER.warn("Converting the original value " + originalValue +  " to Date failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		if (originalDate==null) {
 			return null;
@@ -118,7 +122,8 @@ public class DateFieldChangeApply extends GenericFieldChangeApply {
 			try {
 				intValue = (Integer)value;
 			} catch (Exception e) {
-				LOGGER.warn("Getting the integer value for " + value +  " failed with " + e.getMessage(), e);
+				LOGGER.warn("Getting the integer value for " + value +  " failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 			workItemBean.setAttribute(activityType, parameterCode, 
 					shiftByDays(originalDate, intValue));

@@ -1,0 +1,261 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="As system administrator, you can add any number of roles to your installation. This section describes how to do that. You must be logged in as system manager or system administrator. You have four ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="task"/><meta name="DC.Title" content="Adding and editing roles"/><meta name="abstract" content="As system administrator, you can add any number of roles to your installation. This section describes how to do that."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="As system administrator, you can add any number of roles to your installation. This section describes how to do that."/><meta name="indexterms" content="role, role, add, role, edit, add role, edit role, permission, access control"/><meta name="DC.subject" content="role, add, edit, add role, edit role, permission, access control"/><meta name="keywords" content="role, add, edit, add role, edit role, permission, access control"/><meta name="DC.Relation" scheme="URI" content="../../../Topics/05ForConfigManagers/roles/Roles.html"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="id14addRole"/><link rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Adding and editing roles</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()" id="id14addRole">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../../Topics/05ForConfigManagers/roles/Roles.html" title="Track+ manages what users can do with items and workspaces via „roles“. You can assign roles for a workspace to users and thereby give them certain permissions. For example, you would permit them to view other peoples items, or see certain item properties but not others, or see only items of a specific item type."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Roles and permissions</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../../Topics/05ForConfigManagers/roles/../../../Topics/05ForConfigManagers/Chapter5Wrapper.html" title="Customizing Track+">Customizing Track+</a> / <a class="navheader_parent_path" href="../../../Topics/05ForConfigManagers/roles/Roles.html" title="Track+ manages what users can do with items and workspaces via „roles“. You can assign roles for a workspace to users and thereby give them certain permissions. For example, you would permit them to view other peoples items, or see certain item properties but not others, or see only items of a specific item type.">Roles and permissions</a></td></tr></tbody></table>
+
+    <h1 class="title topictitle1">Adding and editing roles</h1>
+
+    
+    
+    <div class="body taskbody"><p class="shortdesc">As system administrator, you can add any number of roles
+        to your installation. This section describes how to do that. </p>
+
+        <div class="section prereq p"><p class="p">You must be logged in as system manager or system administrator.</p>
+</div>
+
+        <div class="section context">You have four different areas you need to address when defining roles:<ol class="ol" id="id14addRole__ol_u13_nxy_xk">
+                <li class="li">General permissions, as described below</li>
+
+                <li class="li">RACI selection list assignments, as described below</li>
+
+                <li class="li">Defining access to item types, see <a class="xref" href="accessItemTypes.html" title="You can restrict access to a set of item types for each role. By default, a role can access all item types.">Restricting access to item types</a> for more
+                    information</li>
+
+                <li class="li">Hide fields or make them read only, see <a class="xref" href="accessFields.html" title="You can hide fields from users and make fields read-only. By default all fields are shown and all fields are writable except for those where it doesn't make sense to change them.">Restricting access to item fields</a> for
+                    more information</li>
+
+            </ol>
+
+<div class="tablenoborder"><table cellpadding="4" cellspacing="0" summary="" class="table" frame="hsides" border="1" rules="all"><caption><span class="tablecap">Table 1. General permissions</span></caption>
+                    
+                    
+                    <thead class="thead" align="left">
+                        <tr class="row">
+                            <th class="entry" valign="top" width="31%" id="d47625e98">Permission</th>
+
+                            <th class="entry" valign="top" width="69%" id="d47625e101">Description</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" valign="top" width="31%" headers="d47625e98 ">read any</td>
+
+                            <td class="entry" valign="top" width="69%" headers="d47625e101 ">You may read or view all items in this project, not
+                                just your own. If this flag is not set, you will only be able to
+                                read an item if you are<ul class="ul">
+                                    <li class="li">
+                                        <p class="p">the original author</p>
+
+                                    </li>
+
+                                    <li class="li">
+                                        <p class="p">the current manager</p>
+
+                                    </li>
+
+                                    <li class="li">
+                                        <p class="p">the current responsible</p>
+
+                                    </li>
+
+                                    <li class="li">
+                                        <p class="p">on the consulted or informed list</p>
+
+                                    </li>
+
+                                </ul>
+of this item.</td>
+
+                        </tr>
+
+                        <tr class="row">
+                            <td class="entry" valign="top" width="31%" headers="d47625e98 ">modify any</td>
+
+                            <td class="entry" valign="top" width="69%" headers="d47625e101 ">You may modify all items in this project, not just
+                                your own. If this flag is not set you will only be able to modify an
+                                item if you are<ul class="ul">
+                                    <li class="li">
+                                        <p class="p">the current manager</p>
+
+                                    </li>
+
+                                    <li class="li">
+                                        <p class="p">the current responsible</p>
+
+                                    </li>
+
+                                    <li class="li">
+                                        <p class="p">on the consulted list</p>
+
+                                    </li>
+
+                                </ul>
+of this item. This will automatically enforce that you can read
+                                this item.</td>
+
+                        </tr>
+
+                        <tr class="row">
+                            <td class="entry" valign="top" width="31%" headers="d47625e98 ">create item</td>
+
+                            <td class="entry" valign="top" width="69%" headers="d47625e101 ">You may create items in this project.</td>
+
+                        </tr>
+
+                        <tr class="row">
+                            <td class="entry" valign="top" width="31%" headers="d47625e98 ">close any</td>
+
+                            <td class="entry" valign="top" width="69%" headers="d47625e101 ">You may close any item that you are authorized to
+                                modify. This flag does not imply any modification authorization, it
+                                just is superimposed upon possible modification permissions.</td>
+
+                        </tr>
+
+                        <tr class="row">
+                            <td class="entry" valign="top" width="31%" headers="d47625e98 ">close if resp.</td>
+
+                            <td class="entry" valign="top" width="69%" headers="d47625e101 ">You may only close an item if you are the current
+                                responsible of this item. This flag does not imply any modification
+                                authorization, it is just superimposed upon possible modification
+                                permissions.</td>
+
+                        </tr>
+
+                        <tr class="row">
+                            <td class="entry" valign="top" width="31%" headers="d47625e98 ">close if manager or author</td>
+
+                            <td class="entry" valign="top" width="69%" headers="d47625e101 ">You may only close an item if you are the current
+                                manager or the original author of this item. This flag does not
+                                imply any modification authorization, it is just superimposed upon
+                                possible modification permissions.</td>
+
+                        </tr>
+
+                        <tr class="row">
+                            <td class="entry" valign="top" width="31%" headers="d47625e98 ">workspace admin</td>
+
+                            <td class="entry" valign="top" width="69%" headers="d47625e101 ">You may act as a workspace administrator or manager.
+                                You can assign users to your project, and set all project
+                                parameters. You may archive and delete items, or get them back out
+                                of the archive or undelete them. You may change other users
+                                comments, and modify their expense entries. You cannot create a
+                                project, this has to be done by users with system administrator
+                                privileges, e.g., the system administrator („admin“ user).</td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+</div>
+
+<div class="tablenoborder"><table cellpadding="4" cellspacing="0" summary="" class="table" frame="void" border="1" rules="all"><caption><span class="tablecap">Table 2. RACI selection</span></caption>
+                    
+                    
+                    <thead class="thead" align="left">
+                        <tr class="row">
+                            <th class="entry" valign="top" width="31%" id="d47625e237">Selection list</th>
+
+                            <th class="entry" valign="top" width="69%" id="d47625e240">Description</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" valign="top" width="31%" headers="d47625e237 ">manager</td>
+
+                            <td class="entry" valign="top" width="69%" headers="d47625e240 ">This is not exactly a permission flag. It indicates
+                                that your name appears in the selection list of managers when
+                                modifying or creating items.</td>
+
+                        </tr>
+
+                        <tr class="row">
+                            <td class="entry" valign="top" width="31%" headers="d47625e237 ">responsible</td>
+
+                            <td class="entry" valign="top" width="69%" headers="d47625e240 ">This is not exactly a permission flag. It indicates
+                                that your name appears in the selection list of responsibles when
+                                modifying or creating items.</td>
+
+                        </tr>
+
+                        <tr class="row">
+                            <td class="entry" valign="top" width="31%" headers="d47625e237 ">consulted</td>
+
+                            <td class="entry" valign="top" width="69%" headers="d47625e240 ">This is not exactly a permission flag. It indicates
+                                that your name appears in the selection list of consulted“ when
+                                modifying or creating items.</td>
+
+                        </tr>
+
+                        <tr class="row">
+                            <td class="entry" valign="top" width="31%" headers="d47625e237 ">informed</td>
+
+                            <td class="entry" valign="top" width="69%" headers="d47625e240 ">This is not exactly a permission flag. It indicates
+                                that your name appears in the selection list of informed when
+                                modifying or creating items.</td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+</div>
+</div>
+
+        <ol class="ol steps"><li class="li step stepexpand">
+                    <span class="ph cmd"><span class="ph">In the top toolbar select <span class="ph menucascade"><span class="ph uicontrol">Administration</span> &gt; <span class="ph uicontrol">Customize</span> &gt; <span class="ph uicontrol">User roles</span></span>.</span> Alternatively click on the
+                            <span class="q">"Customize"</span>/<span class="q">"User roles"</span> bar in the left navigation
+                        area.</span>
+                    <div class="itemgroup stepxmp">
+                        <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="../figures/customizeRoles.png" height="133" width="505"/></div><br/>
+                            
+                        </div>
+
+                    </div>
+                </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">Click on "Add" in the toolbar, or double click on a role to edit it. Fill out
+                    the form that appears. For explanations on each check box see the context
+                    description above.</span>
+                <div class="itemgroup stepxmp"><div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/addRole1.png" height="196" width="280"/></div><br/>
+                        
+                    </div>
+</div>
+                <div class="itemgroup info"><div class="note attention"><span class="attentiontitle">Attention:</span> When you rename an entry the 
+                        change may not be reflected at the user
+                        interface! This happens when you have specific localizations for the
+                        selection entries, which is the case for all predefined entries.
+                        In this case the localized values will be shown and not the label
+                        you define here.</div>
+</div>
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">When you are done, click on the „Save“ button in the toolbar area. </span>
+            </li>
+</ol>
+
+        <div class="section result"><p class="p">You have created a new role with associated permissions. You or any space
+                administrator can now assign users in this role to workspaces.</p>
+</div>
+
+    </div>
+
+<div class="related-links"/>
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../../Topics/05ForConfigManagers/roles/Roles.html" title="Track+ manages what users can do with items and workspaces via „roles“. You can assign roles for a workspace to users and thereby give them certain permissions. For example, you would permit them to view other peoples items, or see certain item properties but not others, or see only items of a specific item type."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Roles and permissions</span></a></span>  </div>
+</body>
+</html>

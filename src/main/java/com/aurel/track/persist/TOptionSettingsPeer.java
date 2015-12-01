@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -52,6 +52,7 @@ public class TOptionSettingsPeer
      * @param objectID
      * @return
      */
+    @Override
     public TOptionSettingsBean loadByPrimaryKey(Integer objectID)  {    	
     	TOptionSettings tOptionSettings = null;
     	try {
@@ -71,6 +72,7 @@ public class TOptionSettingsPeer
 	 * @param optionSettingsBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TOptionSettingsBean optionSettingsBean) {
 		Criteria criteria = new Criteria();
 		if (optionSettingsBean!=null && optionSettingsBean.getObjectID()==null 
@@ -93,7 +95,7 @@ public class TOptionSettingsPeer
 			tOptionSettings.save();
 			return tOptionSettings.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of an option settings failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of an option settings failed with " + e.getMessage());
 			return null;
 		}
 	}	  
@@ -102,6 +104,7 @@ public class TOptionSettingsPeer
 	 * Deletes by configID
 	 * @param configID
 	 */
+	@Override
 	public void delete(Integer configID) {        
     	Criteria crit = new Criteria();
         crit.add(CONFIG, configID);
@@ -148,6 +151,7 @@ public class TOptionSettingsPeer
 	 * @param parameterCode
 	 * @return
 	 */
+    @Override
     public TOptionSettingsBean loadByConfigAndParameter(Integer configID, Integer parameterCode) {	
 		List optionSettingsList =  null;
 		Criteria crit = new Criteria();
@@ -182,6 +186,7 @@ public class TOptionSettingsPeer
 	 * @param configIDs
 	 * @return
 	 */
+    @Override
     public List<TOptionSettingsBean> loadByConfigList(List<Integer> configIDs) {
     	//Map optionSettingsMap = new HashMap();
     	if (configIDs==null || configIDs.isEmpty()) {
@@ -230,6 +235,7 @@ public class TOptionSettingsPeer
 	 * @param listObjectId
 	 * @return
 	 */
+	@Override
 	public List<TOptionSettingsBean> loadByListID(Integer listObjectID) {		
 		Criteria crit = new Criteria();
         crit.add(LIST, listObjectID);
@@ -245,12 +251,13 @@ public class TOptionSettingsPeer
 	 * Loads all option settings
 	 * @return
 	 */
+	@Override
 	public List<TOptionSettingsBean> loadAll() {		
 		Criteria crit = new Criteria();
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all custom options failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all custom options failed with " + e.getMessage());
 			return null;
 		}		
 	}

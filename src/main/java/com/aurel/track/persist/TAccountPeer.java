@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -78,6 +78,7 @@ public class TAccountPeer
 	 * @param objectIDs
 	 * @return
 	 */
+	@Override
 	public TAccountBean loadByPrimaryKey(Integer objectID) {
 		TAccount tAccount = null;
 		try {
@@ -100,6 +101,7 @@ public class TAccountPeer
 	 * @param accountNumber
 	 * @return
 	 */
+	@Override
 	public List<TAccountBean> loadByNumber(Integer costcenterID, String accountNumber) {
 		Criteria crit = new Criteria();		
 		crit.add(ACCOUNTNUMBER, accountNumber);
@@ -116,6 +118,7 @@ public class TAccountPeer
 	 * Gets all accounts
 	 * @return
 	 */
+	@Override
 	public List loadAll() {
 		Criteria crit = new Criteria();
 		crit.add(OBJECTID, 0, Criteria.GREATER_THAN);
@@ -123,7 +126,7 @@ public class TAccountPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all accounts failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all accounts failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -132,6 +135,7 @@ public class TAccountPeer
 	 * Gets all accounts for a costcenter
 	 * @return
 	 */
+	@Override
 	public List<TAccountBean> loadByCostcenter(Integer costcenterID) {
 		Criteria crit = new Criteria();
 		crit.add(COSTCENTER, costcenterID);
@@ -150,6 +154,7 @@ public class TAccountPeer
 	 * @param costcenters
 	 * @return
 	 */
+	@Override
 	public List<TAccountBean> loadByCostcenters(Integer[] costcenterKeys) {
 		List torqueList = new ArrayList();
 		if (costcenterKeys!=null && costcenterKeys.length>0) {
@@ -170,6 +175,7 @@ public class TAccountPeer
 	 * @param objectIDs
 	 * @return
 	 */
+	@Override
 	public List<TAccountBean> loadByKeys(List<Integer> objectIDs) {
 		if (objectIDs!=null && !objectIDs.isEmpty()) {
 			Criteria crit = new Criteria();
@@ -185,6 +191,7 @@ public class TAccountPeer
 		return new LinkedList<TAccountBean>();
 	}
 	
+	@Override
 	public List<TAccountBean> loadByProjectForStateflag(Integer project, int stateflag) {
 		Criteria crit = new Criteria();
 		crit.addJoin(OBJECTID, BaseTProjectAccountPeer.ACCOUNT);
@@ -205,6 +212,7 @@ public class TAccountPeer
 	 * @param stateflag
 	 * @return list of {@link TAccountBean} beans in that project which match the given stateflag
 	 */
+	@Override
 	public List<TAccountBean> loadByStateflag(int stateflag) {
 		Criteria crit = new Criteria();
 		crit.addJoin(STATUS,  TSystemStatePeer.OBJECTID);
@@ -223,6 +231,7 @@ public class TAccountPeer
 	 * @param workItemKeys
 	 * @return
 	 */
+	@Override
 	public List<TAccountBean> loadByWorkItemKeys(int[] workItemKeys) {
 		List accounts = new ArrayList();
 		if (workItemKeys==null || workItemKeys.length==0) {
@@ -243,7 +252,7 @@ public class TAccountPeer
 			try {
 				accounts.addAll(doSelect(criteria));
 			} catch(Exception e) {
-				LOGGER.error("Loading the accounts by workItemKeys failed with " + e.getMessage(), e);
+				LOGGER.error("Loading the accounts by workItemKeys failed with " + e.getMessage());
 			}			
 		}
 		return convertTorqueListToBeanList(accounts);
@@ -254,6 +263,7 @@ public class TAccountPeer
 	 * @param fieldBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TAccountBean accountBean) {
 		TAccount tAccount;		
 		try {
@@ -261,7 +271,7 @@ public class TAccountPeer
 			tAccount.save();
 			return tAccount.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of account failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of account failed with " + e.getMessage());
 			return null;
 		}		
 	}
@@ -270,14 +280,8 @@ public class TAccountPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public void delete(Integer objectID) {
-		/*Criteria crit = new Criteria();
-		crit.add(OBJECTID, objectID);
-		try {
-			doDelete(crit);
-		} catch (TorqueException e) {
-			LOGGER.error("Deleting the account " + objectID +  " failed with " + e.getMessage(), e);
-		}*/
 		ReflectionHelper.delete(deletePeerClasses, deleteFields, objectID);
 	}
 	
@@ -286,6 +290,7 @@ public class TAccountPeer
 	 * @param objectID 
 	 * @return
 	 */
+	@Override
 	public boolean hasDependentData(Integer pkey) {
 		return ReflectionHelper.hasDependentData(replacePeerClasses, replaceFields, pkey);
 	}
@@ -297,6 +302,7 @@ public class TAccountPeer
 	 * @param oldOID object identifier of account to be replaced
 	 * @param newOID object identifier of replacement account
 	 */
+	@Override
 	public void replaceAndDelete(Integer oldOID, Integer newOID) {	
 		if (newOID!=null) {
 			ReflectionHelper.replace(replacePeerClasses, replaceFields, oldOID, newOID);
@@ -311,14 +317,6 @@ public class TAccountPeer
 	 * @param criteria
 	 * @return
 	 */
-	/*public List getBeansList(Criteria criteria) {
-		try {
-			return convertTorqueListToBeanList(doSelect(criteria));
-		} catch (TorqueException e) {
-			LOGGER.error("Getting the account beans list for the configured criteria " + criteria + " failed with " + e.getMessage(), e);
-		}
-		return new ArrayList();
-	}*/
 	
 	private List<TAccountBean> convertTorqueListToBeanList(List torqueList) {		
 		List<TAccountBean> beanList = new ArrayList();
@@ -326,13 +324,6 @@ public class TAccountPeer
 			Iterator itrTorqueList = torqueList.iterator();
 			while (itrTorqueList.hasNext()){
 				TAccount tAccount = (TAccount)itrTorqueList.next();
-				/*TAccountBean accountBean = tAccount.getBean();
-				try {
-					accountBean.setStateFlag(tAccount.getTSystemState().getStateflag());
-				} catch (TorqueException e) {
-					LOGGER.error("Getting the state flag failed with " + e.getMessage(), e);
-				}
-				beanList.add(accountBean);*/
 				beanList.add(tAccount.getBean());
 			}
 		}

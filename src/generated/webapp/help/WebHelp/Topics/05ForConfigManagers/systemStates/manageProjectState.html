@@ -1,0 +1,117 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="Each workspace has a state which determines its visibility and controls what can be done with items belonging to it. You must be logged in as system manager or system administrator. There are three ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="task"/><meta name="DC.Title" content="Managing workspace states"/><meta name="abstract" content="Each workspace has a state which determines its visibility and controls what can be done with items belonging to it."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="Each workspace has a state which determines its visibility and controls what can be done with items belonging to it."/><meta name="DC.Relation" scheme="URI" content="../../../Topics/05ForConfigManagers/systemStates/systemStates.html"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="id37manageProjectStatuses"/><link rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Managing workspace states</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()" id="id37manageProjectStatuses">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../../Topics/05ForConfigManagers/systemStates/systemStates.html" title="Spaces, releases, and accounts just like items have a state. The state determines whether regular users can see or use such objects or items linked to them. This way you can release, archive or delete spaces, releases, and accounts, keeping them in the database but hiding them from regular users or for a particular purpose (like creating new items for an archived release)."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">System object states</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../../Topics/05ForConfigManagers/systemStates/../../../Topics/05ForConfigManagers/Chapter5Wrapper.html" title="Customizing Track+">Customizing Track+</a> / <a class="navheader_parent_path" href="../../../Topics/05ForConfigManagers/systemStates/systemStates.html" title="Spaces, releases, and accounts just like items have a state. The state determines whether regular users can see or use such objects or items linked to them. This way you can release, archive or delete spaces, releases, and accounts, keeping them in the database but hiding them from regular users or for a particular purpose (like creating new items for an archived release).">System object states</a></td></tr></tbody></table>
+
+    <h1 class="title topictitle1">Managing workspace states</h1>
+
+    
+    <div class="body taskbody"><p class="shortdesc">Each workspace has a state which determines its visibility
+        and controls what can be done with items belonging to it. </p>
+
+        <div class="section prereq p"><p class="p">You must be logged in as system manager or system administrator.</p>
+</div>
+
+        <div class="section context">
+            <p class="p">There are three workspace state values in <span class="ph"><span class="ph">Track+</span></span>.
+                        
+                 Each state has a
+                „state flag“ which determines the availability of a workspace. There are three
+                values a state flag can assume, as shown in the following table.</p>
+
+            
+<div class="tablenoborder"><table cellpadding="4" cellspacing="0" summary="" id="id37manageProjectStatuses__table_yjy_m3b_lk" class="table" frame="hsides" border="1" rules="all"><caption><span class="tablecap">Table 1. Workspace states</span></caption>
+                    
+                    
+                    
+                    <thead class="thead" align="left">
+                        <tr class="row">
+                            <th class="entry" valign="top" width="11.001100110011002%" id="d49170e54">State</th>
+
+                            <th class="entry" valign="top" width="13.09130913091309%" id="d49170e57">State flag</th>
+
+                            <th class="entry" valign="top" width="75.90759075907592%" id="d49170e60">Description</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" valign="top" width="11.001100110011002%" headers="d49170e54 ">in progress</td>
+
+                            <td class="entry" valign="top" width="13.09130913091309%" headers="d49170e57 ">active</td>
+
+                            <td class="entry" valign="top" width="75.90759075907592%" headers="d49170e60 ">This is the standard workspace state. You can create and modify
+                                items as you like.</td>
+
+                        </tr>
+
+                        <tr class="row">
+                            <td class="entry" valign="top" width="11.001100110011002%" headers="d49170e54 ">on hold</td>
+
+                            <td class="entry" valign="top" width="13.09130913091309%" headers="d49170e57 ">inactive</td>
+
+                            <td class="entry" valign="top" width="75.90759075907592%" headers="d49170e60 ">The workspace will not permit you to create and modify items. all
+                                existing information remains visible, as well as the workspace
+                                itself.</td>
+
+                        </tr>
+
+                        <tr class="row">
+                            <td class="entry" valign="top" width="11.001100110011002%" headers="d49170e54 ">archived</td>
+
+                            <td class="entry" valign="top" width="13.09130913091309%" headers="d49170e57 ">closed</td>
+
+                            <td class="entry" valign="top" width="75.90759075907592%" headers="d49170e60 ">The workspace will not accept new items and will not permit to
+                                modify existing items. Furthermore the workspace is invisible with
+                                all its information. Items are inaccessible.</td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+</div>
+
+        </div>
+
+        <ol class="ol steps"><li class="li step stepexpand">
+                    <span class="ph cmd"><span class="ph">In the top toolbar select <span class="ph menucascade"><span class="ph uicontrol">Administration</span> &gt; <span class="ph uicontrol">Customize</span> &gt; <span class="ph uicontrol">System states</span></span>.</span> Alternatively click on the
+                        <span class="q">"Customize"</span>/<span class="q">"System state"</span> bar in the left navigation area.</span>
+                    <div class="itemgroup stepxmp">
+                        <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="../figures/customizeSystemStates.png" height="212" width="505"/></div><br/>
+                            
+                        </div>
+
+                    </div>
+                </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">Select "Workspace state". <span class="ph">Click on the "Add" button to 
+                    add a new state.</span> Select a state
+                    in the grid and click on "Edit" button to modify a state. <span class="ph">Click
+                    on the "Delete" button to delete a state.</span> </span>
+                <div class="itemgroup stepxmp">
+                    <div class="fig fignone"><br/><div class="imagecenter"><img class="image imagecenter" id="id37manageProjectStatuses__image_dwn_t4b_lk" src="figures/workspaceStatus2.png" height="66" width="362"/></div><br/>
+                        
+                    </div>
+                    
+                </div>
+            </li>
+</ol>
+
+    </div>
+
+<div class="related-links"/>
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../../Topics/05ForConfigManagers/systemStates/systemStates.html" title="Spaces, releases, and accounts just like items have a state. The state determines whether regular users can see or use such objects or items linked to them. This way you can release, archive or delete spaces, releases, and accounts, keeping them in the database but hiding them from regular users or for a particular purpose (like creating new items for an archived release)."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">System object states</span></a></span>  </div>
+</body>
+</html>

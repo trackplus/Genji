@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -69,10 +69,12 @@ public class BaseFieldTypeDT implements IFieldTypeDT {
 		this.pluginID = pluginID;
 	}
 	
+	@Override
 	public String getPluginID() {
 		return pluginID;
 	}
 
+	@Override
 	public void setPluginID(String pluginID) {
 		this.pluginID = pluginID;
 	}
@@ -82,6 +84,7 @@ public class BaseFieldTypeDT implements IFieldTypeDT {
 	 * Typically it should be rendered when the required flag should be also rendered 
 	 * @return
 	 */
+	@Override
 	public boolean renderDeprecatedFlag() {
 		return renderRequiredFlag();
 	}
@@ -94,6 +97,7 @@ public class BaseFieldTypeDT implements IFieldTypeDT {
 	 * ex. labels, check boxes, superiorWorkitem  
 	 * @return
 	 */
+	@Override
 	public boolean renderRequiredFlag() {
 		return true;
 	}
@@ -109,6 +113,7 @@ public class BaseFieldTypeDT implements IFieldTypeDT {
 	 * They are forced by code to false
 	 * @return
 	 */
+	@Override
 	public boolean renderHistoryFlag() {
 		return true;
 	}
@@ -120,13 +125,16 @@ public class BaseFieldTypeDT implements IFieldTypeDT {
 	 * @param destSettings
 	 * @param destConfigID
 	 */
+	@Override
 	public void copySettings(Map<Integer, Object> srcSettings, 
 			Map<Integer, Object> destSettings, Integer destConfigID) {				
 	}
 
+	@Override
 	public void deleteSettings(Integer configID) {		
 	}
 
+	@Override
 	public List<ErrorData> isValidSettings(Map<Integer, Object> settings) {
 		return null;
 	}
@@ -140,6 +148,7 @@ public class BaseFieldTypeDT implements IFieldTypeDT {
 	 * @param bundleName
 	 * @return
 	 */
+	@Override
 	public String getSettingsJSON(Integer configID, 
 			TreeConfigIDTokens treeConfigIDTokens, TPersonBean personBean, Locale locale, String bundleName) {
 		return getLocalizationJSON(locale, bundleName);
@@ -152,6 +161,7 @@ public class BaseFieldTypeDT implements IFieldTypeDT {
 	 * @param bundleName
 	 * @return
 	 */
+	@Override
 	public String getDefaultSettingsJSON(TPersonBean personBean, Locale locale, String bundleName) {
 		return getLocalizationJSON(locale, bundleName);
 	}
@@ -163,10 +173,12 @@ public class BaseFieldTypeDT implements IFieldTypeDT {
 	 * @param bundleName 
 	 * @return
 	 */
+	@Override
 	public String getLocalizationJSON(Locale locale, String bundleName) {
 		return "";
 	}
 
+	@Override
 	public Map<Integer, Object> loadSettings(Integer configID) {		
 		return new HashMap<Integer, Object>();
 	}
@@ -176,6 +188,7 @@ public class BaseFieldTypeDT implements IFieldTypeDT {
 	 * @param settings
 	 * @param configID
 	 */
+	@Override
 	public void saveSettings(Map<Integer, Object> settings, Integer configID) {		
 	}
 	
@@ -183,6 +196,7 @@ public class BaseFieldTypeDT implements IFieldTypeDT {
 	 * Executes a command
 	 * @param configItem
 	 */
+	@Override
 	public void executeCommand(ConfigItem configItem) {
 		
 	}

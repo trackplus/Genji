@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -61,10 +61,10 @@ public class StatusOverTimeBL {
 			DocumentBuilder builder = factory.newDocumentBuilder ();
 			dom = builder.newDocument ();
 		}catch (FactoryConfigurationError e){
-			LOGGER.error ("Creating the DOM document failed with FactoryConfigurationError:" + e.getMessage(), e);
+			LOGGER.error ("Creating the DOM document failed with FactoryConfigurationError:" + e.getMessage());
 			return null;
 		}catch (ParserConfigurationException e){
-			LOGGER.error ("Creating the DOM document failed with ParserConfigurationException: " + e.getMessage(), e);
+			LOGGER.error ("Creating the DOM document failed with ParserConfigurationException: " + e.getMessage());
 			return null;
 		}
 		Element root = dom.createElement ("track-report");
@@ -89,7 +89,6 @@ public class StatusOverTimeBL {
 		Element timeInterval =createDomElement("timeInterval",String.valueOf(selectedTimeInterval),dom);
 		root.appendChild(timeInterval);
 
-		//Map<Integer, TStateBean> statusMap = GeneralUtils.createMapFromList(statusBeanList);
 
 		Map<Integer, SortedMap<Date, Integer>> numberOfIssuesInDateByStatus = new HashMap<Integer, SortedMap<Date,Integer>>();
 		Iterator<Date> itrIssuesInStatus = numberOfIssuesInStatusByDate.keySet().iterator();
@@ -119,7 +118,6 @@ public class StatusOverTimeBL {
 					Date date = itrDate.next();
 					Integer numberOfIssues = numberOfIssuesInDate.get(date);
 					if (numberOfIssues!=null) {
-						//String statusLabel = stateBean.getLabel();
 						Element statusCount = dom.createElement ("s");
 						statusCount.appendChild(createDomElement("label","new",dom));
 						statusCount.appendChild(createDomElement("no",numberOfIssues.toString(),dom));
@@ -155,7 +153,6 @@ public class StatusOverTimeBL {
 				while (itrIssuesAtDate.hasNext()) {
 					TStateBean stateBean = itrIssuesAtDate.next();
 					Integer statusID = stateBean.getObjectID();
-					//TStateBean stateBean = statusMap.get(statusID);
 					if (stateBean!=null) {
 						Map<Date, Integer> numberOfIssuesInDate = numberOfIssuesInDateByStatus.get(statusID);
 						if (numberOfIssuesInDate!=null) {

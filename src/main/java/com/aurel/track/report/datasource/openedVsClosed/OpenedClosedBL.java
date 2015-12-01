@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -62,10 +62,10 @@ public class OpenedClosedBL {
 			DocumentBuilder builder = factory.newDocumentBuilder ();
 			dom = builder.newDocument ();	
 		}catch (FactoryConfigurationError e){
-			LOGGER.error ("Creating the DOM document failed with FactoryConfigurationError:" + e.getMessage(), e);
+			LOGGER.error ("Creating the DOM document failed with FactoryConfigurationError:" + e.getMessage());
 			return null;
 		}catch (ParserConfigurationException e){
-			LOGGER.error ("Creating the DOM document failed with ParserConfigurationException: " + e.getMessage(), e);
+			LOGGER.error ("Creating the DOM document failed with ParserConfigurationException: " + e.getMessage());
 			return null;
 		}
 		Element root = dom.createElement ("track-report");
@@ -109,7 +109,6 @@ public class OpenedClosedBL {
 	}
 
 	static void openedClosedJavaBean(SortedMap<Date, OpenedClosedDateData> openedClosedTimeSliceMap, SortedMap<Date, Object> countMap, boolean opened) {
-		//SortedMap openedClosed = new TreeMap();
 		if (countMap!=null) {
 			for (Date date : countMap.keySet()) {
 				OpenedClosedDateData openedClosedTimeSlice = (OpenedClosedDateData)openedClosedTimeSliceMap.get(date);

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -88,24 +88,23 @@ public class LaTeXExportBL extends DocxExportBL{
 			IOUtils.copy(is, outputStream);
 			is.close();
 		} catch (FileNotFoundException e) {
-			LOGGER.error(ExceptionUtils.getStackTrace(e), e);
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		catch (IOException e) {
-			LOGGER.error("Getting the output stream failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the output stream failed with " + e.getMessage());
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 		catch (Exception e) {
-			LOGGER.error(ExceptionUtils.getStackTrace(e), e);
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 
 
-		//			try {
 		//				Docx4J.save(wordMLPackage, outputStream, Docx4J.FLAG_NONE);
 		//				//wordMLPackage.save(outputStream);
 		//				/*SaveToZipFile saver = new SaveToZipFile(wordMLPackage);
 		//			saver.save(outputStream);*/
 		//			} catch (Exception e) {
-		//				LOGGER.error("Exporting the docx failed with throwable " + e.getMessage(), e);
+		//				LOGGER.error("Exporting the docx failed with throwable " + e.getMessage());
 		//				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		//			}
 		return null;

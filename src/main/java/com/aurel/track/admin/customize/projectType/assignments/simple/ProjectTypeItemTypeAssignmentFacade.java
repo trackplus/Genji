@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -60,6 +60,7 @@ public class ProjectTypeItemTypeAssignmentFacade extends ProjectTypeSimpleAssign
 	 * @param projectTypeID
 	 * @return
 	 */
+	@Override
 	public Set<Integer> getAssignedIDsByProjectTypeID(Integer projectTypeID) {
 		Set<Integer> itemTypeIDs = new HashSet<Integer>();
 		List<TPlistTypeBean> pItemTypeBeans = pIssueTypeDAO.loadByProjectType(projectTypeID);
@@ -75,6 +76,7 @@ public class ProjectTypeItemTypeAssignmentFacade extends ProjectTypeSimpleAssign
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public List<ILabelBean> getAllAssignables(Locale locale) {
 		return IssueTypeBL.loadAll(locale);
 	}
@@ -83,6 +85,7 @@ public class ProjectTypeItemTypeAssignmentFacade extends ProjectTypeSimpleAssign
 	 * Gets the key for the assignment info 
 	 * @return
 	 */
+	@Override
 	public String getAssignmentInfoKey() {
 		return "admin.customize.projectType.lbl.assignmentInfoIssueType";
 	}
@@ -92,6 +95,7 @@ public class ProjectTypeItemTypeAssignmentFacade extends ProjectTypeSimpleAssign
 	 * If static the getIconCssClass() should return a non null value
 	 * @return
 	 */
+	@Override
 	public boolean isDynamicIcon() {
 		return true;
 	}
@@ -103,6 +107,7 @@ public class ProjectTypeItemTypeAssignmentFacade extends ProjectTypeSimpleAssign
 	 * @param assignedID
 	 * @return
 	 */
+	@Override
 	public Object createAssignmentBean(Integer projectTypeID, Integer itemTypeID, Integer assignedID) {
 		TPlistTypeBean plistTypeBean = new TPlistTypeBean();
 		plistTypeBean.setProjectType(projectTypeID);
@@ -115,6 +120,7 @@ public class ProjectTypeItemTypeAssignmentFacade extends ProjectTypeSimpleAssign
 	 * @param assignmentBean
 	 * @return
 	 */
+	@Override
 	public Integer save(Object assignmentBean) {
 		return pIssueTypeDAO.save((TPlistTypeBean)assignmentBean);
 	}
@@ -125,6 +131,7 @@ public class ProjectTypeItemTypeAssignmentFacade extends ProjectTypeSimpleAssign
 	 * @param itemTypeID
 	 * @param assignedIDs
 	 */
+	@Override
 	public void delete(Integer projectTypeID, Integer itemTypeID, List<Integer> assignedIDs) {
 		pIssueTypeDAO.delete(projectTypeID, assignedIDs);
 	}

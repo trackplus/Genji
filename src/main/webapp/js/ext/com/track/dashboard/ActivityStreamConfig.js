@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -32,17 +32,17 @@ Ext.define('js.ext.com.track.dashboard.ActivityStreamConfig',{
         var labelWidth = 150;
         var dateDaysWidth = 250;
         var numberWidth = 225;
-        if(typeof(me.projectID) !== 'undefined' && me.projectID != null) {
+        if(typeof(me.projectID) !== 'undefined' && me.projectID ) {
             projectID=me.projectID;
         }
-        if(projectID==null){
+        if(CWHF.isNull(projectID)){
             me.dataSourceType=com.trackplus.dashboard.createRadioGroupConfig(getText('common.datasource'),
                 'params.selectedDatasourceType',me.jsonData.datasourceTypes,me.jsonData.selectedDatasourceType,me.datasourceTypeChanged,me);
             me.projectReleasePicker=com.trackplus.dashboard.createReleasePickerCfg("common.datasource.projectRelease",
                 'params.selectedProjectOrRelease',me.jsonData.selectedProjectOrRelease);
-            me.projectReleasePicker.setDisabled(me.jsonData.selectedDatasourceType!=1);
+            me.projectReleasePicker.setDisabled(me.jsonData.selectedDatasourceType!==1);
             me.filterPicker=com.trackplus.dashboard.createFilterPickerCfg("common.datasource.filter",'params.selectedQueryID',me.jsonData.selectedQueryID);
-            me.filterPicker.setDisabled(me.jsonData.selectedDatasourceType==1);
+            me.filterPicker.setDisabled(me.jsonData.selectedDatasourceType===1);
             items.push({
                 xtype: 'fieldset',
                 itemId: 'fsDatasource',
@@ -67,11 +67,12 @@ Ext.define('js.ext.com.track.dashboard.ActivityStreamConfig',{
         me.txtDaysBefore = CWHF.createNumberField("common.timePeriod.daysBefore", "params.daysBefore", 0, null, null,
             {value:me.jsonData.daysBefore,
                labelWidth: labelWidth,
-               width: numberWidth});
+               width: numberWidth,
+               itemId:"paramsDaysBefore"});
         //fromTo=1,dateFrom=2
-        me.dateFrom.setDisabled(me.jsonData.selectedPeriodType!=1);
-        me.dateTo.setDisabled(me.jsonData.selectedPeriodType!=1);
-        me.txtDaysBefore.setDisabled(me.jsonData.selectedPeriodType==1);
+        me.dateFrom.setDisabled(me.jsonData.selectedPeriodType!==1);
+        me.dateTo.setDisabled(me.jsonData.selectedPeriodType!==1);
+        me.txtDaysBefore.setDisabled(me.jsonData.selectedPeriodType===1);
         items.push({
             xtype: 'fieldset',
             itemId: 'fsTimePeriod',
@@ -98,12 +99,14 @@ Ext.define('js.ext.com.track.dashboard.ActivityStreamConfig',{
             {value:me.jsonData.refresh,
              minValue: 60,
              labelWidth: labelWidth,
-             width: numberWidth});
+             width: numberWidth,
+             itemId:'paramsRefresh'});
 
 		me.txtMaxIssues=CWHF.createNumberField('myFilterView.maxIssuesToShow','params.maxIssuesToShow',0,1,1000,
 			{value:me.jsonData.maxIssuesToShow,
 				labelWidth: labelWidth,
-				width: numberWidth});
+				width: numberWidth,
+				itemId:'paramsMaxIssuesToShow'});
 		items.push({
             xtype: 'fieldset',
             itemId: 'fsOtherSettings',
@@ -119,12 +122,12 @@ Ext.define('js.ext.com.track.dashboard.ActivityStreamConfig',{
         var me=this;
         var checkedArr = radioGroup.getChecked();
         var checkedRadio;
-        if (checkedArr.length==1) {
+        if (checkedArr.length===1) {
             checkedRadio = checkedArr[0];
             var value=checkedRadio.getSubmitValue();
             //project=1,query=2
-            me.projectReleasePicker.setDisabled(value!=1);
-            me.filterPicker.setDisabled(value==1);
+            me.projectReleasePicker.setDisabled(value!==1);
+            me.filterPicker.setDisabled(value===1);
         }
     },
 
@@ -132,13 +135,13 @@ Ext.define('js.ext.com.track.dashboard.ActivityStreamConfig',{
         var me=this;
         var checkedArr = radioGroup.getChecked();
         var checkedRadio;
-        if (checkedArr.length==1) {
+        if (checkedArr.length===1) {
             checkedRadio = checkedArr[0];
             var value=checkedRadio.getSubmitValue();
             //fromTo=1,dateFrom=2
-            me.dateFrom.setDisabled(value!=1);
-            me.dateTo.setDisabled(value!=1);
-            me.txtDaysBefore.setDisabled(value==1);
+            me.dateFrom.setDisabled(value!==1);
+            me.dateTo.setDisabled(value!==1);
+            me.txtDaysBefore.setDisabled(value===1);
         }
     },
 
@@ -146,7 +149,7 @@ Ext.define('js.ext.com.track.dashboard.ActivityStreamConfig',{
 		var me=this;
 		var valid=me.callParent();
 		var refresh=me.txtRefresh.getValue();
-		if(refresh!=null&&parseInt(refresh)<60){
+		if(refresh&&parseInt(refresh)<60){
 			valid=false;
 			me.txtRefresh.markInvalid(me.txtRefresh.invalidText);
 		}

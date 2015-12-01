@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -26,7 +26,6 @@
 Ext.define('com.trackplus.admin.SimpleAssignment',{
 	extend:'Ext.Base',
 	config: {
-		baseAction: null,
 		//the id of the selected object to assign to
 		objectID: null,
 		//the request parameter name to submit objectID
@@ -43,12 +42,18 @@ Ext.define('com.trackplus.admin.SimpleAssignment',{
 
 	constructor: function(config) {
 		var config = config || {};
-		this.initialConfig = config;
-		Ext.apply(this, config);
+		this.initConfig(config);
+	},
+
+	/**
+	 * Gets the base struts action
+	 */
+	getBaseAction: function() {
+		return this.baseAction;
 	},
 
 	getDetailUrl: function() {
-		return this.baseAction + ".action";
+		return this.getBaseAction() + ".action";
 	},
 
 	/**
@@ -56,9 +61,9 @@ Ext.define('com.trackplus.admin.SimpleAssignment',{
 	 */
 	getDetailParams: function(node) {
 		var params = new Object();
-		params[this.objectIDParamName] = this.objectID;
-		if (this.assignmentType!=null && this.assignmentTypeParameterName!=null) {
-			params[this.assignmentTypeParameterName] = this.assignmentType;
+		params[this.getObjectIDParamName()] = this.getObjectID();
+		if (this.getAssignmentType() && this.getAssignmentTypeParameterName()) {
+			params[this.getAssignmentTypeParameterName()] = this.getAssignmentType();
 		}
 		return params;
 	},
@@ -133,7 +138,7 @@ Ext.define('com.trackplus.admin.SimpleAssignment',{
 	},
 
 	getIconField: function() {
-		if (this.dynamicIcons) {
+		if (this.getDynamicIcons()) {
 			return "icon";
 		} else {
 			return "iconCls";
@@ -157,7 +162,7 @@ Ext.define('com.trackplus.admin.SimpleAssignment',{
 
 	getColumnModel: function() {
 		var renderer;
-		if (this.dynamicIcons) {
+		if (this.getDynamicIcons()) {
 			renderer = this.iconRenderer;
 		} else {
 			renderer = this.iconClsRenderer;
@@ -169,7 +174,7 @@ Ext.define('com.trackplus.admin.SimpleAssignment',{
 
 	createAssignmentGrids: function(record, response) {
 		var items = [];
-		if (response['assigned']!=null) {
+		if (response['assigned']) {
 			var assignedGridStore = Ext.create('Ext.data.Store', {
 				fields:this.getGridFields(record),
 				data: response['assigned']
@@ -196,17 +201,17 @@ Ext.define('com.trackplus.admin.SimpleAssignment',{
 					listeners: {
 						drop: {scope:this,
 							fn: function(node, data, dropRec, dropPosition) {
-								if(data!=null && data.records!=null && data.records.length>0){
+								if(data && data.records && data.records.length>0){
 									var idsArray = new Array();
 									for ( var i = 0; i < data.records.length; i++) {
 										idsArray[i] = data.records[i].data.id;
 									}
 									var params=this.getDetailParams();
-									if (params==null) {
+									if (CWHF.isNull(params)) {
 										params=new Object();
 									}
 									params['assign']=idsArray.join();
-									this.reloadAssigned(this.baseAction+"!assign.action", params);
+									this.reloadAssigned(this.getBaseAction()+"!assign.action", params);
 								}
 							}
 						}
@@ -216,7 +221,7 @@ Ext.define('com.trackplus.admin.SimpleAssignment',{
 			items.push(this.assignedGrid);
 		}
 
-		if (response['unassigned']!=null) {
+		if (response['unassigned']) {
 			var availableGridStore = Ext.create('Ext.data.Store', {
 				fields:this.getGridFields(record),
 				data: response['unassigned']
@@ -246,17 +251,17 @@ Ext.define('com.trackplus.admin.SimpleAssignment',{
 					listeners: {
 						drop: {scope:this,
 							fn: function(node, data, dropRec, dropPosition) {
-								if(data!=null && data.records!=null && data.records.length>0){
+								if(data && data.records && data.records.length>0){
 									var idsArray = new Array();
 									for ( var i = 0; i < data.records.length; i++) {
 										idsArray[i] = data.records[i].data.id;
 									}
 									var params=this.getDetailParams();
-									if (params==null) {
+									if (CWHF.isNull(params)) {
 										params=new Object();
 									}
 									params['unassign']=idsArray.join();
-									this.reloadAssigned(this.baseAction+"!unassign.action", params);
+									this.reloadAssigned(this.getBaseAction()+"!unassign.action", params);
 								}
 							}
 						}

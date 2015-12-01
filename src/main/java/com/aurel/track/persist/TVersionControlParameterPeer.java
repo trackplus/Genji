@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -131,6 +131,7 @@ public class TVersionControlParameterPeer
        }
     }
 
+    @Override
     public List<TVersionControlParameterBean> getByProject(Integer projectID) {
         Connection con = null;
         List<TVersionControlParameterBean> beanList=new ArrayList<TVersionControlParameterBean>();
@@ -141,11 +142,12 @@ public class TVersionControlParameterPeer
             beanList=convertTorqueListToBeanList(torqueList);
         } catch (TorqueException e) {
 			Transaction.safeRollback(con);
-            LOGGER.error("Loading version control parameters  failed with " + e.getMessage(), e);
+            LOGGER.error("Loading version control parameters  failed with " + e.getMessage());
 		}
         return beanList;
     }
 
+    @Override
     public void save(Integer projectID, Map vcmap) {
         Connection con = null;
         try {
@@ -154,7 +156,7 @@ public class TVersionControlParameterPeer
             Transaction.commit(con);
         } catch (TorqueException e) {
 			Transaction.safeRollback(con);
-            LOGGER.error("Save version control parameters   failed with " + e.getMessage(), e);
+            LOGGER.error("Save version control parameters   failed with " + e.getMessage());
 		}
     }
     private List<TVersionControlParameterBean> convertTorqueListToBeanList(List torqueList) {

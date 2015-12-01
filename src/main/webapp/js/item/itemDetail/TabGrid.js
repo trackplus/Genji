@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -52,14 +52,14 @@ Ext.define('com.aurel.trackplus.itemDetail.TabGrid',{
 		for(var i=0;i<gridLayoutData.layout.length;i++){
 			layoutData=gridLayoutData.layout[i];
 			colCfg={
-				header:layoutData.header,
+				text:layoutData.header,
 				dataIndex:layoutData.dataIndex,
-				itemId:gridConfig.id+'_'+layoutData.id,
+				//itemId:gridConfig.id+'_'+layoutData.id,
 				sortable:layoutData.sortable,
 				hidden:layoutData.hidden
 			};
-			//if(layoutData.flex!=null){
-			//if(i==gridLayoutData.layout.length-1){
+			//if(layoutData.flex){
+			//if(i===gridLayoutData.layout.length-1){
 			//colCfg['flex']=1;
 			//}else{
 			colCfg['width']=layoutData.width;
@@ -68,22 +68,22 @@ Ext.define('com.aurel.trackplus.itemDetail.TabGrid',{
 
 			colClassName=me.gridConfig.updateColCfg.call(me.gridConfig,colCfg,layoutData,i);
 			var col=Ext.create(colClassName,colCfg);
-			if(layoutData.type==me.COLUMN_TYPE.DATETIME){
+			if(layoutData.type===me.COLUMN_TYPE.DATETIME){
 				col.renderer=Ext.util.Format.dateRenderer(com.trackplus.TrackplusConfig.DateTimeFormat);
 			}
-			if(layoutData.type==me.COLUMN_TYPE.DATE){
+			if(layoutData.type===me.COLUMN_TYPE.DATE){
 				col.renderer=Ext.util.Format.dateRenderer(com.trackplus.TrackplusConfig.DateFormat);
 			}
-			if(layoutData.type==me.COLUMN_TYPE.BYTES){
+			if(layoutData.type===me.COLUMN_TYPE.BYTES){
 				col.renderer=me.formatBytes;
 			}
-			if(layoutData.type==me.COLUMN_TYPE.IMAGE){
+			if(layoutData.type===me.COLUMN_TYPE.IMAGE){
 				col.renderer=me.thumbnailRenderer(me.workItemID);
 			}
-			if(layoutData.dataIndex=='newValues'||layoutData.dataIndex=='oldValues'||
-				layoutData.dataIndex=='comment'||layoutData.dataIndex=='diff'){
+			if(layoutData.dataIndex==='newValues'||layoutData.dataIndex==='oldValues'||
+				layoutData.dataIndex==='comment'||layoutData.dataIndex==='diff'){
 				col.renderer=function(value,metaData, record, rowIndex, colIndex, store) {
-					if(this.isHidden()==true){
+					if(this.isHidden()===true){
 						metaData.tdCls = '';
 						return '';
 					}else{
@@ -111,7 +111,7 @@ Ext.define('com.aurel.trackplus.itemDetail.TabGrid',{
 				}
 			}
 		});
-		if(items!=null){
+		if(items){
 			store.loadData(items);
 		}
 
@@ -119,7 +119,7 @@ Ext.define('com.aurel.trackplus.itemDetail.TabGrid',{
 			groupHeaderTpl: '{name} ({rows.length} Item{[values.rows.length > 1 ? "s" : ""]})'
 		});
 		var features=me.gridConfig.features;
-		if(features==null){
+		if(CWHF.isNull(features)){
 			features=[];
 		}
 		features.push(groupingFeature);
@@ -140,7 +140,7 @@ Ext.define('com.aurel.trackplus.itemDetail.TabGrid',{
 				items:gridConfig.tbar
 			}]
 		});
-		if(groupField==null){
+		if(CWHF.isNull(groupField)){
 			me.grid.addListener('afterrender', function(){
 				groupingFeature.disable();
 			});
@@ -169,12 +169,9 @@ Ext.define('com.aurel.trackplus.itemDetail.TabGrid',{
 	formatThumbnail:function(value,metaData, record, rowIndex, colIndex, store,workItemID){
 		var result="";
 		if(value){
-			result= '<div style="text-align: center;';
-			if(record.data['imgHeight']!=null){
-				result+=' height:'+record.data['imgHeight']+'px;'
-			}
-			result+='"><img src="thumbnailAttachment.action?attachKey='+record.data['id'];
-			if(workItemID!=null){
+			result= '<div style="text-align: center;height:100px;">';
+			result+='<img src="thumbnailAttachment.action?attachKey='+record.data['id'];
+			if(workItemID){
 				result=result+'&workItemID='+workItemID;
 			}
 			result=result+'"></div>';
@@ -195,7 +192,7 @@ Ext.define('com.aurel.trackplus.itemDetail.TabGrid',{
 		var sortField=null;
 		var sortDir=null;
 		var sorters=me.grid.getStore().sorters;
-		if(sorters!=null&&sorters.getCount()>0){
+		if(sorters&&sorters.getCount()>0){
 			var s=sorters.getAt(0);
 			sortField=s.property;
 			sortDir=s.direction;
@@ -209,28 +206,28 @@ Ext.define('com.aurel.trackplus.itemDetail.TabGrid',{
 			var col=gridColumns[i];
 			var colId=null;
 			var itemID=col.getItemId();
-			if(itemID!=null){
+			if(itemID){
 				var idx=itemID.indexOf("_");
 				if(idx>0){
 					colId=itemID.substring(idx+1);
 				}
 			}
-			if(colId==null){
+			if(CWHF.isNull(colId)){
 				continue;
 			}
 			var colWidth=col.getWidth();
 			var colDataIndex=col.dataIndex;
 			var colHidden=col.isHidden();
 			var direction="-";
-			if(sortField!=null&&colDataIndex==sortField){
-				if(sortDir=='ASC'){
+			if(sortField&&colDataIndex===sortField){
+				if(sortDir==='ASC'){
 					direction='Y'
 				}else{
 					direction='N';
 				}
 			}
 			var grouping=false;
-			if(groupField!=null&&colDataIndex==groupField){
+			if(groupField&&colDataIndex===groupField){
 				grouping=true;
 			}
 			columns=columns+colId+":"+colHidden+":"+colWidth+":"+direction+":"+grouping+";";
@@ -256,7 +253,7 @@ Ext.define('com.aurel.trackplus.itemDetail.TabGrid',{
 	createChildren:function(){
 		var me=this;
 		var items=[];
-		if(me.gridConfig!=null&&me.jsonData!=null&&me.jsonData.gridLayoutData!=null){
+		if(me.gridConfig&&me.jsonData&&me.jsonData.gridLayoutData){
 			var someGrid=me.createGrid.call(me,me.gridConfig,me.jsonData.gridLayoutData,me.jsonData.items);
 			me.gridConfig.grid=someGrid;
 			items.push(someGrid);
@@ -266,7 +263,7 @@ Ext.define('com.aurel.trackplus.itemDetail.TabGrid',{
 	refresh:function(){
 		var me=this;
 		Ext.suspendLayouts();
-		if(me.gridConfig.grid==null){
+		if(CWHF.isNull(me.gridConfig.grid)){
 			Ext.Ajax.request({
 				url: me.gridConfig.urlStore,
 				disableCaching:true,
@@ -278,7 +275,7 @@ Ext.define('com.aurel.trackplus.itemDetail.TabGrid',{
 					me.add(someGrid);
 					var records=new Array();
 					var data=someGrid.store.data;
-					if(data!=null){
+					if(data){
 						for(var i=0;i<data.getCount();i++){
 							records.push(data.getAt(i));
 						}
@@ -316,13 +313,13 @@ Ext.define('com.aurel.trackplus.itemDetail.TabGrid',{
 	},
 	gridOnClickHandler:function(){
 		var me=this;
-		if(me.gridConfig.dblClickHandler!=null){
+		if(me.gridConfig.dblClickHandler){
 			me.gridConfig.dblClickHandler.call(me);
 		}
 	},
 	gridOnCellClickHandler:function(grid, td, cellIndex, record, tr, rowIndex, e, eOpts){
 		var me=this;
-		if(me.gridConfig.cellClickHandler!=null){
+		if(me.gridConfig.cellClickHandler){
 			me.gridConfig.cellClickHandler.call(me, grid, td, cellIndex, record, tr, rowIndex, e, eOpts);
 		}
 	},
@@ -334,7 +331,7 @@ Ext.define('com.aurel.trackplus.itemDetail.TabGrid',{
 		var messageNoSelection=com.trackplus.TrackplusConfig.getText("common.lbl.messageBox.removeSelected.notSelected");
 		var titleDelete=com.trackplus.TrackplusConfig.getText("common.btn.delete");
 		var okLabel=com.trackplus.TrackplusConfig.getText("common.btn.ok");
-		if(selections==null||selections.length==0){
+		if(CWHF.isNull(selections)||selections.length===0){
 			Ext.MessageBox.show({
 				title:titleNotSelected,
 				msg:messageNoSelection ,
@@ -344,7 +341,7 @@ Ext.define('com.aurel.trackplus.itemDetail.TabGrid',{
 			return;
 		}
 		/*var rowData=selections[0].data;
-		 if(rowData.editable==false){
+		 if(rowData.editable===false){
 		 return false;
 		 }*/
 		Ext.MessageBox.show({
@@ -353,8 +350,8 @@ Ext.define('com.aurel.trackplus.itemDetail.TabGrid',{
 			//buttons:{yes : yesLabel, no : noLabel},
 			buttons: Ext.MessageBox.YESNO,
 			fn: function(btn){
-				if(btn=="yes"){
-					if(me.handlerDeleteItem!=null){
+				if(btn==="yes"){
+					if(me.handlerDeleteItem){
 						me.handlerDeleteItem();
 					}else{
 						var selections=me.gridConfig.selectionModel.getSelection();
@@ -364,7 +361,7 @@ Ext.define('com.aurel.trackplus.itemDetail.TabGrid',{
 						for(i=0;i<selections.length;i++){
 							//row=selections[i];
 							row=selections[i].data;
-							if(row.editable==true) {
+							if(row.editable===true) {
 								deletedItems = deletedItems + row.id + ";";
 							}
 						}
@@ -372,7 +369,7 @@ Ext.define('com.aurel.trackplus.itemDetail.TabGrid',{
 							url: me.urlDeleteItems,
 							disableCaching:true,
 							success: function(response){
-								if(me.fieldsToNotifyOnDelete!=null){
+								if(me.fieldsToNotifyOnDelete){
 									var result = Ext.decode(response.responseText);
 									var lastModified=result.data.lastModified;
 									me.fireItemChange(me.fieldsToNotifyOnDelete,lastModified);

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -34,25 +34,25 @@ com.trackplus.util.RefreshAfterSubmit.refreshSimpleTree = function(refreshParams
 		//tree reload is needed: after delete, add and edit with label change
 		var treeStore = this.tree.getStore();
 		var options = {};
-		if (nodeID==null && treeStore.getRootNode().hasChildNodes()) {
+		if (CWHF.isNull(nodeID) && treeStore.getRootNode().hasChildNodes()) {
 			var childNodes = treeStore.getRootNode().childNodes;
-			if (childNodes!=null) {
+			if (childNodes) {
 				var numberOfChildren = childNodes.length;
 				if (numberOfChildren>0) {
 					//select the first row after delete
 					var firstNode = treeStore.getRootNode().getChildAt(0);
-					if (firstNode!=null) {
+					if (firstNode) {
 						var selectedNodeID = null;
-						if (this.selectNode!=null) {
+						if (this.selectNode) {
 							selectedNodeID = this.selectedNode.get("id");
 						}
 						nodeID = firstNode.get("id");
-						if (nodeID==selectedNodeID) {
+						if (nodeID===selectedNodeID) {
 							//the first row was deleted, try to select the second row if exists
 							nodeID = null;
 							if (numberOfChildren>1) {
 								var secondNode = treeStore.getRootNode().getChildAt(1);
-								if (secondNode!=null) {
+								if (secondNode) {
 									nodeID = secondNode.get("id");
 								}
 							}
@@ -61,7 +61,7 @@ com.trackplus.util.RefreshAfterSubmit.refreshSimpleTree = function(refreshParams
 				}
 			}
 		}
-		if (nodeID!=null) {
+		if (nodeID) {
 			options.callback = this.selectNode;
 			options.scope = {tree:this.tree, nodeIdToSelect:nodeID}
 		} else {
@@ -73,10 +73,10 @@ com.trackplus.util.RefreshAfterSubmit.refreshSimpleTree = function(refreshParams
 	} else {
 		//edit without label change
 		var selectionModel = this.tree.getSelectionModel();
-		if (nodeID!=null) {
+		if (nodeID) {
 			//get the node by id
 			var nodeToSelect = this.tree.getStore().getNodeById(nodeID);
-			if (nodeToSelect!=null) {
+			if (nodeToSelect) {
 				selectionModel.select(nodeToSelect);
 			}
 		}
@@ -95,10 +95,10 @@ com.trackplus.util.RefreshAfterSubmit.refreshTreeAfterSubmit = function(refreshP
 		//tree reload is needed: after delete, add and edit with label change
 		var treeStore = this.tree.getStore();
 		var options = {};
-		if (nodeIDToReload!=null) {
+		if (nodeIDToReload) {
 			options.node = this.tree.getStore().getNodeById(nodeIDToReload);
 		}
-		if (nodeIDToSelect!=null) {
+		if (nodeIDToSelect) {
 			options.callback = com.trackplus.util.RefreshAfterSubmit.selectTreeNodeAfterReload;
 			options.scope = {treePanel:this.tree, nodeIDToSelect:nodeIDToSelect}
 		} else {
@@ -126,16 +126,16 @@ com.trackplus.util.RefreshAfterSubmit.refreshGridAndTreeAfterSubmit = function(r
 	var nodeIDToReload = null;
 	var nodeIDToSelect = null;
 	var rowToSelect = null;
-	if (refreshParametersObject!=null) {
+	if (refreshParametersObject) {
 		nodeIDToReload = refreshParametersObject.nodeIDToReload;
 		nodeIDToSelect = refreshParametersObject.nodeIDToSelect;
 		rowToSelect = refreshParametersObject.rowToSelect;
 	}
 	var nodeToReload;
-	if (nodeIDToReload!=null) {
+	if (nodeIDToReload) {
 		nodeToReload=this.tree.getStore().getNodeById(nodeIDToReload);
 	} else {
-		if (this.selectedNode!=null) {
+		if (this.selectedNode) {
 			//typically no nodeIDToReload specified when this.selectedNode is the one to reload
 			nodeToReload = this.selectedNode;
 			nodeIDToReload = this.selectedNodeID;
@@ -147,13 +147,13 @@ com.trackplus.util.RefreshAfterSubmit.refreshGridAndTreeAfterSubmit = function(r
 		}
 	}
 
-	if (nodeToReload!=null) {
+	if (nodeToReload) {
 		if (nodeToReload.isLoaded()) {
 			//reload the node only if the node was already loaded (expanded)
 			//set the global this.rowToSelect for selecting a row after the grid has been reloaded. See treeWithGrid.onGridStoreLoad()
 			//(in selectTreeNodeAfterReload the grid row can't be selected: see selectTreeNodeAfterReload
 			this.rowIdToSelect = rowToSelect;
-			if (nodeIDToSelect==null) {
+			if (CWHF.isNull(nodeIDToSelect)) {
 				nodeIDToSelect = nodeIDToReload;
 			}
 			var scope={treePanel:this.tree, grid:this.grid, nodeIDToSelect:nodeIDToSelect, rowToSelect:rowToSelect, scope: this};
@@ -163,7 +163,7 @@ com.trackplus.util.RefreshAfterSubmit.refreshGridAndTreeAfterSubmit = function(r
 								scope:scope});
 		} else {
 			//tree node was not loaded previously: refresh the grid only
-			if (this.grid!=null) {
+			if (this.grid) {
 				com.trackplus.util.RefreshAfterSubmit.refreshGridAfterSubmit.call(this, {rowToSelect:rowToSelect});
 
 			}
@@ -176,11 +176,11 @@ com.trackplus.util.RefreshAfterSubmit.refreshGridAndTreeAfterSubmit = function(r
  * Called from selectAfterReload() (grid and tree refresh) and from simple grid CRUD
  */
 /*com.trackplus.util.RefreshAfterSubmit.refreshGridAfterSubmit = function(grid, rowIdToSelect) {
-	if (grid!=null) {
+	if (grid) {
 		grid.getStore().load({scope:this, callback:function(){
-			if (rowIdToSelect!=null) {
+			if (rowIdToSelect) {
 				var row = grid.getStore().getById(rowIdToSelect);
-				if (row!=null) {
+				if (row) {
 					var gridSelectionModel = grid.getSelectionModel();
 					gridSelectionModel.select(row);
 				}
@@ -200,9 +200,9 @@ com.trackplus.util.RefreshAfterSubmit.selectTreeNodeAfterReload = function() {
 	//but the corresponding grid row can't be selected here directly (if it would be the case) that's why it is selected
 	//in treeWithGrid.onGridStoreLoad() after the global this.rowToSelect was set
 	var treeSelectionModel = this.treePanel.getSelectionModel();
-	if (this.nodeIDToSelect!=null) {
+	if (this.nodeIDToSelect) {
 		var nodeToSelect=this.treePanel.getStore().getNodeById(this.nodeIDToSelect);
-		if (nodeToSelect!=null) {
+		if (nodeToSelect) {
 			if (treeSelectionModel.isSelected(nodeToSelect)) {
 				//if already selected deselect it first because
 				//otherwise the select does not trigger the select handler (for refreshing the detail part)
@@ -221,16 +221,19 @@ com.trackplus.util.RefreshAfterSubmit.selectTreeNodeAfterReload = function() {
  * Called from selectAfterReload() (grid and tree refresh) and from simple grid CRUD
  */
 com.trackplus.util.RefreshAfterSubmit.refreshGridAfterSubmit = function(refreshParametersObject) {
-	this.grid.getStore().load({scope:this, callback:function(){
-		if (refreshParametersObject!=null) {
-			var rowToSelect = refreshParametersObject.rowToSelect;
-			if (rowToSelect!=null) {
-				var row = this.grid.getStore().getById(rowToSelect);
-				if (row!=null) {
-					var gridSelectionModel = this.grid.getSelectionModel();
-					gridSelectionModel.select(row);
+	this.grid.getStore().load({
+		scope:this,
+		callback:function(){
+			if (refreshParametersObject) {
+				var rowToSelect = refreshParametersObject.rowToSelect;
+				if (rowToSelect) {
+					var row = this.grid.getStore().getById(rowToSelect);
+					if (row) {
+						var gridSelectionModel = this.grid.getSelectionModel();
+						gridSelectionModel.select(row);
+					}
 				}
 			}
 		}
-	}})
+	});
 }

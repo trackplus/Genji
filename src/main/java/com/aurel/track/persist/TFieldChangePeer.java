@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -58,6 +58,7 @@ public class TFieldChangePeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TFieldChangeBean loadByPrimaryKey(Integer objectID) {
 		TFieldChange tFieldChange = null;
     	try {
@@ -79,6 +80,7 @@ public class TFieldChangePeer
 	 * @param since
 	 * @return
 	 */
+	@Override
 	public List<TFieldChangeBean> loadByItemAndFieldsSince(Integer itemID, List<Integer> fieldIDs, Date since) {
 		if (fieldIDs!=null && !fieldIDs.isEmpty() && itemID!=null) {
 			Criteria criteria = new Criteria();
@@ -106,6 +108,7 @@ public class TFieldChangePeer
 	 * @param personID if not null filter also by personID, otherwise neglect this parameter
 	 * @return
 	 */
+	@Override
 	public List<TFieldChangeBean> loadHistoryCustomOptionFieldChanges(int[] workItemIDs) {
 		List<TFieldChangeBean> fieldChangeBeanList = new ArrayList<TFieldChangeBean>();		
 		List<int[]> workItemIDChunksList = GeneralUtils.getListOfChunks(workItemIDs);        
@@ -139,6 +142,7 @@ public class TFieldChangePeer
      * @param toDate  if specified before this date
      * @return
      */
+    @Override
     public List<TFieldChangeBean> getByWorkItemsAndFields(int[] workItemIDs, 
     		Integer[] fieldIDs, boolean includeField, List<Integer> personIDs, Date fromDate, Date toDate) {
     	List<TFieldChangeBean> fieldChangeBeanList = new ArrayList<TFieldChangeBean>();		
@@ -165,6 +169,7 @@ public class TFieldChangePeer
 	 * @param transactionIDList
 	 * @return
 	 */
+	@Override
 	public List<TFieldChangeBean> loadByTransactionIDS(List<Integer> transactionIDList) {
 		List<TFieldChangeBean> fieldChangeBeansList = new ArrayList<TFieldChangeBean>();
 		if (transactionIDList==null || transactionIDList.isEmpty()) {
@@ -197,6 +202,7 @@ public class TFieldChangePeer
 	 * @param transactionUUIDList
 	 * @return
 	 */
+	@Override
 	public List<TFieldChangeBean> loadByTransactionUUIDS(List<String> transactionUUIDList) {
 		List<TFieldChangeBean> fieldChangeBeansList = new ArrayList<TFieldChangeBean>();
 		if (transactionUUIDList==null || transactionUUIDList.isEmpty()) {
@@ -231,6 +237,7 @@ public class TFieldChangePeer
      * @param fieldID
      * @return
      */
+	@Override
 	public List<TFieldChangeBean> getByFieldID(Integer fieldID) {
     	Criteria criteria = new Criteria();
     	criteria.add(TFieldChangePeer.FIELDKEY, fieldID);
@@ -245,6 +252,7 @@ public class TFieldChangePeer
 		}
     }
     
+	@Override
 	public Integer save(TFieldChangeBean fieldChangeBean) throws ItemPersisterException {
 		TFieldChange tFieldChange;		
 		try {
@@ -262,6 +270,7 @@ public class TFieldChangePeer
 	 * Whether the history transaction contains any field changes 
 	 * @return
 	 */
+	@Override
 	public boolean hasFieldChanges(Integer historyTransaction) {
 		List fieldChanges = null;
 		Criteria criteria = new Criteria();
@@ -279,6 +288,7 @@ public class TFieldChangePeer
 	 * Deletes a fieldChange by primary key 
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		Criteria crit = new Criteria();
         crit.add(OBJECTID, objectID);
@@ -295,6 +305,7 @@ public class TFieldChangePeer
      * @param fieldIDs
      * @return
      */
+	@Override
 	public void deleteByFieldID(Integer fieldID) {
 		Criteria crit = new Criteria();
         crit.add(FIELDKEY, fieldID);
@@ -313,6 +324,7 @@ public class TFieldChangePeer
 	 * @param newValues
 	 * @return
 	 */
+	@Override
 	public boolean isSystemOptionInHistory(Integer objectID, Integer fieldID, boolean newValues) {
 		List historyList = null;
 		Criteria selectCriteria = new Criteria();        
@@ -342,6 +354,7 @@ public class TFieldChangePeer
 	 * @param fieldID
 	 * @param newValues
 	 */
+	@Override
 	public boolean isSystemOptionInHistory(List<Integer> objectIDs, Integer fieldID, boolean newValues) {
 		if (objectIDs==null || objectIDs.isEmpty()) {
 			return false;
@@ -380,6 +393,7 @@ public class TFieldChangePeer
 	 * @param fieldID
 	 * @param newValues
 	 */
+	@Override
 	public void replaceSystemOptionInHistory(Integer oldObjectID, Integer newObjectID, Integer fieldID, boolean newValues) {
 		Criteria selectCriteria = new Criteria();
         Criteria updateCriteria = new Criteria();
@@ -408,6 +422,7 @@ public class TFieldChangePeer
 	 * @param fieldID
 	 * @param newValues
 	 */
+	@Override
 	public void setSystemOptionToNullInHistory(Integer objectID, Integer fieldID, boolean newValues) {
 		Criteria selectCriteria = new Criteria();
         Criteria updateCriteria = new Criteria();
@@ -430,6 +445,7 @@ public class TFieldChangePeer
 	}
 
 
+	@Override
 	public int countCommentsByWorkItemID(Integer workItemID){
 		String COUNT = "count(" + OBJECTID + ")";
 		Criteria criteria = new Criteria();
@@ -440,7 +456,7 @@ public class TFieldChangePeer
 		try {
 			return ((Record) doSelectVillageRecords(criteria).get(0)).getValue(1).asInt();
 		} catch (Exception e) {
-			LOGGER.error("Counting comments by workItemID " + workItemID +  " failed with " + e.getMessage(), e);
+			LOGGER.error("Counting comments by workItemID " + workItemID +  " failed with " + e.getMessage());
 			return 0;
 		}
 	}

@@ -1,9 +1,9 @@
 <#list flatHistoryList as x>
   
   <#if x_index=0>
- 	<div class="historyRow olist-ulist" style="border-top: 0; margin-left: 0px;margin-right:0px;margin-top:5px;background-color: white;">
+ 	<div class="historyRow olist-ulist" style="border-top: 0; margin-left: 0px;margin-right:0px;margin-top:5px;">
   <#else>
-	<div class="historyRow olist-ulist" style="margin-left: 0px;margin-right:0px;margin-top:5px;background-color: white;">
+	<div class="historyRow olist-ulist" style="margin-left: 0px;margin-right:0px;margin-top:5px;">
   </#if>    
 		<table width="100%" border="0" cellPadding="0" cellSpacing="0" style="table-layout:fixed;">
 			<tr style="height:0px;padding:0px;border:none;margin:0px;">

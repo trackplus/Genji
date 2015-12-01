@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -30,6 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -91,7 +92,8 @@ public abstract class InputFieldTypeRT extends OutputFieldTypeRT
 			} catch (Exception e) {
 				LOGGER.error("The type of the history fieldChanges for multiple values by loading is " + 
 						fieldChangeMap.get(mergeKey).getClass().getName() + 
-						". Casting it to List failed with " + e.getMessage(), e);
+						". Casting it to List failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				return;
 			}			
 			if (fieldChangeBeanList==null ) {			
@@ -134,6 +136,7 @@ public abstract class InputFieldTypeRT extends OutputFieldTypeRT
 	 * @param workItemBeanOriginal
 	 * @param fieldChangeBean the existing TFieldChange entry (for editing/deleting comments, and updating history changes in the last x minutes)
 	 */
+	@Override
 	public void processHistorySave(Integer fieldID, Integer parameterCode, Integer historyTransactionID,
 			TWorkItemBean workItemBean, TWorkItemBean workItemBeanOriginal, TFieldChangeBean fieldChangeBean) {
 		if (SystemFields.INTEGER_COMMENT.equals(fieldID) && fieldChangeBean!=null) {
@@ -147,7 +150,8 @@ public abstract class InputFieldTypeRT extends OutputFieldTypeRT
 				try {
 					HistoryDAOUtils.updateFieldChange(fieldChangeBean, attributeNew, getValueType());
 				} catch (ItemPersisterException e) {
-					LOGGER.warn("Updating the field " + fieldID + " failed with " + e.getMessage(), e);
+					LOGGER.warn("Updating the field " + fieldID + " failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 			}
 		} else {
@@ -171,7 +175,8 @@ public abstract class InputFieldTypeRT extends OutputFieldTypeRT
 						newOptionsArr=(Object[])attributeNewObj;
 					} catch (Exception e) {
 						LOGGER.error("The type of the new attribute by saving is " + attributeNewObj.getClass().getName() + 
-								". Casting it to Object[] failed with " + e.getMessage(), e);
+								". Casting it to Object[] failed with " + e.getMessage());
+						LOGGER.debug(ExceptionUtils.getStackTrace(e));
 						return;
 					}
 				}			
@@ -180,7 +185,8 @@ public abstract class InputFieldTypeRT extends OutputFieldTypeRT
 						oldOptionsArr=(Object[])attributeOldObj;
 					} catch (Exception e) {
 						LOGGER.error("The type of the old attribute  by saving is " + attributeOldObj.getClass().getName() + 
-								". Casting it to Object[] failed with " + e.getMessage(), e);				
+								". Casting it to Object[] failed with " + e.getMessage());
+						LOGGER.debug(ExceptionUtils.getStackTrace(e));
 					}	
 				}			
 				if (oldOptionsArr==null) {
@@ -207,7 +213,8 @@ public abstract class InputFieldTypeRT extends OutputFieldTypeRT
 								newOptionsArr[i], oldOptionsArr[i], getValueType(), getSystemOptionType());
 					} catch (ItemPersisterException e) {
 						LOGGER.warn("Inserting the field " + fieldID + " with historyTransactionID " + 
-								historyTransactionID + " failed with " + e.getMessage(), e);
+								historyTransactionID + " failed with " + e.getMessage());
+						LOGGER.debug(ExceptionUtils.getStackTrace(e));
 					}	
 				}
 				for (int i = lessValue; i < greatherValue; i++) {
@@ -217,7 +224,8 @@ public abstract class InputFieldTypeRT extends OutputFieldTypeRT
 									newOptionsArr[i], null, getValueType(), getSystemOptionType());
 						} catch (ItemPersisterException e) {
 							LOGGER.warn("Inserting the field " + fieldID + " with historyTransactionID " + 
-									historyTransactionID + " failed with " + e.getMessage(), e);
+									historyTransactionID + " failed with " + e.getMessage());
+							LOGGER.debug(ExceptionUtils.getStackTrace(e));
 						}
 					} else {
 						try {
@@ -225,7 +233,8 @@ public abstract class InputFieldTypeRT extends OutputFieldTypeRT
 									null, oldOptionsArr[i], getValueType(), getSystemOptionType());
 						} catch (ItemPersisterException e) {
 							LOGGER.warn("Inserting the field " + fieldID + " with historyTransactionID " + 
-									historyTransactionID + " failed with " + e.getMessage(), e);
+									historyTransactionID + " failed with " + e.getMessage());
+							LOGGER.debug(ExceptionUtils.getStackTrace(e));
 						}
 					}
 				}							
@@ -264,7 +273,8 @@ public abstract class InputFieldTypeRT extends OutputFieldTypeRT
 									attributeNew, attributeOld, getValueType(), getSystemOptionType());
 						} catch (ItemPersisterException e) {
 							LOGGER.warn("Inserting the field " + fieldID + " with historyTransactionID " + 
-									historyTransactionID + " failed with " + e.getMessage(), e);
+									historyTransactionID + " failed with " + e.getMessage());
+							LOGGER.debug(ExceptionUtils.getStackTrace(e));
 						}				
 					}
 				}
@@ -290,6 +300,7 @@ public abstract class InputFieldTypeRT extends OutputFieldTypeRT
 	/**
 	 * Override it when needed
 	 */
+	@Override
 	public void setDefaultAttribute(Integer fieldID, Integer parameterCode, Integer validConfig, Map<String, Object> fieldSettings, TWorkItemBean workItemBean) {			
 	}
 	

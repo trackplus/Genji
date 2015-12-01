@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -505,12 +505,12 @@ public class ComputedValueBL {
 	 * @param hoursPerWorkingDay
 	 * @param forceRecompute cover the case then the plan/expense was set form a non null value to null
 	 * (the ancestors contain the previous non-null values in their sum)
+	 * FIXME it should be synchronized but performance is also important
 	 */
-	public static synchronized void actualizeAncestorPlannedValuesOrExpenses(
+	public static /*synchronized*/ void actualizeAncestorPlannedValuesOrExpenses(
 			Integer workItemID, Integer parentID, int computedValueType,
 			Integer personID, Double hoursPerWorkingDay) {
 		
-		//if (forceRecompute || computedWorkWorkExists || computedWorkCostExists) {
 			//recalculate if forced or the actual workItem has any plan/expense
 			Set<Integer> visistedAscendentsSet = new HashSet<Integer>();
 			while (parentID!=null) {
@@ -521,7 +521,6 @@ public class ComputedValueBL {
 				}
 				if (parentWorkItem!=null) {
 					boolean ancestorTimeFound = false;
-					//if (forceRecompute || computedWorkWorkExists) {
 						ValueAndTimeUnitBean ancestorTimePlan = getSumOfDescendantBudgetOrPlanOrExpense(parentID,
 								TComputedValuesBean.EFFORTTYPE.TIME, computedValueType, personID, hoursPerWorkingDay);
 						if (ancestorTimePlan!=null) {
@@ -529,9 +528,7 @@ public class ComputedValueBL {
 							saveComputedValue(parentID, TComputedValuesBean.EFFORTTYPE.TIME, computedValueType, personID,
 								ancestorTimePlan.getDoubleValue(), ancestorTimePlan.getTimeUnit());
 						}
-					//}
 					boolean ancestorCostFound = false;
-					//if (forceRecompute || computedWorkCostExists) {
 						ValueAndTimeUnitBean ancestorCostPlan = getSumOfDescendantBudgetOrPlanOrExpense(parentID,
 								TComputedValuesBean.EFFORTTYPE.COST, computedValueType, personID, null);
 						if (ancestorCostPlan!=null) {
@@ -539,7 +536,6 @@ public class ComputedValueBL {
 							saveComputedValue(parentID, TComputedValuesBean.EFFORTTYPE.COST, computedValueType, personID,
 								ancestorCostPlan.getDoubleValue(), null);
 						}
-					//}
 					//no descendants (last child was removed) -> workItem is leaf again 
 					if (!ancestorTimeFound && !ancestorCostFound) {
 						resetComputeForLeaf(parentID, computedValueType, personID);
@@ -555,7 +551,6 @@ public class ComputedValueBL {
 					}
 				}
 			}
-		//}
 	}
 	
 	/**
@@ -848,7 +843,6 @@ public class ComputedValueBL {
 			//in the same cycle compute the commonDenominatorTimeUnit: 
 			for (Integer childID : childrenList) {
 				TWorkItemBean childWorkItem = workItemBeansMap.get(childID);
-				//ValueAndTimeUnitBean valueAndTimeUnitBeanChild = null;
 				if (childWorkItem!=null) {
 					Map<Integer, ValueAndTimeUnitBean> branchValuesForPersons = computeBottomUpPersonValues(childWorkItem, parentToChildrenMap,
 							workItemBeansMap, effortType, computedValueType, hoursPerWorkdayForProject);

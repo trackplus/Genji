@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -76,24 +76,6 @@ public class TRolePeer
 	
 	
 	
-	/*public static List loadByProjectAndPersons (Integer projectKey, Integer personKey) {
-		List roles = new ArrayList();
-		Criteria crit = new Criteria();
-		crit.add(BaseTAccessControlListPeer.PROJKEY, projectKey, Criteria.EQUAL);
-		//crit.add(TAccessControlListPeer.PERSONKEY, personKey, Criteria.EQUAL);
-		crit.addIn(BaseTAccessControlListPeer.PERSONKEY, AccessBeans.getGroupsAndSelf(personKey));
-		crit.addJoin(BaseTAccessControlListPeer.ROLEKEY , BaseTRolePeer.PKEY);
-		crit.add(BaseTRolePeer.PKEY, new Integer(0), Criteria.GREATER_THAN);
-		try
-		{
-			roles = doSelect(crit);
-		}
-		catch(Exception e)
-		{
-			LOGGER.error("Loading the roles by project and persons failed with " + e.getMessage(), e); 
-		}
-		return roles;
-	}*/
 	
 	
 	
@@ -105,6 +87,7 @@ public class TRolePeer
 	 * Loads a roleBean by primaty key
 	 * @return 
 	 */
+	@Override
 	public TRoleBean loadByPrimaryKey(Integer objectID) {
 		TRole tRole = null;
 		try {
@@ -125,6 +108,7 @@ public class TRolePeer
 	 * @param label
 	 * @return
 	 */
+	@Override
 	public TRoleBean loadByName(String label) {
 		if (label==null) {
 			return null;
@@ -135,7 +119,7 @@ public class TRolePeer
 		try {
 			roles = doSelect(crit);
 		} catch(Exception e) {
-			LOGGER.error("Loading all roles failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all roles failed with " + e.getMessage());
 		}
 		if (roles!=null && !roles.isEmpty()) {
 			return ((TRole)roles.get(0)).getBean();
@@ -147,14 +131,14 @@ public class TRolePeer
 	 * Loads all RoleBeans
 	 * @return 
 	 */
+	@Override
 	public List<TRoleBean> loadAll() {
 		Criteria crit = new Criteria();
-		//crit.add(PKEY, new Integer(0), Criteria.GREATER_THAN);
 		crit.addAscendingOrderByColumn(LABEL);
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch(Exception e) {
-			LOGGER.error("Loading all roles failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all roles failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -163,6 +147,7 @@ public class TRolePeer
 	 * Loads all visible RoleBeans
 	 * @return 
 	 */
+	@Override
 	public List<TRoleBean> loadVisible() {
 		Criteria crit = new Criteria();
 		crit.add(PKEY, 0, Criteria.GREATER_THAN);
@@ -170,7 +155,7 @@ public class TRolePeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch(Exception e) {
-			LOGGER.error("Loading all visisble roles failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all visisble roles failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -179,6 +164,7 @@ public class TRolePeer
 	 * Loads all not visible RoleBeans
 	 * @return 
 	 */
+	@Override
 	public List<TRoleBean> loadNotVisible() {
 		Criteria crit = new Criteria();
 		crit.add(PKEY, 0, Criteria.LESS_THAN);
@@ -186,7 +172,7 @@ public class TRolePeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch(Exception e) {
-			LOGGER.error("Loading all not visible roles failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all not visible roles failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -196,6 +182,7 @@ public class TRolePeer
 	 * Load by roleIDs
 	 * @return
 	 */
+	@Override
 	public List<TRoleBean> loadByRoleIDs(List<Integer> primaryKeys) {
 		if (primaryKeys==null || primaryKeys.isEmpty()) {
 			return new LinkedList<TRoleBean>();
@@ -206,7 +193,7 @@ public class TRolePeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the roles by keys " + primaryKeys + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the roles by keys " + primaryKeys + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -216,6 +203,7 @@ public class TRolePeer
 	 * @param roleIDs
 	 * @return
 	 */
+	@Override
 	public List<TRoleBean> loadWithExplicitIssueType(Object[] roleIDs) {
 		if (roleIDs==null || roleIDs.length==0) {
 			return new LinkedList<TRoleBean>();
@@ -229,7 +217,7 @@ public class TRolePeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (Exception e) {
-			LOGGER.error("Getting the roles with list type restrictions for " + roleIDs.length + " failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the roles with list type restrictions for " + roleIDs.length + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -239,6 +227,7 @@ public class TRolePeer
 	 * @param roleIDs
 	 * @return
 	 */
+	@Override
 	public List<TRoleBean> loadWithExplicitFieldRestrictions(Object[] roleIDs) {
 		if (roleIDs==null || roleIDs.length==0) {
 			return new LinkedList<TRoleBean>();
@@ -251,7 +240,7 @@ public class TRolePeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (Exception e) {
-			LOGGER.error("Getting the roles with field restrictions for " + roleIDs.length + " failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the roles with field restrictions for " + roleIDs.length + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -262,6 +251,7 @@ public class TRolePeer
 	 * @param issueType
 	 * @param stateFrom 
 	 */
+	@Override
 	public List<TRoleBean> getRolesForTransition(Integer projectType, 
 			Integer  issueType,	Integer stateFrom) {
 		if (projectType == null || issueType == null || stateFrom ==null) {
@@ -279,7 +269,6 @@ public class TRolePeer
 		
 		criteria.addJoin(BaseTWorkFlowPeer.OBJECTID, BaseTWorkFlowRolePeer.WORKFLOW);
 		criteria.addJoin(BaseTWorkFlowRolePeer.MAYCHANGEROLE, BaseTRolePeer.PKEY);
-		//criteria.addJoin(TRolePeer.PKEY, TAccessControlListPeer.ROLEKEY);
 		//criteria.add(TAccessControlListPeer.PROJKEY, project);
 		//criteria.addIn(TAccessControlListPeer.PERSONKEY, AccessBeans.getGroupsAndSelf(person));
 		criteria.setDistinct();
@@ -298,13 +287,14 @@ public class TRolePeer
 	 * @param defaultLocale whether to save as default locale
 	 * @return the created roleID
 	 */
+	@Override
 	public Integer save(TRoleBean roleBean) {
 		try {
 			TRole tTole = BaseTRole.createTRole(roleBean);
 			tTole.save();
 			return tTole.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a role failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a role failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -313,6 +303,7 @@ public class TRolePeer
 	 * Deletes a roleBean
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		ReflectionHelper.delete(deletePeerClasses, deleteFields, objectID);
 	}

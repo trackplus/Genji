@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -81,6 +81,7 @@ public class TScreenPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TScreenBean loadByPrimaryKey(Integer objectID)  {
 		TScreen tobject = null;
 		try {
@@ -100,6 +101,7 @@ public class TScreenPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TScreenBean tryToLoadByPrimaryKey(Integer objectID)  {
 		TScreen tobject = null;
 		try{
@@ -119,6 +121,7 @@ public class TScreenPeer
 	 * @param screenIDs
 	 * @return
 	 */
+	@Override
 	public List<TScreenBean> loadByKeys(List<Integer> screenIDs) {
 		List<TScreenBean> screenBeans = new LinkedList<TScreenBean>();
 		if (screenIDs==null || screenIDs.isEmpty()) {
@@ -136,12 +139,13 @@ public class TScreenPeer
 			try {
 				screenBeans.addAll(convertTorqueListToBeanList(doSelect(criteria)));
 			} catch(Exception e) {
-	        	LOGGER.error("Loading the screens by screenIDs " + screenIDs.size() + " failed with " + e.getMessage(), e);
+	        	LOGGER.error("Loading the screens by screenIDs " + screenIDs.size() + " failed with " + e.getMessage());
 	        }			
 		}
 		return screenBeans;
 	}
 	
+	@Override
 	public TScreenBean loadFullByPrimaryKey(Integer objectID)  {
 		TScreenBean screenBean=null;
 		Connection con = null;
@@ -237,12 +241,13 @@ public class TScreenPeer
 	 * Loads all screens from TScreen table 
 	 * @return
 	 */
+	@Override
 	public List<TScreenBean> loadAll() {
 		Criteria crit = new Criteria();
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all screens failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all screens failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -252,6 +257,7 @@ public class TScreenPeer
 	 * @param ascending
 	 * @return
 	 */
+	@Override
 	public List<TScreenBean> loadAllOrdered(String sortKey,boolean ascending){		
 		Criteria crit = new Criteria();
 		if(ascending){
@@ -262,7 +268,7 @@ public class TScreenPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all screens failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all screens failed with " + e.getMessage());
 			return null;
 		}		
 	}
@@ -272,6 +278,7 @@ public class TScreenPeer
 	 * @param bean
 	 * @return
 	 */
+	@Override
 	public Integer save(TScreenBean bean){
 		try {
 			TScreen tobject = BaseTScreen.createTScreen(bean);
@@ -281,7 +288,7 @@ public class TScreenPeer
 			tobject.save();
 			return tobject.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a screen failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a screen failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -291,6 +298,7 @@ public class TScreenPeer
 	 * Is deletable should return true before calling this method
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		Connection con = null;
 		try{
@@ -315,7 +323,7 @@ public class TScreenPeer
 		try {
 			list = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the list of TClasses to be deleted failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the list of TClasses to be deleted failed with " + e.getMessage());
 		}			
         if (list == null || list.size() < 1) {
             return;
@@ -323,7 +331,6 @@ public class TScreenPeer
         for (TScreen tScreen : list) {
 			LOGGER.warn("Deleting the screen  " + tScreen.getName());
 			ReflectionHelper.setToNull(setToNullPeerClasses, setToNullFields, tScreen.getObjectID());
-			//BaseTScreenPeer.doDelete(crit);
 			new TScreenPeer().delete(tScreen.getObjectID());
 		}
 	}   
@@ -353,6 +360,7 @@ public class TScreenPeer
 	 * Verify is a screen can be delete 
 	 * @param objectID
 	 */
+	@Override
 	public boolean isDeletable(Integer objectID) {
 		return !ReflectionHelper.hasDependentData(replaceScreenPeerClasses, replaceScreenFields, objectID);
 	}
@@ -362,6 +370,7 @@ public class TScreenPeer
 	 * @param oldScreenID
 	 * @param newScreenID
 	 */
+	@Override
 	public void replaceScreen(Integer oldScreenID, Integer newScreenID) {
 		ReflectionHelper.replace(replaceScreenPeerClasses, replaceScreenFields, oldScreenID, newScreenID);
 	}

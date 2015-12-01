@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -21,8 +21,7 @@
 /* $Id:$ */
 
 
-Ext.define('com.trackplus.admin.project.ProjectConfig',
-{
+Ext.define('com.trackplus.admin.project.ProjectConfig', {
 	extend : 'com.trackplus.admin.TreeDetail',
 	config : {
 	    // the project tree from the admin navigation menu
@@ -41,7 +40,6 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	 * has dependencies
 	 */
 	confirmDeleteNotEmpty : true,
-	// by adding a project whether to add a main project or a
 	// subproject
 	addAsSubproject : false,
 	// by adding a project whether to add a private project
@@ -94,8 +92,7 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 
 	constructor : function(config) {
 	    var config = config || {};
-	    this.initialConfig = config;
-	    Ext.apply(this, config);
+	    this.initConfig(config);
 	    // the actions are initialized asynchronously after
 		// getting the localized labels:
 	    // initialize the lists and phases directly to be sure
@@ -105,9 +102,9 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	        fromProjectConfig : true
 	    });
 	    this.phases = Ext.create('com.trackplus.admin.project.Release', {
-	        projectID : this.rootID
+	        projectID : this.getRootID()
 	    });
-	    this.init(config);
+	    this.initBase(config);
 	},
 
 	GENERAL : 1,
@@ -155,7 +152,7 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 		var height = 650;
 		var loadUrl = this.getDetailUrl();
 		var load = {loadUrl:loadUrl, loadUrlParams:loadParams};
-		var submitUrl = this.baseAction + "!save.action";
+		var submitUrl = this.getBaseAction() + "!save.action";
 		var submit = {
 			submitUrl:submitUrl,
 			submitUrlParams:submitParams,
@@ -190,7 +187,7 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	treeNodeSelect : function(rowModel, node, index, opts) {
 		var leaf = false;
 	    var privateProject = false;
-	    if (node != null) {
+	    if (node ) {
 	        // called for the select event of the tree
 	        leaf = node.data['leaf'];
 	        this.selectedNodeID = node.data['id'];
@@ -198,6 +195,7 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	        this.selectedNode = node;
 	        privateProject = node.data['privateProject'];
 	    }
+
 	    var selectedNodeClass = this.getSelectedNodeClass(node);
 	    if (this.getSelectedNodeIsTreeBased(node)) {
 	        node = this.loadTreeWithGrid(selectedNodeClass, node);
@@ -206,7 +204,7 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	        this.actualizeToolbarOnTreeSelect.call(selectedNodeClass, node);
 	    } else {
 	        if (this.getSelectedNodeIsWizardBased(node) || this.getSelectedNodeIsDetailBased(node)) {
-	            if (this.centerPanel != null) {
+	            if (this.centerPanel ) {
 	                this.mainPanel.remove(this.centerPanel, true);
 	            }
 	            if (this.getSelectedNodeIsWizardBased(node)) {
@@ -223,8 +221,9 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	            borderLayout.setActiveToolbarActionList(selectedNodeClass.getToolbarActions(true,
 	                    privateProject));
 	        }
-	        // borderLayout.setActiveToolbarActionList(selectedNodeClass.getToolbarActions());
 	    }
+
+
 	    // toolbar content
 	    // call the actualizeToolbarOnTreeSelect of the main
 		// base class: "this."
@@ -234,15 +233,14 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 		// select)
 	    // but the toolbar methods in the overridden method are
 		// called according to the actual scope
-
 	},
 
 	loadTreeWithGrid : function(treeWithGridConfig, node) {
 	    var branchRoot = null;
-	    if (node != null) {
+	    if (node ) {
 	        branchRoot = node.data['branchRoot'];
 	    }
-	    if (this.centerPanel != null) {
+	    if (this.centerPanel ) {
 	        this.mainPanel.remove(this.centerPanel, true);
 	    }
 	    this.centerPanel = treeWithGridConfig.createCenterPanel();
@@ -281,7 +279,7 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	 */
 	getSelectedNodeIsWizardBased : function(node) {
 	    var projectConfigType = node.data['id'];
-	    return projectConfigType == this.IMPORT_FROM_MSPROJECT;
+	    return projectConfigType === this.IMPORT_FROM_MSPROJECT;
 
 	},
 
@@ -291,8 +289,8 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	 */
 	getSelectedNodeIsDetailBased : function(node) {
 	    var projectConfigType = node.data['id'];
-	    if (projectConfigType == this.EXPORT_TO_MSPROJECT || projectConfigType == this.VERSION_CONTROL
-	            || projectConfigType == this.COCKPIT || projectConfigType == this.ASSIGN_ACCOUNTS) {
+	    if (projectConfigType === this.EXPORT_TO_MSPROJECT || projectConfigType === this.VERSION_CONTROL
+	            || projectConfigType === this.COCKPIT || projectConfigType === this.ASSIGN_ACCOUNTS) {
 	        return true;
 	    }
 	    return false;
@@ -323,46 +321,45 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	        this.phases.rootID = branchRoot;
 	        return this.phases;
 	    case this.ASSIGN_ROLES:
-	        if (this.roleAssignment == null) {
+	        if (CWHF.isNull(this.roleAssignment)) {
 	            this.roleAssignment = Ext.create("com.trackplus.admin.project.RoleAssignment", {
 	                rootID : branchRoot,
-	                baseAction : "roleAssignments",
 	                treeWidth : 200
 	            });
 	        }
 	        return this.roleAssignment;
 	    case this.ASSIGN_ACCOUNTS:
-	        if (this.accountAssignment == null) {
+	        if (CWHF.isNull(this.accountAssignment)) {
 	            this.accountAssignment = Ext.create("com.trackplus.admin.SimpleAssignment", {
-	                baseAction : "accountAssignments",
-	                objectID : this.rootID,
+	                objectID : this.getRootID(),
 	                objectIDParamName : "projectID"
 	            });
+	            this.accountAssignment.baseAction = "accountAssignments";
 	        }
 	        return this.accountAssignment;
 	    case this.LISTS:
-	        this.lists.rootID = branchRoot;
+	        this.lists.setRootID(branchRoot);
 	        return this.lists;
 	    case this.FILTERS:
-	        if (this.filters == null) {
+	        if (CWHF.isNull(this.filters)) {
 	            this.filters = Ext.create('com.trackplus.admin.customize.category.CategoryConfig', {
 	                rootID : branchRoot,
-	                projectID : this.rootID
+	                projectID : this.getRootID()
 	            });
 	        }
 	        return this.filters;
 	    case this.REPORT_TEMPLTATES:
-	        if (this.reportTemplates == null) {
+	        if (CWHF.isNull(this.reportTemplates)) {
 	            var branchRoot = node.data['branchRoot'];
 	            this.reportTemplates = Ext.create(
 	                    'com.trackplus.admin.customize.category.CategoryConfig', {
 	                        rootID : branchRoot,
-	                        projectID : this.rootID
+	                        projectID : this.getRootID()
 	                    });
 	        }
 	        return this.reportTemplates;
 	    case this.FIELD_CONFIGURATION:
-	        if (this.fieldConfig == null) {
+	        if (CWHF.isNull(this.fieldConfig)) {
 	            var branchRoot = node.data['branchRoot'];
 	            this.fieldConfig = Ext.create('com.trackplus.admin.customize.treeConfig.FieldConfig', {
 	                rootID : branchRoot,
@@ -371,7 +368,7 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	        }
 	        return this.fieldConfig;
 	    case this.SCREEN_ASSIGNMENT:
-	        if (this.screenConfig == null) {
+	        if (CWHF.isNull(this.screenConfig)) {
 	            var branchRoot = node.data['branchRoot'];
 	            this.screenConfig = Ext.create('com.trackplus.admin.customize.treeConfig.ScreenConfig',
 	                    {
@@ -381,31 +378,31 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	        }
 	        return this.screenConfig;
 	    case this.AUTOMAIL:
-	        if (this.automail == null) {
+	        if (CWHF.isNull(this.automail)) {
 	            this.automail = Ext.create('com.trackplus.admin.NotifyConfig', {
 	                defaultSettings : true,
-	                exclusiveProjectID : this.rootID
+	                exclusiveProjectID : this.getRootID()
 	            });
 	        }
 	        return this.automail;
 	    case this.COCKPIT:
-	        if (this.cockpit == null) {
+	        if (CWHF.isNull(this.cockpit)) {
 	            this.cockpit = Ext.create('com.trackplus.admin.project.ProjectCockpit', {
-	                projectID : this.rootID
+	                projectID : this.getRootID()
 	            });
 	        }
 	        return this.cockpit;
 	    case this.VERSION_CONTROL:
-	        if (this.versionControl == null) {
+	        if (CWHF.isNull(this.versionControl)) {
 	            this.versionControl = Ext.create('com.trackplus.vc.VersionControlFacade', {
-	                model : {
-	                    projectID : this.rootID
+	            	versionControlFacadeModel: {
+	                    projectID : this.getRootID()
 	                }
 	            });
 	        }
 	        return this.versionControl;
 	    case this.WORKFLOW:
-	        if (this.workflowConfig == null) {
+	        if (CWHF.isNull(this.workflowConfig)) {
 	            var branchRoot = node.data['branchRoot'];
 	            this.workflowConfig = Ext.create(
 	                    'com.trackplus.admin.customize.treeConfig.WorkflowConfig', {
@@ -416,16 +413,16 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	        }
 	        return this.workflowConfig;
 	    case this.EXPORT_TO_MSPROJECT:
-	        if (this.exportToMsProject == null) {
+	        if (CWHF.isNull(this.exportToMsProject)) {
 	            this.exportToMsProject = Ext.create('com.trackplus.admin.action.ExportMsProject', {
-	                projectID : this.rootID
+	                projectID : this.getRootID()
 	            });
 	        }
 	        return this.exportToMsProject;
 	    case this.IMPORT_FROM_MSPROJECT:
-	        if (this.importFromMsProject == null) {
+	        if (CWHF.isNull(this.importFromMsProject)) {
 	            this.importFromMsProject = Ext.create('com.trackplus.admin.action.ImportMsProject', {
-	                projectID : this.rootID
+	                projectID : this.getRootID()
 	            });
 	        }
 	        return this.importFromMsProject;
@@ -477,7 +474,7 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	 * The localized entity name
 	 */
 	getEntityLabel : function(extraConfig) {
-	    if (this.isTemplate) {
+	    if (this.getIsTemplate()) {
 	        return getText('admin.project.lbl.templateForOp');
 	    } else {
 	        return getText('admin.project.lbl.projectForOp');
@@ -515,11 +512,11 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	/**
 	 * Initialization method
 	 */
-	init : function(config) {
+	initBase: function(config) {
 	    Ext.Ajax.request({
-	        url : this.baseAction + '!getWorkspaceAndTemplateToolbarConfig.action',
+	        url : this.getBaseAction() + '!getWorkspaceAndTemplateToolbarConfig.action',
 	        params : {
-	            projectID : this.rootID
+	            projectID : this.getRootID()
 	        },
 	        fromCenterPanel : true,
 	        scope : this,
@@ -568,21 +565,21 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	 */
 	getToolbarActions : function(projectIsSelected, privateProjectIsSelected) {
 	    var actions = [];
-	    if (this.sys) {
+	    if (this.getSys()) {
 	        actions.push(this.actionAddProject);
 	    }
-	    if (com.trackplus.TrackplusConfig.appType!=APPTYPE_BUGS && projectIsSelected && privateProjectIsSelected!=null && !privateProjectIsSelected) {
+	    if (com.trackplus.TrackplusConfig.appType!==APPTYPE_BUGS && projectIsSelected && privateProjectIsSelected && !privateProjectIsSelected) {
 	        actions.push(this.actionAddSubproject);
 	    }
 	    if (!this.hasPrivateProject && com.trackplus.TrackplusConfig.user.privateWorkspace
-	            && !this.isTemplate) {
+	            && !this.getIsTemplate()) {
 	        actions.push(this.actionAddPrivateProject);
 	    }
-	    if (projectIsSelected && privateProjectIsSelected != null && !privateProjectIsSelected) {
+	    if (projectIsSelected && privateProjectIsSelected  && !privateProjectIsSelected) {
 	        actions.push(this.actionCopyProject);
 	    }
 	    if (projectIsSelected) {
-	        if (this.isTemplate) {
+	        if (this.getIsTemplate()) {
 	            actions.push(this.actionCreateWorkspaceFromTemplate);
 	            actions.push(this.actionLockUnlock);
 	        } else {
@@ -605,10 +602,10 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	    // select the first child (general settings)
 	    if (node.isRoot()) {
 	        var selectedNode = null;
-	        if (me.lastSelections.lastSelectedSection != null) {
-	            selectedNode = treeStore.getNodeById(me.lastSelections.lastSelectedSection);
+	        if (me.getLastSelections().lastSelectedSection ) {
+	            selectedNode = treeStore.getNodeById(me.getLastSelections().lastSelectedSection);
 	        }
-	        if (selectedNode == null) {
+	        if (CWHF.isNull(selectedNode)) {
 	            selectedNode = node.firstChild;
 	        }
 	        var treeSelectionModel = this.tree.getSelectionModel();
@@ -639,11 +636,11 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	    this.addAsPrivateProject = addAsPrivateProject;
 	    this.mainPanel = Ext.create('Ext.panel.Panel', {
 	        layout : 'border',
-	        region : 'center',
+	        //region : 'center',
 	        border : false,
 	        items : []
 	    });
-	    borderLayout.controller.setCenterContent(this.mainPanel);
+	    borderLayout.borderLayoutController.setCenterContent(this.mainPanel);
 	    this.loadDetailPanelWithFormLoad(null, true, {
 	        addAsSubproject : addAsSubproject,
 	        addAsPrivateProject : addAsPrivateProject
@@ -653,16 +650,16 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 
 	onCopy : function() {
 	    var projectCopyModel = {
-	        projectID : this.rootID
+	        projectID : this.getRootID()
 	    };
 	    var actionTarget = this.COPY_ACTION_COPY_WP;
-	    if (this.isTemplate) {
+	    if (this.getIsTemplate()) {
 	        actionTarget = this.COPY_ACTION_COPY_TPL;
 	    }
 	    var projectCopyController = Ext.create('com.trackplus.admin.project.ProjectCopyController', {
-	        model : projectCopyModel,
-	        projectConfig : this,
-	        isTemplate : this.isTemplate,// copy template or
+	    	dataModel: projectCopyModel,
+	        projectConfig: this,
+	        isTemplate: this.getIsTemplate(),// copy template or
 											// workspace
 	        applyTemplate : false,
 	        actionTarget : actionTarget
@@ -672,28 +669,28 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 
 	onCreateFromCopy : function() {
 	    var projectCopyModel = {
-	        projectID : this.rootID
+	        projectID : this.getRootID()
 	    };
 
 	    var actionTarget = this.COPY_ACTION_TPL_FROM_WP;
-	    if (this.isTemplate) {
+	    if (this.getIsTemplate()) {
 	        actionTarget = this.COPY_ACTION_WP_FROM_TPL;
 	    }
 	    var projectCopyController = Ext.create('com.trackplus.admin.project.ProjectCopyController', {
-	        model : projectCopyModel,
-	        projectConfig : this,
-	        isTemplate : false, // applying this template
-	        applyTemplate : true,
-	        actionTarget : actionTarget
+	    	dataModel: projectCopyModel,
+	        projectConfig: this,
+	        isTemplate: false, // applying this template
+	        applyTemplate: true,
+	        actionTarget: actionTarget
 	    });
 	    projectCopyController.showDialog();
 	},
 
 	onLockUnlock : function() {
 	    Ext.Ajax.request({
-	        url : this.baseAction + '!changeTemplateState.action',
+	        url : this.getBaseAction() + '!changeTemplateState.action',
 	        params : {
-	            projectID : this.rootID
+	            projectID : this.getRootID()
 	        },
 	        scope : this,
 	        success : function(response) {
@@ -716,11 +713,11 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	},
 
 	onCancel : function() {
-	    var selectionModel = this.projectTree.getSelectionModel();
+	    var selectionModel = this.getProjectTree().getSelectionModel();
 	    var lastSelected = selectionModel.getLastSelected();
-	    if (lastSelected != null) {
+	    if (lastSelected ) {
 	        selectionModel.select(lastSelected);
-	        com.trackplus.admin.myClick(this.projectTree, lastSelected);
+	        com.trackplus.admin.myClick(this.getProjectTree(), lastSelected);
 	    } else {
 	        // cancel when no project is selected: no project
 			// exists for the user
@@ -741,16 +738,16 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	    borderLayout.setLoading(true);
 	    this.clearErrorTabs();
 	    var params = {
-	        projectID : this.rootID,
+	        projectID : this.getRootID(),
 	        addAsSubproject : this.addAsSubproject,
 	        addAsPrivateProject : this.addAsPrivateProject,
-	        isTemplate : this.isTemplate
+	        isTemplate : this.getIsTemplate()
 	    };
-	    if (confirmSave != null) {
+	    if (confirmSave ) {
 	        params['confirmSave'] = confirmSave;
 	    }
 	    this.centerPanel.getForm().submit({
-	        url : this.baseAction + '!save.action',
+	        url : this.getBaseAction() + '!save.action',
 	        params : params,
 	        scope : this,
 	        success : function(form, action) {
@@ -759,7 +756,7 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	            if (result.success) {
 	                this.reload(result);
 	                var projectNodeToSelect = result['projectNodeToSelect'];
-	                this.rootID = projectNodeToSelect;
+	                this.setRootID(projectNodeToSelect);
 	                CWHF.showMsgInfo(getText('admin.project.successSave'));
 	            } else {
 	                errorHandlerSave(result);
@@ -768,17 +765,17 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	        failure : function(form, action) {
 	            borderLayout.setLoading(false);
 	            result = action.result;
-	            if (result != null) {
-	                if (action.result != null && action.result.errors != null) {
+	            if (result ) {
+	                if (action.result  && action.result.errors ) {
 	                    me.handleErrors(action.result.errors);
 	                } else {
 	                    var errorCode = result.errorCode;
 	                    var title = result.title;
-	                    if (errorCode != null && errorCode == 4) {
-	                        // 4==NEED_CONFIRMATION
+	                    if (errorCode  && errorCode === 4) {
+	                        // 4===NEED_CONFIRMATION
 	                        var errorMessage = result.errorMessage;
 	                        Ext.MessageBox.confirm(title, errorMessage, function(btn) {
-		                        if (btn == "no") {
+		                        if (btn === "no") {
 			                        return false;
 		                        } else {
 			                        this.saveProject(true);
@@ -796,8 +793,8 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	},
 
 	onDelete : function() {
-	    var selectedRecord = this.projectTree.getSelectionModel().getLastSelected();
-	    if (selectedRecord != null) {
+	    var selectedRecord = this.getProjectTree().getSelectionModel().getLastSelected();
+	    if (selectedRecord ) {
 	        var extraConfig = {
 	            fromTree : true,
 	            isLeaf : false
@@ -808,8 +805,8 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 
 	/**
 	 * This method returns the proper flag for reloading: or the
-	 * project tree (==true) or the template project tree
-	 * (==false)
+	 * project tree (===true) or the template project tree
+	 * (===false)
 	 */
 	reloadProjectTree : function(actionTarget) {
 	    switch (actionTarget) {
@@ -836,12 +833,12 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	reloadAfterApplyingTemplate : function(refreshParamsObject, actionTarget) {
 	    var templateTree = Ext.getCmp('tree-projectTemplateTreePanel');
 	    var projectTree = Ext.getCmp('tree-projectTreePanel');
-	    if (actionTarget == this.COPY_ACTION_WP_FROM_TPL) {
+	    if (actionTarget === this.COPY_ACTION_WP_FROM_TPL) {
 	        Ext.getCmp('projectTreePanel').expand();
 	        templateTree.getSelectionModel().deselectAll();
 	    }
 
-	    if (actionTarget == this.COPY_ACTION_TPL_FROM_WP) {
+	    if (actionTarget === this.COPY_ACTION_TPL_FROM_WP) {
 	        Ext.getCmp('projectTemplateTreePanel').expand();
 	        projectTree.getSelectionModel().deselectAll();
 	    }
@@ -852,7 +849,7 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	    // tree reload is needed: after delete, add and edit
 		// with label change
 	    var options = new Object();
-	    if (projectNodeToReload != null) {
+	    if (projectNodeToReload ) {
 	        var nodeToReload = null;
 	        if (this.reloadProjectTree(actionTarget)) {
 	            nodeToReload = projectTree.getStore().getNodeById(projectNodeToReload);
@@ -862,7 +859,7 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	        // if null reload the branch i.e. the main projects
 	        options.node = nodeToReload;
 	    }
-	    if (projectNodeToSelect == null) {
+	    if (CWHF.isNull(projectNodeToSelect)) {
 	        // after deleting a main project
 	        var rootNode = null;
 	        if (this.reloadProjectTree(actionTarget)) {
@@ -870,9 +867,9 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	        } else {
 	            rootNode = templateTree.getRootNode();
 	        }
-	        if (rootNode != null && rootNode.childNodes != null && rootNode.childNodes.length > 0) {
+	        if (rootNode  && rootNode.childNodes  && rootNode.childNodes.length > 0) {
 	            var firstChild = rootNode.getChildAt(0);
-	            if (deletedProjectID != null && firstChild.data['id'] == deletedProjectID) {
+	            if (deletedProjectID  && firstChild.data['id'] === deletedProjectID) {
 	                if (rootNode.childNodes.length > 1) {
 	                    var secondChild = rootNode.getChildAt(1);
 	                    projectNodeToSelect = secondChild.data['id'];
@@ -914,12 +911,12 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	    var reloadProjectConfigTree = refreshParamsObject['reloadProjectConfigTree'];
 	    var projectConfigTypeNodeToSelect = refreshParamsObject['projectConfigTypeNodeToSelect'];
 	    var deletedProjectID = refreshParamsObject['deletedProjectID'];
-	    if (!reloadProjectTree && reloadProjectConfigTree && this.tree != null) {
+	    if (!reloadProjectTree && reloadProjectConfigTree && this.tree ) {
 
 	        // this.tree is null by add
 	        // only after save
 	        var options = new Object();
-	        if (projectConfigTypeNodeToSelect != null) {
+	        if (projectConfigTypeNodeToSelect ) {
 	            // callback after load
 	            options.callback = this.selectNode;
 	            // options.node = projectNodeToSelect;
@@ -935,18 +932,18 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	        // tree reload is needed: after delete, add and edit
 			// with label change
 	        var options = new Object();
-	        if (projectNodeToReload != null) {
-	            var nodeToReload = this.projectTree.getStore().getNodeById(projectNodeToReload);
+	        if (projectNodeToReload ) {
+	            var nodeToReload = this.getProjectTree().getStore().getNodeById(projectNodeToReload);
 	            // if null reload the branch i.e. the main
 				// projects
 	            options.node = nodeToReload;
 	        }
-	        if (projectNodeToSelect == null) {
+	        if (CWHF.isNull(projectNodeToSelect)) {
 	            // after deleting a main project
-	            var rootNode = this.projectTree.getRootNode();
-	            if (rootNode != null && rootNode.childNodes != null && rootNode.childNodes.length > 0) {
+	            var rootNode = this.getProjectTree().getRootNode();
+	            if (rootNode  && rootNode.childNodes  && rootNode.childNodes.length > 0) {
 	                var firstChild = rootNode.getChildAt(0);
-	                if (deletedProjectID != null && firstChild.data['id'] == deletedProjectID) {
+	                if (deletedProjectID  && firstChild.data['id'] === deletedProjectID) {
 	                    if (rootNode.childNodes.length > 1) {
 		                    var secondChild = rootNode.getChildAt(1);
 		                    projectNodeToSelect = secondChild.data['id'];
@@ -960,32 +957,32 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	                }
 	            }
 	        }
-	        // if (projectNodeToSelect!=null) {
+	        // if (projectNodeToSelect) {
 	        // callback after load
 	        options.callback = this.selectNode;
 	        // scope for callback
 	        options.scope = {
-	            tree : this.projectTree,
+	            tree : this.getProjectTree(),
 	            nodeIdToReload : projectNodeToReload,
 	            nodeIdToSelect : projectNodeToSelect,
 	            scope : this,
 	            expandWorkspaceNode : false
 	        };
 	        // }
-	        this.projectTree.getStore().load(options);
+	        this.getProjectTree().getStore().load(options);
 	    }
 	},
 
 	selectNode : function() {
-	    if (this.nodeIdToReload != null) {
+	    if (this.nodeIdToReload ) {
 	        nodeReloaded = this.tree.getStore().getNodeById(this.nodeIdToReload);
-	        if (nodeReloaded != null && !nodeReloaded.isExpanded()) {
+	        if (nodeReloaded  && !nodeReloaded.isExpanded()) {
 	            nodeReloaded.expand();
 	        }
 	    }
-	    if (this.nodeIdToSelect != null) {
+	    if (this.nodeIdToSelect ) {
 	        var nodeToSelect = this.tree.getStore().getNodeById(this.nodeIdToSelect);
-	        if (nodeToSelect != null) {
+	        if (nodeToSelect ) {
 	            var selectionModel = this.tree.getSelectionModel();
 	            selectionModel.select(nodeToSelect);
 	            com.trackplus.admin.myClick(this.tree.getView(), nodeToSelect);
@@ -1007,7 +1004,7 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	 */
 	getDeleteParams : function(selectedRecords, extraConfig) {
 	    var deleteParams = this.callParent(arguments);
-	    deleteParams['projectID'] = this.rootID;
+	    deleteParams['projectID'] = this.getRootID();
 	    return deleteParams;
 	},
 
@@ -1022,7 +1019,7 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	 * Gets the URL for loading the node detail
 	 */
 	getDetailUrl : function(node, add) {
-	    return this.baseAction + '!load.action';
+	    return this.getBaseAction() + '!load.action';
 	},
 
 	/**
@@ -1030,12 +1027,12 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	 */
 	getDetailParams : function(node, add, extraDetailParameters) {
 	    var detailParams = null;
-	    if (extraDetailParameters == null) {
+	    if (CWHF.isNull(extraDetailParameters)) {
 	        detailParams = new Object();
 	    } else {
 	        detailParams = extraDetailParameters;
 	    }
-	    detailParams['projectID'] = this.rootID;
+	    detailParams['projectID'] = this.getRootID();
 	    detailParams['add'] = add;
 	    // return {projectID:this.rootID, add:add};
 	    return detailParams;
@@ -1083,7 +1080,7 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	    // onProjectTypeOrIssueTypeChange which is not desirable
 	    projectType.on('change', this.onProjectTypeOrIssueTypeChange, this);
 
-	    if (!this.isTemplate) {
+	    if (!this.getIsTemplate()) {
 	        var projectStatus = this.getWrappedControl("mainTab", "fsbasic", "projectStatus");
 	        projectStatus.store.loadData(data['projectStatusList']);
 	        projectStatus.setValue(data['projectBaseTO.projectStatusID']);
@@ -1091,9 +1088,8 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	    var hasPrefix = data['hasPrefix'];
 	    if (hasPrefix) {
 	    	var workspacePrefixTxtBoxChangeObj = {};
-
 	    	workspacePrefixTxtBoxChangeObj.change = function(txtBox, newValue, oldValue, eOpts) {
-        		me.checkNewWorkspacePrefix(txtBox, newValue, me.rootID);
+        		me.checkNewWorkspacePrefix(txtBox, newValue, me.getRootID());
 	    	};
 
 	    	mainTab.add({
@@ -1127,17 +1123,17 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 
 	    // default tab
 	    var defaultManager = this.getWrappedControl("defaultTab", "fsdef",
-	            "projectDefaultsTO.defaultManagerID");
+	            "projectDefaultsTODefaultManagerID");
 	    defaultManager.store.loadData(data['managerList']);
 	    defaultManager.setValue(data['projectDefaultsTO.defaultManagerID']);
 
 	    var defaultResponsible = this.getWrappedControl("defaultTab", "fsdef",
-	            "projectDefaultsTO.defaultResponsibleID");
+	            "projectDefaultsTODefaultResponsibleID");
 	    defaultResponsible.store.loadData(data['responsibleList']);
 	    defaultResponsible.setValue(data['projectDefaultsTO.defaultResponsibleID']);
 
 	    var defaultIssueType = this.getWrappedControl("defaultTab", "fsdef",
-	            "projectDefaultsTO.defaultIssueTypeID");
+	            "projectDefaultsTODefaultIssueTypeID");
 	    defaultIssueType.store.loadData(data['issueTypeList']);
 	    defaultIssueType.setValue(data['projectDefaultsTO.defaultIssueTypeID']);
 	    // add the change listener only here: if it would be
@@ -1148,12 +1144,12 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	    defaultIssueType.on('change', this.onProjectTypeOrIssueTypeChange, this);
 
 	    var defaultPriority = this.getWrappedControl("defaultTab", "fsdef",
-	            "projectDefaultsTO.defaultPriorityID");
+	            "projectDefaultsTODefaultPriorityID");
 	    defaultPriority.store.loadData(data['priorityList']);
 	    defaultPriority.setValue(data['projectDefaultsTO.defaultPriorityID']);
 
 	    var defaultSeverity = this.getWrappedControl("defaultTab", "fsdef",
-	            "projectDefaultsTO.defaultSeverityID");
+	            "projectDefaultsTODefaultSeverityID");
 	    defaultSeverity.store.loadData(data['severityList']);
 	    defaultSeverity.setValue(data['projectDefaultsTO.defaultSeverityID']);
 
@@ -1162,13 +1158,13 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	    var fsInitSt = this.getControl("defaultTab", "fsInitSt");
 
 	    var initialStatus = this.getWrappedControl("defaultTab", "fsInitSt",
-	            "projectDefaultsTO.initialStatusID");
+	            "projectDefaultsTOInitialStatusID");
 	    initialStatus.store.loadData(data['statusList']);
 	    initialStatus.setValue(data['projectDefaultsTO.initialStatusID']);
 
 	    initStItems = [];
 	    var initStatusData = data['initStatuses'];
-	    if (initStatusData != null) {
+	    if (initStatusData ) {
 	        Ext.Array.forEach(initStatusData, function(item) {
 	            var issueType = item['issueType'];
 	            var status = item['status'];
@@ -1186,7 +1182,7 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	                data : statusList,
 	                disabled : !active,
 	                labelIsLocalized : true
-	            }, null, comboName);
+	            });
 	            var issueTypePanel = new Ext.Panel({
 	                border : false,
 	                defaults : {
@@ -1216,45 +1212,46 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	    var errors = data.errors;
 	    this.markInvalidByErrors(errors, panel);
 	    /*
-		 * if (errors!=null) { var accountErrorMessage =
+		 * if (errors) { var accountErrorMessage =
 		 * errors['projectBaseTO.defaultAccount']; if
-		 * (accountErrorMessage!=null) { var defaultAccount =
+		 * (accountErrorMessage) { var defaultAccount =
 		 * this.getWrappedControl("mainTab", "fsacc",
 		 * "projectBaseTO.defaultAccount")
 		 * defaultAccount.markInvalid(accountErrorMessage); }
 		 * else { var managerErrorMessage =
 		 * errors['projectDefaultsTO.defaultManagerID']; if
-		 * (managerErrorMessage!=null) {
+		 * (managerErrorMessage) {
 		 * defaultManager.markInvalid(managerErrorMessage); }
 		 * var responsibleErrorMessage =
 		 * errors['projectDefaultsTO.defaultResponsiblID']; if
-		 * (responsibleErrorMessage!=null) {
+		 * (responsibleErrorMessage) {
 		 * defaultResponsible.markInvalid(responsibleErrorMessage); }
 		 * var statusErrorMessage =
 		 * errors['projectDefaultsTO.initialStatusID']; if
-		 * (statusErrorMessage!=null) {
+		 * (statusErrorMessage) {
 		 * initialStatus.markInvalid(statusErrorMessage); } var
 		 * issueTypeErrorMessage =
 		 * errors['projectDefaultsTO.defaultIssueTypeID']; if
-		 * (issueTypeErrorMessage!=null) {
+		 * (issueTypeErrorMessage) {
 		 * defaultIssueType.markInvalid(issueTypeErrorMessage); }
 		 * var priorityErrorMessage =
 		 * errors['projectDefaultsTO.defaultPriorityID']; if
-		 * (priorityErrorMessage!=null) {
+		 * (priorityErrorMessage) {
 		 * defaultPriority.markInvalid(priorityErrorMessage); }
 		 * var severityErrorMessage =
 		 * errors['projectDefaultsTO.defaultSeverityID']; if
-		 * (severityErrorMessage!=null) {
+		 * (severityErrorMessage) {
 		 * defaultSeverity.markInvalid(severityErrorMessage); }
 		 * var tabPanel = panel.getComponent('tabPanel');
 		 * tabPanel.setActiveTab(defaultTab); } }
 		 */
 	    // email tab
-	    if (com.trackplus.TrackplusConfig.appType != APPTYPE_BUGS) {
+
+	    if (com.trackplus.TrackplusConfig.appType !== APPTYPE_BUGS) {
 	        var eoutValue = this.getWrappedControl("emailTab", "fsout",
-	                "projectEmailTO.sendFromProjectEmail").getValue();
+	                "projectEmailTOSendFromProjectEmail").getValue();
 	        this.enableEmailOutFields(eoutValue);
-	        var emailEnabled = this.getWrappedControl("emailTab", "fseserv", "projectEmailTO.enabled");
+	        var emailEnabled = this.getWrappedControl("emailTab", "fseserv", "projectEmailTOEnabled");
 	        this.onChangeEmailEnabled(emailEnabled, emailEnabled.getValue());
 	    }
 	},
@@ -1279,24 +1276,24 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	markInvalidByErrors : function(errors, panel) {
 	    var accountErrorFound = false;
 	    var systemListErrorFound = false;
-	    if (errors != null) {
+	    if (errors ) {
 	        var accountErrorMessage = errors['projectBaseTO.defaultAccount'];
-	        if (accountErrorMessage != null) {
+	        if (accountErrorMessage ) {
 	            var defaultAccount = this.getWrappedControl("mainTab", "fsacc",
 	                    "projectBaseTO.defaultAccount");
 	            defaultAccount.markInvalid(accountErrorMessage);
 	            accountErrorFound = true;
 	        }
 
-	        var defaultSystemListIDs = [ "projectDefaultsTO.defaultManagerID",
-	                "projectDefaultsTO.defaultResponsiblID", "projectDefaultsTO.initialStatusID",
-	                "projectDefaultsTO.defaultIssueTypeID", "projectDefaultsTO.defaultPriorityID",
-	                "projectDefaultsTO.defaultSeverityID" ];
+	        var defaultSystemListIDs = [ "projectDefaultsTODefaultManagerID",
+	                "projectDefaultsTODefaultResponsiblID", "projectDefaultsTOInitialStatusID",
+	                "projectDefaultsTODefaultIssueTypeID", "projectDefaultsTODefaultPriorityID",
+	                "projectDefaultsTODefaultSeverityID" ];
 	        Ext.Array.forEach(defaultSystemListIDs, function(item) {
 	            var errorMessage = errors[item];
-	            if (errorMessage != null) {
+	            if (errorMessage ) {
 	                var control = this.getWrappedControl("defaultTab", "fsdef", item);
-	                if (control != null) {
+	                if (control ) {
 	                    if (!systemListErrorFound) {
 		                    systemListErrorFound = true;
 	                    }
@@ -1337,7 +1334,8 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	    items.push(CWHF.createCheckboxWithHelp("admin.project.lbl.work",
 	            "projectAccountingTO.workTracking", {
 	                width : this.textFieldWidthCheck,
-	                value : workTracking
+	                value : workTracking,
+	                itemId: 'projectAccountingTOWorkTracking'
 	            }, {
 	                change : {
 	                    fn : this.onWorkTrackingChange,
@@ -1347,17 +1345,20 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	    items.push(CWHF.createNumberFieldWithHelp("common.lbl.hoursPerWorkday",
 	            "projectAccountingTO.hoursPerWorkday", 2, 0, 24, {
 	                width : this.textFieldWidthShort,
-	                value : data['projectAccountingTO.hoursPerWorkday']
+	                value : data['projectAccountingTO.hoursPerWorkday'],
+	                itemId: 'projectAccountingTOHoursPerWorkday'
 	            }));
 	    items.push(CWHF.createComboWithHelp("admin.project.lbl.defaultWorkUnit",
 	            "projectAccountingTO.defaultWorkUnit", {
-	                data : data['workUnitList'],
+	                itemId: "projectAccountingTODefaultWorkUnit",
+	    			data : data['workUnitList'],
 	                value : data["projectAccountingTO.defaultWorkUnit"]
 	            }));
 	    items.push(CWHF.createCheckboxWithHelp("admin.project.lbl.cost",
 	            "projectAccountingTO.costTracking", {
 	                width : this.textFieldWidthCheck,
-	                value : costTracking
+	                value : costTracking,
+	                itemId: 'projectAccountingTOCostTracking'
 	            }, {
 	                change : {
 	                    fn : this.onCostTrackingChange,
@@ -1367,15 +1368,18 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	    items.push(CWHF.createTextFieldWithHelp("admin.project.lbl.currencyName",
 	            "projectAccountingTO.currencyName", {
 	                width : this.textFieldWidthShort,
-	                value : data['projectAccountingTO.currencyName']
+	                value : data['projectAccountingTO.currencyName'],
+	                itemId: 'projectAccountingTOCurrencyName'
 	            }));
 	    items.push(CWHF.createTextFieldWithHelp("admin.project.lbl.currencySymbol",
 	            "projectAccountingTO.currencySymbol", {
 	                width : this.textFieldWidthShort,
-	                value : data['projectAccountingTO.currencySymbol']
+	                value : data['projectAccountingTO.currencySymbol'],
+	                itemId : 'projectAccountingTOCurrencySymbol'
 	            }));
 	    items.push(CWHF.createComboWithHelp('admin.project.lbl.defaultAccount',
 	            "projectAccountingTO.defaultAccount", {
+	    			itemId: "projectAccountingTODefaultAccount",
 	                data : data["accountList"],
 	                value : data['projectAccountingTO.defaultAccount']
 	            }));
@@ -1411,7 +1415,8 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	        items : [ CWHF.createCheckboxWithHelp('admin.project.lbl.useRelease',
 	                'projectBaseTO.useRelease', {
 	                    width : this.textFieldWidthCheck,
-	                    value : data['projectBaseTO.useRelease']
+	                    value : data['projectBaseTO.useRelease'],
+	                    itemId: 'projectBaseTOUseRelease'
 	                }) ]
 	    });
 	},
@@ -1424,19 +1429,19 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	 * Enable or disable the fields related to accounting (work and cost tracking)
 	 */
 	enableAccountingFields : function(accountingInherited, workTracking, costTracking) {
-	    this.getHelpWrapper("mainTab", "fsacc", "projectAccountingTO.workTracking").setDisabled(
+	    this.getHelpWrapper("mainTab", "fsacc", "projectAccountingTOWorkTracking").setDisabled(
 	            accountingInherited);
-	    this.getHelpWrapper("mainTab", "fsacc", "projectAccountingTO.hoursPerWorkday").setDisabled(
+	    this.getHelpWrapper("mainTab", "fsacc", "projectAccountingTOHoursPerWorkday").setDisabled(
 	            accountingInherited || !workTracking);
-	    this.getHelpWrapper("mainTab", "fsacc", "projectAccountingTO.defaultWorkUnit").setDisabled(
+	    this.getHelpWrapper("mainTab", "fsacc", "projectAccountingTODefaultWorkUnit").setDisabled(
 	            accountingInherited || !workTracking);
-	    this.getHelpWrapper("mainTab", "fsacc", "projectAccountingTO.costTracking").setDisabled(
+	    this.getHelpWrapper("mainTab", "fsacc", "projectAccountingTOCostTracking").setDisabled(
 	            accountingInherited);
-	    this.getHelpWrapper("mainTab", "fsacc", "projectAccountingTO.currencyName").setDisabled(
+	    this.getHelpWrapper("mainTab", "fsacc", "projectAccountingTOCurrencyName").setDisabled(
 	            accountingInherited || !costTracking);
-	    this.getHelpWrapper("mainTab", "fsacc", "projectAccountingTO.currencySymbol").setDisabled(
+	    this.getHelpWrapper("mainTab", "fsacc", "projectAccountingTOCurrencySymbol").setDisabled(
 	            accountingInherited || !costTracking);
-	    this.getHelpWrapper("mainTab", "fsacc", "projectAccountingTO.defaultAccount").setDisabled(
+	    this.getHelpWrapper("mainTab", "fsacc", "projectAccountingTODefaultAccount").setDisabled(
 	            accountingInherited || !workTracking && !costTracking);
 	},
 
@@ -1446,9 +1451,9 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	onAccountingInheritedChange : function(field, newValue, oldValue, options) {
 	    var accountingInherited = field.getValue();
 	    var workTracking = this.getWrappedControl("mainTab", "fsacc",
-	            "projectAccountingTO.workTracking").getValue();
+	            "projectAccountingTOWorkTracking").getValue();
 	    var costTracking = this.getWrappedControl("mainTab", "fsacc",
-	            "projectAccountingTO.costTracking").getValue();
+	            "projectAccountingTOCostTracking").getValue();
 	    this.enableAccountingFields(accountingInherited, workTracking, costTracking);
 	},
 
@@ -1462,12 +1467,12 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	 */
 	enableWorkTrackingFields : function(workTracking) {
 	    var costTracking = this.getWrappedControl("mainTab", "fsacc",
-	            "projectAccountingTO.costTracking").getValue();
-	    this.getHelpWrapper("mainTab", "fsacc", "projectAccountingTO.hoursPerWorkday").setDisabled(
+	            "projectAccountingTOCostTracking").getValue();
+	    this.getHelpWrapper("mainTab", "fsacc", "projectAccountingTOHoursPerWorkday").setDisabled(
 	            !workTracking);
-	    this.getHelpWrapper("mainTab", "fsacc", "projectAccountingTO.defaultWorkUnit").setDisabled(
+	    this.getHelpWrapper("mainTab", "fsacc", "projectAccountingTODefaultWorkUnit").setDisabled(
 	            !workTracking);
-	    this.getHelpWrapper("mainTab", "fsacc", "projectAccountingTO.defaultAccount").setDisabled(
+	    this.getHelpWrapper("mainTab", "fsacc", "projectAccountingTODefaultAccount").setDisabled(
 	            !workTracking && !costTracking);
 	},
 
@@ -1481,12 +1486,12 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	 */
 	enableCostTrackingFields : function(costTracking) {
 	    var workTracking = this.getWrappedControl("mainTab", "fsacc",
-	            "projectAccountingTO.workTracking").getValue();
-	    this.getHelpWrapper("mainTab", "fsacc", "projectAccountingTO.currencyName").setDisabled(
+	            "projectAccountingTOWorkTracking").getValue();
+	    this.getHelpWrapper("mainTab", "fsacc", "projectAccountingTOCurrencyName").setDisabled(
 	            !costTracking);
-	    this.getHelpWrapper("mainTab", "fsacc", "projectAccountingTO.currencySymbol").setDisabled(
+	    this.getHelpWrapper("mainTab", "fsacc", "projectAccountingTOCurrencySymbol").setDisabled(
 	            !costTracking);
-	    this.getHelpWrapper("mainTab", "fsacc", "projectAccountingTO.defaultAccount").setDisabled(
+	    this.getHelpWrapper("mainTab", "fsacc", "projectAccountingTODefaultAccount").setDisabled(
 	            !costTracking && !workTracking);
 	},
 
@@ -1507,14 +1512,14 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	getDetailItems : function(node, add) {
 	    var me = this;
 	    var activeTab = null;
-	    if (me.lastSelections!=null) {
-	    	activeTab = me.lastSelections.lastSelectedTab;
+	    if (me.getLastSelections()) {
+	    	activeTab = me.getLastSelections().lastSelectedTab;
 		}
-	    if (activeTab == null) {
+	    if (CWHF.isNull(activeTab)) {
 	        activeTab = 0;
 	    }
 	    var tabs =  [ this.createTabMain(add), this.createTabDefault()];
-	    if (com.trackplus.TrackplusConfig.appType != APPTYPE_BUGS) {
+	    if (com.trackplus.TrackplusConfig.appType !== APPTYPE_BUGS) {
 	    	tabs.push(this.createTabEmail());
 	    }
 	    this.tabPanel = Ext.create('Ext.tab.Panel', {
@@ -1536,10 +1541,10 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	    });
 	    return this.tabPanel;
 	},
-	tabActivate : function(tab) {
+	tabActivate: function(tab) {
 	    var me = this;
 	    var tabIndex = me.tabPanel.items.indexOf(tab);
-	    me.lastSelections.lastSelectedTab = tabIndex;
+	    me.getLastSelections().lastSelectedTab = tabIndex;
 	    var storeTabUrl = "project!storeLastSelectedTab.action";
 	    Ext.Ajax.request({
 	        fromCenterPanel : true,
@@ -1580,10 +1585,10 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	        maxLength : 255
 	    }));
 	    items.push(CWHF.createComboWithHelp('common.lbl.projectType', 'projectBaseTO.projectTypeID',
-	            null, null, 'projectType'));
-	    if (!this.isTemplate) {
+	            {itemId:'projectType'}, null));
+	    if (!this.getIsTemplate()) {
 	        items.push(CWHF.createComboWithHelp('admin.customize.localeEditor.type.projectStatus',
-	                'projectBaseTO.projectStatusID', null, null, 'projectStatus'));
+	                'projectBaseTO.projectStatusID', {itemId:'projectStatus'}, null));
 	    }
 	    var panel = Ext.create('Ext.panel.Panel', {
 	        title : getText('admin.project.lbl.mainTab'),
@@ -1614,7 +1619,8 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	                    layout : 'anchor',
 	                    items : [ CWHF.createCheckboxWithHelp('admin.project.lbl.linking',
 	                            'projectBaseTO.linking', {
-	                                width : this.textFieldWidthCheck
+	                                width : this.textFieldWidthCheck,
+	                                itemId : 'projectBaseTOLinking'
 	                            }) ]
 	                }, {
 	                    xtype : 'hidden',
@@ -1633,9 +1639,9 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	    this.tabPanel.ownerCt.getForm().submit({
 	        //allow submit even without the required name this time
 	        clientValidation : false,
-	        url : this.baseAction + '!projectTypeChange.action',
+	        url : this.getBaseAction() + '!projectTypeChange.action',
 	        params : {
-	            projectID : this.rootID,
+	            projectID : this.getRootID(),
 	            addAsSubproject : this.addAsSubproject
 	        },
 	        scope : this,
@@ -1659,9 +1665,9 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	refreshSystemFieldCombos : function(data, panel) {
 	    var mainTab = this.getControl("mainTab");
 	    var accountingFieldSet = this.getControl("mainTab", "fsacc");
-	    var oldProjectTypeHasAccounting = accountingFieldSet != null;
+	    var oldProjectTypeHasAccounting = accountingFieldSet !== null;
 	    var newProjectTypeHasAccounting = data["hasAccounting"];
-	    if (oldProjectTypeHasAccounting != newProjectTypeHasAccounting) {
+	    if (oldProjectTypeHasAccounting !== newProjectTypeHasAccounting) {
 	        if (oldProjectTypeHasAccounting && !newProjectTypeHasAccounting) {
 	            mainTab.remove(accountingFieldSet);
 	        } else {
@@ -1673,9 +1679,9 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	        }
 	    }
 	    var releaseFieldSet = this.getControl("mainTab", "fsrel");
-	    var oldProjectTypeHasRelease = releaseFieldSet != null;
+	    var oldProjectTypeHasRelease = releaseFieldSet !== null;
 	    var newProjectTypeHasRelease = data["hasRelease"];
-	    if (oldProjectTypeHasRelease != newProjectTypeHasRelease) {
+	    if (oldProjectTypeHasRelease !== newProjectTypeHasRelease) {
 	        if (oldProjectTypeHasRelease && !newProjectTypeHasRelease) {
 	            mainTab.remove(releaseFieldSet);
 	        } else {
@@ -1683,22 +1689,22 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	        }
 	    }
 	    var initialStatus = this.getWrappedControl("defaultTab", "fsInitSt",
-	            "projectDefaultsTO.initialStatusID");
+	            "projectDefaultsTO_initialStatusID");
 	    initialStatus.store.loadData(data['statusList']);
 	    initialStatus.setValue(data['projectDefaultsTO.initialStatusID']);
 
 	    var defaultIssueType = this.getWrappedControl("defaultTab", "fsdef",
-	            "projectDefaultsTO.defaultIssueTypeID");
+	            "projectDefaultsTO_defaultIssueTypeID");
 	    defaultIssueType.store.loadData(data['issueTypeList']);
 	    defaultIssueType.setValue(data['projectDefaultsTO.defaultIssueTypeID']);
 
 	    var defaultPriority = this.getWrappedControl("defaultTab", "fsdef",
-	            "projectDefaultsTO.defaultPriorityID");
+	            "projectDefaultsTO_defaultPriorityID");
 	    defaultPriority.store.loadData(data['priorityList']);
 	    defaultPriority.setValue(data['projectDefaultsTO.defaultPriorityID']);
 
 	    var defaultSeverity = this.getWrappedControl("defaultTab", "fsdef",
-	            "projectDefaultsTO.defaultSeverityID");
+	            "projectDefaultsTODefaultSeverityID");
 	    defaultSeverity.store.loadData(data['severityList']);
 	    defaultSeverity.setValue(data['projectDefaultsTO.defaultSeverityID']);
 
@@ -1714,12 +1720,12 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	},
 
 	actualizeAccountingByProjectType : function(data) {
-	    var accountingControls = [ "projectAccountingTO.defaultWorkUnit",
-	            "projectAccountingTO.hoursPerWorkday", "projectAccountingTO.currencyName",
-	            "projectAccountingTO.currencySymbol" ];
+	    var accountingControls = [ "projectAccountingTODefaultWorkUnit",
+	            "projectAccountingTOHoursPerWorkday", "projectAccountingTOCurrencyName",
+	            "projectAccountingTOCurrencySymbol" ];
 	    Ext.Array.forEach(accountingControls, function(itemId) {
-	        var control = this.getWrappedControl("mainTab", "fsacc", itemId);
-	        if (control != null) {
+	        var control = this.getWrappedControl("mainTab", "fsacc", itemId.split(".").join("_"));
+	        if (control ) {
 	            control.setValue(data[itemId]);
 	        }
 	    }, this);
@@ -1752,22 +1758,20 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	                                    items : [
 	                                            CWHF.createComboWithHelp(
 	                                                    'admin.project.lbl.defaultManager',
-	                                                    'projectDefaultsTO.defaultManagerID'),
+	                                                    'projectDefaultsTO.defaultManagerID',{itemId:'projectDefaultsTODefaultManagerID'}),
 	                                            CWHF.createComboWithHelp(
 	                                                    'admin.project.lbl.defaultResponsible',
-	                                                    'projectDefaultsTO.defaultResponsibleID'),
+	                                                    'projectDefaultsTO.defaultResponsibleID',{itemId:'projectDefaultsTODefaultResponsibleID'}),
 	                                            CWHF.createComboWithHelp(
 	                                                    'admin.project.lbl.defaultIssueType',
-	                                                    'projectDefaultsTO.defaultIssueTypeID'),
+	                                                    'projectDefaultsTO.defaultIssueTypeID',{itemId:'projectDefaultsTODefaultIssueTypeID'}),
 	                                            CWHF.createComboWithHelp(
 	                                                    'admin.project.lbl.defaultPriority',
-	                                                    'projectDefaultsTO.defaultPriorityID'),
+	                                                    'projectDefaultsTO.defaultPriorityID',{itemId:'projectDefaultsTODefaultPriorityID'}),
 	                                            CWHF.createComboWithHelp(
 	                                                    'admin.project.lbl.defaultSeverity',
-	                                                    'projectDefaultsTO.defaultSeverityID'),
-	                                            CWHF
-	                                                    .getRadioGroupWithHelp(
-	                                                            'prefillBy',
+	                                                    'projectDefaultsTO.defaultSeverityID',{itemId:'projectDefaultsTODefaultSeverityID'}),
+	                                            CWHF.getRadioGroupWithHelp(
 	                                                            'admin.project.lbl.prefill',
 	                                                            this.prefillByWidth,
 	                                                            [
@@ -1782,6 +1786,7 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	                                                                        name : 'projectDefaultsTO.prefillBy',
 	                                                                        inputValue : this.PREFILL.PROJECTDEFAULT
 	                                                                    } ], {
+	                                                            	itemId : 'prefillBy',
 	                                                                layout : 'checkboxgroup',
 	                                                                columns : 2
 	                                                            }) ]
@@ -1800,7 +1805,7 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	                                    items : [
 	                                            CWHF.createComboWithHelp(
 	                                                    'admin.project.lbl.defaultInitialState',
-	                                                    'projectDefaultsTO.initialStatusID'),
+	                                                    'projectDefaultsTO.initialStatusID',{itemId:'projectDefaultsTOInitialStatusID'}),
 	                                            Ext
 	                                                    .create(
 	                                                            'Ext.Component',
@@ -1825,31 +1830,23 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	},
 
 	enableEmailOutFields : function(eout) {
-	    this.getHelpWrapper("emailTab", "fsout", "projectEmailTO.projectFromEmail").setDisabled(!eout);
-	    this.getHelpWrapper("emailTab", "fsout", "projectEmailTO.projectFromEmailName").setDisabled(!eout);
-	    this.getHelpWrapper("emailTab", "fsout", "projectEmailTO.sendFromProjectAsReplayTo").setDisabled(!eout);
+	    this.getHelpWrapper("emailTab", "fsout", "projectEmailTOProjectFromEmail").setDisabled(!eout);
+	    this.getHelpWrapper("emailTab", "fsout", "projectEmailTOProjectFromEmailName").setDisabled(!eout);
+	    this.getHelpWrapper("emailTab", "fsout", "projectEmailTOSendFromProjectAsReplayTo").setDisabled(!eout);
 	},
 
 	onChangeEmailEnabled : function(checkBox, newValue, oldValue, eOpts) {
 	    disabled = !newValue;
-	    this.getHelpWrapper("emailTab", "fseserv", "projectEmailTO.protocol").setDisabled(disabled);
-	    this.getHelpWrapper("emailTab", "fseserv", "projectEmailTO.serverName").setDisabled(disabled);
-	    this.getHelpWrapper("emailTab", "fseserv", "projectEmailTO.port").setDisabled(disabled);
+	    this.getHelpWrapper("emailTab", "fseserv", "projectEmailTOProtocol").setDisabled(disabled);
+	    this.getHelpWrapper("emailTab", "fseserv", "projectEmailTOServerName").setDisabled(disabled);
+	    this.getHelpWrapper("emailTab", "fseserv", "projectEmailTOPort").setDisabled(disabled);
 
-	    this.getHelpWrapper("emailTab", "fsauth", "projectEmailTO.user").setDisabled(disabled);
-	    this.getHelpWrapper("emailTab", "fsauth", "projectEmailTO.password").setDisabled(disabled);
+	    this.getHelpWrapper("emailTab", "fsauth", "projectEmailTOUser").setDisabled(disabled);
+	    this.getHelpWrapper("emailTab", "fsauth", "projectEmailTOPassword").setDisabled(disabled);
 	    this.getHelpWrapper("emailTab", "fsauth", "securityConnection").setDisabled(disabled);
 
-	    //this.getHelpWrapper("emailTab", "fsout", "projectEmailTO.sendFromProjectEmail").setDisabled(disabled);
-	    //this.getHelpWrapper("emailTab", "fsout", "projectEmailTO.projectFromEmail").setDisabled(disabled);
-	    //this.getHelpWrapper("emailTab", "fsout", "projectEmailTO.projectFromEmailName").setDisabled(disabled);
 
 	    this.getHelpWrapper("emailTab", "fsother", "keep").setDisabled(disabled);
-	    /*var fromDisabled = !(this.getWrappedControl("emailTab", "fsout", "projectEmailTO.sendFromProjectEmail").getValue());
-	    if (disabled==true) {
-	    	fromDisabled = true;
-	    }
-	    this.enableEmailOutFields(!fromDisabled);*/
 	    this.testBtn.setDisabled(disabled);
 	},
 
@@ -1866,7 +1863,7 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	            marginBottom : '5px',
 	            marginLeft : (me.labelWidth + 20) + 'px'
 	        },
-	        itemId : 'emailTab.testConnection',
+	        itemId : 'emailTab_testConnection',
 	        enableToggle : false,
 	        iconCls : 'check16',
 	        text : getText('admin.server.config.testConnection'),
@@ -1874,65 +1871,61 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	            me.testEmailIncoming.call(me);
 	        }
 	    });
-	    var panel = Ext
-	            .create(
-	                    'Ext.panel.Panel',
-	                    {
-	                        title : getText('admin.project.lbl.emailTab'),
-	                        itemId : 'emailTab',
-	                        layout : {
-	                            type : 'anchor'
-	                        },
-	                        items : [
-	                                {
-	                                    xtype : 'fieldset',
-	                                    itemId : 'fseserv',
-	                                    width : this.FieldSetWidth,
-	                                    title : getText('admin.server.config.incomingServer'),
-	                                    collapsible : false,
-	                                    defaultType : 'textfield',
-	                                    defaults : {
-	                                        anchor : '100%'
-	                                    },
-	                                    layout : 'anchor',
-	                                    items : [
-	                                            CWHF.createCheckboxWithHelp(
-	                                                    'admin.server.config.emailSubmission',
-	                                                    'projectEmailTO.enabled', {}, {
-	                                                        change : {
-	                                                            fn : this.onChangeEmailEnabled,
-	                                                            scope : this
-	                                                        }
-	                                                    }),
-	                                            CWHF.getRadioGroupWithHelp('projectEmailTO.protocol',
-	                                                    'admin.server.config.mailReceivingProtocol',
-	                                                    this.protocolWidth, [ {
-	                                                        boxLabel : 'POP3',
-	                                                        name : 'projectEmailTO.protocol',
-	                                                        inputValue : 'pop3',
-	                                                        checked : true
-	                                                    }, {
-	                                                        boxLabel : 'IMAP',
-	                                                        name : 'projectEmailTO.protocol',
-	                                                        inputValue : 'imap'
-	                                                    } ], null, {
-	                                                        change : {
-	                                                            fn : this.changePort,
-	                                                            scope : this
-	                                                        }
-	                                                    }),
-	                                            CWHF.createTextFieldWithHelp(
-	                                                    'admin.server.config.mailReceivingServerName',
-	                                                    'projectEmailTO.serverName'),
-	                                            CWHF.createTextFieldWithHelp(
-	                                                    'admin.server.config.mailReceivingPort',
-	                                                    'projectEmailTO.port', {
-	                                                        width : this.textFieldWidthShort
-	                                                    }) ]
-	                                },
-	                                {
-	                                    xtype : 'fieldset',
-	                                    itemId : 'fsauth',
+	    var panel = Ext.create(
+	    		'Ext.panel.Panel', {
+	    			title : getText('admin.project.lbl.emailTab'),
+	    			itemId : 'emailTab',
+	    			layout : {
+	    				type : 'anchor'
+	    			},
+	    			items : [{
+	    				xtype : 'fieldset',
+	    				itemId : 'fseserv',
+	    				width : this.FieldSetWidth,
+                        title : getText('admin.server.config.incomingServer'),
+                        collapsible : false,
+                        defaultType : 'textfield',
+	                    defaults : {
+	                    	anchor : '100%'
+	                    },
+	                    layout : 'anchor',
+	                    items : [
+	                    CWHF.createCheckboxWithHelp(
+	                    		'admin.server.config.emailSubmission',
+	                            'projectEmailTO.enabled', {itemId:"projectEmailTOEnabled"}, {
+	                            change : {
+	                            	fn: this.onChangeEmailEnabled,
+	                                	scope: this
+	                            }}),
+	                             CWHF.getRadioGroupWithHelp('admin.server.config.mailReceivingProtocol',
+	                            	this.protocolWidth, [{
+	                            			 boxLabel : 'POP3',
+	                            			 name : 'projectEmailTO.protocol',
+	                            			 inputValue : 'pop3',
+	                            			 checked : true
+	                            		 }, {
+	                            			 boxLabel : 'IMAP',
+	                            			 name : 'projectEmailTO.protocol',
+	                            			 inputValue : 'imap'
+	                            		 }], {itemId:'projectEmailTOProtocol'}, {
+	                            			 change : {
+	                            				 fn : this.changePort,
+	                            				 scope : this
+	                            			 }
+	                            		 }),
+	                            		 CWHF.createTextFieldWithHelp(
+	                            				 'admin.server.config.mailReceivingServerName',
+	                            				 'projectEmailTO.serverName',{itemId:'projectEmailTOServerName'}),
+	                            		CWHF.createTextFieldWithHelp(
+	                            				'admin.server.config.mailReceivingPort',
+	                            				'projectEmailTO.port', {
+	                            				width : this.textFieldWidthShort,
+	                            				itemId : 'projectEmailTOPort'
+	                            				})
+	                            ]
+	                    },{
+	    				xtype : 'fieldset',
+	    				itemId : 'fsauth',
 	                                    width : this.FieldSetWidth,
 	                                    title : getText('admin.server.config.incomingAuth'),
 	                                    collapsible : false,
@@ -1944,18 +1937,15 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	                                    items : [
 	                                            CWHF.createTextFieldWithHelp(
 	                                                    'admin.server.config.mailReceivingUser',
-	                                                    'projectEmailTO.user'),
+	                                                    'projectEmailTO.user', {itemId:'projectEmailTOUser'}),
 	                                            CWHF.createTextFieldWithHelp(
 	                                                    'admin.server.config.mailReceivingPassWord',
 	                                                    'projectEmailTO.password', {
-	                                                        inputType : 'password'
+	                                                        inputType : 'password',
+	                                                        itemId : 'projectEmailTOPassword'
 	                                                    }),
-	                                            CWHF
-	                                                    .getRadioGroupWithHelp(
-	                                                            'securityConnection',
-	                                                            'admin.server.config.mailReceivingSecurityConnection',
-	                                                            this.securityConnectionWidth,
-	                                                            [
+	                                            CWHF.getRadioGroupWithHelp('admin.server.config.mailReceivingSecurityConnection',
+	                                            		this.securityConnectionWidth,[
 	                                                                    {
 	                                                                        boxLabel : getText('admin.server.config.securityConnections.never'),
 	                                                                        name : 'projectEmailTO.securityConnection',
@@ -1975,7 +1965,7 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	                                                                        boxLabel : getText('admin.server.config.securityConnections.ssl'),
 	                                                                        name : 'projectEmailTO.securityConnection',
 	                                                                        inputValue : this.SECURITY_CONNECTIONS_MODES.SSL
-	                                                                    } ], null, {
+	                                                                    } ], {itemId:'securityConnection'}, {
 	                                                                change : {
 	                                                                    fn : this.changePort,
 	                                                                    scope : this
@@ -1997,7 +1987,8 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	                                            CWHF.createCheckboxWithHelp(
 	                                                    'admin.project.lbl.useProjectFromAddress',
 	                                                    'projectEmailTO.sendFromProjectEmail', {
-	                                                        width : this.textFieldWidthCheck
+	                                                        width : this.textFieldWidthCheck,
+	                                                        itemId: 'projectEmailTOSendFromProjectEmail'
 	                                                    }, {
 	                                                        change : {
 	                                                            fn : this.onEmailOutChange,
@@ -2006,14 +1997,16 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	                                                    }),
 	                                            CWHF.createTextFieldWithHelp(
 	                                                    'admin.project.lbl.projectEmail',
-	                                                    'projectEmailTO.projectFromEmail'),
+	                                                    'projectEmailTO.projectFromEmail',
+	                                                    {itemId: 'projectEmailTOProjectFromEmail'}),
 	                                            CWHF.createTextFieldWithHelp(
 	                                                    'admin.project.lbl.projectEmailPersonalName',
-	                                                    'projectEmailTO.projectFromEmailName'),
+	                                                    'projectEmailTO.projectFromEmailName', {itemId:'projectEmailTOProjectFromEmailName'}),
 	                                            CWHF.createCheckboxWithHelp(
 	                                                    'admin.project.lbl.useProjectFromAsReplyTo',
 	                                                    'projectEmailTO.sendFromProjectAsReplayTo', {
-	                                                        width : this.textFieldWidthCheck
+	                                                        width : this.textFieldWidthCheck,
+	                                                        itemId : 'projectEmailTOSendFromProjectAsReplayTo'
 	                                                    }) ]
 	                                },
 	                                {
@@ -2043,25 +2036,25 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	    var me = this;
 	    var errStr = '';
 	    var tabErrors = new Array();
-	    if (errorMsg == null) {
+	    if (CWHF.isNull(errorMsg)) {
 	        errorMsg = getText('admin.project.err.errorSave');
 	    }
-	    if (errors != null && errors.length > 0) {
+	    if (errors  && errors.length > 0) {
 	        for (var i = 0; i < errors.length; i++) {
 	            var error = errors[i];
 	            var controlPath = error.controlPath;
 	            var inputComp = null;
-	            if (controlPath != null && controlPath.length > 0) {
+	            if (controlPath  && controlPath.length > 0) {
 	                var tabId = controlPath[0];
 	                if (!Ext.Array.contains(tabErrors, tabId)) {
 	                    tabErrors.push(tabId);
 	                }
 	                inputComp = this.getControl.apply(this, controlPath);
-	                if (inputComp == null) {
+	                if (CWHF.isNull(inputComp)) {
 	                    inputComp = this.getWrappedControl.apply(this, controlPath);
 	                }
 	            }
-	            if (inputComp != null) {
+	            if (inputComp ) {
 	                inputComp.markInvalid(error.errorMessage);
 	            } else {
 	                errStr += error.errorMessage + "</br>";
@@ -2069,7 +2062,7 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	        }
 	        me.markErrorTabs(tabErrors);
 	    }
-	    if (errStr != '') {
+	    if (errStr !== '') {
 	        errorMsg = errStr;
 	    }
 	    CWHF.showMsgError(errorMsg);
@@ -2080,7 +2073,7 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	    if (tabErrors.length > 0) {
 	        for (var i = 0; i < tabErrors.length; i++) {
 	            var tabComp = this.getControl(tabErrors[i]);
-	            if (tabComp != null) {
+	            if (tabComp ) {
 	                tabErrorsCmp.push(tabComp);
 	            }
 	        }
@@ -2105,7 +2098,7 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	        var headerCm = tabBar.getComponent(i);
 	        headerCm.removeCls("errorTab");
 	    }
-	    if (me.ldapController != null) {
+	    if (me.ldapController ) {
 	        me.ldapController.clearErrorTabs.call(me.ldapController);
 	    }
 	},
@@ -2124,7 +2117,7 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	    form.submit({
 	        url : urlStr,
 	        params : {
-	            projectID : this.rootID
+	            projectID : this.getRootID()
 	        },
 	        success : function(form, action) {
 	            borderLayout.setLoading(false);
@@ -2132,7 +2125,7 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	        },
 	        failure : function(form, action) {
 	            borderLayout.setLoading(false);
-	            if (action.result != null && action.result.errors != null) {
+	            if (action.result  && action.result.errors ) {
 	                me.handleErrors(action.result.errors, getText('admin.project.err.invalidEmail'));
 	            } else {
 	                CWHF.showMsgError(getText('admin.project.err.invalidEmail'));
@@ -2142,20 +2135,20 @@ Ext.define('com.trackplus.admin.project.ProjectConfig',
 	},
 
 	changePort : function(protocol, securityConnection, port) {
-	    var protocol = this.getWrappedControl("emailTab", "fseserv", "projectEmailTO.protocol");
+	    var protocol = this.getWrappedControl("emailTab", "fseserv", "projectEmailTOProtocol");
 	    var securityConnection = this.getWrappedControl("emailTab", "fsauth", "securityConnection");
-	    var port = this.getWrappedControl("emailTab", "fseserv", "projectEmailTO.port");
+	    var port = this.getWrappedControl("emailTab", "fseserv", "projectEmailTOPort");
 	    var protocolValue = CWHF.getSelectedRadioButtonValue(protocol);
 	    var securityConnectionValue = CWHF.getSelectedRadioButtonValue(securityConnection);
 	    var portValue;
-	    if (protocolValue == this.EMAIL_PROTOCOL.POP3) {
-	        if (securityConnectionValue == this.SECURITY_CONNECTIONS_MODES.SSL) {
+	    if (protocolValue === this.EMAIL_PROTOCOL.POP3) {
+	        if (securityConnectionValue === this.SECURITY_CONNECTIONS_MODES.SSL) {
 	            portValue = this.DEFAULT_EMAIL_PORTS.POP3_SSL;
 	        } else {
 	            portValue = this.DEFAULT_EMAIL_PORTS.POP3;
 	        }
 	    } else {
-	        if (securityConnectionValue == this.SECURITY_CONNECTIONS_MODES.SSL) {
+	        if (securityConnectionValue === this.SECURITY_CONNECTIONS_MODES.SSL) {
 	            portValue = this.DEFAULT_EMAIL_PORTS.IMAP_SSL;
 	        } else {
 	            portValue = this.DEFAULT_EMAIL_PORTS.IMAP;

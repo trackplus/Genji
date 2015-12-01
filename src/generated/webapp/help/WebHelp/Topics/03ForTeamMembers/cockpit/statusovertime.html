@@ -1,0 +1,119 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="This powerful graphical tile permits you to visualize the development of your project over time. The change in the number of items per state can be a good indication for how close you are to project ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="concept"/><meta name="DC.Title" content="Status over time"/><meta name="abstract" content="This powerful graphical tile permits you to visualize the development of your project over time. The change in the number of items per state can be a good indication for how close you are to project completion and can give you information on the workload to be handled."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="This powerful graphical tile permits you to visualize the development of your project over time. The change in the number of items per state can be a good indication for how close you are to project completion and can give you information on the workload to be handled."/><meta name="DC.Relation" scheme="URI" content="../../../Topics/03ForTeamMembers/cockpit/configureView.html"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="id31statusOverTime"/><link rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Status over time</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../../Topics/03ForTeamMembers/cockpit/configureView.html" title="Some tiles may require configuration, for example project parameters, date parameters, or state parameters."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Configuring tiles</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../../Topics/03ForTeamMembers/cockpit/../../../Topics/03ForTeamMembers/cockpit/cockpit.html" title="Track+ provides special overview pages, called the „cockpit“ or dashboard. Based on the metaphor of cockpit in a car or plane, this &#34;digital&#34; version of a cockpit provides you with the input necessary to &#34;drive&#34; your business.">Working with the cockpit</a> / <a class="navheader_parent_path" href="../../../Topics/03ForTeamMembers/cockpit/configureView.html" title="Some tiles may require configuration, for example project parameters, date parameters, or state parameters.">Configuring tiles</a></td></tr></tbody></table>
+
+    <div class="nested0" id="id31statusOverTime">
+        <h1 class="title topictitle1">Status over time</h1>
+
+        
+        <div class="body conbody"><p class="shortdesc">This powerful graphical tile permits you to visualize
+            the development of your project over time. The change in the number of items per state
+            can be a good indication for how close you are to project completion and can give you
+            information on the workload to be handled.</p>
+
+            <div class="section"><h2 class="title sectiontitle">Tile configuration</h2>
+                
+                <p class="p">Before you can use this tile you need to configure it. Follow the general
+                    procedure to configure a tile outlined above to get to the state over time
+                    configuration page.</p>
+
+                <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/statusotConfig.png" height="273" width="410"/></div><br/><p class="figcapcenter">Status over time tile configuration</p>
+                    
+                    
+                </div>
+
+                <p class="p">You have a number of options on what you want to see. First you should give your
+                    tile an expressive name so you later on know what you actually see in the
+                    tile.</p>
+
+                <p class="p">Then you need to set the projects or project releases you want to monitor. You
+                    can select an entire project which includes all associated project release, or
+                    just some releases.</p>
+
+                <p class="p">Next you select the reporting period you want to monitor. You can either set a
+                    fixed interval starting and ending with a specified date, or probably more
+                    useful just consider the last X number of days.</p>
+
+                <p class="p">Next you need to set the granularity of your tile, for example to daily, weekly,
+                    or monthly. The granularity determines the time interval which will be used for
+                    computing the associated values. If the granularity is „weekly“, the reporting
+                    interval goes from the beginning of a week to the end.</p>
+
+                <p class="p">In the next step you need to select the type of algorithm you want to use for
+                    computing the values to be displayed. There are four different algorithms
+                    available:</p>
+
+                <ul class="ul">
+                    <li class="li">
+                        <p class="p">New items in interval: This diagram shows the number of newly created
+                            items per reporting interval (day, week, month). </p>
+
+                    </li>
+
+                    <li class="li">
+                        <p class="p">Accumulated activity: This diagram shows the accumulated number of items,
+                            that have changed into the selected state within each reporting
+                            interval. For example, if the granularity has been set to „monthly“ and
+                            the state to „implemented“, the diagram would show for each month how
+                            many items have changed to state „implemented“ during that month, and
+                            all months before that.</p>
+
+                    </li>
+
+                    <li class="li">
+                        <p class="p">Interval activity: This diagram shows the number of items, that have
+                            changed into the selected state within each reporting interval. For
+                            example, if the granularity has been set to „monthly“ and the state to
+                            „implemented“, the diagram would show for each month how many items have
+                            changed to state „implemented“.</p>
+
+                    </li>
+
+                    <li class="li">
+                        <p class="p">Number of items in interval: This diagram shows the number of items that
+                            have been in the selected state at the end of each reporting interval
+                            (day, week, month). For example, if the granularity was selected as
+                            „weekly“ and the state selected as „closed“, the diagram would show for
+                            each end of a week how many items have been in state „closed“ at this
+                            time.</p>
+
+                    </li>
+
+                </ul>
+
+                <p class="p">In the last step you can set a filter which states you want to consider. In
+                    case of the „New items in interval“ you cannot choose a state, since the state
+                    doesn‘t matter. Only the creation date is considered.</p>
+
+                <p class="p">The following figures show some example views.</p>
+
+                <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/statusNew.png" height="146" width="360"/></div><br/><p class="figcapcenter">Various state over time graphs</p>
+                    
+                    
+                </div>
+
+                <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/statusActivity.png" height="146" width="359"/></div><br/><p class="figcapcenter">More status over time graphs</p>
+                    
+                    
+                </div>
+
+            </div>
+
+        </div>
+
+    <div class="related-links"/>
+</div>
+
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../../Topics/03ForTeamMembers/cockpit/configureView.html" title="Some tiles may require configuration, for example project parameters, date parameters, or state parameters."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Configuring tiles</span></a></span>  </div>
+</body>
+</html>

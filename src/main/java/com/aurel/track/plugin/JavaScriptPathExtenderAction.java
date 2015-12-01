@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -54,23 +54,6 @@ public class JavaScriptPathExtenderAction extends ActionSupport
 	private String jsFile = null;
     private String pluginDir = null;
 
-	/*public String execute() throws Exception {
-		List<File> dirs = PluginUtils.getJavaScriptExtensionDirs();
-		if (dirs == null || dirs.isEmpty()) {
-			JSONUtility.encodeJSON(ServletActionContext.getResponse(), "");
-			return null;
-		}
-		StringBuffer sresponse = new StringBuffer();
-		sresponse.append("");
-		for (File dir: dirs) {
-			String nameSpace = dir.getName();
-			String path = dir.getAbsolutePath();
-			sresponse.append("'"+nameSpace+"'"+"'"+path+"';");
-		}
-		
-		JSONUtility.encodeJSON(ServletActionContext.getResponse(), sresponse.toString());
-		return null;
-	}*/
 	
 	public static String getDirs() {
 		List<File> dirs = PluginUtils.getJavaScriptExtensionDirs();
@@ -81,7 +64,6 @@ public class JavaScriptPathExtenderAction extends ActionSupport
 		for (File dir: dirs) {
 			String nameSpace = dir.getName();
 			String path = dir.getAbsolutePath();
-			//sresponse.append("Ext.Loader.setPath('"+nameSpace+"', 'loadJavaScript.action?file="+path+"/js');\n");
             //for ex. if a plugin name is 'reportPlugin' then: Ext.Loader.setPath('reportPlugin', 'loadJavaScript!load.action?file=reportPlugin/js');
             //that means all js files defined in plugin should be defined as Ext.define('reportPlugin.<ReportConfigJSName>',{...})
 
@@ -98,6 +80,7 @@ public class JavaScriptPathExtenderAction extends ActionSupport
      * @return
      * @throws Exception
      */
+	@Override
 	public String execute() throws Exception {
         String tpHome = HandleHome.getTrackplus_Home();
         String jsDir = tpHome + File.separator+  HandleHome.PLUGINS_DIR + File.separator + pluginDir + File.separator + "js";
@@ -132,6 +115,7 @@ public class JavaScriptPathExtenderAction extends ActionSupport
 		return null;
 	}
 
+	@Override
 	public void setServletResponse(HttpServletResponse servletResponse) {
 		this.servletResponse = servletResponse;
 	}

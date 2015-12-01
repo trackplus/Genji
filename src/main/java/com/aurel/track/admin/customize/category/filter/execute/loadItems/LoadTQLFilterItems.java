@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -107,7 +107,7 @@ public class LoadTQLFilterItems {
 		List<TComputedValuesBean> budgetAndPlanList = null;
 		if (withBudgetPlan) {
 		int[] computedValueTypes = null;
-		boolean budgetActive = ApplicationBean.getApplicationBean().getBudgetActive();
+		boolean budgetActive = ApplicationBean.getInstance().getBudgetActive();
 		if (budgetActive) {
 			computedValueTypes = new int[] {TComputedValuesBean.COMPUTEDVALUETYPE.PLAN, TComputedValuesBean.COMPUTEDVALUETYPE.BUDGET};
 		} else {
@@ -129,7 +129,7 @@ public class LoadTQLFilterItems {
 		}
 		Set<Integer> parentIDsSet = null;
 		if (withParents) {
-			boolean summaryItemsBehavior = ApplicationBean.getApplicationBean().getSiteBean().getSummaryItemsBehavior();
+			boolean summaryItemsBehavior = ApplicationBean.getInstance().getSiteBean().getSummaryItemsBehavior();
 			if (summaryItemsBehavior) {
 				parentIDsSet = workItemDAO.loadTQLFilterParentIDs(userQuery, personBean, locale, errors);
 			}

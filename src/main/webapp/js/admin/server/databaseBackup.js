@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -46,7 +46,7 @@ Ext.define('com.trackplus.admin.server.DatabaseBackup',{
 
 	createToolbar:function(){
 		var me=this;
-		if(me.btnStart==null){
+		if(CWHF.isNull(me.btnStart)){
 			me.btnStart=new Ext.Button({
 				text:getText('admin.server.databaseBackup.button.Execute'),
 				overflowText:getText('admin.server.databaseBackup.button.Execute'),
@@ -123,7 +123,7 @@ Ext.define('com.trackplus.admin.server.DatabaseBackup',{
 				stripeRows:true,
 				getRowClass: function(record) {
 					var cls="";
-					if(record.data['valid']==false){
+					if(record.data['valid']===false){
 						cls="invalidBackupRow";
 					}
 					return cls;
@@ -151,41 +151,12 @@ Ext.define('com.trackplus.admin.server.DatabaseBackup',{
 	createBackupFieldSet:function(){
 		var me=this;
 		var txtName=CWHF.createTextField("admin.server.databaseBackup.lbl.backupName",
-				"backupName", {labelWidth:me.labelWidth});
-			/*Ext.create('Ext.form.field.Text',{
-			fieldLabel:getText('admin.server.databaseBackup.lbl.backupName'),
-			allowBlank:false,
-			blankText :getText("common.err.required"),
-			width:515,
-			labelStyle:{overflow:'hidden'},
-			labelWidth:me.labelWidth,
-			labelAlign:me.alignR,
-			name:'backupName'
-		});*/
-
+				"backupName", {itemId:'backupName', labelWidth:me.labelWidth});
 		var chkSendNotifyEmail=CWHF.createCheckbox("admin.server.databaseBackup.lbl.sendNotifyEmail",
 				"sendNotifyEmail", {labelWidth:me.labelWidth});
-		 /*Ext.create('Ext.form.field.Checkbox',{
-			fieldLabel:getText('admin.server.databaseBackup.lbl.sendNotifyEmail'),
-			checked:true,
-			labelStyle:{overflow:'hidden'},
-			labelWidth:me.labelWidth,
-			labelAlign:me.alignR,
-			inputValue:'true',
-			name: 'sendNotifyEmail'
-		});*/
 
 		var chkIncludeAttachments=CWHF.createCheckbox("admin.server.databaseBackup.lbl.includeAttachments",
 				"includeAttachments", {labelWidth:me.labelWidth});
-			/*Ext.create('Ext.form.field.Checkbox',{
-			fieldLabel:getText('admin.server.databaseBackup.lbl.includeAttachments'),
-			checked:true,
-			inputValue:'true',
-			labelStyle:{overflow:'hidden'},
-			labelWidth:me.labelWidth,
-			labelAlign:me.alignR,
-			name: 'includeAttachments'
-		});*/
 
 		var fieldSetBackup={
 			xtype: 'fieldset',
@@ -206,36 +177,26 @@ Ext.define('com.trackplus.admin.server.DatabaseBackup',{
 	createBackupFieldSetConf:function(){
 		var me=this;
 		var autoBackup=CWHF.createCheckboxWithHelp('admin.server.config.isDatabaseBackupJobOn',
-				'autoBackup',{listeners:{
+				'autoBackup',{itemId:'autoBackup'},{
 						change:function(){
 							me.enableAutoBackup.call(me);
-						}
 					}
 				}
-			);
+		);
 		var backupDir=CWHF.createTextField("admin.server.config.backupDir",
-				"backupDir", {labelWidth:me.labelWidth, width:515});
-			/*Ext.create('Ext.form.field.Text',{
-			fieldLabel:getText('admin.server.config.backupDir'),
-			name:'backupDir',
-			itemId:'backupDir',
-			width:515,
-			labelStyle:{overflow:'hidden'},
-			labelWidth:me.labelWidth,
-			labelAlign:me.alignR
-		});*/
+				"backupDir", {itemId:'backupDir', labelWidth:me.labelWidth, width:515});
 
 		var backupOnDays=CWHF.createComboWithHelp('admin.server.databaseBackup.lbl.backupDays',
-				'backupOnDays',{multiSelect :true},null,'backupOnDays');
+				'backupOnDays',{itemId:'backupOnDays', multiSelect :true},null);
 
 		var noOfBackupsCmp=CWHF.createNumberFieldWithHelp('admin.server.databaseBackup.lbl.noOfBackups',
-				'noOfBackups',0,1,99999,{width:me.labelWidth+30,hideTrigger:true});
+				'noOfBackups',0,1,99999,{width:me.labelWidth+30,hideTrigger:true,itemId:'noOfBackups'});
 
 		var backupTime=CWHF.createTimeFieldWithHelp('admin.server.databaseBackup.lbl.backupTime',
-				'backupTime', {altFormats:"H:i", allowBlank:false,increment:5});
+				'backupTime', {itemId:"backupTime",altFormats:"H:i", allowBlank:false,increment:5});
 
 		var chkIncludeAttachments=CWHF.createCheckbox("admin.server.databaseBackup.lbl.includeAttachments",
-				"includeAttachmentsConf", {labelWidth:me.labelWidth});
+				"includeAttachmentsConf", {itemId:'includeAttachmentsConf', labelWidth:me.labelWidth});
 			/*Ext.create('Ext.form.field.Checkbox',{
 			fieldLabel:getText('admin.server.databaseBackup.lbl.includeAttachments'),
 			checked:true,
@@ -298,12 +259,9 @@ Ext.define('com.trackplus.admin.server.DatabaseBackup',{
 	 */
 	enableAutoBackup:function() {
 		var me=this;
-		var fsauto = me.formPanel.getComponent('fsauto');
-
 		// Get the main enable/disable check box
 		autoBackup = this.getWrappedControl("fsauto", "autoBackup");
 		var autoBackupChkd = autoBackup.getValue();
-
 		// Get all components to disable or enable
 		this.getControl("fsauto", "backupDir").setDisabled(!autoBackupChkd);
 		this.getControl("fsauto", "includeAttachmentsConf").setDisabled(!autoBackupChkd);

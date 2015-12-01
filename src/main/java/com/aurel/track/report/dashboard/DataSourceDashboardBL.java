@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -79,7 +79,6 @@ public class DataSourceDashboardBL {
 		static String DATASOURCE_TYPES = "datasourceTypes";
 		static String SELECTED_DATASOURCE_TYPE = "selectedDatasourceType";
 		static String SELECTED_PROJECT_OR_RELEASE = "selectedProjectOrRelease";
-		//static String SELECTED_PROJECT_OR_RELEASE_NAME = "selectedProjectOrReleaseName";
 		static String SELECTED_QUERY = "selectedQueryID";
 	}
 	/**
@@ -235,11 +234,13 @@ public class DataSourceDashboardBL {
 			Integer queryType = queryRepositoryBean.getQueryType();
 			QNode extendedRootNode = FilterBL.loadNode(queryRepositoryBean);
 			filterUpperTO = FilterUpperFromQNodeTransformer.getFilterSelectsFromTree(extendedRootNode, true, true, personBean, locale, true);
-		}else {
+		} else {
 			filterUpperTO = FilterUpperConfigUtil.getByProjectReleaseID(filterOrProjectOrReleaseID, true, true, false);
 		}
 		return filterUpperTO;
 	}
+	
+	
 	/**
 	 * This method returns for a filter project or release ID all general work items OR document work items.
 	 * If loadOnlyDocuments is true then all document issue types are returned, otherwise all general

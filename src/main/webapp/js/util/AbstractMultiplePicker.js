@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -25,7 +25,7 @@ Ext.define('com.trackplus.util.AbstractMultiplePicker', {
     extend : 'Ext.form.field.Picker',
     config : {
         localizedLabel : '',
-        data : null,
+        options : null,
         value : null,
         store : null,
         displayField : 'label',
@@ -40,6 +40,7 @@ Ext.define('com.trackplus.util.AbstractMultiplePicker', {
         maxSelectionCount : null,
         includeSearch : true
     },
+
     displayValue : null,
     editable : false,
     tip : null,
@@ -47,19 +48,20 @@ Ext.define('com.trackplus.util.AbstractMultiplePicker', {
     lblClearSelection : getText('common.lbl.clearSelectedItems'),
     lblSelectAll : getText('common.lbl.selectAll'),
     allItemSelected : false,
+
     initComponent : function() {
 	    var me = this;
-	    if (me.useNull == true) {
+	    if (me.useNull === true) {
 		    me.emptyText = null;
 	    } else {
 		    me.emptyText = me.localizedLabel + ":" + me.allText;
 	    }
 	    me.tooltip = me.emptyText;
-	    if (me.useRemoveBtn == true) {
+	    if (me.useRemoveBtn === true) {
 		    me.trigger2Cls = Ext.baseCSSPrefix + 'form-clear-trigger';
 	    }
 	    me.callParent(arguments);
-	    if (me.store == null) {
+	    if (CWHF.isNull(me.store)) {
 		    me.store = me.createStore();
 	    }
 	    if (me.useTooltip) {
@@ -68,7 +70,7 @@ Ext.define('com.trackplus.util.AbstractMultiplePicker', {
     },
     onTrigger2Click : function() {
 	    var me = this;
-	    if (me.removeHandler != null && Ext.isFunction(me.removeHandler)) {
+	    if (me.removeHandler  && Ext.isFunction(me.removeHandler)) {
 		    me.removeHandler.call(me);
 	    } else {
 		    me.ownerCt.remove(me);
@@ -114,7 +116,7 @@ Ext.define('com.trackplus.util.AbstractMultiplePicker', {
     },
     clearOrSelectAll : function() {
 	    var me = this;
-	    if ((me.maxSelectionCount != null && me.maxSelectionCount > 0) || me.allItemSelected == true) {
+	    if ((me.maxSelectionCount  && me.maxSelectionCount > 0) || me.allItemSelected === true) {
 		    me.clearSelection();
 	    } else {
 		    me.selectAll();
@@ -124,13 +126,13 @@ Ext.define('com.trackplus.util.AbstractMultiplePicker', {
     selectAll : function() {
     },
     /* abstract */
-    updateData : function(data) {
+    updateMyOptions : function(options) {
     },
 
     updateTooltip : function() {
 	    var me = this;
-	    if (me.useTooltip == true) {
-		    if (me.tooltip != null) {
+	    if (me.useTooltip === true) {
+		    if (me.tooltip ) {
 			    me.setToolTip(me.tooltip);
 		    }
 	    }
@@ -141,7 +143,7 @@ Ext.define('com.trackplus.util.AbstractMultiplePicker', {
 	        emptyText : getText('common.btn.search') + ' ' + me.localizedLabel + "...",
 	        cls : 'searchfield',
 	        paramName : me.displayField,
-	        width : me.pickerWidth == null ? me.inputEl.getWidth() - 5 : me.pickerWidth - 15,
+	        width : CWHF.isNull(me.pickerWidth) ? me.inputEl.getWidth() - 5 : me.pickerWidth - 15,
 	        margin : '5 15 5 5'
 	    });
 	    searchField.on('change', function(cmp, value) {
@@ -168,11 +170,11 @@ Ext.define('com.trackplus.util.AbstractMultiplePicker', {
     },
     getClearSelectionLabel : function() {
 	    var me = this;
-	    if (me.maxSelectionCount != null && me.maxSelectionCount > 0) {
+	    if (me.maxSelectionCount  && me.maxSelectionCount > 0) {
 		    var count = me.getSelectedItemsCount();
 		    return me.lblClearSelection + " (" + count + ' from ' + me.maxSelectionCount + ')';
 	    }
-	    return me.allItemSelected == true ? me.lblClearSelection : me.lblSelectAll
+	    return me.allItemSelected === true ? me.lblClearSelection : me.lblSelectAll;
     },
     createPicker : function() {
 	    var me = this;
@@ -186,14 +188,14 @@ Ext.define('com.trackplus.util.AbstractMultiplePicker', {
 	        label : me.getClearSelectionLabel()
 	    });
 	    var items = new Array();
-	    if (me.extraComponent != null) {
+	    if (me.extraComponent ) {
 		    items.push(me.extraComponent);
 	    }
-	    if (me.includeSearch == true) {
+	    if (me.includeSearch === true) {
 		    me.searchField = me.createSearchField();
 		    items.push(me.searchField);
 	    }
-	    if (me.includeClear == true) {
+	    if (me.includeClear === true) {
 		    items.push(me.linkClearSelection);
 	    }
 	    items.push(me.boundList);
@@ -224,7 +226,7 @@ Ext.define('com.trackplus.util.AbstractMultiplePicker', {
     },
     getSelectableItemsCount : function() {
 	    var me = this;
-	    if (me.store == null) {
+	    if (CWHF.isNull(me.store)) {
 		    me.store = me.createStore();
 	    }
 	    var items = me.store.getRange();
@@ -235,7 +237,7 @@ Ext.define('com.trackplus.util.AbstractMultiplePicker', {
     },
     findRecord : function(field, value) {
 	    var me = this;
-	    if (me.store == null) {
+	    if (CWHF.isNull(me.store)) {
 		    me.store = me.createStore();
 	    }
 	    var ds = this.store, idx = ds.findExact(field, value);
@@ -259,7 +261,7 @@ Ext.define('com.trackplus.util.AbstractMultiplePicker', {
 	    var processedValue = new Array();
 	    var displayData = new Array();
 	    me.valueModels = new Array();
-	    if (value == null || value == '') {
+	    if (CWHF.isNull(value) || value === '') {
 		    me.value = null;
 		    me.displayValue = null;
 	    } else {
@@ -289,25 +291,25 @@ Ext.define('com.trackplus.util.AbstractMultiplePicker', {
 		    me.syncSelection();
 	    }
 	    var tooltipBegin = "";
-	    if (me.localizedLabel != null && me.localizedLabel != "") {
+	    if (me.localizedLabel  && me.localizedLabel !== "") {
 		    tooltipBegin = me.localizedLabel + ":";
 	    }
-	    if (me.value == null) {
+	    if (CWHF.isNull(me.value)) {
 		    me.tooltip = tooltipBegin + me.allText;
 		    me.allItemSelected = false;
 	    } else {
 		    me.tooltip = tooltipBegin + me.displayValue;
 		    var count = me.getSelectableItemsCount();
-		    if (count == me.value.length) {
+		    if (count === me.value.length) {
 			    me.allItemSelected = true;
 		    } else {
 			    me.allItemSelected = false;
 		    }
 	    }
-	    if (me.linkClearSelection != null) {
+	    if (me.linkClearSelection ) {
 		    var oldLabel = me.linkClearSelection.getMyLabel();
-		    var newLabel = me.getClearSelectionLabel();// me.allItemSelected==true?me.lblClearSelection:me.lblSelectAll;
-		    if (oldLabel != newLabel) {
+		    var newLabel = me.getClearSelectionLabel();// me.allItemSelected===true?me.lblClearSelection:me.lblSelectAll;
+		    if (oldLabel !== newLabel) {
 			    me.linkClearSelection.suspendLayout = true;
 			    me.linkClearSelection.setLabel(newLabel);
 			    me.linkClearSelection.suspendLayout = false;
@@ -323,14 +325,14 @@ Ext.define('com.trackplus.util.AbstractMultiplePicker', {
 
     clearSelection : function() {
 	    var me = this;
-	    if (me.boundList != null) {
+	    if (me.boundList ) {
 		    me.boundList.getSelectionModel().deselectAll(true);
 	    }
 	    me.setValue(null);
     },
     getSubmitValue : function() {
 	    var value = this.getValue();
-	    if (value != null) {
+	    if (value ) {
 		    value = value.join();
 	    }
 	    return value;
@@ -341,16 +343,16 @@ Ext.define('com.trackplus.util.AbstractMultiplePicker', {
     },
     setToolTip : function(str) {
 	    var me = this;
-	    if (str == null) {
-		    if (me.tip == null) {
+	    if (CWHF.isNull(str)) {
+		    if (CWHF.isNull(me.tip)) {
 			    me.tip.destroy();
 			    delete me.tip;
 		    }
 		    return;
 	    }
 	    var domEl = me.getEl();
-	    if (domEl != null) {
-		    if (me.tip == null) {
+	    if (domEl ) {
+		    if (CWHF.isNull(me.tip)) {
 			    me.tip = Ext.create('Ext.tip.ToolTip', {
 			        target : domEl,
 			        html : str

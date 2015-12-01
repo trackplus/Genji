@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -45,39 +45,48 @@ public class ScreenDAOAdapter implements IScreenDAO {
     public ScreenDAOAdapter(){
         screenDAO=DAOFactory.getFactory().getScreenDAO();
     }
+    @Override
     public IScreen loadByPrimaryKey(Integer objectID) {
         return screenDAO.loadByPrimaryKey(objectID);
     }
     
+    @Override
     public IScreen tryToLoadByPrimaryKey(Integer objectID) {
         return screenDAO.tryToLoadByPrimaryKey(objectID);
     }
 
+    @Override
     public IScreen loadByPerson(Integer pk) {
         //no implementation
         return null;
     }
 
+	@Override
 	public IScreen loadDefault() {
 		//no implementation
 		return null;
 	}
+	@Override
 	public List loadAll() {
         return screenDAO.loadAll();
     }
 
+    @Override
     public List loadAllOrdered(String sortKey, boolean ascending) {
         return screenDAO.loadAllOrdered(sortKey,ascending);
     }
 
+    @Override
     public Integer save(IScreen screen) {
         return screenDAO.save((TScreenBean)screen);
     }
 
+    @Override
     public void delete(Integer objectID) {
         screenDAO.delete(objectID);
     }
 
+    @Override
     public boolean isDeletable(Integer objectID) {
         return screenDAO.isDeletable(objectID);
     }

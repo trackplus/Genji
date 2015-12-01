@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -131,7 +131,7 @@ public class PersonConfigBL {
 				for (Integer personID : selectedPersonIDList) {
 					deletePerson(personID);
 				}
-				ApplicationBean.getApplicationBean().setActualUsers();
+				ApplicationBean.getInstance().setActualUsers();
 			}
 		}
 		return JSONUtility.encodeJSONSuccess();
@@ -294,7 +294,7 @@ public class PersonConfigBL {
 				personDAO.replaceHistoryPerson(oldPersonID, newPersonID, false);
 				deletePerson(oldPersonID);
 			}
-			ApplicationBean.getApplicationBean().setActualUsers();
+			ApplicationBean.getInstance().setActualUsers();
 		}
 	}
 
@@ -320,9 +320,6 @@ public class PersonConfigBL {
 	static String activateDeactivate(String selectedPersonIDs, Locale locale, boolean deactivate) {
 		if (selectedPersonIDs!=null) {
 			List<Integer> selectedPersonIDList = getPersonIDList(selectedPersonIDs);
-//			if(deactivate == false) {
-//				PersonConfigBL.setToken(selectedPersonIDs);
-//			}
 			if (selectedPersonIDList!=null && !selectedPersonIDList.isEmpty()) {
 				if (deactivate) {
 					if (allSysAdminsInvolved(selectedPersonIDList)) {
@@ -337,7 +334,7 @@ public class PersonConfigBL {
 					}
 				}
 				PersonBL.activateDeactivatePersons(selectedPersonIDList, deactivate);
-				ApplicationBean appBean = ApplicationBean.getApplicationBean();
+				ApplicationBean appBean = ApplicationBean.getInstance();
 			 	appBean.setActualUsers();
 			}
 		}
@@ -396,7 +393,7 @@ public class PersonConfigBL {
 	 * @return
 	 */
 	static String getLdapIsOn() {
-		Boolean isLdapOn = ApplicationBean.getApplicationBean().getSiteBean().getIsLDAPOnBool();
+		Boolean isLdapOn = ApplicationBean.getInstance().getSiteBean().getIsLDAPOnBool();
 		return JSONUtility.encodeJSONBoolean(isLdapOn);
 	}
 
@@ -422,7 +419,7 @@ public class PersonConfigBL {
 			if (usersExceededMessage!=null) {
 				return JSONUtility.encodeJSONFailure(usersExceededMessage);
 			}
-			ApplicationBean appBean = ApplicationBean.getApplicationBean();
+			ApplicationBean appBean = ApplicationBean.getInstance();
 			PersonBL.setUserLevelPersons(selectedPersonIDList, userLevel);
 			appBean.setActualUsers();
 		}
@@ -477,7 +474,7 @@ public class PersonConfigBL {
 	 * @return
 	 */
 	public static String usersExceeded(List<Integer> selectedPersonIDList, Locale locale, Integer newUserLevel, boolean activateDisabledUsers) {
-		ApplicationBean appBean = ApplicationBean.getApplicationBean();
+		ApplicationBean appBean = ApplicationBean.getInstance();
 		//max allowed values
 		int maxNumberOfFullUsers = appBean.getMaxNumberOfFullUsers();
 		int maxNumberOfEasyUsers = appBean.getMaxNumberOfLimitedUsers();

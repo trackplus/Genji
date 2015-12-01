@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -92,7 +92,7 @@ public class FieldsRestrictionsToRoleBL {
 	 * @param locale
 	 * @return
 	 */
-	private static List<FieldForRoleBean> getPseudoFields(Locale locale) {
+	private static List<FieldForRoleBean> getPseudoFields(Locale locale, boolean all) {
 		List<FieldForRoleBean> pseudoFields = new LinkedList<FieldForRoleBean>();
 		pseudoFields.add(new FieldForRoleBean(LocalizeUtil.getLocalizedTextFromApplicationResources(
 				"admin.customize.role.fieldsRestrictions.field.attachment", locale),
@@ -111,8 +111,7 @@ public class FieldsRestrictionsToRoleBL {
 		pseudoFields.add(new FieldForRoleBean(LocalizeUtil.getLocalizedTextFromApplicationResources(
 				"admin.customize.role.fieldsRestrictions.field.plan", locale),
 				PSEUDO_COLUMNS.PLAN));
-		boolean budgetActive = ApplicationBean.getApplicationBean().getBudgetActive();
-		if (budgetActive) {
+		if (all || ApplicationBean.getInstance().getBudgetActive()) {
 			pseudoFields.add(new FieldForRoleBean(LocalizeUtil.getLocalizedTextFromApplicationResources(
 				"admin.customize.role.fieldsRestrictions.field.budget", locale),
 				PSEUDO_COLUMNS.BUDGET));
@@ -153,7 +152,7 @@ public class FieldsRestrictionsToRoleBL {
 			}
 		}
 		//pseudo fields
-		List<FieldForRoleBean> pseudoFields = getPseudoFields(locale);
+		List<FieldForRoleBean> pseudoFields = getPseudoFields(locale, false);
 		for (FieldForRoleBean fieldForRoleBean : pseudoFields) {
 			TRoleFieldBean roleFieldBean = fieldsToAccessFlags.get(fieldForRoleBean.getFieldID());
 			if (roleFieldBean!=null) {
@@ -278,7 +277,7 @@ public class FieldsRestrictionsToRoleBL {
 		if (roleFields!=null && !roleFields.isEmpty()) {
 			Map<Integer, String> fieldConfigLabelsMap = LocalizeUtil.getLocalizedFieldConfigLables(
 					FieldConfigBL.loadDefault(), locale);
-			List<FieldForRoleBean> pseudoFields = getPseudoFields(locale);
+			List<FieldForRoleBean> pseudoFields = getPseudoFields(locale, true);
 			for (FieldForRoleBean fieldForRoleBean : pseudoFields) {
 				fieldConfigLabelsMap.put(fieldForRoleBean.getFieldID(), fieldForRoleBean.getFieldLabel());
 			}

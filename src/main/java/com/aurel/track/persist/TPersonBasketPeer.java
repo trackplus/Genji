@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -54,6 +54,7 @@ public class TPersonBasketPeer
 	 * @param personI
 	 * @return
 	 */
+	@Override
 	public List<TPersonBasketBean> loadByBasketAndPerson(Integer basketID, Integer personID) {
 		Criteria crit = new Criteria();
 		crit.add(BASKET, basketID);
@@ -61,7 +62,7 @@ public class TPersonBasketPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (Exception e) {
-			LOGGER.error("Loading basket items for basket " + basketID + " and person " + personID +  " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading basket items for basket " + basketID + " and person " + personID +  " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -72,6 +73,7 @@ public class TPersonBasketPeer
 	 * @param date
 	 * @return
 	 */
+	@Override
 	public List<TPersonBasketBean> loadPersonBasketItemsByDate(Integer personID, Date date) {
 		Criteria crit = new Criteria();
 		crit.add(PERSON, personID);
@@ -83,7 +85,7 @@ public class TPersonBasketPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (Exception e) {
-			LOGGER.error("Loading basket items for person " + personID + " for date " + date + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading basket items for person " + personID + " for date " + date + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -95,6 +97,7 @@ public class TPersonBasketPeer
 	 * @param dateTo
 	 * @return
 	 */
+	@Override
 	public List<TPersonBasketBean> loadPersonBasketItemsByTime(Integer personID, Date dateFrom, Date dateTo) {
 		Criteria crit = new Criteria();
 		crit.add(PERSON, personID);
@@ -108,11 +111,12 @@ public class TPersonBasketPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (Exception e) {
-			LOGGER.error("Loading basket items for person " + personID + " between date " + dateFrom + " and " + dateTo +  " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading basket items for person " + personID + " between date " + dateFrom + " and " + dateTo +  " failed with " + e.getMessage());
 			return null;
 		}
 	}
 	
+	@Override
 	public TPersonBasketBean loadBasketByItemAndPerson(Integer itemID,Integer personID){
 		TPersonBasketBean personBasketBean = null;
 		Criteria crit = new Criteria();
@@ -124,11 +128,12 @@ public class TPersonBasketPeer
 				personBasketBean=((TPersonBasket)lst.get(0)).getBean();
 			}
 		} catch (Exception e) {
-			LOGGER.error("Loading  basket by itemID:"+itemID+" and personID:" + personID +  " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading  basket by itemID:"+itemID+" and personID:" + personID +  " failed with " + e.getMessage());
 			personBasketBean=null;
 		}
 		return personBasketBean;
 	}
+	@Override
 	public List<TPersonBasketBean> loadBasketsByItemsAndPerson(List<Integer> workItemIDs,Integer personID){
 		List basketList =  new ArrayList();
 		if (workItemIDs==null || workItemIDs.isEmpty()) {
@@ -148,7 +153,7 @@ public class TPersonBasketPeer
 			try {
 				basketList.addAll(doSelect(criteria));
 			} catch(Exception e) {
-				LOGGER.error("Loading the basket by workItemIDs failed with " + e.getMessage(), e);
+				LOGGER.error("Loading the basket by workItemIDs failed with " + e.getMessage());
 			}
 		}
 		return convertTorqueListToBeanList(basketList);
@@ -159,13 +164,14 @@ public class TPersonBasketPeer
 	 * @param personBasketBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TPersonBasketBean personBasketBean) {
 		try {
 			TPersonBasket tPersonBasket = BaseTPersonBasket.createTPersonBasket(personBasketBean);
 			tPersonBasket.save();
 			return tPersonBasket.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a person basket failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a person basket failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -175,6 +181,7 @@ public class TPersonBasketPeer
 	 * @param basketID
 	 * @param personID
 	 */
+	@Override
 	public void delete(Integer basketID, Integer personID) {
 		Criteria  criteria = new Criteria();
 		criteria.add(BASKET, basketID);
@@ -182,9 +189,10 @@ public class TPersonBasketPeer
 		try {
 			doDelete(criteria);
 		} catch (TorqueException e) {
-			LOGGER.error("Deleting the person basket for basket " + basketID + " and person " + personID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Deleting the person basket for basket " + basketID + " and person " + personID + " failed with " + e.getMessage());
 		}
 	}
+	@Override
 	public void emptyTrash(Integer personID){
 		Criteria  selectCriteria = new Criteria();
 		selectCriteria.add(PERSON, personID);
@@ -194,7 +202,7 @@ public class TPersonBasketPeer
 		try {
 			doUpdate(selectCriteria, updateCriteria);
 		} catch (TorqueException e) {
-			LOGGER.error("Empty the trash basket for person " + personID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Empty the trash basket for person " + personID + " failed with " + e.getMessage());
 		}
 	}
 

@@ -1,0 +1,49 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="With reports you can obtain any information from the Track+ database in almost any conceivable format, like graphics, PDF, Word, HTML, XML, or Excel. While you work with queries all the time, you ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="concept"/><meta name="DC.Title" content="Reports"/><meta name="abstract" content="With reports you can obtain any information from the Track+ database in almost any conceivable format, like graphics, PDF, Word, HTML, XML, or Excel."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="With reports you can obtain any information from the Track+ database in almost any conceivable format, like graphics, PDF, Word, HTML, XML, or Excel."/><meta name="DC.Relation" scheme="URI" content="../../../Topics/02KeyConcepts/Reporting/reporting.html"/><meta name="DC.Creator" content="Steinbeis Technical Documentation"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="id12BQG0OE01M"/><link rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Reports</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()" id="id12BQG0OE01M">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../../Topics/02KeyConcepts/Reporting/reporting.html" title="To retrieve a set of items you use queries and reports. Both of them use filters."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Queries, filters, views, and reports</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../../Topics/02KeyConcepts/Reporting/../../../Topics/02KeyConcepts/Chapter2Wrapper.html" title="Key concepts">Key concepts</a> / <a class="navheader_parent_path" href="../../../Topics/02KeyConcepts/Reporting/reporting.html" title="To retrieve a set of items you use queries and reports. Both of them use filters.">Queries, filters, views, and reports</a></td></tr></tbody></table>
+
+    <h1 class="title topictitle1">Reports</h1>
+
+    
+    
+    <div class="body conbody"><p class="shortdesc"><span class="ph" id="67uu5674564">With reports you can obtain any information from the <span class="ph"><span class="ph">Track+</span></span> database in almost any conceivable format,
+            like graphics, PDF, Word, HTML, XML, or Excel.</span></p>
+
+        <p class="p">While you work with queries all the time, you create reports typically just once in a
+            while. Reports are based on <strong class="ph b">datasources</strong>, <strong class="ph b">filters</strong>, and <strong class="ph b">templates</strong>.
+            The report generation process is shown in <a class="xref fm:Figure" href="#id12BQG0OE01M__fig_1">Figure 1</a>.</p>
+
+        <div class="fig figborder" id="id12BQG0OE01M__fig_1"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/reportEngineStructure.png" height="188" width="404"/></div><br/><p class="figcapcenter">Report generation process</p>
+            
+            
+        </div>
+
+        <p class="p">The datasource consists of Java code that directly accesses the <span class="ph"><span class="ph">Track+</span></span> database, plus optional user interface code
+            for defining filters. The datasource uses a <span class="ph"><span class="ph">Track+</span></span>
+            extension API; it is possible to add more datasources without having to change the <span class="ph"><span class="ph">Track+</span></span> system itself. The output of the datasource is
+            the data for the report in an XML format.</p>
+
+        <p class="p">The data from the datasource is processed by the JasperReports engine based on a template
+            to generate the desired report. The template has to match the data from the
+            datasource.</p>
+
+        <p class="p">There are some standard data sources available with the system as it ships. The standard
+            data source for running queries is one of them. There are others, e.g., for Earned-Value
+            diagrams, accounting, history filters and so on.</p>
+
+    </div>
+
+<div class="related-links"/>
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../../Topics/02KeyConcepts/Reporting/reporting.html" title="To retrieve a set of items you use queries and reports. Both of them use filters."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Queries, filters, views, and reports</span></a></span>  </div>
+</body>
+</html>

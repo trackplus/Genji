@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -51,6 +51,7 @@ public class TMailTemplateConfigPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TMailTemplateConfigBean loadByPrimaryKey(Integer objectID) {
 		TMailTemplateConfig tobject = null;
 		try{
@@ -71,13 +72,14 @@ public class TMailTemplateConfigPeer
 	 * @param actionID
 	 * @return
 	 */
+	@Override
 	public List<TMailTemplateConfigBean> loadByEventKey(Integer actionID) {
 		Criteria crit = new Criteria();
 		crit.add(EVENTKEY, actionID);
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all mailTemplateConfigs failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all mailTemplateConfigs failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -87,66 +89,24 @@ public class TMailTemplateConfigPeer
 	 * @param projectIDs
 	 * @return
 	 */
-	/*public List loadByProjects(Object[] projectIDs) {
-		List torqueList = null;
-		if (projectIDs!=null && projectIDs.length!=0) {
-			Criteria crit = new Criteria();
-			crit.addIn(PROJECT, projectIDs);
-			crit.add(PROJECTTYPE, (Object)null, Criteria.ISNULL);
-			try {
-				torqueList = doSelect(crit);
-			} catch (TorqueException e) {
-				LOGGER.error("Loading mailTemplateConfigs by projects failed with " + e.getMessage(), e);
-			}
-		}
-		return convertTorqueListToBeanList(torqueList);
-	}*/
 
 	/**
 	 * Load the mailTemplate configurations for project types
 	 * @param projectTypeIDs
 	 * @return
 	 */
-	/*public List loadByProjectTypes(Object[] projectTypeIDs) {
-		List torqueList = null;
-		if (projectTypeIDs!=null && projectTypeIDs.length!=0) {
-			Criteria crit = new Criteria();
-			crit.addIn(PROJECTTYPE, projectTypeIDs);
-			crit.add(PROJECT, (Object)null, Criteria.ISNULL);
-			try {
-				torqueList = doSelect(crit);
-			} catch (TorqueException e) {
-				LOGGER.error("Loading mailTemplateConfigs by project types failed with " + e.getMessage(), e);
-			}
-		}
-		return convertTorqueListToBeanList(torqueList);
-	}*/
 
 	/**
 	 * Load the mailTemplate configurations for issue types
 	 * @param issueTypeIDs
 	 * @return
 	 */
-	/*public List loadByIssueTypes(Object[] issueTypeIDs) {
-		List torqueList = null;
-		if (issueTypeIDs!=null && issueTypeIDs.length!=0) {
-			Criteria crit = new Criteria();
-			crit.addIn(ISSUETYPE, issueTypeIDs);
-			crit.add(PROJECT, (Object)null, Criteria.ISNULL);
-			crit.add(PROJECTTYPE, (Object)null, Criteria.ISNULL);
-			try {
-				torqueList = doSelect(crit);
-			} catch (TorqueException e) {
-				LOGGER.error("Loading mailTemplateConfigs by issue types failed with " + e.getMessage(), e);
-			}
-		}
-		return convertTorqueListToBeanList(torqueList);
-	}*/
 
 	/**
 	 * Load the global mailTemplates
 	 * @return
 	 */
+	@Override
 	public List<TMailTemplateConfigBean> loadDefaults() {
 		Criteria crit = new Criteria();
 		crit.add(ISSUETYPE, (Object)null, Criteria.ISNULL);
@@ -155,7 +115,7 @@ public class TMailTemplateConfigPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading mailTemplateConfigs by issue types failed with " + e.getMessage(), e);
+			LOGGER.error("Loading mailTemplateConfigs by issue types failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -164,16 +124,6 @@ public class TMailTemplateConfigPeer
 	 * Loads all mailTemplateConfigs from TMailTemplateConfig table
 	 * @return
 	 */
-	/*public List loadAll() {
-		List torqueList = null;
-		Criteria crit = new Criteria();
-		try {
-			torqueList = doSelect(crit);
-		} catch (TorqueException e) {
-			LOGGER.error("Loading all mailTemplateConfigs failed with " + e.getMessage(), e);
-		}
-		return convertTorqueListToBeanList(torqueList);
-	}*/
 
 	/**
 	 * Gets all the TMailTemplateConfigBeans for issueType, projectType and project
@@ -182,6 +132,7 @@ public class TMailTemplateConfigPeer
 	 * @param project include into filtering even if null
 	 * @return
 	 */
+	@Override
 	public List<TMailTemplateConfigBean> loadAllByIssueType(Integer issueType, Integer projectType, Integer project) {
 		Criteria criteria = new Criteria();
 		//add issueType filter only if issueType is specified
@@ -217,6 +168,7 @@ public class TMailTemplateConfigPeer
 	 * @param projectType if specified filter by projectType otherwise only be sure to not to be null (all projectType specific configurations)
 	 * @return
 	 */
+	@Override
 	public List<TMailTemplateConfigBean> loadAllByProjectType(Integer projectType) {
 		Criteria criteria = new Criteria();
 		if (projectType==null) {
@@ -227,7 +179,7 @@ public class TMailTemplateConfigPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the mailTemplate assignments by projectType " + projectType + "  failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the mailTemplate assignments by projectType " + projectType + "  failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -237,6 +189,7 @@ public class TMailTemplateConfigPeer
 	 * @param project
 	 * @return
 	 */
+	@Override
 	public List<TMailTemplateConfigBean> loadAllByProject(Integer project) {
 		Criteria criteria = new Criteria();
 		if (project==null) {
@@ -247,7 +200,7 @@ public class TMailTemplateConfigPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the mailTemplate configs by project " + project + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the mailTemplate configs by project " + project + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -257,6 +210,7 @@ public class TMailTemplateConfigPeer
 	 * @param projects
 	 * @return
 	 */
+	@Override
 	public List<TMailTemplateConfigBean> loadAllByProjects(List<Integer> projects) {
 		Criteria criteria = new Criteria();
 		if (projects==null || projects.isEmpty()) {
@@ -267,7 +221,7 @@ public class TMailTemplateConfigPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the mailTemplate configs by project " + projects + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the mailTemplate configs by project " + projects + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -277,13 +231,14 @@ public class TMailTemplateConfigPeer
 	 * @param bean
 	 * @return
 	 */
+	@Override
 	public Integer save(TMailTemplateConfigBean bean){
 		try {
 			TMailTemplateConfig tobject = BaseTMailTemplateConfig.createTMailTemplateConfig(bean);
 			tobject.save();
 			return tobject.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a mailTemplateConfig failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a mailTemplateConfig failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -293,11 +248,12 @@ public class TMailTemplateConfigPeer
 	 * @param mailTemplateConfigBean
 	 * @param deep
 	 */
+	@Override
 	public TMailTemplateConfigBean copy(TMailTemplateConfigBean mailTemplateConfigBean, boolean deep) {
 		try {
 			return (BaseTMailTemplateConfig.createTMailTemplateConfig(mailTemplateConfigBean).copy(deep)).getBean();
 		} catch (TorqueException e) {
-			LOGGER.error("Deep " + deep + " copying a mailTemplate config failed with " + e.getMessage(), e);
+			LOGGER.error("Deep " + deep + " copying a mailTemplate config failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -307,6 +263,7 @@ public class TMailTemplateConfigPeer
 	 * Is deletable should return true before calling this method
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		try {
 			doDelete(SimpleKey.keyFor(objectID));
@@ -319,6 +276,7 @@ public class TMailTemplateConfigPeer
 	 * Verify is a mailTemplateConfig can be delete
 	 * @param objectID
 	 */
+	@Override
 	public boolean isDeletable(Integer objectID){
 		return true;
 	}
@@ -333,6 +291,7 @@ public class TMailTemplateConfigPeer
 	 * @param cfg
 	 * @return
 	 */
+	@Override
 	public List<TMailTemplateConfigBean> load(TMailTemplateConfigBean cfg){
 		Integer projectTypeID=null;
 		Integer projectID=null;
@@ -349,7 +308,7 @@ public class TMailTemplateConfigPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading  mailTemplateConfigs failed with " + e.getMessage(), e);
+			LOGGER.error("Loading  mailTemplateConfigs failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -359,6 +318,7 @@ public class TMailTemplateConfigPeer
 	 * @param event
 	 * @return
 	 */
+	@Override
 	public TMailTemplateConfigBean loadDefault(Integer event) {
 		List<TMailTemplateConfig> mailTemplateConfigList = null;
 		Criteria criteria = new Criteria();
@@ -389,6 +349,7 @@ public class TMailTemplateConfigPeer
 	 * @param issueType
 	 * @return
 	 */
+	@Override
 	public TMailTemplateConfigBean loadByIssueType(Integer event, Integer issueType) {
 		List<TMailTemplateConfig> mailTemplateConfigList = null;
 		Criteria criteria = new Criteria();
@@ -421,6 +382,7 @@ public class TMailTemplateConfigPeer
 	 * @param projectType
 	 * @return
 	 */
+	@Override
 	public TMailTemplateConfigBean loadByProjectType(Integer event, Integer projectType) {
 		List<TMailTemplateConfig> mailTemplateConfigList = null;
 		Criteria criteria = new Criteria();
@@ -453,6 +415,7 @@ public class TMailTemplateConfigPeer
 	 * @param project
 	 * @return
 	 */
+	@Override
 	public TMailTemplateConfigBean loadByProject(Integer event, Integer project) {
 		List<TMailTemplateConfig> mailTemplateConfigList = null;
 		Criteria criteria = new Criteria();
@@ -486,6 +449,7 @@ public class TMailTemplateConfigPeer
 	 * @param projectType
 	 * @return
 	 */
+	@Override
 	public TMailTemplateConfigBean loadByIssueTypeAndProjectType(Integer event, Integer issueType, Integer projectType) {
 		List<TMailTemplateConfig> mailTemplateConfigList =  null;
 		Criteria criteria = new Criteria();
@@ -518,6 +482,7 @@ public class TMailTemplateConfigPeer
 	 * @param project
 	 * @return
 	 */
+	@Override
 	public TMailTemplateConfigBean loadByIssueTypeAndProject(Integer event, Integer issueType, Integer project) {
 		List<TMailTemplateConfig> mailTemplateConfigList =  null;
 		Criteria criteria = new Criteria();
@@ -542,6 +507,7 @@ public class TMailTemplateConfigPeer
 		}
 		return ((TMailTemplateConfig)mailTemplateConfigList.get(0)).getBean();
 	}
+	@Override
 	public TMailTemplateConfigBean loadByEventAndTemplate(Integer eventType,Integer mailTemplateID){
 		List<TMailTemplateConfig> mailTemplateConfigList =  null;
 		Criteria criteria = new Criteria();
@@ -570,6 +536,7 @@ public class TMailTemplateConfigPeer
 		}
 		return ((TMailTemplateConfig)mailTemplateConfigList.get(0)).getBean();
 	}
+	@Override
 	public TMailTemplateConfigBean loadByEvent(Integer eventType){
 		List<TMailTemplateConfig> mailTemplateConfigList =  null;
 		Criteria criteria = new Criteria();
@@ -577,7 +544,7 @@ public class TMailTemplateConfigPeer
 		try {
 			mailTemplateConfigList = doSelect(criteria);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the mailTemplate config by eventType "+eventType+" failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the mailTemplate config by eventType "+eventType+" failed with " + e.getMessage());
 		}
 		if (mailTemplateConfigList == null || mailTemplateConfigList.isEmpty()) {
 			LOGGER.debug("No mailTemplate config found by eventType ");
@@ -601,6 +568,7 @@ public class TMailTemplateConfigPeer
 	 * @param projectTypeID
 	 * @param projectID
 	 */
+	@Override
 	public void deleteByIssueType(Integer issueTypeID, Integer projectTypeID, Integer projectID) {
 		Criteria crit = new Criteria();
 		if(issueTypeID==null){
@@ -624,7 +592,7 @@ public class TMailTemplateConfigPeer
 		try {
 			doDelete(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Delete  mailTemplateConfigs failed with " + e.getMessage(), e);
+			LOGGER.error("Delete  mailTemplateConfigs failed with " + e.getMessage());
 		}
 	}
 	private List<TMailTemplateConfigBean> convertTorqueListToBeanList(List<TMailTemplateConfig> torqueList) {
@@ -641,6 +609,7 @@ public class TMailTemplateConfigPeer
 	 * if pk is null delete all configs for all projects
 	 * @param projectID
 	 */
+	@Override
 	public void deleteByProjects(List<Integer> projectIDs) {
 		Criteria crit = new Criteria();
 		if (projectIDs!=null && !projectIDs.isEmpty()) {
@@ -652,7 +621,7 @@ public class TMailTemplateConfigPeer
 		try {
 			doDelete(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Delete mailTemplateConfigs for " + projectIDs + " failed with " + e.getMessage(), e);
+			LOGGER.error("Delete mailTemplateConfigs for " + projectIDs + " failed with " + e.getMessage());
 		}
 	}
 	/**
@@ -660,6 +629,7 @@ public class TMailTemplateConfigPeer
 	 * if pk is null delete all configs for all projectTypes
 	 * @param projectTypeID
 	 */
+	@Override
 	public void deleteByProjectType(Integer projectTypeID) {
 		Criteria crit = new Criteria();
 		if (projectTypeID!=null) {
@@ -671,7 +641,7 @@ public class TMailTemplateConfigPeer
 		try {
 			doDelete(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Delete  mailTemplateConfigs failed with " + e.getMessage(), e);
+			LOGGER.error("Delete  mailTemplateConfigs failed with " + e.getMessage());
 		}
 	}
 }

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -29,8 +29,7 @@ Ext.define('com.trackplus.admin.action.ExportMsProject',{
 	constructor : function(config) {
 		var me = this;
 		var config = config || {};
-		me.initialConfig = config;
-		Ext.apply(me, config);
+		this.initConfig(config);
 	},
 	exportButton:null,
 	panelForm:null,
@@ -41,7 +40,7 @@ Ext.define('com.trackplus.admin.action.ExportMsProject',{
 	 * Initialize all actions and return the toolbar actions
 	 */
 	getToolbarActions: function() {
-		if (this.exportButton==null) {
+		if (CWHF.isNull(this.exportButton)) {
 			this.exportButton = new Ext.Button({
 					text:getText('common.btn.export'),
 					tooltip:getText('common.btn.export'),
@@ -72,12 +71,13 @@ Ext.define('com.trackplus.admin.action.ExportMsProject',{
 	getDetailPanel: function() {
 	    var releasePicker = CWHF.createSingleTreePicker("admin.actions.importTp.lbl.fromProjectRelease",
 	        "projectOrReleaseID", [], null,
-	        {allowBlank:false,
+	        {itemId:'projectOrReleaseID',
+	    	allowBlank:false,
 	         labelWidth:200,
 	         width:500,
 	         padding: '10 0 0 0'
 	        }, {select:{fn: this.onProjectReleaseSelect, scope:this}})
-		var notClosedCheckBox = CWHF.createCheckbox("admin.actions.exportMSProject.lbl.notClosed", "notClosed", {labelWidth:200, width:250});
+		var notClosedCheckBox = CWHF.createCheckbox("admin.actions.exportMSProject.lbl.notClosed", "notClosed", {itemId:"notClosed", labelWidth:200, width:250});
 		var importFileInfo = {xtype:"label", itemId:"importFileInfo", cls:"infoBox_bottomBorder",
 				border:true, html: "MsProject", anchor:'100%'};
 		this.panelForm= new Ext.form.FormPanel({
@@ -120,7 +120,7 @@ Ext.define('com.trackplus.admin.action.ExportMsProject',{
 	},
 
 	panelLoad: function() {
-		params = {projectOrReleaseID:-this.projectID};
+		params = {projectOrReleaseID:-this.getProjectID()};
 		this.panelForm.getForm().load({
 			url: "msProjectExport.action",
 			scope: this,
@@ -139,12 +139,12 @@ Ext.define('com.trackplus.admin.action.ExportMsProject',{
 	postLoadProcess: function(panel, data) {
 		var projectReleasesPicker = panel.getComponent("projectOrReleaseID");
 	    //projectReleasesPicker.setSubmitValue(data["selectedProjectReleaseID"]);
-	    projectReleasesPicker.updateData(data["projectReleaseTree"]);
+	    projectReleasesPicker.updateMyOptions(data["projectReleaseTree"]);
 	    projectReleasesPicker.setValue(data["selectedProjectReleaseID"]);
 	    this.replaceImportFileInfo(panel, data["importFileInfo"]);
 	    //this.replaceImportFileInfo(panel, data);
 		/*var importFileInfo = panel.getComponent("importFileInfo");
-		if (importFileInfo!=null) {
+		if (importFileInfo) {
 			panel.remove(importFileInfo);
 		}
 		panel.insert(0, {
@@ -160,7 +160,7 @@ Ext.define('com.trackplus.admin.action.ExportMsProject',{
 
 	replaceImportFileInfo: function(panel, importFileInfo) {
 	    var importFileInfoComponent = panel.getComponent("importFileInfo");
-	    if (importFileInfoComponent!=null) {
+	    if (importFileInfoComponent) {
 	        panel.remove(importFileInfoComponent);
 	    }
 	    panel.insert(0, {

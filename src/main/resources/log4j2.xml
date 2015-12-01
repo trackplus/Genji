@@ -4,7 +4,7 @@
   For user access logging configuration see WEB-INF/Logging.properties.
   Usually, there is no need to change this.
     
-  $Id: log4j2.xml 1580 2015-10-10 14:44:33Z friedric $#
+  $Id: log4j2.xml 1596 2015-10-13 13:54:26Z friedric $#
 -->
 <Configuration packages="com.aurel.track.admin.server.logging">
     <Properties>

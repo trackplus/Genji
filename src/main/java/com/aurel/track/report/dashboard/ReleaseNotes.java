@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -81,6 +81,7 @@ public class ReleaseNotes extends BasePluginDashboardView{
 	
 	private HashMap<Integer,Integer> projectIds = new HashMap<Integer,Integer>();
 
+	@Override
 	protected boolean isUseConfig(){
 		return true;
 	}
@@ -136,20 +137,8 @@ public class ReleaseNotes extends BasePluginDashboardView{
 	 */
 	private List<ProjectWrapper> assembleReleaseNotes(Map configParameters, TPersonBean personBean,
 			Integer project,Integer release) throws TooManyItemsToLoadException {
-		//List selectedProjects, Integer userId, String theProvider, String theParams, Map session, Locale locale) {
 		List<ProjectWrapper> projectViews = new ArrayList<ProjectWrapper>();
 		Locale locale = personBean.getLocale();
-		/*List selectedProjectsAndReleases;
-		if(project!=null){
-			selectedProjectsAndReleases=new ArrayList();
-			if(release!=null){
-				selectedProjectsAndReleases.add(release.toString());
-			}else{
-				selectedProjectsAndReleases.add((project.intValue()*-1)+"");
-			}
-		}else{
-			selectedProjectsAndReleases = StringArrayParameterUtils.splitSelection((String)configParameters.get(CONFIGURATION_PARAMETERS.SELECTED_PROJECTS));
-		}*/
 		
 		List<Integer> selectedProjectsAndReleases = getSelectedProjectAndReleases(configParameters, project, release);
 		
@@ -160,7 +149,6 @@ public class ReleaseNotes extends BasePluginDashboardView{
 		
 		// TODO Handle empty selections
 		
-		//Map selectedProjectsMap = new HashMap();
 		//List selectedProjectList = ProjectBL.loadProjectsWithReadIssueRight(personBean.getObjectID());
 		/*Map readableProjectsMap = GeneralUtils.createMapFromList(selectedProjectList);
 		if (selectedProjectsAndReleases.size() > 0) {
@@ -192,10 +180,10 @@ public class ReleaseNotes extends BasePluginDashboardView{
 				List<ReleaseNoteWrapper> relNoteList = getReleaseNotesForSingleRelease(itemsResolved, locale, selectedIssueTypes);
 				int noOfResolvedIssues = computeTotalEntries(relNoteList);
 				projectWrapperResolved.setList(relNoteList);
-				projectWrapperResolved.setSymbol("release_ok.png");
+				projectWrapperResolved.setSymbol("project_resolved.png");
 				// and the open ones...
 				ProjectWrapper projectWrapperOpen = new ProjectWrapper(projectBean.getLabel() + "   " + unresolved);
-				projectWrapperOpen.setSymbol("release_error.png");
+				projectWrapperOpen.setSymbol("project_unresolved.png");
 				List<TWorkItemBean> itemsUnresolved = workItemsProProjectDescendantsUnresolved.get(projectBean.getObjectID());
 				relNoteList = getReleaseNotesForSingleRelease(itemsUnresolved, locale, selectedIssueTypes);
 				int noOfOpenIssues = computeTotalEntries(relNoteList);
@@ -230,14 +218,13 @@ public class ReleaseNotes extends BasePluginDashboardView{
 			for (TReleaseBean releaseBean : selectedReleaseList) {
 					if (releaseBean!=null) { //if the release was not deleted
 						// Try to find the project. If it exists, forget about the release
-						//TProjectBean projectBean = (TProjectBean) readableProjectsMap.get(releaseBean.getProjectID());
 						TProjectBean projectBean = LookupContainer.getProjectBean(releaseBean.getProjectID());
 						if (projectBean == null) {
 							//right for project revoked
 							continue;
 						}
 						ProjectWrapper projectWrapperResolved = new ProjectWrapper(projectBean.getLabel() + " " + releaseBean.getLabel() + "   " + resolved);
-						projectWrapperResolved.setSymbol("box_closed.png");
+						projectWrapperResolved.setSymbol("release_resolved.png");
 	
 						List<TWorkItemBean> itemsResolved = workItemsProReleaseDescendantsResolved.get(releaseBean.getObjectID());
 						List<ReleaseNoteWrapper> relNoteList = getReleaseNotesForSingleRelease(itemsResolved, locale, selectedIssueTypes);
@@ -247,7 +234,7 @@ public class ReleaseNotes extends BasePluginDashboardView{
 	
 						// and the open ones...
 						ProjectWrapper projectWrapperOpen = new ProjectWrapper(projectBean.getLabel() + " " + releaseBean.getLabel() + "   " + unresolved);
-						projectWrapperOpen.setSymbol("box.png");
+						projectWrapperOpen.setSymbol("release_unresolved.png");
 	
 						List<TWorkItemBean> itemsUnresolved = workItemsProReleasetDescendantsUnresolved.get(releaseBean.getObjectID());
 						relNoteList = getReleaseNotesForSingleRelease(itemsUnresolved, locale, selectedIssueTypes);
@@ -274,28 +261,11 @@ public class ReleaseNotes extends BasePluginDashboardView{
 							projectViews.add(projectWrapperOpen);
 						}
 					}
-				//}
 			}
 		}
 		return projectViews;
 	}
 
-	/*private static Map prepareProjectMap(List selectedProjects, Map readableProjectsMap) {
-		Map projectMap = new HashMap();
-		for (int i=0; i < selectedProjects.size(); ++ i) {
-			Integer projectID = new Integer((String)selectedProjects.get(i)); 
-			if (projectID.intValue() < 0) {
-				//if project it is negative, get the positive value 
-				projectID = new Integer(-projectID.intValue());
-				// Get all projects w/o releases
-				TProjectBean projectBean = (TProjectBean) readableProjectsMap.get(projectID);
-				if (projectBean!=null) { //right for project revoked, or project deleted
-					projectMap.put(projectBean.getObjectID(), projectBean);
-				}
-			}
-		}
-		return projectMap;
-	}*/
 	
 	private static List<Integer> getSelectedProjectAndReleases(Map<String, String> configParameters, Integer project, Integer release) {
 		List<Integer> selectedProjectsAndReleases;

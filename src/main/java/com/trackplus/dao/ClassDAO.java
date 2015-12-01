@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -41,7 +41,6 @@ public interface ClassDAO {
 	 * @param objectID
 	 * @return
 	 */
-	// Tclass loadbyprimarykey(Integer objectid);
 
 	/**
 	 * Gets an class from a project by label
@@ -50,7 +49,6 @@ public interface ClassDAO {
 	 * @param label
 	 * @return
 	 */
-	// Tclass loadbyprojectandlabel(Integer projectid, string label);
 
 	/**
 	 * Gets the classs by uuid list
@@ -58,20 +56,17 @@ public interface ClassDAO {
 	 * @param uuids
 	 * @return
 	 */
-	// List<Tclass> loadbyuuids(list<string> uuids);
 	/**
 	 * Gets the classs by labels list
 	 * 
 	 * @param labels
 	 * @return
 	 */
-	// List<Tclass> loadbylabels(list<string> labels);
 	/**
 	 * Loads all ClassBeans
 	 * 
 	 * @return
 	 */
-	// List loadAll();
 
 	/**
 	 * Loads a ClassBean list by workItemKeys
@@ -79,7 +74,6 @@ public interface ClassDAO {
 	 * @param workItemIDs
 	 * @return
 	 */
-	// List loadByWorkItemKeys(int[] workItemIDs);
 
 	/**
 	 * Loads a list with classs with the defined classes for a project
@@ -94,7 +88,6 @@ public interface ClassDAO {
 	 * @param projectIDs
 	 * @return
 	 */
-	// List<Tclass> loadbyprojectkeys(list<Integer> projectids);
 	/**
 	 * Loads a list with classs with the used classes for a project (classes
 	 * which are assigned to at least one workItem)
@@ -102,7 +95,6 @@ public interface ClassDAO {
 	 * @param projectID
 	 * @return
 	 */
-	// List loadUsedByProject(Integer projectID);
 
 	/**
 	 * Saves a classBean in the Tclass table
@@ -110,7 +102,6 @@ public interface ClassDAO {
 	 * @param classBean
 	 * @return
 	 */
-	// Integer save(Tlclass class);
 
 	/**
 	 * Whether there are workItems with this class
@@ -118,7 +109,6 @@ public interface ClassDAO {
 	 * @param objectID
 	 * @return
 	 */
-	// boolean hasDependentData(Integer objectID);
 
 	/**
 	 * Replaces the dependences with a new classID and deletes the old classID
@@ -127,7 +117,6 @@ public interface ClassDAO {
 	 * @param oldClassID
 	 * @param newClassID
 	 */
-	// void replaceAndDelete1(Integer oldClassID, Integer newClassID);
 
 	/*********************************************************
 	 * Manager-, Responsible-, My- and Custom Reports methods *
@@ -139,7 +128,6 @@ public interface ClassDAO {
 	 * @param personID
 	 * @return
 	 */
-	// List loadManagerClasses(Integer personID);
 
 	/**
 	 * Get the classs associated through a class picker with workItems the
@@ -148,7 +136,6 @@ public interface ClassDAO {
 	 * @param personID
 	 * @return
 	 */
-	// List loadManagerPickerClasses(Integer personID);
 
 	/**
 	 * Get the classs associated with workItems the person is responsible for
@@ -156,7 +143,6 @@ public interface ClassDAO {
 	 * @param personID
 	 * @return
 	 */
-	// List loadResponsibleClasses(Integer personID);
 
 	/**
 	 * Get the classs associated through a class picker with workItems the
@@ -165,7 +151,6 @@ public interface ClassDAO {
 	 * @param personID
 	 * @return
 	 */
-	// List loadResponsiblePickerClasses(Integer personID);
 
 	/**
 	 * Get the classs associated with workItems the person is originator for
@@ -173,7 +158,6 @@ public interface ClassDAO {
 	 * @param personID
 	 * @return
 	 */
-	// List loadReporterClasses(Integer personID);
 
 	/**
 	 * Get the classs associated with workItems the person is manager or
@@ -182,7 +166,6 @@ public interface ClassDAO {
 	 * @param personID
 	 * @return
 	 */
-	// List loadMyClasses(Integer personID);
 
 	/**
 	 * Get the classs associated through a class picker with workItems the
@@ -191,7 +174,6 @@ public interface ClassDAO {
 	 * @param personID
 	 * @return
 	 */
-	// List loadMyPickerClasses(Integer personID);
 
 	/**
 	 * Get the classs filtered by the FilterSelectsTo
@@ -199,7 +181,6 @@ public interface ClassDAO {
 	 * @param filterSelectsTo
 	 * @return
 	 */
-	// List<Tclass> loadcustomreportclasses(filterupperto filterselectsto);
 	/**
 	 * Get the classs through a class picker filtered by the FilterSelectsTo
 	 * 
@@ -207,7 +188,6 @@ public interface ClassDAO {
 	 * @return
 	 */
 	// List<Tclass> loadcustomreportpickerclasses(filterupperto
-	// filterselectsto);
 	/**
 	 * Get the classs associated through a class picker for an array of
 	 * workItemIDs
@@ -215,7 +195,6 @@ public interface ClassDAO {
 	 * @param workItemIDs
 	 * @return
 	 */
-	// List loadLucenePickerClasses(int[] workItemIDs);
 
 	/**
 	 * Get the Map of classs from the history of the workItemIDs added by
@@ -227,5 +206,4 @@ public interface ClassDAO {
 	 * @return
 	 */
 	// Map<Integer, Tclass> loadhistoryclasses(int[] workitemids/*, Integer
-	// personid*/);
 }

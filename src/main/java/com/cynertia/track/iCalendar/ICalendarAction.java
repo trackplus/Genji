@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -54,31 +54,18 @@ public class ICalendarAction extends ActionSupport implements Preparable, Sessio
 
 	private static final Logger LOGGER = LogManager.getLogger(ICalendarAction.class);
 
+	@Override
 	public void prepare() throws Exception {
 		personBean=(TPersonBean) session.get(Constants.USER_KEY);
 		locale=(Locale) session.get(Constants.LOCALE_KEY);
 	}
 
-	/*public void validate() {
-			//no access to any project -> project dropdown is empty -> no possible calendar
-			addFieldError("reportConfigBean.selectedProjects", getText("common.err.required",
-					new String[]{FieldRuntimeBL.getLocalizedDefaultFieldLabel(SystemFields.INTEGER_PROJECT, locale)}));
-	}*/
 
 
 	@Override
 	public String execute(){
 		return null;
 	}
-	/*public String projectPicker() {
-		JSONUtility.encodeJSON(ServletActionContext.getResponse(),
-				JSONUtility.getTreeHierarchyJSON(
-						ProjectBL.getProjectNodesByRightEager(
-						false, personBean, true,
-						new int[]{AccessBeans.AccessFlagMigrationIndexes.PROJECTADMIN,
-								AccessBeans.AccessFlagMigrationIndexes.READANYTASK}), true, false, null));
-		return null;
-	}*/
 	public String generateURL(){
 		String url=createURL();
 		StringBuilder sb=new StringBuilder();
@@ -113,6 +100,7 @@ public class ICalendarAction extends ActionSupport implements Preparable, Sessio
 	/**
 	 * @param session the session to set
 	 */
+	@Override
 	public void setSession(Map session) {
 		this.session = session;
 	}

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -96,13 +96,13 @@ public class CustomXML {
 			transformer.setOutputProperty (OutputKeys.ENCODING,"UTF-8");
 			transformer.setOutputProperty ("{http://xml.apache.org/xslt}indent-amount", "4");
 		} catch (TransformerConfigurationException e){
-			LOGGER.error ("Creating the transformer failed with TransformerConfigurationException: " + e.getMessage(), e);
+			LOGGER.error ("Creating the transformer failed with TransformerConfigurationException: " + e.getMessage());
 			return;
 		}
 		try{
 			transformer.transform (new DOMSource(dom), new StreamResult(outputStream));
 		} catch (TransformerException e){
-			LOGGER.error ("Transform failed with TransformerException: " + e.getMessage(), e);
+			LOGGER.error ("Transform failed with TransformerException: " + e.getMessage());
 		}
 	}
 	
@@ -113,16 +113,15 @@ public class CustomXML {
 			DocumentBuilder builder = factory.newDocumentBuilder ();
 			dom = builder.newDocument ();	
 		}catch (FactoryConfigurationError e){
-			LOGGER.error ("Creating the DOM document failed with FactoryConfigurationError:" + e.getMessage(), e);
+			LOGGER.error ("Creating the DOM document failed with FactoryConfigurationError:" + e.getMessage());
 			return null;
 		}catch (ParserConfigurationException e){
-			LOGGER.error ("Creating the DOM document failed with ParserConfigurationException: " + e.getMessage(), e);
+			LOGGER.error ("Creating the DOM document failed with ParserConfigurationException: " + e.getMessage());
 			return null;
 		}
 		Element root = dom.createElement (CUSTOM_XML_ELEMENTS.MAIN_ELEMENT);
 		if (documentItem!=null) {
 			Integer itemID = documentItem.getObjectID();
-			//ShowableWorkItem showableWorkItem = ReportBeanLoader.getReportBean(documentItem, personID, locale);
 			List<TWorkItemBean> itemList = new LinkedList<TWorkItemBean>();
 			itemList.add(documentItem);
 			List<ReportBean> reportBeansList = LoadItemIDListItems.getReportBeansByWorkItems(itemList, personID, locale, true, false, false, false, false, false, false, false, false);
@@ -130,7 +129,6 @@ public class CustomXML {
 			Map<Integer, String> showValuesMap = showableWorkItem.getShowValuesMap();
 			if (showValuesMap!=null) {
 				List<TFieldBean> fieldBeansList = FieldBL.loadAll();
-				//Map<Integer, TFieldBean> fieldsMap = GeneralUtils.createMapFromList(fieldBeansList);
 				for (TFieldBean fieldBean : fieldBeansList) {
 					Integer fieldID = fieldBean.getObjectID();
 					String fieldName = fieldBean.getName();
@@ -139,7 +137,6 @@ public class CustomXML {
 						IFieldTypeRT fieldTypeRT = FieldTypeManager.getFieldTypeRT(fieldID);
 						if (fieldTypeRT!=null) {
 							if (fieldTypeRT.isLong()) {
-								//showValue = "<html><head><title>Export me</title></head><body>" + showValue + "</body></html>"; 
 								showValue = StringEscapeUtils.escapeHtml4(showValue);
 							}
 						}
@@ -159,46 +156,6 @@ public class CustomXML {
 				List<HistoryValues> comments = HistoryLoaderBL.getRestrictedWorkItemComments(personID, itemID, locale, false, /*LONG_TEXT_TYPE.ISPLAIN*/ LONG_TEXT_TYPE.ISFULLHTML);
 				addCommentNodes(comments, root, dom, locale);
 				
-				/*Set<Integer> fieldIDs = new HashSet<Integer>();
-				fieldIDs.add(SystemFields.INTEGER_RESPONSIBLE);
-				fieldIDs.add(SystemFields.INTEGER_MANAGER);
-				fieldIDs.add(SystemFields.INTEGER_ORIGINATOR);
-				fieldIDs.add(SystemFields.INTEGER_PROJECT);
-				fieldIDs.add(SystemFields.INTEGER_RELEASE);
-				fieldIDs.add(SystemFields.INTEGER_STATE);
-				fieldIDs.add(SystemFields.INTEGER_SYNOPSIS);
-				fieldIDs.add(SystemFields.INTEGER_DESCRIPTION);
-				List<TFieldBean> fields = FieldBL.loadByFieldIDs(fieldIDs.toArray());
-				for (TFieldBean fieldBean : fields) {
-					Integer fieldID = fieldBean.getObjectID();
-					String fieldName = fieldBean.getName();
-					String fieldValue = null;
-					Object attributeValue = documentItem.getAttribute(fieldID);
-					if (attributeValue!=null) {
-						switch(fieldID.intValue()) {
-						case SystemFields.RESPONSIBLE:
-						case SystemFields.MANAGER:
-						case SystemFields.ORIGINATOR:
-						case SystemFields.PROJECT:
-						case SystemFields.RELEASE:
-							fieldValue = LookupContainer.getNotLocalizedLabelBeanLabel(fieldID, (Integer)attributeValue);
-							appendChild(root, fieldName, fieldValue, dom);
-							break;
-						case SystemFields.STATE:
-							fieldValue = LookupContainer.getLocalizedLabelBeanLabel(fieldID, (Integer)attributeValue, locale);
-							appendChild(root, fieldName, fieldValue, dom);
-							break;	
-						case SystemFields.SYNOPSIS:
-							appendChild(root, "Title", (String)attributeValue, dom);
-							break;
-						case SystemFields.DESCRIPTION:	
-							String description = (String)attributeValue;
-							description = StringEscapeUtils.escapeHtml4(description);
-							appendChild(root, fieldName, description, dom);
-							break;
-						}
-					}
-				}*/
 			}
 		}
 		dom.appendChild(root);

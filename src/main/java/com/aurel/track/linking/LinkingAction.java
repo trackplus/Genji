@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -42,10 +42,12 @@ public class LinkingAction extends ActionSupport implements Preparable, SessionA
 	private HttpServletResponse servletResponse;
 	private TPersonBean personBean;
 	private Locale locale;
-	private Integer columnsQueryID;
-	private Integer rowsQueryID;
+	private Integer columnFilterID;
+	private Integer columnLinkedFlag;
+	private Integer rowFilterID;
+	private Integer rowLinkedFlag;
 	private String linkTypeWithDirection;
-
+	
 	private boolean hasInitData=true;
 	private String initData;
 	private String layoutCls="com.trackplus.layout.LinkingLayout";
@@ -53,6 +55,7 @@ public class LinkingAction extends ActionSupport implements Preparable, SessionA
 
 	
 
+	@Override
 	public void prepare() throws Exception {
 		personBean = (TPersonBean) session.get(Constants.USER_KEY);
 		locale=(Locale) session.get(Constants.LOCALE_KEY);
@@ -72,14 +75,16 @@ public class LinkingAction extends ActionSupport implements Preparable, SessionA
 	 * @return
 	 */
 	public String search(){
-		JSONUtility.encodeJSON(servletResponse, LinkMatrixBL.loadLinks(columnsQueryID, rowsQueryID, linkTypeWithDirection, personBean, locale));
+		JSONUtility.encodeJSON(servletResponse, LinkMatrixBL.loadLinks(columnFilterID, columnLinkedFlag, rowFilterID, rowLinkedFlag, linkTypeWithDirection, personBean, locale));
 		return null;
 	}
 
+	@Override
 	public void setSession(Map<String, Object> session) {
 		this.session=session;
 	}
 	
+	@Override
 	public void setServletResponse(HttpServletResponse servletResponse) {
 		this.servletResponse = servletResponse;
 	}
@@ -109,19 +114,21 @@ public class LinkingAction extends ActionSupport implements Preparable, SessionA
 		return pageTitle;
 	}
 
-	/*public Integer getRowsQueryID() {
-		return rowsQueryID;
-	}*/
-
-	public void setRowsQueryID(Integer rowsQueryID) {
-		this.rowsQueryID = rowsQueryID;
+	public void setRowFilterID(Integer rowFilterID) {
+		this.rowFilterID = rowFilterID;
 	}
 
-	/*public Integer getColumnsQueryID() {
-		return columnsQueryID;
-	}*/
-
-	public void setColumnsQueryID(Integer columnsQueryID) {
-		this.columnsQueryID = columnsQueryID;
+	public void setColumnFilterID(Integer columnFilterID) {
+		this.columnFilterID = columnFilterID;
 	}
+
+	public void setColumnLinkedFlag(Integer columnLinkedFlag) {
+		this.columnLinkedFlag = columnLinkedFlag;
+	}
+
+	public void setRowLinkedFlag(Integer rowLinkedFlag) {
+		this.rowLinkedFlag = rowLinkedFlag;
+	}
+	
+	
 }

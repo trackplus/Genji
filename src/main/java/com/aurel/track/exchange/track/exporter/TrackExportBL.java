@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -42,6 +42,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.w3c.dom.CDATASection;
@@ -139,7 +140,8 @@ public class TrackExportBL {
         try {
             zipOutputStream.putNextEntry(dataEntry);
         } catch (IOException e) {
-            LOGGER.error("Adding the XML data to the zip failed with " + e.getMessage(), e);
+            LOGGER.error("Adding the XML data to the zip failed with " + e.getMessage());
+            LOGGER.debug(ExceptionUtils.getStackTrace(e));
         }
         ReportBeansToXML.convertToXml(zipOutputStream, document);
         //zipOutputStream.closeEntry();
@@ -158,7 +160,8 @@ public class TrackExportBL {
         try {
             zipOutputStream.close();
         } catch (IOException e) {
-            LOGGER.warn("Closing the zip failed with " + e.getMessage(), e);
+            LOGGER.warn("Closing the zip failed with " + e.getMessage());
+            LOGGER.debug(ExceptionUtils.getStackTrace(e));
         }
         return zipOutputStream;
     }
@@ -176,10 +179,12 @@ public class TrackExportBL {
             DocumentBuilder builder = factory.newDocumentBuilder();
             dom = builder.newDocument();
         } catch (FactoryConfigurationError e){
-            LOGGER.error("Creating the DOM document failed with FactoryConfigurationError:" + e.getMessage(), e);
+            LOGGER.error("Creating the DOM document failed with FactoryConfigurationError:" + e.getMessage());
+            LOGGER.debug(ExceptionUtils.getStackTrace(e));
             return null;
         } catch (ParserConfigurationException e){
-            LOGGER.error("Creating the DOM document failed with ParserConfigurationException: " + e.getMessage(), e);
+            LOGGER.error("Creating the DOM document failed with ParserConfigurationException: " + e.getMessage());
+            LOGGER.debug(ExceptionUtils.getStackTrace(e));
             return null;
         }
         //create the DOM object
@@ -290,7 +295,8 @@ public class TrackExportBL {
                             try {
                                 parameterCode = Integer.valueOf(strParameterCode);
                             } catch (Exception e) {
-                                LOGGER.error("Converting the parameterCode " + strParameterCode + " to an integer failed with " + e.getMessage(), e);
+                                LOGGER.error("Converting the parameterCode " + strParameterCode + " to an integer failed with " + e.getMessage());
+                                LOGGER.debug(ExceptionUtils.getStackTrace(e));
                             }
                         }
                     }
@@ -723,7 +729,8 @@ public class TrackExportBL {
                     objectID = (Integer)workItemAttribute;
                 } catch (Exception e) {
                     LOGGER.warn("Value for field type " + fieldTypeRT.getClass()  + 
-                            " and value type " + fieldTypeRT.getValueType() + " is not an integer " + e.getMessage(), e);
+                            " and value type " + fieldTypeRT.getValueType() + " is not an integer " + e.getMessage());
+                    LOGGER.debug(ExceptionUtils.getStackTrace(e));
                     return null;
                 }
             }
@@ -1433,7 +1440,8 @@ public class TrackExportBL {
                         element.setAttribute(attributeName, attributeValue);
                     } catch (DOMException e) {
                         LOGGER.warn("Setting the attribute name " + attributeName + 
-                                " to attribute value " + attributeValue + " faield with " + e.getMessage(), e);
+                                " to attribute value " + attributeValue + " faield with " + e.getMessage());
+                        LOGGER.debug(ExceptionUtils.getStackTrace(e));
                     }
                 }
             }

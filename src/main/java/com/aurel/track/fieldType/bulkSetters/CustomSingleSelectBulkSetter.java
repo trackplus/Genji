@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -32,6 +32,7 @@ import java.util.TreeMap;
 
 import com.aurel.track.beans.TPersonBean;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -60,6 +61,7 @@ public class CustomSingleSelectBulkSetter extends AbstractBulkSetter {
 	 * the control for rendering the bulk value
 	 * @return
 	 */
+	@Override
 	public String getSetterValueControlClass() {
 		switch (relation) {
 		case BulkRelations.SET_TO:
@@ -106,7 +108,6 @@ public class CustomSingleSelectBulkSetter extends AbstractBulkSetter {
 		if (dataSourceMap!=null) {
 			boolean allIssuesFromTheSameProject = dataSourceMap.keySet().size()==1; 
 			Map<Integer, Integer[]> valueMap = (Map<Integer, Integer[]>)value;
-			//stringBuilder.append("projectJson").append(":[");
 			JSONUtility.appendFieldName(stringBuilder, "projectJson").append(":[");
 			for (Iterator<Integer> itrList = dataSourceMap.keySet().iterator(); itrList.hasNext();) {
 				Integer listID = itrList.next();
@@ -115,7 +116,6 @@ public class CustomSingleSelectBulkSetter extends AbstractBulkSetter {
 				if (labelMap!=null && !allIssuesFromTheSameProject) {
 					JSONUtility.appendStringValue(stringBuilder, JSONUtility.JSON_FIELDS.LABEL, labelMap.get(listID));
 				}
-				JSONUtility.appendStringValue(stringBuilder, JSONUtility.JSON_FIELDS.NAME, getNameWithMergedKey(baseName, listID));
 				JSONUtility.appendILabelBeanList(stringBuilder, JSONUtility.JSON_FIELDS.DATA_SOURCE, listDataSource);
 				Integer[] listValues = null;
 				Integer listValue = null;
@@ -131,8 +131,9 @@ public class CustomSingleSelectBulkSetter extends AbstractBulkSetter {
 					}
 				}
 				if (listValue!=null) {
-					JSONUtility.appendIntegerValue(stringBuilder, JSONUtility.JSON_FIELDS.VALUE, listValue, true);
+					JSONUtility.appendIntegerValue(stringBuilder, JSONUtility.JSON_FIELDS.VALUE, listValue);
 				}
+				JSONUtility.appendStringValue(stringBuilder, JSONUtility.JSON_FIELDS.NAME, getNameWithMergedKey(baseName, listID), true);
 				stringBuilder.append("}");
 				if (itrList.hasNext()) {
 					stringBuilder.append(",");
@@ -145,6 +146,7 @@ public class CustomSingleSelectBulkSetter extends AbstractBulkSetter {
 		return stringBuilder.toString();
 	}
 
+	@Override
 	public Object fromDisplayString(Map<String, String> displayStringMap, Locale locale) {
 		SortedMap<Integer, Integer[]> actualValuesMap = new TreeMap<Integer, Integer[]>();
 		if (displayStringMap == null) {
@@ -168,7 +170,8 @@ public class CustomSingleSelectBulkSetter extends AbstractBulkSetter {
 								actualValuesMap.put(listID, new Integer[] { intValue });
 							} catch (Exception e) {
 								LOGGER.warn("Converting the " + displayStringMapValue + " for fieldID " + getFieldID() +
-									" and list " + listID +  " to Integer from display string failed with " + e.getMessage(), e);
+									" and list " + listID +  " to Integer from display string failed with " + e.getMessage());
+								LOGGER.debug(ExceptionUtils.getStackTrace(e));
 							}
 						}
 					}

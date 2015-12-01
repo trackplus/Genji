@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -40,7 +40,6 @@ public interface SubprojectDAO {
 	 * @param objectID
 	 * @return
 	 */
-	// Tprojectcategory loadByPrimaryKey(Integer objectID);
 
 	/**
 	 * Gets an subprojectBean from a project by label
@@ -49,7 +48,6 @@ public interface SubprojectDAO {
 	 * @param label
 	 * @return
 	 */
-	// Tprojectcategory loadByProjectAndLabel(Integer projectID, String label);
 
 	/**
 	 * Gets the subprojectsBeans by uuid list
@@ -64,13 +62,11 @@ public interface SubprojectDAO {
 	 * @param labels
 	 * @return
 	 */
-	// List<Tprojectcategory> loadByLabels(List<String> labels);
 	/**
 	 * Loads all ProjectCategoryBeans
 	 * 
 	 * @return
 	 */
-	// List loadAll();
 
 	/**
 	 * Loads a ProjectCategoryBean list by workItemKeys
@@ -78,7 +74,6 @@ public interface SubprojectDAO {
 	 * @param workItemKeys
 	 * @return
 	 */
-	// List loadByWorkItemKeys(int[] workItemKeys);
 
 	/**
 	 * Loads all subprojects of the active and inactive projects with the labels
@@ -86,7 +81,6 @@ public interface SubprojectDAO {
 	 * 
 	 * @return
 	 */
-	// List loadAllWithProjectLabel();
 
 	/**
 	 * Loads a list with subprojectBeans with the defined subprojects for a
@@ -102,7 +96,6 @@ public interface SubprojectDAO {
 	 * @param projectIDs
 	 * @return
 	 */
-	// List<Tprojectcategory> loadByProjectKeys(List<Integer> projectIDs);
 	/**
 	 * Loads a list with subprojectBeans with the used subprojects for a project
 	 * (subprojects which have workItems)
@@ -110,7 +103,6 @@ public interface SubprojectDAO {
 	 * @param projectID
 	 * @return
 	 */
-	// List loadUsedByProject(Integer projectID);
 
 	/**
 	 * saves a projectCategoryBean in the TProjCat table
@@ -118,7 +110,6 @@ public interface SubprojectDAO {
 	 * @param projectCategoryBean
 	 * @return
 	 */
-	// Integer save(Tprojectcategory projectCategoryBean);
 
 	/**
 	 * Whether there are workItems with this subproject
@@ -126,7 +117,6 @@ public interface SubprojectDAO {
 	 * @param objectID
 	 * @return
 	 */
-	// boolean hasDependentData(Integer objectID);
 
 	/**
 	 * Replaces the dependences with a new subprojectID and deletes the old
@@ -135,7 +125,6 @@ public interface SubprojectDAO {
 	 * @param oldSubprojectID
 	 * @param newSubprojectID
 	 */
-	// void replaceAndDelete1(Integer oldSubprojectID, Integer newSubprojectID);
 
 	/*********************************************************
 	 * Manager-, Responsible-, My- and Custom Reports methods *
@@ -148,7 +137,6 @@ public interface SubprojectDAO {
 	 * @param personID
 	 * @return
 	 */
-	// List loadManagerSubprojects(Integer personID);
 
 	/**
 	 * Get the subprojectBeans associated through a subproject picker with
@@ -157,7 +145,6 @@ public interface SubprojectDAO {
 	 * @param personID
 	 * @return
 	 */
-	// List loadManagerPickerSubprojects(Integer personID);
 
 	/**
 	 * Get the subprojectBeans associated with workItems the person is
@@ -166,7 +153,6 @@ public interface SubprojectDAO {
 	 * @param personID
 	 * @return
 	 */
-	// List loadResponsibleSubprojects(Integer personID);
 
 	/**
 	 * Get the subprojectBeans associated through a subproject picker with
@@ -175,7 +161,6 @@ public interface SubprojectDAO {
 	 * @param personID
 	 * @return
 	 */
-	// List loadResponsiblePickerSubprojects(Integer personID);
 
 	/**
 	 * Get the subprojectBeans associated with workItems the person is
@@ -184,7 +169,6 @@ public interface SubprojectDAO {
 	 * @param personID
 	 * @return
 	 */
-	// List loadReporterSubprojects(Integer personID);
 
 	/**
 	 * Get the subprojectBeans associated with workItems the person is manager
@@ -194,7 +178,6 @@ public interface SubprojectDAO {
 	 * @param locale
 	 * @return
 	 */
-	// List<Tprojectcategory> loadMySubprojects(Integer personID);
 	/**
 	 * Get the subprojectBeans associated through a subproject picker with
 	 * workItems the person is manager or responsible or owner for
@@ -202,7 +185,6 @@ public interface SubprojectDAO {
 	 * @param personID
 	 * @return
 	 */
-	// List loadMyPickerSubprojects(Integer personID);
 
 	/**
 	 * Get the subprojectBeans filtered by the FilterSelectsTO
@@ -211,7 +193,6 @@ public interface SubprojectDAO {
 	 * @return
 	 */
 	// List<Tprojectcategory> loadCustomReportSubprojects(FilterUpperTO
-	// filterSelectsTO);
 	/**
 	 * Get the subprojectBeans associated through a subproject picker filtered
 	 * by the FilterSelectsTO
@@ -220,7 +201,6 @@ public interface SubprojectDAO {
 	 * @return
 	 */
 	// List<Tprojectcategory> loadCustomReportPickerSubprojects(FilterUpperTO
-	// filterSelectsTO);
 	/**
 	 * Get the subprojectBeans associated through a subproject picker for an
 	 * array of workItemIDs
@@ -228,7 +208,6 @@ public interface SubprojectDAO {
 	 * @param workItemIDs
 	 * @return
 	 */
-	// List loadLucenePickerSubprojects(int[] workItemIDs);
 
 	/**
 	 * Get the Map of projectCategoryBeans from the history of the workItemIDs
@@ -240,5 +219,4 @@ public interface SubprojectDAO {
 	 * @return
 	 */
 	// Map<Integer, Tprojectcategory loadHistorySubprojects(int[] workItemIDs/*,
-	// Integer personID*/);
 }

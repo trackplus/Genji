@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -37,9 +37,11 @@ public abstract class AbstractVersionControlPlugin implements VersionControlPlug
 
 	
 	
+	@Override
 	public List<LabelValueBean> verify(Map<String,String> parameters,Locale locale){
 		return null;
 	}
+	@Override
 	public String getRepository(Map<String,String> parameters){
 		String accesMethod= parameters.get("accessMethod");
      	String serverName=parameters.get("serverName");
@@ -58,6 +60,7 @@ public abstract class AbstractVersionControlPlugin implements VersionControlPlug
      	String url=sb.toString();
      	return url;
 	}
+	@Override
 	public Map<Integer,List<Revision>> getLogs(Map<String,String> parameters,String prefixIssueNumber){
         Map<Integer,List<Revision>> map=new HashMap<Integer, List<Revision>>();
         List<Revision> revisions=getRevisions(parameters,prefixIssueNumber);

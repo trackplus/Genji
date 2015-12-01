@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -51,6 +51,7 @@ public class TWorkflowConnectPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TWorkflowConnectBean loadByPrimaryKey(Integer objectID) {
 		TWorkflowConnect tobject = null;
 		try{
@@ -70,12 +71,13 @@ public class TWorkflowConnectPeer
 	 * Gets all TWorkflowConnectBeans
 	 * @return
 	 */
+	@Override
 	public List<TWorkflowConnectBean> loadAll() {
 		Criteria crit = new Criteria();
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all workflowConfigs failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all workflowConfigs failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -85,13 +87,14 @@ public class TWorkflowConnectPeer
 	 * @param workflowConfig
 	 * @return
 	 */
+	@Override
 	public Integer save(TWorkflowConnectBean workflowConfig) {
 		try {
 			TWorkflowConnect tobject = TWorkflowConnect.createTWorkflowConnect(workflowConfig);
 			tobject.save();
 			return tobject.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a workflowConfig failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a workflowConfig failed with " + e.getMessage());
 			return null;
 		}		
 	}
@@ -101,6 +104,7 @@ public class TWorkflowConnectPeer
 	 * Is deletable should return true before calling this method
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		try {
 			doDelete(SimpleKey.keyFor(objectID));
@@ -120,6 +124,7 @@ public class TWorkflowConnectPeer
 	 * @param cfg
 	 * @return
 	 */
+	@Override
 	public List<TWorkflowConnectBean> load(TWorkflowConnectBean cfg) {
 		Integer projectTypeID=null;
 		Integer projectID=null;
@@ -136,7 +141,7 @@ public class TWorkflowConnectPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading  workflowConfigs failed with " + e.getMessage(), e);
+			LOGGER.error("Loading  workflowConfigs failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -145,6 +150,7 @@ public class TWorkflowConnectPeer
 	 * Gets the default TWorkflowConnectBean
 	 * @return
 	 */
+	@Override
 	public TWorkflowConnectBean loadDefault() {
 		List<TWorkflowConnect> workflowConfigList = null;
 		Criteria criteria = new Criteria();
@@ -154,7 +160,7 @@ public class TWorkflowConnectPeer
 		try {
 			workflowConfigList = doSelect(criteria);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the default window config failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the default window config failed with " + e.getMessage());
 		}
 		if (workflowConfigList == null || workflowConfigList.isEmpty()) {
 			LOGGER.debug("No default workflow config found");
@@ -171,6 +177,7 @@ public class TWorkflowConnectPeer
 	 * @param issueType
 	 * @return
 	 */
+	@Override
 	public TWorkflowConnectBean loadByIssueType(Integer issueType) {
 		List<TWorkflowConnect> workflowConfigList = null;
 		Criteria criteria = new Criteria();
@@ -193,6 +200,7 @@ public class TWorkflowConnectPeer
 		return (workflowConfigList.get(0)).getBean();
 	}
 
+	@Override
 	public List<TWorkflowConnectBean> loadByIssueTypes(Object[] issueTypeIDs){
 		if (issueTypeIDs!=null && issueTypeIDs.length!=0) {
 			Criteria crit = new Criteria();
@@ -202,7 +210,7 @@ public class TWorkflowConnectPeer
 			try {
 				return convertTorqueListToBeanList(doSelect(crit));
 			} catch (TorqueException e) {
-				LOGGER.error("Loading the field configs by issueTypes  failed with  " + e.getMessage(), e);
+				LOGGER.error("Loading the field configs by issueTypes  failed with  " + e.getMessage());
 				return null;
 			}
 		}
@@ -214,6 +222,7 @@ public class TWorkflowConnectPeer
 	 * @param projectType
 	 * @return
 	 */
+	@Override
 	public TWorkflowConnectBean loadByProjectType(Integer projectType) {
 		List<TWorkflowConnect> workflowConfigList = null;
 		Criteria criteria = new Criteria();
@@ -241,6 +250,7 @@ public class TWorkflowConnectPeer
 	 * @param project
 	 * @return
 	 */
+	@Override
 	public TWorkflowConnectBean loadByProject(Integer project) {
 		List<TWorkflowConnect> workflowConfigList = null;
 		Criteria criteria = new Criteria();
@@ -270,6 +280,7 @@ public class TWorkflowConnectPeer
 	 * @param project include into filtering even if null
 	 * @return
 	 */
+	@Override
 	public List<TWorkflowConnectBean> loadAllByIssueType(Integer issueType, Integer projectType, Integer project) {
 		Criteria criteria = new Criteria();
 		//add issueType filter only if issueType is specified
@@ -306,6 +317,7 @@ public class TWorkflowConnectPeer
 	 * @param excludeWithIssueType
 	 * @return
 	 */
+	@Override
 	public List<TWorkflowConnectBean> loadAllByProjectType(Integer projectType, boolean excludeWithIssueType) {
 		Criteria criteria = new Criteria();
 		if (projectType==null) {
@@ -319,7 +331,7 @@ public class TWorkflowConnectPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the workfow assignments by projectType " + projectType + "  failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the workfow assignments by projectType " + projectType + "  failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -330,6 +342,7 @@ public class TWorkflowConnectPeer
 	 * @param excludeWithIssueType
 	 * @return
 	 */
+	@Override
 	public List<TWorkflowConnectBean> loadAllByProject(Integer project, boolean excludeWithIssueType) {
 		Criteria criteria = new Criteria();
 		if (project==null) {
@@ -343,7 +356,7 @@ public class TWorkflowConnectPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the workfow configs by project " + project + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the workfow configs by project " + project + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -353,6 +366,7 @@ public class TWorkflowConnectPeer
 	 * @param projects if specified filter by projects otherwise only be sure to not to be null (all project specific configurations)
 	 * @return
 	 */
+	@Override
 	public List<TWorkflowConnectBean> loadAllByProjects(List<Integer> projects) {
 		Criteria criteria = new Criteria();
 		if (projects==null) {
@@ -363,7 +377,7 @@ public class TWorkflowConnectPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the workfow configs by project " + projects + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the workfow configs by project " + projects + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -374,6 +388,7 @@ public class TWorkflowConnectPeer
 	 * @param projectType
 	 * @return
 	 */
+	@Override
 	public TWorkflowConnectBean loadByIssueTypeAndProjectType(Integer issueType, Integer projectType) {
 		List workflowConfigList = null;
 		Criteria criteria = new Criteria();
@@ -383,7 +398,7 @@ public class TWorkflowConnectPeer
 		try {
 			workflowConfigList = doSelect(criteria);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the workflow config by issueType " + issueType + " and projectType " + projectType + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the workflow config by issueType " + issueType + " and projectType " + projectType + " failed with " + e.getMessage());
 		}
 		if (workflowConfigList == null || workflowConfigList.isEmpty()) {
 			LOGGER.debug("No workflow config found by issueType " + issueType + " and projecttype" + projectType);
@@ -401,6 +416,7 @@ public class TWorkflowConnectPeer
 	 * @param project
 	 * @return
 	 */
+	@Override
 	public TWorkflowConnectBean loadByIssueTypeAndProject(Integer issueType, Integer project) {
 		List workflowConfigList =  null;
 		Criteria criteria = new Criteria();
@@ -430,6 +446,7 @@ public class TWorkflowConnectPeer
 	 * @param projectTypeID
 	 * @param projectID
 	 */
+	@Override
 	public void deleteByIssueType(Integer issueTypeID) {
 		Criteria crit = new Criteria();
 		if(issueTypeID==null){
@@ -438,21 +455,10 @@ public class TWorkflowConnectPeer
 		}else{
 			crit.add(ISSUETYPE, issueTypeID);
 		}
-		/*if (projectTypeID == null) {
-			crit.add(PROJECTTYPE, (Object) null, Criteria.ISNULL);
-		} else {
-			crit.add(PROJECTTYPE, projectTypeID);
-		}
-		// add project filter anyway
-		if (projectID == null) {
-			crit.add(PROJECT, (Object) null, Criteria.ISNULL);
-		} else {
-			crit.add(PROJECT, projectID);
-		}*/
 		try {
 			doDelete(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Delete workflowConfigs by issueType " + issueTypeID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Delete workflowConfigs by issueType " + issueTypeID + " failed with " + e.getMessage());
 		}
 	}
 	
@@ -461,6 +467,7 @@ public class TWorkflowConnectPeer
 	 * if the projects is null - delete all all configs which have project set
 	 * @param projectIDs
 	 */
+	@Override
 	public void deleteByProjects(List<Integer> projectIDs) {
 		Criteria crit = new Criteria();
 		if (projectIDs!=null && !projectIDs.isEmpty()) {
@@ -472,7 +479,7 @@ public class TWorkflowConnectPeer
 		try {
 			doDelete(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Delete workflowConfigs by projects " + projectIDs +  " failed with " + e.getMessage(), e);
+			LOGGER.error("Delete workflowConfigs by projects " + projectIDs +  " failed with " + e.getMessage());
 		}
 	}
 	
@@ -481,6 +488,7 @@ public class TWorkflowConnectPeer
 	 * if the project pk is null - delete all all configs which have projectType set
 	 * @param projectTypeID
 	 */
+	@Override
 	public void deleteByProjectType(Integer projectTypeID) {
 		Criteria crit = new Criteria();
 		if (projectTypeID!=null) {
@@ -492,7 +500,7 @@ public class TWorkflowConnectPeer
 		try {
 			doDelete(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Delete  workflowConfigs by projectType " + projectTypeID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Delete  workflowConfigs by projectType " + projectTypeID + " failed with " + e.getMessage());
 		}
 	}
 	

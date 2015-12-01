@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -82,7 +82,7 @@ public class PrintItemDetailsBL {
 		try {
 			descendentWorkItemsList.add(workItemDAO.loadByPrimaryKey(workItemID));
 		} catch (ItemLoaderException e) {
-			LOGGER.error("WorkItem " + workItemID + " not found " + e.getMessage(), e);
+			LOGGER.error("WorkItem " + workItemID + " not found " + e.getMessage());
 		}
 		Map<Integer, TWorkItemBean> workItemBeansMap = GeneralUtils.createMapFromList(descendentWorkItemsList);
 		//history entries
@@ -245,7 +245,6 @@ public class PrintItemDetailsBL {
 					String fileNameOnDisk = attachmentBeanPopulated.getFullFileNameOnDisk();
 					File f = new File(fileNameOnDisk);
 					BufferedImage image;
-					//int height = image.getHeight();
 					Integer originalWidth = null;
 					Integer originalHeight = null;
 					try {
@@ -282,7 +281,6 @@ public class PrintItemDetailsBL {
 							}
 							historyEntry.setNewValue(calculatedWidth.toString());
 						}
-						//historyEntry.setNewValue(attachmentBean.getWorkItem().toString());
 						historyEntry.setOldValue(attachmentBean.getObjectID().toString());
 						historyEntries.add(historyEntry);
 					}
@@ -303,7 +301,7 @@ public class PrintItemDetailsBL {
 		try {
 			properties.load(inputStream);
 		} catch (IOException e) {
-			LOGGER.warn("Loading the PrintItem.properties from classpath failed with " + e.getMessage(), e);
+			LOGGER.warn("Loading the PrintItem.properties from classpath failed with " + e.getMessage());
 		}
 		return properties;
 	}
@@ -313,7 +311,7 @@ public class PrintItemDetailsBL {
 		try {
 			configValue = Integer.valueOf(properties.getProperty(configString).trim());
 		} catch (Exception e) {
-			LOGGER.warn("Loading the " + configString + " failed with " + e.getMessage(), e);
+			LOGGER.warn("Loading the " + configString + " failed with " + e.getMessage());
 		}
 		if (configValue==null || configValue.intValue()<=0) {
 			return Integer.valueOf(defaultValue);

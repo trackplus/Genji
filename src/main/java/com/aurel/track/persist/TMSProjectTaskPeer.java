@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -58,6 +58,7 @@ public class TMSProjectTaskPeer
 	 * @param objectID
 	 * @return 
 	 */
+	@Override
 	public TMSProjectTaskBean loadByPrimaryKey(Integer objectID) {
 		TMSProjectTask msProjectTask = null;
     	try {
@@ -77,6 +78,7 @@ public class TMSProjectTaskPeer
 	 * @param workItemID
 	 * @return
 	 */
+	@Override
 	public TMSProjectTaskBean loadByPrimaryWorkItemID(Integer workItemID) {
 		List msProjectTasks = new ArrayList();
         Criteria crit = new Criteria();        
@@ -85,7 +87,7 @@ public class TMSProjectTaskPeer
         try {
         	msProjectTasks = doSelect(crit);
     	} catch(Exception e) {
-    		LOGGER.error("Loading MsProjectTaskBean by workItemID " + workItemID + " failed with " + e.getMessage(), e);
+    		LOGGER.error("Loading MsProjectTaskBean by workItemID " + workItemID + " failed with " + e.getMessage());
     	}
     	if (msProjectTasks==null || msProjectTasks.isEmpty()) {
     		return null;
@@ -98,6 +100,7 @@ public class TMSProjectTaskPeer
 	 * @param UID
 	 * @return 
 	 */
+	@Override
 	public TMSProjectTaskBean loadByUIDAndRelease(Integer UID, Integer entityID, int entityType) {
 		List msProjectTasks = new ArrayList();
         Criteria crit = new Criteria();        
@@ -108,7 +111,6 @@ public class TMSProjectTaskPeer
 			crit.add(TWorkItemPeer.RELSCHEDULEDKEY, entityID);
 			break;
 		case SystemFields.PROJECT:
-			//crit.addJoin(BaseTWorkItemPeer.PROJCATKEY, BaseTProjectCategoryPeer.PKEY);
         	crit.add(TWorkItemPeer.PROJECTKEY, entityID);	
 			break;
 		default:
@@ -117,7 +119,7 @@ public class TMSProjectTaskPeer
         try {
         	msProjectTasks = doSelect(crit);
     	} catch(Exception e) {
-    		LOGGER.error("Loading MsProjectTaskBean by UID " + UID + " entityID " + entityID + " entityType " + entityType + " failed with " + e.getMessage(), e);
+    		LOGGER.error("Loading MsProjectTaskBean by UID " + UID + " entityID " + entityID + " entityType " + entityType + " failed with " + e.getMessage());
     	}
     	if (msProjectTasks==null || msProjectTasks.isEmpty()) {
     		return null;
@@ -131,6 +133,7 @@ public class TMSProjectTaskPeer
 	 * @param entityType
 	 * @return
 	 */
+	@Override
 	public List<TMSProjectTaskBean> loadMsProjectTasksForImport(Integer entityID, int entityType) {
 		List msProjectTasks = new ArrayList();
         Criteria crit = new Criteria();                
@@ -140,7 +143,6 @@ public class TMSProjectTaskPeer
 			crit.add(TWorkItemPeer.RELSCHEDULEDKEY, entityID);
 			break;
 		case SystemFields.PROJECT:
-			//crit.addJoin(TWorkItemPeer.PROJCATKEY, TProjectCategoryPeer.PKEY);
         	crit.add(TWorkItemPeer.PROJECTKEY, entityID);	
 			break;
 		default:
@@ -150,7 +152,7 @@ public class TMSProjectTaskPeer
         try {
         	msProjectTasks = doSelect(crit);
     	} catch(Exception e) {
-    		LOGGER.error("Loading MsProjectTaskBean by entityID " + entityID + " entityType " + entityType + " failed with " + e.getMessage(), e);
+    		LOGGER.error("Loading MsProjectTaskBean by entityID " + entityID + " entityType " + entityType + " failed with " + e.getMessage());
     	}    	
     	return convertTorqueListToBeanList(msProjectTasks);
 	}
@@ -162,6 +164,7 @@ public class TMSProjectTaskPeer
 	 * @param notClosed
 	 * @return
 	 */
+	@Override
 	public List<TMSProjectTaskBean> loadMsProjectTasksForExport(Integer entityID, int entityType, boolean notClosed) {
 		List msProjectTasks = new ArrayList();
         Criteria crit = new Criteria();                
@@ -173,7 +176,6 @@ public class TMSProjectTaskPeer
 			crit.add(TWorkItemPeer.RELSCHEDULEDKEY, entityID);
 			break;
 		case SystemFields.PROJECT:
-			//crit.addJoin(BaseTWorkItemPeer.PROJCATKEY, BaseTProjectCategoryPeer.PKEY);
         	crit.add(TWorkItemPeer.PROJECTKEY, entityID);	
 			break;
 		default:
@@ -187,7 +189,7 @@ public class TMSProjectTaskPeer
         try {
         	msProjectTasks = doSelect(crit);
     	} catch(Exception e) {
-    		LOGGER.error("Loading MsProjectTaskBean by entityID " + entityID + " entityType " + entityType + " failed with " + e.getMessage(), e);
+    		LOGGER.error("Loading MsProjectTaskBean by entityID " + entityID + " entityType " + entityType + " failed with " + e.getMessage());
     	}    	
     	return convertTorqueListToBeanList(msProjectTasks);
 	}
@@ -197,6 +199,7 @@ public class TMSProjectTaskPeer
 	 * @param mSProjectTaskBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TMSProjectTaskBean mSProjectTaskBean) {
 		try {			
 			TMSProjectTask msProjectTask = BaseTMSProjectTask.createTMSProjectTask(mSProjectTaskBean);
@@ -213,6 +216,7 @@ public class TMSProjectTaskPeer
 	 * Deletes an MsProjectTaskBean
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		Criteria crit = new Criteria();
         crit.add(OBJECTID, objectID);
@@ -239,6 +243,7 @@ public class TMSProjectTaskPeer
 	 * @param workItemIDs
 	 * @return
 	 */
+	@Override
 	public List<Integer> getMilestones(int[] workItemIDs) {
 		List<Integer> milestoneWorkItems = new ArrayList<Integer>();
 		List<TMSProjectTaskBean> msProjectTaskBean = new ArrayList<TMSProjectTaskBean>();
@@ -272,7 +277,7 @@ public class TMSProjectTaskPeer
 		if(msProjectTaskBean != null) {
 			for(int j = 0; j < msProjectTaskBean.size(); j++) {
 				if(msProjectTaskBean.get(j).getMilestone() != null) {
-					if (msProjectTaskBean.get(j).getMilestone().equals("Y")) {
+					if ("Y".equals(msProjectTaskBean.get(j).getMilestone())) {
 						milestoneWorkItems.add(msProjectTaskBean.get(j).getWorkitem());
 					}
 				}

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -27,7 +27,6 @@ Ext.define('com.trackplus.admin.TreeDetailAssignment',{
 	extend:'com.trackplus.admin.TreeDetail',
 	config: {
 		rootID: null,
-		baseAction: null,
 		rootMessage: null,
 		dynamicIcons: false,
 		//whether to reload the grids after drag and drop:
@@ -37,22 +36,14 @@ Ext.define('com.trackplus.admin.TreeDetailAssignment',{
 		reloadGrids: false
 	},
 	leafDetailByFormLoad: false,
+	gridPlugins:["gridfilters"],
 	assignedGrid: null,
 	availableGrid: null,
 
 	constructor: function(config) {
 		var config = config || {};
-		this.initialConfig = config;
-		Ext.apply(this, config);
-		this.init();
-	},
-
-	/**
-	 * The message to appear first time after selecting this menu entry
-	 * Is should be shown by selecting the root but the root is typically not visible
-	 */
-	getRootMessage: function() {
-		return this.rootMessage;
+		this.initConfig(config);
+		this.initBase();
 	},
 
 	/**
@@ -66,7 +57,7 @@ Ext.define('com.trackplus.admin.TreeDetailAssignment',{
 			disableCaching:true,
 			success: function(response){
 				var responseJson = Ext.decode(response.responseText);
-				if (this.centerPanel!=null) {
+				if (this.centerPanel) {
 					this.mainPanel.remove(this.centerPanel, true);
 				}
 				var northPanel = {
@@ -97,7 +88,7 @@ Ext.define('com.trackplus.admin.TreeDetailAssignment',{
 	},
 
 	getDetailUrl: function() {
-		return this.baseAction + ".action";
+		return this.getBaseAction() + ".action";
 	},
 
 	reloadAssigned: function(urlStr,params) {
@@ -116,23 +107,23 @@ Ext.define('com.trackplus.admin.TreeDetailAssignment',{
 					var nodeToReload=treeStore.getNodeById(nodeIdToReload);
 					var params = {node:nodeIdToReload};
 					var oldParentsToReload = jsonData["parentsToReload"];
-					if (oldParentsToReload!=null && oldParentsToReload.length>0) {
+					if (oldParentsToReload && oldParentsToReload.length>0) {
 						//old parents for department: the persons added to the departments should be automatically removed from other departments
 						//for persons in groups or persons in roles parentsToReload will be null
 						//(should not actualize old parents because a person can me in more groups/roles at the same time)
 						params["oldParentIDs"] = oldParentsToReload.join();
 					}
 					Ext.Ajax.request({
-						url: this.baseAction + "!refreshParent.action",
+						url: this.getBaseAction() + "!refreshParent.action",
 						params: params,
 						scope: this,
 						disableCaching:true,
 						success: function(response){
 							var parents = Ext.decode(response.responseText);
-							if (parents!=null && parents.length>0) {
+							if (parents && parents.length>0) {
 								Ext.Array.forEach(parents, function(parent, index, allItems) {
 									var parentNode=treeStore.getNodeById(parent["id"]);
-									if (parentNode!=null) {
+									if (parentNode) {
 										parentNode.set("text", parent["label"]);
 										parentNode.commit();
 										if (parentNode.isLoaded()) {
@@ -150,17 +141,9 @@ Ext.define('com.trackplus.admin.TreeDetailAssignment',{
 						method:"POST"
 					});
 					//the assignment node was not yet expanded: refresh only the grids, the tree remains unmodified
-					if (this.reloadGrids) {
+					if (this.getReloadGrids()) {
 						this.assignedGrid.store.loadData(jsonData["assigned"], false);
-						var assignedGridFilterData = this.assignedGrid.filters.getFilterData();
-						Ext.Array.each(assignedGridFilterData, function(filter){
-							this.assignedGrid.filters.filters.getByKey(filter.field).setValue(filter.data.value)
-						}, this);
 						this.availableGrid.store.loadData(jsonData["unassigned"], false);
-						var availableGridFilterData = this.availableGrid.filters.getFilterData();
-						Ext.Array.each(availableGridFilterData, function(filter){
-							this.availableGrid.filters.filters.getByKey(filter.field).setValue(filter.data.value)
-						}, this);
 					}
 				} else {
 					com.trackplus.util.requestFailureHandler(result);
@@ -173,7 +156,7 @@ Ext.define('com.trackplus.admin.TreeDetailAssignment',{
 	},
 
 	getIconField: function() {
-		if (this.dynamicIcons) {
+		if (this.getDynamicIcons()) {
 			return "icon";
 		} else {
 			return "iconCls";
@@ -206,7 +189,7 @@ Ext.define('com.trackplus.admin.TreeDetailAssignment',{
 
 	getColumnModel: function() {
 		var renderer;
-		if (this.dynamicIcons) {
+		if (this.getDynamicIcons()) {
 			renderer = this.iconRenderer;
 		} else {
 			renderer = this.iconClsRenderer;
@@ -231,13 +214,14 @@ Ext.define('com.trackplus.admin.TreeDetailAssignment',{
 	getGridFeatures: function() {
 		return null;
 	},
+	
 	getGroupingFeature:function(features){
 		return null;
 	},
 
 	createAssignmentGrids: function(record, response) {
 		var items = [];
-		if (response['assigned']!=null) {
+		if (response['assigned']) {
 			var assignedGridStore = Ext.create('Ext.data.Store', {
 				fields:this.getGridFields(record),
 				data: response['assigned']
@@ -248,6 +232,7 @@ Ext.define('com.trackplus.admin.TreeDetailAssignment',{
 				title: getText('common.lbl.assigned'),
 				hideHeaders: this.hideGridHeaders(),
 				store: assignedGridStore,
+				plugins: this.gridPlugins,
 				columns: this.getColumnModel(),
 				stripeRows:	true,
 				multiSelect: true,
@@ -266,14 +251,14 @@ Ext.define('com.trackplus.admin.TreeDetailAssignment',{
 					listeners: {
 						drop: {scope:this,
 							fn: function(node, data, dropRec, dropPosition) {
-								if(data!=null && data.records!=null && data.records.length>0){
+								if(data && data.records && data.records.length>0){
 									var idsArray = new Array();
 									for ( var i = 0; i < data.records.length; i++) {
 										idsArray[i] = data.records[i].data.id;
 									}
 									var params=new Object();
 									params['assign']=idsArray.join();
-									this.reloadAssigned(this.baseAction+"!assign.action", params);
+									this.reloadAssigned(this.getBaseAction()+"!assign.action", params);
 								}
 							}
 						}
@@ -281,7 +266,7 @@ Ext.define('com.trackplus.admin.TreeDetailAssignment',{
 				}
 			});
 			var assignedGroupingFeature=this.getGroupingFeature(assignedFeatures);
-			if(assignedGroupingFeature!=null){
+			if(assignedGroupingFeature){
 				this.assignedGrid.addListener('afterrender', function(){
 					assignedGroupingFeature.disable();
 				});
@@ -289,7 +274,7 @@ Ext.define('com.trackplus.admin.TreeDetailAssignment',{
 			items.push(this.assignedGrid);
 		}
 
-		if (response['unassigned']!=null) {
+		if (response['unassigned']) {
 			var availableGridStore = Ext.create('Ext.data.Store', {
 				fields:this.getGridFields(record),
 				data: response['unassigned']
@@ -300,6 +285,7 @@ Ext.define('com.trackplus.admin.TreeDetailAssignment',{
 				title: getText('common.lbl.unassigned'),
 				hideHeaders:this.hideGridHeaders(),
 				store: availableGridStore,
+				plugins: this.gridPlugins,
 				columns: this.getColumnModel(),
 				stripeRows:	true,
 				multiSelect: true,
@@ -321,14 +307,14 @@ Ext.define('com.trackplus.admin.TreeDetailAssignment',{
 					listeners: {
 						drop: {scope:this,
 							fn: function(node, data, dropRec, dropPosition) {
-								if(data!=null && data.records!=null && data.records.length>0){
+								if(data && data.records && data.records.length>0){
 									var idsArray = new Array();
 									for ( var i = 0; i < data.records.length; i++) {
 										idsArray[i] = data.records[i].data.id;
 									}
 									var params=new Object();
 									params['unassign']=idsArray.join();
-									this.reloadAssigned(this.baseAction+"!unassign.action", params);
+									this.reloadAssigned(this.getBaseAction()+"!unassign.action", params);
 								}
 							}
 						}
@@ -336,7 +322,7 @@ Ext.define('com.trackplus.admin.TreeDetailAssignment',{
 				}
 			});
 			var availableGroupingFeature=this.getGroupingFeature(availableGridFeatures);
-			if(availableGroupingFeature!=null){
+			if(availableGroupingFeature){
 				this.availableGrid.addListener('afterrender', function(){
 					availableGroupingFeature.disable();
 				});

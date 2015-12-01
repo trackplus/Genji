@@ -1,6 +1,6 @@
 CKEDITOR.editorConfig = function( config )
 {
-	config.extraPlugins='issue,code,task,simpleuploads,image2';
+	config.extraPlugins='issue,code,simpleuploads,image2';
 	config.height = 130;
 	config.toolbar =
 		[

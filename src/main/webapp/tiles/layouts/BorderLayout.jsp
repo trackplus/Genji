@@ -4,7 +4,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 	"http://www.w3.org/TR/html4/loose.dtd">
 
-<%-- $Id: BorderLayout.jsp 1362 2015-09-15 21:05:06Z friedric $ --%>
+<%-- $Id: BorderLayout.jsp 1810 2015-11-13 16:54:55Z adib $ --%>
 
 <s:if test="#application.APPLICATION_BEAN==null">
     <div> Try again later...</div>
@@ -89,10 +89,22 @@
 	<!-- define paths to other resource files: .css, .js, etc. -->
 	<s:if test="#session.DESIGNPATH==null||#session.DESIGNPATH!='silver'">
 		<s:set name="userDesignPath" value="%{'silver'}" scope="session"/>
-	</s:if><s:else>
+	</s:if>
+	<s:else>
 		<s:set name="userDesignPath" value="#session.DESIGNPATH" scope="session"/>
 	</s:else>
-	
+
+<%
+	String theme=request.getParameter("theme");
+	if(theme==null){
+		theme=(String)session.getAttribute("theme");
+		if(theme==null) {
+			theme = "silver";
+		}
+	}
+	session.setAttribute("theme", theme);
+%>
+
 <%
 	String helpLocalePath="";
 	if (session.getAttribute("HELPLOCALE") == null || "".equals(session.getAttribute("HELPLOCALE"))) {
@@ -101,12 +113,13 @@
 		helpLocalePath="help/"+session.getAttribute("HELPLOCALE")+"/";
 	}
 %>
-	<jsp:useBean id="extjsLocale" scope="request" class="java.lang.String"/>
-	<s:if test="#session.EXTJSLOCALE==null">
+	<jsp:useBean id="EXTJSLOCALE" scope="session" class="java.lang.String"/>
+	<!--<jsp:useBean id="extjsLocale" scope="request" class="java.lang.String"/>
+	 <s:if test="#session.EXTJSLOCALE==null">
 		<s:set name="extjsLocale" value="de"  scope="request"/>
 	</s:if><s:else>
 		<s:set name="extjsLocale" value="#session.EXTJSLOCALE" scope="request"/>
-	</s:else>
+	</s:else> -->
 
 	<s:set name="designPath"
 		value="#request.appContextPath+'/design/'+#session.userDesignPath"
@@ -145,12 +158,26 @@
 	<jsp:useBean id="EXTJSTIMEFORMATNOSECONDS" scope="session" class="java.lang.String"/>
 	<jsp:useBean id="EXTJSDECIMALSEPARATOR" scope="session" class="java.lang.String"/>
 
+
+	<%
+		String ua=request.getHeader("User-Agent");
+		boolean isIE9=false;
+		boolean isMSIE = ( ua != null && ua.indexOf( "MSIE" ) != -1 );
+		if(isMSIE) {
+			String tempStr = ua.substring(ua.indexOf("MSIE"), ua.length());
+			String version = tempStr.substring(4, tempStr.indexOf(";")).trim();
+			isIE9 = version.startsWith("9");
+		}
+	%>
+
 	<s:if test="#session.debug!=null">
-	   <script type="text/javascript" src="<%=request.getContextPath()%>/js/ext/ext-all.js?v=<s:property value='#application.TVERSION.label'/>"></script>
+	   <script type="text/javascript" src="<%=request.getContextPath()%>/js/ext/ext-all-debug.js?v=<s:property value='#application.TVERSION.label'/>"></script>
+	   <script type="text/javascript" src="<%=request.getContextPath()%>/js/ext/packages/charts/classic/charts-debug.js?v=<s:property value='#application.TVERSION.label'/>"></script>
 	</s:if>
 
     <s:if test="#session.debug==null">
-	   <script type="text/javascript" src="<%=request.getContextPath()%>/js/ext/ext-all.js?v=<s:property value='#application.TVERSION.label'/>"></script>
+	   <script type="text/javascript" src="<%=request.getContextPath()%>/js/ext/ext-all-debug.js?v=<s:property value='#application.TVERSION.label'/>"></script>
+	   <script type="text/javascript" src="<%=request.getContextPath()%>/js/ext/packages/charts/classic/charts-debug.js?v=<s:property value='#application.TVERSION.label'/>"></script>
 	</s:if>
 
 	<%
@@ -159,52 +186,53 @@
 	  } else fmresp="";
 	%>
 	<%= fmresp %>
-	<script type="text/javascript" src="<%=request.getContextPath()%>/js/ext/locale/ext-lang-<%=extjsLocale%>.js?v=<s:property value='#application.TVERSION.label'/>"></script>
+	<script type="text/javascript" src="<%=request.getContextPath()%>/js/ext/classic/locale/locale-<%=EXTJSLOCALE%>.js?v=<s:property value='#application.TVERSION.label'/>"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/js/lib/log4javascript_production.js"></script>
 
 	<s:set name="ckEditorPath" value="#request.appContextPath+'/js/ckeditor/'"/>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/js/ckeditor/ckeditor.js?v=<s:property value='#application.TVERSION.label'/>"></script>
 
 	<s:if test="#request.dir=='rtl'">
-	  <link rel="stylesheet" type="text/css" href='<%=request.getContextPath()%>/js/ext/resources/css/ext-all-rtl.css?v=<s:property value="#application.TVERSION.label"/>'>
+	  <link rel="stylesheet" type="text/css" href='<%=request.getContextPath()%>/js/ext/resources/css/ext-all-rtl.css?v=<s:property value="#application.TVERSION.label"/>'/>
+	  <link rel="stylesheet" type="text/css" href='<%=request.getContextPath()%>/js/ext/packages/charts/classic/classic/charts-all-debug.scss?v=<s:property value="#application.TVERSION.label"/>'/>
 	</s:if>
 	<s:else>
-		<link rel="stylesheet" type="text/css" href='<%=request.getContextPath()%>/js/ext/resources/css/ext-all.css?v=<s:property value="#application.TVERSION.label"/>'>
-		<!--<link rel="stylesheet" type="text/css" href='<%=request.getContextPath()%>/js/ext/resources/css/ext-all-gray.css?v=<s:property value="#application.TVERSION.label"/>'>-->
-		<!--<link rel="stylesheet" type="text/css" href='<%=request.getContextPath()%>/js/ext/resources/css/ext-all-neptune.css?v=<s:property value="#application.TVERSION.label"/>'>-->
-		<!--<link rel="stylesheet" type="text/css" href='<%=request.getContextPath()%>/js/ext/resources/css/ext-all-access.css?v=<s:property value="#application.TVERSION.label"/>'>-->
-		<link rel="stylesheet" type="text/css" href='<%=request.getContextPath()%>/js/ext/resources/ext-theme-silver/ext-theme-silver-all.css?v=<s:property value="#application.TVERSION.label"/>'>
+		<s:if test="#session.theme!=null">
+			<link rel="stylesheet" type="text/css" href='<%=request.getContextPath()%>/js/ext/classic/theme-<s:property value="#session.theme"/>/resources/theme-<s:property value="#session.theme"/>-all.css?v=<s:property value="#application.TVERSION.label"/>'/>
+		</s:if>
+		<s:else>
+			<link rel="stylesheet" type="text/css" href='<%=request.getContextPath()%>/js/ext/classic/theme-gray/resources/theme-gray-all.css?v=<s:property value="#application.TVERSION.label"/>'>
+			<!--<link rel="stylesheet" type="text/css" href='<%=request.getContextPath()%>/js/ext/classic/theme-silver/resources/theme-silver-all.css?v=<s:property value="#application.TVERSION.label"/>'>-->
+			<!--<link rel="stylesheet" type="text/css" href='<%=request.getContextPath()%>/js/ext/classic/theme-crisp/resources/theme-crisp-all.css?v=<s:property value="#application.TVERSION.label"/>'> -->
+			<!--<link rel="stylesheet" type="text/css" href='<%=request.getContextPath()%>/js/ext/classic/theme-crisp-touch/resources/theme-crisp-touch-all.css?v=<s:property value="#application.TVERSION.label"/>'>-->
+			<!--<link rel="stylesheet" type="text/css" href='<%=request.getContextPath()%>/js/ext/classic/theme-aria/resources/theme-aria-all.css?v=<s:property value="#application.TVERSION.label"/>'>-->
+			<!-- <link rel="stylesheet" type="text/css" href='<%=request.getContextPath()%>/js/ext/classic/theme-triton/resources/theme-triton-all.css?v=<s:property value="#application.TVERSION.label"/>'>  -->
+		</s:else>
 	</s:else>
-	<link rel="stylesheet" type="text/css" href='<%=request.getContextPath()%>/js/ext/ux/css/CheckHeader.css?v=<s:property value="#application.TVERSION.label"/>'>
+	<link rel="stylesheet" type="text/css" href='<%=request.getContextPath()%>/js/ext/ux/css/CheckHeader.css?v=<s:property value="#application.TVERSION.label"/>'/>
 
 	<!-- stylesheet resources -->
-	<link rel="stylesheet" type="text/css" href='<%=designPath%>/style.css?v=<s:property value="#application.TVERSION.label"/>'>
-	<link rel="stylesheet" type="text/css" href='<%=designPath%>/treenodeStyles.css?v=<s:property value="#application.TVERSION.label"/>'>
-	<link rel="stylesheet" type="text/css" href='<%=designPath%>/daisyDiff.css?v=<s:property value="#application.TVERSION.label"/>'>
+
+	<s:if test="#session.theme!=null">
+		<link rel="stylesheet" type="text/css" href='design/<s:property value="#session.theme"/>/style-<s:property value="#session.theme"/>.css?v=<s:property value="#application.TVERSION.label"/>'>
+	</s:if>
+	<s:else>
+		<link rel="stylesheet" type="text/css" href='<%=designPath%>/style.css?v=<s:property value="#application.TVERSION.label"/>'>
+		<link rel="stylesheet" type="text/css" href='<%=designPath%>/style-ext.css?v=<s:property value="#application.TVERSION.label"/>'>
+		<link rel="stylesheet" type="text/css" href='<%=designPath%>/style-icons.css?v=<s:property value="#application.TVERSION.label"/>'>
+		<link rel="stylesheet" type="text/css" href='<%=designPath%>/treenodeStyles.css?v=<s:property value="#application.TVERSION.label"/>'>
+		<link rel="stylesheet" type="text/css" href='<%=designPath%>/daisyDiff.css?v=<s:property value="#application.TVERSION.label"/>'>
+		<link rel="stylesheet" type="text/css" href='<%=designPath%>/lightbox.css'/>
+	</s:else>
+
 	<%
-	  if (com.aurel.track.prop.ApplicationBean.getInstance().getLicenseManager() != null) {
-		  fmresp=com.aurel.track.prop.ApplicationBean.getInstance().getLicenseManager().getFeatureStyles(request);
-	  } else fmresp="";
+/* ## */	  if (com.aurel.track.prop.ApplicationBean.getInstance().getLicenseManager() != null) {
+/* ## */		  fmresp=com.aurel.track.prop.ApplicationBean.getInstance().getLicenseManager().getFeatureStyles(request);
+/* ## */	  } else
+		  fmresp="";
 	%>
-		    <link rel="stylesheet" type="text/css" href='<%=request.getContextPath()%>/design/silver/lightbox.css'/>
 	<%= fmresp %>
 
-
-	<%-- include extra css for iE8 --%>
-	<%
-		String ua=request.getHeader("User-Agent");
-		boolean isIE9=false;
-		boolean isMSIE = ( ua != null && ua.indexOf( "MSIE" ) != -1 );
-		if(isMSIE){
-			String tempStr = ua.substring(ua.indexOf("MSIE"),ua.length());
-			String version = tempStr.substring(4,tempStr.indexOf(";")).trim();
-			isIE9=version.startsWith("9");
-			//if(version.startsWith("8")){
-	%>
-	    <link rel="stylesheet" type="text/css" href='<%=designPath%>/styleIE8.css?v=<s:property value="#application.TVERSION.label"/>'>
-	<%}else{%>
-	    <link rel="stylesheet" type="text/css" href='<%=designPath%>/styleNonIE8.css'>
-	<%}%>
 	<s:if test="#session.externalCss!=null">
 		<link rel="stylesheet" type="text/css" href="<s:property value='#session.externalCss'/>"/>
 	</s:if>
@@ -219,47 +247,6 @@
 		Ext.Loader.setConfig({enabled:true, disableCaching:false});
 		Ext.Loader.setPath('Ext.ux', '../ux');
 		<%=com.aurel.track.plugin.JavaScriptPathExtenderAction.getDirs()%>
-
-        //Ext.require('reportPlugin.FilterHistory');
-		/**
-		 * Bug fix for ext js 4.0.7
-		 * TODO remove for a newer version of ext js
-		 */
-		Ext.override(Ext.data.TreeStore, {
-		    load: function(options) {
-		        options = options || {};
-		        options.params = options.params || {};
-
-		        var me = this,
-		                node = options.node || me.tree.getRootNode(),
-		                root;
-
-		        // If there is not a node it means the user hasnt defined a rootnode yet. In this case lets just
-		        // create one for them.
-		        if (!node) {
-		            node = me.setRootNode({
-		                expanded: true
-		            });
-		        }
-
-		        if (me.clearOnLoad) {
-		            if(node.childNodes!=null){
-                        node.removeAll(false);
-                    }
-		        }
-
-		        Ext.applyIf(options, {
-		            node: node
-		        });
-		        options.params[me.nodeParam] = node ? node.getId() : 'root';
-
-		        if (node) {
-		            node.set('loading', true);
-		        }
-
-		        return me.callParent([options]);
-		    }
-		});
 
 
 		/*global variables*/
@@ -546,7 +533,7 @@
 
 
 		function getLocale(){
-			return '<%=extjsLocale%>';
+			return '<%=EXTJSLOCALE%>';
 		}
         function getScaytLocale(){
             var locale=getLocale();
@@ -661,8 +648,8 @@
 	httpPostLayout.setKeys("loggerClient", "timeStampClient", "levelClient", "messageClient", "exceptionClient", "urlClient");
 	ajaxAppender.setLayout(httpPostLayout);
 	ajaxAppender.setThreshold(log4javascript.Level.DEBUG);
-	// log.addAppender(ajaxAppender);
-	// log.debug("Debug message");
+	log.addAppender(ajaxAppender);
+	log.debug("Debug message");
 	// log.warn("Warning message");
 	// log.error("Error message");
 	//]]>
@@ -672,6 +659,7 @@
 		if("true".equalsIgnoreCase(debug)){
 	%>
 		<%--INCLUDE ALL JS --%>
+       <!--
         <script type="text/javascript" src="<%=request.getContextPath()%>/js/ext/ux/grid/FiltersFeature.js"></script>
         <script type="text/javascript" src="<%=request.getContextPath()%>/js/ext/ux/grid/menu/ListMenu.js"></script>
         <script type="text/javascript" src="<%=request.getContextPath()%>/js/ext/ux/grid/menu/RangeMenu.js"></script>
@@ -683,18 +671,22 @@
         <script type="text/javascript" src="<%=request.getContextPath()%>/js/ext/ux/grid/filter/NumericFilter.js"></script>
         <script type="text/javascript" src="<%=request.getContextPath()%>/js/ext/ux/grid/filter/StringFilter.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/ext/ux/CheckColumn.js"></script>
+		-->
 
         <script type="text/javascript" src="<%=request.getContextPath()%>/js/util/control.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/util/upload.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/util/messaging.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/util/ColorPicker.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/util/AbstractMultiplePicker.js"></script>
+
+	    <script type="text/javascript" src="<%=request.getContextPath()%>/js/util/AbstractMultiplePicker.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/util/MultipleSelectPicker.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/util/SingleSelectPicker.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/util/MultipleTreePicker.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/util/SingleTreePicker.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/util/PersonPickerDialog.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/ext/ux/LinkColumn.js"></script>
+
+
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/util/IssuePicker.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/util/NameAndPathPicker.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/item/itemDetail/Tab.js"></script>
@@ -726,8 +718,9 @@
 
 		<%--item--%>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/item/printItem.js"></script>
+
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/ext/ux/form/MultiSelect.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/ext/ux/layout/component/form/MultiSelect.js"></script>
+
 
 		<%-- itemNavigator--%>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/ext/ux/RowExpander.js"></script>
@@ -739,8 +732,7 @@
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/itemNavigator/filterNavigator.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/itemNavigator/simpleTreeGridView.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/itemNavigator/flatGridView.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/itemNavigator/ganttView.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/itemNavigator/cellInlineEditController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/itemNavigator/CellInlineEditController.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/itemNavigator/liteGridView.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/itemNavigator/wbsView.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/itemNavigator/cardView.js"></script>
@@ -756,9 +748,10 @@
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/util/ajaxErrorHanding.js"></script>
 
 
+		<!--
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/ext/com/track/speedometerPlugin/SpeedometerAxis.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/ext/com/track/speedometerPlugin/SpeedometerSeries.js"></script>
-
+		-->
 
 
 
@@ -785,12 +778,13 @@
 
 		<%--reports --%>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/util/refreshAfterSubmit.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/crudBase.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/treeBase.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/treeDetail.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/treeWithGrid.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/category/categoryConfig.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/category/reportConfig.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/CrudBase.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/ActionBase.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/TreeBase.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/TreeDetail.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/TreeWithGrid.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/category/CategoryConfig.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/category/ReportConfig.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/category/report.js"></script>
 
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/category/reportsInit.js"></script>
@@ -802,47 +796,56 @@
 
 
 		<%--admin--%>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/adminGrid.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/simpleAssignment.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/treeDetailAssignment.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/DeleteController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/GridBase.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/GridControllerBase.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/SimpleAssignment.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/TreeDetailAssignment.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/screenListView.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/projectType/projectType.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/role/roles.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/projectType/ProjectType.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/role/Role.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/role/RoleController.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/admin.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/profile.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/person.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/group.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/userRolesInProjects.js"></script>
-        <script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/filtersInUserMenus.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/department.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/Person.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/PersonController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/Group.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/UserRolesInProject.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/UserRolesInProjectController.js"></script>
+        <script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/FiltersInUserMenu.js"></script>
+        <script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/FiltersInUserMenuController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/Department.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/dashboardAssignment.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/scripting/script.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/server/siteConfig.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/server/emailOutgoing.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/server/ldap.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/server/serverStatus.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/server/loggingConfig.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/server/logonPageText.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/server/sendEmail.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/server/databaseBackup.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/server/databaseRestore.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/scripting/Script.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/scripting/ScriptController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/server/SiteConfig.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/server/EmailOutgoing.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/server/Ldap.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/server/ServerStatus.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/server/LoggingConfig.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/server/LogonPageText.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/server/SendEmail.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/server/DatabaseBackup.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/server/DatabaseRestore.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/myProfile/iCalendar.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/myProfile/notify/notifyConfig.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/myProfile/notify/notifySettingsList.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/myProfile/notify/notifyTriggerList.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/treeConfig/treeConfig.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/treeConfig/fieldConfig.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/treeConfig/assignmentConfig.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/treeConfig/screenConfig.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/userLevel/userLevelConfig.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/list/listConfig.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/objectStatus/objectStatusConfig.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/project/projectConfig.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/myProfile/notify/NotifyConfig.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/myProfile/notify/NotifySettingsList.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/myProfile/notify/NotifySettingsListController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/myProfile/notify/NotifyTriggerList.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/myProfile/notify/NotifyTriggerListController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/treeConfig/TreeConfig.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/treeConfig/FieldConfig.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/treeConfig/AssignmentConfig.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/treeConfig/ScreenConfig.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/userLevel/UserLevel.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/list/ListConfig.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/objectStatus/ObjectStatus.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/project/ProjectConfig.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/project/projectCockpit.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/project/projectCopy.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/project/projectRelease.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/project/Release.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/project/versionControl.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/project/roleAssignment.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/project/RoleAssignment.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/action/importWizard.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/action/importExcel.js"></script>
     	<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/action/importDocx.js"></script>
@@ -876,8 +879,8 @@
 	<s:if test="dependentModules!=null">
 		<s:iterator value="dependentModules">
 			<script type="text/javascript" src='<%=request.getContextPath()%>/<s:property value="id"/>/js/<s:property value="id"/>.js'></script>
-
-			<%if(isIE9){%>
+			<%
+			if(isIE9){%>
 				<s:if test="haveIE9Css">
 					<link rel="stylesheet" type="text/css" href='<%=request.getContextPath()%>/<s:property value="id"/>/design/silver/<s:property value="id"/>_IE9.css?v=<s:property value="#application.TVERSION.label"/>'>
 				</s:if>
@@ -889,7 +892,6 @@
 				<link rel="stylesheet" type="text/css" href='<%=request.getContextPath()%>/<s:property value="id"/>/design/silver/<s:property value="id"/>.css?v=<s:property value="#application.TVERSION.label"/>'>
 			<%}%>
 		</s:iterator>
-
 	</s:if>
 
 	<s:if test="#application.APPLICATION_BEAN.AppTypeDesk==#application.APPLICATION_BEAN.AppType">
@@ -922,8 +924,9 @@
 	Ext.onReady(function(){
 		Ext.QuickTips.init();
 		Ext.History.init();
+
 		borderLayout.createView();
-		borderLayout.view.doLayout();
+		borderLayout.view.updateLayout();
 		borderLayout.notifyReady.call(borderLayout);
 
 		CKEDITOR.on('dialogDefinition', function(ev) {
@@ -947,7 +950,7 @@
 	Ext.Ajax.on('requestcomplete',function(conn, response, options, eOpts){
 		var jsonData=null;
 		try {
-			jsonData=Ext.decode(response.responseText);
+			jsonData=Ext.decode(response.responseText,true);
 		}catch(e){};
 		if(jsonData!=null&&jsonData.success===false){
 			if(jsonData.errorCode==-1000){

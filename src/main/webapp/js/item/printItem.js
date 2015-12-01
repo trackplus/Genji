@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -55,8 +55,8 @@ Ext.define('com.trackplus.item.PrintItemAction',{
 	},
 	isVisibleAction:function(toolbarItem){
 		var id=toolbarItem.id;
-		if(id==com.trackplus.item.ToolbarItem.NAVIGATION_NEXT||
-				id==com.trackplus.item.ToolbarItem.NAVIGATION_PREV){
+		if(id===com.trackplus.item.ToolbarItem.NAVIGATION_NEXT||
+				id===com.trackplus.item.ToolbarItem.NAVIGATION_PREV){
 			return false;
 		}
 		return true;
@@ -66,8 +66,8 @@ Ext.define('com.trackplus.item.PrintItemAction',{
 		return {
 			overflowText:getText(toolbarItem.labelKey),
 			tooltip:getText(toolbarItem.tooltipKey),
-			iconCls: toolbarItem.cssClass+'20',
-			disabled:toolbarItem.condition==false,
+			iconCls: toolbarItem.cssClass+'16',
+			disabled:toolbarItem.condition===false,
 			text:getText(toolbarItem.labelKey),
 			handler:function(btn){
 				me.executeToolbarAction.call(me,toolbarItem);
@@ -78,8 +78,8 @@ Ext.define('com.trackplus.item.PrintItemAction',{
 	},
 	saveSuccess:function(form, action){
 		var me=this;
-		if(me.successHandler!=null){
-			me.successHandler.call(me.scope!=null?me.scope:me,action.result.data,me.successExtra);
+		if(me.successHandler){
+			me.successHandler.call(me.scope?me.scope:me,action.result.data,me.successExtra);
 		}
 	},
 	saveFailure:function(form, action){
@@ -89,12 +89,6 @@ Ext.define('com.trackplus.item.PrintItemAction',{
 		var me=this;
 		var actionID=jsonData.actionID;
 		var parentID=jsonData.parentID;
-		/*if(me.successExtra==null){
-			me.successExtra={};
-		}
-		me.successExtra['actionID']=me.actionID;
-		me.successExtra['workItemID']=me.workItemID;*/
-
 		var itemAction=Ext.create('com.trackplus.item.ItemActionDialog',{
 			workItemID:me.workItemID,
 			actionID:actionID,
@@ -122,8 +116,8 @@ Ext.define('com.trackplus.item.PrintItemAction',{
 		var itemAction=Ext.create('com.trackplus.item.ItemActionDialog',{
 			workItemID:itemID,
 			actionID:-2,//printItem
-			successHandler:extraAction!=null?extraAction.refreshChildren:me.refreshChildren,
-			scope:extraAction!=null?extraAction:me,
+			successHandler:extraAction?extraAction.refreshChildren:me.refreshChildren,
+			scope:extraAction?extraAction:me,
 			modal:false
 		});
 		itemAction.execute.call(itemAction);
@@ -141,7 +135,7 @@ Ext.define('com.trackplus.layout.PrintItemLayout',{
 		var me = this;
 		me.callParent(arguments);
 		var data=me.initData;
-		if(data.workItemID!=null){
+		if(data.workItemID){
 			me.printItemAction=Ext.create('com.trackplus.item.PrintItemAction',{
 				workItemID:data.workItemID,
 				successHandler:me.successHandler,
@@ -156,7 +150,7 @@ Ext.define('com.trackplus.layout.PrintItemLayout',{
 	},
 	createCenterPanel:function(){
 		var me=this;
-		if(me.initData.workItemID==null){
+		if(CWHF.isNull(me.initData.workItemID)){
 			return Ext.create('Ext.Component',{
 				cls:'errorDiv ulist',
 				html:'<ul><li>'+me.initData.error+'</li></ul>'

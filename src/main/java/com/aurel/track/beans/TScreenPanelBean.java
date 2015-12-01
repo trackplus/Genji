@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -55,6 +55,7 @@ public class TScreenPanelBean
 	private IField[][] fieldsArray;
 	private static ScreenPanelDAO screenPanelDAO = DAOFactory.getFactory().getScreenPanelDAO();
 	
+	@Override
 	public void setFields(List<IField> fields){
 		this.fields=new ArrayList<IField>();
 		if(fields!=null){
@@ -71,6 +72,7 @@ public class TScreenPanelBean
 	 * @param col
 	 * @return
 	 */
+	@Override
 	public  IField getScreenField(int row, int col){
 		if(fieldsArray==null){
 			fieldsArray=new IField[this.getRowsNo().intValue()][this.getColsNo().intValue()];
@@ -100,6 +102,7 @@ public class TScreenPanelBean
 		fields.add(field);
 	}
 
+	@Override
 	public FieldWrapper[][] getFieldWrappers() {
 		if(fieldWrappers==null){
 			fieldWrappers=new FieldWrapper[getRowsNo().intValue()][getColsNo().intValue()];
@@ -111,6 +114,7 @@ public class TScreenPanelBean
 		this.fieldWrappers = fieldWrappers;
 	}
 
+	@Override
 	public List<IField> getFields() {
 		return fields;
 	}
@@ -119,6 +123,7 @@ public class TScreenPanelBean
 	/**A
 	 * serialize Bean
 	 */
+	@Override
 	public Map<String, String> serializeBean() {
 		Map<String, String> attributesMap = new HashMap<String, String>();
 		
@@ -143,6 +148,7 @@ public class TScreenPanelBean
 	/**
 	 * deserialize bean
 	 */
+	@Override
 	public ISerializableLabelBean deserializeBean(Map<String, String> attributes) {		
 		String strObjectID = attributes.get("objectID");
 		if (strObjectID!=null) {
@@ -167,6 +173,7 @@ public class TScreenPanelBean
 	 * @param 
 	 * @return 
 	 */
+	@Override
 	public boolean considerAsSame(ISerializableLabelBean serializableLabelBean,
 			Map<String, Map<Integer, Integer>> matchesMap) {
 		if (serializableLabelBean==null) {
@@ -179,18 +186,6 @@ public class TScreenPanelBean
 			return true;
 		}
 		///
-		/*String externalName = getName();
-		String internalName = screenPanelBean.getName();	
-		Integer externalParent = getParent();
-		Integer internalParent = screenPanelBean.getParent();
-		Map<Integer, Integer> parentMatches = matchesMap.get(ExchangeFieldNames.SCREENTAB);
-		//a field matches if the name and the parent matches 		
-		if (externalName!=null && internalName!=null && externalParent!=null &&
-			internalParent!=null && externalParent!=null && parentMatches!=null && 
-			parentMatches.get(externalParent)!=null) {
-				return externalName.equals(internalName) && 
-					   parentMatches.get(externalParent).equals(internalParent);			
-		}*/
 		return false;
 	}
 	
@@ -199,6 +194,7 @@ public class TScreenPanelBean
 	 * @param 
 	 * @return 
 	 */
+	@Override
 	public Integer saveBean(ISerializableLabelBean serializableLabelBean, 
 			Map<String, Map<Integer, Integer>> matchesMap) {		
 		TScreenPanelBean screenPanelBean = (TScreenPanelBean)serializableLabelBean;		
@@ -212,6 +208,7 @@ public class TScreenPanelBean
 		return screenPanelDAO.save(screenPanelBean);
 	}
 
+	@Override
 	public IPanel cloneMe(){
 		TScreenPanelBean panelBean=new TScreenPanelBean();
 		panelBean.setColsNo(this.getColsNo());

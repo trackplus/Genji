@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -41,12 +41,13 @@ public class TSitePeer extends BasePeer<Tsite> implements SiteDAO {
 
     private static final long serialVersionUID = -130849904047755361L;
     private static final Logger LOGGER = LogManager.getLogger(TSitePeer.class);
-        
+
     /**
      * Load the one and only TSITE object from the database
      * @return
      */
-    public Tsite load() { 
+    @Override
+    public Tsite load() {
 		EntityManager em = TpEm.getEntityManager();
 		List<Tsite> tsites = em.createQuery("SELECT s FROM Tsite s").getResultList();
 		em.close();
@@ -57,14 +58,15 @@ public class TSitePeer extends BasePeer<Tsite> implements SiteDAO {
 		}
     }
 
-	
+
 	/**
 	 * loads, updates and saves the Tsite in a synchronized method
 	 * @param fieldValues
 	 */
+	@Override
 	synchronized public void loadAndSaveSynchronized(Map<Integer, Object> fieldValues) {
 		Tsite site = load();
-		
+
 		if (site==null || fieldValues==null || fieldValues.isEmpty()) {
 			return;
 		}
@@ -108,7 +110,7 @@ public class TSitePeer extends BasePeer<Tsite> implements SiteDAO {
 				break;
 			case Tsite.COLUMNIDENTIFIERS.POPSERVERNAME:
 				site.setMailReceivingServerName((String)value);
-				break;				
+				break;
 			case Tsite.COLUMNIDENTIFIERS.POPPORT:
 				site.setMailReceivingPort((Integer)value);
 				break;
@@ -124,7 +126,7 @@ public class TSitePeer extends BasePeer<Tsite> implements SiteDAO {
 			case Tsite.COLUMNIDENTIFIERS.ISLDAPON:
 				site.setIsLDAPOn((String)value);
 				break;
-				
+
 			case Tsite.COLUMNIDENTIFIERS.LDAPSERVERURL:
 				site.setLdapServerURL((String)value);
 				break;
@@ -135,7 +137,7 @@ public class TSitePeer extends BasePeer<Tsite> implements SiteDAO {
 			case Tsite.COLUMNIDENTIFIERS.DESCRIPTIONLENGTH:
 				site.setDescriptionLength((Integer)value);
 				break;
-				
+
 			case Tsite.COLUMNIDENTIFIERS.HISTORYENTITY:
 				site.setHistoryEntity((String)value);
 				break;
@@ -153,10 +155,10 @@ public class TSitePeer extends BasePeer<Tsite> implements SiteDAO {
 				break;
 			case Tsite.COLUMNIDENTIFIERS.ANALYZER:
 				site.setAnalyzer((String)value);
-				break;			
+				break;
 			case Tsite.COLUMNIDENTIFIERS.LASTSERVERURL:
 				site.setLastServerURL((String)value);
-				break;	
+				break;
 			case Tsite.COLUMNIDENTIFIERS.LASTBASEURL:
 				site.setLastBaseURL((String)value);
 				break;
@@ -169,17 +171,18 @@ public class TSitePeer extends BasePeer<Tsite> implements SiteDAO {
 			}
 		}
 		;
-	}	
-	
+	}
+
 	/**
 	 * Sets the SMTPUser and SMTPPassword fields to null
 	 *
 	 */
+	@Override
 	public void clearSMTPPassword() {
 		Tsite site = load();
 		site.setSmtpPassword(null);
 		EntityManager em = TpEm.getEntityManager();
 		em.persist(site);
 	}
-	
+
 }

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -219,9 +220,6 @@ public abstract class AbstractFieldTypeRT implements IFieldTypeRT {
 	 * @param fieldID
 	 * @param parameterCode
 	 */
-	/*public boolean isCalculated(Integer fieldID, Integer parameterCode) {
-		return false;
-	}*/
 	
 	/**
 	 * Whether this field is a custom label field
@@ -574,8 +572,9 @@ public abstract class AbstractFieldTypeRT implements IFieldTypeRT {
 			try {
 				return (Comparable)value;
 			} catch (Exception e) {
-				LOGGER.warn("Casting " + value.toString() + " of class " + value.getClass().getName() + 
-						" to comparable failed with " + e.getMessage(), e);
+				LOGGER.warn("Casting value " + value.toString() + " of class " + value.getClass().getName() + 
+						" to comparable for field " + fieldID + " failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		return null;
@@ -589,9 +588,6 @@ public abstract class AbstractFieldTypeRT implements IFieldTypeRT {
 	 * the other system dependences should be specified 
 	 * @return
 	 */
-	/*public Map getSystemDependences(Integer fieldID) {
-		return null;
-	}*/
 	
 	/**
 	 * Get the map of internal dependences 
@@ -602,9 +598,6 @@ public abstract class AbstractFieldTypeRT implements IFieldTypeRT {
 	 * Do not override for system or custom single fields 
 	 * @return
 	 */
-	/*public Map getInternalDependences(Integer fieldID) {
-		return null;
-	}*/
 	
 	/**
 	 * Gets the Matcher converter corresponding to the type

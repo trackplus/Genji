@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -116,9 +116,9 @@ Ext.define('com.trackplus.itemNavigator.FilterView',{
 
 	createCtxMenu: function(tree, record,evtObj) {
 		var me=this;
-		if (record!=null) {
+		if (record) {
 			var nodeType = record.data["nodeType"];
-			if (nodeType!=null) {
+			if (nodeType) {
 				switch (nodeType){
 					case "2_8": {
 						//project or release
@@ -145,7 +145,7 @@ Ext.define('com.trackplus.itemNavigator.FilterView',{
 					}
 					case "2_7":{
 						var entityID=record.data["objectID"];
-						if(entityID==6){
+						if(entityID===6){
 							//trash
 							var items = [];
 							items.push({
@@ -285,7 +285,7 @@ Ext.define('com.trackplus.itemNavigator.FilterView',{
 						}
 					});
 				}
-				if(issueTypes!=null&&issueTypes.length>0){
+				if(issueTypes&&issueTypes.length>0){
 					items.push('-');
 					for(var i=0;i<issueTypes.length;i++){
 						var issueType=issueTypes[i];
@@ -298,7 +298,7 @@ Ext.define('com.trackplus.itemNavigator.FilterView',{
 								releaseID:entityID>0?entityID:null
 							},
 							handler:function(btn){
-								borderLayout.controller.createNewIssue.call(borderLayout.controller,this.issueTypeID,this.projectID,this.releaseID);
+								borderLayout.borderLayoutController.createNewIssue.call(borderLayout.borderLayoutController,this.issueTypeID,this.projectID,this.releaseID);
 							}
 						});
 					}
@@ -338,11 +338,10 @@ Ext.define('com.trackplus.itemNavigator.FilterView',{
 		var projectConfig=Ext.create("com.trackplus.admin.project.ProjectConfig",{rootID:projectID});
 		projectConfig.addOrEditProject(loadParams,submitParams, title, me, me.reloadAll);
 	},
-	
+
 	assignRoles:function(projectID, title) {
 		var roleAssignment = Ext.create("com.trackplus.admin.project.RoleAssignment", {
             rootID : projectID,
-            baseAction : "roleAssignments",
             treeWidth : 200
         });
 		var width = 1200;
@@ -355,13 +354,13 @@ Ext.define('com.trackplus.itemNavigator.FilterView',{
 		};
 		var windowConfig = Ext.create('com.trackplus.util.WindowConfig', windowParameters);
 		windowConfig.showWindowByConfig(this);
-		
+
 	},
-	
+
 	addRelease:function(projectID, releaseID){
 		var me=this;
 		var node=""+projectID;
-		if(releaseID!=null){
+		if(releaseID){
 			node=node+"_"+releaseID;
 		}
 		var loadParams={
@@ -376,7 +375,7 @@ Ext.define('com.trackplus.itemNavigator.FilterView',{
 	addChildRelease:function(projectID, releaseID){
 		var me=this;
 		var node=""+projectID;
-		if(releaseID!=null){
+		if(releaseID){
 			node=node+"_"+releaseID;
 		}
 		var loadParams={
@@ -391,7 +390,7 @@ Ext.define('com.trackplus.itemNavigator.FilterView',{
 	editRelease:function(projectID, releaseID){
 		var me=this;
 		var node=""+projectID;
-		if(releaseID!=null){
+		if(releaseID){
 			node=node+"_"+releaseID;
 		}
 		var loadParams={
@@ -434,7 +433,7 @@ Ext.define('com.trackplus.itemNavigator.FilterView',{
 		Ext.MessageBox.confirm(getText("common.lbl.delete",releaseLbl),
 			getText("common.lbl.removeWarning",releaseLbl),
 			function(btn){
-				if (btn=="no") {
+				if (btn==="no") {
 					return false;
 				} else {
 					me.deleteSelected.call(me, projectID, releaseID);
@@ -455,18 +454,19 @@ Ext.define('com.trackplus.itemNavigator.FilterView',{
 			scope: me,
 			success: function(response){
 				var responseJson = Ext.decode(response.responseText);
-				if (responseJson.success==true) {
+				if (responseJson.success===true) {
 					//delete done (no replacement were needed)
 					me.reloadAll();
 				} else {
 					var errorCode = responseJson.errorCode;
-					if (errorCode!=null) {
-						if (errorCode==1){//ERROR_CODE_NEED_REPLACE
+					if (errorCode) {
+						if (errorCode===1){//ERROR_CODE_NEED_REPLACE
 							//render dialog for selecting the replacement
 							var windowItems = [{xtype : 'label',itemId: 'replacementWarning'},
 								CWHF.createSingleTreePicker("Replacement",
 									"replacementID", [], null,
-									{allowBlank:false,
+									{itemId:"replacementID",
+										allowBlank:false,
 										blankText: getText('common.err.replacementRequired',releaseLbl),
 										labelWidth:150,
 										margin:'5 0 0 0'
@@ -509,16 +509,16 @@ Ext.define('com.trackplus.itemNavigator.FilterView',{
 	replaceOptionPostDataProcess: function(data, panel, extraConfig) {
 		var replacementWarning = panel.getComponent('replacementWarning');
 		var replacementWarningText = data['replacementWarning'];
-		if (replacementWarningText==null) {
+		if (CWHF.isNull(replacementWarningText)) {
 			var label = data['label'];
 			replacementWarningText = getText("common.lbl.replacementWarning", this.getEntityLabel(extraConfig), label);
 			replacementWarningText = replacementWarningText + getText("common.lbl.cancelDeleteAlert");
 		}
 		replacementWarning.setText(replacementWarningText, false);
 		var replacementList = panel.getComponent('replacementID');
-		replacementList.updateData(data["replacementTree"]);
+		replacementList.updateMyOptions(data["replacementTree"]);
 		var replacementListLabel = data.replacementListLabel;
-		if (replacementListLabel==null) {
+		if (CWHF.isNull(replacementListLabel)) {
 			replacementListLabel =  this.getTitle('common.lbl.replacement', extraConfig);
 		}
 		replacementList.labelEl.dom.innerHTML = replacementListLabel;
@@ -626,7 +626,6 @@ Ext.define('com.trackplus.itemNavigator.FilterView',{
 
 
 
-//controller
 Ext.define('com.trackplus.itemNavigator.FilterController',{
 	extend:'Ext.Base',
 	config: {
@@ -644,14 +643,14 @@ Ext.define('com.trackplus.itemNavigator.FilterController',{
 	},
 	createView:function(){
 		var me=this;
-		if(me.model==null){
+		if(CWHF.isNull(me.model)){
 			me.view=null;
 			return null;
 		}
 		var id=me.queryContext.queryType+"_"+me.queryContext.queryID;
-		me.filterView=me.createTreeView(me.model['queryView'],me.subFilterVisible==true,id);
+		me.filterView=me.createTreeView(me.model['queryView'],me.subFilterVisible===true,id);
 		var myTitle=getText('common.lbl.queries');
-		if(me.subFilterVisible==true){
+		if(me.subFilterVisible===true){
 			me.subFilterView=me.createTreeView(me.model['subFilterView']);
 			myTitle=myTitle+" > "+getText('common.lbl.subfilter');
 		}else{
@@ -659,12 +658,12 @@ Ext.define('com.trackplus.itemNavigator.FilterController',{
 		}
 		var filterItems=new Array();
 		filterItems.push(me.filterView);
-		if(me.subFilterView!=null){
+		if(me.subFilterView){
 			filterItems.push(me.subFilterView);
 		}
 		me.toolPlus=Ext.create('Ext.panel.Tool',{
 			type:'plus',
-			hidden:(me.subFilterVisible==true),
+			hidden:(me.subFilterVisible===true),
 			tooltip:getText('common.lbl.subfilter'),
 			handler:function(){
 				me.toolPlus.setVisible(false);
@@ -675,7 +674,7 @@ Ext.define('com.trackplus.itemNavigator.FilterController',{
 		me.toolMinus=Ext.create('Ext.panel.Tool',{
 			type:'minus',
 			tooltip:getText('common.lbl.subfilter.clear'),
-			hidden:!(me.subFilterVisible==true),
+			hidden:!(me.subFilterVisible===true),
 			handler:function(){
 				me.toolPlus.setVisible(true);
 				me.toolMinus.setVisible(false);
@@ -683,7 +682,7 @@ Ext.define('com.trackplus.itemNavigator.FilterController',{
 			}
 		});
 		var width=225;
-		if(me.subFilterView!=null){
+		if(me.subFilterView){
 			width=450;
 		}
 
@@ -691,7 +690,7 @@ Ext.define('com.trackplus.itemNavigator.FilterController',{
 			region:'west',
 			bodyBorder:false,
 			border:false,
-			margins:Ext.isIE?'0 -4 0 0':'0 -5 0 0',
+			//margin:Ext.isIE?'0 -4 0 0':'0 -6 0 0',
 			width:width,
 			minWidth:width,
 			collapsible:true,
@@ -718,7 +717,7 @@ Ext.define('com.trackplus.itemNavigator.FilterController',{
 	createTreeView:function(model,border,nodeID){
 		var me=this;
 		var myCls='westTreeNavigator';
-		if(border==true){
+		if(border===true){
 			myCls=myCls+' westTreeNavigator-borderRight'
 		}
 		var treeView=Ext.create('com.trackplus.itemNavigator.FilterView',{
@@ -727,10 +726,10 @@ Ext.define('com.trackplus.itemNavigator.FilterController',{
 			cls:myCls,
 			filterController:this
 		});
-		if(nodeID!=null){
+		if(nodeID){
 			treeView.addListener('afterrender',function(){
 				var record = treeView.getStore().getNodeById(nodeID);
-				if(record!=null){
+				if(record){
 					treeView.getSelectionModel().select(record);
 					treeView.expandPath(record.getPath());
 				}
@@ -754,7 +753,7 @@ Ext.define('com.trackplus.itemNavigator.FilterController',{
 				return false;
 			}
 			/*var verifyAllowDropAJAX=overModel.data.verifyAllowDropAJAX;
-			 if(verifyAllowDropAJAX==true){
+			 if(verifyAllowDropAJAX===true){
 			 me.dropOnNodeAjaxRequest.call(me,node,data, overModel, dropPosition,dropFunction,eOpts);
 			 }else{
 			 me.dropOnNode.call(me,node,data, overModel, dropPosition,dropFunction,eOpts);
@@ -767,9 +766,9 @@ Ext.define('com.trackplus.itemNavigator.FilterController',{
 			return true;
 		});
 		treeView.store.on('beforeload',function( store, operation, eOpts){
-			if(operation.node!=null){
+			if(operation.node){
 				var extraParams = me.getTreeExpandExtraParams.call(me,operation.node);
-				if (extraParams!=null) {
+				if (extraParams) {
 					treeView.store.proxy.extraParams = extraParams;
 				}
 			}
@@ -790,7 +789,7 @@ Ext.define('com.trackplus.itemNavigator.FilterController',{
 		var me=this;
 		me.subFilterVisible=!me.subFilterVisible;
 		var myTitle=getText('common.lbl.queries');
-		if(me.subFilterVisible==true){
+		if(me.subFilterVisible===true){
 			var cloneChildren=Ext.clone(me.model['subFilterView']);
 			me.subFilterView=me.createTreeView(cloneChildren);
 
@@ -813,7 +812,7 @@ Ext.define('com.trackplus.itemNavigator.FilterController',{
 						easing: 'easeOut',
 						duration: 500,
 						callback:function(){
-							me.view.doLayout();
+							me.view.updateLayout();
 						}
 					});
 				}
@@ -844,7 +843,7 @@ Ext.define('com.trackplus.itemNavigator.FilterController',{
 							easing: 'easeOut',
 							duration: 500,
 							callback:function(){
-								me.view.doLayout();
+								me.view.updateLayout();
 							}
 						});
 					}
@@ -862,11 +861,11 @@ Ext.define('com.trackplus.itemNavigator.FilterController',{
 		var me=this;
 		var needToClear=false;
 		var selections=me.subFilterView.getSelectionModel().getSelection();
-		if(selections!=null&&selections.length>0){
+		if(selections&&selections.length>0){
 			var nodeData=selections[0].data;
 			var nodeObjectID=nodeData.objectID;
 			var nodeType=nodeData.nodeType;
-			if(nodeType!=null&&nodeType!=''){
+			if(nodeType&&nodeType!==''){
 				needToClear=true;
 			}
 		}
@@ -890,7 +889,7 @@ Ext.define('com.trackplus.itemNavigator.FilterController',{
 		var node=me.filterView.getStore().getNodeById(statusNodeID);
 		me.markValidDropNodes(node,validDropTargetIds,partialDropTargetIds);
 
-		if(me.subFilterVisible==true){
+		if(me.subFilterVisible===true){
 			var fieldIDs=new Array();
 			fieldIDs.push(4);//STATE
 			//fieldIDs.push(2);//ISSUETYPE
@@ -907,14 +906,14 @@ Ext.define('com.trackplus.itemNavigator.FilterController',{
 	markValidDropNodes:function(node,validDropTargetIds,partialDropTargetIds){
 		var me=this;
 		var children = node.childNodes;
-		if (children != null) {
+		if (children ) {
 			for (var i = 0; i < children.length; i++) {
 				var child = children[i];
 				var nodeID = child.data['id'];
 				var id = parseInt(nodeID.substring(nodeID.lastIndexOf("_") + 1));
 				var cls = child.get('cls');
-				var valid = validDropTargetIds == null || Ext.Array.indexOf(validDropTargetIds, id) != -1;
-				var partialValid = partialDropTargetIds != null && Ext.Array.indexOf(partialDropTargetIds, id) != -1;
+				var valid = CWHF.isNull(validDropTargetIds) || Ext.Array.indexOf(validDropTargetIds, id) !== -1;
+				var partialValid = partialDropTargetIds  && Ext.Array.indexOf(partialDropTargetIds, id) !== -1;
 				if (valid) {
 					child.set("cls", cls + " treeItem-dropOk");
 					child.set('canDrop',true);
@@ -932,11 +931,11 @@ Ext.define('com.trackplus.itemNavigator.FilterController',{
 	},
 	clearMarkedNodes:function(node){
 		var children=node.childNodes;
-		if(children!=null){
+		if(children){
 			for(var i=0;i<children.length;i++){
 				var child=children[i];
 				var cls=child.get('cls');
-				if(cls!=null){
+				if(cls){
 					cls=cls.replace(" treeItem-dropOk","");
 					cls=cls.replace(" treeItem-dropPartial","");
 					cls=cls.replace(" treeItem-dropDisabled","");
@@ -953,7 +952,7 @@ Ext.define('com.trackplus.itemNavigator.FilterController',{
 		var statusNodeID="section_status";
 		var node=me.filterView.getStore().getNodeById(statusNodeID);
 		me.clearMarkedNodes(node);
-		if(me.subFilterVisible==true){
+		if(me.subFilterVisible===true){
 			var fieldIDs=new Array();
 			fieldIDs.push(4);//STATE
 			//fieldIDs.push(2);//ISSUETYPE
@@ -969,7 +968,7 @@ Ext.define('com.trackplus.itemNavigator.FilterController',{
 	filterByNode:function(rowModel,record){
 		var me=this;
 		var nodeType=record.data.nodeType;
-		if(me.skipEmptyNodeType==true&&(nodeType==null||nodeType=='')){
+		if(me.skipEmptyNodeType===true&&(CWHF.isNull(nodeType)||nodeType==='')){
 			return false;
 		}
 		me.itemNavController.filterByNodeType.call(me.itemNavController,record.data);
@@ -984,7 +983,7 @@ Ext.define('com.trackplus.itemNavigator.FilterController',{
 			}catch(e){
 				workItemID=-1;
 			}
-			if(!isNaN(workItemID)&&workItemID!=-1){
+			if(!isNaN(workItemID)&&workItemID!==-1){
 				workItems+=workItemID+",";
 			}
 		}
@@ -993,7 +992,7 @@ Ext.define('com.trackplus.itemNavigator.FilterController',{
 	dropOnNodeAjaxRequest:function(node,data, overModel, dropPosition,dropFunction,eOpts){
 		var me=this;
 		var workItems =me.getSelectedItemIds(data);
-		if(workItems==""){
+		if(workItems===""){
 			return false;
 		}
 		var nodeObjectID=overModel.data.objectID;
@@ -1025,13 +1024,13 @@ Ext.define('com.trackplus.itemNavigator.FilterController',{
 	dropOnNode:function(node,data, overModel){
 		var me=this;
 		var  workItems =me.getSelectedItemIds(data);
-		if(workItems==""){
+		if(workItems===""){
 			return false;
 		}
 		var nodeObjectID=overModel.data.objectID;
 		var nodeType=overModel.data.nodeType;
 		var dropHandlerCls=overModel.data.dropHandlerCls;
-		if(dropHandlerCls==null||dropHandlerCls==""){
+		if(CWHF.isNull(dropHandlerCls)||dropHandlerCls===""){
 			dropHandlerCls='com.trackplus.itemNavigator.DropHandler';
 		}
 		var workItemID=workItems[0];
@@ -1084,12 +1083,12 @@ Ext.define('com.trackplus.itemNavigator.DropHandler',{
 			success: function(result){
 				var jsonData=Ext.decode(result.responseText);
 				me.itemNavController.view.setLoading(false);
-				if(jsonData.success==true){
+				if(jsonData.success===true){
 					me.itemNavController.refresh.call(me.itemNavController,null,null,false,function(){
-						if(me.workItemIndex!=null){
+						if(me.workItemIndex){
 							me.itemNavController.issueListFacade.selectItemByIndex.call(me.itemNavController.issueListFacade,me.workItemIndex);
 						}else{
-							if(me.workItemID!=null){
+							if(me.workItemID){
 								me.itemNavController.issueListFacade.selectItem.call(me.itemNavController.issueListFacade,me.workItemID);
 							}else{
 								me.itemNavController.issueListFacade.selectItem.call(me.itemNavController.issueListFacade,me.workItems.split(","));
@@ -1109,7 +1108,7 @@ Ext.define('com.trackplus.itemNavigator.DropHandler',{
 	},
 	confirmationSubmitHandler:function(params){
 		var me=this;
-		if(params==null){
+		if(CWHF.isNull(params)){
 			params={};
 		}
 		params['params.confirmSave']='true';
@@ -1121,7 +1120,7 @@ Ext.define('com.trackplus.itemNavigator.DropHandler',{
 		switch (type){
 			case me.TYPE_COMMON:{
 				var title=getText("common.err.failure");
-				if(jsonData.title!=null){
+				if(jsonData.title){
 					title=jsonData.title;
 				}
 				Ext.MessageBox.show({
@@ -1135,15 +1134,15 @@ Ext.define('com.trackplus.itemNavigator.DropHandler',{
 			case me.TYPE_MASS_OPERATION:{
 				var massEx=jsonData.massOperation;
 				var errorCode=massEx.errorCode;
-				if(errorCode!=null&&errorCode==4){
+				if(errorCode&&errorCode===4){
 					var title="Error";
-					if(massEx.title!=null){
+					if(massEx.title){
 						title=massEx.title;
 					}
 					Ext.MessageBox.confirm(title,
 						massEx.errorMessage,
 						function(btn){
-							if (btn=="no") {
+							if (btn==="no") {
 								return false;
 							} else {
 								me.confirmationSubmitHandler.call(me,params);
@@ -1151,7 +1150,7 @@ Ext.define('com.trackplus.itemNavigator.DropHandler',{
 						});
 				}else{
 					var title="Error";
-					if(massEx.title!=null){
+					if(massEx.title){
 						title=massEx.title;
 					}
 					Ext.MessageBox.show({
@@ -1179,7 +1178,7 @@ Ext.define('com.trackplus.itemNavigator.PopupDropHandler',{
 	execute:function(){
 		var me=this;
 		me.formPanel=me.createFormPanel();
-		if(me.formPanel==null){
+		if(CWHF.isNull(me.formPanel)){
 			me.ajaxRequest.call(me,{
 				workItems:me.workItems,
 				nodeType:me.nodeType,
@@ -1191,16 +1190,16 @@ Ext.define('com.trackplus.itemNavigator.PopupDropHandler',{
 	},
 	openDialog:function(){
 		var me=this;
-		if(me.modalDialog!=null){
+		if(me.modalDialog){
 			me.modalDialog.destroy();
 		}
-		if(me.width==null){
+		if(CWHF.isNull(me.width)){
 			me.width=600;
 		}
-		if(me.height==null){
+		if(CWHF.isNull(me.height)){
 			me.height=400;
 		}
-		if(me.autoScroll==null){
+		if(CWHF.isNull(me.autoScroll)){
 			me.autoScroll=false;
 		}
 		me.modalDialog = new Ext.Window({

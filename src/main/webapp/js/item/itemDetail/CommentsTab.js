@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -30,7 +30,7 @@ Ext.define('com.aurel.trackplus.itemDetail.CommentsTab',{
 	initComponent : function(){
 		var me = this;
 		var commentNumber=0;
-		if(me.jsonData.commentNumber!=null){
+		if(me.jsonData.commentNumber){
 			commentNumber=me.jsonData.commentNumber;
 		}
 		me.title=getText('item.tabs.comment.lbl.title')+" ("+commentNumber+")";
@@ -45,7 +45,7 @@ Ext.define('com.aurel.trackplus.itemDetail.CommentsTab',{
 	},
 	createCommentsConfig:function(){
 		var me=this;
-		if(me.jsonData!=null){
+		if(me.jsonData){
 			me.readOnly=me.jsonData.readOnly;
 		}
 		var gridConfig=new com.trackplus.itemDetail.GridConfig();
@@ -65,20 +65,20 @@ Ext.define('com.aurel.trackplus.itemDetail.CommentsTab',{
 				selectionchange: function(sm, selections) {
 					var btnDelete=me.gridConfig.grid.down("#deleteCommentBtn");
 					var btnEdit=me.gridConfig.grid.down("#editCommentBtn");
-					if(selections==null||selections.length==0){
+					if(CWHF.isNull(selections)||selections.length===0){
 						btnDelete.setDisabled(true);
 						btnEdit.setDisabled(true);
 					}else{
-						if(selections.length==1){
+						if(selections.length===1){
 							var rowData=selections[0].data;
-							btnEdit.setDisabled(rowData.editable==false);
-							btnDelete.setDisabled(rowData.editable==false);
+							btnEdit.setDisabled(rowData.editable===false);
+							btnDelete.setDisabled(rowData.editable===false);
 						}else{
 							btnEdit.setDisabled(true);
 							var enableDelete=false;
 							for(var i=0;i<selections.length;i++){
 								var rowData=selections[i].data;
-								if(rowData.editable==true){
+								if(rowData.editable===true){
 									enableDelete=true;
 									break;
 								}
@@ -119,7 +119,7 @@ Ext.define('com.aurel.trackplus.itemDetail.CommentsTab',{
 		gridConfig.dblClickHandler=me.editComment;
 
 		gridConfig.updateCol=function(col,layout,index){
-			if(layout.dataIndex=='comment'){
+			if(layout.dataIndex==='comment'){
 				col.flex=1;
 			}
 		};
@@ -130,39 +130,62 @@ Ext.define('com.aurel.trackplus.itemDetail.CommentsTab',{
 	},
 	editComment:function(){
 		var me=this;
-		if(me.gridConfig.grid.getStore().getCount()==1){
+		if(me.gridConfig.grid.getStore().getCount()===1){
 			//commentsGridConfig.grid.getSelectionModel().selectFirstRow();
 		}
 		var selections=me.gridConfig.grid.getSelectionModel().getSelection();
-		if(selections==null){
+		if(CWHF.isNull(selections)){
 			return;
 		}
 		var rowData=selections[0].data;
 		var	localizedComment=com.trackplus.TrackplusConfig.getText('common.history.lbl.comment');
-		if(rowData.editable==false){
+		if(rowData.editable===false){
 			com.trackplus.util.showHtmlDetail(localizedComment,rowData.comment);
 			return;
 		}
-		var originalComment=rowData.comment;
+		//var originalComment=rowData.comment;
 		var commentID=rowData.id;
-		me.openEditComment(originalComment,commentID);
+		borderLayout.setLoading(true);
+		Ext.Ajax.request({
+			url: "itemDetail!editComment.action",
+			params:{commentID:commentID},
+			disableCaching:true,
+			success: function(response){
+				var responseJson = Ext.decode(response.responseText);
+				var jsonData=responseJson.data;
+				var originalComment=jsonData.comment;
+				borderLayout.setLoading(false);
+				me.openEditComment(originalComment,commentID);
+			},
+			failure: function(){
+				borderLayout.setLoading(false);
+			},
+			method:'POST'
+
+		});
 	},
 	openEditComment:function(originalValue,commentID){
 		var me=this;
 		var commentCfg={
 			anchor:'100%',
 			allowBlank:false,
-			cls:'ckeField100Percent'
+			cls:'rteField ckeField100Percent'
 		};
-		if(originalValue!=null){
+		if(originalValue){
 			commentCfg.value=originalValue;
 		}
-		me.txtArea=CWHF.createRichTextEditorField('comment',commentCfg,true,true);
+		var ckeditorCfg={
+			workItemID:me.workItemID,
+			projectID:me.projectID,
+			useInlineTask:true,
+			useBrowseImage:true
+		}
+		me.txtArea=CWHF.createRichTextEditorField('comment',commentCfg,true,true,ckeditorCfg);
 
 		var dialogCfg= new com.trackplus.itemDetail.DialogConfig(me.workItemID,me.projectID,me.issueTypeID);
 		dialogCfg.title=com.trackplus.TrackplusConfig.getText("item.tabs.comment.lbl.edit");
 		var urlSave='saveComment.action?lastModified='+me.lastModified;
-		if(commentID!=null){
+		if(commentID){
 			urlSave+='&commentID='+commentID;
 		}
 		dialogCfg.formPanel=Ext.create('Ext.form.Panel', {
@@ -194,7 +217,7 @@ Ext.define('com.aurel.trackplus.itemDetail.CommentsTab',{
 		dialogCfg.validate=function(){
 			var idDescription=me.txtArea.id+'-inputEl';
 			var o=CKEDITOR.instances[idDescription];
-			if(o!=null){
+			if(o){
 				o.updateElement();
 			}
 			var form=this.formPanel.getForm();

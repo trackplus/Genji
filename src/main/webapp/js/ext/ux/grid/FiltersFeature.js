@@ -202,7 +202,7 @@ Ext.define('Ext.ux.grid.FiltersFeature', {
 
         // Add event and filters shortcut on grid panel
         grid.filters = me;
-        grid.addEvents('filterupdate');
+        //grid.addEvents('filterupdate');
         me.createFilters();
     },
 

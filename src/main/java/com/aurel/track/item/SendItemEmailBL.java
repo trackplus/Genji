@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -200,7 +200,6 @@ public class SendItemEmailBL {
 	public static void successEmail(Integer itemID,Integer personID, Locale locale,List<TPersonBean> recipients,String subject,String messageBody){
 		LOGGER.debug("Send email:\""+subject+"\" succesfully!");
 		StringBuffer comment=new StringBuffer();
-		//ResourceBundle rb=ResourceBundleManager.getInstance().getResourceBundle(ResourceBundleManager.APPLICATION_RESOURCES_STRUTS2, locale);
 		String commentTitle;
 		try{
 			commentTitle=LocalizeUtil.getLocalizedTextFromApplicationResources("item.action.sendItemEmail.lbl.comment.sendEmailTo", locale);
@@ -329,14 +328,14 @@ public class SendItemEmailBL {
 		root.put("fieldLabels",fieldLabels);
 		root.put("fieldDisplayValues",fieldDisplayValues);
 		try{
-			URL propURL = ApplicationBean.getApplicationBean().getServletContext().getResource("/WEB-INF/classes/template/printItem.ftl");
+			URL propURL = ApplicationBean.getInstance().getServletContext().getResource("/WEB-INF/classes/template/printItem.ftl");
 			InputStream in = propURL.openStream();
 			Template fmtemplate = new Template("name", new InputStreamReader(in));
 			StringWriter w = new StringWriter();
 			try {
 				fmtemplate.process(root, w);
 			} catch (Exception e) {
-				LOGGER.error("Processing reminder template " + fmtemplate.getName() + " failed with " + e.getMessage(), e);
+				LOGGER.error("Processing reminder template " + fmtemplate.getName() + " failed with " + e.getMessage());
 			}
 			w.flush();
 			infoHtml= w.toString();

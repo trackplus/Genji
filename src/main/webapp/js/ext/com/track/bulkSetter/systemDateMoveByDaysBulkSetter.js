@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -31,19 +31,20 @@ Ext.define("js.ext.com.track.bulkSetter.systemDateMoveByDaysBulkSetter", {
 		jsonData: {}
 	},
 	initComponent: function() {
-		this.itemId = this.jsonData['name'];
-		this.name = this.jsonData['name'];
+		this.dateItemId = this.jsonData.dateItemId;
 		this.adjustCheckboxName = this.jsonData.adjustCheckboxName;
-		this.value = this.jsonData['value'];
+		this.adjustCheckboxItemId = this.jsonData.adjustCheckboxItemId;
+		this.value = this.jsonData.value;
 		this.callParent();
-		this.add(CWHF.createNumberField(null, this.name, 0, null, null,
+		this.add(CWHF.createNumberField(null, this.jsonData.name, 0, null, null,
 				{disabled:this.jsonData.disabled,
 				value: this.value,
-				itemId: this.name,
+				itemId: this.dateItemId,
 				width:150}));
-		if (this.adjustCheckboxName!=null) {
+		if (this.adjustCheckboxName) {
 			this.add(CWHF.createCheckbox(this.jsonData.adjustCheckboxLabel, this.adjustCheckboxName,
-					{labelIsLocalized:true,
+					{itemId: this.adjustCheckboxItemId,
+					labelIsLocalized:true,
 					disabled:this.jsonData.disabled,
 					value:this.jsonData.adjustCheckboxValue},
 					{change: {fn:this.disableOpposite, scope:this}}));
@@ -56,25 +57,25 @@ Ext.define("js.ext.com.track.bulkSetter.systemDateMoveByDaysBulkSetter", {
 	disableOpposite: function(checkboxField, newValue, oldValue, options) {
 		var oppositeField = this.jsonData['oppositeField'];
 		var expressionPanel = this.ownerCt.ownerCt.getComponent('expressionPanel'+oppositeField);
-		var selectedFieldCheckbox = expressionPanel.getComponent("selectedFieldMap.field"+oppositeField);
-		if (selectedFieldCheckbox!=null) {
+		var selectedFieldCheckbox = expressionPanel.getComponent("selectedFieldItemIdfield"+oppositeField);
+		if (selectedFieldCheckbox) {
 			selectedFieldCheckbox.setDisabled(newValue);
 		}
-		var setterCombo = expressionPanel.getComponent("setterRelationMap.field"+oppositeField);
-		var valuePart = expressionPanel.getComponent("displayValueMap.field"+oppositeField);
+		var setterCombo = expressionPanel.getComponent("setterRelationItemIdfield"+oppositeField);
+		var valuePart = expressionPanel.getComponent("displayValueMapfield"+oppositeField);
 		if (newValue) {
-			if (setterCombo!=null) {
+			if (setterCombo) {
 				setterCombo.setDisabled(newValue);
 			}
-			if (valuePart!=null) {
+			if (valuePart) {
 				valuePart.setDisabled(newValue);
 			}
 		} else {
 			if (selectedFieldCheckbox.getValue()) {
-				if (setterCombo!=null) {
+				if (setterCombo) {
 					setterCombo.setDisabled(newValue);
 				}
-				if (valuePart!=null) {
+				if (valuePart) {
 					valuePart.setDisabled(newValue);
 				}
 			}
@@ -86,14 +87,14 @@ Ext.define("js.ext.com.track.bulkSetter.systemDateMoveByDaysBulkSetter", {
 	 */
 	getFieldValueJson: function() {
 		var valueJson = new Object();
-		var numberField = this.getComponent(this.name);
-		if (numberField!=null) {
-			if (numberField.getValue()!=null) {
+		var numberField = this.getComponent(this.dateItemId);
+		if (numberField) {
+			if (numberField.getValue()) {
 				valueJson[this.name] = numberField.getValue();
 			}
 		}
-		var checkBox = this.getComponent(this.adjustCheckboxName);
-		if (checkBox!=null) {
+		var checkBox = this.getComponent(this.adjustCheckboxItemId);
+		if (checkBox) {
 			valueJson[this.adjustCheckboxName] = checkBox.getValue();
 		}
 		return valueJson;
@@ -107,8 +108,8 @@ Ext.define("js.ext.com.track.bulkSetter.systemDateMoveByDaysBulkSetter", {
 	},
 
 	getAdjustCheckBoxValue: function() {
-		var adjustCheckBox = this.getComponent(this.adjustCheckboxName);
-		if (adjustCheckBox!=null) {
+		var adjustCheckBox = this.getComponent(this.adjustCheckboxItemId);
+		if (adjustCheckBox) {
 			return adjustCheckBox.getValue();
 		}
 		return null;

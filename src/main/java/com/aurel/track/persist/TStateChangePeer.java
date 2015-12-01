@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -57,6 +57,7 @@ public class TStateChangePeer
     /**
 	 * Gets the maximal objectID
 	 */
+	@Override
 	public Integer getMaxObjectID() {
 		String max = "max(" + STATECHANGEKEY + ")";
 		Criteria crit = new Criteria();		
@@ -64,7 +65,7 @@ public class TStateChangePeer
 		try {
 			return ((Record) doSelectVillageRecords(crit).get(0)).getValue(1).asIntegerObj();
 		} catch (Exception e) {
-			LOGGER.error("Getting the maximal objectID failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the maximal objectID failed with " + e.getMessage());
 		}
 		return null;
 	}
@@ -75,6 +76,7 @@ public class TStateChangePeer
 	 * @param chunkInterval
 	 * @return
 	 */
+	@Override
 	public List<TStateChangeBean> getNextChunk(Integer actualValue, Integer chunkInterval) {
 		List torqueList = new ArrayList();
 		SimpleCriteria crit = new SimpleCriteria();
@@ -84,7 +86,7 @@ public class TStateChangePeer
 		try {
 			torqueList = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the state changes from " + actualValue + " to " + toValue + " failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the state changes from " + actualValue + " to " + toValue + " failed with " + e.getMessage());
 		}
 		return convertTorqueListToBeanList(torqueList);
 	}
@@ -93,6 +95,7 @@ public class TStateChangePeer
 	 * Load all StateChangeBeans 
 	 * @return
 	 */
+	@Override
 	public List loadAll() {
 		List torqueList = new ArrayList();
 		Criteria crit = new Criteria();
@@ -100,7 +103,7 @@ public class TStateChangePeer
 		try {
 			torqueList = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the state changes for all workItems failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the state changes for all workItems failed with " + e.getMessage());
 		}
 		return convertTorqueListToBeanList(torqueList);
 	}
@@ -110,6 +113,7 @@ public class TStateChangePeer
 	 * @param stateChangeBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TStateChangeBean stateChangeBean) {
 		TStateChange tStateChange;		
 		try {
@@ -117,7 +121,7 @@ public class TStateChangePeer
 			tStateChange.save();
 			return tStateChange.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a state change failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a state change failed with " + e.getMessage());
 			return null;
 		}	
 	}

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -35,7 +35,7 @@ Ext.define('com.aurel.trackplus.itemDetail.WatchersTab',{
 	initComponent : function(){
 		var me = this;
 		var watchersNumber=0;
-		if(me.jsonData.watchersNumber!=null){
+		if(me.jsonData.watchersNumber){
 			watchersNumber=me.jsonData.watchersNumber;
 		}
 		me.title=getText('item.printItem.lbl.watchers')+" ("+watchersNumber+")";
@@ -45,7 +45,7 @@ Ext.define('com.aurel.trackplus.itemDetail.WatchersTab',{
 	},
 	createWatchersConfig:function(){
 		var me=this;
-		if(me.jsonData!=null){
+		if(me.jsonData){
 			//me.readOnly=me.jsonData.readOnly;
 			me.myID=me.jsonData.myID;
 			me.meAsC=me.jsonData.meAsC;
@@ -73,7 +73,7 @@ Ext.define('com.aurel.trackplus.itemDetail.WatchersTab',{
 					selectionchange: function(sm, selections) {
 						var selections=me.gridConfig.selectionModel.getSelection();
 						var btnDelete=me.gridConfig.grid.down("#deleteWatcherBtn");
-						if(selections==null||selections.length==0){
+						if(CWHF.isNull(selections)||selections.length===0){
 							btnDelete.setDisabled(true);
 						}else{
 							btnDelete.setDisabled(false);
@@ -129,7 +129,7 @@ Ext.define('com.aurel.trackplus.itemDetail.WatchersTab',{
 	addRole:function(role, name, w, h){
 		var me=this;
 		var params={projectID:me.projectID,issueTypeID:me.issueTypeID};
-		if(me.workItemID!=null){
+		if(me.workItemID){
 			params.workItemID=me.workItemID;
 		}
 		Ext.Ajax.request({
@@ -142,13 +142,13 @@ Ext.define('com.aurel.trackplus.itemDetail.WatchersTab',{
 				var data = Ext.decode(text);
 				var personItems=[];
 				var persons=data.persons;
-				if(persons!=null){
+				if(persons){
 					for(var i=0;i<persons.length;i++){
 						personItems.push(persons[i]);
 					}
 				}
 				var groups=data.groups;
-				if(groups!=null){
+				if(groups){
 					for(var i=0;i<groups.length;i++){
 						personItems.push(groups[i]);
 					}
@@ -156,7 +156,7 @@ Ext.define('com.aurel.trackplus.itemDetail.WatchersTab',{
 
 				var personPikerDialog=Ext.create('com.trackplus.util.PersonPickerDialog',{
 					title:name,
-					data:personItems,
+					options:personItems,
 					width:300,
 					height:250,
 					includeEmail:false,
@@ -171,14 +171,14 @@ Ext.define('com.aurel.trackplus.itemDetail.WatchersTab',{
 	},
 	addPersonHandler:function(value,role){
 		var me=this;
-		if(value==null&&value.length==0){
+		if(CWHF.isNull(value)&&value.length===0){
 			return ;
 		}
 		var urlStr='addRaciRole!save.action';
 		var selectedPersons='';
 		for(var i=0;i<value.length;i++){
 			var id=value[i].data.id;
-			if(i==0){
+			if(i===0){
 				selectedPersons=id;
 			}else{
 				selectedPersons+=','+id;
@@ -229,14 +229,14 @@ Ext.define('com.aurel.trackplus.itemDetail.WatchersTab',{
 		var i;
 		for(i=0;i<selections.length;i++){
 			row=selections[i].data;
-			if(row.raciRole=="i"){
-				if(row.isGroup=="true"){
+			if(row.raciRole==="i"){
+				if(row.isGroup==="true"){
 					deletedInformantGroups=deletedInformantGroups+row.objectID+";";
 				}else{
 					deletedInformants=deletedInformants+row.objectID+";";
 				}
 			}else{
-				if(row.isGroup=="true"){
+				if(row.isGroup==="true"){
 					deletedConsultantGroups=deletedConsultantGroups+row.objectID+";";
 				}else{
 					deletedConsultants=deletedConsultants+row.objectID+";";
@@ -244,7 +244,7 @@ Ext.define('com.aurel.trackplus.itemDetail.WatchersTab',{
 			}
 		}
 		var urlStr='deleteWatchers.action?projectID='+me.projectID+"&issueTypeID="+me.issueTypeID;
-		if(me.workItemID!=null){
+		if(me.workItemID){
 			urlStr=urlStr+'&workItemID='+me.workItemID;
 		}
 		Ext.Ajax.request({
@@ -282,7 +282,7 @@ Ext.define('com.aurel.trackplus.itemDetail.WatchersTab',{
 	doMe:function(operation,raciRole){
 		var me=this;
 		var urlStr='editConsultants.action?projectID='+me.projectID+"&issueTypeID="+me.issueTypeID;
-		if(me.workItemID!=null){
+		if(me.workItemID){
 			urlStr=urlStr+'&workItemID='+me.workItemID;
 		}
 		Ext.Ajax.request({
@@ -315,7 +315,7 @@ Ext.define('com.aurel.trackplus.itemDetail.WatchersTab',{
 	},
 	refreshCallback:function(r,options,success){
 		var me=this;
-		if(success==false){
+		if(success===false){
 			return;
 		}
 		this.meAsC=false;
@@ -323,7 +323,7 @@ Ext.define('com.aurel.trackplus.itemDetail.WatchersTab',{
 		var i=0;
 		for(i=0;i<r.length;i++){
 			if(r[i].data.objectID===this.myID){
-				if(r[i].data.raciRole=='i'){
+				if(r[i].data.raciRole==='i'){
 					this.meAsI=true;
 				}else{
 					this.meAsC=true;

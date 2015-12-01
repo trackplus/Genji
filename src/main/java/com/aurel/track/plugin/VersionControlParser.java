@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -22,11 +22,8 @@
 
 package com.aurel.track.plugin;
 
-import java.util.List;
-import java.util.Map;
-
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.xml.sax.Attributes;
 
 import com.aurel.track.plugin.VersionControlDescriptor.BrowserDescriptor;
@@ -37,6 +34,7 @@ import com.aurel.track.plugin.VersionControlDescriptor.BrowserDescriptor;
 public class VersionControlParser implements DescriptorParser {
 	private static final Logger LOGGER = LogManager.getLogger(VersionControlParser.class);
 	
+	@Override
 	public PluginDescriptor createDescriptor(String uri, String localName, String qName, Attributes attributes){
 		VersionControlDescriptor descriptor = new VersionControlDescriptor();
 		descriptor.setName(attributes.getValue("name"));
@@ -55,6 +53,7 @@ public class VersionControlParser implements DescriptorParser {
 		}
 		return descriptor;
 	}
+	@Override
 	public Object handleInternalElement(PluginDescriptor descriptor,Object parent, String uri, String localName, String qName, Attributes attributes){
 		if(qName.equalsIgnoreCase("browser")){
 			if(descriptor instanceof VersionControlDescriptor){
@@ -69,6 +68,7 @@ public class VersionControlParser implements DescriptorParser {
     }
 	
 	
+	@Override
 	public void setInternalElementValue(PluginDescriptor descriptor,Object parent, String uri, String localName, String qName, String value){
 		if(qName.equalsIgnoreCase("changeset-link")){
 			if(parent!=null&&parent instanceof BrowserDescriptor){
@@ -76,7 +76,6 @@ public class VersionControlParser implements DescriptorParser {
 					BrowserDescriptor browser=(BrowserDescriptor) parent;
 					browser.setChangesetLink(value);
 				}catch (Exception e) {
-					//ignore;
 				}
 			}
 		}
@@ -86,7 +85,6 @@ public class VersionControlParser implements DescriptorParser {
 					BrowserDescriptor browser=(BrowserDescriptor) parent;
 					browser.setAddedLink(value);
 				}catch (Exception e) {
-					//ignore;
 				}
 			}
 		}
@@ -96,7 +94,6 @@ public class VersionControlParser implements DescriptorParser {
 					BrowserDescriptor browser=(BrowserDescriptor) parent;
 					browser.setModifiedLink(value);
 				}catch (Exception e) {
-					//ignore;
 				}
 			}
 		}
@@ -106,7 +103,6 @@ public class VersionControlParser implements DescriptorParser {
 					BrowserDescriptor browser=(BrowserDescriptor) parent;
 					browser.setReplacedLink(value);
 				}catch (Exception e) {
-					//ignore;
 				}
 			}
 		}
@@ -116,7 +112,6 @@ public class VersionControlParser implements DescriptorParser {
 					BrowserDescriptor browser=(BrowserDescriptor) parent;
 					browser.setDeletedLink(value);
 				}catch (Exception e) {
-					//ignore;
 				}
 			}
 		}
@@ -126,7 +121,6 @@ public class VersionControlParser implements DescriptorParser {
 					BrowserDescriptor browser=(BrowserDescriptor) parent;
 					browser.setBaseURL(value);
 				}catch (Exception e) {
-					//ignore;
 				}
 			}
 		}

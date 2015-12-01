@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -462,7 +462,6 @@ public class FieldsManagerRT {
 		//because it is not a system/custom field and it will be saved separately
 		//(not in InputFieldTypeRT.processHistorySave(), but in HistorySaverBL.insertFieldChange())
 		workItemContext.setFieldChangeID(fieldID);
-		//workItemContext.setUpdateLastEdit(false);
 		TWorkItemBean workItemBean = workItemContext.getWorkItemBean();
 		if (workItemBean!=null) {
 			workItemBean.setAttachment(newFileNameDescription);
@@ -529,7 +528,6 @@ public class FieldsManagerRT {
 	 */
 	public static WorkItemContext viewOrEdit(Integer person, Integer workItemID, boolean isView, Locale locale,boolean dropDownsNeeded){
 		WorkItemContext workItemContext= load(person, workItemID, locale, SystemActions.EDIT);
-		//if(dropDownsNeeded){
 			updateModifyWorkItem(workItemContext, isView, false, dropDownsNeeded);
 		//}
 		return workItemContext;
@@ -609,7 +607,6 @@ public class FieldsManagerRT {
 		if (stateID!=null) {
 			workItemBean.setStateID(stateID);
 		}
-		//updateModifyWorkItem(workItemContext, false, projectChanged, true);
 		prepareConfigsAndRestrictions(workItemContext, false);
 		setComputedFields(workItemBean, workItemContext.getPresentFieldIDs(), workItemContext.getFieldConfigs(), workItemContext.getFieldSettings());
 		prepareDropDownContainerAndDependences(workItemContext, false, false, projectChanged);
@@ -641,7 +638,6 @@ public class FieldsManagerRT {
 		WorkItemContext workItemContext = prepareWorkItemContext(person, locale, actionID, workItemBean.getProjectID(), workItemBean.getListTypeID());
 		workItemContext.setWorkItemBean(workItemBean);
 		//save a copy of the original workItem in workItemContext for later use
-		//workItemContext.setWorkItemBeanOriginal(workItemBean.copyShallow());
 		if (LOGGER.isDebugEnabled() && start!=null) {
 			Date end = new Date();
 			LOGGER.debug("Loading the context for itemID " + workItemID+ " lasted " + new Long(end.getTime()-start.getTime()).toString() + " ms");
@@ -1145,7 +1141,6 @@ public class FieldsManagerRT {
 		//by changing to cost/effort tab (prepare method)
 		workItemContext.setAccountingForm(null);
 		//AccountingBL.loadAllFromDb(workItemContext.getAccountingForm(), workItemBean,
-		//		personDAO.loadByPrimaryKey1(workItemContext.getPerson()), workItemContext.getLocale());
 		if (LOGGER.isDebugEnabled() && start!=null) {
 			Date end = new Date();
 			LOGGER.debug("preparing drop downs for item lasted " + new Long(end.getTime()-start.getTime()).toString() + " ms");
@@ -1849,7 +1844,7 @@ public class FieldsManagerRT {
 			try {
 				workItemKey = workItemDAO.save(workItemBean);
 			} catch (ItemPersisterException e) {
-				LOGGER.error("Saving of the workItem failed with " + e.getMessage(), e);
+				LOGGER.error("Saving of the workItem failed with " + e.getMessage());
 			}
 			if (workItemKey==null) {
 				//the save failed for some reason (see log files)
@@ -1884,7 +1879,10 @@ public class FieldsManagerRT {
 					String sessionID=workItemContext.getSessionID();
 					if (sessionID!=null&&attachList!=null && !attachList.isEmpty()) {
 						//save form web interface (not from email submission)
-						AttachBL.approve(attachList,sessionID,workItemBean.getObjectID());
+						List<Integer> attachIDList=AttachBL.approve(attachList,sessionID,workItemBean.getObjectID());
+						if(attachIDList!=null&&attachIDList.size()==attachList.size()){
+							AttachBL.replaceInlineImagesDescription(workItemBean.getObjectID(), attachList, attachIDList);
+						}
 						haveNewAttachments=true;
 					}
 				}
@@ -1894,15 +1892,14 @@ public class FieldsManagerRT {
 				if (emailAttachmentList!=null && !emailAttachmentList.isEmpty()) {
 					emailAttachmentIDList=AttachBL.storeEmailAttachments(emailAttachmentList, workItemBean.getObjectID());
 					if(isCreate){
-						AttachBL.replaceInlineImagesDescription(workItemBean.getObjectID(), emailAttachmentList, emailAttachmentIDList);
+						AttachBL.replaceEmailInlineImagesDescription(workItemBean.getObjectID(), emailAttachmentList, emailAttachmentIDList);
 					}else{
-						workItemBean.setComment(AttachBL.replaceInlineImagesText(emailAttachmentList, emailAttachmentIDList, workItemID, workItemBean.getComment()));
+						workItemBean.setComment(AttachBL.replaceInlineImagesTextMail(emailAttachmentList, emailAttachmentIDList, workItemID, workItemBean.getComment()));
 					}
 					haveNewAttachments=true;
 				}
 				if(haveNewAttachments){
 					//add the attachments of the workItem to the attachments index
-					//LuceneIndexer.addToAttachmentIndex(workItemBean);
 					List<TAttachmentBean> attachments = AttachBL.getAttachments(workItemBean.getObjectID());
 					if (attachments!=null && !attachments.isEmpty()) {
 						for (TAttachmentBean attachmentBean : attachments) {
@@ -2151,35 +2148,7 @@ public class FieldsManagerRT {
 				}
 				actualizeAncestorBottomUpDate(parentID, bottomUpFields, newValuesMap, oldValuesMap, LookupContainer.getPersonBean(personID), locale);
 			}
-			/*if (parentChanged) {
-				if (parentOriginal!=null) {
-					//similar as the startDate and endDate would be set to null in the "old location", triggering the recalculation of bottom up dates
-					FieldsManagerRT.actualizeAncestorBottomUpDates(parentOriginal, null, null, startDateOriginal, endDateOriginal);
-				}
-				if (parentID!=null) {
-					//as a new child workItem would be created for parentID
-					FieldsManagerRT.actualizeAncestorBottomUpDates(parentID, startDate, endDate, null, null);
-				}
-			} else {
-				//start or end date change
-				actualizeAncestorBottomUpDates(parentID, startDate, endDate, startDateOriginal, endDateOriginal);
-			}*/
 		}
-		/*if (systemDateChanged && cascadeChanges) {
-			Map<String, List<TWorkItemLinkBean>> successorWorkItemLinksByLinkTypeMap = workItemContext.getSuccessorWorkItemLinksByLinkTypeMap();
-			Map<String, List<TWorkItemLinkBean>> predecessorWorkItemLinksByLinkTypeMap = workItemContext.getPredecessorWorkItemLinksByLinkTypeMap();
-			Set<String> workItemsLinksOfTypesFound = new HashSet<String>();
-			if (successorWorkItemLinksByLinkTypeMap!=null) {
-				workItemsLinksOfTypesFound.addAll(successorWorkItemLinksByLinkTypeMap.keySet());
-			}
-			if (predecessorWorkItemLinksByLinkTypeMap!=null) {
-				workItemsLinksOfTypesFound.addAll(predecessorWorkItemLinksByLinkTypeMap.keySet());
-			}
-			for (String linkTypePlugin : workItemsLinksOfTypesFound) {
-				ILinkType linkType = (ILinkType)PluginManager.getInstance().getPluginClass(PluginManager.LINKTYPE_ELEMENT, linkTypePlugin);
-				linkType.afterIssueSave(workItemBean, workItemBeanOriginal, personID, successorWorkItemLinksByLinkTypeMap.get(linkTypePlugin), predecessorWorkItemLinksByLinkTypeMap.get(linkTypePlugin), locale);
-			}
-		}*/
 		if (ApplicationBean.getInstance().getSiteBean().getSummaryItemsBehavior()) {
 			if (parentChanged || archivedOrDeletedOriginal!=archivedOrDeleted) {
 				/**
@@ -2215,8 +2184,9 @@ public class FieldsManagerRT {
 	 * @param newValuesMap
 	 * @param oldValuesMap
 	 * @param locale
+	 * FIXME it should be synchronized but performance is also important
 	 */
-	private static synchronized void actualizeAncestorBottomUpDate(Integer parentID, Set<Integer> bottomUpFieldIDs,
+	private static /*synchronized*/ void actualizeAncestorBottomUpDate(Integer parentID, Set<Integer> bottomUpFieldIDs,
 			Map<Integer, Object> newValuesMap, Map<Integer, Object> oldValuesMap, TPersonBean person, Locale locale) {
 		if (bottomUpFieldIDs!=null && !bottomUpFieldIDs.isEmpty()) {
 			Set<Integer> visistedAscendentsSet = new HashSet<Integer>();
@@ -2249,16 +2219,6 @@ public class FieldsManagerRT {
 				parentID = null;
 				if (parentValueChanged) {
 					try {
-						/*Date newStartDate = ItemMoveBL.getStartDate(parentWorkItem);
-						Date newEndDate =  ItemMoveBL.getEndDate(parentWorkItem);
-						if(originalStartDate != null && originalEndDate != null
-								&& newStartDate != null && newEndDate != null) {
-							TWorkItemBean workItemBeanOriginal = parentWorkItem.copyShallow();
-							ItemMoveBL.setStartDate(workItemBeanOriginal, originalStartDate);
-							ItemMoveBL.setEndDate(workItemBeanOriginal, originalEndDate);
-							System.out.println("**** Call for parent: " + parentWorkItem.getObjectID());
-							ItemMoveBL.moveItem(workItemBeanOriginal, newStartDate, newEndDate, true, true, null, person, locale);
-						}*/
 						//WorkItemContext workItemContext = createImportContext(parentWorkItem, bottomUpFieldIDs, person, locale, fieldConfigs, fieldSettings);
 						workItemDAO.saveSimple(parentWorkItem);
 						//go up the ascendent hierarchy only if further ancestor exists and date change was needed
@@ -2272,8 +2232,7 @@ public class FieldsManagerRT {
 								parentID = null;
 							}
 						}
-					} catch (ItemPersisterException e) {
-					}
+					} catch (ItemPersisterException e) {}
 				}
 			}
 		}
@@ -2613,7 +2572,6 @@ public class FieldsManagerRT {
 									//trigger confirmation message on the UI
 									errorData = new ErrorData("item.conf.openClosedParent");
 									errorData.setConfirm(true);
-									//errorData.setConfirmationMessageKey("item.conf.openClosedParent");
 									errorsList.add(errorData);
 								}
 							}
@@ -2639,7 +2597,7 @@ public class FieldsManagerRT {
 			try {
 				parentWorkItemBean = workItemDAO.loadByPrimaryKey(parentID);
 			} catch (ItemLoaderException e) {
-				LOGGER.error("Loading the parent " + parentID + " failed with " + e.getMessage(), e);
+				LOGGER.error("Loading the parent " + parentID + " failed with " + e.getMessage());
 			}
 			if (parentWorkItemBean!=null) {
 				TStateBean parentStateBean = LookupContainer.getStatusBean(parentWorkItemBean.getStateID());

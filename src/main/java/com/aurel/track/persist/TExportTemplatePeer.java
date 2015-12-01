@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -69,6 +69,7 @@ public class TExportTemplatePeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TExportTemplateBean loadByPrimaryKey(Integer objectID) {
 		TExportTemplateBean templateBean = null;
 		TExportTemplate tobject = null;
@@ -94,6 +95,7 @@ public class TExportTemplatePeer
 	 * @param label
 	 * @return
 	 */
+	@Override
 	public List<TExportTemplateBean> loadByLabel(Integer repository, Integer categoryID, Integer projectID, Integer personID, String label) {
 		List<TExportTemplate> categories = null;
 		Criteria criteria = new Criteria();
@@ -128,6 +130,7 @@ public class TExportTemplatePeer
 	 * @param personID filter by only if set
 	 * @return
 	 */
+	@Override
 	public List<TExportTemplateBean> loadRootReports(Integer repository, Integer projectID, Integer personID) {
 		List<TExportTemplate> categories = null;
 		Criteria criteria = new Criteria();
@@ -156,6 +159,7 @@ public class TExportTemplatePeer
 	 * @param projectIDs
 	 * @return
 	 */
+	@Override
 	public List<TExportTemplateBean> loadProjectRootCategories(List<Integer> projectIDs) {
 		List<TExportTemplateBean> reports = new LinkedList<TExportTemplateBean>();
 		if (projectIDs==null || projectIDs.isEmpty()) {
@@ -253,6 +257,7 @@ public class TExportTemplatePeer
 	 * @param categoryID
 	 * @return
 	 */
+	@Override
 	public List<TExportTemplateBean> loadByCategory(Integer categoryID) {
 		List<TExportTemplate> queries = null;
 		Criteria criteria = new Criteria();
@@ -272,6 +277,7 @@ public class TExportTemplatePeer
 	 * @param categoryIDs
 	 * @return
 	 */
+	@Override
 	public List<TExportTemplateBean> loadByCategories(List<Integer> categoryIDs) {
 		List<TExportTemplateBean> reports = new LinkedList<TExportTemplateBean>();
 		if (categoryIDs==null || categoryIDs.isEmpty()) {
@@ -301,6 +307,7 @@ public class TExportTemplatePeer
 	 * @param reportIds
 	 * @return
 	 */
+	@Override
 	public List<TExportTemplateBean> loadByIDs(List<Integer> reportIds) {
 		if (reportIds!=null && !reportIds.isEmpty()) {
 			Criteria crit = new Criteria();
@@ -322,23 +329,25 @@ public class TExportTemplatePeer
 	 * @param parentTemplateID
 	 * @return
 	 */
+	@Override
 	public List<TExportTemplateBean> loadDerived(Integer parentTemplateID) {
 		Criteria crit = new Criteria();		
 		crit.add(PARENT, parentTemplateID);
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (Exception e) {
-			LOGGER.error("Loading of all derived templates of the template " + parentTemplateID +  " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading of all derived templates of the template " + parentTemplateID +  " failed with " + e.getMessage());
 			return null;
 		}
 	}
 	
+	@Override
 	public List<TExportTemplateBean> loadAll() {
 		Criteria crit = new Criteria();
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all exportTemplate failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all exportTemplate failed with " + e.getMessage());
 			return null;
 		}
 		
@@ -348,6 +357,7 @@ public class TExportTemplatePeer
 	 * Loads all templates between two indexes
 	 * @return
 	 */
+	@Override
 	public List<TExportTemplateBean> loadFromTo(Integer from, Integer to) {
 		SimpleCriteria crit = new SimpleCriteria();
 		crit.addIsBetween(OBJECTID, from, to);
@@ -360,21 +370,24 @@ public class TExportTemplatePeer
 		}
 	}
 	
+	@Override
 	public Integer save(TExportTemplateBean exportTemplate) {
 		try {
 			TExportTemplate tobject = BaseTExportTemplate.createTExportTemplate(exportTemplate);
 			tobject.save();
 			return tobject.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a exportTemplate failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a exportTemplate failed with " + e.getMessage());
 			return null;
 		}
 	}
 	
+	@Override
 	public void delete(Integer objectID) {
 		ReflectionHelper.delete(deletePeerClasses, deleteFields, objectID);
 	}
 	
+	@Override
 	public boolean isDeletable(Integer objectID) {
 		return true;
 	}
@@ -382,35 +395,8 @@ public class TExportTemplatePeer
 	/**
 	 * Delete all private export templates of a person
 	 */
-	/*public List deletePrivateExportTemplates(Integer personID) {
-		List deletedIDs = new ArrayList();
-		Criteria criteria = new Criteria();		
-		criteria.add(PERSON, personID);
-		criteria.add(REPOSITORYTYPE, TExportTemplateBean.REPOSITORY_TYPE.PRIVATE);
-		List privateExportTemplates = null;
-		try {
-			privateExportTemplates = doSelect(criteria);			
-		} catch (Exception e) {
-			LOGGER.error("Getting the own export templates for personID " + personID + " failed with " + e.getMessage(), e);					   
-		}  
-		criteria = new Criteria();		
-		criteria.add(PERSON, personID);
-		criteria.add(REPOSITORYTYPE, TExportTemplateBean.REPOSITORY_TYPE.PRIVATE);		
-		try {
-			doDelete(criteria);
-		} catch (TorqueException e) {
-			LOGGER.error("Deleting the own export templates for personID " + personID + " failed with " + e.getMessage(), e);
-		}					
-		if (privateExportTemplates!=null) {
-			Iterator iterator = privateExportTemplates.iterator();
-			while (iterator.hasNext()) {
-				TExportTemplate exportTemplate = (TExportTemplate) iterator.next();
-				deletedIDs.add(exportTemplate.getObjectID());
-			}
-		}
-		return deletedIDs;
-	}*/
 	
+	@Override
 	public List<TExportTemplateBean> loadPrivate(Integer personID) {
 		Criteria crit = new Criteria();
 		crit.add(REPOSITORYTYPE,new Integer(TExportTemplateBean.REPOSITORY_TYPE.PRIVATE));
@@ -418,7 +404,7 @@ public class TExportTemplatePeer
 		try	{
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch(TorqueException e){
-			LOGGER.error("Loading private templates by person failed with " + e.getMessage(), e);
+			LOGGER.error("Loading private templates by person failed with " + e.getMessage());
 			return null;
 		}
 	}

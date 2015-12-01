@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -140,10 +140,8 @@ public class ClusterUpdateBL {
 			LOGGER.debug("Number of cache changes for " + ipAddress + ": " + cacheChangesList.size());
 			Set<Integer> dirtyLists = new HashSet<Integer>();
 			Set<Integer> dirtySystemStateLists = new HashSet<Integer>();
-			//Map<Integer, Map<Integer, List<Integer>>> systemListChangesMap = new HashMap<Integer, Map<Integer,List<Integer>>>();
 			for (TEntityChangesBean entityChangesBean : cacheChangesList) {
 				Integer entityType = entityChangesBean.getEntityType();
-				//Integer changeType = entityChangesBean.getChangeType();
 				//Integer entityID = entityChangesBean.getEntityKey();
 				//right now only the system lists are cached
 				if (entityType!=null) {
@@ -202,7 +200,7 @@ public class ClusterUpdateBL {
 							//is finished means not yet run or already finished indexing
 						if (luceneIndexer.isFinished()) {
 								//reindex in a new thread (the modifiers are initialized inside run)
-								ApplicationBean.getApplicationBean().getExecutor().execute(luceneIndexer);
+								ApplicationBean.getInstance().getExecutor().execute(luceneIndexer);
 						}
 						return;
 					case ENTITY_TYPE.WORKITEM:

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -294,7 +294,6 @@ public class NavigatorLayoutBL {
 			filterWithViewLayoutBean = new TNavigatorLayoutBean();
 			filterWithViewLayoutBean.setFilterID(filterID);
 			filterWithViewLayoutBean.setFilterType(filterType);
-			//filterWithViewLayoutBean.setViewID(viewID);
 			filterWithViewLayoutID = saveLayout(filterWithViewLayoutBean);
 			add = true;
 		} else {
@@ -677,7 +676,6 @@ public class NavigatorLayoutBL {
 		Set<Integer> customIconFieldIDs = new HashSet<Integer>();
 		Set<Integer> pseudoFieldIDs = new HashSet<Integer>();
 		Map<Integer, TNavigatorColumnBean> navigatorColumnBeansByFieldMap = new HashMap<Integer, TNavigatorColumnBean>();
-		//boolean bulkEdit = false;
 		//boolean indexNumber = false;
 		List<ColumnFieldTO> columnFieldsList = new ArrayList<ColumnFieldTO>();
 		if (navigatorColumnBeans!=null) {
@@ -693,14 +691,7 @@ public class NavigatorLayoutBL {
 					} else {
 						if (fieldID.intValue()!=TReportLayoutBean.PSEUDO_COLUMNS.CHECKBOX_FIELD_ID && 
 								fieldID.intValue()!=TReportLayoutBean.PSEUDO_COLUMNS.INDEX_NUMBER) {
-						/*if (fieldID.intValue()==TReportLayoutBean.PSEUDO_COLUMNS.CHECKBOX_FIELD_ID) {
-							bulkEdit = true;
-						} else {
-							if (fieldID.intValue()==TReportLayoutBean.PSEUDO_COLUMNS.INDEX_NUMBER) {
-								indexNumber = true;
-							} else {*/
 								pseudoFieldIDs.add(fieldID);
-							//}
 						}
 						
 					}

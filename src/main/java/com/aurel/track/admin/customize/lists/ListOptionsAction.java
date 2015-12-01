@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -54,7 +54,6 @@ import com.opensymphony.xwork2.Preparable;
 public class ListOptionsAction extends ActionSupport implements Preparable, 
 	SessionAware, ServletResponseAware {
 
-	//public static final String LAST_SELECTED_NODE="listOptions.lastSelectedNode";
 	
 	private static final long serialVersionUID = 8112488072837466572L;
 	private static final Logger LOGGER = LogManager.getLogger(ListOptionsAction.class);
@@ -96,6 +95,7 @@ public class ListOptionsAction extends ActionSupport implements Preparable,
 	boolean overwriteExisting;
 	boolean clearChildren;
 	
+	@Override
 	public void prepare() throws Exception {
 		personBean = (TPersonBean) session.get(Constants.USER_KEY);
 		locale = (Locale) session.get(Constants.LOCALE_KEY);
@@ -264,6 +264,7 @@ public class ListOptionsAction extends ActionSupport implements Preparable,
 		return null;
 	}
 	
+	@Override
 	public void setSession(Map<String, Object> session) {
 		this.session=session;
 	}
@@ -312,6 +313,7 @@ public class ListOptionsAction extends ActionSupport implements Preparable,
 		this.defaultOption = defaultOption;
 	}
 
+	@Override
 	public void setServletResponse(HttpServletResponse servletResponse) {
 		this.servletResponse = servletResponse;
 	}

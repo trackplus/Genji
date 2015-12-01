@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -48,6 +48,7 @@ public class TConfigOptionsRolePeer
 	private static final Logger LOGGER = LogManager.getLogger(TConfigOptionsRolePeer.class);
 	public static final long serialVersionUID = 400L;
 	
+	@Override
 	public void delete(Integer objectID) {
 		Criteria crit = new Criteria();
 		crit.add(OBJECTID, objectID);
@@ -58,6 +59,7 @@ public class TConfigOptionsRolePeer
 		}
 	}
 
+	@Override
 	public boolean hasOptionRestriction(Integer configID) {
 		List options = null;
 		Criteria criteria = new Criteria();
@@ -65,11 +67,12 @@ public class TConfigOptionsRolePeer
 		try {
 			options = doSelect(criteria);
 		} catch (TorqueException e) {
-			LOGGER.error("Verifying the restriction failed with " + e.getMessage(), e);
+			LOGGER.error("Verifying the restriction failed with " + e.getMessage());
 		}
 		return options!=null && !options.isEmpty();
 	}
 
+	@Override
 	public List loadOptionsByConfigForRoles(Integer configID, Integer person,  Integer project) {
 		List resultList = new ArrayList();
 		Criteria crit;
@@ -82,7 +85,7 @@ public class TConfigOptionsRolePeer
 			try {
 				restrictionByRoleExists = doSelect(crit);
 			} catch (TorqueException e) {
-				LOGGER.error("Getting the option restrictions by configID failed with " + e.getMessage(), e);
+				LOGGER.error("Getting the option restrictions by configID failed with " + e.getMessage());
 			}
 			if (restrictionByRoleExists!=null && !restrictionByRoleExists.isEmpty()) {
 				//return an empty list meaning no option is available, 
@@ -111,7 +114,7 @@ public class TConfigOptionsRolePeer
 		try {
 			tConfigOptionsRole = BaseTRolePeer.doSelect(crit);
 		} catch (Exception e) {
-			LOGGER.error("Getting the implicit options for a config failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the implicit options for a config failed with " + e.getMessage());
 		}
 		
 		//at least one role the user has in project has no restrictions for options 
@@ -131,11 +134,12 @@ public class TConfigOptionsRolePeer
 		try {
 			return TOptionPeer.convertTorqueListToBeanList(BaseTOptionPeer.doSelect(crit));
 		} catch (Exception e) {
-			LOGGER.error("Getting the explicit options failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the explicit options failed with " + e.getMessage());
 		}
 		return resultList;
 	}
 		
+	@Override
 	public Integer save(TConfigOptionsRoleBean configOptionsRoleBean) {
 		TConfigOptionsRole tConfigOptionsRole;
 		try {
@@ -143,7 +147,7 @@ public class TConfigOptionsRolePeer
 			tConfigOptionsRole.save();
 			return tConfigOptionsRole.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Adding of an option for role and config failed with " + e.getMessage(), e);
+			LOGGER.error("Adding of an option for role and config failed with " + e.getMessage());
 			return null;
 		}
 	}

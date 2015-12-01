@@ -3,30 +3,28 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /* $Id:$ */
 
-Ext
-	    .define(
-	            'com.trackplus.admin.customize.list.ListConfig',
+Ext.define('com.trackplus.admin.customize.list.ListConfig',
 	            {
 	                extend : 'com.trackplus.admin.TreeWithGrid',
 	                config : {
-	                    rootID : '',
+	                    rootID : '_',
 	                    fromProjectConfig : false
 	                },
 	                confirmDeleteEntity : true,
@@ -60,19 +58,18 @@ Ext
 
 	                constructor : function(config) {
 	                    var config = config || {};
-	                    this.initialConfig = config;
-	                    Ext.apply(this, config);
-	                    this.init();
+						this.initConfig(config);
+	                    this.initBase();
 	                },
 
 	                isProjectSpecificRoot : function(recordData) {
-	                    return this.fromProjectConfig && recordData['id'] == this.rootID;
+	                    return this.getFromProjectConfig() && recordData['id'] === this.getRootID();
 	                },
 
 	                /**
 					 * Initialization method
 					 */
-	                init : function() {
+	                initBase: function() {
 	                    this.initLocalizedLabels();
 	                },
 
@@ -120,11 +117,11 @@ Ext
 	                    }
 	                    // in the tree either the global lists node or a project
 						// node is selected
-	                    var listParentNode = this.selectedNode.data['nodeChildrenListForLabel'] == -20
-	                            || this.selectedNode.data['nodeChildrenListForLabel'] == -21;
-	                    if ((listParentNode && (operation == "add" || ((operation == "edit" || operation == "copy") && !fromTree)))
+	                    var listParentNode = this.selectedNode.data['nodeChildrenListForLabel'] === -20
+	                            || this.selectedNode.data['nodeChildrenListForLabel'] === -21;
+	                    if ((listParentNode && (operation === "add" || ((operation === "edit" || operation === "copy") && !fromTree)))
 	                            || // add from tree or edit or copy from grid
-	                            ((operation == "edit" || operation == "copy") && fromTree && (recordData["optionID"] == null || recordData["optionID"] == 0))) {// a
+	                            ((operation === "edit" || operation === "copy") && fromTree && (CWHF.isNull(recordData["optionID"]) || recordData["optionID"] === 0))) {// a
 																																								// custom
 																																								// list
 																																								// selected:edit
@@ -151,23 +148,20 @@ Ext
 					 * Get the title of the window in context
 					 */
 	                getEntityLabel : function(extraConfig) {
-	                    var tooltipKey = extraConfig.tooltipKey; // see
-																	// crudBase
-																	// getTitle
-	                    if (tooltipKey != null
-	                            && ("common.lbl.upload" == tooltipKey || "common.lbl.download" == tooltipKey)) {
+	                    var tooltipKey = extraConfig.tooltipKey; // see crudBase getTitle
+	                    if (tooltipKey && ("common.lbl.upload" === tooltipKey || "common.lbl.download" === tooltipKey)) {
 		                    return getText('admin.customize.list.lbl.iconOp');
 	                    } else {
 		                    var listForLabel = null;
 		                    var fromTree = false;
-		                    if (extraConfig != null) {
+		                    if (extraConfig ) {
 			                    fromTree = extraConfig.fromTree;
 		                    }
 		                    var selectedRecord = this.getLastSelected(fromTree);
-		                    if (selectedRecord != null) {
+		                    if (selectedRecord ) {
 			                    if (fromTree) {
-				                    if (tooltipKey != null
-				                            && (tooltipKey == this.actionAdd.initialConfig.tooltipKey || tooltipKey == this.actionImport.initialConfig.tooltipKey)) {
+				                    if (tooltipKey
+				                            && (tooltipKey === this.actionAdd.initialConfig.tooltipKey || tooltipKey === this.actionImport.initialConfig.tooltipKey)) {
 					                    // for add and childAssignment get the
 										// label for children
 					                    listForLabel = selectedRecord.data['nodeChildrenListForLabel'];
@@ -183,7 +177,7 @@ Ext
 			                    // probably root in projectConfig
 			                    listForLabel = -21;// project specific list
 		                    }
-		                    if (listForLabel != null) {
+		                    if (listForLabel ) {
 			                    return this.localizedLabels[listForLabel];
 		                    }
 	                    }
@@ -249,7 +243,7 @@ Ext
 					 * this time called also by treeNodeSelect
 					 */
 	                getToolbarActionsForTreeNodeSelect : function(node) {
-	                    if (node == null /* || arrSelectedNodes.length==0 */) {
+	                    if (CWHF.isNull(node) /* || arrSelectedNodes.length===0 */) {
 		                    // first load of the listConfig
 		                    // return [this.actionAdd, this.actionEditGridRow,
 							// this.actionDeleteGridRow];
@@ -304,7 +298,7 @@ Ext
 		                    var childListID = null;
 		                    if (canAddChild) {
 			                    childListID = node.data["childListID"];
-			                    if (childListID == null || childListID == 0) {
+			                    if (CWHF.isNull(childListID) || childListID === 0) {
 				                    // global or project node
 				                    actions.push(this.actionImport);
 			                    }
@@ -329,7 +323,7 @@ Ext
 			                    this.actionUploadFromGrid.setDisabled(true);
 			                    this.actionDownloadFromGrid.setDisabled(true);
 		                    }
-		                    if (childListID != null && childListID != 0 && mightEditChild) {
+		                    if (childListID  && childListID !== 0 && mightEditChild) {
 			                    actions.push(this.actionMoveUp);
 			                    actions.push(this.actionMoveDown);
 			                    // both disabled until selection
@@ -465,13 +459,13 @@ Ext
 
 	                getTreeExpandExtraParams : function() {
 	                    return {
-		                    fromProjectConfig : this.fromProjectConfig
+		                    fromProjectConfig : this.getFromProjectConfig()
 	                    };
 	                },
 
 	                onChildIssueTypeAssignmentGrid : function() {
 	                    var recordData = this.getSingleSelectedRecordData(false);
-	                    if (recordData != null) {
+	                    if (recordData ) {
 		                    this.onChildIssueTypeAssignment(recordData.node, recordData);
 	                    }
 	                },
@@ -482,11 +476,11 @@ Ext
 
 	                onChildIssueTypeAssignment : function(nodeID, record) {
 	                    this.childIssueTypeAssignment = Ext.create("com.trackplus.admin.SimpleAssignment", {
-	                        baseAction : "childIssueTypeAssignments",
 	                        objectID : nodeID,
 	                        objectIDParamName : "parentIssueTypeNodeID",
 	                        dynamicIcons : true
 	                    });
+	                    this.childIssueTypeAssignment.baseAction = "childIssueTypeAssignments";
 	                    var assignmentWin = Ext.create("Ext.window.Window", {
 	                        height : 450,
 	                        width : 500,
@@ -507,7 +501,7 @@ Ext
 	                /** ****fileupload start***** */
 	                downloadIconFromGrid : function() {
 	                    var recordData = this.getSingleSelectedRecordData(false);
-	                    if (recordData != null) {
+	                    if (recordData ) {
 		                    this.downloadIcon(recordData.node);
 	                    }
 	                },
@@ -523,7 +517,7 @@ Ext
 
 	                createUploadFormFromGrid : function() {
 	                    var record = this.getSingleSelectedRecord(false);
-	                    if (record != null) {
+	                    if (record ) {
 		                    this.createUploadForm(false, record);
 	                    }
 	                },
@@ -578,11 +572,11 @@ Ext
 					 * Get the node to reload after upload operation
 					 */
 	                getReloadParamsAfterUpload : function(fromTree) {
-	                    if (this.selectedNode != null) {
+	                    if (this.selectedNode ) {
 		                    if (fromTree) {
 			                    // edited/copied from tree
 			                    var parentNode = this.selectedNode.parentNode;
-			                    if (parentNode != null) {
+			                    if (parentNode ) {
 				                    // the parent of the edited node should be
 									// reloaded
 				                    return {
@@ -599,14 +593,14 @@ Ext
 									// with a single row: the parent of the
 									// selected tree node should be reloaded
 				                    var parentNode = this.selectedNode.parentNode;
-				                    if (parentNode != null) {
+				                    if (parentNode ) {
 					                    // the parent of the edited node should
 										// be reloaded
 					                    var reloadParams = {
 					                        nodeIDToReload : parentNode.data["id"],
 					                        nodeIDToSelect : this.selectedNode.data["id"]
 					                    };
-					                    if (gridRow != null) {
+					                    if (gridRow ) {
 						                    reloadParams["rowToSelect"] = gridRow.data["node"];
 					                    }
 					                    return reloadParams;
@@ -618,7 +612,7 @@ Ext
 				                    var reloadParams = {
 					                    nodeIDToReload : this.selectedNode.data["id"]
 				                    };
-				                    if (gridRow != null) {
+				                    if (gridRow ) {
 					                    reloadParams["rowToSelect"] = gridRow.data["node"];
 				                    }
 				                    return reloadParams;
@@ -655,10 +649,11 @@ Ext
 
 	                    var picFiles = [ iconWrapper,
 	                            CWHF.createLabelComponent("admin.customize.list.lbl.iconName", "actualIconName", {
-		                            labelWidth : this.labelWidth
+		                            labelWidth : this.labelWidth, itemId:"actualIconName"
 	                            }), CWHF.createFileField("admin.customize.list.lbl.newIcon", "iconFile", {
 	                                allowBlank : false,
-	                                labelWidth : this.labelWidth
+	                                labelWidth : this.labelWidth,
+	                                itemId     : "iconFile"
 	                            },{change:{fn: this.newIconFileChanged, scope:this}}) ];
 	                    return Ext.create("Ext.form.Panel", {
 	                        bodyStyle : "padding:5px",
@@ -676,33 +671,33 @@ Ext
 	                },
 					newIconFileChanged:function(){
 						var toolbars = this.win.getDockedItems("toolbar[dock='bottom']");
-						if (toolbars != null) {
+						if (toolbars ) {
 							// disable delete button if no icon is specified
 							toolbars[0].getComponent(0).setDisabled(false);
 						}
 					},
 	                renderUploadPostDataProcess : function(data, formPanel, fromTree) {
 	                    var actualIcon = formPanel.getComponent("iconPanel").getComponent("actualIcon");
-	                    if (actualIcon != null) {
+	                    if (actualIcon ) {
 		                    actualIcon.setSrc(data.icon);
 		                    // actualIcon.doComponentLayout();
 	                    }
 	                    actualIconName = formPanel.getComponent("actualIconName");
-	                    if (actualIconName != null) {
+	                    if (actualIconName ) {
 		                    actualIconName.setValue(data["iconName"]);
 	                    }
 	                    // Ext.getDom("pic").src = data.icon;
 	                    /*
-						 * if (data["iconName"]!=null) {
+						 * if (data["iconName"]) {
 						 * formPanel.getComponent("actualIconName").setValue(data["iconName"]);
 						 * formPanel.getComponent("actualIconName").setVisible(true); }
 						 */
 	                    formPanel.getComponent("iconFile").setValue("");
 	                    var toolbars = this.win.getDockedItems("toolbar[dock='bottom']");
-	                    if (toolbars != null) {
+	                    if (toolbars ) {
 							toolbars[0].getComponent(0).setDisabled(true);
 		                    // disable delete button if no icon is specified
-		                    toolbars[0].getComponent(1).setDisabled(data.iconName == null || data.iconName == "");
+		                    toolbars[0].getComponent(1).setDisabled(CWHF.isNull(data.iconName) || data.iconName === "");
 	                    }
 	                },
 
@@ -723,7 +718,7 @@ Ext
 	                    }
 
 	                    var fromTree = false;
-	                    if (extraConfig != null) {
+	                    if (extraConfig ) {
 		                    fromTree = extraConfig.fromTree;
 	                    }
 	                    theForm.submit({
@@ -742,7 +737,7 @@ Ext
 	                deleteUploadedFileHandler : function(window, submitUrl, submitUrlParams, extraConfig) {
 	                    var pictUploadForm = this.formEdit;
 	                    var fromTree = false;
-	                    if (extraConfig != null) {
+	                    if (extraConfig ) {
 		                    fromTree = extraConfig.fromTree;
 	                    }
 	                    Ext.Ajax.request({
@@ -769,8 +764,8 @@ Ext
 	            			return {
 	            				plugins: {
 	            					ptype: "gridviewdragdrop",
-	            					dragGroup: this.baseAction + "gridDDGroup",
-	            					dropGroup: this.baseAction + "gridDDGroup",
+	            					dragGroup: this.getBaseAction() + "gridDDGroup",
+	            					dropGroup: this.getBaseAction() + "gridDDGroup",
 	            					enableDrag: true,
 	            					enableDrop: true
 	            				},
@@ -866,7 +861,7 @@ Ext
 	                    }, {
 	                        name : "percentComplete",
 	                        type : "int",
-	                        useNull : true
+		                    allowNull : true
 	                    }, {
 	                        name : "hasDefaultOption",
 	                        type : "boolean"
@@ -883,8 +878,8 @@ Ext
 	                },
 
 	                getListColumns : function() {
-	                    return [ {
-	                        header : getText("admin.customize.list.lbl.icon"),
+	                    return [{
+	                    	text : getText("admin.customize.list.lbl.icon"),
 	                        width : 60,
 	                        dataIndex : "iconCls",
 	                        sortable : false,
@@ -894,7 +889,7 @@ Ext
 		                        return '<div style="width:16px;height:16px" class="' + value + '">&nbsp;</div>';
 	                        }
 	                    }, {
-	                        header : getText("common.lbl.name"),
+	                    	text : getText("common.lbl.name"),
 	                        flex : 1,
 	                        dataIndex : "label",
 	                        sortable : false,
@@ -904,7 +899,7 @@ Ext
 
 	                getListOptionColumns : function(node) {
 	                    var columnModelArr = [ {
-	                        header : getText("common.lbl.name"),
+	                    	text : getText("common.lbl.name"),
 	                        flex : 1,
 	                        dataIndex : "label",
 	                        sortable : false,
@@ -930,20 +925,20 @@ Ext
 	                    }
 	                    if (hasIcon) {
 		                    columnModelArr.push({
-		                        header : getText("admin.customize.list.lbl.icon"),
+		                    	text : getText("admin.customize.list.lbl.icon"),
 		                        width : 60,
 		                        dataIndex : "icon",
 		                        sortable : false,
 		                        hidden : false,
 		                        renderer : function(val) {
-			                        if (val != null && val != "") {
+			                        if (val  && val !== "") {
 				                        return '<img src="' + val + '"/>';
 			                        }
 			                        return '';
 		                        }
 		                    });
 		                    columnModelArr.push({
-		                        header : getText("admin.customize.list.lbl.iconName"),
+		                    	text : getText("admin.customize.list.lbl.iconName"),
 		                        width : 100,
 		                        dataIndex : "iconName",
 		                        sortable : false,
@@ -952,7 +947,7 @@ Ext
 	                    }
 	                    if (hasCssStyle) {
 		                    var colorRendererColumn = Ext.create("Ext.grid.column.Column", {
-		                        header : getText("admin.customize.list.lbl.style"),
+		                    	text : getText("admin.customize.list.lbl.style"),
 		                        width : 100,
 		                        dataIndex : "cssStyle",
 		                        sortable : false,
@@ -967,7 +962,7 @@ Ext
 	                    }
 	                    if (hasPercentComplete) {
 		                    columnModelArr.push({
-		                        header : getText("admin.customize.list.lbl.percentComplete"),
+		                    	text : getText("admin.customize.list.lbl.percentComplete"),
 		                        width : 100,
 		                        dataIndex : "percentComplete",
 		                        sortable : false,
@@ -976,7 +971,7 @@ Ext
 	                    }
 	                    if (hasTypeflag) {
 		                    columnModelArr.push({
-		                        header : getText("admin.customize.list.lbl.typeflag"),
+		                    	text : getText("admin.customize.list.lbl.typeflag"),
 		                        width : 150,
 		                        dataIndex : "typeflagLabel",
 		                        sortable : false,
@@ -986,7 +981,7 @@ Ext
 	                    if (hasDefaultOption) {
 		                    columnModelArr.push({
 		                        xtype : "checkcolumn",
-		                        header : getText("admin.customize.list.lbl.defaultOption"),
+		                        text : getText("admin.customize.list.lbl.defaultOption"),
 		                        width : 100,
 		                        dataIndex : "defaultOption",
 		                        sortable : false,
@@ -1000,10 +995,10 @@ Ext
 
 	                changeDefault: function(checkBox, rowIndex, checked, eOpts) {
 	            		var record = this.grid.getStore().getAt(rowIndex);
-	            		if (record!=null) {
+	            		if (record) {
 	            			var params = {node:record.data["node"], defaultOption:checked};
 	            			Ext.Ajax.request({
-	            				url: this.baseAction + "!changeDefault.action",
+	            				url: this.getBaseAction() + "!changeDefault.action",
 	            				params: params,
 	            				scope: this,
 	            				success: function(response) {
@@ -1020,7 +1015,7 @@ Ext
 					 */
 	                hasDragAndDropOnGrid : function(node) {
 	                    var childListID = node.data["childListID"];
-	                    if (childListID != null && childListID != 0) {
+	                    if (childListID  && childListID !== 0) {
 		                    // custom or system options
 		                    return true;
 	                    }
@@ -1028,7 +1023,7 @@ Ext
 
 	                getGridFields : function(node) {
 	                    var childListID = node.data["childListID"];
-	                    if (childListID == null || childListID == 0) {
+	                    if (CWHF.isNull(childListID) || childListID === 0) {
 		                    return this.getListFields();
 	                    } else {
 		                    // custom or system options
@@ -1038,7 +1033,7 @@ Ext
 
 	                getGridColumns : function(node) {
 	                    var childListID = node.data["childListID"];
-	                    if (childListID == null || childListID == 0) {
+	                    if (CWHF.isNull(childListID) || childListID === 0) {
 		                    return this.getListColumns();
 	                    } else {
 		                    // custom or system options
@@ -1055,18 +1050,18 @@ Ext
 	                    var canDragDropOption = false;
 	                    var draggedNodeTopList = nodeToDrag.data["topParentList"];
 	                    var droppedToTopList = overModel.data["topParentList"];
-	                    if (draggedNodeTopList != null && droppedToTopList != null
-	                            && draggedNodeTopList == droppedToTopList) {
+	                    if (draggedNodeTopList  && droppedToTopList
+	                            && draggedNodeTopList === droppedToTopList) {
 		                    canDragDropOption = true;
 	                    }
-	                    var canDragList = nodeToDrag.data["nodeListForLabel"] == -20
-	                            || nodeToDrag.data["nodeListForLabel"] == -21;
+	                    var canDragList = nodeToDrag.data["nodeListForLabel"] === -20
+	                            || nodeToDrag.data["nodeListForLabel"] === -21;
 	                    if (!(canDragList || canDragDropOption)) {
 		                    return false;
 	                    }
 	                    // move a list to another place
 	                    var canDropList = overModel.data["canAddChild"]
-	                            && (overModel.data["nodeChildrenListForLabel"] == -20 || overModel.data["nodeChildrenListForLabel"] == -21);
+	                            && (overModel.data["nodeChildrenListForLabel"] === -20 || overModel.data["nodeChildrenListForLabel"] === -21);
 	                    if (!(canDropList || canDragDropOption)) {
 		                    return false;
 	                    }
@@ -1077,8 +1072,8 @@ Ext
 						 * scope: this, disableCaching:true, success:
 						 * function(response){ var responseJson =
 						 * Ext.decode(response.responseText); if
-						 * (responseJson.success == false) { if
-						 * (responseJson.errorMessage!=null) { //no right to
+						 * (responseJson.success === false) { if
+						 * (responseJson.errorMessage) { //no right to
 						 * delete Ext.MessageBox.alert(this.failureTitle,
 						 * responseJson.errorMessage) } } }, failure:
 						 * function(result){
@@ -1090,7 +1085,7 @@ Ext
 
 	                enableDisableToolbarButtons : function(view, arrSelections) {
 	                    var selectedRecord = arrSelections[0];
-	                    if (selectedRecord == null) {
+	                    if (CWHF.isNull(selectedRecord)) {
 		                    this.actionDeleteGridRow.setDisabled(true);
 		                    this.actionEditGridRow.setDisabled(true);
 		                    this.actionCopyGridRow.setDisabled(true);
@@ -1111,16 +1106,16 @@ Ext
 		                    this.actionMoveUp.setDisabled(!canEdit);
 		                    if (canEdit) {
 			                    var store = this.grid.getStore();
-			                    if (store != null) {
-				                    this.actionMoveDown.setDisabled(selectedRecord == store.last());
-				                    this.actionMoveUp.setDisabled(selectedRecord == store.first());
+			                    if (store ) {
+				                    this.actionMoveDown.setDisabled(selectedRecord === store.last());
+				                    this.actionMoveUp.setDisabled(selectedRecord === store.first());
 			                    }
 		                    }
 		                    var canCopy = selectedRecord.data["canCopy"];
 		                    this.actionCopyGridRow.setDisabled(!canCopy);
 		                    this.actionExportGridRow.setDisabled(!canCopy);
-		                    var hasIcon = selectedRecord.data["iconName"] != null
-		                            && selectedRecord.data["iconName"] != "";
+		                    var hasIcon = selectedRecord.data["iconName"]
+		                            && selectedRecord.data["iconName"] !== "";
 		                    this.actionDownloadFromGrid.setDisabled(!hasIcon);
 	                    }
 	                },
@@ -1140,8 +1135,8 @@ Ext
 	                    		"customListType", add, null, null, null, null,
 	                    		{select: function(listTypeCombo) {
 	                    			var cascadingCombo = listTypeCombo.ownerCt.getComponent('cascadingTypesList');
-	                    			if (listTypeCombo.getValue()==3) {
-	                    				if (cascadingCombo.getValue()==null || cascadingCombo.getValue()=="") {
+	                    			if (listTypeCombo.getValue()===3) {
+	                    				if (CWHF.isNull(cascadingCombo.getValue()) || cascadingCombo.getValue()==="") {
 	                    					cascadingCombo.setValue(cascadingCombo.store.data.items[0].data.id);
 	                    				}
 	                    				cascadingCombo.show();
@@ -1159,8 +1154,8 @@ Ext
 	                    		"repositoryType", add || canEdit, null, null, null, null,
 	                    		{select: function(repositoryCombo) {
 	                    			var projectCombo = repositoryCombo.ownerCt.getComponent('projectsList');
-	                    			if (repositoryCombo.getValue()==3) {
-	                    				if (projectCombo.getValue()==null || projectCombo.getValue()=="") {
+	                    			if (repositoryCombo.getValue()===3) {
+	                    				if (CWHF.isNull(projectCombo.getValue()) || projectCombo.getValue()==="") {
 	                    					projectCombo.setValue(projectCombo.store.data.items[0].data.id);
 	                    				}
 	                    				projectCombo.show();
@@ -1191,6 +1186,7 @@ Ext
 	                    if (hasTypeflag) {
 		                    //type flag combo
 		                    windowItems.push(CWHF.createCombo("admin.customize.list.lbl.typeflag", "typeflag", {
+		                    	itemId: "typeflag",
 		                        disabled : disableTypeflag || !canEdit,
 		                        labelWidth : this.labelWidth
 		                    }));
@@ -1223,28 +1219,33 @@ Ext
 		                        items : [
 		                                CWHF.createColorPicker("admin.customize.list.lbl.style.bgrColor",
 		                                        "cssStyleBean.bgrColor", {
+		                                			itemId : "cssStyleBeanBgrColor",
 		                                            disabled : !canEdit,
 		                                            labelWidth : this.labelWidth
 		                                        }),
 		                                CWHF.createColorPicker("admin.customize.list.lbl.style.color",
 		                                        "cssStyleBean.color", {
+		                                			itemId : "cssStyleBeanColor",
 		                                            disabled : !canEdit,
 		                                            labelWidth : this.labelWidth
 		                                        }),
 		                                CWHF.createCombo("admin.customize.list.lbl.style.fontWeight",
 		                                        "cssStyleBean.fontWeight", {
+		                                			itemId: "fontWeight",
 		                                            disabled : !canEdit,
 		                                            idType : "string",
 		                                            labelWidth : this.labelWidth
 		                                        }),
 		                                CWHF.createCombo("admin.customize.list.lbl.style.fontStyle",
 		                                        "cssStyleBean.fontStyle", {
+		                                			itemId: "fontStyle",
 		                                            disabled : !canEdit,
 		                                            idType : "string",
 		                                            labelWidth : this.labelWidth
 		                                        }),
 		                                CWHF.createCombo("admin.customize.list.lbl.style.text-decoration",
 		                                        "cssStyleBean.textDecoration", {
+		                                			itemId: "textDecoration",
 		                                            disabled : !canEdit,
 		                                            idType : "string",
 		                                            labelWidth : this.labelWidth
@@ -1272,13 +1273,13 @@ Ext
 	                 * Load the combos after the result has arrived containing also the combo data sources
 	                 */
 	                postDataLoadCombos : function(data, panel) {
-	                    /*if (panel.items.items!=null) {
+	                    /*if (panel.items.items) {
 	                    	panel.items.items.forEach(function(item) {
 	                    		//for each combo-type control set the value also:
 	                    		//for a combos itemId <xxx>sList the json result should contain
 	                    		//both <xxx>sList for the combo datasource and <xxx> for the combo's actual value
 	                    		//the json field for value is
-	                    		if (item.xtype == "combo") {
+	                    		if (item.xtype === "combo") {
 	                    			var comboSource = data[item.itemId];
 	                    			item.store.loadData(comboSource);
 	                    			//-'Lists'
@@ -1288,32 +1289,31 @@ Ext
 	                    }*/
 
 	                    var typeFlagsList = panel.getComponent("typeflag");
-	                    if (typeFlagsList != null) {
+	                    if (typeFlagsList ) {
 		                    typeFlagsList.store.loadData(data["typeflagsList"]);
 		                    typeFlagsList.setValue(data["typeflag"]);
 	                    }
 	                    var fsStyle = panel.getComponent("fsStyle");
-	                    if (fsStyle != null) {
-		                    var fontWeight = fsStyle.getComponent("cssStyleBean.fontWeight");
-		                    if (fontWeight != null) {
+	                    if (fsStyle ) {
+		                    var fontWeight = fsStyle.getComponent("fontWeight");
+		                    if (fontWeight ) {
 			                    fontWeight.store.loadData(data["fontWeightsList"]);
 		                    }
-		                    var fontStyle = fsStyle.getComponent("cssStyleBean.fontStyle");
-		                    if (fontStyle != null) {
+		                    var fontStyle = fsStyle.getComponent("fontStyle");
+		                    if (fontStyle ) {
 			                    fontStyle.store.loadData(data["fontStylesList"]);
 		                    }
-		                    var textDecoration = panel.getComponent("fsStyle").getComponent(
-		                            "cssStyleBean.textDecoration");
-		                    if (textDecoration != null) {
+		                    var textDecoration = panel.getComponent("fsStyle").getComponent("textDecoration");
+		                    if (textDecoration ) {
 			                    textDecoration.store.loadData(data["textDecorationsList"]);
 		                    }
-		                    var bgrColor = fsStyle.getComponent("cssStyleBean.bgrColor");
-		                    if (bgrColor != null && data["cssStyleBean.bgrColor"] != null) {
+		                    var bgrColor = fsStyle.getComponent("cssStyleBeanBgrColor");
+		                    if (bgrColor  && data["cssStyleBean.bgrColor"] ) {
 			                    bgrColor.setFieldStyle('background-color:#' + data["cssStyleBean.bgrColor"]
 			                            + '; background-image: none;');
 		                    }
-		                    var color = fsStyle.getComponent("cssStyleBean.color");
-		                    if (color != null && data["cssStyleBean.color"] != null) {
+		                    var color = fsStyle.getComponent("cssStyleBeanColor");
+		                    if (color  && data["cssStyleBean.color"] ) {
 			                    color.setFieldStyle('background-color:#' + data["cssStyleBean.color"]
 			                            + '; background-image: none;');
 		                    }
@@ -1329,7 +1329,7 @@ Ext
 	                 */
 	                getEditPostDataProcess : function(record, isLeaf, add, fromTree, operation) {
 	                    var recordData = null;
-	                    if (record != null) {
+	                    if (record ) {
 		                    recordData = record.data;
 	                    }
 	                    if (this.isListOperation(recordData, isLeaf, add, fromTree, operation)) {
@@ -1352,10 +1352,10 @@ Ext
 		                    fromTree : fromTree
 	                    });
 	                    var canEdit = false;
-	                    if (operation == "add" || operation == "copy") {
+	                    if (operation === "add" || operation === "copy") {
 		                    canEdit = true;
 	                    } else {
-		                    if (operation == "edit") {
+		                    if (operation === "edit") {
 			                    canEdit = recordData["canEdit"];
 		                    }
 	                    }
@@ -1398,7 +1398,7 @@ Ext
 	                    var reloadParams = this.getAddReloadParamsAfterSave(true);
 	                    var reloadParamsFromResult = this.getAddSelectionAfterSaveFromResult();
 	                    var selectedRecord = this.getSingleSelectedRecord(true);
-	                    if (selectedRecord == null) {
+	                    if (CWHF.isNull(selectedRecord)) {
 		                    selectedRecord = this.tree.getRootNode();
 	                    }
 	                    return this.onAddEdit(title, selectedRecord, operation, true, true, true, loadParams,
@@ -1455,9 +1455,9 @@ Ext
 	                 */
 	                getCopyReloadParamsAfterSave : function(fromTree) {
 	                    if (fromTree) {
-		                    if (this.selectedNode != null) {
+		                    if (this.selectedNode ) {
 			                    var parentNode = this.selectedNode.parentNode;
-			                    if (parentNode != null) {
+			                    if (parentNode ) {
 				                    return {
 					                    nodeIDToReload : parentNode.data["id"]
 				                    };
@@ -1472,29 +1472,29 @@ Ext
 	                 * Parameters for reloading after a delete operation
 	                 */
 	                getReloadParamsAfterDelete : function(selectedRecords, extraConfig, responseJson) {
-	                    if (selectedRecords != null) {
+	                    if (selectedRecords ) {
 		                    //we suppose that only one selection is allowed in tree
 		                    var selNode = selectedRecords;
-		                    if (selNode != null) {
+		                    if (selNode ) {
 			                    var parentNode = null;
 			                    var grandParentNode = null;
 			                    var parentNodeID = null;
-			                    if (extraConfig != null) {
+			                    if (extraConfig ) {
 				                    fromTree = extraConfig.fromTree;
 				                    if (fromTree) {
 					                    //delete from tree: select the parent of the deleted node for reload and select
 					                    parentNode = selNode.parentNode;
-					                    if (parentNode != null) {
+					                    if (parentNode ) {
 						                    parentNodeID = parentNode.data.id;
 					                    }
-					                    if (responseJson["lastCascadingChildDeleted"] && parentNode != null) {
+					                    if (responseJson["lastCascadingChildDeleted"] && parentNode ) {
 						                    grandParentNode = parentNode.parentNode;
 						                    //in this case not the same as parentNode.data.id becuause the
 						                    //childListID and leaf components of the nodeID changes
 						                    parentNodeID = responseJson["node"];
 					                    }
 					                    var grandParentNodeID = null;
-					                    if (grandParentNode != null) {
+					                    if (grandParentNode ) {
 						                    grandParentNodeID = grandParentNode.data.id;
 					                    } else {
 						                    grandParentNodeID = parentNodeID;
@@ -1505,7 +1505,7 @@ Ext
 					                    };
 				                    } else {
 					                    //delete from grid: the parent or the leaf to be deleted is selected already in tree
-					                    if (responseJson["lastCascadingChildDeleted"] && this.selectedNode != null) {
+					                    if (responseJson["lastCascadingChildDeleted"] && this.selectedNode ) {
 						                    //in this case not the same as this.selectedNode.data.id becuause the
 						                    //childListID and leaf components of the nodeID changes
 						                    parentNodeID = responseJson["node"];
@@ -1517,7 +1517,7 @@ Ext
 							                    //the parent of the leaf to be deleted was selected in the tree
 							                    grandParentNode = this.selectedNode.parentNode;
 						                    }
-						                    if (grandParentNode != null) {
+						                    if (grandParentNode ) {
 							                    var grandParentNodeID = grandParentNode.data.id;
 							                    return {
 							                        nodeIDToReload : grandParentNodeID,
@@ -1558,9 +1558,9 @@ Ext
 	                        fileUpload : true,
 	                        items : [
 	                                CWHF.createFileField("admin.customize.list.import.lbl.uploadFile", "uploadFile", {
-		                                allowBlank : false
+		                                allowBlank : false,
+		                                itemId     : "uploadFile"
 	                                }),
-	                                //CWHF.createLabelComponent(null, "importExistsing", {value:getText("admin.customize.list.import.lbl.importExisting")}),
 	                                CWHF.createCheckbox("common.lbl.overwriteExisting", "overwriteExisting"),
 	                                CWHF.createCheckbox("common.lbl.clearChildren", "clearChildren") ]
 	                    });
@@ -1569,7 +1569,7 @@ Ext
 
 	                onImport : function() {
 	                    var submit = [ {
-	                        submitUrl : this.baseAction + "!importList.action",
+	                        submitUrl : this.getBaseAction() + "!importList.action",
 	                        submitButtonText : getText("common.btn.upload"),
 	                        submitUrlParams : {
 		                        node : this.selectedNodeID
@@ -1600,13 +1600,13 @@ Ext
 	                },
 
 	                onExport : function(fromTree) {
-	                    attachmentURI = this.baseAction + "!exportList.action?node=" + this.getSelectedID(fromTree);
+	                    attachmentURI = this.getBaseAction() + "!exportList.action?node=" + this.getSelectedID(fromTree);
 	                    window.open(attachmentURI);
 	                },
 
 	                getSelectedID : function(fromTree) {
 	                    var recordData = this.getSingleSelectedRecordData(fromTree);
-	                    if (recordData != null) {
+	                    if (recordData ) {
 		                    return this.getRecordID(recordData, {
 			                    fromTree : fromTree
 		                    });
@@ -1640,7 +1640,7 @@ Ext
 	                    if (canAddChild) {
 		                    actions.push(this.actionAdd);
 		                    var childListID = selectedRecord.data["childListID"];
-		                    if (childListID == null || childListID == 0) {
+		                    if (CWHF.isNull(childListID) || childListID === 0) {
 			                    actions.push(this.actionImport);
 		                    }
 	                    }
@@ -1691,22 +1691,22 @@ Ext
 		                    actions.push(this.actionCopyGridRow);
 		                    actions.push(this.actionExportGridRow);
 	                    }
-	                    if (hasIcon != null) {
+	                    if (hasIcon ) {
 		                    if (canEdit) {
 			                    actions.push(this.actionUploadFromGrid);
 		                    }
-		                    if (selectedRecord.data["iconName"] != null && selectedRecord.data["iconName"] != "") {
+		                    if (selectedRecord.data["iconName"]  && selectedRecord.data["iconName"] !== "") {
 			                    actions.push(this.actionDownloadFromGrid);
 		                    }
 	                    }
-	                    if (listOption != null && listOption != 0 && canEdit) {
+	                    if (listOption  && listOption !== 0 && canEdit) {
 		                    //it is an option
 		                    var store = this.grid.getStore();
-		                    if (store != null) {
-			                    if (selectedRecord != store.first()) {
+		                    if (store ) {
+			                    if (selectedRecord !== store.first()) {
 				                    actions.push(this.actionMoveUp);
 			                    }
-			                    if (selectedRecord != store.last()) {
+			                    if (selectedRecord !== store.last()) {
 				                    actions.push(this.actionMoveDown);
 			                    }
 		                    }

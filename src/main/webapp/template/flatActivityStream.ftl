@@ -1,9 +1,9 @@
 <#if allActivityStreamItems?has_content>
 <#list allActivityStreamItems as x>
 	<#if x_index=0>
-    <div class="historyRow" style="border-top: 0; padding-left:5px;margin-left: 0px;margin-right:0px;margin-top:0px;background-color: white;">
+    <div class="historyRow" style="border-top: 0; padding-left:5px;margin-left: 0px;margin-right:0px;margin-top:0px;">
 	<#else>
-    <div class="historyRow" style="padding-left:5px;margin-left: 0px;margin-right:0px;margin-top:0px;background-color: white;">
+    <div class="historyRow" style="padding-left:5px;margin-left: 0px;margin-right:0px;margin-top:0px;">
 	</#if>
     <table width="100%" border="0" cellPadding="0" cellSpacing="0" style="table-layout:fixed;">
 	<tr>

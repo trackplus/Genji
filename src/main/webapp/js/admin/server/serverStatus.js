@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -36,7 +36,7 @@ Ext.define('com.trackplus.admin.server.ServerStatus',{
 
 	createToolbar:function(){
 		var me=this;
-		if(me.btnSave==null){
+		if(CWHF.isNull(me.btnSave)){
 			me.btnSave=new Ext.Button({
 				overflowText:getText('common.btn.save'),
 				tooltip:getText('common.btn.save'),
@@ -59,7 +59,7 @@ Ext.define('com.trackplus.admin.server.ServerStatus',{
 			success: function(response){
 				var jsonData=Ext.decode(response.responseText);
 				borderLayout.setLoading(false);
-				if(jsonData.success==true){
+				if(jsonData.success===true){
 					var component=me.createComp.call(me,jsonData.data);
 					borderLayout.setCenterContent(component);
 					me.btnSave.setDisabled(false);
@@ -88,7 +88,7 @@ Ext.define('com.trackplus.admin.server.ServerStatus',{
 	createLabelComponent:function(fieldLabelKey,value){
 		var me=this;
 		var fieldLabel='';
-		if(fieldLabelKey!=null&&fieldLabelKey!=''){
+		if(fieldLabelKey&&fieldLabelKey!==''){
 			fieldLabel=getText(fieldLabelKey);
 		}
 		var labelComp={
@@ -111,11 +111,11 @@ Ext.define('com.trackplus.admin.server.ServerStatus',{
 		var me=this;
 		var barWidth = 80;
 		var fieldLabel='';
-		if(fieldLabelKey!=null&&fieldLabelKey!=''){
+		if(fieldLabelKey&&fieldLabelKey!==''){
 			fieldLabel=getText(fieldLabelKey);
 		}
 
-		if (percent == null) {
+		if (CWHF.isNull(percent)) {
 			percent = 0;
 		}
 
@@ -167,7 +167,7 @@ Ext.define('com.trackplus.admin.server.ServerStatus',{
 		me.jsonData=jsonData;
 		var ipString=jsonData.serverIPAddress;
 		var index = ipString.indexOf(",");
-		while(index != -1){
+		while(index !== -1){
 			ipString = ipString.replace(",","<br>");
 			index = ipString.indexOf(",");
 		}
@@ -227,7 +227,7 @@ Ext.define('com.trackplus.admin.server.ServerStatus',{
 		var statisticItems = [me.createLabelComponent("admin.server.status.numberOfProjects",jsonData.numberOfProjects),
 	       					me.createLabelComponent("admin.server.status.numberOfIssues",jsonData.numberOfIssues)];
 		var userCountList = jsonData.userCountList;
-		if (userCountList!=null) {
+		if (userCountList) {
 				Ext.Array.forEach(userCountList, function(userCount) {
 					statisticItems.push(me.createCountActiveInactiveLabel(userCount));
 					}, this);
@@ -307,12 +307,12 @@ Ext.define('com.trackplus.admin.server.ServerStatus',{
 				    	   name:'opState',
 				    	   inputValue: 'Running',
 				    	   boxLabel:getText("admin.server.status.opstate.running"),
-				    	   checked:(jsonData.operationalStatus==null||jsonData.operationalStatus=="Running")
+				    	   checked:(CWHF.isNull(jsonData.operationalStatus)||jsonData.operationalStatus==="Running")
 				       },{
 				    	   name:'opState',
 				    	   inputValue: 'Maintenance',
 				    	   boxLabel:getText("admin.server.status.opstate.maintenance"),
-				    	   checked:(jsonData.operationalStatus=="Maintenance")
+				    	   checked:(jsonData.operationalStatus==="Maintenance")
 				       }
 				       ]
 		};
@@ -323,7 +323,7 @@ Ext.define('com.trackplus.admin.server.ServerStatus',{
 				labelAlign:me.alignR,
 				inputValue:'true',
 				name:'hasUserMsg',
-				checked:(jsonData.isUserInfo==true)
+				checked:(jsonData.isUserInfo===true)
 		};
 		var txtUserMsg={
 				xtype:'textarea',
@@ -409,15 +409,15 @@ Ext.define('com.trackplus.admin.server.ServerStatus',{
 
 		var logArray=jsonData['logMessages'];
 		var logMessages = '';
-		if (logArray != null && logArray.length > 0) {
+		if (logArray  && logArray.length > 0) {
 			for (i=0; i < logArray.length; ++i) {
 
 				pre = '<div class="logMessage">';
 				post = '</div>';
-				if (logArray[i].indexOf(' ERROR ') != -1) {
+				if (logArray[i].indexOf(' ERROR ') !== -1) {
 					pre = '<div class="logMessageError">'
 				}
-				if (logArray[i].indexOf(' WARN ') != -1) {
+				if (logArray[i].indexOf(' WARN ') !== -1) {
 					pre = '<div class="logMessageWarn">'
 				}
 

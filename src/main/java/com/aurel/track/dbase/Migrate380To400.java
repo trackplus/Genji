@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -246,7 +246,6 @@ public class Migrate380To400 {
 		
 		Map<Integer, Integer> subprojectOptionMatchMap = new HashMap<Integer, Integer>();
 		Map<Integer, Integer> classOptionMatchMap = new HashMap<Integer, Integer>();
-		//if (subprojectFieldBean!=null || classFieldBean!=null) {
 			List<TProjectBean> projectBeanList = ProjectBL.loadAll();
 			SubprojectDAO subprojectDAO = DAOFactory.getFactory().getSubprojectDAO();
 			ClassDAO classDAO = DAOFactory.getFactory().getClassDAO();
@@ -303,7 +302,6 @@ public class Migrate380To400 {
 					}
 				}
 			}
-		//}		
 		List<TCLOBBean> clobList = ClobBL.loadAll();
 		for (TCLOBBean clobBean : clobList) {
 			QNode qNode = TreeFilterReader.getInstance().readQueryTree(clobBean.getCLOBValue());
@@ -480,10 +478,8 @@ public class Migrate380To400 {
 				}
 				if (subprojectOption!=null) {
 					Integer customOption = subprojectOptionMatchMap.get(subprojectOption);
-					//if (customOption!=null) {
 						qNodeExpression.setValue(customOption);
 						return true;
-					//}
 				}
 			}			
 			Integer classOption = null;
@@ -496,10 +492,8 @@ public class Migrate380To400 {
 				}
 				if (classOption!=null) {
 					Integer customOption = classOptionMatchMap.get(classOption);
-					//if (customOption!=null) {
 						qNodeExpression.setValue(customOption);
 						return true;
-					//}
 				}
 			}
 		}
@@ -529,12 +523,10 @@ public class Migrate380To400 {
 	 * Add two new permission flags at the database level (none of them is yet implemented in the user interface)
 	 */
 	private static void migrateRoles() {
-		//StringBuffer extendedAccessKey;
 		List<TRoleBean> roleBeans = RoleBL.loadAll();
 		for (TRoleBean roleBean : roleBeans) {
 			String strExtendedAccessKey = roleBean.getExtendedaccesskey().trim();
 			if (strExtendedAccessKey!=null && !"".equals(strExtendedAccessKey)){
-				//extendedAccessKey = new StringBuffer(strExtendedAccessKey);
 				String reducedAccessKey = strExtendedAccessKey.substring(0, AccessBeans.NUMBER_OF_ACCESS_FLAGS);
 				roleBean.setExtendedaccesskey(reducedAccessKey);
 				RoleBL.save(roleBean);

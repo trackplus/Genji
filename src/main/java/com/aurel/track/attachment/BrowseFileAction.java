@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -34,6 +34,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.aurel.track.fieldType.runtime.base.WorkItemContext;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -79,6 +80,7 @@ public class BrowseFileAction extends ActionSupport implements Preparable, Sessi
 	/**
 	 * 
 	 */
+	@Override
 	public void prepare() throws Exception {
 		locale = (Locale) session.get(Constants.LOCALE_KEY);
 		person = ((TPersonBean) session.get(Constants.USER_KEY));
@@ -87,6 +89,7 @@ public class BrowseFileAction extends ActionSupport implements Preparable, Sessi
 	/**
 	 * 
 	 */
+	@Override
 	public String execute() {
 		attachments = new ArrayList<TAttachmentBean>();
 		if (workItemID != null) {
@@ -96,6 +99,17 @@ public class BrowseFileAction extends ActionSupport implements Preparable, Sessi
 		if (documentID != null) {
 			List<TAttachmentBean> docuemntAttachments = AttachBL.getAttachmentsImage(documentID);
 			attachments.addAll(docuemntAttachments);
+		}
+		if(workItemID==null&&documentID==null){
+			LOGGER.debug("get attachments for new item ");
+			//new item
+			WorkItemContext ctx=(WorkItemContext)session.get("workItemContext");
+			if(ctx==null){
+				LOGGER.error("No context on session");
+			}else {
+				List<TAttachmentBean> allAttachments = ctx.getAttachmentsList();
+				attachments = AttachBL.gettAttachmentImages(allAttachments);
+			}
 		}
 		return SUCCESS;
 	}
@@ -148,11 +162,13 @@ public class BrowseFileAction extends ActionSupport implements Preparable, Sessi
 				}
 			}
 			if (attachKey != null) {
-				url = /*servletRequest.getContextPath() +*/ "downloadAttachment.action?workItemID=" + workItemID + "&attachKey=" + attachKey;
+				url = /*servletRequest.getContextPath() +*/ "downloadAttachment.action?attachKey=" + attachKey;
+				if(workItemID!=null){
+					url+="&workItemID=" + workItemID;
+				}
 			}
 		} catch (Exception ex) {
 			LOGGER.debug(ExceptionUtils.getStackTrace(ex), ex);
-
 		}
 		String s = "<script type=\"text/javascript\">window.parent.CKEDITOR.tools.callFunction(" + CKEditorFuncNum + ",\"" + url + "\", \"" + error
 				+ "\");</script>";
@@ -171,6 +187,7 @@ public class BrowseFileAction extends ActionSupport implements Preparable, Sessi
 	 * @param session
 	 *            the session to set
 	 */
+	@Override
 	public void setSession(Map<String, Object> session) {
 		this.session = session;
 	}
@@ -186,6 +203,7 @@ public class BrowseFileAction extends ActionSupport implements Preparable, Sessi
 	 * @param servletRequest
 	 *            the servletRequest to set
 	 */
+	@Override
 	public void setServletRequest(HttpServletRequest servletRequest) {
 		this.servletRequest = servletRequest;
 	}
@@ -211,6 +229,7 @@ public class BrowseFileAction extends ActionSupport implements Preparable, Sessi
 		return application;
 	}
 
+	@Override
 	public void setApplication(Map application) {
 		this.application = application;
 	}

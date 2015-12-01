@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -47,7 +47,6 @@ public class DashboardPanelDesignBL extends AbstractPanelDesignBL {
 	//singleton isntance
 	private static DashboardPanelDesignBL instance;
 	private Locale locale;
-	//private DashboarFieldDesignBL screenFieldBL;
 
 	/**
 	 * get a singleton instance
@@ -70,7 +69,6 @@ public class DashboardPanelDesignBL extends AbstractPanelDesignBL {
 	 */
 	public DashboardPanelDesignBL() {
 		super();
-		//screenFieldBL=ScreenFieldDesignBL.getInstance();
 	}
 	@Override
 	protected FieldWrapper createFieldWrapper(){
@@ -89,14 +87,12 @@ public class DashboardPanelDesignBL extends AbstractPanelDesignBL {
 			((DashboardFieldWrapper)fieldWrapper).setJsConfigClass(descriptor.getJsConfigClass());
 			fieldWrapper.setFieldType(descriptor.getName());
 			fieldWrapper.setTooltip(LocalizeUtil.getLocalizedText(descriptor.getTooltip(), locale, descriptor.getBundleName()));
-			//fieldWrapper.setSrcImageProject(descriptor.getThumbnailProject());
 			//fieldWrapper.setSrcImageRelease(descriptor.getThumbnailRelease());
 		}else{
 			((DashboardFieldWrapper)fieldWrapper).setMissingPlugin(true);
 			fieldWrapper.setHtmlString("Plugin missing:<B><I>"+((TDashboardFieldBean)fieldScreen).getDashboardID()+"</I></B>");
 		}
 		fieldWrapper.setJsonData(createJSonData(descriptor, (TDashboardFieldBean)fieldScreen, locale));
-		//fieldWrapper.setSrcImage(imageName);
 		//fieldWrapper.setOneColumn(true);
 	}
 	private String createJSonData( DashboardDescriptor descriptor,TDashboardFieldBean dashboardFieldBean,Locale locale){

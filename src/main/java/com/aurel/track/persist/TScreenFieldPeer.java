@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -54,6 +54,7 @@ extends com.aurel.track.persist.BaseTScreenFieldPeer implements ScreenFieldDAO{
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TScreenFieldBean loadByPrimaryKey(Integer objectID)  {    	
 		TScreenField tobject = null;
 		try {
@@ -72,12 +73,13 @@ extends com.aurel.track.persist.BaseTScreenFieldPeer implements ScreenFieldDAO{
 	 * Loads all screenFields from TScreenField table 
 	 * @return
 	 */
+	@Override
 	public List<TScreenFieldBean> loadAll() {		
 		Criteria crit = new Criteria();
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all screenFields failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all screenFields failed with " + e.getMessage());
 			return null;
 		}		
 	}
@@ -87,16 +89,14 @@ extends com.aurel.track.persist.BaseTScreenFieldPeer implements ScreenFieldDAO{
 	 * @param bean
 	 * @return
 	 */
+	@Override
 	public Integer save(TScreenFieldBean bean){
 		try {
 			TScreenField tobject = BaseTScreenField.createTScreenField(bean);
-//			if(tobject.getIndex()==null){
-//				tobject.setIndex(getNextSortOrder(tobject.getParent()));
-//			}
 			tobject.save();
 			return tobject.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a screenField failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a screenField failed with " + e.getMessage());
 			return null;
 		}		
 	}
@@ -106,6 +106,7 @@ extends com.aurel.track.persist.BaseTScreenFieldPeer implements ScreenFieldDAO{
 	 * Is deletable should return true before calling this method
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		try {
 			doDelete(SimpleKey.keyFor(objectID));
@@ -118,6 +119,7 @@ extends com.aurel.track.persist.BaseTScreenFieldPeer implements ScreenFieldDAO{
 	 * Verify is a screenField can be delete 
 	 * @param objectID
 	 */
+	@Override
 	public boolean isDeletable(Integer objectID){
 		return true;
 	}
@@ -131,7 +133,7 @@ extends com.aurel.track.persist.BaseTScreenFieldPeer implements ScreenFieldDAO{
 		try {
 			torqueList = doSelect(criteria,con);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all screenPanels failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all screenPanels failed with " + e.getMessage());
 		}
 		return convertTorqueListToBeanList(torqueList);
 	}
@@ -141,6 +143,7 @@ extends com.aurel.track.persist.BaseTScreenFieldPeer implements ScreenFieldDAO{
 	 * @param parentID 
 	 * @return 
 	 */
+	@Override
 	public List loadByParent(Integer parentID){
 		List torqueList = new ArrayList();
 	    Criteria crit = new Criteria();
@@ -149,7 +152,7 @@ extends com.aurel.track.persist.BaseTScreenFieldPeer implements ScreenFieldDAO{
 			torqueList = doSelect(crit);
 		}
 		catch(TorqueException e){
-			LOGGER.error("Loading fiels by Parent failed with " + e.getMessage(), e);
+			LOGGER.error("Loading fiels by Parent failed with " + e.getMessage());
 		}
 		return convertTorqueListToBeanList(torqueList);
 	}
@@ -160,14 +163,11 @@ extends com.aurel.track.persist.BaseTScreenFieldPeer implements ScreenFieldDAO{
 	 */
 	public static Integer getNextSortOrder(Integer objectID){
 		Integer sortOrder = null;
-		//String max = "max(" + SORTORDER + ")";
 		Criteria crit = new Criteria();		
 		crit.add(PARENT, objectID);
-		//crit.addSelectColumn(max);		
 		try {
 			sortOrder = ((Record) doSelectVillageRecords(crit).get(0)).getValue(1).asIntegerObj();
 		} catch (Exception e) {
-			//LOGGER.error("Getting the next sortorder for the list " + listID + " failed with: " + e);		
 		}
 		if (sortOrder!=null){
 			sortOrder = new Integer(sortOrder.intValue()+1);
@@ -184,6 +184,7 @@ extends com.aurel.track.persist.BaseTScreenFieldPeer implements ScreenFieldDAO{
 	 * @param col
 	 * @return 
 	 */
+	@Override
 	public TScreenFieldBean loadByParentAndIndex(Integer parentID,Integer row,Integer col){
 		List result = new ArrayList();
 	    Criteria crit = new Criteria();
@@ -194,7 +195,7 @@ extends com.aurel.track.persist.BaseTScreenFieldPeer implements ScreenFieldDAO{
 			result = doSelect(crit);
 		}
 		catch(Exception e){
-			LOGGER.error("Loading field by Parent and index failed with " + e.getMessage(), e);
+			LOGGER.error("Loading field by Parent and index failed with " + e.getMessage());
 		}
 		if(result==null||result.isEmpty()){
 			return null;

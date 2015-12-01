@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -74,6 +74,7 @@ public class THistoryTransactionPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public THistoryTransactionBean loadByPrimaryKey(Integer objectID) {
 		THistoryTransaction tHistoryTransaction = null;
     	try {
@@ -96,6 +97,7 @@ public class THistoryTransactionPeer
 	 * @param since
 	 * @return
 	 */
+	@Override
 	public List<THistoryTransactionBean> loadByItemAndFieldsSince(Integer itemID, List<Integer> fieldIDs, Date since) {
 		if (fieldIDs!=null && !fieldIDs.isEmpty() && itemID!=null) {
 			Criteria criteria = new Criteria();
@@ -127,6 +129,7 @@ public class THistoryTransactionPeer
      * @param toDate  if specified before this date
      * @return
      */
+    @Override
     public List<THistoryTransactionBean> getByWorkItemsAndFields(int[] workItemIDs, 
     		Integer[] fieldIDs, boolean includeField, List<Integer> personIDs, Date fromDate, Date toDate) {    	
     	List<THistoryTransactionBean> transactionBeanList = new ArrayList<THistoryTransactionBean>();		
@@ -198,6 +201,7 @@ public class THistoryTransactionPeer
      * @param dateTo: if null do not filter
      * @return
      */
+    @Override
     public List<HistorySelectValues> getByWorkItemsFieldNewValuesDates(int[] workItemIDs, 
     		Integer fieldID, List<Integer> selectValues, Date dateFrom, Date dateTo) {    	
     	List recordList = new ArrayList();
@@ -255,6 +259,7 @@ public class THistoryTransactionPeer
      * @param fieldID should not be null 
      * @return
      */
+    @Override
     public List<IntegerStringBean> getByWorkItemsLongTextField(List workItemIDs, Integer fieldID) {
     	List torqueList = new ArrayList();
     	List workItemIDChunksList = GeneralUtils.getListOfChunks(workItemIDs);   
@@ -293,6 +298,7 @@ public class THistoryTransactionPeer
     	return criteria;
 	}
 		
+	@Override
 	public Integer save(THistoryTransactionBean historyTransactionBean) {
 		if (historyTransactionBean==null) {
 			return null;
@@ -319,7 +325,7 @@ public class THistoryTransactionPeer
 		try {
 			list = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the list of THistoryTransaction to be deleted failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the list of THistoryTransaction to be deleted failed with " + e.getMessage());
 		}			
         if (list == null || list.isEmpty()) {
             return;
@@ -338,6 +344,7 @@ public class THistoryTransactionPeer
 	 * Deletes a HistoryTransaction by primary key 
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		Criteria crit = new Criteria();
         crit.add(OBJECTID, objectID);        
@@ -354,6 +361,7 @@ public class THistoryTransactionPeer
 	 * @param changedByPersons
 	 * @return
 	 */
+	@Override
 	public List<THistoryTransactionBean> getActivityStream(List<Integer> workItemIDs, Integer limit,
 			Date fromDate, Date toDate, List<Integer> changeTypes, List<Integer> changedByPersons) {
 		Criteria criteria = null;
@@ -393,6 +401,7 @@ public class THistoryTransactionPeer
 	 * @param changedByPersons
 	 * @return
 	 */
+	@Override
 	public List<THistoryTransactionBean> loadActivityStreamHistoryTransactions(FilterUpperTO filterUpperTO, RACIBean raciBean, Integer personID,
 			Integer limit, Date fromDate, Date toDate, List<Integer> changeTypes, List<Integer> changedByPersons) {
 		Integer[] selectedProjects = filterUpperTO.getSelectedProjects();
@@ -565,7 +574,7 @@ public class THistoryTransactionPeer
 					historySelectValues.setNewValue(record.getValue(3).asIntegerObj());
 					historySelectValuesList.add(historySelectValues);
 				} catch (DataSetException e) {
-					LOGGER.error("Converting the record to HistorySelectValues failed with " + e.getMessage(), e);
+					LOGGER.error("Converting the record to HistorySelectValues failed with " + e.getMessage());
 				}
 				
 			}
@@ -585,7 +594,7 @@ public class THistoryTransactionPeer
 					integerStringBean.setLabel(record.getValue(2).asString());					
 					historyCommentsList.add(integerStringBean);
 				} catch (DataSetException e) {
-					LOGGER.error("Converting the record to IntegerStringBean failed with " + e.getMessage(), e);
+					LOGGER.error("Converting the record to IntegerStringBean failed with " + e.getMessage());
 				}
 				
 			}

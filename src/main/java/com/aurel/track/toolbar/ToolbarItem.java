@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -59,7 +59,6 @@ public class ToolbarItem {
 	private boolean condition;
 
 	// whether the action needs also a submit or is just an url without submit
-	//private boolean submit;
 
 
 	// the css class of the active toolbar item
@@ -76,12 +75,9 @@ public class ToolbarItem {
 	//whether to appear directly in the toolbar or in a more actions split button
 	private boolean more = false;
 	// whether to show this item or not
-	//private boolean showItem = true;
 	
 	// whether this item is just a placeholder, not a real toolbar item
-	//private boolean placeholder;
 	
-	//private List<ToolbarItem> children;
 	
 	/**
 	 * @return the condition
@@ -160,54 +156,29 @@ public class ToolbarItem {
 	/**
 	 * @return the submit
 	 */
-	/*public boolean isSubmit() {
-		return submit;
-	}*/
 
 	/**
 	 * @param submit
 	 *            the submit to set
 	 */
-	/*public void setSubmit(boolean submit) {
-		this.submit = submit;
-	}*/
 
 
 	/**
 	 * @return the showItem
 	 */
-	/*public boolean isShowItem() {
-		return showItem;
-	}*/
 
 	/**
 	 * @param showItem the showItem to set
 	 */
-	/*public void setShowItem(boolean showItem) {
-		this.showItem = showItem;
-	}*/
 
 	/**
 	 * @return the placeholder
 	 */
-	/*public boolean isPlaceholder() {
-		return placeholder;
-	}*/
 
 	/**
 	 * @param placeholder the placeholder to set
 	 */
-	/*public void setPlaceholder(boolean placeholder) {
-		this.placeholder = placeholder;
-	}*/
 
-	/*public List<ToolbarItem> getChildren() {
-		return children;
-	}
-
-	public void setChildren(List<ToolbarItem> children) {
-		this.children = children;
-	}*/
 
 	public int getId() {
 		return id;

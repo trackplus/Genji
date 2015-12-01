@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -100,15 +100,10 @@ public abstract class BasicDatasource implements IPluggableDatasource {
 				reportBeanList = LoadItemIDListItems.getReportBeansByWorkItemIDs(GeneralUtils.createIntArrFromIntegerList(workItemIDs), false,
 						personBean.getObjectID(), locale, true, true, true, true, true, true, false, true, false);
 			} else {
-				/*Integer workItemID = (Integer)contextMap.get(CONTEXT_ATTRIBUTE.WORKITEMID);
-				if (workItemID==null) {*/
 					QueryContext queryContext=ItemNavigatorBL.loadLastQuery(personBean.getObjectID(),locale);
 					if (queryContext!=null){
 						reportBeanList = ItemNavigatorBL.executeQuery(personBean, locale, queryContext);
 					}
-				/*} else {
-					reportBeanList = ReportBeanLoader.getReportBeansByWorkItemIDsNoFilterNoLink(new int[] {workItemID}, personBean.getObjectID(), locale);
-				}*/
 			}
 		} else {
 			if (dashboardProjectOrReleaseID!=null) {
@@ -164,14 +159,11 @@ public abstract class BasicDatasource implements IPluggableDatasource {
 		List<TWorkItemBean> workItemBeanList = null;
 		Boolean fromIssueNavigator = (Boolean)contextMap.get(CONTEXT_ATTRIBUTE.FROM_ISSUE_NAVIGATOR);
 		Integer dashboardProjectOrReleaseID = (Integer)contextMap.get(CONTEXT_ATTRIBUTE.DASHBOARD_PROJECT_RELEASE_ID);
-		//Integer dashboardEntityFlag = (Integer)contextMap.get(CONTEXT_ATTRIBUTE.DASHBOARD_ENTITYFLAG);
 		if (fromIssueNavigator!=null && fromIssueNavigator.booleanValue()) {
 			List<Integer> workItemIDs = (List<Integer>)contextMap.get(CONTEXT_ATTRIBUTE.WORKITEMIDS);
 			if (workItemIDs!=null && !workItemIDs.isEmpty()) {
 				workItemBeanList = LoadItemIDListItems.getWorkItemBeansByWorkItemIDs(GeneralUtils.createIntArrFromIntegerList(workItemIDs), personBean.getObjectID(), true, true, false);
 			} else {
-				/*Integer workItemID = (Integer)contextMap.get(CONTEXT_ATTRIBUTE.WORKITEMID);
-				if (workItemID==null) {*/
 					QueryContext queryContext=ItemNavigatorBL.loadLastQuery(personBean.getObjectID(),locale);
 					if (queryContext!=null){
 						//FIXME: get direct getWorkItemBeans from ItemNavigatorBL.executeQuery()
@@ -181,14 +173,6 @@ public abstract class BasicDatasource implements IPluggableDatasource {
 							workItemBeanList.add(reportBean.getWorkItemBean());
 						}
 					}
-				/*} else {
-					try {
-						TWorkItemBean workItemBean = ItemBL2.loadWorkItem(workItemID);
-						workItemBeanList = new LinkedList<TWorkItemBean>();
-						workItemBeanList.add(workItemBean);
-					} catch (ItemLoaderException e) {
-					}
-				}*/
 			}
 		} else {
 			if (dashboardProjectOrReleaseID!=null) {
@@ -236,6 +220,7 @@ public abstract class BasicDatasource implements IPluggableDatasource {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public Map<String, Object> getJasperReportParameters(Map<String, String[]> params, DatasourceDescriptor datasourceDescriptor,
 			Map<String, Object> contextMap, Map<String, Object> templateDescriptionMap,
 			Integer templateID, TPersonBean personBean, Locale locale) {
@@ -247,6 +232,7 @@ public abstract class BasicDatasource implements IPluggableDatasource {
 	 * returns null or not
 	 * @return
 	 */
+	@Override
 	public boolean implementSerialization() {
 		return true;
 	}
@@ -260,6 +246,7 @@ public abstract class BasicDatasource implements IPluggableDatasource {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public String prepareParameters(Integer templateID,
 			DatasourceDescriptor datasourceDescriptor, Map<String, Object> contextMap,
 			TPersonBean personBean, Locale locale) {
@@ -275,19 +262,15 @@ public abstract class BasicDatasource implements IPluggableDatasource {
 		}
 		Integer dashboardProjectOrReleaseID = (Integer)contextMap.get(CONTEXT_ATTRIBUTE.DASHBOARD_PROJECT_RELEASE_ID);
 		Boolean fromIssueNavigator = (Boolean)contextMap.get(CONTEXT_ATTRIBUTE.FROM_ISSUE_NAVIGATOR);
-		//Integer workItemID = (Integer)contextMap.get(CONTEXT_ATTRIBUTE.WORKITEMID);
 		List<Integer> workItemIDs = (List<Integer>)contextMap.get(CONTEXT_ATTRIBUTE.WORKITEMIDS);
 		Integer dashboardID = (Integer)contextMap.get(CONTEXT_ATTRIBUTE.DASHBOARD_ID);
 
 		JSONUtility.appendStringValue(stringBuilder, CONFIG_FILEDS.CONFIG_CLASS, configClass);
-		stringBuilder.append(CONFIG_FILEDS.CONFIG_DATA).append(":{");
+		JSONUtility.appendFieldName(stringBuilder, CONFIG_FILEDS.CONFIG_DATA).append(":{");
 		JSONUtility.appendIntegerValue(stringBuilder, CONTEXT_ATTRIBUTE.TEMPLATE_ID, templateID);
 		if (fromIssueNavigator!=null) {
 			JSONUtility.appendBooleanValue(stringBuilder, CONTEXT_ATTRIBUTE.FROM_ISSUE_NAVIGATOR, fromIssueNavigator.booleanValue());
 		}
-		/*if (workItemID!=null) {
-			JSONUtility.appendIntegerValue(stringBuilder, CONTEXT_ATTRIBUTE.WORKITEMID, workItemID);
-		}*/
 		if (workItemIDs!=null) {
 			JSONUtility.appendIntegerListAsArray(stringBuilder, CONTEXT_ATTRIBUTE.WORKITEMIDS, workItemIDs);
 		}
@@ -492,6 +475,7 @@ public abstract class BasicDatasource implements IPluggableDatasource {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public String refreshParameters(Map<String, String[]> params, Integer templateID,
 			DatasourceDescriptor datasourceDescriptor, Map<String, Object> contextMap,
 			TPersonBean personBean, Locale locale) {

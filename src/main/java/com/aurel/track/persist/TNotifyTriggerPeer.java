@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -90,6 +90,7 @@ public class TNotifyTriggerPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TNotifyTriggerBean loadByPrimaryKey(Integer objectID) {
 		TNotifyTrigger tNotifyTrigger = null;
     	try {
@@ -110,6 +111,7 @@ public class TNotifyTriggerPeer
 	 * @param includeOwn whether do we include also the own triggers
 	 * @return
 	 */
+	@Override
 	public List<TNotifyTriggerBean> loadSystemAndOwn(Integer personID, boolean includeOwn) {		
 		Criteria criteria = new Criteria();
 		if (includeOwn) {
@@ -124,7 +126,7 @@ public class TNotifyTriggerPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading of the notificationTriggers by person " + personID + " and includeSystem " + includeOwn + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading of the notificationTriggers by person " + personID + " and includeSystem " + includeOwn + " failed with " + e.getMessage());
 			return null;
 		}		
 	}
@@ -135,6 +137,7 @@ public class TNotifyTriggerPeer
 	 * @param personID
 	 * @return
 	 */
+	@Override
 	public List<TNotifyTriggerBean> loadByOwnOrDefaultNotifySettings(Integer personID) {
 		List notifyTriggers = new ArrayList();
 		Criteria criteria = new Criteria();
@@ -157,6 +160,7 @@ public class TNotifyTriggerPeer
 	 * which is not linked to any person (default)
 	 * @return
 	 */
+	@Override
 	public List<TNotifyTriggerBean> loadByDefaultNotifySettings() {
 		List notifyTriggers = new ArrayList();
 		Criteria criteria = new Criteria();
@@ -177,6 +181,7 @@ public class TNotifyTriggerPeer
 	 * @param notifyTriggerBean 
 	 * @return
 	 */
+	@Override
 	public Integer save(TNotifyTriggerBean notifyTriggerBean) {
 		TNotifyTrigger tNotifyTrigger;		
 		try {
@@ -184,7 +189,7 @@ public class TNotifyTriggerPeer
 			tNotifyTrigger.save();
 			return tNotifyTrigger.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a notificationTrigger failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a notificationTrigger failed with " + e.getMessage());
 			return null;
 		}		
 	}
@@ -194,6 +199,7 @@ public class TNotifyTriggerPeer
 	 * @param objectID 
 	 * @return
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		ReflectionHelper.delete(deletePeerClassesWithoutNotifySettings, deleteFieldsWithoutNotifySettings, objectID);
 	}
@@ -202,6 +208,7 @@ public class TNotifyTriggerPeer
 	 * Delete all own triggers of a person
 	 * @param personID
 	 */
+	@Override
 	public void deleteOwnTriggers(Integer personID) {
 		Criteria criteria = new Criteria();        
         criteria.add(BaseTNotifyTriggerPeer.PERSON, personID);
@@ -219,7 +226,7 @@ public class TNotifyTriggerPeer
 		try {
 			list = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the list of TNotifyTriggers to be deleted failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the list of TNotifyTriggers to be deleted failed with " + e.getMessage());
 		}			
         if (list == null || list.size() < 1) {
             return;
@@ -237,6 +244,7 @@ public class TNotifyTriggerPeer
 	 * @param objectID 
 	 * @return
 	 */
+	@Override
 	public boolean isDeletable(Integer objectID) {
 		return !ReflectionHelper.hasDependentData(replacePeerClasses, replaceFields, objectID); 
 	}
@@ -247,6 +255,7 @@ public class TNotifyTriggerPeer
 	 * @param personID
 	 * @return
 	 */
+	@Override
 	public boolean isAllowedToDelete(Integer objectID, Integer personID) {
 		List triggers = null; 
 		Criteria crit = new Criteria();		
@@ -267,6 +276,7 @@ public class TNotifyTriggerPeer
 	 * @param newID
 	 * @return
 	 */
+	@Override
 	public void replaceAndDelete(Integer oldID, Integer  newID) {    	
     	if (newID!=null) {
     		ReflectionHelper.replace(replacePeerClasses, replaceFields, oldID, newID);

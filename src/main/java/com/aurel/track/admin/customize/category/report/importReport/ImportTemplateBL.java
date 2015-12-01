@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -42,11 +42,11 @@ import com.aurel.track.admin.customize.treeConfig.screen.importScreen.parser.Par
 import com.aurel.track.beans.TExportTemplateBean;
 
 public class ImportTemplateBL {
-	
+
 	private static ExportTemplateParser exportTemplateParser = ParserFactory.getInstance().getExportTemplateParser();
-	
+
 	private static final Logger LOGGER = LogManager.getLogger(ImportTemplateBL.class);
-	
+
 	/**
 	 * Perform the necessary changes on the TExportTemplateBean extracted from the xml
 	 * Update the values which remain the same in the database
@@ -54,25 +54,25 @@ public class ImportTemplateBL {
 	 * @param xmlOptionSettingsBean
 	 * @return
 	 */
-	private static TExportTemplateBean getExportTemplateValues(TExportTemplateBean dbExportTemplateBean, 
+	private static TExportTemplateBean getExportTemplateValues(TExportTemplateBean dbExportTemplateBean,
 								TExportTemplateBean xmlExportTemplateBean)
-	{	
+	{
 		String dbUuid = dbExportTemplateBean.getUuid();
 		xmlExportTemplateBean.setUuid(dbUuid);
 		xmlExportTemplateBean.setObjectID(dbExportTemplateBean.getObjectID());
-		
+
 		xmlExportTemplateBean.setNew(false);
 		xmlExportTemplateBean.setModified(true);
 		return xmlExportTemplateBean;
 	}
-	
+
 
 	/**
 	 * Update the TEXPORTTEMPLATE table
 	 */
 	public static void updateTExportTemplate(Integer loggedPerson, File file, boolean overwriteExisting) {
 		Map<Integer,Integer> exportTemplateMap = new HashMap<Integer,Integer>();
-		boolean isUpdated = false; 
+		boolean isUpdated = false;
 		String fileName = null;
 		//unzip the archive
 		try
@@ -81,7 +81,7 @@ public class ImportTemplateBL {
 		    ZipInputStream zin = new ZipInputStream(fin);
 		    ZipEntry ze = null;
 		    while ((ze = zin.getNextEntry()) != null) {
-		    	if (ze.getName().equals("exptemplate.xml")){
+		    	if ("exptemplate.xml".equals(ze.getName())){
 		    		fileName = ze.getName();
 				    FileOutputStream fout = new FileOutputStream(ze.getName());
 				    for (int c = zin.read(); c != -1; c = zin.read()) {
@@ -89,7 +89,7 @@ public class ImportTemplateBL {
 				    }
 				    fout.close();
 		    	  }
-		        zin.closeEntry(); 
+		        zin.closeEntry();
 		      }
 		      zin.close();
 		    if (fileName==null) {
@@ -99,10 +99,9 @@ public class ImportTemplateBL {
 		    File xmlFile = new File(fileName);
 			ParserFactory.getInstance();
 			ParserFactory.setFile(xmlFile);
-			
+
 			List<TExportTemplateBean> dbExportTemplate = ReportBL.getAllTemplates();
 			List<TExportTemplateBean> xmlExportTemplate = exportTemplateParser.parse();
-			//System.out.println("Size xml=" + Integer.toString(xmlExportTemplate.size()));
 			Iterator itrXml = xmlExportTemplate.iterator();
 			while (itrXml.hasNext())
 			{
@@ -126,22 +125,22 @@ public class ImportTemplateBL {
 					tmpXmlExportTemplateBean.setPerson(loggedPerson);
 					tmpXmlExportTemplateBean.setRepositoryType(REPOSITORY_TYPE.PUBLIC);
 					tmpXmlExportTemplateBean.setNew(true);
-					tmpXmlExportTemplateBean.saveBean(tmpXmlExportTemplateBean);	
-				}	
+					tmpXmlExportTemplateBean.saveBean(tmpXmlExportTemplateBean);
+				}
 			}
 			if (xmlFile.exists())
 				xmlFile.delete();
 		}
 		catch (FileNotFoundException e){
-			LOGGER.error("File not found:" + e.getMessage(), e);
+			LOGGER.error("File not found:" + e.getMessage());
 		}
 		catch (Exception e)
 		{
-			LOGGER.error("Error:" + e.getMessage(), e);
+			LOGGER.error("Error:" + e.getMessage());
 		}
 
-		
+
 	}
 }
-	
+
 

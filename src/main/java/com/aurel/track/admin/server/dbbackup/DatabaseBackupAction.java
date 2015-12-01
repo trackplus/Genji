@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -59,9 +59,9 @@ import com.opensymphony.xwork2.ActionSupport;
  *
  */
 public class DatabaseBackupAction extends ActionSupport implements ServletRequestAware,SessionAware,ApplicationAware{
-	
+
 	private static final Logger LOGGER = LogManager.getLogger(DatabaseBackupAction.class);
-	
+
 	private static final long serialVersionUID = 400L;
 	private boolean autoBackup;
 	private boolean includeAttachments;
@@ -69,7 +69,7 @@ public class DatabaseBackupAction extends ActionSupport implements ServletReques
 	private HttpServletRequest servletRequest;
 	private Map application;
 	private Map<String, Object> session;
-	private Locale locale; 
+	private Locale locale;
 	private String backupName;
 	private String backupDir;
 	private boolean backupSuccess;
@@ -91,16 +91,16 @@ public class DatabaseBackupAction extends ActionSupport implements ServletReques
 		backupOnDays.add(Integer.valueOf(1));
 
 		// Get errors from last backup attempt, if any
-		if (ApplicationBean.getInstance().getBackupErrors() != null) { 
+		if (ApplicationBean.getInstance().getBackupErrors() != null) {
 			if (errors == null) {
 				errors = ApplicationBean.getInstance().getBackupErrors();
 			} else {
 				errors.addAll(ApplicationBean.getInstance().getBackupErrors());
-			}	
+			}
 		}
 		return null;
 	}
-	
+
 	@Override
 	public String execute() {
 		loadFirst = true;
@@ -111,7 +111,7 @@ public class DatabaseBackupAction extends ActionSupport implements ServletReques
 		prepare();
 		return createResponse();
 	}
-	
+
 	/**
 	 * Construct a proper JSON response string
 	 * @return
@@ -149,17 +149,17 @@ public class DatabaseBackupAction extends ActionSupport implements ServletReques
 		JSONUtility.appendJSONValue(sb,"availableBackups",BackupJSON.encodeJSONBackupList(availableBackups),true);
 		sb.append("}");
 		sb.append("}");
-		
+
 		try {
 			JSONUtility.prepareServletResponseJSON(ServletActionContext.getResponse());
 			PrintWriter out = ServletActionContext.getResponse().getWriter();
 			out.println(sb);
 		} catch (IOException e) {
-			LOGGER.error(Support.readStackTrace(e));
+			LOGGER.error(e);
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Get a list with all available backups
 	 * @return
@@ -176,7 +176,7 @@ public class DatabaseBackupAction extends ActionSupport implements ServletReques
 			PrintWriter out = ServletActionContext.getResponse().getWriter();
 			out.println(BackupJSON.encodeJSONBackupList(availableBackups));
 		} catch (IOException e) {
-			LOGGER.error(Support.readStackTrace(e));
+			LOGGER.error(e);
 		}
 		return null;
 	}
@@ -189,7 +189,7 @@ public class DatabaseBackupAction extends ActionSupport implements ServletReques
 		loadFirst = false;
 		errors = new ArrayList<LabelValueBean>();
 		ApplicationBean.getInstance().setBackupErrors(errors); // reset error list
-		
+
 		ApplicationBean appBean = ApplicationBean.getInstance();
 		synchronized (appBean) {
 			if(appBean.isBackupInProgress()){
@@ -232,7 +232,7 @@ public class DatabaseBackupAction extends ActionSupport implements ServletReques
 				}
 			}
 			catch(InterruptedException ie){
-				LOGGER.error(ie.getMessage(),ie);
+				LOGGER.error(ie.getMessage());
 			}
 
 			backupSuccess=ApplicationBean.getInstance().getBackupErrors() == null||ApplicationBean.getInstance().getBackupErrors().isEmpty();
@@ -240,7 +240,7 @@ public class DatabaseBackupAction extends ActionSupport implements ServletReques
 			return createResponse();
 		}
 	}
-	
+
 	/**
 	 * Save the automated backup configuration
 	 * @return
@@ -253,7 +253,7 @@ public class DatabaseBackupAction extends ActionSupport implements ServletReques
 		ApplicationBean.getInstance().getSiteBean().setIsDatabaseBackupJobOn(autoBackup);
 		if (!autoBackup) {
 			return createResponse();
-		}		
+		}
 		List<ControlError> tmperr = new LinkedList<ControlError>();
 		String errorMessage = SiteConfigBL.createAndCheckDirectory(backupDir, locale);
 		if (errorMessage!=null) {
@@ -265,24 +265,24 @@ public class DatabaseBackupAction extends ActionSupport implements ServletReques
 		ApplicationBean.getInstance().getSiteBean().setBackupOnDays(backupOnDays);
 		ApplicationBean.getInstance().getSiteBean().setBackupTime(backupTime);
 		ApplicationBean.getInstance().getSiteBean().setNoOfBackups(noOfBackups);
-		SiteConfigBL.saveTSite(ApplicationBean.getInstance().getSiteBean(), 
+		SiteConfigBL.saveTSite(ApplicationBean.getInstance().getSiteBean(),
 							   ApplicationBean.getInstance(), tmperr, application);
 		if (errors.isEmpty()){
 			if (!DatabaseBackupBL.setDBJobCronExpression(backupTime,backupOnDays)) {
-				errors.add(new LabelValueBean(getText("admin.server.databaseBackup.err.cronBad", locale), 
+				errors.add(new LabelValueBean(getText("admin.server.databaseBackup.err.cronBad", locale),
 						"backupTime"));
 			}
 		}
 		return createResponse();
 	}
-	
+
 
 	private static String getText(String s, Locale locale){
 		return LocalizeUtil.getLocalizedTextFromApplicationResources(s, locale);
 	}
-	
 
-	
+
+
 	public boolean isIncludeAttachments() {
 		return includeAttachments;
 	}
@@ -293,6 +293,7 @@ public class DatabaseBackupAction extends ActionSupport implements ServletReques
 	public HttpServletRequest getServletRequest() {
 		return servletRequest;
 	}
+	@Override
 	public void setServletRequest(HttpServletRequest servletRequest) {
 		this.servletRequest = servletRequest;
 	}
@@ -311,6 +312,7 @@ public class DatabaseBackupAction extends ActionSupport implements ServletReques
 	public Map getApplication() {
 		return application;
 	}
+	@Override
 	public void setApplication(Map application) {
 		this.application = application;
 	}
@@ -323,33 +325,34 @@ public class DatabaseBackupAction extends ActionSupport implements ServletReques
 	public Map<String, Object> getSession() {
 		return session;
 	}
+	@Override
 	public void setSession(Map<String, Object> session) {
 		this.session = session;
 	}
 	public List<Integer> getBackupOnDays() {
 		return backupOnDays;
 	}
-	
+
 	public void setBackupOnDays(List<Integer> backupOnDays) {
 		this.backupOnDays = backupOnDays;
 	}
-	
+
 	public List<LabelValueBean> getBackupOnDaysList() {
 		return backupOnDaysList;
 	}
-	
+
 	public void setBackupOnDaysList(List<LabelValueBean> backupOnDaysList) {
 		this.backupOnDaysList = backupOnDaysList;
 	}
-	
+
 	public String getBackupDir() {
 		return this.backupDir;
 	}
-	
+
 	public void setBackupDir(String dir) {
 		this.backupDir = dir;
 	}
-	
+
 	public String getBackupTime() {
 		return backupTime;
 	}
@@ -357,7 +360,7 @@ public class DatabaseBackupAction extends ActionSupport implements ServletReques
 	public void setBackupTime(String backupTime) {
 		this.backupTime = backupTime;
 	}
-	
+
 	public boolean isAutoBackup() {
 		return autoBackup;
 	}
@@ -386,5 +389,5 @@ public class DatabaseBackupAction extends ActionSupport implements ServletReques
 	public void setNoOfBackups(Integer noOfBackups) {
 		this.noOfBackups = noOfBackups;
 	}
-	
+
 }

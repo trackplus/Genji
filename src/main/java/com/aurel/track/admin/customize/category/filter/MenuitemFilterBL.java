@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -31,6 +31,7 @@ import java.util.Map;
 import javax.servlet.ServletException;
 
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -280,9 +281,10 @@ public class MenuitemFilterBL {
 		PropertiesConfiguration propertiesConfiguration = null;
 		try {
 			propertiesConfiguration = 
-					HandleHome.getProperties(HandleHome.FILTER_SUBSCRIPTIONS_FILE, ApplicationBean.getApplicationBean().getServletContext());
+					HandleHome.getProperties(HandleHome.FILTER_SUBSCRIPTIONS_FILE, ApplicationBean.getInstance().getServletContext());
 		} catch (ServletException e) {
-			LOGGER.error("ServletException by getting the FilterSubscriptions.properties from war " + e.getMessage(), e);
+			LOGGER.error("ServletException by getting the FilterSubscriptions.properties from war " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		if (propertiesConfiguration!=null) {
 			Iterator<String> keys = propertiesConfiguration.getKeys();
@@ -305,7 +307,8 @@ public class MenuitemFilterBL {
 											filterNames.add(filterName);
 										}
 									} catch (Exception e) {
-										LOGGER.info("The value " + value + " for key " + key + " can't be converted to a boolean " + e.getMessage(), e);
+										LOGGER.info("The value " + value + " for key " + key + " can't be converted to a boolean " + e.getMessage());
+										LOGGER.debug(ExceptionUtils.getStackTrace(e));
 									}
 									
 								} 

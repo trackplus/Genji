@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -34,6 +34,7 @@ import javax.imageio.stream.FileImageInputStream;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.struts2.interceptor.ApplicationAware;
@@ -119,6 +120,7 @@ public class ReportExecuteAction extends ActionSupport implements Preparable, Se
 	private boolean leaf;
 	private String iconCls;
 
+	@Override
 	public void prepare() throws Exception {
 		personBean = (TPersonBean) session.get(Constants.USER_KEY);
 		locale = (Locale) session.get(Constants.LOCALE_KEY);
@@ -261,9 +263,9 @@ public class ReportExecuteAction extends ActionSupport implements Preparable, Se
 			
 			String folderDirectory = "";			
 			if("projects-ticon".equals(iconCls)) {
-				folderDirectory = ApplicationBean.getApplicationBean().getServletContext().getRealPath("/"+Constants.DESIGN_DIRECTORY + "/" + Constants.DEFAULTDESIGNPATH + "/img/project.png");
+				folderDirectory = ApplicationBean.getInstance().getServletContext().getRealPath("/"+Constants.DESIGN_DIRECTORY + "/" + Constants.DEFAULTDESIGNPATH + "/img/project.png");
 			}else {
-				folderDirectory = ApplicationBean.getApplicationBean().getServletContext().getRealPath("/"+Constants.DESIGN_DIRECTORY + "/" + Constants.DEFAULTDESIGNPATH + "/img/folder.png");
+				folderDirectory = ApplicationBean.getInstance().getServletContext().getRealPath("/"+Constants.DESIGN_DIRECTORY + "/" + Constants.DEFAULTDESIGNPATH + "/img/folder.png");
 			}
 			imgFile = new File(folderDirectory);
 		}else {
@@ -290,7 +292,8 @@ public class ReportExecuteAction extends ActionSupport implements Preparable, Se
 					outputStream.write(data);
 					outputStream.flush();
 				} catch (Exception e) {
-					LOGGER.warn("Getting the preview image failed with " + e.getMessage(), e);
+					LOGGER.warn("Getting the preview image failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 			}
 		}
@@ -298,14 +301,17 @@ public class ReportExecuteAction extends ActionSupport implements Preparable, Se
 	}
 	
 
+	@Override
 	public void setSession(Map<String, Object> session) {
 		this.session = session;
 	}
 	
+	@Override
 	public void setServletResponse(HttpServletResponse servletResponse) {
 		this.servletResponse = servletResponse;
 	}
 	
+	@Override
 	public void setServletContext(ServletContext servletContext) {
 		this.servletContext = servletContext;
 	}
@@ -330,6 +336,7 @@ public class ReportExecuteAction extends ActionSupport implements Preparable, Se
 		this.exportFormat = exportFormat;
 	}
 
+	@Override
 	public void setApplication(Map<String, Object> application) {
 		this.application = application;
 	}
@@ -338,9 +345,6 @@ public class ReportExecuteAction extends ActionSupport implements Preparable, Se
 		this.projectID = projectID;
 	}
 
-	/*public void setWorkItemID(Integer workItemID) {
-		this.workItemID = workItemID;
-	}*/
 
 	
 	public void setWorkItemIDs(String workItemIDs) {

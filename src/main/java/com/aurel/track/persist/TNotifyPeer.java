@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -63,6 +63,7 @@ public class TNotifyPeer
 	 * @return
 	 * @throws Exception
 	 */
+	@Override
 	public boolean hasDirectRaciRole(Integer workItemKey, Integer personKey, String raciRole) {
 		List watchers = null;
 		Criteria crit = new Criteria();
@@ -91,6 +92,7 @@ public class TNotifyPeer
 	 * @return
 	 * @throws Exception
 	 */
+	@Override
 	public boolean anyPersonHasDirectRaciRole(Integer workItemKey, List<Integer> personIDs, String raciRole) {
 		List watchers = null;
 		Criteria crit = new Criteria();
@@ -119,6 +121,7 @@ public class TNotifyPeer
 	 * @return
 	 * @throws Exception
 	 */
+	@Override
 	public boolean anyPersonHasIndirectRaciRole(Integer workItemKey, List<Integer> personIDs, String raciRole) {
 		List watchers = null;
 		Criteria crit = new Criteria();
@@ -146,6 +149,7 @@ public class TNotifyPeer
 	 * @param persons
 	 * @param raciRole
 	 */
+	@Override
 	public void deleteByWorkItemAndPersonsAndRaciRole(Integer workItemKey, Integer[] persons, String raciRole) {
 		if (workItemKey!=null && persons!=null && persons.length>0) {
 			Criteria crit = new Criteria();
@@ -166,6 +170,7 @@ public class TNotifyPeer
 	 * @param workItemKey	
 	 * @param raciRole
 	 */
+	@Override
 	public void deleteByWorkItemAndRaciRole(Integer workItemKey, String raciRole) {
 		if (workItemKey!=null) {
 			Criteria crit = new Criteria();
@@ -186,6 +191,7 @@ public class TNotifyPeer
 	 * @param person
 	 * @param raciRole
 	 */
+	@Override
 	public void insertByWorkItemAndPersonAndRaciRole(Integer workItemKey, Integer person, String raciRole) {
 		if (workItemKey!=null && person!=null) {
 			Criteria crit = new Criteria();
@@ -220,7 +226,7 @@ public class TNotifyPeer
 			tNotify.save();
 			return tNotify.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a notify failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a notify failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -244,6 +250,7 @@ public class TNotifyPeer
 	 * @param personID
 	 * @return
 	 */
+	@Override
 	public List<TNotifyBean> loadTreeFilterWatchers(FilterUpperTO filterSelectsTO, RACIBean raciBean, Integer personID) {
 		Integer[] selectedProjects = filterSelectsTO.getSelectedProjects();
 		if (selectedProjects==null  || selectedProjects.length==0) {
@@ -254,7 +261,7 @@ public class TNotifyPeer
 		try {
 			return getFilterWatchers(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the watchers for tree filter failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the watchers for tree filter failed with " + e.getMessage());
 			return new ArrayList<TNotifyBean>();
 		}
 	}
@@ -267,12 +274,13 @@ public class TNotifyPeer
 	 * @param errors
 	 * @return
 	 */
+	@Override
 	public List<TNotifyBean> loadTQLFilterWatchers(String tqlExpression, TPersonBean personBean, Locale locale, List<ErrorData> errors) {
 		Criteria crit = TqlBL.createCriteria(tqlExpression, personBean, locale, errors);
 		try {
 			return getFilterWatchers(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the watchers for TQL filter " + tqlExpression + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the watchers for TQL filter " + tqlExpression + " failed with " + e.getMessage());
 			return new ArrayList<TNotifyBean>();
 		}
 	}
@@ -282,16 +290,6 @@ public class TNotifyPeer
 	 * person is originator or manager or responsible for 		 
 	 * @param personID
 	 */
-	/*public List<TNotifyBean> loadMyConsInf(Integer personID) {
-		Criteria criteria = ReportBeanLoader.prepareMyCriteria(personID, false);
-		try {
-			return getReportConsultantInformants(criteria);
-		} catch (TorqueException e) {
-			LOGGER.error("Loading the my consultants/informants for person " + 
-					personID + " failed with " + e.getMessage(), e);
-			return null;
-		}
-	}*/
 	
 	
 	/**
@@ -299,28 +297,6 @@ public class TNotifyPeer
 	 * @param filterSelectsTO
 	 * @return
 	 */
-	/*public List<TNotifyBean> loadCustomReportConsInf(FilterUpperTO filterSelectsTO) {
-		Criteria criteria = ReportBeanLoader.prepareCustomReportCriteria(filterSelectsTO, false);
-		try {
-			Integer[] selectedConsultantsInformants = filterSelectsTO.getSelectedConsultantsInformants();
-			//the join to the TNotify not yet included in the criteria 
-			if (selectedConsultantsInformants==null || selectedConsultantsInformants.length==0) {
-				return getReportConsultantInformants(criteria);
-			} else {
-				//1. the join to the TNotify was already included in prepareCustomReportCriteria() in the criteria
-				//2. the limitation to the person is needed just for getting the workItemBeans in TWorkItemPeer.loadCustomReportWorkItems()
-				//but for those filtered workItems we need all consultant/informant persons!
-				//same the limitation for raciRole 
-				criteria.remove(PERSONKEY);
-				criteria.remove(RACIROLE);
-				criteria.add(RACIROLE, (Object)null, Criteria.ISNOTNULL);
-				return convertTorqueListToBeanList(doSelect(criteria));
-			}
-		} catch (TorqueException e) {
-			LOGGER.error("Loading the custom report consultants/informants failed with " + e.getMessage(), e);
-			return null;
-		}
-	}*/
 	
 	/**
 	 * Loads the list of TNotifyBeans associated with items
@@ -328,6 +304,7 @@ public class TNotifyPeer
 	 * @param raciRole
 	 * @return
 	 */
+	@Override
 	public List<TNotifyBean> loadWatcherByItems(List<Integer> workItemIDs, String raciRole) {
 		List<TNotifyBean> consInfList = new LinkedList<TNotifyBean>();
 		if (workItemIDs==null || workItemIDs.isEmpty()) {
@@ -352,7 +329,7 @@ public class TNotifyPeer
 			try {
 				consInfList.addAll(convertTorqueListToBeanList(doSelect(criteria)));
 			} catch(Exception e) {
-				LOGGER.error("Loading the watchers by items failed with " + e.getMessage(), e);
+				LOGGER.error("Loading the watchers by items failed with " + e.getMessage());
 			}
 		}
 		return consInfList;
@@ -363,6 +340,7 @@ public class TNotifyPeer
 	 * @param workItemIDs
 	 * @return
 	 */
+	@Override
 	public List<TNotifyBean> loadLuceneConsInf(int[] workItemIDs) {
 		List<TNotifyBean> consInfList = new LinkedList<TNotifyBean>();
 		if (workItemIDs==null || workItemIDs.length==0) {
@@ -381,7 +359,7 @@ public class TNotifyPeer
 			try {
 				consInfList.addAll(getFilterWatchers(criteria));
 			} catch(Exception e) {
-				LOGGER.error("Loading the lucene report consultants/informants (by workItemKeys) failed with " + e.getMessage(), e);
+				LOGGER.error("Loading the lucene report consultants/informants (by workItemKeys) failed with " + e.getMessage());
 			}
 		}
 		return consInfList;
@@ -395,14 +373,6 @@ public class TNotifyPeer
 	 * @param tqlCriteria
 	 * @return
 	 */
-	/*public static List<TNotifyBean> loadReportTQLConsultantInformants(Criteria tqlCriteria) {
-		try {
-			return getFilterWatchers(tqlCriteria);
-		} catch (TorqueException e) {
-			LOGGER.error("Loading the consultants/informants for TQL report failed with failed with " + e.getMessage(), e);
-			return null;
-		}
-	}*/
 
 	/************************************************************************
 	 * Get consulted/informed beans to calculate read/edit right for person *
@@ -416,22 +386,6 @@ public class TNotifyPeer
 	 * @param isProject <ul><li>true: projectReleaseID is a projectID</li>
 	 * 					<li>false: projectReleaseID is a releaseID false</li></ul>
 	 */
-	/*public List<TNotifyBean> getProjectIDsReleaseIDsWorkItemsWithConsInfRoles(List<Integer> projectReleaseIDList, List<Integer> personIDs, boolean isProject) {
-		Criteria crit;
-		if (isProject) {
-			crit = ReportBeanLoader.prepareProjectIDsCriteria(projectReleaseIDList);
-		} else {
-			crit = ReportBeanLoader.prepareReleaseIDsCriteria(projectReleaseIDList);
-		}
-		crit.addJoin(TWorkItemPeer.WORKITEMKEY, TNotifyPeer.WORKITEM);
-		crit.addIn(TNotifyPeer.PERSONKEY, personIDs);
-		try {
-			return convertTorqueListToBeanList(doSelect(crit));
-		} catch (TorqueException e) {
-			LOGGER.error("Loading the direct consultants/informants for project failed with failed with " + e.getMessage(), e);
-			return null;
-		}
-	}*/
 	
 	
 	/**
@@ -441,20 +395,6 @@ public class TNotifyPeer
 	 * @param personIDs
 	 * @return
 	 */
-	/*public List<TNotifyBean> getCustomWorkItemsWithConsInfRoles(FilterUpperTO filterSelectsTO, List<Integer> personIDs) {
-		if (personIDs==null || personIDs.isEmpty()) {
-			return new LinkedList<TNotifyBean>();
-		}
-		Criteria crit = ReportBeanLoader.prepareCustomReportCriteria(filterSelectsTO);
-		crit.addJoin(TWorkItemPeer.WORKITEMKEY,  WORKITEM);
-		crit.addIn(PERSONKEY, personIDs);
-		try {
-			return convertTorqueListToBeanList(doSelect(crit));
-		} catch (TorqueException e) {
-			LOGGER.error("Loading the direct consultants/informants for custom report failed with failed with " + e.getMessage(), e);
-			return null;
-		}
-	}*/
 	
 	/**
 	 * Gets the list of TNotifyBeans by a list of workItemIDs 
@@ -463,6 +403,7 @@ public class TNotifyPeer
 	 * @param personIDs
 	 * @return
 	 */
+	@Override
 	public List<TNotifyBean> getByWorkItemsAndPersons(List<Integer> workItemIDs, List<Integer> personIDs) {
 		List<TNotifyBean> notifyBeans = new LinkedList<TNotifyBean>();
 		if (workItemIDs==null || workItemIDs.isEmpty()) {
@@ -482,7 +423,7 @@ public class TNotifyPeer
 			try {
 				notifyBeans.addAll(convertTorqueListToBeanList(doSelect(crit)));
 			} catch (TorqueException e) {
-				LOGGER.error("Loading the direct consultant/informant workItemIDs for lucene report failed with failed with " + e.getMessage(), e);			
+				LOGGER.error("Loading the direct consultant/informant workItemIDs for lucene report failed with failed with " + e.getMessage());			
 			}
 		}
 		return notifyBeans;
@@ -497,17 +438,8 @@ public class TNotifyPeer
 	 * @param personIDs
 	 * @return
 	 */
-	/*public static List<TNotifyBean> getTQLWorkItemsWithConsInfRoles(Criteria tqlCriteria, List<Integer> personIDs) {
-		tqlCriteria.addJoin(TWorkItemPeer.WORKITEMKEY,  WORKITEM);
-		tqlCriteria.addIn(PERSONKEY, personIDs);
-		try {
-			return convertTorqueListToBeanList(doSelect(tqlCriteria));
-		} catch (TorqueException e) {
-			LOGGER.error("Loading the direct consultants/informants for TQL report failed with failed with " + e.getMessage(), e);
-			return null;
-		}
-	}*/
 
+	@Override
 	public int countDirectWatcherPersons(Integer workItemID){
 		String COUNT = "count(" + PKEY + ")";
 		Criteria crit = new Criteria();
@@ -516,7 +448,7 @@ public class TNotifyPeer
 		try {
 			return ((Record) doSelectVillageRecords(crit).get(0)).getValue(1).asInt();
 		} catch (Exception e) {
-			LOGGER.error("countDirectWatcherPersons by workItemID " + workItemID +  " failed with " + e.getMessage(), e);
+			LOGGER.error("countDirectWatcherPersons by workItemID " + workItemID +  " failed with " + e.getMessage());
 			return 0;
 		}
 	}

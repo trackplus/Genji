@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -62,12 +62,13 @@ public class TGroupMemberPeer
 	 * Load all assignments
 	 * @return
 	 */
+	@Override
 	public List<TGroupMemberBean> loadAll() {
 		Criteria crit = new Criteria();
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch(Exception e) {
-			LOGGER.warn("Loading all group - person associations failed with " + e.getMessage(), e);
+			LOGGER.warn("Loading all group - person associations failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -76,6 +77,7 @@ public class TGroupMemberPeer
 	 * Loads the number of persons in groups 
 	 * @return
 	 */
+	@Override
 	public Map<Integer, Integer> loadNumberOfPersonsInAllGroups() {
 		Map<Integer, Integer> numberOfPersonsInGroups = new HashMap<Integer, Integer>();
 		Criteria crit = new Criteria();
@@ -87,7 +89,7 @@ public class TGroupMemberPeer
 		try {
 			records = doSelectVillageRecords(crit);
 		} catch(Exception e) {
-			LOGGER.error("Groupping the persons by groups failed with " + e.getMessage(), e);
+			LOGGER.error("Groupping the persons by groups failed with " + e.getMessage());
 		}
 		try {
 			if (records!=null && !records.isEmpty()) {
@@ -98,7 +100,7 @@ public class TGroupMemberPeer
 				}
 			}
 		} catch (Exception e) {
-			LOGGER.error("Getting the number of persons by groups failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the number of persons by groups failed with " + e.getMessage());
 		}
 		return numberOfPersonsInGroups;
 	}
@@ -108,6 +110,7 @@ public class TGroupMemberPeer
 	 * @param groupID 
 	 * @return
 	 */
+	@Override
 	public Integer loadNumberOfPersonsInGroup(Integer groupID) {
 		Criteria crit = new Criteria();
 		crit.add(THEGROUP, groupID);
@@ -116,9 +119,9 @@ public class TGroupMemberPeer
 		try {
 			return ((Record) doSelectVillageRecords(crit).get(0)).getValue(1).asIntegerObj();
 		} catch (TorqueException e) {
-			LOGGER.error("Counting the persons in group " + groupID + " failed with TorqueException " + e.getMessage(), e);
+			LOGGER.error("Counting the persons in group " + groupID + " failed with TorqueException " + e.getMessage());
 		} catch (DataSetException e) {
-			LOGGER.error("Counting the persons in group " + groupID + " failed with TorqueException " + e.getMessage(), e);
+			LOGGER.error("Counting the persons in group " + groupID + " failed with TorqueException " + e.getMessage());
 		}
 		return Integer.valueOf(0);
 	}
@@ -128,6 +131,7 @@ public class TGroupMemberPeer
 	 * @param personID
 	 * @return
 	 */
+	@Override
 	public List<TGroupMemberBean> loadGroupsForPerson(Integer personID) {
 		Criteria crit = new Criteria();
 		crit.add(PERSON, personID);
@@ -144,6 +148,7 @@ public class TGroupMemberPeer
 	 * @param personID
 	 * @return
 	 */
+	@Override
 	public List<TGroupMemberBean> loadPersonsForGroups(List<Integer> groupIDs) {
 		if (groupIDs==null || groupIDs.isEmpty()) {
 			return new LinkedList<TGroupMemberBean>();
@@ -226,6 +231,7 @@ public class TGroupMemberPeer
 	 * @param fieldBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TGroupMemberBean groupMemberBean) {
 		TGroupMember tGroupMember;
 		try {
@@ -233,11 +239,12 @@ public class TGroupMemberPeer
 			tGroupMember.save();
 			return tGroupMember.getObjectId();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a groupMemberBean failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a groupMemberBean failed with " + e.getMessage());
 			return null;
 		}		
 	}
 	
+	@Override
 	public void delete(Integer group, Integer person) {
 		Criteria crit = new Criteria();
 		crit.add(THEGROUP, group);
@@ -532,6 +539,7 @@ public class TGroupMemberPeer
 	 * @param group
 	 * @return
 	 */
+	@Override
 	public boolean isPersonMemberInGroup(Integer person, Integer group) {
 		List list = null;
 		Criteria crit = new Criteria();
@@ -552,6 +560,7 @@ public class TGroupMemberPeer
 	 * @param groupID
 	 * @return
 	 */
+	@Override
 	public boolean isAnyPersonMemberInGroup(List<Integer> personIDs, Integer groupID) {
 		if (personIDs!=null && !personIDs.isEmpty() && groupID!=null) {
 			List list = null;
@@ -576,6 +585,7 @@ public class TGroupMemberPeer
 	* @param groupIDs
 	* @return
 	*/
+	@Override
 	public boolean isPersonMemberInAnyGroup(Integer personID, List<Integer> groupIDs) {
 		List list = null;
 		if (personID!=null && groupIDs!=null && !groupIDs.isEmpty()) {
@@ -598,6 +608,7 @@ public class TGroupMemberPeer
 	* @param groupIDs
 	* @return
 	*/
+	@Override
 	public boolean isAnyPersonMemberInAnyGroup(List<Integer> personIDs, List<Integer> groupIDs) {
 		List list = null;
 		if (personIDs!=null && !personIDs.isEmpty() && groupIDs!=null && !groupIDs.isEmpty()) {
@@ -619,6 +630,7 @@ public class TGroupMemberPeer
 	 * @param personID
 	 * @return
 	 */
+	@Override
 	public List<Integer> getGroupsIDsForPerson(Integer personID) {
 		List<Integer> groupIDList = new LinkedList<Integer>();
 		List<TGroupMember> groupMemberList = null;
@@ -642,6 +654,7 @@ public class TGroupMemberPeer
 	 * @param personID
 	 * @return
 	 */
+	@Override
 	public Set<Integer> getGroupsIDsForPersons(Integer[] personIDs) {
 		Set<Integer> groupIDList = new HashSet<Integer>();
 		if (personIDs!=null && personIDs.length>0) {

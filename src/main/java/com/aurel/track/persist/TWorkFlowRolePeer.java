@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -41,10 +41,10 @@ import com.aurel.track.dao.WorkflowRoleDAO;
  *  You should add additional methods to this class to meet the
  *  application requirements.  This class will only be generated as
  *  long as it does not already exist in the output directory.
- *  
+ *
  * @author Sergej Redel <sergej@schoene-hochzeit.com>
  * @author Martin Bierkoch <martin.bierkoch@gmx.de>
- * @version $Revision: 1229 $ $Date: 2013-02-26 13:08:03 +0100 (Di, 26 Feb 2013) $
+ * @version $Revision: 1795 $ $Date: 2015-11-12 13:07:18 +0100 (Thu, 12 Nov 2015) $
  */
 public class TWorkFlowRolePeer
     extends com.aurel.track.persist.BaseTWorkFlowRolePeer
@@ -52,71 +52,23 @@ public class TWorkFlowRolePeer
 {
     private static final long serialVersionUID = 6244732857929601740L;
     private static final Logger LOGGER = LogManager.getLogger(TWorkFlowRolePeer.class);
-    
-    /**
-     * @return a List with all project types defined in this system
-     * If the mandatory entry with object id 0 for generic projects
-     * does not exist, it is being created and saved to the database.
-     * Thus, this method should always return a List with at least
-     * one entry.
-     */
-/*    public static List load() {
-        Criteria crit = new Criteria();
-        // first check if there is the mandatory entry with object id of 0
-        crit.add(BaseTWorkFlowPeer.OBJECTID, new Integer(0), Criteria.EQUAL );        
-        try {
-            List workFlows = doSelect(crit);
-            
-            Iterator i = workFlows.iterator();
-            TProjectType workFlow = null;
-            if (!i.hasNext())
-            {
-                LOGGER.error("Database not consistent, "
-                             + "forgot to run update script?");
-            }
-            crit = new Criteria(); // get a fresh one
-            workFlows = doSelect(crit);
-            LOGGER.error("TProjectTypePeer "+workFlows.toString());
-            
-            return (workFlows);
-        }
-        catch (Exception e) {
-            return null;
-        }
-    }*/
-    
-    
-    /*public static void doDelete(TWorkFlow twf) throws TorqueException
-    {
-       Criteria crit = new Criteria();
-       crit.add(BaseTWorkFlowRolePeer.WORKFLOW, twf.getObjectID(), Criteria.EQUAL );
-       doDelete(crit);
-    }
-    
-    public static void doDelete(List roleKeys) throws TorqueException
-    {       
-        for(int i=0; i < roleKeys.size(); i++ )
-        {
-            TWorkFlowRole tRole = (TWorkFlowRole) roleKeys.get(i);
-            BaseTWorkFlowRolePeer.doDelete(tRole.getPrimaryKey());            
-        }
-    }*/
-    
+
     /**
 	 * Load all workflow roles
 	 * @return
 	 */
+	@Override
 	public List<TWorkFlowRoleBean> loadAll() {
 		try {
 			Criteria crit = new Criteria();
 			return convertTorqueListToBeanList(doSelect(crit));
 		}
 		catch (Exception e) {
-			LOGGER.error("Loading all workflow roles for migration failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all workflow roles for migration failed with " + e.getMessage());
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Convert the torque objects to beans
 	 * @param torqueList

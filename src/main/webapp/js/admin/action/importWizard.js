@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -31,9 +31,7 @@ Ext.define('com.trackplus.admin.action.ImportWizard',{
 	constructor : function(config) {
 		var me = this;
 		var config = config || {};
-		me.initialConfig = config;
-		Ext.apply(me, config);
-		//this.init();
+		this.initConfig(config);
 	},
 
 	getToolbarActions: function() {
@@ -185,12 +183,12 @@ Ext.define('com.trackplus.admin.action.ImportWizard',{
 		var activeItem = layout.getActiveItem();
 		var index = panel.items.indexOf(activeItem);
 		var numItems = panel.items.getCount() - 1;
-		if (btn!=null) {
+		if (btn) {
 	        var params = null;
-			if (btn.itemId == 'next' || btn.itemId == 'finish' && index <= numItems) {
+			if (btn.itemId === 'next' || btn.itemId === 'finish' && index <= numItems) {
 				//+ 2 because index is 0 based and the data for the next card is loaded
 				var reload = false;
-				if (index==numItems) {
+				if (index===numItems) {
 					//reload the error handling card
 					index = index-1;
 					reload = true;
@@ -205,12 +203,12 @@ Ext.define('com.trackplus.admin.action.ImportWizard',{
 				//To avoid this initialize all next cards after each next.
 				this.initCards(index+2);
 				var dataIsValid = this.loadDataForCard(index+2, reload, params);
-				if (dataIsValid!=false) {
+				if (dataIsValid!==false) {
 					//if data is valid then change to the next card
 					panel.layout.setActiveItem(index + 1);
 				}
 			} else {
-				if (btn.itemId == 'previous' && index > 0) {
+				if (btn.itemId === 'previous' && index > 0) {
 					var activeItem = layout.getActiveItem();
 					//remove all data from the current card before moving back to the previous card: next always starts from an empty card
 					activeItem.removeAll();
@@ -257,19 +255,19 @@ Ext.define('com.trackplus.admin.action.ImportWizard',{
 		var numItems = panel.items.getCount();
 		var toolbar = panel.getDockedItems('toolbar[dock="top"]');
 		var previous = toolbar[0].getComponent('previous');
-		if (previous!=null) {
+		if (previous) {
 			previous.setDisabled(!layout.getPrev());
 		}
 		var next = toolbar[0].getComponent('next');
-		if (next!=null) {
+		if (next) {
 			next.setDisabled((index+1)>=(numItems-1));
 		}
 		var finish = toolbar[0].getComponent('finish');
-		if (finish!=null) {
-			finish.setDisabled((index+1)!=(numItems-1));
+		if (finish) {
+			finish.setDisabled((index+1)!==(numItems-1));
 		}
 		var indicator = toolbar[0].getComponent('indicator');
-		if (indicator!=null) {
+		if (indicator) {
 			var indicatorText = getText("common.lbl.wizard.step", (index + 1), numItems);
 			panel.setTitle(this.getTitle(index + 1));
 			indicator.update(indicatorText);
@@ -315,13 +313,18 @@ Ext.define('com.trackplus.admin.action.ImportWizard',{
 	},
 
 	submitFromCardToCard: function(cardFrom, cardTo, params, reload, timeout) {
+		var me = this;
 		var panelFrom = this.wizardPanel.getComponent("card" + cardFrom);
 		var panelTo = this.wizardPanel.getComponent("card" + cardTo);
 		if (!panelFrom.getForm().isValid()) {
 			return false;
 		}
-		panelTo.setLoading(getText("common.lbl.loading"));
-	    if (timeout!=null) {
+		var showLoadingOnComp = me.getWindowComponent();
+		if (CWHF.isNull(showLoadingOnComp)) {
+			showLoadingOnComp = panelTo;
+		}
+		showLoadingOnComp.setLoading(getText("common.lbl.loading"));
+	   if (timeout) {
 	        //for huge files the import can take longer as the standard 30 sec timeout
 	        //if timeout expires before the file is completely processed the failure callback executed
 	        panelFrom.getForm().timeout = timeout;
@@ -332,41 +335,47 @@ Ext.define('com.trackplus.admin.action.ImportWizard',{
 			scope: this,
 			method: "POST",
 			success: function(form, action) {
-	            panelTo.setLoading(false);
+				showLoadingOnComp.setLoading(false);
 				panelTo.removeAll(true);
 				panelTo.add(this.getImportWizardItemsForCard(cardTo));
 				this.postDataProcess(panelTo, action.result, cardTo, cardFrom);
 			},
 			failure: function(form, action) {
-	            panelTo.setLoading(false);
+				showLoadingOnComp.setLoading(false);
 				panelTo.removeAll();
 				panelTo.add(this.getImportWizardItemsForCard(cardTo));
 	            var data = action.result;
-	            if (data==null) {
+	            if (CWHF.isNull(data)) {
 	                //not controlled failure: for ex. connection time out
 	                data =  action.response;
 	            }
 				this.postDataProcess(panelTo, data, cardTo, cardFrom);
 			}
-		})
+		});
 	},
 
 	submitFromCardToCardMessageOnFailure: function(cardFrom, cardTo, params, reload, back) {
+		var me = this;
 		var panelFrom = this.wizardPanel.getComponent("card" + cardFrom);
 		var panelTo = this.wizardPanel.getComponent("card" + cardTo);
-		panelTo.setLoading(getText("common.lbl.loading"));
+		var showLoadingOnComp = me.getWindowComponent();
+		if (CWHF.isNull(showLoadingOnComp)) {
+			showLoadingOnComp = panelTo;
+		}
+
+		showLoadingOnComp.setLoading(getText("common.lbl.loading"));
 		panelFrom.getForm().submit({
 			url: this.getImportWizardUrl(cardTo, reload),
 			params: params,
 			scope: this,
 			method: "POST",
 			success: function(form, action) {
-	            panelTo.setLoading(false);
+				showLoadingOnComp.setLoading(false);
 				//do not recreate the form (items for card) if there is no card change
 				//because the previous fields in the formBase are not cleaned
 				//consequently it would duplicate the fields to submit
 				//instead upgrade the existing fields with refreshed data
-				if (cardFrom!=cardTo) {
+				if (cardFrom!==cardTo) {
 					panelTo.removeAll(true);
 					var panel = this.getImportWizardItemsForCard(cardTo);
 					panelTo.add(panel);
@@ -374,7 +383,7 @@ Ext.define('com.trackplus.admin.action.ImportWizard',{
 				this.postDataProcess(panelTo, action.result, cardTo, cardFrom);
 			},
 			failure: function(form, action) {
-				panelTo.setLoading(false);
+				showLoadingOnComp.setLoading(false);
 				if (back) {
 					this.goPrevious();
 				}
@@ -404,7 +413,7 @@ Ext.define('com.trackplus.admin.action.ImportWizard',{
 	/*protected*/getImportWizardCard1Items: function() {
 		var card1Items = [CWHF.createFileField(
 							getText("common.lbl.file", this.getFileTypeLabel()), 'uploadFile',
-							{allowBlank:false, labelWidth:250, width:700, labelIsLocalized: true, emptyText:this.getFileEmptyText()},
+							{itemId:"uploadFile", allowBlank:false, labelWidth:250, width:700, labelIsLocalized: true, emptyText:this.getFileEmptyText()},
 							{change:{fn:function(){
 								this.uploadDone=false;},
 								scope:this}})];
@@ -420,5 +429,9 @@ Ext.define('com.trackplus.admin.action.ImportWizard',{
 	postProcessCard1: function(formPanel, data) {
 		var uploadFile = formPanel.getComponent('uploadFile');
 		uploadFile.setRawValue('');
+	},
+
+	getWindowComponent: function() {
+		return null;
 	}
 });

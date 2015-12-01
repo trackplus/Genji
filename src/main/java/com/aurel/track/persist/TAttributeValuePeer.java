@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -64,6 +64,7 @@ public class TAttributeValuePeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TAttributeValueBean loadByPrimaryKey(Integer objectID) {
 		TAttributeValue tAttributeValue = null;
 		try {
@@ -85,6 +86,7 @@ public class TAttributeValuePeer
 	 * @param parameterCode 
 	 * @return
 	 */
+	@Override
 	public TAttributeValueBean loadBeanByFieldAndWorkItemAndParameter(Integer field, Integer workItem, Integer parameterCode) {
 		List<TAttributeValue> attributeValueList =  null;
 		Criteria criteria = new Criteria();
@@ -126,6 +128,7 @@ public class TAttributeValuePeer
 	 * @param workItem
 	 * @return
 	 */
+	@Override
 	public List<TAttributeValueBean> loadByWorkItem(Integer workItem) {
 		Criteria criteria = new Criteria();
 		criteria.add(WORKITEM, workItem);
@@ -134,7 +137,7 @@ public class TAttributeValuePeer
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the attributevaluebeans by workItem " + workItem + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the attributevaluebeans by workItem " + workItem + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -144,6 +147,7 @@ public class TAttributeValuePeer
 	 * @param workItem
 	 * @return
 	 */
+	@Override
 	public List<TAttributeValueBean> loadUserPickerByWorkItem(Integer workItemID) {
 		Criteria criteria = new Criteria();
 		criteria.add(WORKITEM, workItemID);
@@ -153,7 +157,7 @@ public class TAttributeValuePeer
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the user picker attributevaluebeans by workItem " + workItemID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the user picker attributevaluebeans by workItem " + workItemID + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -176,7 +180,7 @@ public class TAttributeValuePeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the user pickers for project/release failed with failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the user pickers for project/release failed with failed with " + e.getMessage());
 			return null;
 		}
 	}*/
@@ -192,7 +196,7 @@ public class TAttributeValuePeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the user pickers for custom filter failed with failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the user pickers for custom filter failed with failed with " + e.getMessage());
 			return null;
 		}
 	}*/
@@ -202,6 +206,7 @@ public class TAttributeValuePeer
 	 * @param allWorkItemIDs
 	 * @return
 	 */
+	@Override
 	public List<TAttributeValueBean> getUserPickerAttributesByWorkItems(List<Integer> workItemIDs) {
 		List<TAttributeValueBean> attributeValueBeans = new LinkedList<TAttributeValueBean>();
 		if (workItemIDs==null || workItemIDs.isEmpty()) {
@@ -218,7 +223,7 @@ public class TAttributeValuePeer
 			try {
 				attributeValueBeans.addAll(convertTorqueListToBeanList(doSelect(crit)));
 			} catch (TorqueException e) {
-				LOGGER.error("Loading the user pickers by workItemIDs failed with failed with " + e.getMessage(), e);
+				LOGGER.error("Loading the user pickers by workItemIDs failed with failed with " + e.getMessage());
 			}
 		}
 		return attributeValueBeans;
@@ -232,6 +237,7 @@ public class TAttributeValuePeer
 	 * @param objectIDs
 	 * @param fieldID
 	 */
+	@Override
 	public boolean isSystemOptionAttribute(List<Integer> objectIDs, Integer fieldID) {
 		if (objectIDs==null || objectIDs.isEmpty()) {
 			return false;
@@ -264,13 +270,14 @@ public class TAttributeValuePeer
 	 * @param attributeValueBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TAttributeValueBean attributeValueBean) {
 		try {
 			TAttributeValue tAttributeValue = BaseTAttributeValue.createTAttributeValue(attributeValueBean);
 			tAttributeValue.save();
 			return tAttributeValue.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of an attribute value failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of an attribute value failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -279,6 +286,7 @@ public class TAttributeValuePeer
 	 * Deletes an attributeValueBean from the TAttributeValue table by ID
 	 * @param objectID
 	 */
+	@Override
 	public void deleteByObjectID(Integer objectID) {
 		Criteria crit = new Criteria();
 		crit.add(OBJECTID, objectID);
@@ -295,6 +303,7 @@ public class TAttributeValuePeer
 	 * @param parameterCode
 	 * @param workItemID
 	 */
+	@Override
 	public void delete(Integer fieldID, Integer parameterCode, Integer workItemID) {
 		Criteria crit = new Criteria();
 		crit.add(FIELDKEY, fieldID);
@@ -317,6 +326,7 @@ public class TAttributeValuePeer
 	 * @param systemOptionID
 	 * @param systemOptionType
 	 */
+	@Override
 	public void deleteBySystemOption(Integer fieldID, Integer systemOptionID, Integer systemOptionType) {
 		Criteria crit = new Criteria();
 		crit.add(FIELDKEY, fieldID);
@@ -359,6 +369,7 @@ public class TAttributeValuePeer
 	 * @param personID
 	 * @return
 	 */
+	@Override
 	public List<TAttributeValueBean> loadTreeFilterAttributes(FilterUpperTO filterSelectsTO, RACIBean raciBean, Integer personID) {
 		Integer[] selectedProjects = filterSelectsTO.getSelectedProjects();
 		if (selectedProjects==null  || selectedProjects.length==0) {
@@ -369,7 +380,7 @@ public class TAttributeValuePeer
 		try {
 			return getCustomAttributeValues(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the custom attributes for tree filter failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the custom attributes for tree filter failed with " + e.getMessage());
 			return new ArrayList<TAttributeValueBean>();
 		}
 	}
@@ -382,11 +393,12 @@ public class TAttributeValuePeer
 	 * @param errors
 	 * @return
 	 */
+	@Override
 	public List<TAttributeValueBean> loadTQLFilterAttributeValues(String tqlExpression, TPersonBean personBean, Locale locale, List<ErrorData> errors) {
 		try {
 			return getCustomAttributeValues(TqlBL.createCriteria(tqlExpression, personBean, locale, errors));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the custom option attribute values for TQL report failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the custom option attribute values for TQL report failed with " + e.getMessage());
 			return new ArrayList<TAttributeValueBean>();
 		}	
 	}
@@ -397,6 +409,7 @@ public class TAttributeValuePeer
 	 * @param workItemIDs
 	 * @return
 	 */
+	@Override
 	public List<TAttributeValueBean> loadByWorkItemKeys(int[] workItemIDs) {
 		List<TAttributeValueBean> attributeValueBeansList = new ArrayList<TAttributeValueBean>();
 		List<TAttributeValue> tav = new ArrayList<TAttributeValue>();
@@ -416,7 +429,7 @@ public class TAttributeValuePeer
 			try {
 				tav.addAll(doSelect(criteria));
 			} catch(Exception e) {
-	        	LOGGER.error("Loading the attributeValueBeans by workItemIDs failed with " + e.getMessage(), e);
+	        	LOGGER.error("Loading the attributeValueBeans by workItemIDs failed with " + e.getMessage());
 	        }			
 		}
         return convertTorqueListToBeanList(tav);	
@@ -427,6 +440,7 @@ public class TAttributeValuePeer
 	 * @param workItemIDs
 	 * @return
 	 */
+	@Override
 	public List<TAttributeValueBean> loadLuceneCustomOptionAttributeValues(int[] workItemIDs) {
 		List<TAttributeValueBean> attributeValueBeansList = new ArrayList<TAttributeValueBean>();
 		if (workItemIDs==null || workItemIDs.length==0) {
@@ -445,7 +459,7 @@ public class TAttributeValuePeer
 			try {
 				attributeValueBeansList.addAll(getReportCustomOptionAttributeValues(criteria));
 			} catch(Exception e) {
-				LOGGER.error("Loading the custom option type attributeValueBeans by workItemIDs failed with " + e.getMessage(), e);
+				LOGGER.error("Loading the custom option type attributeValueBeans by workItemIDs failed with " + e.getMessage());
 			}
 		}
 		return attributeValueBeansList;

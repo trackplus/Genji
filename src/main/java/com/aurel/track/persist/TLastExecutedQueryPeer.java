@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -51,6 +51,7 @@ public class TLastExecutedQueryPeer extends com.aurel.track.persist.BaseTLastExe
 
 	public static final long serialVersionUID = 400L;
 	
+	@Override
 	public TLastExecutedQueryBean loadByPrimaryKey(Integer objectID) {
 		TLastExecutedQueryBean lastExecutedQueryBean = null;
 		try{
@@ -69,6 +70,7 @@ public class TLastExecutedQueryPeer extends com.aurel.track.persist.BaseTLastExe
 	/**
 	 * Loads the last executed filters by a person
 	 */
+	@Override
 	public List<TLastExecutedQueryBean> loadByPerson(Integer personID) {
 		Criteria crit = new Criteria();
 		crit.add(PERSON,personID);
@@ -76,7 +78,7 @@ public class TLastExecutedQueryPeer extends com.aurel.track.persist.BaseTLastExe
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading by person failed with " + e.getMessage(), e);
+			LOGGER.error("Loading by person failed with " + e.getMessage());
 			return  null;
 		}
 	}
@@ -84,6 +86,7 @@ public class TLastExecutedQueryPeer extends com.aurel.track.persist.BaseTLastExe
 	 * @param personID
 	 * @return
 	 */
+	@Override
 	public TLastExecutedQueryBean loadLastByPerson(Integer personID){
 		TLastExecutedQueryBean lastExecutedQueryBean = null;
 		Criteria crit = new Criteria();
@@ -95,11 +98,12 @@ public class TLastExecutedQueryPeer extends com.aurel.track.persist.BaseTLastExe
 				lastExecutedQueryBean=((TLastExecutedQuery)torqueList.get(0)).getBean();
 			}
 		} catch (TorqueException e) {
-			LOGGER.error("Loading last by person failed with " + e.getMessage(), e);
+			LOGGER.error("Loading last by person failed with " + e.getMessage());
 		}
 		return lastExecutedQueryBean;
 	}
 
+	@Override
 	public Integer save(TLastExecutedQueryBean lastExecutedQuery) {
 		try {
 			TLastExecutedQuery tobject = BaseTLastExecutedQuery.createTLastExecutedQuery(lastExecutedQuery);
@@ -107,7 +111,7 @@ public class TLastExecutedQueryPeer extends com.aurel.track.persist.BaseTLastExe
 			tobject.save();
 			return tobject.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a LastExecutedQuery failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a LastExecutedQuery failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -115,6 +119,7 @@ public class TLastExecutedQueryPeer extends com.aurel.track.persist.BaseTLastExe
 	/**
 	 * Deletes the last executed quieries by filterID and filterType
 	 */
+	@Override
 	public void deleteByFilterIDAndFilterType(Integer filterID, Integer filterType) {
 		deleteByFilterIDAndFilterType(filterID, filterType, null);
 	}
@@ -122,6 +127,7 @@ public class TLastExecutedQueryPeer extends com.aurel.track.persist.BaseTLastExe
 	/**
 	 * Deletes the last executed quieries by filterID and filterType
 	 */
+	@Override
 	public void deleteByFilterIDAndFilterType(Integer filterID, Integer filterType, Connection con) {
 		Criteria crit = new Criteria();
 		crit.add(QUERYKEY, filterID);
@@ -139,7 +145,7 @@ public class TLastExecutedQueryPeer extends com.aurel.track.persist.BaseTLastExe
 		try {
 			list = doSelect(crit, con);
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the list of TNotifyTriggers to be deleted failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the list of TNotifyTriggers to be deleted failed with " + e.getMessage());
 		}			
         if (list==null || list.isEmpty()) {
             return;
@@ -147,7 +153,7 @@ public class TLastExecutedQueryPeer extends com.aurel.track.persist.BaseTLastExe
         try {
 			BaseTLastExecutedQueryPeer.doDelete(crit, con);
 		} catch (TorqueException e) {
-			LOGGER.warn("Deleting the last executed query failed with " + e.getMessage(), e);
+			LOGGER.warn("Deleting the last executed query failed with " + e.getMessage());
 			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
         for (TLastExecutedQuery lastExecutedQuery : list) {
@@ -156,13 +162,14 @@ public class TLastExecutedQueryPeer extends com.aurel.track.persist.BaseTLastExe
 	        	try {
 					BaseTCLOBPeer.doDelete(SimpleKey.keyFor(queryClobID), con);
 				} catch (TorqueException e) {
-					LOGGER.warn("Deleting the last executed query failed with " + e.getMessage(), e);
+					LOGGER.warn("Deleting the last executed query failed with " + e.getMessage());
 					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
         	}
 		}
 	}
 	
+	@Override
 	public void delete(Integer objectID) {
 		Connection con = null;
 		try {

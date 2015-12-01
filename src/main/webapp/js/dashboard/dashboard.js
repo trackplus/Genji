@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -112,7 +112,7 @@ Ext.define('js.ext.com.track.dashboard.DashboardRenderer',{
 
 		me.originalTitle=me.title;
 		var tools=[];
-		if(me.useRefresh==true){
+		if(me.useRefresh===true){
 			tools.push({
 				type:'refresh',
 				tooltip: getText("common.btn.reload"),
@@ -121,7 +121,7 @@ Ext.define('js.ext.com.track.dashboard.DashboardRenderer',{
 				}
 			});
 		}
-		if(me.useConfig==true){
+		if(me.useConfig===true){
 			tools.push({
 				type:'gear',
                 tooltip: getText("common.btn.config"),
@@ -169,7 +169,7 @@ Ext.define('js.ext.com.track.dashboard.DashboardRenderer',{
 			success: function(result){
 				var jsonData = Ext.decode(result.responseText);
 				me.setLoading(false);
-				if(jsonData.data.tooManyItems==true){
+				if(jsonData.data.tooManyItems===true){
 					me.refreshErrorHandler();
 				}else{
 					me.doRefresh.call(me,jsonData.data);
@@ -207,17 +207,18 @@ Ext.define('js.ext.com.track.dashboard.DashboardRenderer',{
 		var projectID=me.jsonData.projectID;
 		var entityType=me.jsonData.entityType;
 		var dashboardID=me.jsonData.dashboardID;
-		if(projectID!=null){
+		var dashboardTitle =me.title;
+		if(projectID){
 			configURL="dashboardParamsConfig.action?projectID="+projectID+"&entityType="+entityType+"&dashboardID="+dashboardID;
 		}else{
 			configURL="dashboardParamsConfig.action?dashboardID="+dashboardID;
 		}
-		com.trackplus.dashboard.openConfigDialog(dashboardID,configURL,projectID,entityType,function(){
+		com.trackplus.dashboard.openConfigDialog(dashboardID,configURL,projectID,entityType,dashboardTitle, function(){
 			me.refreshDashboard.call(me);
 		});
 	},
 	addAll:function(destination,source){
-		if(source!=null&&source.length>0){
+		if(source&&source.length>0){
 			for(var i=0;i<source.length;i++){
 				destination.push(source[i]);
 			}
@@ -249,7 +250,7 @@ Ext.define('js.ext.com.track.dashboard.Error',{
 
 com.trackplus.dashboard.createPercentGroup=function(title,list,dashboard){
 	var gridData=list;
-	if(title!=null){
+	if(title){
 		gridData.unshift({
 			label:title,
 			h2:true,
@@ -264,8 +265,8 @@ com.trackplus.dashboard.createPercentGroup=function(title,list,dashboard){
 			{name: 'percent',type: 'int'},
 
 			{name: 'groupByFieldType',type: 'int'},
-			{name: 'projectID',type: 'int',useNull:true},
-			{name: 'releaseID',type: 'int',useNull:true},
+			{name: 'projectID',type: 'int',allowNull:true},
+			{name: 'releaseID',type: 'int',allowNull:true},
 			{name: 'openOnly',type: 'boolean'},
 			{name: 'groupByField',type: 'int'},
 			{name: 'icon'},
@@ -278,6 +279,7 @@ com.trackplus.dashboard.createPercentGroup=function(title,list,dashboard){
 		data: gridData
 	});
 	var grid = Ext.create('Ext.grid.Panel', {
+		cls:'dashboardGrid-noBottomBorder',
 		store: store,
 		columns: [
 			{
@@ -335,7 +337,7 @@ com.trackplus.dashboard.createPercentGroup=function(title,list,dashboard){
 			},
 			getRowClass: function(record, rowIndex, rp, ds){
 				var cls="";
-				if(record.data['category']==true){//grouping
+				if(record.data['category']===true){//grouping
 					cls+="dashboardCategoryPercent";
 				}
 				return cls;
@@ -346,7 +348,7 @@ com.trackplus.dashboard.createPercentGroup=function(title,list,dashboard){
 	return grid;
 };
 com.trackplus.dashboard.updateElementWrapperList=function(list,projectWrapper){
-	if(list!=null){
+	if(list){
 		var elmWrapper;
 		for(var i=0;i<list.length;i++){
 			elmWrapper=list[i];
@@ -360,13 +362,13 @@ com.trackplus.dashboard.updateElementWrapperList=function(list,projectWrapper){
 };
 
 com.trackplus.dashboard.isLabelLink=function(value,metaData,record,rowIndex,colIndex,store,view){
-	return !(record.data['category']==true);
+	return !(record.data['category']===true);
 };
 com.trackplus.dashboard.postProcessRendererLabel=function(value,metaData,record,rowIndex,colIndex,store,view){
 	var htmlStr='';
-	if(record.data['category']==true){
+	if(record.data['category']===true){
 		htmlStr='<div style="text-align:left;overflow: visible;">';
-		if(record.data['h2']==true){
+		if(record.data['h2']===true){
 			htmlStr+='<h2>'+value+'</h2>';
 		}else{
 			htmlStr+='<B>'+value+'</B>';
@@ -392,24 +394,24 @@ com.trackplus.dashboard.clickOnLabel=function(record,cellIndex){
 		'dashboardParams.dashboardID':me.jsonData.dashboardID
 	};
 	var entityFlag=null;
-	if(projectID==null && releaseID==null){
+	if(CWHF.isNull(projectID) && CWHF.isNull(releaseID)){
 		projectID=me.jsonData.projectID;
         releaseID=me.jsonData.releaseID;
 		entityFlag=me.jsonData.entityType;
-        if (entityFlag!=null) {
-             if (entityFlag==9 && releaseID!=null) {
+        if (entityFlag) {
+             if (entityFlag===9 && releaseID) {
                  projectID = releaseID;
              }
         }
 	}else{
-		if(releaseID!=null){
+		if(releaseID){
 			entityFlag=9;
             projectID=releaseID;
 		}else{
 			entityFlag=1;
 		}
 	}
-	if(openOnly==null){
+	if(CWHF.isNull(openOnly)){
 		openOnly=false;
 	}
 	params['dashboardParams.groupByFieldType']=groupByFieldType;
@@ -478,13 +480,13 @@ com.trackplus.dashboard.createReportTreeCfg=function(label,name,values,projectID
 	};
 	var labelWidth=150;
 	var labelAlign='right';
-	if(extraCfg!=null){
+	if(extraCfg){
 		for (var propertyName in extraCfg) {
-			if(propertyName=='labelAlign'){
+			if(propertyName==='labelAlign'){
 				labelAlign=extraCfg[propertyName];
 				continue;
 			}
-			if(propertyName=='labelWidth'){
+			if(propertyName==='labelWidth'){
 				labelWidth=extraCfg[propertyName];
 				continue;
 			}
@@ -495,14 +497,14 @@ com.trackplus.dashboard.createReportTreeCfg=function(label,name,values,projectID
     cfg["useNull"] = true;
     cfg["useTooltip"] = false;
     var reportTree = CWHF.createMultipleTreePicker(label,
-        name, [], values, cfg)
+        name, [], values, cfg);
     Ext.Ajax.request({
         url: "categoryPicker.action",
         params:{node:"report", useChecked: true},
         //scope:me,
         success: function(response){
             var children = Ext.decode(response.responseText);
-            reportTree.updateData(children);
+            reportTree.updateMyOptions(children);
             reportTree.setValue(values);
         },
         failure: function(response){
@@ -510,14 +512,6 @@ com.trackplus.dashboard.createReportTreeCfg=function(label,name,values,projectID
         }
     });
     return reportTree;
-	/*var reportTreeObject = CWHF.createReportTree(values,{projectID:projectID},name,cfg);//,null,label);
-	if(label==null){
-		return reportTreeObject;
-	}
-	reportTreeObject.flex=1;
-	var labelCmp = com.trackplus.dashboard.getLabelCmp(label, labelAlign, labelWidth);
-	return com.trackplus.dashboard.wrapLabelAndTree(labelCmp,reportTreeObject);*/
-
 };
 
 
@@ -527,13 +521,13 @@ com.trackplus.dashboard.createReleaseTreeCfg=function(label,name,values,extraCfg
 	}
 	var labelWidth=150;
 	var labelAlign='right';
-	if(extraCfg!=null){
+	if(extraCfg){
 		for (var propertyName in extraCfg) {
-			if(propertyName=='labelAlign'){
+			if(propertyName==='labelAlign'){
 				labelAlign=extraCfg[propertyName];
 				continue;
 			}
-			if(propertyName=='labelWidth'){
+			if(propertyName==='labelWidth'){
 				labelWidth=extraCfg[propertyName];
 				continue;
 			}
@@ -551,7 +545,7 @@ com.trackplus.dashboard.createReleaseTreeCfg=function(label,name,values,extraCfg
         //scope:me,
         success: function(response){
             var children = Ext.decode(response.responseText);
-            releaseProjectTree.updateData(children);
+            releaseProjectTree.updateMyOptions(children);
             releaseProjectTree.setValue(values);
         },
         failure: function(response){
@@ -559,23 +553,6 @@ com.trackplus.dashboard.createReleaseTreeCfg=function(label,name,values,extraCfg
         }
     });
     return releaseProjectTree;
-	/*var releaseTreeObject = CWHF.createReleaseTree(values,
-		{	withParameter:false,
-			activeFlag: true,
-			inactiveFlag: true,
-			notPlannedFlag: true,
-			closedFlag: false,
-			useChecked: true,
-			projectIsSelectable: true
-		},
-		name,cfg);//,null,label);
-	if(label==null){
-		return releaseTreeObject;
-	}
-	releaseTreeObject.flex=1;
-	var labelCmp = com.trackplus.dashboard.getLabelCmp(label, labelAlign, labelWidth);
-	return com.trackplus.dashboard.wrapLabelAndTree(labelCmp,releaseTreeObject);*/
-
 };
 
 com.trackplus.dashboard.wrapLabelAndTree=function(labelCmp, treeObject) {
@@ -592,7 +569,7 @@ com.trackplus.dashboard.wrapLabelAndTree=function(labelCmp, treeObject) {
 
 com.trackplus.dashboard.getLabelCmp=function(label, labelAlign, labelWidth) {
 	return Ext.create('Ext.Component',{
-		cls:labelAlign=='right'?'x-form-item-label-right x-form-item-label':'x-form-item-label',
+		cls:labelAlign==='right'?'x-form-item-label-right x-form-item-label':'x-form-item-label',
 		style:{
 			marginRight:'5px'
 		},
@@ -609,7 +586,7 @@ com.trackplus.dashboard.createReleasePickerCfg=function(label,name,releaseID,ext
         anchor:'100%',
         margin: '0 0 5 0'
 	};
-	if(extraCfg!=null){
+	if(extraCfg){
 		for (var propertyName in extraCfg) {
 			cfg[propertyName] = extraCfg[propertyName];
 		}
@@ -621,7 +598,7 @@ com.trackplus.dashboard.createReleasePickerCfg=function(label,name,releaseID,ext
         //scope:me,
         success: function(response){
             var projectReleaseTree = Ext.decode(response.responseText);
-            picker.updateData(projectReleaseTree);
+            picker.updateMyOptions(projectReleaseTree);
             picker.setValue(releaseID);
         },
         failure: function(response){
@@ -640,7 +617,7 @@ com.trackplus.dashboard.createMultipleReleasePickerCfg=function(label,name,relea
         anchor:'100%',
         margin: '0 0 5 0'
 	};
-	if(extraCfg!=null){
+	if(extraCfg){
 		for (var propertyName in extraCfg) {
 			cfg[propertyName] = extraCfg[propertyName];
 		}
@@ -652,7 +629,7 @@ com.trackplus.dashboard.createMultipleReleasePickerCfg=function(label,name,relea
         //scope:me,
         success: function(response){
             var projectReleaseTree = Ext.decode(response.responseText);
-            picker.updateData(projectReleaseTree);
+            picker.updateMyOptions(projectReleaseTree);
             picker.setValue(releaseID);
         },
         failure: function(response){
@@ -673,25 +650,24 @@ com.trackplus.dashboard.createFilterPickerCfg=function(label,name,queryID,extraC
 		anchor:'100%',
         margin: '0 0 5 0'
 	};
-	if(extraCfg!=null){
+	if(extraCfg){
 		for (var propertyName in extraCfg) {
 			cfg[propertyName] = extraCfg[propertyName];
 		}
 	}
-    var picker = CWHF.createSingleTreePicker(label,
-        name, [], queryID, cfg);
-        Ext.Ajax.request({
-            url: "categoryPicker.action",
-            params: {node:"issueFilter"},
-            success: function(response){
-                var filterTree = Ext.decode(response.responseText);
-                picker.updateData(filterTree);
-                picker.setValue(queryID);
-            },
-            failure: function(response){
-                com.trackplus.util.requestFailureHandler(response);
-            }
-    });
+	var picker = CWHF.createSingleTreePicker(label, name, [], queryID, cfg);
+	Ext.Ajax.request({
+		url: "categoryPicker.action",
+		params: {node:"issueFilter"},
+		success: function(response){
+			var filterTree = Ext.decode(response.responseText);
+			picker.updateMyOptions(filterTree);
+			picker.setValue(queryID);
+		},
+		failure: function(response){
+			com.trackplus.util.requestFailureHandler(response);
+		}
+	});
 	return picker;
 };
 
@@ -713,7 +689,7 @@ com.trackplus.dashboard.createMultiSelectConfig=function(label,name,data,value,e
 		width:300,
 		height:125
 	};
-	if(extraCfg!=null){
+	if(extraCfg){
 		for (var propertyName in extraCfg) {
 			cfg[propertyName] = extraCfg[propertyName];
 		}
@@ -725,10 +701,10 @@ com.trackplus.dashboard.createMultiSelectConfig=function(label,name,data,value,e
 com.trackplus.dashboard.createSelectConfig=function(label,name,data,value,handler,scope){
 	return Ext.create('Ext.form.ComboBox',{
 		fieldLabel:label,
-		hideLabel:(label==null),
+		hideLabel:(CWHF.isNull(label)),
 		name:name,
 		store: Ext.create('Ext.data.Store', {
-			data	:(data==null?[]:data),
+			data	:(CWHF.isNull(data)?[]:data),
 			fields	: [{name:'id', type:'int'}, {name:'label', type:'string'}],
 			autoLoad: false
 		}),
@@ -738,11 +714,11 @@ com.trackplus.dashboard.createSelectConfig=function(label,name,data,value,handle
 		valueField: 'id',
 		queryMode: 'local',
 		value:value,
-		width:(label==null? 150:300),
+		width:(CWHF.isNull(label)? 150:300),
 		labelAlign:'right',
 		listeners: {
 			change: function(cmb, newValue, oldValue, options) {
-				if(handler!=null){
+				if(handler){
 					handler.call(scope,cmb, newValue, oldValue, options);
 				}
 			}
@@ -753,10 +729,10 @@ com.trackplus.dashboard.createSelectConfig=function(label,name,data,value,handle
 com.trackplus.dashboard.createMultiSelectComboConfig=function(label,name,data,value,handler,scope){
 	return Ext.create('Ext.form.ComboBox',{
 		fieldLabel:label,
-		hideLabel:(label==null),
+		hideLabel:(CWHF.isNull(label)),
 		name:name,
 		store: Ext.create('Ext.data.Store', {
-			data	:(data==null?[]:data),
+			data	:(CWHF.isNull(data)?[]:data),
 			fields	: [{name:'id', type:'int'}, {name:'label', type:'string'}],
 			autoLoad: false
 		}),
@@ -766,12 +742,12 @@ com.trackplus.dashboard.createMultiSelectComboConfig=function(label,name,data,va
 		valueField: 'id',
 		queryMode: 'local',
 		value:value,
-		width:(label==null? 150:300),
+		width:(CWHF.isNull(label)? 150:300),
 		labelAlign:'right',
 		multiSelect: true,
 		listeners: {
 			change: function(cmb, newValue, oldValue, options) {
-				if(handler!=null){
+				if(handler){
 					handler.call(scope,cmb, newValue, oldValue, options);
 				}
 			}
@@ -780,14 +756,14 @@ com.trackplus.dashboard.createMultiSelectComboConfig=function(label,name,data,va
 };
 com.trackplus.dashboard.createRadioGroupConfig=function(label,name,options,value,handler,scope){
 	var items=[];
-	if(options!=null){
+	if(options){
 		for(var i=0;i<options.length;i++){
 			items.push({
 				name:name,
 				inputValue: options[i].id,
 				//id:id+"_"+options[i].id,
 				boxLabel:options[i].label,
-				checked:options[i].id==value
+				checked:options[i].id===value
 			});
 		}
 	}
@@ -801,7 +777,7 @@ com.trackplus.dashboard.createRadioGroupConfig=function(label,name,options,value
 		defaults:{margin:'0 5 0 0'},
 		listeners: {
 			change: function(radioGroup, newValue, oldValue, options) {
-				if(handler!=null){
+				if(handler){
 					handler.call(scope,radioGroup, newValue, oldValue, options);
 				}
 			}
@@ -814,21 +790,23 @@ com.trackplus.dashboard.createRadioGroupConfig=function(label,name,options,value
 
 var dashboardCfgWin;
 
-com.trackplus.dashboard.showConfigDialog=function(dashboardID,data,projectID,entityType,handlerCallback,scopeCallBack){
+com.trackplus.dashboard.showConfigDialog=function(dashboardID,data,projectID,entityType,dashboardTitle, handlerCallback,scopeCallBack){
 	var w=600;
 	var h=400;
 	var title=getText('cockpit.screenEdit.config.title');
-
-	if(dashboardCfgWin!=null){
+	if(dashboardTitle){
+		title=title+" : "+dashboardTitle;
+	}
+	if(dashboardCfgWin){
 		dashboardCfgWin.destroy();
 	}
 	var cfgClass=data.cfgClass;
 	var prefWidth=data.jsonData.prefWidth;
 	var prefHeight=data.jsonData.prefHeight;
-	if(prefWidth!=null){
+	if(prefWidth){
 		w=prefWidth;
 	}
-	if(prefHeight!=null){
+	if(prefHeight){
 		h=prefHeight;
 	}
 	var dashboardConfigPanel=Ext.create(cfgClass,{
@@ -876,24 +854,23 @@ com.trackplus.dashboard.showConfigDialog=function(dashboardID,data,projectID,ent
 
 	 dashboardCfgWin.show();
 };
-com.trackplus.dashboard.openConfigDialog=function(dashboardID,urlStr,projectID,entityType, handlerCallback,scopeCallBack){
+com.trackplus.dashboard.openConfigDialog=function(dashboardID,urlStr,projectID,entityType,dashboardTitle, handlerCallback,scopeCallBack){
 	borderLayout.setLoading(true);
 	Ext.Ajax.request({
 		url:urlStr,
 		success: function(response){
 			var jsonData=Ext.decode(response.responseText);
-			com.trackplus.dashboard.showConfigDialog(dashboardID,jsonData.data,projectID,entityType, handlerCallback,scopeCallBack);
+			com.trackplus.dashboard.showConfigDialog(dashboardID,jsonData.data,projectID,entityType,dashboardTitle, handlerCallback,scopeCallBack);
 			borderLayout.setLoading(false);
 		},
 		failure:function(response){
-			alert("failed to open config dashboard");
 			borderLayout.setLoading(false);
 		}
 	});
 };
 function saveDashParams(dashboardID,dashboardConfigPanel,projectID,entityType, handler,scope){
 	var urlSave="";
-	if(projectID!=null){
+	if(projectID){
 		urlSave="dashboardParamsConfig!save.action?projectID="+projectID+"&entityType="+entityType+"&dashboardID="+dashboardID;
 	}else{
 		urlSave="dashboardParamsConfig!save.action?dashboardID="+dashboardID;
@@ -907,7 +884,7 @@ function saveDashParams(dashboardID,dashboardConfigPanel,projectID,entityType, h
 		success: function(form, action) {
 			dashboardCfgWin.setLoading(false);
 			dashboardCfgWin.hide();
-			if(handler!=null){
+			if(handler){
 				handler.call(scope);
 			}
 		},
@@ -959,7 +936,7 @@ Ext.define('com.trackplus.screen.DashboardPanelView',{
 	getPanelConfig:function(panelModel,index,length){
 		var me=this;
 		var margins='0 5 2 0';
-		if(index==0){
+		if(index===0){
 			margins='5 5 2 0';
 		}
 		return {

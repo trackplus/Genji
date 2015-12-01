@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -102,16 +102,16 @@ public class LoginBL {
 	private static final String ISMOBILEAPP = "isMobileApplication";
 	private static final String DATABRACE = "\"data\":{";
 	private static final String DOTACTION = ".action";
-	
+
 	/**
 	 * Hide the constructor
 	 */
-	private LoginBL() {	
+	private LoginBL() {
 	}
 
 	/**
 	 * This method controls entire login procedure.
-	 * 
+	 *
 	 * @param isInTestMode
 	 * @param isMobileApplication
 	 * @param username
@@ -174,13 +174,13 @@ public class LoginBL {
 		// user we use that one, no more questions asked. However, a local login
 		// always overrules.
 
-		if ((username == null || "".equals(username) || password == null || "".equals(password)) 
-			&& (request.getRemoteUser() != null 
+		if ((username == null || "".equals(username) || password == null || "".equals(password))
+			&& (request.getRemoteUser() != null
 			&& ApplicationBean.getInstance().getSiteBean().getIsCbaAllowed())) {
 				username = request.getRemoteUser();
 				usingContainerBasedAuthentication = true;
 		}
-		
+
 		List<LabelValueBean> errors = new ArrayList<LabelValueBean>();
 		StringBuilder sb = new StringBuilder();
 		String redirectMapEntry = "";
@@ -204,7 +204,7 @@ public class LoginBL {
 
 	/**
 	 * This method controls entire login procedure.
-	 * 
+	 *
 	 * @param isInTestMode
 	 * @param isMobileApplication
 	 * @param username
@@ -274,7 +274,7 @@ public class LoginBL {
 	 * unexpired token. This is to prevent using the clear text password all the
 	 * time. The token is created when using the restLogin routine for the first
 	 * time.
-	 * 
+	 *
 	 * @param username
 	 * @param token
 	 */
@@ -298,13 +298,13 @@ public class LoginBL {
 			out.println(sb);
 		} catch (IOException e) {
 			// can't do much here
-			LOGGER.error(Support.readStackTrace(e));
+			LOGGER.error(e);
 		}
 		return null;
 	}
 
 	/**
-	 * 
+	 *
 	 * @param username
 	 * @param userPwd
 	 * @param nonce
@@ -314,7 +314,7 @@ public class LoginBL {
 	 *         "mappingEnum": Integer with 2: bad credentials, 6: license
 	 *         problems, 7: forward to URL, 8: first time admin user, 18:
 	 *         request license, 9: standard login
-	 * 
+	 *
 	 */
 	public static Map<String, Object> setEnvironment(String username, String userPwd, String nonce, HttpServletRequest request, Map<String, Object> sessionMap,
 			boolean anonymousLogin, boolean usingContainerBasedAuthentication, boolean springAuthenticated) {
@@ -336,7 +336,6 @@ public class LoginBL {
 		LocaleHandler.exportLocaleToSession(sessionMap, locale);
 		Support support = new Support();
 		support.setURIs(request);
-
 		if (username != null) {
 			ACCESSLOGGER.info("LOGON: User '" + username.trim() + "' trying to log on" + " at " + new Date().toString() + " from " + request.getRemoteAddr());
 		}
@@ -348,7 +347,7 @@ public class LoginBL {
 				LOGGER.info("Torque was re-initialized.");
 			}
 		} catch (Exception e) {
-			LOGGER.error(e.getMessage(), e);
+			LOGGER.error(e.getMessage());
 			LOGGER.error("Could not initialize Torque (1)");
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 			errors.add(new LabelValueBean("errGeneralError", getText("logon.err.noDataBase", locale) + ":" + e.getMessage()));
@@ -389,7 +388,7 @@ public class LoginBL {
 					LOGGER.debug("User '" + username + "' is not in database...");
 				}
 			} catch (Exception e) {
-				LOGGER.error(e.getMessage(), e);
+				LOGGER.error(e.getMessage());
 				LOGGER.error("Could not initialize Torque (2)");
 				LOGGER.error(ExceptionUtils.getStackTrace(e));
 				errors.add(new LabelValueBean("errGeneralError", getText("logon.err.noDataBase", locale)));
@@ -427,7 +426,7 @@ public class LoginBL {
 
 		// check if opState
 		// (reject users, but not admin, in maintenance state)
-		ApplicationBean appBean = ApplicationBean.getApplicationBean();
+		ApplicationBean appBean = ApplicationBean.getInstance();
 
 		if (appBean == null) {
 			LOGGER.error("appBean == null: this should never happen");
@@ -574,7 +573,6 @@ public class LoginBL {
 
 		Boolean isMobileDevice = LogoffBL.isThisAMobileDevice(request);
 		httpSession.setAttribute("mobile", isMobileDevice);
-		// session.put("mobile", isMobileDevice);
 
 		LOGGER.debug("Mobile is " + httpSession.getAttribute("mobile"));
 
@@ -582,7 +580,6 @@ public class LoginBL {
 		String forwardUrl = (String) httpSession.getAttribute(Constants.POSTLOGINFORWARD);
 		if (forwardUrl != null) {
 			LOGGER.debug("Forward URL found :" + forwardUrl);
-			// session.removeAttribute(Constants.POSTLOGINFORWARD);
 			mappingEnum = 7;
 			result.put("mappingEnum", mappingEnum);
 			return result;
@@ -596,7 +593,7 @@ public class LoginBL {
 			return result;
 		}
 
-		String extendedKey = ApplicationBean.getApplicationBean().getExtendedKey();
+		String extendedKey = ApplicationBean.getInstance().getExtendedKey();
 
 		if (extendedKey == null || extendedKey.length() < 10) { // no empty keys
 																// allowed
@@ -657,7 +654,7 @@ public class LoginBL {
 
 	/**
 	 * Some simple XOR decryption algorithm
-	 * 
+	 *
 	 * @param key
 	 *            a the for decryption
 	 * @param ciphertext
@@ -716,25 +713,25 @@ public class LoginBL {
 	 * @param redirectMapEntry
 	 * @return the JSON response
 	 */
-	public static StringBuilder createLoginResponseJSON(String _username, 
-			                                            String password, 
-			                                            String nonce, 
+	public static StringBuilder createLoginResponseJSON(String _username,
+			                                            String password,
+			                                            String nonce,
 			                                            boolean usingContainerBasedAuthentication,
-			                                            boolean springAuthenticated, 
-			                                            HttpServletRequest request, 
-			                                            List<LabelValueBean> errors, 
-			                                            HttpSession httpSession, 
+			                                            boolean springAuthenticated,
+			                                            HttpServletRequest request,
+			                                            List<LabelValueBean> errors,
+			                                            HttpSession httpSession,
 			                                            String forwardUrl,
-			                                            TMotdBean motd, 
-			                                            boolean isMobileApplication, 
-			                                            Locale locale, 
-			                                            Integer mobileApplicationVersionNo, 
+			                                            TMotdBean motd,
+			                                            boolean isMobileApplication,
+			                                            Locale locale,
+			                                            Integer mobileApplicationVersionNo,
 			                                            String redirectMapEntry) {
-		
+
 		StringBuilder sb = new StringBuilder();
 		sb.append("{");
 		Integer mappingEnum = 0;
-		
+
 		Map envResult = LoginBL.setEnvironment(_username, password, nonce, request, ActionContext.getContext().getSession(), false,
 				usingContainerBasedAuthentication, springAuthenticated);
 
@@ -753,7 +750,6 @@ public class LoginBL {
 		JSONUtility.appendStringValue(sb, "nonce", nonce);
 		JSONUtility.appendStringValue(sb, "j_username", _username);
 
-		// initData=sb.toString();
 
 		BanProcessor bp = BanProcessor.getBanProcessor();
 		String ipNumber = request.getRemoteAddr();
@@ -779,12 +775,10 @@ public class LoginBL {
 			}
 			break;
 		case 3:
-			// appBean = 0, should never happen;
 		case 4:
 			// can't login, maintenance mode
 			break;
 		case 5:
-			// return INPUT;
 		case 6:
 			// license expired, too many login attempts
 			// and not admin user. Admin can always log in
@@ -823,7 +817,7 @@ public class LoginBL {
 			// First login ever
 			bp.removeBanEntry(ipNumber);
 			firstTimeEver = true;
-			if (ApplicationBean.getApplicationBean().getLicenseManager() != null) {
+			if (ApplicationBean.getInstance().getLicenseManager() != null) {
 				firstTimeEver = false;
 			}
 			redirectMapEntry = "admin";
@@ -837,18 +831,18 @@ public class LoginBL {
 			break;
 		}
 
-		return assembleJSONPart2(sb, locale, 
-				    			firstTimeEver, 
+		return assembleJSONPart2(sb, locale,
+				    			firstTimeEver,
 				    			personBean,
 				    			httpSession,
 				    			redirectURL,
 				    			mobileApplicationVersionNo,
 				    			motd);
 	}
-	
-	private static StringBuilder assembleJSONPart2(StringBuilder sb, 
-												   Locale locale, 
-												   boolean firstTimeEver, 
+
+	private static StringBuilder assembleJSONPart2(StringBuilder sb,
+												   Locale locale,
+												   boolean firstTimeEver,
 												   TPersonBean personBean,
 												   HttpSession httpSession,
 												   String redirectURL,
@@ -856,8 +850,8 @@ public class LoginBL {
 												   TMotdBean motd
 												   ){
 		String licURL = "";
-		if (ApplicationBean.getApplicationBean().getLicenseManager() != null) {
-			licURL = ApplicationBean.getApplicationBean().getLicenseManager().getLicenseUrl(locale);
+		if (ApplicationBean.getInstance().getLicenseManager() != null) {
+			licURL = ApplicationBean.getInstance().getLicenseManager().getLicenseUrl(locale);
 		}
 
 		JSONUtility.appendStringValue(sb, "licURL", licURL, false);
@@ -878,8 +872,8 @@ public class LoginBL {
 					JSONUtility.appendIntegerValue(sb, "sessionTimeoutMinutes", httpSession.getMaxInactiveInterval() / 60);
 					JSONUtility.appendJSONValue(sb, "userSettingsProperties", getUserProperties(personBean));
 					JSONUtility.appendIntegerValue(sb, "userObjectID", personBean.getObjectID());
-					JSONUtility.appendStringValue(sb, "serverVersion", ApplicationBean.getApplicationBean().getVersion());
-					JSONUtility.appendIntegerValue(sb, "serverVersionNo", ApplicationBean.getApplicationBean().getVersionNo());
+					JSONUtility.appendStringValue(sb, "serverVersion", ApplicationBean.getInstance().getVersion());
+					JSONUtility.appendIntegerValue(sb, "serverVersionNo", ApplicationBean.getInstance().getVersionNo());
 					JSONUtility.appendIntegerValue(sb, "clientCompatibility", MobileBL.checkClientCompatibility(mobileApplicationVersionNo, true));
 					JSONUtility.appendStringValue(sb, "sessionId", httpSession.getId());
 

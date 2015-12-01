@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -58,9 +58,6 @@ public class ItemFieldRefreshBL {
 	 * @return
 	 */
 	public static boolean hasDependences(TFieldBean fieldBean, WorkItemContext ctx){
-		/*if(fieldID.intValue()== SystemFields.STATE){
-			return true;
-		}*/
 		if (fieldBean!=null) {
 			Integer fieldID = fieldBean.getObjectID();
 			FieldType fieldType= FieldTypeManager.getInstance().getType(fieldID);
@@ -75,7 +72,6 @@ public class ItemFieldRefreshBL {
 						SystemFields.INTEGER_TOP_DOWN_START_DATE.equals(fieldID) || SystemFields.INTEGER_TOP_DOWN_END_DATE.equals(fieldID)) {
 					return true;
 				}
-				//return GroovyScriptLoader.getInstance().doesGroovyClassExist(FieldChangeScriptHandler.FIELD_CHANGE+fieldBean.getName());
 				TWorkItemBean workItemBean = ctx.getWorkItemBean();
 				if (workItemBean!=null) {
 					boolean newItem = workItemBean.getObjectID()==null;
@@ -131,9 +127,6 @@ public class ItemFieldRefreshBL {
 	 */
 	public static Set<Integer> getDependences(Integer fieldID, WorkItemContext workItemContext, TPersonBean personBean, Locale locale){
 		Set<Integer> result=new HashSet<Integer>();
-		/*if(fieldID.intValue()== SystemFields.STATE){
-			result.add(SystemFields.RESPONSIBLE);
-		}*/
 		FieldType fieldType= FieldTypeManager.getInstance().getType(fieldID);
 		if(fieldType!=null && fieldType.getFieldTypeRT().isComposite()) {
 			//hardcoded field change
@@ -141,12 +134,10 @@ public class ItemFieldRefreshBL {
 		} else {
 			if (SystemFields.INTEGER_DURATION.equals(fieldID)) {
 				result.add(SystemFields.INTEGER_DURATION);
-				//result.add(SystemFields.INTEGER_STARTDATE);
 				//result.add(SystemFields.INTEGER_ENDDATE);
 			} else {
 				if (SystemFields.INTEGER_TOP_DOWN_DURATION.equals(fieldID)) {
 					result.add(SystemFields.INTEGER_TOP_DOWN_DURATION);
-					//result.add(SystemFields.INTEGER_TOP_DOWN_START_DATE);
 					//result.add(SystemFields.INTEGER_TOP_DOWN_END_DATE);
 				} else {
 					List<String> scriptNames = FieldChangeScriptHandler.getHandlersForField(fieldID);
@@ -161,7 +152,6 @@ public class ItemFieldRefreshBL {
 								inputBinding.put(BINDING_PARAMS.LOCALE, locale);
 								EventPublisher eventPublisher = EventPublisher.getInstance();
 								if (eventPublisher!=null) {
-									//new FieldChangeScriptHandlerExample().handleEvent(inputBinding);
 									List<Integer> events = new LinkedList<Integer>();
 									events.add(Integer.valueOf(IEventSubscriber.FIELD_CHANGED+fieldID));
 									eventPublisher.notify(events, inputBinding);

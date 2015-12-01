@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -25,6 +25,7 @@ package com.aurel.track.fieldType.runtime.system.text;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -66,6 +67,7 @@ public class SystemCommentRT extends SystemRichTextBaseRT {
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public IActivityConfig getFieldChangeConfig(Integer fieldID) {
 		return new CommentChangeConfig(fieldID);
 	}
@@ -91,7 +93,8 @@ public class SystemCommentRT extends SystemRichTextBaseRT {
 			attributeValueList = (List<TAttributeValueBean>)attributeValueMap.get(MergeUtil.mergeKey(fieldID, parameterCode));
 		} catch (Exception e) {
 			LOGGER.error("Converting the attribute value for field " + fieldID + " and parameterCode " +
-					parameterCode + " for workItem " + workItemBean.getObjectID() + " to List failed with " + e.getMessage(), e); 
+					parameterCode + " for workItem " + workItemBean.getObjectID() + " to List failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		//dump all comments into a single string to be used in the matcher
 		StringBuilder stringBuilder = new StringBuilder();

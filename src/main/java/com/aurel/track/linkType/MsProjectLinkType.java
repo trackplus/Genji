@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -24,6 +24,7 @@ package com.aurel.track.linkType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -47,13 +48,18 @@ import com.aurel.track.item.budgetCost.AccountingBL;
 import com.aurel.track.json.JSONUtility;
 import com.aurel.track.resources.LocalizeUtil;
 import com.aurel.track.util.IntegerStringBean;
+import com.aurel.track.util.ParameterMetadata;
 import com.aurel.track.util.numberFormatter.DoubleNumberFormatUtil;
 
 public class MsProjectLinkType extends AbstractSpecificLinkType {
 	private static final Logger LOGGER = Logger.getLogger(MsProjectLinkType.class);
-	public static Integer DEPENDENCY_TYPE_PARAM = Integer.valueOf(0);
+	/*public static Integer DEPENDENCY_TYPE_PARAM = Integer.valueOf(0);
 	public static Integer LINKLAG_PARAM = Integer.valueOf(1);
-	public static Integer LAGFORMAT_PARAM = Integer.valueOf(2);
+	public static Integer LAGFORMAT_PARAM = Integer.valueOf(2);*/
+	
+	public static String DEPENDENCY_TYPE = "DependencyType";
+	public static String LINKLAG = "Lag";
+	public static String LAGFORMAT = "Lagformat";
 
 	private static MsProjectLinkType instance;
 
@@ -68,6 +74,7 @@ public class MsProjectLinkType extends AbstractSpecificLinkType {
 		return instance;
 	}
 
+	@Override
 	public int getPossibleDirection() {
 		return LINK_DIRECTION.RIGHT_TO_LEFT;
 	}
@@ -76,6 +83,7 @@ public class MsProjectLinkType extends AbstractSpecificLinkType {
 	 * Whether this link type appears in gantt view
 	 * @return
 	 */
+	@Override
 	public boolean isGanttSpecific() {
 		return true;
 	}
@@ -112,6 +120,7 @@ public class MsProjectLinkType extends AbstractSpecificLinkType {
 	 * @param workItemLinkBean
 	 * @return
 	 */
+	@Override
 	public ItemLinkSpecificData getItemLinkSpecificData(TWorkItemLinkBean workItemLinkBean) {
 		MsProjectLinkSpecificData msProjectLinkSpecificData = new MsProjectLinkSpecificData();
 		msProjectLinkSpecificData.setDependencyType(decodeLinkTypeForGantt(workItemLinkBean.getIntegerValue1()));
@@ -226,31 +235,8 @@ public class MsProjectLinkType extends AbstractSpecificLinkType {
 			if (workItemBeanOriginal!=null && (EqualUtils.notEqual(ItemMoveBL.getStartDate(workItemBean), ItemMoveBL.getStartDate(workItemBeanOriginal)) ||
 					EqualUtils.notEqual(ItemMoveBL.getEndDate(workItemBean), ItemMoveBL.getEndDate(workItemBeanOriginal)))) {
 
-//				Set<Integer> problems = ItemMoveBL.moveItem(workItemBeanOriginal, MsProjectLinkTypeBL.getStartDate(workItemBean), MsProjectLinkTypeBL.getEndDate(workItemBean), false, null, PersonBL.loadByPrimaryKey(personID), locale);
 //				Set<Integer> problems = MsProjectLinkTypeBL.checkSuccMoveValidity(MsProjectLinkTypeBL.getStartDate(workItemBean), MsProjectLinkTypeBL.getEndDate(workItemBean),
-//						workItemBean.getObjectID(), personID, null);
 //				Set<Integer> botomUpAnchestorProblem = MsProjectLinkTypeBL.validateAncestorBottomUpLinks(workItemBean, MsProjectLinkTypeBL.getStartDate(workItemBean),
-//						MsProjectLinkTypeBL.getEndDate(workItemBean), personID);
-//				if (!botomUpAnchestorProblem.isEmpty()) {
-//					ErrorData errorDataViol = new ErrorData("itemov.ganttView.dependency.violation");
-//					errorDataViol.setConfirm(true);
-//					errorsList.add(errorDataViol);
-//					if(confirm) {
-//						MsProjectLinkTypeBL.removeViolatedParentDependencies(botomUpAnchestorProblem);
-//						errorsList.remove(errorDataViol);
-//					}
-//				}
-//				if (!problems.isEmpty()) {
-//					if (confirm) {
-//						LOGGER.debug("MS Proj. dep violation: confirmation received, delete not valid links");
-//						ItemMoveBL.removeViolatedParentDependencies(problems);
-//					} else {
-//						LOGGER.debug("MS Proj. dep violation: request confirmation");
-//						ErrorData errorData = new ErrorData("itemov.ganttView.dependency.violation");
-//						errorData.setConfirm(true);
-//						errorsList.add(errorData);
-//					}
-//				}
 			}
 		}
 		return errorsList;
@@ -267,6 +253,7 @@ public class MsProjectLinkType extends AbstractSpecificLinkType {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public List<ErrorData> validateBeforeSave(TWorkItemLinkBean workItemLinkBean, TWorkItemLinkBean workItemLinkOriginal,
 			SortedMap<Integer, TWorkItemLinkBean> workItemsLinksMap,
 			TWorkItemBean predWorkItem, TWorkItemBean succWorkItem, TPersonBean personBean, Locale locale) {
@@ -364,6 +351,7 @@ public class MsProjectLinkType extends AbstractSpecificLinkType {
 	 * @param succToPredLinksOfType
 	 * @param locale
 	 */
+	@Override
 	public void afterIssueSave(TWorkItemBean workItemBean, TWorkItemBean workItemBeanOriginal, Integer personID, List<TWorkItemLinkBean> predToSuccLinksOfType,
 			List<TWorkItemLinkBean> succToPredLinksOfType, Locale locale) {
 		//MsProjectLinkTypeBL.planItem(workItemBeanOriginal, oldStartDate, oldEndDate, startDate, endDate, locale, msProjectLinkTypeIDs, personID, storeCurrentWorkitem);
@@ -373,9 +361,7 @@ public class MsProjectLinkType extends AbstractSpecificLinkType {
 		//List<Integer> msProjectLinkTypeIDs = LinkTypeBL.getLinkTypesByPluginClass(msProjectLinkType);
 
 //		MsProjectLinkTypeBL.planItem(workItemBean, MsProjectLinkTypeBL.getStartDate(workItemBeanOriginal), MsProjectLinkTypeBL.getEndDate(workItemBeanOriginal),
-//			MsProjectLinkTypeBL.getStartDate(workItemBean), MsProjectLinkTypeBL.getEndDate(workItemBean), locale, msProjectLinkTypeIDs, personID, false);
 
-//		ItemMoveBL.moveItem(workItemBeanOriginal, ItemMoveBL.getStartDate(workItemBean), ItemMoveBL.getEndDate(workItemBean), true, null, PersonBL.loadByPrimaryKey(personID), locale);
 
 		/*Integer parent = workItemBeanOriginal.getSuperiorworkitem();
 		Map<Integer, Date[]> allParentsAllSuccessorWorkItemIDs = null;
@@ -384,11 +370,10 @@ public class MsProjectLinkType extends AbstractSpecificLinkType {
 			for(Map.Entry<Integer, Date[]> entry : allParentsAllSuccessorWorkItemIDs.entrySet()) {
 				try {
 					TWorkItemBean currentWorkItem = ItemBL.loadWorkItem(entry.getKey());
-//					MsProjectLinkTypeBL.planItem(currentWorkItem, entry.getValue()[0], entry.getValue()[1], MsProjectLinkTypeBL.getStartDate(currentWorkItem), MsProjectLinkTypeBL.getEndDate(currentWorkItem), locale, msProjectLinkTypeIDs, personID, false);
 					ItemMoveBL.moveItem(currentWorkItem, entry.getValue()[0], entry.getValue()[1], true, null, PersonBL.loadByPrimaryKey(personID), locale);
 				} catch (ItemLoaderException e) {
 					LOGGER.error(ExceptionUtils.getStackTrace(e));
-					LOGGER.error("Error while cascading parent work items successors: " + e.getMessage(), e);
+					LOGGER.error("Error while cascading parent work items successors: " + e.getMessage());
 				}
 			}
 		}*/
@@ -422,14 +407,17 @@ public class MsProjectLinkType extends AbstractSpecificLinkType {
 		}
 	}*/
 
+	@Override
 	public boolean selectableForQueryResultSuperset() {
 		return true;
 	}
 
+	@Override
 	public boolean isHierarchical() {
 		return false;
 	}
 
+	@Override
 	public String prepareParametersOnLinkTab(
 			TWorkItemLinkBean workItemLinkBean, Integer linkDirection,
 			Locale locale) {
@@ -448,6 +436,53 @@ public class MsProjectLinkType extends AbstractSpecificLinkType {
 						linkLag, locale) + " " + lagFormat;
 	}
 
+	/**
+	 * Prepare the parameters map
+	 * Used in webservice
+	 * @param workItemLinkBean
+	 * @return
+	 */
+	@Override
+	public Map<String, String> prepareParametersMap(TWorkItemLinkBean workItemLinkBean) {
+		Map<String, String> parametersMap = new HashMap<String, String>();
+		Integer dependencyType = workItemLinkBean.getIntegerValue1();
+		if (dependencyType!=null) {
+			parametersMap.put(DEPENDENCY_TYPE, String.valueOf(dependencyType));
+		}
+		Integer lagFormat = workItemLinkBean.getLinkLagFormat();
+		if (lagFormat!=null) {
+			parametersMap.put(LAGFORMAT, String.valueOf(lagFormat));
+		}
+		Double hoursPerWorkDay = AccountingBL.DEFAULTHOURSPERWORKINGDAY;
+		if (LinkLagBL.isHoursPerWorkdayNeeded(workItemLinkBean.getLinkLagFormat())) {
+			hoursPerWorkDay = getHoursPerWorkingDayForWorkItem(workItemLinkBean.getLinkPred());
+		}
+		double linkLag = LinkLagBL.getUILinkLagFromMinutes(workItemLinkBean.getLinkLag(),
+				workItemLinkBean.getLinkLagFormat(), hoursPerWorkDay);
+		parametersMap.put(LINKLAG, String.valueOf(linkLag));
+		return parametersMap;
+	}
+	
+	/**
+	 * Gets the parameter metadata as a list
+	 * @param locale
+	 * @return
+	 */
+	@Override
+	public List<ParameterMetadata> getParameterMetadata(Locale locale) {
+		List<ParameterMetadata> parameterList = new LinkedList<ParameterMetadata>();
+		ParameterMetadata dependencyType = new ParameterMetadata(DEPENDENCY_TYPE, "int", true);
+		dependencyType.setOptions(getDependencyTypeList(locale));
+		parameterList.add(dependencyType);
+		ParameterMetadata lag = new ParameterMetadata(LINKLAG, "double", false);
+		parameterList.add(lag);
+		ParameterMetadata lagFormat = new ParameterMetadata(LAGFORMAT, "int", true);
+		lagFormat.setOptions(getLinkLagFormatList(locale));
+		parameterList.add(lagFormat);
+		return parameterList;
+	}
+	
+	
 	static interface JSON_FIELDS {
 		static final String DEPENDENCY_TYPE_LABEL = "dependencyTypeLabel";
 		static final String DEPENDENCY_TYPES_LIST = "dependencyTypesList";
@@ -462,6 +497,7 @@ public class MsProjectLinkType extends AbstractSpecificLinkType {
 	 * Gets the JavaScript class for configuring the link type specific part
 	 * @return
 	 */
+	@Override
 	public String getLinkTypeJSClass() {
 		return "js.ext.com.track.linkType.MSProject";
 	}
@@ -473,6 +509,7 @@ public class MsProjectLinkType extends AbstractSpecificLinkType {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public String getSpecificJSON(TWorkItemLinkBean workItemLinkBean, TPersonBean personBean, Locale locale) {
 		StringBuilder stringBuilder = new StringBuilder("{");
 		JSONUtility.appendStringValue(stringBuilder,
@@ -525,21 +562,22 @@ public class MsProjectLinkType extends AbstractSpecificLinkType {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public List<ErrorData> unwrapParametersBeforeSave(
-			Map<Integer, String> parametersMap,
+			Map<String, String> parametersMap,
 			TWorkItemLinkBean workItemLinkBean, TPersonBean personBean, Locale locale) {
 		Integer dependencyType = PREDECESSOR_ELEMENT_TYPE.FS;
 		try {
 			if (parametersMap!=null) {
-				dependencyType = Integer.valueOf(parametersMap.get(DEPENDENCY_TYPE_PARAM));
+				dependencyType = Integer.valueOf(parametersMap.get(DEPENDENCY_TYPE));
 			}
 		} catch (Exception e) {
-			LOGGER.warn("Getting the dependency type parameter failed with " + e.getMessage(), e);
+			LOGGER.warn("Getting the dependency type parameter failed with " + e.getMessage());
 		}
 		workItemLinkBean.setIntegerValue1(dependencyType);
 		Double linkLag = Double.valueOf(0);
 		if (parametersMap!=null) {
-			String linkLagStr = parametersMap.get(LINKLAG_PARAM);
+			String linkLagStr = parametersMap.get(LINKLAG);
 			if (linkLagStr!=null) {
 				try {
 					linkLag = new Double(DoubleNumberFormatUtil.getInstance().parseGUI(linkLagStr, locale));
@@ -553,7 +591,7 @@ public class MsProjectLinkType extends AbstractSpecificLinkType {
 		}
 		Integer lagFormat = LAG_FORMAT.h;
 		if (parametersMap!=null) {
-			String lagFormatStr = parametersMap.get(LAGFORMAT_PARAM);
+			String lagFormatStr = parametersMap.get(LAGFORMAT);
 			if (lagFormatStr != null) {
 				try {
 					lagFormat = Integer.valueOf(lagFormatStr);
@@ -562,7 +600,7 @@ public class MsProjectLinkType extends AbstractSpecificLinkType {
 			}
 		}
 		Double hoursPerWorkday = AccountingBL.DEFAULTHOURSPERWORKINGDAY;
-		if (LinkLagBL.isHoursPerWorkdayNeeded(workItemLinkBean.getLinkLagFormat())) {
+		if (LinkLagBL.isHoursPerWorkdayNeeded(lagFormat)) {
 			hoursPerWorkday = getHoursPerWorkingDayForWorkItem(workItemLinkBean.getLinkPred());
 		}
 		int linkLagMinutes = LinkLagBL.getMinutesFromUILinkLag(linkLag,

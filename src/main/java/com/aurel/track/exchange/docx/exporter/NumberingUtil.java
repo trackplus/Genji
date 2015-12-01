@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -55,7 +55,7 @@ public class NumberingUtil {
 		try {
 			is = ResourceUtils.getResource("com/aurel/track/exchange/docx/exporter/numbering.xml");
 		} catch (IOException e) {
-			LOGGER.error("Getting the KnownStyles.xml failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the KnownStyles.xml failed with " + e.getMessage());
 			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}                  
 	    JAXBContext jc = Context.jc;
@@ -63,27 +63,27 @@ public class NumberingUtil {
 		try {
 			unmarshaller = jc.createUnmarshaller();
 		} catch (JAXBException e) {
-			LOGGER.error("Creating a JAXB unmarshaller failed with " + e.getMessage(), e);
+			LOGGER.error("Creating a JAXB unmarshaller failed with " + e.getMessage());
 			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}         
 	    try {
 			unmarshaller.setEventHandler(new JaxbValidationEventHandler());
 		} catch (JAXBException e) {
-			LOGGER.error("Setting the event handler for JAXB unmarshaller failed with " + e.getMessage(), e);
+			LOGGER.error("Setting the event handler for JAXB unmarshaller failed with " + e.getMessage());
 			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 	    Numbering numbering =  null;
 	    try {
 			numbering = (Numbering)unmarshaller.unmarshal(is);
 		} catch (JAXBException e) {
-			LOGGER.error("Unmarshalling the numbering.xml failed with " + e.getMessage(), e);
+			LOGGER.error("Unmarshalling the numbering.xml failed with " + e.getMessage());
 			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		} 
 	    NumberingDefinitionsPart numberingDefinitionsPart = null;
 		try {
 			numberingDefinitionsPart = new NumberingDefinitionsPart();
 		} catch (InvalidFormatException e) {
-			LOGGER.error("Creating the styles definition part failed with " + e.getMessage(), e);
+			LOGGER.error("Creating the styles definition part failed with " + e.getMessage());
 			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 	    numberingDefinitionsPart.setPackage(newPkg);
@@ -91,7 +91,7 @@ public class NumberingUtil {
 	    try {
 			newPkg.getMainDocumentPart().addTargetPart(numberingDefinitionsPart);
 		} catch (InvalidFormatException e) {
-			LOGGER.error("Adding the target part to MainDocumentPart failed with " + e.getMessage(), e);
+			LOGGER.error("Adding the target part to MainDocumentPart failed with " + e.getMessage());
 			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 	}

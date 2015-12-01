@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -26,6 +26,7 @@ package com.aurel.track.fieldType.runtime.custom.check;
 import java.util.Date;
 import java.util.Locale;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -113,7 +114,8 @@ public class CustomCheckBoxSingleRT extends CustomTextBoxBaseRT {
 			booleanAttribute = (Boolean)attribute;
 		}	
 		catch (Exception e) {
-			LOGGER.error("Wrong attribute type " + e.getMessage(), e);
+			LOGGER.error("Wrong attribute type " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		if (booleanAttribute!=null && booleanAttribute.booleanValue()==true) {
 			tAttributeValueBean.setCharacterValue(BooleanFields.TRUE_VALUE);
@@ -153,7 +155,8 @@ public class CustomCheckBoxSingleRT extends CustomTextBoxBaseRT {
 			} catch (Exception e) {
 				LOGGER.warn("Converting the new value of type " + 
 						newValue.getClass().getName() +  
-						" to Boolean failed with " + e.getMessage(), e);
+						" to Boolean failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		Boolean bOld = null;
@@ -163,7 +166,8 @@ public class CustomCheckBoxSingleRT extends CustomTextBoxBaseRT {
 			} catch (Exception e) {
 				LOGGER.warn("Converting the old value of type " + 
 						newValue.getClass().getName() +  
-						" to Boolean failed with " + e.getMessage(), e);
+						" to Boolean failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		//especially by grouping to make difference between the null and No
@@ -173,6 +177,7 @@ public class CustomCheckBoxSingleRT extends CustomTextBoxBaseRT {
 	/**
 	 * The value of the checkbox is stored as a string of length 1 ("Y" or "N") 
 	 */
+	@Override
 	public int getValueType() {
 		return ValueType.BOOLEAN;
 	}
@@ -187,6 +192,7 @@ public class CustomCheckBoxSingleRT extends CustomTextBoxBaseRT {
 	 * @param locale 
 	 * @return
 	 */
+	@Override
 	public String getShowValue(Integer fieldID, Integer parameterCode, Object value, 
 			Integer workItemID, LocalLookupContainer localLookupContainer, Locale locale) {
 		return getShowValue(value, locale);
@@ -212,7 +218,8 @@ public class CustomCheckBoxSingleRT extends CustomTextBoxBaseRT {
 				boolValue = (Boolean)value;
 			} catch (Exception e) {
 				LOGGER.debug("Casting the value type " + value.getClass().getName() +
-						" to Boolean failed with " + e.getMessage(), e);
+						" to Boolean failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}			
 			if (boolValue!=null && boolValue.booleanValue()==true) {
 				keySuffix=BooleanFields.TRUE_VALUE;
@@ -236,6 +243,7 @@ public class CustomCheckBoxSingleRT extends CustomTextBoxBaseRT {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public String getShowISOValue(Integer fieldID, Integer parameterCode, Object value, 
 			Integer workItemID, LocalLookupContainer localLookupContainer, Locale locale) {
 		if (value!=null) {
@@ -247,7 +255,8 @@ public class CustomCheckBoxSingleRT extends CustomTextBoxBaseRT {
 				boolValue = (Boolean)value;
 			} catch (Exception e) {
 				LOGGER.debug("Casting the value type " + value.getClass().getName() +
-						" to Boolean failed with " + e.getMessage(), e);
+						" to Boolean failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 			if (boolValue!=null) {
 				return boolValue.toString();
@@ -271,7 +280,8 @@ public class CustomCheckBoxSingleRT extends CustomTextBoxBaseRT {
 				boolValue = new Boolean(isoStrValue.toString());
 			} catch (Exception e) {
 				LOGGER.debug("Casting the string " + isoStrValue +
-						" to Boolean failed with " + e.getMessage(), e);
+						" to Boolean failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 			return boolValue;
 		}
@@ -330,6 +340,7 @@ public class CustomCheckBoxSingleRT extends CustomTextBoxBaseRT {
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public IActivityConfig getFieldChangeConfig(Integer fieldID) {
 		return new BooleanFieldChangeConfig(fieldID);
 	}
@@ -339,6 +350,7 @@ public class CustomCheckBoxSingleRT extends CustomTextBoxBaseRT {
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public IActivityExecute getFieldChangeApply(Integer fieldID) {
 		return new BooleanFieldChangeApply(fieldID);
 	}
@@ -348,6 +360,7 @@ public class CustomCheckBoxSingleRT extends CustomTextBoxBaseRT {
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public IValueConverter getFieldValueConverter(Integer fieldID) {
 		return new BooleanSetterConverter(fieldID);
 	}
@@ -358,6 +371,7 @@ public class CustomCheckBoxSingleRT extends CustomTextBoxBaseRT {
 	 * @param workItemBean the lucene value might depend on other fields of the workItem
 	 * @return
 	 */
+	@Override
 	public String getLuceneValue(Object value, TWorkItemBean workItemBean) {
 		if (value!=null) {
 			try {
@@ -369,7 +383,8 @@ public class CustomCheckBoxSingleRT extends CustomTextBoxBaseRT {
 					return  LuceneUtil.BOOLEAN_YES;
 				}
 			} catch (Exception e) {
-				LOGGER.debug("Converting the value " + value +  "of class " + value.getClass().getName() + " to Boolean failed with " + e.getMessage(), e);
+				LOGGER.debug("Converting the value " + value +  "of class " + value.getClass().getName() + " to Boolean failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		return LuceneUtil.BOOLEAN_NO;
@@ -379,6 +394,7 @@ public class CustomCheckBoxSingleRT extends CustomTextBoxBaseRT {
 	 * Whether the field should be stored
 	 * @return
 	 */
+	@Override
 	public int getLuceneStored() {
 		return LuceneUtil.STORE.NO;
 	}
@@ -387,6 +403,7 @@ public class CustomCheckBoxSingleRT extends CustomTextBoxBaseRT {
 	 * Whether the field should be tokenized
 	 * @return
 	 */
+	@Override
 	public int getLuceneTokenized() {
 		return LuceneUtil.TOKENIZE.NO;
 	}
@@ -395,6 +412,7 @@ public class CustomCheckBoxSingleRT extends CustomTextBoxBaseRT {
 	 * Returns the lookup entity type related to the fieldType
 	 * @return
 	 */
+	@Override
 	public int getLookupEntityType() {
 		return LuceneUtil.LOOKUPENTITYTYPES.DIRECTBOOLEAN;
 	}

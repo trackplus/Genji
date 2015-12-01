@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -28,25 +28,35 @@ Ext.define('com.trackplus.item.ItemActionDialog',{
 		modal:true,
 		w:1000,
 		h:600,
-		createDialogBeforLoaded:true,
+		createDialogBeforeLoaded:true,
 		animateTarget:null,
 		position:null,
 		addLinkFromContextMenu:null
 	},
 	myPosition:null,
 	centerPanelCls:'itemDialogBody',
+	dialog:null,
+	savedSuccessfully:false,
+	constructor : function(config) {
+		var me = this;
+		var config = config || {};
+		me.initialConfig = config;
+		this.initConfig(config);
+		this.listeners = config.listeners;
+		this.callParent(arguments);
+	},
+
 	getMyPosition:function(){
 		var me=this;
 		return me.myPosition;
 	},
-	dialog:null,
-	savedSuccessfully:false,
+
 	reExecute:function(){
 		this.execute(true);
 	},
 	execute:function(reExecute){
 		var me=this;
-		if(!(reExecute==true)&&me.createDialogBeforLoaded){
+		if(!(reExecute===true)&&me.getCreateDialogBeforeLoaded()){
 			me.initDialog();
 		}
 		me.callParent();
@@ -60,14 +70,14 @@ Ext.define('com.trackplus.item.ItemActionDialog',{
 	},
 	loadSuccess:function(data){
 		var me=this;
-		if(!me.createDialogBeforLoaded){
+		if(!me.getCreateDialogBeforeLoaded()){
 			me.initDialog();
 		}
 		me.callParent(arguments);
 	},
 	loadFailure:function(response){
 		var me=this;
-		if(me.dialog!=null){
+		if(me.dialog){
 			try{
 				me.dialog.close();
 			}catch(ex){}
@@ -86,8 +96,8 @@ Ext.define('com.trackplus.item.ItemActionDialog',{
 			layout:'fit',
 			region:'center'
 		});
-		me.toolbar.height=27;
-		var size=borderLayout.ensureSize(me.w,me.h);
+		//me.toolbar.height=27;
+		var size=borderLayout.ensureSize(me.getW(),me.getH());
 		me.w=size.width;
 		me.h=size.height;
 		var northPanel=Ext.create('Ext.panel.Panel',{
@@ -158,15 +168,15 @@ Ext.define('com.trackplus.item.ItemActionDialog',{
 		});
 	},
 	afterSetPositionItemDialog:function(){
-		if(this.maximized==true){
+		if(this.maximized===true){
 			var maxH=borderLayout.getHeight();
 			var h=this.getHeight();
 			var y=this.getY();
 			var preferredH=maxH-(67+28);
-			if(preferredH!=h||y!=67){
+			if(preferredH!==h||y!==67){
 				this.setY(67);
 				this.setHeight(preferredH);
-				this.doLayout();
+				this.updateLayout();
 			}
 		}
 	},
@@ -176,22 +186,24 @@ Ext.define('com.trackplus.item.ItemActionDialog',{
 		var maxH=borderLayout.getHeight();
 		me.dialog.setHeight(maxH-(67+28));
 		me.dialog.setY(67);
-		me.dialog.doLayout();
+		me.dialog.updateLayout();
 	},
 	updateTitle:function(data){
 		var me=this;
-		var useWizard=data.useWizard;
-		if(useWizard){
-			me.dialog.setTitle(data.title1);
-		}else{
-			me.dialog.setTitle(data.title);
+		if(me.dialog){
+			var useWizard=data.useWizard;
+			if(useWizard){
+				me.dialog.setTitle(data.title1);
+			}else{
+				me.dialog.setTitle(data.title);
+			}
 		}
 	},
 	navigate:function(direction,data){
 		var me=this;
 		me.callParent(arguments);
-		if(me.dialog!=null){
-			if(direction=="prev"){
+		if(me.dialog){
+			if(direction==="prev"){
 				me.dialog.setTitle(data.title1);
 			}else{
 				me.dialog.setTitle(data.title);
@@ -202,13 +214,13 @@ Ext.define('com.trackplus.item.ItemActionDialog',{
 		var me=this;
 		var data=null;
 		var workItemID=null;
-		if(action!=null){
+		if(action){
 			data=action.result.data;
 			workItemID=data.workItemID;
 		}
-		if(me.successExtra!=null&&me.successExtra['actionID']==-2){
+		if(me.successExtra&&me.successExtra['actionID']===-2){
 			me.actionID=-2;
-			if(workItemID==null){
+			if(CWHF.isNull(workItemID)){
 				workItemID=me.successExtra['workItemID']
 			}
 			me.workItemID=workItemID;
@@ -227,7 +239,7 @@ Ext.define('com.trackplus.item.ItemActionDialog',{
 	},
 	saveFailure:function(form, action){
 		var me=this;
-		if(me.dialog!=null){
+		if(me.dialog){
 			try{
 				me.dialog.destroy();
 			}catch(ex){}
@@ -248,9 +260,9 @@ Ext.define('com.trackplus.item.ItemActionDialog',{
 			case com.trackplus.item.ToolbarItem.NAVIGATION_PREV:
 				break;
 			case com.trackplus.item.ToolbarItem.CANCEL:
-				if(me.dialog!=null) {
+				if(me.dialog) {
 
-					if (me.successExtra != null && me.successExtra['actionID'] == -2) {
+					if (me.successExtra  && me.successExtra['actionID'] === -2) {
 						me.actionID = -2;
 						me.workItemID  = me.successExtra['workItemID']
 						me.successExtra['actionID'] = null;
@@ -270,7 +282,7 @@ Ext.define('com.trackplus.item.ItemActionDialog',{
 		me.callParent(arguments);
 	},
 	setLoading:function(b){
-		if(this.dialog!=null){
+		if(this.dialog){
 			this.dialog.setLoading(b);
 		}else{
 			borderLayout.setLoading(b);

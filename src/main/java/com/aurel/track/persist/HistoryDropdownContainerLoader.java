@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -63,21 +63,6 @@ public class HistoryDropdownContainerLoader {
 	 * for some system selects because they contain anyway just a few records
 	 * @return
 	 */
-	/*private static DropDownContainer initHistoryDropdown(Locale locale) {
-		DropDownContainer dropDownContainer = new DropDownContainer();
-		if (locale!=null) {
-			dropDownContainer.setLocale(locale);
-			dropDownContainer.setDataSourceMap(MergeUtil.mergeKey(new Integer(SystemFields.ISSUETYPE), null), 
-					GeneralUtils.createMapFromList(IssueTypeBL.loadAll(locale)));
-			dropDownContainer.setDataSourceMap(MergeUtil.mergeKey(new Integer(SystemFields.STATE), null), 
-					GeneralUtils.createMapFromList(StatusBL.loadAll(locale)));
-			dropDownContainer.setDataSourceMap(MergeUtil.mergeKey(new Integer(SystemFields.PRIORITY), null), 
-					GeneralUtils.createMapFromList(PriorityBL.loadAll(locale)));
-			dropDownContainer.setDataSourceMap(MergeUtil.mergeKey(new Integer(SystemFields.SEVERITY), null), 
-					GeneralUtils.createMapFromList(LocalizeUtil.localizeDropDownList(SeverityBL.loadAll(), locale)));
-		}
-		return dropDownContainer;
-	}*/
 	
 	
 	
@@ -87,23 +72,6 @@ public class HistoryDropdownContainerLoader {
 	 * @param locale
 	 * @return
 	 */
-	/*public static DropDownContainer loadHistoryDropDownContainer(int[] workItemIDs, Locale locale) {
-		DropDownContainer dropDownContainer = initHistoryDropdown(locale);		
-		dropDownContainer.setDataSourceMap(MergeUtil.mergeKey(new Integer(SystemFields.PERSON), null), 
-				GeneralUtils.createMapFromList(personDAO.loadHistoryPersons(workItemIDs)));
-
-		dropDownContainer.setDataSourceMap(MergeUtil.mergeKey(new Integer(SystemFields.PROJECT), null), 
-				GeneralUtils.createMapFromList(projectDAO.loadHistoryProjects(workItemIDs)));
-
-		dropDownContainer.setDataSourceMap(MergeUtil.mergeKey(new Integer(SystemFields.RELEASE), null), 
-				(Map)releaseDAO.loadHistoryReleases(workItemIDs));
-		
-		List<TFieldChangeBean> customOptionFieldChangesBeanList = 
-			fieldChangeDAO.loadHistoryCustomOptionFieldChanges(workItemIDs);
-		Map<Integer, TOptionBean> customOptionsMap = optionDAO.loadHistoryOptions(workItemIDs);
-		setCustomOptions(dropDownContainer, customOptionFieldChangesBeanList, null, customOptionsMap);
-		return dropDownContainer;
-	}*/
 	
 	/**
 	 * We do not bother for getting only the really needed beans in the dropDown container
@@ -203,9 +171,6 @@ public class HistoryDropdownContainerLoader {
 		Criteria criteria = new Criteria();
 		criteria.addJoin(BaseTHistoryTransactionPeer.OBJECTID, BaseTFieldChangePeer.HISTORYTRANSACTION);
 		criteria.addIn(BaseTHistoryTransactionPeer.WORKITEM, workItemIDs);
-		/*if (personID!=null) {
-			criteria.add(THistoryTransactionPeer.CHANGEDBY, personID);
-        }*/			
 		return criteria;
 	}
 	

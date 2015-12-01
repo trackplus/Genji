@@ -1,0 +1,125 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="You can further filter automails generated from triggers by assigning automail conditions. With these filters you can control down to each item property what kind of messages you will get from your ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="task"/><meta name="DC.Title" content="Automail conditions"/><meta name="abstract" content="You can further filter automails generated from triggers by assigning automail conditions. With these filters you can control down to each item property what kind of messages you will get from your Track+ system when items are created or modified."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="You can further filter automails generated from triggers by assigning automail conditions. With these filters you can control down to each item property what kind of messages you will get from your Track+ system when items are created or modified."/><meta name="indexterms" content="automail condition, condition for automail"/><meta name="DC.subject" content="automail condition, condition for automail"/><meta name="keywords" content="automail condition, condition for automail"/><meta name="DC.Relation" scheme="URI" content="../../../Topics/05ForConfigManagers/automail/automailOverview.html"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="id33AutomailCondition"/><link rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Automail conditions</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()" id="id33AutomailCondition">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../../Topics/05ForConfigManagers/automail/automailOverview.html" title="Track+ can inform users of item activity. The conditions under which such information occurs can be largely customized via automail triggers and automail conditions."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Customizing automail</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../../Topics/05ForConfigManagers/automail/../../../Topics/05ForConfigManagers/Chapter5Wrapper.html" title="Customizing Track+">Customizing Track+</a> / <a class="navheader_parent_path" href="../../../Topics/05ForConfigManagers/automail/automailOverview.html" title="Track+ can inform users of item activity. The conditions under which such information occurs can be largely customized via automail triggers and automail conditions.">Customizing automail</a></td></tr></tbody></table>
+
+    <h1 class="title topictitle1">Automail conditions</h1>
+
+    
+    
+    <div class="body taskbody"><p class="shortdesc">You can further filter automails generated from triggers
+        by assigning automail conditions. With these filters you can control down to each item
+        property what kind of messages you will get from your <span class="ph"><span class="ph">Track+</span></span> system when items are created or
+        modified.</p>
+
+        <div class="section prereq p"><p class="p">You must be logged in as system manager or system administrator.</p>
+</div>
+
+        <div class="section context"><p class="p">When items are created or changed, depending on the automail trigger settings a
+                message is prepared for this item to be sent to you. With automail conditions you
+                can investigate the item belonging to this message, and depending on the result of
+                the evaluation, the message is passed on to you as an e-mail, or it is stopped and
+                discarded.</p>
+<p class="p">Automail conditions are logical expressions that relate to item
+                properties. If the condition evaluates to true, an e-mail is sent to you. With
+                automail conditions you can take a look at all item properties, and not only their
+                new value but also their value prior to the change. This permits you to filter on
+                absolute values as well as on value transitions.</p>
+<p class="p">Each automail condition can
+                be named, and can be stored in a repository. The system administrator can place
+                conditions into the public repository so that all users can access and use them. A
+                space administrator can copy conditions to a space repository, so it becomes
+                available to all users that have a role in any of the spaces the space administrator
+                manages.</p>
+<p class="p">You can copy a public automail condition into your private repository
+                and modify it there to your liking. You can modify and delete your own conditions,
+                and you can create new conditions.</p>
+
+        </div>
+
+        <ol class="ol steps"><li class="li step stepexpand">
+                    <span class="ph cmd"><span class="ph">In the top toolbar select <span class="ph menucascade"><span class="ph uicontrol">Administration</span> &gt; <span class="ph uicontrol">Customize</span> &gt; <span class="ph uicontrol">Automail</span></span>.</span> Alternatively click on the
+                        <span class="q">"Customize"</span>/<span class="q">"Automail"</span> bar in the left navigation
+                        area.</span>
+                    <div class="itemgroup stepxmp">
+                        <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="../figures/customizeAutomail.png" height="152" width="363"/></div><br/>
+                            
+                        </div>
+
+                    </div>
+                </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">Click on <span class="q">"Automail condition"</span> in the next navigation column.</span>
+                <div class="itemgroup stepxmp">
+                    <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/condition1.png" height="163" width="506"/></div><br/>
+                        
+                    </div>
+
+                </div>
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">Select the folder where you want to create or modify a condition in. For
+                    example, click on <span class="q">"Workspaces &gt; IT Helpdesk"</span> to create or modify a
+                    condition specifically for that workspace. To add a condition, click on the
+                        <span class="q">"Add"</span> button in the toolbar. To edit a condition, select it in the
+                    right grid area and then use either the context menu or the toolbar button
+                    labeled <span class="q">"Edit"</span>.</span>
+                <div class="itemgroup info"><div class="note restriction"><span class="restrictiontitle">Restriction:</span>  You can only modify conditions that you "own", i.e.,
+                        you have created. Only the system manager or system administrator can edit
+                        and delete filters he does not own. </div>
+</div>
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">Enter a name for the condition and click on the <span class="q">"Add"</span> button. Define your
+                    filter.</span>
+                <div class="itemgroup stepxmp">
+                    <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/trigger2.png" height="235" width="407"/></div><br/>
+                        
+                    </div>
+
+                </div>
+                <div class="itemgroup info"><p class="p">The selection box with <span class="q">"new"</span> and <span class="q">"old"</span> refers to the item
+                        property value before and after the triggering change. This permits you to
+                        filter on transitions. In the example we filter on the state transition from
+                        any state except for <span class="q">"closed"</span> to <span class="q">"closed"</span>. Thus if changes were
+                        made in state <span class="q">"closed"</span> we would not receive an e-mail.</p>
+
+                </div>
+                <div class="itemgroup info">
+                    <div class="note important"><span class="importanttitle">Important:</span> <span class="q">"Current user"</span> always means <span class="q">"me"</span> as seen from
+                        the user that utilizes an automail condition.</div>
+
+                </div>
+
+                <div class="itemgroup stepxmp">
+                    <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/condition2.png" height="147" width="405"/></div><br/>
+                        
+                    </div>
+
+                </div>
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">Save your condition.</span>
+            </li>
+</ol>
+
+        <div class="section result">
+            <p class="p">You have created or modified an automail condition. You can now use it together with
+                an automail trigger to control the kind of messages that you will get from the <span class="ph"><span class="ph">Track+</span></span>system.</p>
+</div>
+
+    </div>
+
+<div class="related-links"/>
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../../Topics/05ForConfigManagers/automail/automailOverview.html" title="Track+ can inform users of item activity. The conditions under which such information occurs can be largely customized via automail triggers and automail conditions."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Customizing automail</span></a></span>  </div>
+</body>
+</html>

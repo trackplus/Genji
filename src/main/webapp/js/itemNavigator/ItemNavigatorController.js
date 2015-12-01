@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -52,10 +52,10 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 		var config = cfg || {};
 		me.initialConfig = config;
 		Ext.apply(me, config);
-		this.mixins.navigable.constructor.call(this);
+		this.initConfig(config);
+		this.mixins.navigable.constructor.call(this,config);
 	},
 	test:function() {
-		alert("HE");
 	},
 	createView:function(){
 		var me=this;
@@ -89,9 +89,6 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 			bodyBorder:false,
 			baseCls:'itemNavigator',
 			layout:'border',
-			style:{
-				borderLeft:'1px solid #D0D0D0'
-			},
 			bodyStyle:{
 				padding:'0px 0px 0px 0px'
 			},
@@ -110,17 +107,17 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 		var filterID=me.model.queryContext.queryID;
 		var filterName=me.model.queryContext.queryName;
 		var viewID = me.selectedIssueViewDescriptor.id;
-		if(this.fromSession==null||this.fromSession==false){
+		if(CWHF.isNull(this.fromSession)||this.fromSession===false){
 			if(me.useLastQuery) {
-				var instantFilter = Ext.create("com.trackplus.itemNavigator.instantFilter",
+				var instantFilter = Ext.create("com.trackplus.itemNavigator.InstantFilter",
 						{filterName: filterName,
 						filterType: filterType,
 						filterID:filterID,
 						queryContextID:queryContextID,
 						viewID:viewID,
 						fromSession:this.fromSession});
-				 me.filterEditPanel.removeAll(true);
-				 me.filterEditPanel.add(instantFilter.createPanel());
+				me.filterEditPanel.removeAll(true);
+				me.filterEditPanel.add(instantFilter.createPanel());
 				instantFilter.addListener("applyFilter",me.onApplyFilter,me);
 				instantFilter.addListener("clearFilter",me.onClearFilter,me);
 				instantFilter.loadFilter.call(instantFilter);
@@ -135,11 +132,11 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 				cls:'infoBox1'
 			});
 			me.issueViewPanel.add(pan);
-			me.view.doLayout();
+			me.view.updateLayout ();
 			return true;
 		}
 
-		if(createView===true||me.issueListFacade==null){
+		if(createView===true||CWHF.isNull(me.issueListFacade)){
 			me.createIssueListView();
 		}else{
 			me.issueListFacade.refreshData.call(me.issueListFacade,me.model.issues);
@@ -148,7 +145,7 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 
 	createIssueListView:function(){
 		var me=this;
-		if(me.issueListFacade!=null){
+		if(me.issueListFacade){
 			me.issueListFacade.destroy.call(me.issueListFacade);
 			me.issueListFacade=null;
 			delete me.issueListFacade;
@@ -162,8 +159,8 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 		me.issueViewPanel.removeAll(true);
 		var pan=me.issueListFacade.createView.call(me.issueListFacade,me.model,me.settingsVisible);
 		me.issueViewPanel.add(pan);
-		me.view.doLayout();
-		if(pan.getEl()!=null) {
+		me.view.updateLayout ();
+		if(pan.getEl()) {
 			me.onReadyHandler();
 		}else {
 			pan.addListener('render',me.onReadyHandler,me);
@@ -227,7 +224,7 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 			evt.stopPropagation();
 			me.dragCounter--;
 			if (Ext.isChrome || Ext.isSafari || Ext.isIE) {
-				if(me.dragCounter== 0) {
+				if(me.dragCounter=== 0) {
 					me.highLightPanel.setVisible(false);
 				}
 			}else {
@@ -249,11 +246,11 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 //			viewDrop.removeCls("itemNavigatorViewHighlightWhenDrag");
 			me.highLightPanel.setVisible(false);
 			var files = evt.dataTransfer.files;
-			if(files.length == 1) {
+			if(files.length === 1) {
 				var importExcelWizard = Ext.create('com.trackplus.admin.action.ImportExcel');
 				var importMsProjPopUpWiz = 	Ext.create('com.trackplus.admin.action.ImportMsProject', {projectID:null});
 				var file = null;
-				if(files != null && files.length > 0){
+				if(files  && files.length > 0){
 					file = files[0];
 				}
 				if(importExcelWizard.validateFileExtension(file.name)) {
@@ -282,9 +279,9 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 		var btnMassEdit=Ext.getCmp("massEdit");
 		var btnMassCopy=Ext.getCmp("massCopy");
 		var btnAddLink=Ext.getCmp("addLink");
-		btnMassEdit.setDisabled(selections==null||selections.length==0);
-		btnMassCopy.setDisabled(selections==null||selections.length==0);
-		btnAddLink.setDisabled(selections==null||selections.length<2);
+		btnMassEdit.setDisabled(CWHF.isNull(selections)||selections.length===0);
+		btnMassCopy.setDisabled(CWHF.isNull(selections)||selections.length===0);
+		btnAddLink.setDisabled(CWHF.isNull(selections)||selections.length<2);
 	},
 	showGroupByPopup:function(){
 		var me = this;
@@ -296,7 +293,7 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 		groupingDialog.showDialog();
 
 		/*var me=this;
-		if(me.grouping!=null){
+		if(me.grouping){
 			me.grouping.destroyMe.call(me.grouping);
 		}
 		me.grouping=new com.trackplus.itemNavigator.Grouping(me);
@@ -307,10 +304,10 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 		var me=this;
 		var includeLongFields=false;
 		var selView=me.selectedIssueViewDescriptor;
-		if(selView!=null){
+		if(selView){
 			includeLongFields=selView.useLongFields;
 		}
-		if(me.chooseColumns!=null){
+		if(me.chooseColumns){
 			me.chooseColumns.destroyMe.call(me.chooseColumns);
 		}
 		me.chooseColumns=Ext.create('com.trackplus.itemNavigator.ChooseColumns',{
@@ -337,7 +334,7 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 
 	/*appendDashboardParams:function(params){
 	 var me=this;
-	 if(me.model.dashboardParams!=null){
+	 if(me.model.dashboardParams){
 	 for(var x in me.model.dashboardParams){
 	 params['dashboardParams.'+x]=me.model.dashboardParams[x];
 	 }
@@ -346,19 +343,19 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 
 	changeIssueListViewMode:function(issueListViewDescriptor,handler,storeLast){
 		var me=this;
-		if(me.selectedIssueViewDescriptor!=null){
-			if(me.selectedIssueViewDescriptor.id==issueListViewDescriptor.id){
+		if(me.selectedIssueViewDescriptor){
+			if(me.selectedIssueViewDescriptor.id===issueListViewDescriptor.id){
 				return false;
 			}
 		}
 		me.selectedIssueViewDescriptor=issueListViewDescriptor;
-		if(me.btnListView!=null) {
+		if(me.btnListView) {
 			me.btnListView.setText(me.selectedIssueViewDescriptor.name);
 			me.btnListView.setIconCls(me.selectedIssueViewDescriptor.iconCls);
 			me.btnListView.setTooltip(me.selectedIssueViewDescriptor.description);
 		}
 		var items = [];
-		if(issueListViewDescriptor.id=='com.trackplus.itemNavigator.GanttViewPlugin'){
+		if(issueListViewDescriptor.id==='com.trackplus.itemNavigator.GanttViewPlugin'){
 			items.push(me.btnPrintGantt);
 		}else {
 			items.push(me.btnExportPDF);
@@ -405,11 +402,11 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 	 */
 	removeOrAddPrintGanttIntoPDFAfterChange: function(issueListViewDescriptor) {
 		var me = this;
-		if(issueListViewDescriptor.id=='com.trackplus.itemNavigator.GanttViewPlugin'){
+		if(issueListViewDescriptor.id==='com.trackplus.itemNavigator.GanttViewPlugin'){
 			var found = false;
 			me.btnExtraActions.menu.items.each(function(item){
-				if(item.itemId != null) {
-					if(item.itemId  == 'exportGanttIntoPDFBtn') {
+				if(item.itemId ) {
+					if(item.itemId  === 'exportGanttIntoPDFBtn') {
 						found = true;
 					}
 				}
@@ -419,8 +416,8 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 			}
 		}else {
 			me.btnExtraActions.menu.items.each(function(item){
-				if(item.itemId != null) {
-					if(item.itemId  == 'exportGanttIntoPDFBtn') {
+				if(item.itemId ) {
+					if(item.itemId  === 'exportGanttIntoPDFBtn') {
 						me.btnExtraActions.menu.remove(item);
 					}
 				}
@@ -430,7 +427,7 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 
 	doChangeIssueListViewMode:function(issueListViewDescriptor,handler,storeLast){
 		var me=this;
-		if(handler!=null){
+		if(handler){
 			handler.call(me);
 		}else{
 			var urlStr="itemNavigator!reload.action";
@@ -441,16 +438,16 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 	createLastQueriesMenu:function(lastQueries){
 		var me=this;
 		var menu=[];
-		if(lastQueries!=null){
+		if(lastQueries){
 			for(var i=0;i<lastQueries.length;i++){
 				menu.push(me.createQueryMenu(lastQueries[i]/*.id,lastQueries[i].label*/));
 			}
 		}
 		return Ext.create('Ext.menu.Menu',{items:menu});
 	},
-	updateModel:function(jsonData){
+	updateMyItemNavigatorModel:function(jsonData){
 		var me=this;
-		if(jsonData.layout!=null){
+		if(jsonData.layout){
 			me.model.layout=jsonData.layout;
 		}else{
 		}
@@ -462,7 +459,7 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 		me.model.listViewData=jsonData.listViewData;
 		me.model.milestoneWorkitems=jsonData.milestoneWorkitems;
 		me.model.totalCount=jsonData.totalCount;
-		me.model.forceAllItems=jsonData.forceAllItems==true;
+		me.model.forceAllItems=jsonData.forceAllItems===true;
 		me.model.overflowItems=jsonData.overflowItems;
 		me.model.holidays=jsonData.holidays;
 		me.model.localizedToolTipLabels=jsonData.localizedToolTipLabels;
@@ -486,10 +483,10 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 		createView=true;
 		borderLayout.setLoading(true);
 		var me=this;
-		if(urlStr==null){
-			urlStr=me.baseAction+'!refresh.action';
+		if(CWHF.isNull(urlStr)){
+			urlStr=me.getBaseAction()+'!refresh.action';
 		}
-		if(queryContextID==null){
+		if(CWHF.isNull(queryContextID)){
 			queryContextID=me.model.queryContext.id;
 		}
 		var params={
@@ -520,16 +517,16 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 		createView=true;
 		var me=this;
 		var jsonData=Ext.decode(result.responseText);
-		if(jsonData.success==false){
+		if(jsonData.success===false){
 			CWHF.showMsgError(jsonData.errorMessage);
 			return false;
 		}
-		me.updateModel(jsonData.data);
+		me.updateMyItemNavigatorModel(jsonData.data);
 		me.updateTotalCount();
 		me.updateLastExecutedQueries();
 		me.updateSelectedIssueListView(createView===true);
 		borderLayout.setLoading(false);
-		if(handlerRefresh!=null){
+		if(handlerRefresh){
 			handlerRefresh.call(me);
 		}
 		me.issueListFacade.addOrRemoveSaveButton(null);
@@ -542,17 +539,17 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 		var useFilter=nodeData.useFilter;
 		var filterViewID=nodeData.filterViewID;
 
-		if(me.nodeType==nodeType&&me.nodeObjectID==nodeObjectID){
+		if(me.nodeType===nodeType&&me.nodeObjectID===nodeObjectID){
 			return false;
 		}
-		if(me.btnListView!=null){
+		if(me.btnListView){
 			me.btnListView.setDisabled(false);
 		}
-		if(filterViewID!=null&&filterViewID!=''){
-			if(me.btnListView!=null){
+		if(filterViewID&&filterViewID!==''){
+			if(me.btnListView){
 				me.btnListView.setDisabled(true);
 			}
-			if(me.selectedIssueViewDescriptor.id!=filterViewID){
+			if(me.selectedIssueViewDescriptor.id!==filterViewID){
 				me.nodeType=nodeType;
 				me.nodeObjectID=nodeObjectID;
 				me.changeIssueListViewMode(me.findView(filterViewID),function(){
@@ -561,7 +558,7 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 				return true;
 			}
 		}else{
-			if(me.selectedIssueViewDescriptorStandard!=null&&me.selectedIssueViewDescriptorStandard.id!=me.selectedIssueViewDescriptor.id){
+			if(me.selectedIssueViewDescriptorStandard&&me.selectedIssueViewDescriptorStandard.id!==me.selectedIssueViewDescriptor.id){
 				me.nodeType=nodeType;
 				me.nodeObjectID=nodeObjectID;
 				me.changeIssueListViewMode(me.selectedIssueViewDescriptorStandard,function(){
@@ -581,8 +578,7 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 	doFilterByNode:function(nodeType,nodeObjectID,useFilter){
 		var me=this;
 		me.fromSession = false;
-		var urlStr=me.baseAction+"!filterByNode.action";
-
+		var urlStr=me.getBaseAction()+"!filterByNode.action";
 		me.nodeType=nodeType;
 		me.nodeObjectID=nodeObjectID;
 		var queryContextID=me.model.queryContext.id;
@@ -598,9 +594,9 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 			success: function(result){
 				borderLayout.setLoading(false);
 				var jsonData=Ext.decode(result.responseText);
-				if(jsonData.success==false){
+				if(jsonData.success===false){
 					var msg="";
-					if(jsonData.errorMessage!=null){
+					if(jsonData.errorMessage){
 						msg=jsonData.errorMessage;
 					}else{
 						msg="Failure!";
@@ -612,8 +608,8 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 					//var node=nodeType+"_"+nodeObjectID;
 					com.trackplus.admin.Filter.executeFilter(me, nodeObjectID, false);
 				}else{
-					var createView=jsonData.data.layout!=null;
-					if(useFilter==true){
+					var createView=jsonData.data.layout!==null;
+					if(useFilter===true){
 						createView=true;
 					}
 					me.refreshSuccessHandler.call(me,result,createView);
@@ -632,14 +628,14 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 		me.fromSession = false;
 		var queryContextID = lastQuery["queryContextID"];
 		var filterViewID=lastQuery['viewID'];
-		if(me.btnListView!=null){
+		if(me.btnListView){
 			me.btnListView.setDisabled(false);
 		}
-		if(filterViewID!=null&&filterViewID!=''){
-			if(me.btnListView!=null){
+		if(filterViewID&&filterViewID!==''){
+			if(me.btnListView){
 				me.btnListView.setDisabled(true);
 			}
-			if(me.selectedIssueViewDescriptor.id!=filterViewID){
+			if(me.selectedIssueViewDescriptor.id!==filterViewID){
 				me.changeIssueListViewMode(me.findView(filterViewID),function(){
 					var urlStr="itemNavigator!executePreviousQuery.action";
 					me.refresh(urlStr,queryContextID,true);
@@ -647,7 +643,7 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 				return true;
 			}
 		}else{
-			if(me.selectedIssueViewDescriptorStandard!=null&&me.selectedIssueViewDescriptorStandard.id!=me.selectedIssueViewDescriptor.id){
+			if(me.selectedIssueViewDescriptorStandard&&me.selectedIssueViewDescriptorStandard.id!==me.selectedIssueViewDescriptor.id){
 				me.changeIssueListViewMode(me.selectedIssueViewDescriptorStandard,function(){
 					var urlStr="itemNavigator!executePreviousQuery.action";
 					me.refresh(urlStr,queryContextID,true);
@@ -655,7 +651,7 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 				return true;
 			}
 		}
-		if(me.btnListView!=null){
+		if(me.btnListView){
 			me.btnListView.setDisabled(false);
 		}
 		var urlStr="itemNavigator!executePreviousQuery.action";
@@ -671,13 +667,13 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 		var icon=lastQuery["icon"];
 		var iconCls=lastQuery["iconCls"];
 		/*var iconCls='treeFilter-ticon';
-		if(queryType==2){//dashboard
+		if(queryType===2){//dashboard
 			iconCls='dashboard-ticon'
 		}
-		if(queryType==4){//basket
+		if(queryType===4){//basket
 			iconCls='basket-ticon';
 		}
-		if(queryType==5){//PROJECT_RELEASE= 5;
+		if(queryType===5){//PROJECT_RELEASE= 5;
 			var entityID=0;
 			try {
 				entityID=parseInt(queryID);
@@ -690,10 +686,10 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 				iconCls='release-ticon';
 			}
 		}
-		if(queryType==6){//SCHEDULED= 6;
+		if(queryType===6){//SCHEDULED= 6;
 			iconCls="schedule-ticon";
 		}
-		if (queryType==7) {
+		if (queryType===7) {
 			iconCls="tqlPlusFilter-ticon";
 		}*/
 		return {
@@ -713,8 +709,8 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 			var btnQueries = Ext.getCmp('reportQueryName');
 			//btnQueries.setIconCls(me.getQueryContextIcon(me.model.queryContext));
 			btnQueries.setText(me.model.queryContext.queryName);
-			btnQueries.menu = me.createLastQueriesMenu(me.model.lastQueries);
-			borderLayout.controller.updateLastExecutedQueries.call(borderLayout.controller, me.model.lastQueries);
+			btnQueries.setMenu(me.createLastQueriesMenu(me.model.lastQueries));
+			borderLayout.borderLayoutController.updateLastExecutedQueries.call(borderLayout.borderLayoutController, me.model.lastQueries);
 		}
 	},
 	updateTotalCount:function(){
@@ -722,17 +718,17 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 		Ext.getCmp('txtReportCount').setText(me.createHtmlTotalNumber());
 		Ext.getCmp('txtReportFilteredCount').setText(me.createHtmlFilteredNumber());
 		var overflowItems=me.model.overflowItems;
-		me.viewAllLink.setVisible(overflowItems!=null&&overflowItems>0);
+		me.viewAllLink.setVisible(overflowItems&&overflowItems>0);
 	},
 	createHtmlTotalNumber:function(){
 		var me=this;
 		var totalCount=me.model.totalCount;
 		var overflowItems=me.model.overflowItems;
 		var txtTotalNumber="";
-		if(totalCount==-1){
+		if(totalCount===-1){
 			return getText('itemov.lbl.totalNumber') + ' ? ';
 		}
-		if(overflowItems!=null&&overflowItems>0){
+		if(overflowItems&&overflowItems>0){
 			txtTotalNumber='<span class="warning">!</span> '+getText('itemov.lbl.totalNumber') +' ' +totalCount
 		}else{
 			txtTotalNumber = getText('itemov.lbl.totalNumber') + ' ' + totalCount;
@@ -744,10 +740,10 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 		var count=me.model.count;
 		var overflowItems=me.model.overflowItems;
 		var txtFiltered="";
-		if(count==-1){
+		if(count===-1){
 			return '   ' + getText('itemov.lbl.filtered')+': ? ';
 		}
-		if(overflowItems!=null&&overflowItems>0){
+		if(overflowItems&&overflowItems>0){
 			txtFiltered='   ' + getText('itemov.lbl.filtered')+': '+overflowItems+" ("+getText('itemov.lbl.filteredLimitedTo')+" "+count+")";
 		}else{
 			txtFiltered='   ' + getText('itemov.lbl.filtered')+': '+count;
@@ -758,7 +754,7 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 	createIssueListViewButton:function(issueListViewDescriptor){
 		var me=this;
 		return {
-			itemId:issueListViewDescriptor.id,
+			//itemId:issueListViewDescriptor.id,
 			iconCls:issueListViewDescriptor.iconCls,
 			overflowText :issueListViewDescriptor.name,
 			text :issueListViewDescriptor.name,
@@ -770,7 +766,7 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 	},
 					storeExtraAction:function(extraActionID){
 		var me=this;
-		if(me.selectedExtraAction==extraActionID){
+		if(me.selectedExtraAction===extraActionID){
 			return false;
 		}
 		me.selectedExtraAction=extraActionID;
@@ -788,7 +784,7 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 			}
 			case 3:{//EXPORT_REPORT
 				text=getText('common.btn.report');
-				iconCls='reports20';
+				iconCls='reports16';
 				break;
 			}
 			case 4:{//EXCHANGE
@@ -865,7 +861,7 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 	executeExtraAction:function(){
 		var me=this;
 		var extraActionID=me.selectedExtraAction;
-		if(extraActionID==null){
+		if(CWHF.isNull(extraActionID)){
 			return false;
 		}
 		switch(extraActionID){
@@ -924,7 +920,7 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 			overflowText:getText('common.btn.bulkEdit'),
 			tooltip:getText('common.btn.bulkEdit.tt'),
 			iconCls: 'bulkEdit',
-			//selectedIssueMap!=null && selectedIssueMap.size()>0
+			//selectedIssueMap && selectedIssueMap.size()>0
 			disabled:true,
 			handler:function(){
 				me.massOperation.call(me,false);
@@ -938,7 +934,7 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 			overflowText:getText('common.btn.bulkCopy'),
 			tooltip:getText('common.btn.bulkCopy.tt'),
 			iconCls: 'bulkCopy',
-			//selectedIssueMap!=null && selectedIssueMap.size()>0
+			//selectedIssueMap && selectedIssueMap.size()>0
 			disabled:true,
 			handler:function(){
 				me.massOperation.call(me,true);
@@ -952,7 +948,7 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 			overflowText:getText('common.btn.addLink'),
 			tooltip:getText('common.btn.addLink.tt'),
 			iconCls: 'links16',
-			//selectedIssueMap!=null && selectedIssueMap.size()>0
+			//selectedIssueMap && selectedIssueMap.size()>0
 			disabled:true,
 			handler:function(){
 				me.addLink.call(me);
@@ -965,7 +961,7 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 			text:getText('common.btn.report'),
 			overflowText:getText('common.btn.report'),
 			tooltip:getText('common.btn.report.tt'),
-			iconCls: 'reports20',
+			iconCls: 'reports16',
 			disabled:false,
 			handler:function(){
 				//me.executeUrl('reportConfig.action?fromIssueNavigator=true',"_self");
@@ -992,13 +988,10 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 			iconCls: 'export',
 			disabled:false,//#session.user.sys
 			handler:function(){
-				var gantView=me.issueListFacade.getView();
-				gantView.items.items[1].zoomToFit();
-				gantView.items.items[1].print();
+				me.issueListFacade.listViewPlugin.view.zoomToFit();
+				me.issueListFacade.listViewPlugin.view.print();
 			}
 		};
-
-
 
 		me.btnExportPDF={
 			text:getText('itemov.btn.exportPDF'),
@@ -1011,6 +1004,7 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 				me.storeExtraAction.call(me,me.EXPORT_PDF);
 			}
 		};
+
 		me.btnExportCSV={
 			text:getText('itemov.btn.exportCSV'),
 			overflowText:getText('itemov.btn.exportCSV'),
@@ -1071,7 +1065,7 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 			}
 		};
 		var items = [];
-		if(me.model.lastSelectedView=='com.trackplus.itemNavigator.GanttViewPlugin'){
+		if(me.model.lastSelectedView==='com.trackplus.itemNavigator.GanttViewPlugin'){
 			items.push(me.btnPrintGantt);
 		}else {
 			items.push(me.btnExportPDF);
@@ -1093,11 +1087,11 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 				var gantView=me.issueListFacade.getView().items.items[1];
 				var exportPlugin = null;
 				for(var aPlugin in gantView.plugins) {
-					if(gantView.plugins[aPlugin].$className == "Gnt.plugin.Export") {
+					if(gantView.plugins[aPlugin].$className === "Gnt.plugin.Export") {
 						exportPlugin = gantView.plugins[aPlugin];
 					}
 				}
-				if(exportPlugin != null) {
+				if(exportPlugin ) {
 				    Ext.Ajax.request({
 				        url : "itemNavigator!getGanttExportPDFConfig.action",
 				        disableCaching : true,
@@ -1174,7 +1168,7 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 		}
 		extraActions.push(me.btnImport);
 		extraActions.push(me.btnExport);
-		if(me.model.lastSelectedView=='com.trackplus.itemNavigator.GanttViewPlugin'){
+		if(me.model.lastSelectedView==='com.trackplus.itemNavigator.GanttViewPlugin'){
 			extraActions.push(me.btnExportGanttIntoPDF);
 		}
 		me.btnExtraActions=Ext.create('Ext.button.Split',{
@@ -1218,7 +1212,7 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 		});
 		me.viewAllLink=Ext.create('Ext.ux.LinkComponent',{
 			handler:me.forceViewAll,
-			hidden:(me.model.overflowItems==null||me.model.overflowItems==0),
+			hidden:(CWHF.isNull(me.model.overflowItems)||me.model.overflowItems===0),
 			scope:me,
 			margin:'0 0 0 0',
 			style:{
@@ -1322,7 +1316,7 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 							//useDisplay: false,
 							listeners:{
 								'afteranimate':function(){
-									me.view.doLayout();
+									me.view.updateLayout ();
 								}
 							}
 						});
@@ -1342,7 +1336,7 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 							listeners:{
 								'afteranimate':function(){
 									filterPanel.setVisible(false);
-									me.view.doLayout();
+									me.view.updateLayout ();
 								}
 							}
 						});
@@ -1367,17 +1361,17 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 	},
 	getSelectedIssues:function(){
 		var me=this;
-		if(me.selectedIssueViewDescriptor==null){
+		if(CWHF.isNull(me.selectedIssueViewDescriptor)){
 			return null;
 		}
-		if(me.issueListFacade==null){
+		if(CWHF.isNull(me.issueListFacade)){
 			return null;
 		}
 		return me.issueListFacade.getSelectedIssues();
 	},
 	formatIntegersAsString:function(integers){
 		var str="";
-		if(integers!=null&&integers.length>0){
+		if(integers&&integers.length>0){
 			for(var i=0;i<integers.length;i++){
 				str+=integers[i];
 				if(i<integers.length-1){
@@ -1391,16 +1385,17 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 		var me=this;
 		var selectedIssues=me.getSelectedIssues();
 		var workItemIds=me.formatIntegersAsString(selectedIssues);
-		var massModel={copy:copy,selectedIssueIDs:workItemIds};
 		var massOperationController=Ext.create('com.trackplus.itemNavigator.MassOperationController',{
-			model:massModel,
-			itemNavigatorController:me
+			copy:copy,
+			selectedIssueIDs:workItemIds/*,
+			itemNavigatorController:me*/
 		});
+		massOperationController.itemNavigatorController=me;
 		massOperationController.showDialog();
 	},
 	addLink:function() {
 		/*var fromGantt = false;
-		if(this.issueListFacade.descriptor.id == "com.trackplus.itemNavigator.GanttViewPlugin") {
+		if(this.issueListFacade.descriptor.id === "com.trackplus.itemNavigator.GanttViewPlugin") {
 			fromGantt = true;
 		}*/
 		var selectedIssues=this.getSelectedIssues();
@@ -1415,7 +1410,7 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 	executeReport:function() {
 		var selectedIssues=this.getSelectedIssues();
 		var workItemIDs = null;
-		if (selectedIssues!=null) {
+		if (selectedIssues) {
 			workItemIDs=selectedIssues.join();
 		}
 		com.trackplus.admin.Report.executeReportFromIssueNavigator(workItemIDs);
@@ -1424,7 +1419,7 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 	exportDocx: function() {
 		var selectedIssues=this.getSelectedIssues();
 		var workItemIDs = null;
-		if (selectedIssues!=null) {
+		if (selectedIssues) {
 			workItemIDs=selectedIssues.join();
 		}
 		var exportDocx = Ext.create("com.trackplus.admin.action.ExportDocx", {workItemIDs:workItemIDs});
@@ -1434,10 +1429,10 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 	executeUrl:function(url) {
 		var selectedIssues=this.getSelectedIssues();
 		var workItemIDs = null;
-		if (selectedIssues!=null) {
+		if (selectedIssues) {
 			workItemIDs=selectedIssues.join();
 		}
-		if (workItemIDs==null) {
+		if (CWHF.isNull(workItemIDs)) {
 			window.open(url);
 		} else {
 			//because there could be a large number of selections the url would be too long, we force a http post
@@ -1455,9 +1450,9 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 	findView:function(viewID){
 		var me=this;
 		var lastSelectedView=me.model.issueListViewDescriptors[0];
-		if(viewID!=null){
+		if(viewID){
 			for(var i=0;i<me.model.issueListViewDescriptors.length;i++){
-				if(me.model.issueListViewDescriptors[i].id==viewID){
+				if(me.model.issueListViewDescriptors[i].id===viewID){
 					lastSelectedView=me.model.issueListViewDescriptors[i];
 					break;
 				}
@@ -1483,14 +1478,14 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 	},
 	navigate:function(workItemID,workItemIndex,dir){
 		var me=this;
-		if(me.issueListFacade!=null){
+		if(me.issueListFacade){
 			return me.issueListFacade.navigate.call(me.issueListFacade,workItemID,workItemIndex,dir);
 		}
 		return null;
 	},
 	itemChangeHandler:function(fields){
 		var me=this;
-		if(me.issueListFacade!=null){
+		if(me.issueListFacade){
 			if(me.issueListFacade.viewContainsFields(fields)) {
 				me.refresh();
 			}
@@ -1498,13 +1493,13 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 	},
 	selectItem:function(workItemID){
 		var me=this;
-		if(me.issueListFacade!=null){
+		if(me.issueListFacade){
 			me.issueListFacade.selectItem.call(me.issueListFacade,workItemID);
 		}
 	},
 	deselectItem:function(workItemID){
 		var me=this;
-		if(me.issueListFacade!=null){
+		if(me.issueListFacade){
 			me.issueListFacade.deselectItem.call(me.issueListFacade,workItemID);
 		}
 	},
@@ -1544,31 +1539,31 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 	itemActionSuccessHandler:function(data,successExtra){
 		var me=this;
 		var workItemID=null;
-		if(data!=null){
+		if(data){
 			workItemID=data.workItemID;
 		}else{
-			if(successExtra!=null){
+			if(successExtra){
 				workItemID=successExtra['workItemID'];
 			}
 		}
-		if(successExtra!=null&&successExtra['createItem']==true) {
+		if(successExtra&&successExtra['createItem']===true) {
 			CWHF.showMsgInfo(getText('item.msg.newItemCreated', data.workItemIDDisplay, data.title));
 		}
 		me.refresh(null,null,false,function(){
 			var workItemIndex=null;
-			if(successExtra!=null){
+			if(successExtra){
 				workItemIndex=successExtra['workItemIndex'];
 			}
 			var selectedItems=null;
-			if(workItemID!=null){
+			if(workItemID){
 				selectedItems=me.issueListFacade.selectItem.call(me.issueListFacade,workItemID);
 			}
-			if(selectedItems==null||selectedItems.length==0){
-				if(workItemIndex!=null){
+			if(CWHF.isNull(selectedItems)||selectedItems.length===0){
+				if(workItemIndex){
 					me.issueListFacade.selectItemByIndex.call(me.issueListFacade,workItemIndex);
 				}
 			}
-			/*if(successExtra!=null&&successExtra['actionID']!=null&&successExtra['actionID']==-2){
+			/*if(successExtra&&successExtra['actionID']&&successExtra['actionID']===-2){
 			 me.issueListFacade.onItemDblClick.call(me.issueListFacade,{workItemID:workItemID});
 			 }*/
 

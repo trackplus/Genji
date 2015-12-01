@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -48,26 +48,32 @@ public class CardScreenFactory implements ScreenFactory {
 	}
 	protected CardScreenFactory(){
 	}
+	@Override
 	public IScreenDAO getScreenDAO() {
 		return null;
 	}
 
+	@Override
 	public ITabDAO getTabDAO() {
 		return null;
 	}
 
+	@Override
 	public IPanelDAO getPanelDAO() {
 		return CardPanelDAOAdapter.getInstance();
 	}
 
+	@Override
 	public IFieldDAO getFieldDAO() {
 		return CardFieldDAOAdapter.getInstance();
 	}
 
+	@Override
 	public IScreen createIScreeenInstance() {
 		return new CardScreen();
 	}
 
+	@Override
 	public IPanel createIPanelInstance() {
 		IPanel pan=new TCardPanelBean();
 		pan.setRowsNo(new Integer(3));
@@ -75,10 +81,12 @@ public class CardScreenFactory implements ScreenFactory {
 		return pan;
 	}
 
+	@Override
 	public ITab createITabInstance() {
 		return new CardTab();
 	}
 
+	@Override
 	public IField createIFieldInstance() {
 		return new TCardFieldBean();
 	}

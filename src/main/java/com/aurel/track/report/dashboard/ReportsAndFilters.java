@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -57,22 +57,17 @@ public class ReportsAndFilters extends BasePluginDashboardView {
 	//Configuration page constants
 	private static interface CONFIGURATION_PARAMETERS {
 		static String SELECTED_PROJECT_OR_RELEASE = "selectedProjectOrRelease";
-		//static String SELECTED_PROJECT_OR_RELEASE_NAME = "selectedProjectOrReleaseName";
 		static String SELECTED_REPORTS = "selectedReports";
-		//atic String REPORTS = "reports";
 	}
 
 	//Runtime page constants
-	//private static String RESULTS = "results";
 	//private static String RESULTP = "resultp";
 	//private static String RESULTR = "resultr";
 	private static String RELEASE = "release";
-	//private static String FILTERS = "filters";
 
 	private static String PROJECT_ID = "projectID";
 	private static String ENTITY_FLAG = "entityFlag";
 
-	//private static String TEMPLATE_14_EXISTS = "template14Exists";
 
 	//Runtime link attribute names
 	protected static interface ADDITIONAL_LINK_PARAMETERS {
@@ -91,6 +86,7 @@ public class ReportsAndFilters extends BasePluginDashboardView {
 	private static final int ME_MANAGER=21;
 	private static final int ME_AUTHOR=22;
 
+	@Override
 	protected boolean isUseConfig(){
 		return true;
 	}
@@ -126,7 +122,6 @@ public class ReportsAndFilters extends BasePluginDashboardView {
 			List<TExportTemplateBean> existingSelectedExportTemplatesList = ReportBL.loadByIDs(selectedReportsArr);
 			//TODO filter by rights: if the dashboard template configuration was copied from another person
 			//can be that the copied to person can't see some of selectedReportTemplates
-			//Map<Integer, TExportTemplateBean> existingSelectedExportTemplatesMap = GeneralUtils.createMapFromList(existingSelectedExportTemplatesList);
 			//List<TExportTemplateBean> allReadableTemplatesList = getReports(user.getObjectID(), (Locale) session.get(Constants.LOCALE_KEY));
 			/*List<TExportTemplateBean> selectedReadableReports = new ArrayList<TExportTemplateBean>();
 			for (Iterator iterator = allReadableTemplatesList.iterator(); iterator.hasNext();) {
@@ -164,16 +159,8 @@ public class ReportsAndFilters extends BasePluginDashboardView {
 					}
 				}
 				selectedReports.append("]");
-				/*for (int i = 0; i < existingSelectedExportTemplatesList.size(); i++) {
-					TExportTemplateBean exportTemplateBean=existingSelectedExportTemplatesList.get(i);
-
-					String url="reportDatasource.action?templateID="+exportTemplateBean.getObjectID()+
-							"&projectID="+projectID+"&entityFlag="+1+"&dashboardID="+dashboardID;
-					selectedReportsLVB.add(new LabelValueBean(exportTemplateBean.getName(),url));
-				}*/
 				JSONUtility.appendJSONValue(sb, "selectedReports", selectedReports.toString());
 			}
-			//JSONUtility.appendJSONValue(sb, "selectedReports", JSONUtility.encodeJSONLabelValueBeanList(selectedReportsLVB));
 
 
 
@@ -232,16 +219,6 @@ public class ReportsAndFilters extends BasePluginDashboardView {
 		StringBuilder sb=new StringBuilder();
 
 		Integer selectedEntityID=BasePluginDashboardBL.parseInteger(parameters,CONFIGURATION_PARAMETERS.SELECTED_PROJECT_OR_RELEASE);
-		/*String entityName=null;
-		if(selectedEntityID!=null){
-			if(selectedEntityID.intValue()>0){//release
-				TReleaseBean releaseBean=DAOFactory.getFactory().getReleaseDAO().loadByPrimaryKey(selectedEntityID.intValue());
-				entityName=releaseBean.getLabel();
-			}else{
-				TProjectBean projectBean= ProjectBL.loadByPrimaryKey(selectedEntityID * -1);
-				entityName=projectBean.getLabel();
-			}
-		}*/
 		//JSONUtility.appendStringValue(sb,CONFIGURATION_PARAMETERS.SELECTED_PROJECT_OR_RELEASE_NAME,entityName);
 		JSONUtility.appendIntegerValue(sb,CONFIGURATION_PARAMETERS.SELECTED_PROJECT_OR_RELEASE,selectedEntityID);
 

@@ -1,0 +1,141 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="As a project administrator, you can import an entire project from an MS Project database file. During the import process, Track+ tries to synchronize MS Project tasks with existing tasks within the ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="task"/><meta name="DC.Title" content="Importing tasks from MS Project"/><meta name="abstract" content="As a project administrator, you can import an entire project from an MS Project database file. During the import process, Track+ tries to synchronize MS Project tasks with existing tasks within the Track+ system."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="As a project administrator, you can import an entire project from an MS Project database file. During the import process, Track+ tries to synchronize MS Project tasks with existing tasks within the Track+ system."/><meta name="indexterms" content="import, MS Project, MS Project, import"/><meta name="DC.subject" content="import, MS Project"/><meta name="keywords" content="import, MS Project"/><meta name="DC.Relation" scheme="URI" content="../../Topics/04ForProjectAdmins/Chapter4Wrapper.html"/><meta name="DC.Relation" scheme="URI" content="importProjectRules.html"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="id12importProject"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Importing tasks from MS Project</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()" id="id12importProject">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../Topics/04ForProjectAdmins/Chapter4Wrapper.html" title="Track+ for space administrators"><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Track+ for space administrators</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../Topics/04ForProjectAdmins/Chapter4Wrapper.html" title="Track+ for space administrators">Track+ for space administrators</a></td></tr></tbody></table>
+
+
+    <h1 class="title topictitle1">Importing tasks from MS Project</h1>
+
+    
+    
+    <div class="body taskbody"><p class="shortdesc">As a project administrator, you can import an entire
+        project from an MS
+        Project database file. During the import process, <span class="ph"><span class="ph">Track+</span></span>
+        tries to synchronize MS Project tasks with existing tasks within the <span class="ph"><span class="ph">Track+</span></span> system.</p>
+
+        <div class="section prereq p">
+            <p class="p">You must be logged in as system manager or system administrator.</p>
+
+            <p class="p">Make sure you have saved your MS Project plan in MS Project XML format.</p>
+
+        </div>
+
+        <div class="section context">
+            <p class="p">MS Project offers some features not available in <span class="ph"><span class="ph">Track+</span></span>. You can use MS Project to create and
+                maintain your project plan, do your resource planning, and later on you can use it
+                to monitor project progress while keeping everything safe in your <span class="ph"><span class="ph">Track+</span></span> database.</p>
+
+            <p class="p">When you import an MS Project plan into <span class="ph"><span class="ph">Track+</span></span>,
+                all MS Project data is preserved within <span class="ph"><span class="ph">Track+</span></span>.
+                Later on you can export all data back to MS Project, to make more modifications
+                there. You can change MS Project tasks within <span class="ph"><span class="ph">Track+</span></span>, and incorporate these changes back into
+                your MS Project file.</p>
+
+            <div class="p">
+                
+<div class="tablenoborder"><table cellpadding="4" cellspacing="0" summary="" id="id12importProject__table_d3b_r1l_tm" class="table" frame="border" border="1" rules="all"><caption><span class="tablecap">Table 1. Mapping of properties between <span class="ph"><span class="ph">Track+</span></span> and MS Project</span></caption>
+                        
+                        
+                        
+                        <thead class="thead" align="left">
+                            <tr class="row">
+                                <th class="entry" valign="top" width="27.47252747252747%" id="d30080e101"><span class="ph"><span class="ph">Track+</span></span></th>
+
+                                <th class="entry" valign="top" width="39.83516483516483%" id="d30080e106">MS Project</th>
+
+                                <th class="entry" valign="top" width="32.692307692307686%" id="d30080e109">Hints</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry" valign="top" width="27.47252747252747%" headers="d30080e101 ">Planned value (work)</td>
+
+                                <td class="entry" valign="top" width="39.83516483516483%" headers="d30080e106 ">duration * assignment units</td>
+
+                                <td class="entry" valign="top" width="32.692307692307686%" headers="d30080e109 ">In case there is no assignment we assume hours per work day
+                                    and one assigned resource</td>
+
+                            </tr>
+
+                            <tr class="row">
+                                <td class="entry" valign="top" width="27.47252747252747%" headers="d30080e101 ">Budget (work)</td>
+
+                                <td class="entry" valign="top" width="39.83516483516483%" headers="d30080e106 ">duration * assignment units of baseline 1 values if present,
+                                    otherwise planned value (work)</td>
+
+                                <td class="entry" valign="top" width="32.692307692307686%" headers="d30080e109 ">In case there is no assignment we assume hours per work day
+                                    and one assigned resource</td>
+
+                            </tr>
+
+                            <tr class="row">
+                                <td class="entry" valign="top" width="27.47252747252747%" headers="d30080e101 ">Actual work performed</td>
+
+                                <td class="entry" valign="top" width="39.83516483516483%" headers="d30080e106 ">actual duration * assignment units </td>
+
+                                <td class="entry" valign="top" width="32.692307692307686%" headers="d30080e109 ">In case there is no assignment we assume hours per work day
+                                    and one assigned resource. This value is only imported when
+                                    there is no entry for actual work performed in <span class="ph"><span class="ph">Track+</span></span>.</td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+</div>
+
+            </div>
+
+        </div>
+
+        <ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Go to the item navigator. Drag the MS Project file you want to import to the
+                    item navigator. </span>
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">Select the project and release into which you want to import the tasks from the
+                    MS Project file as <span class="ph"><span class="ph">Track+</span></span> tasks. Click on
+                    “Next”.</span>
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">Provide <span class="ph"><span class="ph">Track+</span></span> with information how to map resources in MS Project to users in
+                    <span class="ph"><span class="ph">Track+</span></span>. You can create new users, or just map to existing ones. If you create
+                    new users, you also have to provide valid e-mail addresses.</span>
+                <div class="itemgroup info">
+                    <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/importMSProject3.png" height="211" width="426"/></div><br/>
+                        
+                    </div>
+
+                </div>
+            </li>
+</ol>
+
+        <div class="section result">
+            <p class="p"><span class="ph"><span class="ph">Track+</span></span> will update existing tasks within its
+                database, or will create new tasks with item type “task”. The entire MS Project data
+                file is preserved withing <span class="ph"><span class="ph">Track+</span></span> so that
+                information can later be merged back and exported for further processing.</p>
+
+        </div>
+
+    </div>
+
+    <div class="related-links"><div class="relinfo relconcepts"><strong>Related concepts</strong><br/>
+<div><a class="navheader_parent_path" href="importProjectRules.html" title="When you import an MS Project plan there can be conflicts with existing tasks. Track+ follows specific rules to resolve such conflicts.">MS Project import conflict resolution rules</a></div>
+</div>
+</div>
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../Topics/04ForProjectAdmins/Chapter4Wrapper.html" title="Track+ for space administrators"><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Track+ for space administrators</span></a></span>  </div>
+</body>
+</html>

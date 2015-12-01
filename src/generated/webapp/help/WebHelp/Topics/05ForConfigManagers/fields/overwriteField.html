@@ -1,0 +1,98 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="You can create variations of properties at the workspace level, workspace type level, or item type level. By overwriting properties you can modify any of the property properties except for its type. ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="task"/><meta name="DC.Title" content="Overwriting properties"/><meta name="abstract" content="You can create variations of properties at the workspace level, workspace type level, or item type level. By overwriting properties you can modify any of the property properties except for its type. You can for example change the label, selection lists, tool tip, or the &#34;is required&#34; property."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="You can create variations of properties at the workspace level, workspace type level, or item type level. By overwriting properties you can modify any of the property properties except for its type. You can for example change the label, selection lists, tool tip, or the &#34;is required&#34; property."/><meta name="indexterms" content="overwrite, , property, property, overwrite, derive"/><meta name="DC.subject" content="overwrite, , property, derive"/><meta name="keywords" content="overwrite, , property, derive"/><meta name="DC.Relation" scheme="URI" content="../../../Topics/05ForConfigManagers/fields/manageFields.html"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="id14overwriteFields"/><link rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Overwriting properties</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()" id="id14overwriteFields">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../../Topics/05ForConfigManagers/fields/manageFields.html" title="This section describes how to add, overwrite, modify, and delete custom properties."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Managing custom properties</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../../Topics/05ForConfigManagers/fields/../../../Topics/05ForConfigManagers/fields/customFields.html" title="Items have properties. There are several system properties predefined which you can modify, for example change their label or set default values. Beyond these pre-defined properties you can define custom properties. There are a number of property types like text properties, numeric properties, selections, and date properties provided with Track+. It is possible to extend the number of property types using the Track+ plug-in architecture.">Item properties</a> / <a class="navheader_parent_path" href="../../../Topics/05ForConfigManagers/fields/manageFields.html" title="This section describes how to add, overwrite, modify, and delete custom properties.">Managing custom properties</a></td></tr></tbody></table>
+
+    <h1 class="title topictitle1">Overwriting properties</h1>
+
+    
+    
+    <div class="body taskbody"><p class="shortdesc">You can create variations of properties at the workspace
+        level, workspace type level, or item type level. By overwriting properties you can modify
+        any of the property properties except for its type. You can for example change the label,
+        selection lists, tool tip, or the "is required" property.</p>
+
+        <div class="section prereq p"><p class="p">You must be logged in as system manager or system administrator.</p>
+</div>
+
+        <ol class="ol steps"><li class="li step stepexpand">
+                    <span class="ph cmd"><span class="ph">In the top toolbar select <span class="ph menucascade"><span class="ph uicontrol">Administration</span> &gt; <span class="ph uicontrol">Customize</span> &gt; <span class="ph uicontrol">Item properties</span></span>.</span> Alternatively click on the
+                        <span class="q">"Customize"</span>/<span class="q">"Item properties"</span> bar in the left navigation
+                        area.</span>
+                    <div class="itemgroup stepxmp">
+                        <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="../figures/customizeAttributes.png" height="256" width="362"/></div><br/>
+                            
+                        </div>
+
+                    </div>
+                </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">A new screen appears, consisting of a tree structure on the left and a context
+                    sensitive edit area on the right. The tree structure depends on whether your are
+                    logged in as system administrator or project administrator. Click on the leaf
+                    node and select the custom property you want to overwrite.</span>
+                <div class="itemgroup info"><p class="p">In the example shown here we will overwrite property „Access level“
+                        specific for item type „Task“. Before the value is overwritten, it is
+                        inherited from the global configuration. This is shown by the light grey
+                        color of the labels.</p>
+<div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/overwrite1.png" height="127" width="382"/></div><br/>
+                        
+                    </div>
+</div>
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">In the right area, we click on the „Derive“ button in the toolbar. You
+                    shouldn't change the property name since this could break report templates that
+                    use it. Property name changes are always global!</span>
+                <div class="itemgroup info"><div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/overwrite2.png" height="130" width="383"/></div><br/>
+                        
+                    </div>
+</div>
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">Change the label and tool tip.</span>
+                <div class="itemgroup info"><div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/overwrite3.png" height="131" width="388"/></div><br/>
+                        
+                    </div>
+</div>
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">Click on the „Save“ button in the toolbar. In the tree area the property has
+                    changed from a light color to a strong color, indicating that this is a derived
+                    property. </span>
+                <div class="itemgroup info"><div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/overwrite5.png" height="111" width="118"/></div><br/>
+                        
+                    </div>
+</div>
+            </li>
+</ol>
+
+        <div class="section result"><p class="p">You have created a derived property and overwritten the global property for
+                item types "Task" with the derived version. 
+                 All forms
+                for tasks will have the new label instead of the original one. The property itself
+                is still the same global property, though.</p>
+<div class="p"><div class="note note"><span class="notetitle">Note:</span> You can revert this
+                    operation and return back to the global setting by right clicking on the derived
+                    property in the tree area, and then selecting „Reset“.</div>
+<div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/overwrite6.png" height="118" width="139"/></div><br/>
+                    
+                </div>
+</div>
+</div>
+
+    </div>
+
+<div class="related-links"/>
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../../Topics/05ForConfigManagers/fields/manageFields.html" title="This section describes how to add, overwrite, modify, and delete custom properties."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Managing custom properties</span></a></span>  </div>
+</body>
+</html>

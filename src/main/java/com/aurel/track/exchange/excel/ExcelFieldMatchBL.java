@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -39,6 +39,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -66,11 +67,11 @@ import com.aurel.track.util.IntegerStringBean;
 
 
 public class ExcelFieldMatchBL {
-	
+
 	private static final Logger LOGGER = LogManager.getLogger(ExcelFieldMatchBL.class);
 
 	public static int LOCAL_PARENT_PSEUDO_COLUMN = -1;
-	
+
 	/**
 	 * Get the workbook and returns its sheets
 	 * @param excelMappingsDirectory
@@ -82,12 +83,12 @@ public class ExcelFieldMatchBL {
 		try {
 			inputStream = new FileInputStream(new File(excelMappingsDirectory, fileName));
 		} catch (FileNotFoundException e) {
-			LOGGER.error("Loading the workbook from directory " +excelMappingsDirectory +
-					" and file " + fileName + "  failed with " + e.getMessage(), e);
+			LOGGER.warn("Loading the workbook from directory " +excelMappingsDirectory +
+					" and file " + fileName + "  failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			return null;
 		}
 		try {
-			//poiFileSystem = new POIFSFileSystem(inputStream);
 			if (fileName.endsWith("xls") || fileName.endsWith("XLS")) {
 				return new HSSFWorkbook(inputStream);
 			} else {
@@ -96,11 +97,12 @@ public class ExcelFieldMatchBL {
 				}
 			}
 		} catch (IOException e) {
-			LOGGER.warn("Getting the excel sheets failed with " + e.getMessage(), e);
+			LOGGER.warn("Getting the excel sheets failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Get the workbook and returns its sheets
 	 * @param workbook
@@ -115,10 +117,10 @@ public class ExcelFieldMatchBL {
 		}
 		return sheetList;
 	}
-	
+
 	/**
 	 * Returns the first row headers (field names) mapped to the column indexes
-	 * @return  Map<ColumnNumber, ColumnHeader>	 
+	 * @return  Map<ColumnNumber, ColumnHeader>
 	 */
 	static SortedMap<Integer, String> getFirstRowHeaders(Workbook hSSFWorkbook, Integer sheetID) {
 		SortedMap<Integer, String> firstRowMap = new TreeMap<Integer, String>();
@@ -129,7 +131,7 @@ public class ExcelFieldMatchBL {
 		Set<String> sameColumnNames = new HashSet<String>();
 		Set<String> columnNames = new HashSet<String>();
 		Sheet sheet = hSSFWorkbook.getSheetAt(sheetID.intValue());
-		Row firstRow = sheet.getRow(0);	
+		Row firstRow = sheet.getRow(0);
 		if (firstRow!=null) {
 			for (Cell cell : firstRow) {
 				String columnHeader = ExcelImportBL.getStringCellValue(cell);
@@ -143,7 +145,7 @@ public class ExcelFieldMatchBL {
 			}
 		}
 		sheet  = hSSFWorkbook.getSheetAt(sheetID.intValue());
-		firstRow = sheet.getRow(0);	
+		firstRow = sheet.getRow(0);
 		if (firstRow!=null) {
 			for (Cell cell: firstRow) {
 				String columnHeader = ExcelImportBL.getStringCellValue(cell);
@@ -158,10 +160,10 @@ public class ExcelFieldMatchBL {
 		}
 		return firstRowMap;
 	}
-	
+
 	/**
 	 * Returns the first row of a sheet where there is the fields name
-	 * @return  Map<ColumnNumber, FieldLabelName>	 
+	 * @return  Map<ColumnNumber, FieldLabelName>
 	 */
 	static SortedMap<Integer, String> getFirstRowNumericToLetter(Workbook hSSFWorkbook, Integer sheetID) {
 		SortedMap<Integer, String> firstRowMap = new TreeMap<Integer, String>();
@@ -177,7 +179,7 @@ public class ExcelFieldMatchBL {
 		}
 		return firstRowMap;
 	}
-	
+
 	/**
 	 * Get the excel letter for the column
 	 * @param colNum
@@ -192,8 +194,8 @@ public class ExcelFieldMatchBL {
 		}
 		sb.append((char) (withinNum + 'A'));
 		return (sb.toString());
-	} 
-	
+	}
+
 	/**
 	 * Get the localized TFieldConfigBeans
 	 * @param locale
@@ -202,9 +204,8 @@ public class ExcelFieldMatchBL {
 	static List<IntegerStringBean> getFieldConfigs(Integer personID, Locale locale) {
 		List<TFieldConfigBean> fieldConfigsList = FieldRuntimeBL.getLocalizedDefaultFieldConfigs(locale);
 		List<IntegerStringBean> matchableFieldsList = new LinkedList<IntegerStringBean>();
-		//null fieldID: by selecting the empty entry the field be ignored 
-		matchableFieldsList.add(new IntegerStringBean("-", null));
-		//Set<Integer> notMatchableFields = getNotMatchableFields();
+		//null fieldID: by selecting the empty entry the field be ignored
+		matchableFieldsList.add(new IntegerStringBean("-", 0));
 		for (TFieldConfigBean fieldConfigBean : fieldConfigsList) {
 			Integer fieldID = fieldConfigBean.getField();
 			IFieldTypeRT fieldTypeRT = FieldTypeManager.getFieldTypeRT(fieldID);
@@ -230,7 +231,7 @@ public class ExcelFieldMatchBL {
 		Collections.sort(matchableFieldsList);
 		return matchableFieldsList;
 	}
-	
+
 	/**
 	 * Fields which might be used as identifier columns
 	 * the other are not implemented at the persistence level
@@ -259,7 +260,7 @@ public class ExcelFieldMatchBL {
 		identifierFieldSet.add(SystemFields.INTEGER_SUPERIORWORKITEM);
 		return identifierFieldSet;
 	}
-	
+
 	/**
 	 * Fields which if mapped are mandatory identifier fields
 	 * (their values can't be changed)
@@ -268,12 +269,11 @@ public class ExcelFieldMatchBL {
 	static Set<Integer> getMandatoryIdentifierFields() {
 		Set<Integer> mandatoryIdentifierFields = new HashSet<Integer>();
 		mandatoryIdentifierFields.add(SystemFields.INTEGER_ORIGINATOR);
-		//mandatoryIdentifierFields.add(SystemFields.INTEGER_CHANGEDBY);
 		//mandatoryIdentifierFields.add(SystemFields.INTEGER_CREATEDATE);
 		mandatoryIdentifierFields.add(SystemFields.INTEGER_ISSUENO);
 		return mandatoryIdentifierFields;
 	}
-	
+
 	/**
 	 * Get a label based map with the localized default field configs
 	 * @param locale
@@ -282,7 +282,7 @@ public class ExcelFieldMatchBL {
 	private static Map<String, TFieldConfigBean> getLocalizedDefaultFieldConfigsMap(Locale locale) {
 		return getLabelBasedFieldConfigsMap(FieldRuntimeBL.getLocalizedDefaultFieldConfigs(locale));
 	}
-	
+
 	/**
 	 * Get a label based map with the not localized default field configs
 	 * @return
@@ -290,7 +290,7 @@ public class ExcelFieldMatchBL {
 	private static Map<String, TFieldConfigBean> getDefaultFieldConfigsMap() {
 		return getLabelBasedFieldConfigsMap(FieldConfigBL.loadDefault());
 	}
-	
+
 	/**
 	 * Get a label based map of the field configs
 	 * @param fieldConfigBeansList
@@ -311,7 +311,7 @@ public class ExcelFieldMatchBL {
 		}
 		return fieldConfigBeansMap;
 	}
-	
+
 	/**
 	 * Get a label based map of all defined fields
 	 * @return
@@ -330,19 +330,19 @@ public class ExcelFieldMatchBL {
 		}
 		return fieldConfigBeansMap;
 	}
-	
-	static Map<String, Integer> prepareBestMatchByLabel(Set<String> excelColumnNames, 
+
+	static Map<String, Integer> prepareBestMatchByLabel(Set<String> excelColumnNames,
 			Map<String, Integer> previousMappings, Locale locale) {
 		if (excelColumnNames==null) {
 			return previousMappings;
-		}	
+		}
 		//do not match the previously matched columns
 		excelColumnNames.removeAll(previousMappings.keySet());
-		
+
 		if (!excelColumnNames.isEmpty()) {
 			//match by localized config labels
 			addMatch(excelColumnNames, getLocalizedDefaultFieldConfigsMap(locale), previousMappings);
-		}		
+		}
 		if (!excelColumnNames.isEmpty()) {
 			//match by not localized config labels
 			addMatch(excelColumnNames, getDefaultFieldConfigsMap(), previousMappings);
@@ -353,14 +353,14 @@ public class ExcelFieldMatchBL {
 		}
 		return previousMappings;
 	}
-	
+
 	/**
 	 * Match by fieldConfigBean labels
 	 * @param excelColumnNames
 	 * @param fieldConfigsMap
 	 * @param previousMappings
 	 */
-	private static void addMatch(Set<String> excelColumnNames, 
+	private static void addMatch(Set<String> excelColumnNames,
 			Map<String, TFieldConfigBean> fieldConfigsMap,
 			Map<String, Integer> previousMappings) {
 		if (!excelColumnNames.isEmpty()) {
@@ -384,7 +384,7 @@ public class ExcelFieldMatchBL {
 	 * @param columnIndexToColumNameMap
 	 * @return
 	 */
-	static Map<Integer, Integer> getColumnIndexToFieldIDMap(Map<String, Integer> columNameToFieldIDMap, 
+	static Map<Integer, Integer> getColumnIndexToFieldIDMap(Map<String, Integer> columNameToFieldIDMap,
 			SortedMap<Integer, String> columnIndexToColumNameMap) {
 		Map<Integer, Integer> columnIndexToFieldIDMap = new HashMap<Integer, Integer>();
 		Iterator<Integer> iterator = columnIndexToColumNameMap.keySet().iterator();
@@ -404,7 +404,7 @@ public class ExcelFieldMatchBL {
 	 * @param columnIndexToColumNameMap
 	 * @return
 	 */
-	static Map<String, Integer> getColumnNameToFieldIDMap(Map<Integer, Integer> columnIndexToFieldIDMap, 
+	static Map<String, Integer> getColumnNameToFieldIDMap(Map<Integer, Integer> columnIndexToFieldIDMap,
 			SortedMap<Integer, String> columnIndexToColumNameMap) {
 		Map<String, Integer> columNameToFieldIDMap = new HashMap<String, Integer>();
 		Iterator<Integer> iterator = columnIndexToColumNameMap.keySet().iterator();

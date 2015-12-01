@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -51,6 +51,7 @@ Ext.define('com.trackplus.admin.server.EmailOutgoingController',{
 		var config = config || {};
 		me.initialConfig = config;
 		Ext.apply(me, config);
+		this.initConfig(config);
 	},
 	view:null,
 	createView:function(){
@@ -61,32 +62,31 @@ Ext.define('com.trackplus.admin.server.EmailOutgoingController',{
 			textFieldWidthShort:me.textFieldWidthShort,
 			alignR:me.alignR,
 			FieldSetWidth:me.FieldSetWidth,
-			controller:me
+			emailController:me
 		});
 		return me.view;
 	},
 	postDataProcess: function(data) {
 		var me=this;
-		var userPasswordDisabled = !data["outgoingEmail.reqAuth"] || data["outgoingEmail.authMode"]!=1;
-
-		var outgoingEmailUserControl = CWHF.getControl.call(this.view, "fsSmtpAuth", "outgoingEmail.user");
+		var userPasswordDisabled = !data["outgoingEmail.reqAuth"] || data["outgoingEmail.authMode"]!==1;
+		var outgoingEmailUserControl = CWHF.getControl.call(this.view, "fsSmtpAuth", "outgoingEmailUser");
 		outgoingEmailUserControl.setDisabled(userPasswordDisabled);
 		var outgoingEmailPasswordControl = CWHF.getControl.call(this.view, "fsSmtpAuth",
-				"passwPanel", "outgoingEmail.password");
+				"passwPanel", "outgoingEmailPassword");
 		outgoingEmailPasswordControl.setDisabled(userPasswordDisabled);
 
 		var outgoingEmailSecurityConnectionModes=data["outgoingEmail.securityConnectionsModes"];
 		var outgoingEmailSecurityConnection=data["outgoingEmail.securityConnection"];
 		var outgoingEmailSecurityConnectionModesRadioButtons = CWHF.getRadioButtonItems(outgoingEmailSecurityConnectionModes,
 				"outgoingEmail.securityConnection", "id", "label", outgoingEmailSecurityConnection, false, true);
-		var outgoingEmailSecurityConnectionControl = CWHF.getWrappedControl.call(this.view, "fsSmtpServer", "outgoingEmail.securityConnection");
+		var outgoingEmailSecurityConnectionControl = CWHF.getWrappedControl.call(this.view, "fsSmtpServer", "outgoingEmailSecurityConnection");
 		outgoingEmailSecurityConnectionControl.add(outgoingEmailSecurityConnectionModesRadioButtons);
 
 		var authenticationModes = data["outgoingEmail.authenticationModes"];
 		var authMode = data["outgoingEmail.authMode"];
 		var authenticationModesRadioButtons = CWHF.getRadioButtonItems(authenticationModes,
 				"outgoingEmail.authMode", "id", "label", authMode, !data["outgoingEmail.reqAuth"], true);
-		 var authModeControl = CWHF.getWrappedControl.call(this.view, "fsSmtpAuth", "outgoingEmail.authMode");
+		 var authModeControl = CWHF.getWrappedControl.call(this.view, "fsSmtpAuth", "outgoingEmailAuthMode");
 		 authModeControl.add(authenticationModesRadioButtons);
 
 
@@ -94,33 +94,37 @@ Ext.define('com.trackplus.admin.server.EmailOutgoingController',{
 		var sendFromModeValue=data["outgoingEmail.sendFromMode"];
 		var sendFromModesRadioButtons = CWHF.getRadioButtonItems(sendFromModes,
 				"outgoingEmail.sendFromMode", "id", "label", sendFromModeValue, false, true);
-		var sendFromModeControl = CWHF.getWrappedControl.call(this.view, "fsSmtpMore", "outgoingEmail.sendFromMode");
+		var sendFromModeControl = CWHF.getWrappedControl.call(this.view, "fsSmtpMore", "outgoingEmailSendFromMode");
 		sendFromModeControl.add(sendFromModesRadioButtons);
 
-		var mailEncodingControl = CWHF.getWrappedControl.call(this.view, "fsSmtpMore", "outgoingEmail.mailEncoding");
+		var mailEncodingControl = CWHF.getWrappedControl.call(this.view, "fsSmtpMore", "outgoingEmailMailEncoding");
 			mailEncodingControl.setValue(data["outgoingEmail.mailEncoding"]);
 	},
+
+
 	changeSecurityMode:function(radioGroup, newValue, oldValue, options){
 		var useSSL = CWHF.getSelectedRadioButtonValue(CWHF.getWrappedControl.call(this.view,
-				"fsSmtpServer", "outgoingEmail.securityConnection"));
+				"fsSmtpServer", "outgoingEmailSecurityConnection"));
 		var portValue;
-		if(useSSL==this.SECURITY_CONNECTIONS_MODES.SSL){
+		if(useSSL===this.SECURITY_CONNECTIONS_MODES.SSL){
 			portValue=this.portSMTP_SSL;
 		}else{
 			portValue=this.portSMTP;
 		}
-		var portControl=CWHF.getWrappedControl.call(this.view, "fsSmtpMore", "outgoingEmail.port");
+		var portControl=CWHF.getWrappedControl.call(this.view, "fsSmtpMore", "outgoingEmailPort");
 		portControl.setValue(portValue);
 	},
+
 	changeRequireAuthentication:function() {
-		var smtpReqAuth = CWHF.getWrappedControl.call(this.view, "fsSmtpAuth", "outgoingEmail.reqAuth");
+		var smtpReqAuth = CWHF.getWrappedControl.call(this.view, "fsSmtpAuth", "outgoingEmailReqAuth");
 		var smtpReqAuthChecked = smtpReqAuth.getValue();
-		var authModeWrapper=CWHF.getHelpWrapper.call(this.view, "fsSmtpAuth", "outgoingEmail.authMode");
+		var authModeWrapper=CWHF.getHelpWrapper.call(this.view, "fsSmtpAuth", "outgoingEmailAuthMode");
 		authModeWrapper.setDisabled(!smtpReqAuthChecked);
 		var authMode = authModeWrapper.getInputComponent();
+
 		for(var i=0; i<3; i++){
 			var item = authMode.getComponent(i);
-			if (item!=null) {
+			if (item) {
 				item.setDisabled(!smtpReqAuthChecked);
 			}
 		}
@@ -129,16 +133,16 @@ Ext.define('com.trackplus.admin.server.EmailOutgoingController',{
 		if (smtpReqAuthChecked) {
 			this.changeAuthenticationMode();
 		} else {
-			CWHF.getControl.call(this.view, "fsSmtpAuth", "outgoingEmail.user").setDisabled(true);
-			CWHF.getControl.call(this.view, "fsSmtpAuth", "passwPanel", "outgoingEmail.password").setDisabled(true);
+			CWHF.getControl.call(this.view, "fsSmtpAuth", "outgoingEmailUser").setDisabled(true);
+			CWHF.getControl.call(this.view, "fsSmtpAuth", "passwPanel", "outgoingEmailPassword").setDisabled(true);
 		}
 	},
 
 	changeAuthenticationMode:function(radioGroup, newValue, oldValue, options){
-		var authMode=CWHF.getWrappedControl.call(this.view, "fsSmtpAuth", "outgoingEmail.authMode");
-		var usingSMTPselected = CWHF.getSelectedRadioButtonValue(authMode)==1;
-		CWHF.getControl.call(this.view, "fsSmtpAuth", "outgoingEmail.user").setDisabled(!usingSMTPselected);
-		CWHF.getControl.call(this.view, "fsSmtpAuth", "passwPanel", "outgoingEmail.password").setDisabled(!usingSMTPselected);
+		var authMode=CWHF.getWrappedControl.call(this.view, "fsSmtpAuth", "outgoingEmailAuthMode");
+		var usingSMTPselected = CWHF.getSelectedRadioButtonValue(authMode)===1;
+		CWHF.getControl.call(this.view, "fsSmtpAuth", "outgoingEmailUser").setDisabled(!usingSMTPselected);
+		CWHF.getControl.call(this.view, "fsSmtpAuth", "passwPanel", "outgoingEmailPassword").setDisabled(!usingSMTPselected);
 	},
 
 	clearSMTPPassword:function() {
@@ -175,13 +179,13 @@ Ext.define('com.trackplus.admin.server.EmailOutgoingController',{
 		var me=this;
 		var urlStr='saveAdminSiteConfig!testOutgoingEmail.action';
 		borderLayout.setLoading(true);
-		if(me.siteCfgController!=null){
+		if(me.siteCfgController){
 			me.siteCfgController.test.call(me.siteCfgController,urlStr);
 		}
 	},
 	onTxtEmailTestInputKeyPressed:function(field, e){
 		var me=this;
-		if (e.getKey() == e.ENTER&&me.view.txtEmailTestTo.isValid()) {
+		if (e.getKey() === e.ENTER&&me.view.txtEmailTestTo.isValid()) {
 			me.testOutgoingEmail();
 		}
 	}
@@ -195,9 +199,9 @@ Ext.define('com.trackplus.admin.server.EmailOutgoingView',{
 		textFieldWidthShort:320,
 		alignR:"right",
 		FieldSetWidth:600,
-		controller:null
+		emailController:null
 	},
-	itemId:'tab.outgoingEmail',
+	itemId:'tab_outgoingEmail',
 	title:getText('admin.server.config.tabEmailOut'),
 	checkEmailTest:null,
 	txtEmailTestTo:null,
@@ -233,7 +237,7 @@ Ext.define('com.trackplus.admin.server.EmailOutgoingView',{
 				 {'id':'Big5','label':'Chinese (traditional)'},
 				 {'id':'UTF-16','label':'Unicode UTF-16'}];
 		var inputCompPwd=CWHF.createTextField('admin.server.config.smtpPassWord',
-				'outgoingEmail.password', {inputType:'password'});
+				'outgoingEmail.password', {inputType:'password', itemId:"outgoingEmailPassword"});
 
 		var clearBtn={xtype:'button',
 				style:{ marginBottom: '5px', marginLeft: '5px'},
@@ -241,7 +245,7 @@ Ext.define('com.trackplus.admin.server.EmailOutgoingView',{
 				itemId:'ClearBtn',
 				text:getText('common.btn.clear'),
 				handler:function(){
-					me.controller.clearSMTPPassword.call(me.controller);
+					me.emailController.clearSMTPPassword.call(me.emailController);
 				}
 		};
 		var inputCompPwdWrapper={
@@ -285,10 +289,10 @@ Ext.define('com.trackplus.admin.server.EmailOutgoingView',{
 			layout: 'anchor',
 			items: [CWHF.createTextFieldWithHelp('admin.server.config.smtpServerName',
 						'outgoingEmail.serverName'),
-					CWHF.getRadioGroupWithHelp('outgoingEmail.securityConnection', 'admin.server.config.smtpSecurityConnection',
-						me.textFieldWidth, null, null,
+					CWHF.getRadioGroupWithHelp('admin.server.config.smtpSecurityConnection',
+						me.textFieldWidth, null, {itemId:"outgoingEmailSecurityConnection"},
 						{change: function(radioGroup, newValue, oldValue, options) {
-								me.controller.changeSecurityMode.call(me.controller,radioGroup, newValue, oldValue, options)}
+								me.emailController.changeSecurityMode.call(me.emailController,radioGroup, newValue, oldValue, options)}
 						})
 					]
 		}, {
@@ -300,16 +304,15 @@ Ext.define('com.trackplus.admin.server.EmailOutgoingView',{
 			defaultType: 'textfield',
 			layout: 'anchor',
 			items: [CWHF.createCheckboxWithHelp('admin.server.config.smtpReqAuth',
-					'outgoingEmail.reqAuth', {height:40}, {change:function(){
-						me.controller.changeRequireAuthentication.call(me.controller);
+					'outgoingEmail.reqAuth', {itemId:'outgoingEmailReqAuth',height:40}, {change:function(){
+						me.emailController.changeRequireAuthentication.call(me.emailController);
 					}}),
-					CWHF.getRadioGroupWithHelp('outgoingEmail.authMode', 'admin.server.config.smtpAuthMode',
-							me.textFieldWidth, null, {layout: 'vbox'},
+					CWHF.getRadioGroupWithHelp('admin.server.config.smtpAuthMode',
+							me.textFieldWidth, null, {itemId:'outgoingEmailAuthMode',layout: 'vbox'},
 							{change: function(radioGroup, newValue, oldValue, options) {
-									me.controller.changeAuthenticationMode.call(me.controller,radioGroup, newValue, oldValue, options);
+									me.emailController.changeAuthenticationMode.call(me.emailController,radioGroup, newValue, oldValue, options);
 							}}),
-					CWHF.createTextField('admin.server.config.smtpUser',
-							'outgoingEmail.user'),
+					CWHF.createTextField('admin.server.config.smtpUser', 'outgoingEmail.user', {itemId:"outgoingEmailUser"}),
 					inputCompPwdWrapper]
 		}, {
 			xtype: 'fieldset',
@@ -320,12 +323,11 @@ Ext.define('com.trackplus.admin.server.EmailOutgoingView',{
 			collapsed: true,
 			defaultType: 'textfield',
 			layout: 'anchor',
-			items: [CWHF.getRadioGroupWithHelp('outgoingEmail.sendFromMode',
-						'admin.server.config.sendFromMode', me.textFieldWidth,null, {layout: 'vbox'}),
+			items: [CWHF.getRadioGroupWithHelp(me.textFieldWidth,null, [], {itemId:'outgoingEmailSendFromMode',layout: 'vbox'}),
 					CWHF.createComboWithHelp('admin.server.config.mailEncoding',
-							'outgoingEmail.mailEncoding',{data:options, idType:'string'}),
+							'outgoingEmail.mailEncoding',{itemId:'outgoingEmailMailEncoding', data:options, idType:'string'}),
 					CWHF.createNumberFieldWithHelp('admin.server.config.smtpPort',
-						'outgoingEmail.port', 0, 1, 9999, {width:me.textFieldWidth, hideTrigger: true})]
+						'outgoingEmail.port', 0, 1, 9999, {width:me.textFieldWidth, hideTrigger: true,itemId:'outgoingEmailPort'})]
 		},
 		me.createTestPanel()
 		];
@@ -335,19 +337,19 @@ Ext.define('com.trackplus.admin.server.EmailOutgoingView',{
 		me.checkEmailTest=CWHF.createCheckbox('admin.server.config.trackEmailTest', 'outgoingEmail.emailTest',null,
 			{
 				change:function(){
-					me.controller.changeEmailTest.call(me.controller);
+					me.emailController.changeEmailTest.call(me.emailController);
 				}
 			}
 		);
 		me.txtEmailTestTo=CWHF.createTextField('admin.server.config.trackEmailTestTo','emailTestTo',{disabled:true,allowBlank:false,vtype: 'email'});
-		me.txtEmailTestTo.addListener('specialkey',me.controller.onTxtEmailTestInputKeyPressed,me.controller);
+		me.txtEmailTestTo.addListener('specialkey',me.emailController.onTxtEmailTestInputKeyPressed,me.emailController);
 		me.btnEmailTest=Ext.create('Ext.button.Button',{
 			style:{marginTop:'10px', marginBottom: '5px', marginLeft: (me.labelWidth+5)+'px'},
 			disabled:true,
 			iconCls: 'check16',
 			text: getText('admin.server.config.trackEmailTestButton'),
 			handler:function(){
-				me.controller.testOutgoingEmail.call(me.controller);
+				me.emailController.testOutgoingEmail.call(me.emailController);
 			}
 		});
 		var testArea={

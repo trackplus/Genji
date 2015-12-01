@@ -1,0 +1,103 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="You can define selection lists in Track+ which you then can use in item selection properties. You can assign custom lists to item properties either globally, workspace type specific, or workspace ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="concept"/><meta name="DC.Title" content="Custom lists overview"/><meta name="abstract" content="You can define selection lists in Track+ which you then can use in item selection properties. You can assign custom lists to item properties either globally, workspace type specific, or workspace specific."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="You can define selection lists in Track+ which you then can use in item selection properties. You can assign custom lists to item properties either globally, workspace type specific, or workspace specific."/><meta name="indexterms" content="list, custom, custom list, tags, selection, option, multiple select, simple select, cascaded select, select, cascaded, select, multiple, select, simple, list, selection, subsystem, classes"/><meta name="DC.subject" content="list, custom, custom list, tags, selection, option, multiple select, simple select, cascaded select, select, cascaded, multiple, simple, subsystem, classes"/><meta name="keywords" content="list, custom, custom list, tags, selection, option, multiple select, simple select, cascaded select, select, cascaded, multiple, simple, subsystem, classes"/><meta name="DC.Relation" scheme="URI" content="../../../Topics/05ForConfigManagers/lists/lists.html"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="id31listOverview"/><link rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Custom lists overview</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()" id="id31listOverview">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../../Topics/05ForConfigManagers/lists/lists.html" title="Some item properties require a selection of predefined values. For example, you may have a list of customers, or you want to support a number of operating systems. Track+permits you to define your own selection lists which can then be used for custom or system properties."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Custom selection lists</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../../Topics/05ForConfigManagers/lists/../../../Topics/05ForConfigManagers/Chapter5Wrapper.html" title="Customizing Track+">Customizing Track+</a> / <a class="navheader_parent_path" href="../../../Topics/05ForConfigManagers/lists/lists.html" title="Some item properties require a selection of predefined values. For example, you may have a list of customers, or you want to support a number of operating systems. Track+permits you to define your own selection lists which can then be used for custom or system properties.">Custom selection lists</a></td></tr></tbody></table>
+
+    <h1 class="title topictitle1">Custom lists overview</h1>
+
+    
+    
+    <div class="body conbody"><p class="shortdesc">You can define selection lists in <span class="ph"><span class="ph">Track+</span></span> which you then can use in item selection
+        properties. You can assign custom lists to item properties either globally, workspace type
+        specific, or workspace specific.</p>
+
+        <div class="section"><h2 class="title sectiontitle">Lists for built-in system properties</h2>
+            
+            <p class="p"><span class="ph"><span class="ph">Track+</span></span> has a number of built-in system properties
+                that draw their value from a list of options. These properties have some logic
+                associated with them, for example in the notification and workflow engines.</p>
+
+            <p class="p">The following system properties have simple selection lists associated with them:</p>
+
+            <ul class="ul">
+                <li class="li">item state</li>
+
+                <li class="li"><span class="ph">priority</span></li>
+
+                <li class="li"><span class="ph">severity</span></li>
+
+                <li class="li">item type</li>
+
+            </ul>
+
+            <p class="p">The logic is associated with „flags“ or a numeric value that you assign to your list
+                entries. The entry name is of no importance to the application logic.</p>
+
+            <p class="p">These lists are always globally (system wide) available. You can limit the set of
+                visible selection values from your list to a subset for each item type and workspace
+                type. For example, you could have item states „open“ and „closed“ for item type mile
+                stone, and more states for item type „problem report“. For more information have a
+                look at section <a class="xref" href="../projectTypes/projectTypes.html#idWorkspaceTypes" title="Workspace types help you minimize the effort of configuring a large number of workspaces or projects. Workspaces inherit their configuration from their associated workspace type. By configuring a workspace type you configure all workspaces that you have associated with that type.">Managing workspace types</a>.</p>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Lists for custom properties</h2>
+            
+            <p class="p">You can define any number of custom lists. Custom lists do not have any specific
+                application logic associated with them. You can make custom lists available globally
+                or just to a specific workspace. <span class="ph"><span class="ph">Track+</span></span> offers
+                three types of custom lists:</p>
+
+            <ul class="ul">
+                <li class="li">simple select</li>
+
+                <li class="li">multiple select</li>
+
+                <li class="li">cascaded select</li>
+
+            </ul>
+
+            <p class="p">The last type, the cascaded select can be rather complex. <span class="ph"><span class="ph">Track+</span></span> comes with implementations for a
+                parent-child list, a parent and two children list, and a parent-child-grandchild
+                list.</p>
+
+            <p class="p">Custom lists are assigned to custom properties of the same type. You can assign
+                different lists to the same custom property in different workspaces. For example,
+                you may have a list of customers defined as a custom property. In one workspace you
+                may assign a different customer list to this property than in another one.</p>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Workspace specific lists</h2>
+            
+            <p class="p">All custom lists can be made available globally or workspace specific. Previous
+                versions of <span class="ph"><span class="ph">Track+</span></span> had two fixed workspace
+                specific lists:</p>
+
+            <ul class="ul">
+                <li class="li">project subsystems or components</li>
+
+                <li class="li">project classes</li>
+
+            </ul>
+
+            <p class="p">These two lists have been moved to custom properties and workspace specific
+                lists.</p>
+
+        </div>
+
+    </div>
+
+<div class="related-links"/>
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../../Topics/05ForConfigManagers/lists/lists.html" title="Some item properties require a selection of predefined values. For example, you may have a list of customers, or you want to support a number of operating systems. Track+permits you to define your own selection lists which can then be used for custom or system properties."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Custom selection lists</span></a></span>  </div>
+</body>
+</html>

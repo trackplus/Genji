@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -33,6 +33,8 @@ import java.util.Map;
 import java.util.Properties;
 
 import com.aurel.track.admin.projectCopy.ProjectCopyBL;
+
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -227,11 +229,11 @@ public class ProjectConfigBL {
 		}
 		boolean showWorkflow = !isPrivateProject &&
 				(sys || (canSeeWorkflows!=null && canSeeWorkflows.booleanValue())) &&
-				!ApplicationBean.getApplicationBean().isGenji();
-		boolean showAssignAccount = !ApplicationBean.getApplicationBean().isGenji() &&
+				!ApplicationBean.getInstance().isGenji();
+		boolean showAssignAccount = !ApplicationBean.getInstance().isGenji() &&
 				projectTypeBean!=null && mightHaveAccounting(projectTypeBean, projectBean);
 		boolean showAutomail = !isPrivateProject;
-		boolean showCockpit = !ApplicationBean.getApplicationBean().isGenji();
+		boolean showCockpit = !ApplicationBean.getInstance().isGenji();
 		boolean showVersionControl=projectTypeBean!=null && projectTypeBean.getUseVersionControl() && !isPrivateProject;
 		
 		boolean hasNext = showRoles || showRelease || showManageList || showManageFilters ||  showManageReports ||
@@ -375,7 +377,6 @@ public class ProjectConfigBL {
 		}
 		//version control
 		if (showVersionControl) {
-			//hasNext=useExportMsProject||useImportMsProject;
 			ProjectTreeNodeTO versionControl = new ProjectTreeNodeTO(
 					String.valueOf(ProjectConfigBL.PROJECT_ASSIGNMENTS.VERSION_CONTROL), 
 					LocalizeUtil.getLocalizedTextFromApplicationResources("admin.customize.projectType.lbl.versionControl", locale),
@@ -500,7 +501,7 @@ public class ProjectConfigBL {
 			if (projectTypeBean!=null) {
 				projectBaseTO.setHasRelease(projectTypeBean.getUseReleases());
 				boolean projectTypeHasAccountig = projectTypeBean.getUseAccounting();
-				if (!ApplicationBean.getApplicationBean().isGenji() && projectTypeHasAccountig) {
+				if (!ApplicationBean.getInstance().isGenji() && projectTypeHasAccountig) {
 					projectAccountingTO = ProjectBL.getProjectAccountingTO(projectID, add, addAsSubproject, false, projectTypeBean, false);
 					invalidDefaults.putAll(ProjectBL.setAccountList(projectID, projectAccountingTO, add, addAsSubproject, locale));
 					projectAccountingTO.setWorkUnitList(AccountingBL.getTimeUnitOptionsList(locale));
@@ -642,7 +643,7 @@ public class ProjectConfigBL {
 		Map<Integer, String> invalidDefaults = new HashMap<Integer, String>();
 		if (projectTypeBean!=null) {
 			projectTypeHasAccountig = projectTypeBean.getUseAccounting();
-			if (!ApplicationBean.getApplicationBean().isGenji() && projectTypeHasAccountig) {
+			if (!ApplicationBean.getInstance().isGenji() && projectTypeHasAccountig) {
 				projectAccountingTO = ProjectBL.getProjectAccountingTO(projectID, add,
 						addAsSubproject, true, projectTypeBean, submittedAccountingInherited);
 				invalidDefaults.putAll(ProjectBL.setAccountList(projectID, projectAccountingTO, add, addAsSubproject, locale));
@@ -919,7 +920,7 @@ public class ProjectConfigBL {
 			}
 			//validateChildStatus(add, statusFlagNew, projectBean.getParent(), locale, errors);
 			projectNameExists = ProjectBL.projectNameExists(projectBaseTO.getLabel(), projectBean.getParent(), projectID);
-			if (ApplicationBean.getApplicationBean().getSiteBean().getProjectSpecificIDsOn()) {
+			if (ApplicationBean.getInstance().getSiteBean().getProjectSpecificIDsOn()) {
 				String prefix = projectBaseTO.getPrefix();
 				if (prefix!=null && !"".equals(prefix)) {
 					projectPrefixExists = ProjectBL.projectPrefixExists(prefix, projectBean.getParent(), projectID);
@@ -1629,7 +1630,8 @@ public class ProjectConfigBL {
 			try {
 				return Integer.valueOf(strDefaultSubproject);
 			} catch (Exception e) {
-				LOGGER.warn("Converting the default subproject " + strDefaultSubproject + " for project " + projectID + " to integer failed with " + e.getMessage(), e);
+				LOGGER.warn("Converting the default subproject " + strDefaultSubproject + " for project " + projectID + " to integer failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		return null;
@@ -1651,15 +1653,11 @@ public class ProjectConfigBL {
 			try {
 				return Integer.valueOf(strDefaultClass);
 			} catch (Exception e) {
-				LOGGER.warn("Converting the default class " + strDefaultClass + " for project " + projectID + " to integer failed with " + e.getMessage(), e);
+				LOGGER.warn("Converting the default class " + strDefaultClass + " for project " + projectID + " to integer failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		return null;
-		/*boolean fallback = false;
-		if (fieldConfigBean!=null && fieldConfigBean.isRequiredString()) {
-			fallback = true;
-		}
-		return getDefaultIfSpecifiedAndExists(defaultClass, classDAO.loadByProject1(projectID), fallback);*/
 	}
 	
 	
@@ -1715,7 +1713,8 @@ public class ProjectConfigBL {
 			try {
 				defaultIssueType = Integer.valueOf(strDefaultIssueType);
 			} catch (Exception e) {
-				LOGGER.warn("Converting the default issue type " + strDefaultIssueType + " for project " + projectID + " to integer failed with " + e.getMessage(), e);
+				LOGGER.warn("Converting the default issue type " + strDefaultIssueType + " for project " + projectID + " to integer failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		return getDefaultIfSpecifiedAndExists(defaultIssueType, 
@@ -1736,7 +1735,8 @@ public class ProjectConfigBL {
 			try {
 				defaultPriority = Integer.valueOf(strDefaultPriority);
 			} catch (Exception e) {
-				LOGGER.warn("Converting the default priority " + strDefaultPriority + " for project " + projectID + " to integer failed with " + e.getMessage(), e);
+				LOGGER.warn("Converting the default priority " + strDefaultPriority + " for project " + projectID + " to integer failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		return getDefaultIfSpecifiedAndExists(defaultPriority,
@@ -1756,7 +1756,8 @@ public class ProjectConfigBL {
 			try {
 				defaultSeverity = Integer.valueOf(strDefaultSeverity);
 			} catch (Exception e) {
-				LOGGER.warn("Converting the default severity " + strDefaultSeverity + " for project " + projectID + " to integer failed with " + e.getMessage(), e);
+				LOGGER.warn("Converting the default severity " + strDefaultSeverity + " for project " + projectID + " to integer failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		boolean fallback = false;

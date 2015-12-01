@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -163,7 +163,6 @@ public class ReportBeans implements Serializable {
 		Map<Integer, ReportBean> reportBeansMap = new HashMap<Integer, ReportBean>();
 		reportBeansMap.putAll(originalReportBeans.getReportBeansMap());
 		//projectID might overwrite itemID!!!
-		//reportBeansMap.put(projectBean.getObjectID(), projectReportBean);
 		ReportBeans reportBeansResult =  new ReportBeans();
 		reportBeansResult.setReportBeansFirstLevel(firstLevelItems);
 		reportBeansResult.setReportBeansFlat(reportBeansFlat);
@@ -241,17 +240,10 @@ public class ReportBeans implements Serializable {
 	 * @return 
 	 */
 	public List<ReportBean> getItems() {
-		//if (groupingActive) {
 			//all ReportBeans are included but only those with inGroupedList set to true will be shown:
 			//needed because the grouping limit rows will be shown in the iteration for the ReportBeans
 			//and if the ReportBeans are collapsed (not shown) for a group then the grouping limit rows would be also absent
 			return reportBeansFlat;
-		/*} else {
-			List resultList = new ArrayList(10);
-			//make the flat list: the first level reportBeans and the expanded children 
-			ReportBeansBL.addChildrenToFlatList(resultList, reportBeansFirstLevel, false);
-			return resultList;
-		}*/
 	}
 	
 	/**
@@ -523,9 +515,7 @@ public class ReportBeans implements Serializable {
 		//get the limits but just when not already set
 		//uncomment the if when groupingLimits of the new ReportBean is given as parameter
 		//from the old ReportBean to avoid recalculating of it in case of manual expand/collapse 
-		//if (this.groupingLimits==null) {
 		this.groupingLimits = ReportGroupBL.populateGroupingLimits(this, groupByList, treeFieldsToChildToParentMap, treeFieldsToIDToLabelMap, treeFieldsToSortOrderMap, groupOtherExpandCollapse, locale);
-		//}
 		
 		List<ReportBean> newReportBeansFlat = new LinkedList<ReportBean>();
 		//gather the report beans form the same group
@@ -583,7 +573,6 @@ public class ReportBeans implements Serializable {
 			List<GroupLimitBean> groupingLimitsList = groupingLimits.get(previousGroupLimitWorkItemID);
 			if (groupingLimitsList!=null && !groupingLimitsList.isEmpty()) {
 				GroupLimitBean groupLimitBean = groupingLimitsList.get(groupingLimitsList.size()-1);
-				//groupLimitBean.setNoOfChildren(reportBeansFirstLevel.size());
 				groupLimitBean.setReportBeans(reportBeansFirstLevel);
 			}
 		}		

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -56,6 +56,7 @@ public class LayoutColumnsAction extends ActionSupport implements Preparable, Se
 	private Integer toIdx;
 	private Map<String,Boolean> selectedColumnsMap;
 
+	@Override
 	public void prepare() throws Exception {
 		personBean = (TPersonBean) session.get(Constants.USER_KEY);
 		locale=(Locale) session.get(Constants.LOCALE_KEY);
@@ -65,6 +66,7 @@ public class LayoutColumnsAction extends ActionSupport implements Preparable, Se
 	 * Loads all columns to use in layout
 	 * @return
 	 */
+	@Override
 	public String execute() {
 		List<ChooseColumnTO> chooseColumns = LayoutColumnsBL.getAllColumns(personBean, locale, filterType, filterID, includeLongFields);
 		JSONUtility.encodeJSON(servletResponse, LayoutColumnsJSON.encodeAllColumns(chooseColumns));
@@ -105,10 +107,12 @@ public class LayoutColumnsAction extends ActionSupport implements Preparable, Se
 		return null;
 	}
 
+	@Override
 	public void setSession(Map<String, Object> stringObjectMap) {
 		this.session=stringObjectMap;
 	}
 
+	@Override
 	public void setServletResponse(HttpServletResponse servletResponse) {
 		this.servletResponse = servletResponse;
 	}

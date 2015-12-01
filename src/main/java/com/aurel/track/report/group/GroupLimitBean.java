@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -65,7 +65,6 @@ public class GroupLimitBean implements Serializable {
 	private Integer treeSortOrder = null;
 	
 	public static int FIRST_LEVEL_DEPTH = 0;
-	//private GroupLimitBean parent; 
 	
 	public GroupLimitBean() {
 		super();
@@ -143,7 +142,6 @@ public class GroupLimitBean implements Serializable {
 	 */
 	public void setParent(GroupLimitBean parent) {
 		if (parent!=null) {
-			//this.parent = parent;		
 			List<GroupLimitBean> subgroups = parent.getSubgroups();
 			if (subgroups==null) {
 				subgroups = new ArrayList<GroupLimitBean>();
@@ -159,7 +157,6 @@ public class GroupLimitBean implements Serializable {
 	 */
 	public void setTreeParent(GroupLimitBean treeParent) {
 		if (treeParent!=null) {
-			//this.parent = parent;		
 			List<GroupLimitBean> treeSubgroups = treeParent.getTreeSubgroups();
 			if (treeSubgroups==null) {
 				treeSubgroups = new ArrayList<GroupLimitBean>();

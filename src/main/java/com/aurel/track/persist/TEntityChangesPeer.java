@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -53,6 +53,7 @@ public class TEntityChangesPeer
 	 * @param changeTypes
 	 * @return
 	 */
+	@Override
 	public List<TEntityChangesBean> loadByClusterNodeAndChangeTypes(Integer clusterNodeID, int[] changeTypes) {
 		Criteria crit = new Criteria();
 		crit.add(CLUSTERNODE, clusterNodeID);
@@ -60,7 +61,7 @@ public class TEntityChangesPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch(Exception e) {
-			LOGGER.error("Loading entity changes by cluster node " + clusterNodeID +  " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading entity changes by cluster node " + clusterNodeID +  " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -73,6 +74,7 @@ public class TEntityChangesPeer
 	 * @param changeType
 	 * @return
 	 */
+	@Override
 	public List<TEntityChangesBean> loadByClusterNodeEntityTypeListChangeType(Integer clusterNode, Integer entityType, Integer list, int changeType) {
 		Criteria crit = new Criteria();
 		crit.add(CLUSTERNODE, clusterNode);
@@ -86,7 +88,7 @@ public class TEntityChangesPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch(Exception e) {
-			LOGGER.error("Loading entity changes by cluster node " + clusterNode +  " entityType " + entityType + " list " + list + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading entity changes by cluster node " + clusterNode +  " entityType " + entityType + " list " + list + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -100,6 +102,7 @@ public class TEntityChangesPeer
 	 * @param changeTypes
 	 * @return
 	 */
+	@Override
 	public List<TEntityChangesBean> loadByClusterNodeEntityIDEntityTypeListChangeTypes(Integer clusterNode, Integer entityID, Integer entityType, Integer list, int[] changeTypes) {
 		Criteria crit = new Criteria();
 		if (clusterNode==null) {
@@ -117,7 +120,7 @@ public class TEntityChangesPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch(Exception e) {
-			LOGGER.error("Loading entity changes by cluster node " + clusterNode +  " entityType " + entityType + " list " + list + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading entity changes by cluster node " + clusterNode +  " entityType " + entityType + " list " + list + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -131,20 +134,6 @@ public class TEntityChangesPeer
 	 * @param changeType
 	 * @return
 	 */
-	/*public List<TEntityChangesBean> loadByClusterNodeEntityIDEntityTypeListChangeType(Integer clusterNode, Integer entityID, Integer entityType, Integer list, int changeType) {
-		Criteria crit = new Criteria();
-		crit.add(CLUSTERNODE, clusterNode);
-		crit.add(ENTITYKEY, entityID);
-		crit.add(ENTITYTYPE, entityType);
-		crit.add(LIST, list);
-		crit.add(CHANGETYPE, changeType);
-		try {
-			return convertTorqueListToBeanList(doSelect(crit));
-		} catch(Exception e) {
-			LOGGER.error("Loading entity changes by cluster node " + clusterNode +  " entityType " + entityType + " list " + list + " failed with " + e.getMessage(), e);
-			return null;
-		}
-	}*/
 	
 	/**
 	 * Loads the entity changes by entityType, listID, entityID and changeType
@@ -154,23 +143,6 @@ public class TEntityChangesPeer
 	 * @param changeType
 	 * @return
 	 */
-	/*public List<TEntityChangesBean> loadByEntityTypeListEntityIDChangeType(int entityType, Integer listID, Integer entityID, int changeType) {
-		Criteria crit = new Criteria();
-		crit.add(ENTITYTYPE, entityType);
-		if (listID==null) {
-			crit.add(LIST, (Integer)null, Criteria.ISNULL);
-		} else {
-			crit.add(LIST, listID);
-		}
-		crit.add(ENTITYKEY, entityID);
-		crit.add(CHANGETYPE, changeType);
-		try {
-			return convertTorqueListToBeanList(doSelect(crit));
-		} catch(Exception e) {
-			LOGGER.error("Loading entity changes by entityType " + entityType + " list " + listID + " entityID " + entityID + " changeType " + changeType + " failed with " + e.getMessage(), e);
-			return null;
-		}
-	}*/
 	
 	/**
 	 * Loads the entity changes by entityType, entityID and changeType
@@ -179,24 +151,13 @@ public class TEntityChangesPeer
 	 * @param changeType
 	 * @return
 	 */
-	/*public List<TEntityChangesBean> loadByEntityTypeEntityIDChangeType(int entityType, Integer entityID, int changeType) {
-		Criteria crit = new Criteria();
-		crit.add(ENTITYTYPE, entityType);
-		crit.add(ENTITYKEY, entityID);
-		crit.add(CHANGETYPE, changeType);
-		try {
-			return convertTorqueListToBeanList(doSelect(crit));
-		} catch(Exception e) {
-			LOGGER.error("Loading entity changes by entityType " + entityType + " entityID " + entityID + " changeType " + changeType + " failed with " + e.getMessage(), e);
-			return null;
-		}
-	}*/
 	
 	/**
 	 * Loads all entity changes without a cluster node
 	 * @param changeTypes
 	 * @return 
 	 */
+	@Override
 	public List<TEntityChangesBean> loadWithoutClusterNodeByChangeTypes(int[] changeTypes) {
 		Criteria crit = new Criteria();
 		crit.add(CLUSTERNODE, (Object)null, Criteria.ISNULL);
@@ -204,7 +165,7 @@ public class TEntityChangesPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch(Exception e) {
-			LOGGER.error("Loading entity changes by missing cluster node failed with " + e.getMessage(), e);
+			LOGGER.error("Loading entity changes by missing cluster node failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -213,6 +174,7 @@ public class TEntityChangesPeer
 	 * Loads all entity changes without a cluster node
 	 * @return 
 	 */
+	@Override
 	public List<TEntityChangesBean> loadWithoutClusterNodeReindex() {
 		Criteria crit = new Criteria();
 		crit.add(CLUSTERNODE, (Object)null, Criteria.ISNULL);
@@ -220,7 +182,7 @@ public class TEntityChangesPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch(Exception e) {
-			LOGGER.error("Loading entity changes by missing cluster node failed with " + e.getMessage(), e);
+			LOGGER.error("Loading entity changes by missing cluster node failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -230,6 +192,7 @@ public class TEntityChangesPeer
 	 * @param clusterNodeID
 	 * @return
 	 */
+	@Override
 	public List<TEntityChangesBean> loadByClusterNodeReindex(Integer clusterNodeID) {
 		Criteria crit = new Criteria();
 		crit.add(CLUSTERNODE, clusterNodeID);
@@ -237,7 +200,7 @@ public class TEntityChangesPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch(Exception e) {
-			LOGGER.error("Loading entity changes by missing cluster node failed with " + e.getMessage(), e);
+			LOGGER.error("Loading entity changes by missing cluster node failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -247,6 +210,7 @@ public class TEntityChangesPeer
 	 * @param entityChangesBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TEntityChangesBean entityChangesBean) {
 		TEntityChanges tEntityChange;
 		try {
@@ -254,7 +218,7 @@ public class TEntityChangesPeer
 			tEntityChange.save();
 			return tEntityChange.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of the entity change failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of the entity change failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -267,6 +231,7 @@ public class TEntityChangesPeer
 	 * @param list
 	 * @param changeType
 	 */
+	@Override
 	public void deleteByClusterNodeEntityIDEntityTypeListChangeTypes(Integer clusterNodeID, Integer entityID, Integer entityType, Integer list, int changeType) {
 		Criteria crit = new Criteria();
 		if (clusterNodeID!=null) {
@@ -287,7 +252,7 @@ public class TEntityChangesPeer
 		try {
 			doDelete(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Deleting the entity change by cluster node " + clusterNodeID +  " failed with " + e.getMessage(), e);
+			LOGGER.error("Deleting the entity change by cluster node " + clusterNodeID +  " failed with " + e.getMessage());
 		}
 	}
 	
@@ -297,6 +262,7 @@ public class TEntityChangesPeer
 	 * @param changeTypes
 	 * @return
 	 */
+	@Override
 	public void deleteByClusterNodeChangeTypes(Integer clusterNodeID, int[] changeTypes) {
 		Criteria crit = new Criteria();
 		crit.add(CLUSTERNODE, clusterNodeID);
@@ -304,7 +270,7 @@ public class TEntityChangesPeer
 		try {
 			doDelete(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Deleting the entity change by cluster node " + clusterNodeID +  " failed with " + e.getMessage(), e);
+			LOGGER.error("Deleting the entity change by cluster node " + clusterNodeID +  " failed with " + e.getMessage());
 		}
 	}
 	
@@ -313,6 +279,7 @@ public class TEntityChangesPeer
 	 * @param changeTypes
 	 * @return
 	 */
+	@Override
 	public void deleteByChangeTypesWithoutClusterNode(int[] changeTypes) {
 		Criteria crit = new Criteria();
 		crit.add(CLUSTERNODE, (Object)null, Criteria.ISNULL);
@@ -320,7 +287,7 @@ public class TEntityChangesPeer
 		try {
 			doDelete(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Deleting the entity change by changeTypes " + changeTypes.length +  " failed with " + e.getMessage(), e);
+			LOGGER.error("Deleting the entity change by changeTypes " + changeTypes.length +  " failed with " + e.getMessage());
 		}
 	}
 	
@@ -329,6 +296,7 @@ public class TEntityChangesPeer
 	 * @param clusterNodeID
 	 * @return
 	 */
+	@Override
 	public void deleteReindexByClusterNode(Integer clusterNodeID) {
 		Criteria crit = new Criteria();
 		crit.add(CLUSTERNODE, clusterNodeID);
@@ -336,13 +304,14 @@ public class TEntityChangesPeer
 		try {
 			doDelete(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Deleting the entity change by cluster node " + clusterNodeID +  " failed with " + e.getMessage(), e);
+			LOGGER.error("Deleting the entity change by cluster node " + clusterNodeID +  " failed with " + e.getMessage());
 		}
 	}
 	
 	/**
 	 * Delete the entities without a cluster node
 	 */
+	@Override
 	public void deleteReindexWithoutClusterNode() {
 		Criteria crit = new Criteria();
 		crit.add(CLUSTERNODE, (Object)null, Criteria.ISNULL);
@@ -350,7 +319,7 @@ public class TEntityChangesPeer
 		try {
 			doDelete(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Deleting the entity change for master node failed with " + e.getMessage(), e);
+			LOGGER.error("Deleting the entity change for master node failed with " + e.getMessage());
 		}
 	}
 	

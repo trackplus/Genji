@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -34,28 +34,31 @@ Ext.define('com.trackplus.util.MultipleSelectPicker',{
 	createStore:function(){
 		var me=this;
 		return Ext.create('Ext.data.Store', {
-				data	:(me.data==null?[]:me.data),
+				data	:(CWHF.isNull(me.getOptions())?[]:me.getOptions()),
 				fields	: [{name:'id', type:'int',useNull:true}, {name:'label', type:'string'},{name:'icon', type:'string'},{name:'iconCls', type:'string'}],
 				autoLoad: false
 		});
 	},
-	updateData:function(data){
+	updateMyOptions:function(options){
 		var me=this;
-		me.data=data;
-		if(me.store!=null){
-			me.store.loadData.call(me.store,data,false);
+		me.setOptions(options);
+		if(me.store){
+			me.store.loadData.call(me.store,options,false);
 		}
 	},
 	createBoundList:function(){
 		var me=this;
 		var tpl='';
-		if(me.multiSelect==true){
+
+		if(me.getMultiSelect()===true){
 			tpl+='<div class="x-combo-list-item"><img src="' + Ext.BLANK_IMAGE_URL + '" class="chkCombo-default-icon chkCombo" /> ';
 		}
-		if(me.iconUrlPrefix!=null){
-			var urlStr=me.iconUrlPrefix+'{'+me.valueField+'}';
+		var iconUrlPrefix =me.getIconUrlPrefix();
+		var useIconCls=me.getUseIconCls();
+		if(iconUrlPrefix){
+			var urlStr=iconUrlPrefix+'{'+me.valueField+'}';
 			tpl+='<img  style="width:16px;height:16px;vertical-align: bottom; margin-bottom: 2px;margin-right: 5px;" src="'+urlStr+'"/>';
-		}else if(me.useIconCls){
+		}else if(useIconCls){
 			tpl+='<img  style="width:16px;height:16px;vertical-align: bottom; margin-bottom: 2px;margin-right: 5px;" src="data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" class="{iconCls}"/>';
 		}
 		tpl+='{'+ me.displayField+'} </div>';
@@ -94,7 +97,7 @@ Ext.define('com.trackplus.util.MultipleSelectPicker',{
 	},
 	onListBeforeSelect:function(){
 		var me=this;
-		if(me.maxSelectionCount!=null&&me.maxSelectionCount>0){
+		if(me.maxSelectionCount&&me.maxSelectionCount>0){
 			var selectedIssues=me.getSelectedItemsCount();
 			return selectedIssues<me.maxSelectionCount;
 		}
@@ -105,7 +108,7 @@ Ext.define('com.trackplus.util.MultipleSelectPicker',{
 	},
 	findRecord: function(field, value) {
 		var me=this;
-		if(me.store==null){
+		if(CWHF.isNull(me.store)){
 			me.store=me.createStore();
 		}
 		var ds = this.store,
@@ -141,14 +144,14 @@ Ext.define('com.trackplus.util.MultipleSelectPicker',{
 	},
 	clearSelection:function(){
 		var me=this;
-        if (me.boundList!=null) {
+        if (me.boundList) {
 		    me.boundList.getSelectionModel().deselectAll(true);
         }
 		me.setValue(null);
 	},
 	selectAll:function(){
 		var me=this;
-		if (me.boundList!=null) {
+		if (me.boundList) {
 			me.boundList.getSelectionModel().selectAll();
 		}
 		//me.setValue(null);
@@ -176,7 +179,7 @@ Ext.define('com.trackplus.util.MultipleSelectPicker',{
 				}
 			}
 		}
-		me.picker.doLayout();
+		me.picker.updateLayout();
 	},
 	clearFilter: function () {
 		var me = this;

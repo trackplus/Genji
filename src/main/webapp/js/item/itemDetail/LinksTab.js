@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -39,7 +39,7 @@ Ext.define('com.aurel.trackplus.itemDetail.LinksTab',{
 	initComponent : function(){
 		var me = this;
 		var linkNumber=0;
-		if(me.jsonData.linkNumber!=null){
+		if(me.jsonData.linkNumber){
 			linkNumber=me.jsonData.linkNumber;
 		}
 		me.title=getText('item.printItem.lbl.tab.links')+" ("+linkNumber+")";
@@ -55,7 +55,7 @@ Ext.define('com.aurel.trackplus.itemDetail.LinksTab',{
 	},
 	createLinkConfig:function(){
 		var me=this;
-		if(me.jsonData!=null){
+		if(me.jsonData){
 			me.readOnly=me.jsonData.readOnly;
 		}
 		var gridConfig=new com.trackplus.itemDetail.GridConfig();
@@ -131,7 +131,7 @@ Ext.define('com.aurel.trackplus.itemDetail.LinksTab',{
 			}
 		});
 		gridConfig.updateColCfg=function(colCfg,layout,index){
-			if(layout.dataIndex=='itemID'||layout.dataIndex=='itemTitle'){
+			if(layout.dataIndex==='itemID'||layout.dataIndex==='itemTitle'){
 				colCfg.xtype='linkcolumn';
 				colCfg.handler=me.clickOnLinkItem;
 				colCfg.scope=me;
@@ -166,23 +166,23 @@ Ext.define('com.aurel.trackplus.itemDetail.LinksTab',{
 	 */
 	onSelectionChange: function(sm, selections) {
 		var me=this;
-		if(selections==null||selections.length==0){
+		if(CWHF.isNull(selections)||selections.length===0){
 			me.btnDeleteLink.setDisabled(true);
 			me.btnEditLink.setDisabled(true);
 			me.btnUpLink.setDisabled(true);
 			me.btnDownLink.setDisabled(true);
 		}else{
-			if(selections.length==1) {
+			if(selections.length===1) {
 				var rowData=selections[0].data;
 				var editable = rowData.editable;
 				me.btnEditLink.setDisabled(!editable);
 				me.btnDeleteLink.setDisabled(!editable);
 				var grid = me.gridConfig.grid;
 				var store = grid.getStore();
-				if (store!=null) {
+				if (store) {
 					//the records are not equal after reloading the store, so it is tested for id equality
-					me.btnDownLink.setDisabled(rowData.id==store.last().data.id || !editable);
-					me.btnUpLink.setDisabled(rowData.id==store.first().data.id || !editable);
+					me.btnDownLink.setDisabled(rowData.id===store.last().data.id || !editable);
+					me.btnUpLink.setDisabled(rowData.id===store.first().data.id || !editable);
 				}
 			}else{
 				me.btnEditLink.setDisabled(true);
@@ -196,12 +196,12 @@ Ext.define('com.aurel.trackplus.itemDetail.LinksTab',{
 				for(var i=0;i<selections.length;i++){
 					var record = selections[i];
 					var rowData=record.data;
-					if (rowData.editable==true) {
+					if (rowData.editable===true) {
 						enableDelete=true;
-						if (rowData.id==store.first().data.id) {
+						if (rowData.id===store.first().data.id) {
 							enableMoveUp = false;
 						}
-						if (rowData.id==store.last().data.id) {
+						if (rowData.id===store.last().data.id) {
 							enableMoveDown = false;
 						}
 						//break;
@@ -223,7 +223,7 @@ Ext.define('com.aurel.trackplus.itemDetail.LinksTab',{
 		var ids=null;
 		var grid = me.gridConfig.grid;
 		var selections=grid.getSelectionModel().getSelection();
-		if (selections!=null && selections.length>0) {
+		if (selections && selections.length>0) {
 			ids=[];
 			for(var i=0;i<selections.length;i++){
 				ids.push(selections[i].data["id"]);
@@ -241,9 +241,9 @@ Ext.define('com.aurel.trackplus.itemDetail.LinksTab',{
 		var me=this;
 		me.cmbLinkType = CWHF.createCombo("item.tabs.itemLink.lbl.thisIssue", "linkTypeWithDirection",
 			{labelWidth:150, anchor:'100%', idType:"string"}, {select:{fn:me.selectLinkType, scope:me, linkID:linkID, workItemID:me.workItemID}});
-		me.txtIssueNo = CWHF.createTextField(null, "linkedNumber", {width: 100,margin:'0 5 0 0', readOnly:true/*, allowBlank:false*/});
-		me.hiddenIssueNo = CWHF.createHiddenField("linkedWorkItemID");
-		me.txtSynopsis = CWHF.createTextField(null, "linkedWorkItemTitle", {margin:'0 10 0 0', readOnly:true, columnWidth:1/*, allowBlank:false*/});
+		me.txtIssueNo = CWHF.createTextField(null, "linkedNumber", {itemId:'linkedNumber', width: 100,margin:'0 5 0 0', readOnly:true/*, allowBlank:false*/});
+		me.hiddenIssueNo = CWHF.createHiddenField("linkedWorkItemID",{itemId:"linkedWorkItemID"});
+		me.txtSynopsis = CWHF.createTextField(null, "linkedWorkItemTitle", {itemId:'linkedWorkItemTitle', margin:'0 10 0 0', readOnly:true, columnWidth:1/*, allowBlank:false*/});
 		me.txtDescription = CWHF.createTextAreaField("item.tabs.itemLink.lbl.comment", "description", {height:125, anchor:'100%', labelWidth:150});
 		var btnSearch={
 			xtype: 'button',text:getText('common.btn.search'),
@@ -252,7 +252,7 @@ Ext.define('com.aurel.trackplus.itemDetail.LinksTab',{
 			}
 		};
 		var urlStr= 'itemLink!saveItemLink.action';
-		if(linkID!=null){
+		if(linkID){
 			urlStr=urlStr+'?linkID='+linkID;
 		}
 		me.formPanel=Ext.create('Ext.form.Panel', {
@@ -364,21 +364,21 @@ Ext.define('com.aurel.trackplus.itemDetail.LinksTab',{
 	 */
 	replaceSpecificPart: function(panel, specificLinkTypeClass, specificData) {
 		var specificPart = panel.getComponent("specificPart");
-		if (specificPart!=null) {
+		if (specificPart) {
 			specificPart.setDisabled(true);
 			panel.remove(specificPart, true);
 		}
-		if (specificLinkTypeClass!=null) {
+		if (specificLinkTypeClass) {
 			var specificPart = Ext.create(specificLinkTypeClass,{
 				margin:'0 5 5 0'
 			});
 			//specificItem.setTitle(getText('admin.customize.field.config.detail.lbl.specificConfig'));
-			if (specificPart!=null) {
+			if (specificPart) {
 				//panel.add(specificItem);
 				panel.insert(2, specificPart);
 				//specificData["labelWidth"] = 100;
 				specificPart.onDataReady(specificData);
-				panel.doLayout();
+				panel.updateLayout();
 			}
 		}
 	},
@@ -386,15 +386,15 @@ Ext.define('com.aurel.trackplus.itemDetail.LinksTab',{
 	editLink:function(){
 		var me=this;
 		var selections=me.gridConfig.grid.getSelectionModel().getSelection();
-		if(selections==null){
+		if(CWHF.isNull(selections)){
 			return;
 		}
 		var rowData=selections[0].data;
 		var linkID=null;
-		if(rowData!=null){
+		if(rowData){
 			linkID=rowData.id;
 		}
-		if(rowData.editable==false){
+		if(rowData.editable===false){
 			return;
 		}
 		var dialogCfg= new com.trackplus.itemDetail.DialogConfig(me.workItemID,me.projectID,me.issueTypeID);
@@ -432,7 +432,7 @@ Ext.define('com.aurel.trackplus.itemDetail.LinksTab',{
 		};
 		dialogCfg.failureHandler=function(form, action){
 			var violationError = action.result.errors['itemov.ganttView.dependency.violation'];
-			if(violationError != null || violationError != undefined) {
+			if(violationError  || violationError !== undefined) {
 				var title = getText("itemov.ganttView.dependency.violationTitle");
 				Ext.Msg.show({
 					title: title,
@@ -442,7 +442,7 @@ Ext.define('com.aurel.trackplus.itemDetail.LinksTab',{
 				});
 			}
 			var msg=action.result.errorMessage;
-			if(msg==null||msg==''){
+			if(CWHF.isNull(msg)||msg===''){
 				msg=getText('common.err.failure.validate');
 			}
 			CWHF.showMsgError(msg);
@@ -452,11 +452,11 @@ Ext.define('com.aurel.trackplus.itemDetail.LinksTab',{
 
 	onGridDrop: function(node, data, dropRec, dropPosition) {
 		var before = false;
-		if (dropPosition=="before") {
+		if (dropPosition==="before") {
 			before = true;
 		}
 		var draggedLinkIDs = this.getSelectedIDs();
-		if (draggedLinkIDs!=null) {
+		if (draggedLinkIDs) {
 			var params = {workItemID: this.workItemID, draggedLinkIDs:draggedLinkIDs.join(), droppedToLinkID:dropRec.get("id"), before:before};
 			this.onOrderChange("itemLink!droppedNear.action", params);
 		}
@@ -467,7 +467,7 @@ Ext.define('com.aurel.trackplus.itemDetail.LinksTab',{
 	 */
 	onMoveUpGridRow: function() {
 		var draggedLinkIDs = this.getSelectedIDs();
-		if (draggedLinkIDs!=null) {
+		if (draggedLinkIDs) {
 			this.onOrderChange("itemLink!moveUp.action", {workItemID: this.workItemID, draggedLinkIDs:draggedLinkIDs.join()});
 		}
 	},
@@ -477,7 +477,7 @@ Ext.define('com.aurel.trackplus.itemDetail.LinksTab',{
 	 */
 	onMoveDownGridRow: function() {
 		var draggedLinkIDs = this.getSelectedIDs();
-		if (draggedLinkIDs!=null) {
+		if (draggedLinkIDs) {
 			this.onOrderChange("itemLink!moveDown.action", {workItemID: this.workItemID, draggedLinkIDs:draggedLinkIDs.join()});
 		}
 	},
@@ -495,11 +495,11 @@ Ext.define('com.aurel.trackplus.itemDetail.LinksTab',{
 				if (responseJson.success !== true) {
 					Ext.MessageBox.alert(this.failureTitle, responseJson.errorMessage);
 				}
-				if (this.workItemID!=null) {
+				if (this.workItemID) {
 					this.keepSelection = true;
 				}
 				this.refresh.call(this);
-				if (this.workItemID!=null) {
+				if (this.workItemID) {
 					this.keepSelection = false;
 				}
 			},

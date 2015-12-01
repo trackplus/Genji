@@ -18,7 +18,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* $Id: build-genji.gradle 1574 2015-10-09 15:16:04Z friedric $ */
+/* $Id: build-genji.gradle 1594 2015-10-13 13:35:54Z friedric $ */
 
 
 import java.util.Properties;
@@ -239,7 +239,7 @@ dependencies {
 sourceSets {
 	main {
 		resources {
-			srcDirs = ["src/main/java", "src/main/resources"]
+			srcDirs = ["src/main/java", "src/main/resources", "src/generated/resources"]
 		}
 	}
 }
@@ -475,7 +475,8 @@ def File combineJs() {
 minifyJs {
 	mustRunAfter clean
 	source = combineJs() //file(project.webAppDir.toString()+'/js/trackplus-max.js');
-	dest = file(project.webAppDir.toString()+'/js/trackplus.js');
+	// mkdir (projectDir.toString()+'/src/generated/webapp/js');
+	dest = file(projectDir.toString()+'/src/generated/webapp/js/trackplus.js');
 	closure {
 		warningLevel = 'DEFAULT'
 		compilerOptions = ['languageIn':"ECMASCRIPT5"];
@@ -491,6 +492,8 @@ compileJava { mustRunAfter minifyJs // mustRunAfter jasper
 war {
 	zip64 false
 	duplicatesStrategy DuplicatesStrategy.EXCLUDE
+	from 'src/generated/webapp'
+	from ('src/generated/resources') { into '/WEB-INF/classes' }
 	doFirst {
 		excludes.each { String path ->
 			rootSpec.exclude(path)
@@ -759,15 +762,15 @@ task copyScriptsToDoc << {
 }
 
 task distSrc (type:Zip) {
-	    archiveName 'genji-'+project.ext.xversion+'-src.zip'
+		archiveName 'genji-'+project.ext.xversion+'-src.zip'
 		destinationDir projectDir
-        classifier = 'src'
-        from projectDir
+		classifier = 'src'
+		from projectDir
 
-        include 'build.gradle'
-        include 'Version.properties'
-        include 'docResources/**'
-        include 'docs/**'
-        include 'src/**'
+		include 'build.gradle'
+		include 'Version.properties'
+		include 'docResources/**'
+		include 'docs/**'
+		include 'src/**'
 }
 

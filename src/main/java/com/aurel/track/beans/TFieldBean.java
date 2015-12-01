@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -88,6 +88,7 @@ public class TFieldBean
 		return false;
 	}
 	
+	@Override
 	public String getLabel() {
 		return getName();
 	}
@@ -126,6 +127,7 @@ public class TFieldBean
 	 * @param labelBean
 	 * @return
 	 */
+	@Override
 	public Map<String, String> serializeBean() {
 		Map<String, String> attributesMap = new HashMap<String, String>();
 		attributesMap.put("objectID", getObjectID().toString());
@@ -153,6 +155,7 @@ public class TFieldBean
 	 * @param attributes
 	 * @return
 	 */
+	@Override
 	public ISerializableLabelBean deserializeBean(Map<String, String> attributes) {
 		String strObjectID = attributes.get("objectID");
 		if (strObjectID!=null) {
@@ -166,10 +169,6 @@ public class TFieldBean
 		this.setRequired(attributes.get("required"));
 		this.setDescription(attributes.get("description"));
 		//the persons are by field match not yet available
-		/*String strOwner = attributes.get("owner");
-		if (strOwner!=null) {
-			fieldBean.setOwner(new Integer(strOwner));
-		}*/
 		this.setUuid(attributes.get("uuid"));
 		return this;
 	}
@@ -181,6 +180,7 @@ public class TFieldBean
 	 * 						value: map of already mapped external vs. internal objectIDs 
 	 * @return
 	 */
+	@Override
 	public boolean considerAsSame(ISerializableLabelBean serializableLabelBean,
 			Map<String, Map<Integer, Integer>> matchesMap) {
 		if (serializableLabelBean==null) {
@@ -206,16 +206,11 @@ public class TFieldBean
 	 * @param matchesMap
 	 * @return
 	 */
+	@Override
 	public Integer saveBean(ISerializableLabelBean serializableLabelBean,
 			Map<String, Map<Integer, Integer>> matchesMap) {
 		TFieldBean fieldBean = (TFieldBean)serializableLabelBean;
 		//the persons are by field match not yet available
-		/*Integer owner = fieldBean.getOwner();
-		if (owner!=null) {
-			Map<Integer, Integer> personsMap = 
-				matchesMap.get(MergeUtil.mergeKey(SystemFields.PERSON, null));
-			fieldBean.setOwner(personsMap.get(owner));
-		}*/		
 		return FieldBL.save(fieldBean);
 	}
 	

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -52,6 +52,7 @@ public class TListPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TListBean loadByPrimaryKey(Integer objectID) {
 		TList tList = null;
 		try {
@@ -70,6 +71,7 @@ public class TListPeer
 	 * Loads all lists
 	 * @return
 	 */
+	@Override
 	public List<TListBean> loadAll() {
 		Criteria criteria = new Criteria();
 		criteria.addAscendingOrderByColumn(NAME);
@@ -77,7 +79,7 @@ public class TListPeer
 			return convertTorqueListToBeanList(doSelect(criteria));
 		}
 		catch (TorqueException e) {
-			LOGGER.error("Loading the all lists failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the all lists failed with " + e.getMessage());
 			return null;
 		}		
 	}
@@ -87,60 +89,12 @@ public class TListPeer
 	 * @deprecated
 	 * @return
 	 */
-	/*public List loadActivePublicLists() {
-		List activeLists = null;
-		Criteria criteria;
-		criteria = new Criteria();
-		criteria.add(DELETED, (Object)"Y", Criteria.NOT_EQUAL);
-		criteria.add(LISTTYPE, TListBean.LIST_TYPE.CASCADINGCHILD, Criteria.NOT_EQUAL);		
-		Criterion publicRepositoryType = criteria.getNewCriterion(REPOSITORYTYPE, new Integer(TListBean.REPOSITORY_TYPE.PUBLIC), Criteria.EQUAL);
-		Criterion noRepositoryType = criteria.getNewCriterion(REPOSITORYTYPE, (Object)null, Criteria.ISNULL);
-		criteria.add(publicRepositoryType.or(noRepositoryType));		
-		criteria.addAscendingOrderByColumn(NAME);
-		try {
-			activeLists = doSelect(criteria);
-		}
-		catch (TorqueException e) {
-			LOGGER.error("Loading the active lists failed with " + e.getMessage(), e);		
-		}
-		List listBeanList = convertTorqueListToBeanList(activeLists);
-		
-		//sets the has entries flag
-		List activeListsWithEntries = new ArrayList();
-		Set activeSetWithEntries = new HashSet();
-		criteria = new Criteria();
-		criteria.add(DELETED, (Object)"Y", Criteria.NOT_EQUAL);
-		criteria.add(LISTTYPE, TListBean.LIST_TYPE.CASCADINGCHILD, Criteria.NOT_EQUAL);
-		publicRepositoryType = criteria.getNewCriterion(REPOSITORYTYPE, new Integer(TListBean.REPOSITORY_TYPE.PUBLIC), Criteria.EQUAL);
-		noRepositoryType = criteria.getNewCriterion(REPOSITORYTYPE, (Object)null, Criteria.ISNULL);
-		criteria.add(publicRepositoryType.or(noRepositoryType));
-		criteria.addJoin(OBJECTID, TOptionPeer.LIST);
-		criteria.setDistinct();
-		try {
-			activeListsWithEntries = doSelect(criteria);
-		}
-		catch (TorqueException e) {
-			LOGGER.error("Loading the active lists failed with " + e.getMessage(), e);		
-		}
-		Iterator iterator = activeListsWithEntries.iterator();
-		while (iterator.hasNext()) {
-			TList tList = (TList) iterator.next();
-			activeSetWithEntries.add(tList.getObjectID());
-		}
-		
-		iterator = listBeanList.iterator();
-		while (iterator.hasNext()) {
-			TListBean listBean = (TListBean) iterator.next();			
-			listBean.setHasEntries(activeSetWithEntries.contains(listBean.getObjectID()));
-		}		
-		
-		return listBeanList;
-	}*/
 	
 	/**
 	 * Load the public lists 
 	 * @return
 	 */
+	@Override
 	public List<TListBean> loadPublicLists() {
 		Criteria criteria = new Criteria();
 		criteria.add(DELETED, (Object)BooleanFields.TRUE_VALUE, Criteria.NOT_EQUAL);
@@ -152,7 +106,7 @@ public class TListPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the public lists failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the public lists failed with " + e.getMessage());
 			return null;
 		}		
 	}
@@ -163,91 +117,12 @@ public class TListPeer
 	 * @param personID
 	 * @return
 	 */
-	/*public List loadActiveProjectListsByUser(Integer personID) {
-		List listBeanList = new ArrayList();
-		List projectsBeans = DAOFactory.getFactory().getProjectDAO().loadActiveInactiveProjectsByProjectAdmin(personID);
-		List projectIDs = new ArrayList();
-		if (projectsBeans!=null) {
-			Iterator iterator = projectsBeans.iterator();
-			while (iterator.hasNext()) {
-				TProjectBean project = (TProjectBean) iterator.next();
-				projectIDs.add(project.getObjectID());
-			}
-		}
-		if (projectIDs.isEmpty()) {
-			return listBeanList;
-		}
-		
-		List activeLists = null;
-		Criteria criteria;
-		criteria = new Criteria();
-		criteria.add(DELETED, (Object)"Y", Criteria.NOT_EQUAL);
-		criteria.add(LISTTYPE, TListBean.LIST_TYPE.CASCADINGCHILD, Criteria.NOT_EQUAL);
-		criteria.addIn(PROJECT, projectIDs);
-		criteria.add(REPOSITORYTYPE, TListBean.REPOSITORY_TYPE.PROJECT);
-		criteria.addAscendingOrderByColumn(NAME);
-		try {
-			activeLists = doSelect(criteria);
-		}
-		catch (TorqueException e) {
-			LOGGER.error("Loading the active lists failed with " + e.getMessage(), e);		
-		}
-		listBeanList = convertTorqueListToBeanList(activeLists);
-		
-		//sets the has entries flag
-		List activeListsWithEntries = new ArrayList();
-		Set activeSetWithEntries = new HashSet();
-		criteria = new Criteria();
-		criteria.add(DELETED, (Object)"Y", Criteria.NOT_EQUAL);
-		criteria.add(LISTTYPE, TListBean.LIST_TYPE.CASCADINGCHILD, Criteria.NOT_EQUAL);
-		criteria.addIn(PROJECT, projectIDs);
-		criteria.add(REPOSITORYTYPE, TListBean.REPOSITORY_TYPE.PROJECT);
-		criteria.addJoin(OBJECTID, TOptionPeer.LIST);
-		criteria.setDistinct();
-		try {
-			activeListsWithEntries = doSelect(criteria);
-		}
-		catch (TorqueException e) {
-			LOGGER.error("Loading the active lists failed with " + e.getMessage(), e);		
-		}
-		Iterator iterator = activeListsWithEntries.iterator();
-		while (iterator.hasNext()) {
-			TList tList = (TList) iterator.next();
-			activeSetWithEntries.add(tList.getObjectID());
-		}
-		
-		iterator = listBeanList.iterator();
-		while (iterator.hasNext()) {
-			TListBean listBean = (TListBean) iterator.next();			
-			listBean.setHasEntries(activeSetWithEntries.contains(listBean.getObjectID()));
-		}		
-		
-		return listBeanList;
-	}*/
 	
 	/**
 	 * Load the lists for projects
 	 * @param projectIDs
 	 * @return
 	 */
-	/*public List<TListBean> loadProjectLists(List<Integer> projectIDs) {
-		if (projectIDs==null || projectIDs.isEmpty()) {
-			return new ArrayList();
-		}						
-		Criteria criteria = new Criteria();
-		criteria.add(DELETED, (Object)BooleanFields.TRUE_VALUE, Criteria.NOT_EQUAL);
-		criteria.add(LISTTYPE, TListBean.LIST_TYPE.CASCADINGCHILD, Criteria.NOT_EQUAL);
-		criteria.addIn(PROJECT, projectIDs);
-		criteria.add(REPOSITORYTYPE, TListBean.REPOSITORY_TYPE.PROJECT);
-		criteria.addAscendingOrderByColumn(NAME);
-		try {
-			return convertTorqueListToBeanList(doSelect(criteria));
-		}
-		catch (TorqueException e) {
-			LOGGER.error("Loading the project lists failed with " + e.getMessage(), e);
-			return new ArrayList();
-		}
-	}*/
 	
 	/**
 	 * Loads a list by name
@@ -255,6 +130,7 @@ public class TListPeer
 	 * @param repositoryType
 	 * @param project
 	 */
+	@Override
 	public List<TListBean> loadByNameInContext(String name, Integer repositoryType, Integer project) {
 		Criteria crit = new Criteria();
 		crit.add(DELETED, (Object)BooleanFields.TRUE_VALUE, Criteria.NOT_EQUAL);
@@ -280,6 +156,7 @@ public class TListPeer
 	 * @param listBean
 	 * @return the created optionID
 	 */
+	@Override
 	public Integer save(TListBean listBean) {
 		TList tList;		
 		try {
@@ -287,7 +164,7 @@ public class TListPeer
 			tList.save();
 			return tList.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a list failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a list failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -296,6 +173,7 @@ public class TListPeer
 	 * Deletes a list by primary key
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		Criteria crit = new Criteria();
 		crit.add(OBJECTID, objectID);
@@ -304,13 +182,13 @@ public class TListPeer
 		} catch (TorqueException e) {
 			LOGGER.error("Deleting a list by objectID " + objectID + " failed with: " + e);
 		}
-		//ReflectionHelper.delete(deletePeerClasses, deleteFields, objectID);
 	}
 	
 	/**
 	 * Sets the deleted flag
 	 * @param fieldId
 	 */
+	@Override
 	public void setDeleted(Integer objectID, boolean deactivate) {
 		TListBean listBean = loadByPrimaryKey(objectID);
 		if (listBean!=null) {
@@ -333,15 +211,15 @@ public class TListPeer
 	 * @param listID
 	 * @return
 	 */
+	@Override
 	public List<TListBean> getChildLists(Integer listID) {
 		Criteria criteria = new Criteria();
 		criteria.add(PARENTLIST, listID);
-		//criteria.add(DELETED, (Object)BooleanFields.TRUE_VALUE, Criteria.NOT_EQUAL);
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		}
 		catch (TorqueException e) {
-			LOGGER.error("Getting the child lists for list " + listID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the child lists for list " + listID + " failed with " + e.getMessage());
 			return null;
 		}		
 	}
@@ -353,6 +231,7 @@ public class TListPeer
 	 * @param childNumber
 	 * @return
 	 */
+	@Override
 	public TListBean getChildList(Integer parentListID, Integer childNumber) {
 		List childLists = null;
 		Criteria criteria = new Criteria();
@@ -383,6 +262,7 @@ public class TListPeer
 	 * @param type
 	 * @return
 	 */
+	@Override
 	public List<TListBean> getPublicListsOfType(Integer type) {
 		Criteria criteria = new Criteria();
 		criteria.add(LISTTYPE, type);
@@ -393,7 +273,7 @@ public class TListPeer
 			return convertTorqueListToBeanList(doSelect(criteria));
 		}
 		catch (TorqueException e) {
-			LOGGER.error("Getting the of type " + type + " failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the of type " + type + " failed with " + e.getMessage());
 			return null;
 		}		
 	}
@@ -404,6 +284,7 @@ public class TListPeer
 	 * @param type
 	 * @return
 	 */
+	@Override
 	public List<TListBean> getProjectListsOfType(List<Integer> projectIDs, Integer type) {
 		Criteria criteria = new Criteria();
 		criteria.add(LISTTYPE, type);
@@ -415,7 +296,7 @@ public class TListPeer
 			return convertTorqueListToBeanList(doSelect(criteria));
 		}
 		catch (TorqueException e) {
-			LOGGER.error("Getting the of type " + type + " failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the of type " + type + " failed with " + e.getMessage());
 			return null;
 		}		
 	}
@@ -425,6 +306,7 @@ public class TListPeer
 	 * @param listID
 	 * @return
 	 */
+	@Override
 	public boolean isListAssignedToWorkitem(Integer listID) {
 		List childLists = null;
 		Criteria criteria = new Criteria();
@@ -434,7 +316,7 @@ public class TListPeer
 			childLists = doSelect(criteria);
 		}
 		catch (TorqueException e) {
-			LOGGER.error("Is assigned to workitem for list " + listID + " failed with " + e.getMessage(), e);		
+			LOGGER.error("Is assigned to workitem for list " + listID + " failed with " + e.getMessage());		
 		}
 		return (childLists!=null && !childLists.isEmpty());
 	}
@@ -446,6 +328,7 @@ public class TListPeer
 	 * @param optionID
 	 * @return
 	 */
+	@Override
 	public boolean isListAssignedToConfig(Integer listID) {
 		List childLists = null;
 		Criteria criteria = new Criteria();
@@ -455,7 +338,7 @@ public class TListPeer
 			childLists = doSelect(criteria);
 		}
 		catch (TorqueException e) {
-			LOGGER.error("Is assigned to field config for list " + listID + " failed with " + e.getMessage(), e);		
+			LOGGER.error("Is assigned to field config for list " + listID + " failed with " + e.getMessage());		
 		}
 		return (childLists!=null && !childLists.isEmpty());
 	}
@@ -466,6 +349,7 @@ public class TListPeer
 	 * @param whether to include only the not deleted list
 	 * @return
 	 */
+	@Override
 	public List<TListBean> getListsByProject(Integer projectID, boolean onlyNotDeleted) {
 		Criteria criteria = new Criteria();
 		criteria.add(PROJECT, projectID);
@@ -478,7 +362,7 @@ public class TListPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the lists for project " + projectID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the lists for project " + projectID + " failed with " + e.getMessage());
 			return null;
 		}		
 	}
@@ -506,6 +390,7 @@ public class TListPeer
 	 * @param screenID
 	 * @return
 	 */
+	@Override
 	public List<TListBean> loadAllForField(List<Integer> fieldIDs){
 		Criteria crit = new Criteria();
 		crit.addIn(BaseTFieldPeer.OBJECTID, fieldIDs);
@@ -516,7 +401,7 @@ public class TListPeer
 			return convertTorqueListToBeanList(doSelect(crit));
 		}
 		catch(TorqueException e){
-			LOGGER.error("Loading the custom fields failed with:" + e.getMessage(), e);
+			LOGGER.error("Loading the custom fields failed with:" + e.getMessage());
 			return null;
 		}		
 	}
@@ -528,6 +413,7 @@ public class TListPeer
 	 * @param parentID
 	 * @return 
 	 */
+		@Override
 		public List<TListBean> loadByParent(Integer parentID){
 			Criteria crit = new Criteria();
 			if (parentID == null) {
@@ -540,7 +426,7 @@ public class TListPeer
 				return convertTorqueListToBeanList(doSelect(crit));
 			}
 			catch(TorqueException e){
-				LOGGER.error("Loading the custom fields failed with:" + e.getMessage(), e);
+				LOGGER.error("Loading the custom fields failed with:" + e.getMessage());
 				return null;
 			}
 		}
@@ -553,6 +439,7 @@ public class TListPeer
 		 * @param ChildNumber
 		 * @return
 		 */
+		@Override
 		public TListBean loadByAttribute(String name, Integer listType, Integer repositoryType,
 							Integer childNumber){
 			List<TListBean> list = null;
@@ -570,7 +457,7 @@ public class TListPeer
 				else return null;
 			}
 			catch(TorqueException e){
-				LOGGER.error("Loading the custom fields failed with:" + e.getMessage(), e);
+				LOGGER.error("Loading the custom fields failed with:" + e.getMessage());
 				return null;
 			}	
 		}

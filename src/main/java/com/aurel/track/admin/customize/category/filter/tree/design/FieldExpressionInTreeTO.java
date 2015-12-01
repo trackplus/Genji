@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -38,6 +38,8 @@ public class FieldExpressionInTreeTO extends FieldExpressionSimpleTO {
 	private List<IntegerStringBean> fieldsList = new ArrayList<IntegerStringBean>();
 	//the name for the fields combo on the client side (used by submit)	
 	private String fieldName;
+	//the itemId in the ext js client side to find by getComponent() 
+	private String fieldItemId;
 	private boolean withFieldMoment;
 	private Integer fieldMoment;
 	private List<IntegerStringBean> fieldMomentsList = new ArrayList<IntegerStringBean>();
@@ -53,7 +55,9 @@ public class FieldExpressionInTreeTO extends FieldExpressionSimpleTO {
 	
 	private Integer selectedOperation;
 	private List<IntegerStringBean> operationsList = new ArrayList<IntegerStringBean>();	
-	private String operationName;	
+	private String operationName;
+	//the itemId in the ext js client side to find by getComponent() 
+	private String operationItemId;
 	
 	public FieldExpressionInTreeTO() {
 		super();
@@ -145,6 +149,14 @@ public class FieldExpressionInTreeTO extends FieldExpressionSimpleTO {
 		this.fieldName = fieldName;
 	}
 
+	public String getFieldItemId() {
+		return fieldItemId;
+	}
+
+	public void setFieldItemId(String fieldItemId) {
+		this.fieldItemId = fieldItemId;
+	}
+
 	public boolean isWithFieldMoment() {
 		return withFieldMoment;
 	}
@@ -184,5 +196,14 @@ public class FieldExpressionInTreeTO extends FieldExpressionSimpleTO {
 	public void setOperationName(String operationName) {
 		this.operationName = operationName;
 	}
+
+	public String getOperationItemId() {
+		return operationItemId;
+	}
+
+	public void setOperationItemId(String operationItemId) {
+		this.operationItemId = operationItemId;
+	}
+	
 	
 }

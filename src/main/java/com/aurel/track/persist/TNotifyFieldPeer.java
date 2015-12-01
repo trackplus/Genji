@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -55,6 +55,7 @@ public class TNotifyFieldPeer
 	 * @param fieldType  
 	 * @return
 	 */	
+	@Override
 	public List<TNotifyFieldBean> getTriggerFieldsForRaciRole(Integer person, List<Integer> projectIDs, Integer actionType, Integer fieldType) {
 		if (projectIDs==null || projectIDs.isEmpty() || actionType==null) {
 			LOGGER.error("Getting the notification fields for person " + person + 
@@ -88,6 +89,7 @@ public class TNotifyFieldPeer
 	 * @param notifyFieldBean   
 	 * @return
 	 */
+	@Override
 	public Integer save(TNotifyFieldBean notifyFieldBean) {
 		try {
 			TNotifyField tNotifyField = BaseTNotifyField.createTNotifyField(notifyFieldBean);
@@ -106,13 +108,14 @@ public class TNotifyFieldPeer
 	 * @param triggerID 
 	 * @return
 	 */
+	@Override
 	public List<TNotifyFieldBean> getNotifyFieldsForTrigger(Integer triggerID) {
 		Criteria criteria = new Criteria();
 		criteria.add(NOTIFYTRIGGER, triggerID);
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the fields defined in trigger " + triggerID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the fields defined in trigger " + triggerID + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -122,6 +125,7 @@ public class TNotifyFieldPeer
 	 * @param notifyTriggerFieldIDs 
 	 * @return
 	 */
+	@Override
 	public List<TNotifyFieldBean> getNotifyFieldsByKeys(List<Integer> notifyTriggerFieldIDs) {
 		if (notifyTriggerFieldIDs==null || notifyTriggerFieldIDs.isEmpty()) {
 			return new LinkedList<TNotifyFieldBean>();
@@ -131,7 +135,7 @@ public class TNotifyFieldPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the notify fields by ids failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the notify fields by ids failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -141,6 +145,7 @@ public class TNotifyFieldPeer
 	 * @param triggerID 
 	 * @return
 	 */
+	@Override
 	public void deleteByTrigger(Integer triggerID) {
 		if (triggerID==null) {
 			return;
@@ -150,7 +155,7 @@ public class TNotifyFieldPeer
 		try {
 			doDelete(criteria);
 		} catch (TorqueException e) {
-			LOGGER.error("Deleting the previous triggering fields for a trigger failed with " + e.getMessage(), e);
+			LOGGER.error("Deleting the previous triggering fields for a trigger failed with " + e.getMessage());
 		}
 	}
 	
@@ -160,6 +165,7 @@ public class TNotifyFieldPeer
 	 * @param action probably ACTIONTYPE.EDIT_ISSUE 
 	 * @param fieldType probably FIELDTYPE.ISSUE_FIELD
 	 */
+	@Override
 	public void deleteByField(Integer fieldID, int action, int fieldType) {
 		if (fieldID==null) {
 			return;
@@ -171,7 +177,7 @@ public class TNotifyFieldPeer
 		try {
 			doDelete(criteria);
 		} catch (TorqueException e) {
-			LOGGER.error("Deleting the field for triggers failed with " + e.getMessage(), e);
+			LOGGER.error("Deleting the field for triggers failed with " + e.getMessage());
 		}
 	}
 	
@@ -194,7 +200,7 @@ public class TNotifyFieldPeer
 		try {
 			doUpdate(selectCriteria, updateCriteria);
 		} catch (TorqueException e) {
-			LOGGER.error("Deleting the field for triggers failed with " + e.getMessage(), e);
+			LOGGER.error("Deleting the field for triggers failed with " + e.getMessage());
 		}
 	}
 	
@@ -202,6 +208,7 @@ public class TNotifyFieldPeer
 	 * Deletes a trigger field by objectID
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		Criteria crit = new Criteria();
 		crit.add(OBJECTID, objectID);

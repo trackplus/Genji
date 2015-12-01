@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -72,6 +72,7 @@ public class TLinkTypePeer
 	 * @param objectID
 	 * @return 
 	 */
+	@Override
 	public TLinkTypeBean loadByPrimaryKey(Integer objectID) {
 		TLinkType tLinkType = null;
 		try {
@@ -91,6 +92,7 @@ public class TLinkTypePeer
 	 * @param linkTypeID
 	 * @return 
 	 */
+	@Override
 	public boolean hasLinksOfType(Integer linkTypeID) {
 		return ReflectionHelper.hasDependentData(replacePeerClasses, replaceFields, linkTypeID);
 	}
@@ -101,6 +103,7 @@ public class TLinkTypePeer
 	 * @param exceptLinkTypeID
 	 * @return
 	 */
+	@Override
 	public List<TLinkTypeBean> loadByLinkType(String linkTypeClass, Integer exceptLinkTypeID) {
 		Criteria crit = new Criteria();
 		if (exceptLinkTypeID!=null) {
@@ -111,7 +114,7 @@ public class TLinkTypePeer
 			return convertTorqueListToBeanList(doSelect(crit));
 		}
 		catch(Exception e) {
-			LOGGER.error("Loading all linkTypes of type " + linkTypeClass + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all linkTypes of type " + linkTypeClass + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -120,6 +123,7 @@ public class TLinkTypePeer
 	 * Loads all linkTypeBeans
 	 * @return 
 	 */
+	@Override
 	public List<TLinkTypeBean> loadAll() {
 		Criteria crit = new Criteria();
 		crit.addAscendingOrderByColumn(NAME);
@@ -127,7 +131,7 @@ public class TLinkTypePeer
 			return convertTorqueListToBeanList(doSelect(crit));
 		}
 		catch(Exception e) {
-			LOGGER.error("Loading all linkTypes failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all linkTypes failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -137,6 +141,7 @@ public class TLinkTypePeer
 	 * @param linkTypeIDsList
 	 * @return
 	 */
+	@Override
 	public List<TLinkTypeBean> loadByLinkIDs(List<Integer> linkTypeIDsList) {
 		List<TLinkTypeBean> list = new ArrayList<TLinkTypeBean>();
 		if (linkTypeIDsList==null || linkTypeIDsList.isEmpty()) {
@@ -156,7 +161,7 @@ public class TLinkTypePeer
 			try {
 				list.addAll(convertTorqueListToBeanList(doSelect(criteria)));
 			} catch(Exception e) {
-				LOGGER.error("Loading the linktypes for " + linkIDChunk.length +  " failed with " + e.getMessage(), e);}
+				LOGGER.error("Loading the linktypes for " + linkIDChunk.length +  " failed with " + e.getMessage());}
 		}
 		return list;
 	}
@@ -166,13 +171,14 @@ public class TLinkTypePeer
 	 * @param linkTypeBean
 	 * @return the created optionID
 	 */
+	@Override
 	public Integer save(TLinkTypeBean linkTypeBean) {
 		try {
 			TLinkType tLinkType = BaseTLinkType.createTLinkType(linkTypeBean);
 			tLinkType.save();
 			return tLinkType.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a linkType failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a linkType failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -181,6 +187,7 @@ public class TLinkTypePeer
 	 * Deletes a linkTypeBean
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		ReflectionHelper.delete(replacePeerClasses, replaceFields, objectID);
 		deleteLinkType(objectID);
@@ -192,6 +199,7 @@ public class TLinkTypePeer
 	 * @param oldLinkTypeID
 	 * @param newLinkTypeID
 	 */
+	@Override
 	public void replaceAndDelete(Integer oldLinkTypeID, Integer newLinkTypeID) {
 		ReflectionHelper.replace(replacePeerClasses, replaceFields, oldLinkTypeID, newLinkTypeID);
 		deleteLinkType(oldLinkTypeID);

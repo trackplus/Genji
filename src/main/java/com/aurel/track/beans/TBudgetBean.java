@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -56,6 +56,7 @@ public class TBudgetBean
 	private String currency;
 	private String changedByName;
 	
+	@Override
 	public String getLabel() {
 		return getChangeDescription();
 	}
@@ -73,6 +74,7 @@ public class TBudgetBean
 	 * It should be one of the HISTORY_TYPE constants
 	 * @return
 	 */
+	@Override
 	public int getType() {
 		Integer budgetType = getBudgetType();
 		if (budgetType==null || budgetType.equals(BUDGET_TYPE.PLANNED_VALUE)) {
@@ -139,9 +141,11 @@ public class TBudgetBean
 		(getEstimatedCost()==null || getEstimatedCost().doubleValue()==0);
 	}
 	
+	@Override
 	public String getCurrency() {
 		return currency;
 	}
+	@Override
 	public void setCurrency(String currency) {
 		this.currency = currency;
 	}
@@ -150,6 +154,7 @@ public class TBudgetBean
 	 * The name of the person who made the modification on a workItem
 	 * @return
 	 */
+	 @Override
 	 public String getChangedByName() {
 		
 		return changedByName;
@@ -158,6 +163,7 @@ public class TBudgetBean
 	/**
 	 * @param changedByName the changedByName to set
 	 */
+	@Override
 	public void setChangedByName(String changedByName) {
 		this.changedByName = changedByName;
 	}
@@ -165,6 +171,7 @@ public class TBudgetBean
 	/**
 	 *  Get the description of the change
 	 */
+	@Override
 	public String getDescription() {
 		return getChangeDescription();
 	}
@@ -173,6 +180,7 @@ public class TBudgetBean
 	 * Set the description of the change
 	 * @param description
 	 */
+	@Override
 	public void setDescription(String description) {
 		setChangeDescription(description);
 	}
@@ -181,6 +189,7 @@ public class TBudgetBean
 	 * Serialize a label bean to a dom element
 	 * @return
 	 */
+	@Override
 	public Map<String, String> serializeBean() {
 		Map<String, String> attributesMap = new HashMap<String, String>();
 		attributesMap.put("objectID", getObjectID().toString());
@@ -233,6 +242,7 @@ public class TBudgetBean
 	 * @param attributes
 	 * @return
 	 */
+	@Override
 	public TBudgetBean deserializeBean(Map<String, String> attributes) {
 		TBudgetBean budgetBean = new TBudgetBean();
 		String strObjectID = attributes.get("objectID");
@@ -287,6 +297,7 @@ public class TBudgetBean
 	}
 		
 
+	@Override
 	public boolean considerAsSame(ISerializableLabelBean serializableLabelBean,
 			Map<String, Map<Integer, Integer>> matchesMap) {
 		//never same (two budgets are the same only if the uuids are same)
@@ -294,6 +305,7 @@ public class TBudgetBean
 		return false;
 	}
 
+	@Override
 	public Integer saveBean(ISerializableLabelBean serializableLabelBean,
 			Map<String, Map<Integer, Integer>> matchesMap) {
 		TBudgetBean budgetBean = (TBudgetBean)serializableLabelBean;

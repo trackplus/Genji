@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -46,7 +46,6 @@ import com.aurel.track.report.dashboard.ElementWrapper;
  */
 public abstract class AbstractGrouping{
 	
-	//private Map<Integer, TStateBean> statusBeansMap;
 	protected int projectIndex;
 	
 	//Runtime link constants
@@ -60,7 +59,6 @@ public abstract class AbstractGrouping{
 	 * @param statusBeansMap the list<TStateBean> of all status
 	 */
 	public AbstractGrouping(/*Map<Integer, TStateBean> statusBeansMap,*/ int projectIndex){
-		//this.statusBeansMap = statusBeansMap;
 		this.projectIndex = projectIndex;
 	}
 	
@@ -114,10 +112,6 @@ public abstract class AbstractGrouping{
 			lateMap.put(groupByID, countLate);
 			
 			// Add this issue to the list for this labelBean
-			/*String keyInTheListMap=formatKeyInTheListMap(labelBeanID);
-			List issueListForThisGrouping = (List) theListMap.get(keyInTheListMap);
-			issueListForThisGrouping.add(twi.getObjectID());
-			theListMap.put(keyInTheListMap, issueListForThisGrouping);*/
 		}
 		
 		Iterator<ILabelBean> iterator = groupByFieldBeansList.iterator();
@@ -125,9 +119,6 @@ public abstract class AbstractGrouping{
 			ILabelBean groupByBean = iterator.next();
 			Integer groupByID=groupByBean.getObjectID();
 			String localizedLabel =groupByBean.getLabel();
-			/*if(locale!=null && groupByBean instanceof ILocalizedLabelBean){// localize the label
-				localizedLabel=LocalizeUtil.localizeDropDownEntry((ILocalizedLabelBean)groupByBean,locale);
-			}*/
 			Integer count = totalMap.get(groupByID);
 			Integer countLate = lateMap.get(groupByID);
 			if (count != null) {

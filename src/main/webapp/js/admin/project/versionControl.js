@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -25,38 +25,39 @@ com.trackplus.vc={};
 Ext.define("com.trackplus.vc.VersionControlFacade",{
 	extend:'Ext.Base',
 	config: {
-		model:null
+		versionControlFacadeModel:null
 	},
 	view:null,
-	controller:null,
+	vcController:null,
 	constructor : function(config) {
 		var me = this;
 		var config = config || {};
 		me.initialConfig = config;
 		Ext.apply(me, config);
-		me.controller=Ext.create('com.trackplus.vc.VersionControlController',{
-			model:me.model
+		this.initConfig(config);
+		me.vcController=Ext.create('com.trackplus.vc.VersionControlController',{
+			versionControlControllerModel:me.versionControlFacadeModel
 		});
 	},
 	getDetailPanel:function(){
 		var me=this;
-		return me.controller.createView.call(me.controller);
+		return me.vcController.createView.call(me.vcController);
 	},
 	initActions:function(){
-		this.controller.initToolbar.call(this.controller);
+		this.vcController.initToolbar.call(this.vcController);
 	},
 	getToolbarActions:function(){
 		var me=this;
-		return me.controller.getToolbar.call(me.controller);
+		return me.vcController.getToolbar.call(me.vcController);
 	}
 });
 
 Ext.define("com.trackplus.vc.VersionControlController",{
 	extend:'Ext.Base',
 	config: {
-		model:null
+		versionControlControllerModel:null
 	},
-	view:null,
+	vcView:null,
 	lastFormData:null,
 	vcPlugin:null,
 	constructor : function(config) {
@@ -64,32 +65,33 @@ Ext.define("com.trackplus.vc.VersionControlController",{
 		var config = config || {};
 		me.initialConfig = config;
 		Ext.apply(me, config);
+		this.initConfig(config);
 	},
 	createView:function(){
 		var me=this;
-		me.view=Ext.create('com.trackplus.vc.VersionControlView',{
-			model:me.model,
-			controller:me
+		me.vcView=Ext.create('com.trackplus.vc.VersionControlView',{
+			versionControlViewModel:me.versionControlControllerModel,
+			vcController:me
 		});
 		me.addMyListeners();
 		me.loadData.call(me);
-		return me.view;
+		return me.vcView;
 	},
-	getView:function(){
+	getVcView:function(){
 		var me=this;
-		if(me.view==null){
+		if(CWHF.isNull(me.vcView)){
 			me.createView();
 		}
-		return me.view;
+		return me.vcView;
 	},
 	addMyListeners:function(){
 		var me=this;
-		me.view.addListener('changeUseVC',me.changeUseVC,me);
-		me.view.addListener('changeVC',me.changeVC,me);
+		me.vcView.addListener('changeUseVC',me.changeUseVC,me);
+		me.vcView.addListener('changeVC',me.changeVC,me);
 	},
 	getToolbar:function(){
 		var me=this;
-		if(me.actionSave==null){
+		if(CWHF.isNull(me.actionSave)){
 			me.initToolbar();
 		}
 		return [me.actionSave];
@@ -112,34 +114,34 @@ Ext.define("com.trackplus.vc.VersionControlController",{
 		var urlStr="versionControlConfig.action";
 		Ext.Ajax.request({
 			url: urlStr,
-			params:{projectID:+me.model.projectID},
+			params:{projectID:+me.versionControlControllerModel.projectID},
 			disableCaching:true,
 			scope: me,
 			success: function(response){
 				var responseJson = Ext.decode(response.responseText);
 				var data=responseJson.data;
-				me.model=data;
-				me.lastFormData=me.model;
-				me.view.cmbVCPlugins.store.loadData(me.model['vcPluginList']);
-				me.view.cmbVCPlugins.setValue(me.model['vc.versionControlType']);
-				me.view.checkUseVC.setValue(''+me.model['vc.useVersionControl']);
+				me.versionControlControllerModel=data;
+				me.lastFormData=me.versionControlControllerModel;
+				me.vcView.cmbVCPlugins.store.loadData(me.versionControlControllerModel['vcPluginList']);
+				me.vcView.cmbVCPlugins.setValue(me.versionControlControllerModel['vc.versionControlType']);
+				me.vcView.checkUseVC.setValue(''+me.versionControlControllerModel['vc.useVersionControl']);
 			}
 		});
 	},
 	save:function(){
 		var me=this;
-		var urlStr="versionControlConfig!save.action?projectID="+me.model.projectID;
+		var urlStr="versionControlConfig!save.action?projectID="+me.versionControlControllerModel.projectID;
 		borderLayout.setLoading(true);
-		me.view.formPanel.getForm().submit({
+		me.vcView.formPanel.getForm().submit({
 			url:urlStr,
 			params:{
-				'vc.useVersionControl':me.view.checkUseVC.getRawValue(),
-				'vc.versionControlType':me.view.cmbVCPlugins.getValue()
+				'vc.useVersionControl':me.vcView.checkUseVC.getRawValue(),
+				'vc.versionControlType':me.vcView.cmbVCPlugins.getValue()
 			},
 			success: function(form, action) {
 				borderLayout.setLoading(false);
 				var success=action.result.success;
-				if(success==false){
+				if(success===false){
 					me.handleErrors(action.result.errors);
 				}else{
 					CWHF.showMsgInfo(getText('admin.project.versionControl.successSave'));
@@ -153,17 +155,17 @@ Ext.define("com.trackplus.vc.VersionControlController",{
 	},
 	testVC:function(){
 		var me=this;
-		if(!me.view.formPanel.getForm().isValid()){
+		if(!me.vcView.formPanel.getForm().isValid()){
 			CWHF.showMsgError(getText('admin.project.versionControl.errorSave'));
 			return false;
 		}
 		borderLayout.setLoading(true);
-		var urlStr='versionControlConfig!test.action?projectID='+me.model.projectID;
-		me.view.formPanel.getForm().submit({
+		var urlStr='versionControlConfig!test.action?projectID='+me.versionControlControllerModel.projectID;
+		me.vcView.formPanel.getForm().submit({
 			url:urlStr,
 			params:{
-				'vc.useVersionControl':me.view.checkUseVC.getRawValue(),
-				'vc.versionControlType':me.view.cmbVCPlugins.getValue()
+				'vc.useVersionControl':me.vcView.checkUseVC.getRawValue(),
+				'vc.versionControlType':me.vcView.cmbVCPlugins.getValue()
 			},
 			success: function(form, action) {
 				borderLayout.setLoading(false);
@@ -171,7 +173,7 @@ Ext.define("com.trackplus.vc.VersionControlController",{
 			},
 			failure: function(form, action) {
 				borderLayout.setLoading(false);
-				if(action.result!=null&&action.result.errors!=null){
+				if(action.result&&action.result.errors){
 					me.handleErrors(action.result.errors);
 				}else{
 					CWHF.showMsgError('Invalid settings!');
@@ -184,7 +186,7 @@ Ext.define("com.trackplus.vc.VersionControlController",{
 		var errMsg=getText('admin.project.versionControl.errorSave');
 		for(var i=0;i<errors.length;i++){
 			var inputComp=me.vcPlugin.getControl.call(me.vcPlugin,errors[i].id);
-			if(inputComp!=null){
+			if(inputComp){
 				inputComp.markInvalid(errors[i].label);
 			}else{
 				errMsg=errMsg+errors[i].label+' ';
@@ -195,41 +197,41 @@ Ext.define("com.trackplus.vc.VersionControlController",{
 	},
 	changeVC:function(pluginID){
 		var me=this;
-		me.lastFormData=me.view.formPanel.getForm().getValues();
+		me.lastFormData=me.vcView.formPanel.getForm().getValues();
 		me.doChangeVC(pluginID);
 	},
 	doChangeVC:function(pluginID){
 		var me=this;
-		me.view.clearFormPanel();
+		me.vcView.clearFormPanel();
 		me.vcPlugin=null;
 		var pluginCls=null;
 		var pluginDescriptor=null;
-		var vcPluginList=me.model['vcPluginList'];
-		for(var i=0;vcPluginList!=null&&i<vcPluginList.length;i++){
-			if(vcPluginList[i].id==pluginID){
+		var vcPluginList=me.versionControlControllerModel['vcPluginList'];
+		for(var i=0;vcPluginList&&i<vcPluginList.length;i++){
+			if(vcPluginList[i].id===pluginID){
 				pluginDescriptor=vcPluginList[i];
 				pluginCls=pluginDescriptor['jsConfigClass'];
 				break;
 			}
 		}
-		if(pluginCls!=null){
+		if(pluginCls){
 			try{
 				me.vcPlugin=Ext.create(pluginCls,{
-					model:me.model,
+					versionControlPluginModel:me.versionControlControllerModel,
 					pluginDescriptor:pluginDescriptor
 				});
 			}catch(e){
 				alert("ex:"+e);
 			}
 		}
-		if(me.vcPlugin!=null&&me.view.checkUseVC.getRawValue()){
-			me.view.replaceFormPanel(me.vcPlugin);
-			me.view.setLoading(true);
+		if(me.vcPlugin&&me.vcView.checkUseVC.getRawValue()){
+			me.vcView.replaceFormPanel(me.vcPlugin);
+			me.vcView.setLoading(true);
 			var urlStr="versionControlConfig!loadVCPlugin.action";
-			me.view.formPanel.getForm().load({
+			me.vcView.formPanel.getForm().load({
 				url:urlStr,
 				params:{
-					projectID:me.model.projectID,
+					projectID:me.versionControlControllerModel.projectID,
 					pluginID:pluginID
 				},
 				success:function(form,action){
@@ -237,21 +239,21 @@ Ext.define("com.trackplus.vc.VersionControlController",{
 					try{
 						me.vcPlugin.postProcessDataLoad.call(me.vcPlugin,data);
 					}catch(e){}
-					me.view.setLoading(false);
+					me.vcView.setLoading(false);
 				}
 			});
 		}
 	},
 	changeUseVC:function(useVC){
 		var me=this;
-		me.view.cmbVCPlugins.setDisabled(!useVC);
-		me.view.testBtn.setDisabled(!useVC);
-		if(useVC&&me.view.cmbVCPlugins.getValue()==null){
-			if(me.model['vcPluginList']!=null&&me.model['vcPluginList'].length>0){
-				me.view.cmbVCPlugins.setValue(me.model['vcPluginList'][0].id);
+		me.vcView.cmbVCPlugins.setDisabled(!useVC);
+		me.vcView.testBtn.setDisabled(!useVC);
+		if(CWHF.isNull(useVC&&me.vcView.cmbVCPlugins.getValue())){
+			if(me.versionControlControllerModel['vcPluginList']&&me.versionControlControllerModel['vcPluginList'].length>0){
+				me.vcView.cmbVCPlugins.setValue(me.versionControlControllerModel['vcPluginList'][0].id);
 			}
 		}
-		me.doChangeVC(me.view.cmbVCPlugins.getValue());
+		me.doChangeVC(me.vcView.cmbVCPlugins.getValue());
 	}
 
 });
@@ -259,8 +261,8 @@ Ext.define("com.trackplus.vc.VersionControlController",{
 Ext.define("com.trackplus.vc.VersionControlView",{
 	extend:'Ext.panel.Panel',
 	config: {
-		model:null,
-		controller:null
+		versionControlViewModel:null,
+		vcController:null
 	},
 	region:'center',
 	layout:'border',
@@ -269,7 +271,8 @@ Ext.define("com.trackplus.vc.VersionControlView",{
 	initComponent: function(){
 		var me=this;
 		me.items=me.createChildren();
-		this.addEvents('changeVC','changeUseVC');
+		//TODO remove comment and check the right way to call adding events
+//		this.addEvents('changeVC','changeUseVC');
 		me.callParent();
 	},
 	createChildren:function(){
@@ -333,7 +336,7 @@ Ext.define("com.trackplus.vc.VersionControlView",{
 			iconCls: 'check16',
 			text: getText('admin.project.versionControl.lbl.test'),
 			handler:function(){
-				me.controller.testVC.call(me.controller);
+				me.vcController.testVC.call(me.vcController);
 			},
 			scope:me
 		});
@@ -359,7 +362,7 @@ Ext.define("com.trackplus.vc.VersionControlView",{
 		var me=this;
 		me.formPanel.removeAll(true);
 		me.formPanel.add(pan);
-		me.formPanel.doLayout();
+		me.formPanel.updateLayout();
 	},
 	clearFormPanel:function(){
 		var me=this;
@@ -370,18 +373,16 @@ Ext.define("com.trackplus.vc.VersionControlView",{
 			bodyBorder:false
 		});
 		me.centerPanel.insert(1,me.formPanel);
-		me.doLayout();
+		me.updateLayout();
 		me.formPanel.removeAll(true);
-		me.formPanel.doLayout();
+		me.formPanel.updateLayout();
 	}
 });
-
-
 
 Ext.define("com.trackplus.vc.VersionControlPlugin",{
 	extend:'Ext.panel.Panel',
 	config: {
-		model:null,
+		versionControlPluginModel:null,
 		pluginDescriptor:null
 	},
 	layout:'anchor',
@@ -411,9 +412,9 @@ Ext.define("com.trackplus.vc.VersionControlPlugin",{
 		me.browserList=data.browsers;
 		var browserID=data['vc.browserID'];
 		me.cmbBrowser.setValue(browserID);
-		var linksDisabled=(browserID==null||browserID=="-1");
+		var linksDisabled=(CWHF.isNull(browserID)||browserID==="-1");
 		me.setDisabledLinks(linksDisabled);
-		if(browserID == 'integratedwebsvn') {
+		if(browserID === 'integratedwebsvn') {
 			me.setRepoBrowserTxtFieldDisabled(true);
 		}
 	},
@@ -456,12 +457,12 @@ Ext.define("com.trackplus.vc.VersionControlPlugin",{
 				inputValue: options[i].id,
 				//id:name+"_"+options[i].id,
 				boxLabel:options[i].label,
-				checked:options[i].id==value
+				checked:options[i].id===value
 			});
 		}
 		var inputComp=Ext.create('Ext.form.RadioGroup',{
-			fieldLabel:fieldLabelKey==null?"":getText(fieldLabelKey),
-			hideLabel:(fieldLabelKey==null),
+			fieldLabel:CWHF.isNull(fieldLabelKey)?"":getText(fieldLabelKey),
+			hideLabel:(CWHF.isNull(fieldLabelKey)),
 			labelStyle:{overflow:'hidden'},
 			labelWidth:me.labelWidth,
 			labelAlign:me.alignR,
@@ -473,7 +474,7 @@ Ext.define("com.trackplus.vc.VersionControlPlugin",{
 			defaults:{margin:'0 5 0 0'},
 			listeners: {
 				change: function(radioGroup, newValue, oldValue, options) {
-					if(handler!=null){
+					if(handler){
 						handler.call(handlerScope,radioGroup, newValue, oldValue, options);
 					}
 				}
@@ -503,17 +504,17 @@ Ext.define("com.trackplus.vc.VersionControlPlugin",{
 	changeBrowser:function(){
 		var me=this;
 		var browserValue=me.cmbBrowser.getValue();
-		var linksDisabled=(browserValue==null||browserValue=="-1");
+		var linksDisabled=(CWHF.isNull(browserValue)||browserValue==="-1");
 		me.setDisabledLinks(linksDisabled);
 		var changesetLink="";
 		var addedLink="";
 		var modifiedLink="";
 		var replacedLink="";
 		var deletedLink="";
-		if(me.browserList!=null&&browserValue!=null&&browserValue!="-1"){
+		if(me.browserList&&browserValue&&browserValue!=="-1"){
 			for(var i=0;i<me.browserList.length;i++){
 				var selected=false;
-				if (me.browserList[i].id==browserValue) {
+				if (me.browserList[i].id===browserValue) {
 					changesetLink=me.browserList[i].baseURL+me.browserList[i].changesetLink;
 					addedLink=me.browserList[i].baseURL+me.browserList[i].addedLink;
 					modifiedLink=me.browserList[i].baseURL+me.browserList[i].modifiedLink;
@@ -528,7 +529,7 @@ Ext.define("com.trackplus.vc.VersionControlPlugin",{
 		me.txtModifiedLink.setValue(modifiedLink);
 		me.txtReplacedLink.setValue(replacedLink);
 		me.txtDeletedLink.setValue(deletedLink);
-		if(browserValue == 'integratedwebsvn') {
+		if(browserValue === 'integratedwebsvn') {
 			me.setRepoBrowserTxtFieldDisabled(true);
 		} else {
 			me.setRepoBrowserTxtFieldDisabled(false);

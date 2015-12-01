@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -139,7 +139,6 @@ class CustomDependentSelectRT extends CustomSelectSimpleRT /*implements IInterna
 			Integer parentListID = optionBean.getList();
 			//get the childNumber'th child list of the parentListID
 			TListBean childListBean = ListBL.getChildList(parentListID, childNumber);
-			//TODO later filter first by configOptionRoleDAO.loadEditOptionsByConfigForRoles(configID, person, project, currentOptions);
 			if (childListBean!=null) {
 				return LocalizeUtil.localizeDropDownList(
 						optionDAO.loadEditDataSourceByListAndParents(
@@ -236,7 +235,6 @@ class CustomDependentSelectRT extends CustomSelectSimpleRT /*implements IInterna
 				else
 				{*/	//multiple select
 					workItemBean.setAttribute(fieldID, parameterCode, defaultValue);
-				//}
 			}
 		}
 	}
@@ -251,13 +249,15 @@ class CustomDependentSelectRT extends CustomSelectSimpleRT /*implements IInterna
 	 * @param parameterCode for composite selects
 	 * @return the datasource (list or tree)
 	 */	
+	@Override
 	public Object getMatcherDataSource(IMatcherValue matcherValue, MatcherDatasourceContext matcherDatasourceContext, Integer parameterCode) {
 		Map<Integer, Integer[]> actualValuesMap = null;
 		Locale locale = matcherDatasourceContext.getLocale();
 		try {
 			actualValuesMap = (Map<Integer, Integer[]>)matcherValue.getValue();
 		} catch (Exception e) {
-			LOGGER.warn("ValueModified: converting the qnode values to map failed with " + e.getMessage(), e);
+			LOGGER.warn("ValueModified: converting the qnode values to map failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		if (actualValuesMap == null || actualValuesMap.isEmpty()) {
 			return new ArrayList<IBeanID>();
@@ -269,7 +269,8 @@ class CustomDependentSelectRT extends CustomSelectSimpleRT /*implements IInterna
 				parentIntValue = parentIntArr[0];
 			}
 		} catch(Exception e) {
-			LOGGER.warn("Converting the parent value to Integer failed with " + e.getMessage(), e);
+			LOGGER.warn("Converting the parent value to Integer failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		Integer childIntValue = null;
 		try {
@@ -278,7 +279,8 @@ class CustomDependentSelectRT extends CustomSelectSimpleRT /*implements IInterna
 				childIntValue = childIntArr[0];
 			}
 		} catch (Exception e) {
-			LOGGER.warn("Converting the child value to Integer failed with " + e.getMessage(), e);
+			LOGGER.warn("Converting the child value to Integer failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		List<ILabelBean> possibleValues = null;
 		if (parentIntValue!=null) {
@@ -391,7 +393,8 @@ class CustomDependentSelectRT extends CustomSelectSimpleRT /*implements IInterna
 		try {
 			actualValuesMap = (Map<Integer, SortedMap<Integer, Integer[]>>)massOperationValue.getValue();
 		} catch (Exception e) {
-			LOGGER.warn("ValueModified: converting the massOperationExpression values to map failed with " + e.getMessage(), e);
+			LOGGER.warn("ValueModified: converting the massOperationExpression values to map failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		if (actualValuesMap == null || actualValuesMap.isEmpty()) {
 			return;
@@ -415,7 +418,8 @@ class CustomDependentSelectRT extends CustomSelectSimpleRT /*implements IInterna
 							parentIntValue = parentIntArr[0];
 						}
 					} catch(Exception e) {
-						LOGGER.warn("Converting the parent value to Integer[] failed with " + e.getMessage(), e);
+						LOGGER.warn("Converting the parent value to Integer[] failed with " + e.getMessage());
+						LOGGER.debug(ExceptionUtils.getStackTrace(e));
 					}
 					List<IBeanID> possiblePartValues = null;
 					if (parentIntValue!=null) {			
@@ -449,6 +453,7 @@ class CustomDependentSelectRT extends CustomSelectSimpleRT /*implements IInterna
 	 * @param personBean
 	 * @param locale
 	 */
+	@Override
 	public void loadFieldChangeDatasourceAndValue(WorkflowContext workflowContext,
 			FieldChangeValue fieldChangeValue, 
 			Integer parameterCode, TPersonBean personBean, Locale locale) {
@@ -456,7 +461,8 @@ class CustomDependentSelectRT extends CustomSelectSimpleRT /*implements IInterna
 		try {
 			actualValuesMap = (SortedMap<Integer, Integer[]>)fieldChangeValue.getValue();
 		} catch (Exception e) {
-			LOGGER.warn("ValueModified: converting the massOperationExpression values to map failed with " + e.getMessage(), e);
+			LOGGER.warn("ValueModified: converting the massOperationExpression values to map failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		if (actualValuesMap == null || actualValuesMap.isEmpty()) {
 			return;
@@ -473,7 +479,8 @@ class CustomDependentSelectRT extends CustomSelectSimpleRT /*implements IInterna
 				parentIntValue = parentIntArr[0];
 			}
 		} catch(Exception e) {
-			LOGGER.warn("Converting the parent value to Integer[] failed with " + e.getMessage(), e);
+			LOGGER.warn("Converting the parent value to Integer[] failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		List<IBeanID> possiblePartValues = null;
 		if (parentIntValue!=null) {			
@@ -482,7 +489,6 @@ class CustomDependentSelectRT extends CustomSelectSimpleRT /*implements IInterna
 			//get the childNumber'th child list of the parentListID
 			TListBean childListBean = ListBL.getChildList(parentListID, childNumber);
 			if (childListBean!=null) {
-				//TODO later filter first by configOptionRoleDAO.loadCreateOptionsByConfigForRoles(configID, person, project);
 				possiblePartValues = LocalizeUtil.localizeDropDownList(
 						optionDAO.loadCreateDataSourceByListAndParents(
 								childListBean.getObjectID(), parentIntArr),

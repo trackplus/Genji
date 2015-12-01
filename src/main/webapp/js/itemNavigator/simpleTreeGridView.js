@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -35,24 +35,16 @@ Ext.define('com.trackplus.itemNavigator.SimpleTreeGridViewPlugin',{
 	useSelectionModel:false,
 	useTree:true,
 
-	UNIFORMIZED_FIELD_TYPES: {
-		singleSelect: 'SINGLE_SELECT',
-		datePicker: 'DATE_PICKER',
-		simpleTextField: 'SIMPLE_TEXT_FIELD',
-		checkBox: "CHECK_BOX",
-		numberEditor: "NUMBER_EDITOR"
-	},
-
 	constructor: function(config){
 		this.callParent(arguments);
 		this.mixins.navigable.constructor.call(this);
 	},
 	refreshData:function(data){
 		var me=this;
-		if(me.view!=null){
+		if(me.view){
 			var rootNode=me.view.getStore().getRootNode();
-			rootNode.removeAll(true);
-			if(data!=null&&data.length>0){
+			rootNode.removeAll();
+			if(data&&data.length>0){
 				rootNode.appendChild(data);
 				me.view.getStore().sort();
 			}
@@ -72,6 +64,7 @@ Ext.define('com.trackplus.itemNavigator.SimpleTreeGridViewPlugin',{
 			border:false,
 			bodyBorder:false,
 			columnLines :true,
+			rowLines:true,
 			lines :me.lines,
 			rootVisible: false,
 			useArrows: me.useArrows,
@@ -94,7 +87,7 @@ Ext.define('com.trackplus.itemNavigator.SimpleTreeGridViewPlugin',{
 		});
 		me.initMyListeners();
 
-		me.cellInlineCtr.grid = me.view;
+		me.cellInlineCtr.setGrid(me.view);
         me.cellInlineCtr.initListeners();
 
         return me.view;
@@ -117,7 +110,7 @@ Ext.define('com.trackplus.itemNavigator.SimpleTreeGridViewPlugin',{
 		var issueIds=[];
 		if(me.model.layout.bulkEdit){
 			var selections=me.view.getSelectionModel().getSelection();
-			if(selections!=null&&selections.length>0){
+			if(selections&&selections.length>0){
 				for(var i=0;i<selections.length;i++){
 					issueIds.push(selections[i].data.workItemID);
 				}
@@ -162,10 +155,9 @@ Ext.define('com.trackplus.itemNavigator.SimpleTreeGridViewPlugin',{
 	onGridSelectionChange: function(sm, selections) {
 		var me = this;
 		if(me.model.layout.bulkEdit){
-//			me.callParent(sm, selections);
 			me.fireEvent.call(me,'selectionchange',selections);
 		}
-		if(me.cellInlineCtr != null) {
+		if(me.cellInlineCtr ) {
 			me.cellInlineCtr.onGridSelectionChnage(sm, selections);
 		}
 	},
@@ -173,15 +165,15 @@ Ext.define('com.trackplus.itemNavigator.SimpleTreeGridViewPlugin',{
 	onGridAfterRenderer:function(){
 		var me=this;
 		var rowExpandAllTrgEl=Ext.get('rowExpandAllTrg');
-		if(rowExpandAllTrgEl!=null){
+		if(rowExpandAllTrgEl){
 			rowExpandAllTrgEl.addListener('click',me.rowExpandAll,me);
 		}
 		var rowCollapseAllTrgEl=Ext.get('rowCollapseAllTrg');
-		if(rowCollapseAllTrgEl!=null){
+		if(rowCollapseAllTrgEl){
 			rowCollapseAllTrgEl.addListener('click',me.rowCollapseAll,me);
 		}
 		var dragZone=this.view.view.plugins[0].dragZone;
-		if(dragZone!=null){
+		if(dragZone){
 			dragZone.onStartDrag=function(x,y){
 				var records=this.dragData.records;
 				var workItems=me.getSelectedItemIds(records);
@@ -206,7 +198,7 @@ Ext.define('com.trackplus.itemNavigator.SimpleTreeGridViewPlugin',{
 			}catch(e){
 				workItemID=-1;
 			}
-			if(!isNaN(workItemID)&&workItemID!=-1){
+			if(!isNaN(workItemID)&&workItemID!==-1){
 				workItems+=workItemID+",";
 			}
 		}
@@ -222,7 +214,7 @@ Ext.define('com.trackplus.itemNavigator.SimpleTreeGridViewPlugin',{
 		var me=this;
 
 		e.stopEvent();
-		if(me.model.layout.bulkEdit==true&&cellIndex==0){
+		if(me.model.layout.bulkEdit===true&&cellIndex===0){
 			return false;
 		}
 		me.fireEvent.call(me,'itemdblclick',record.data,td);
@@ -232,7 +224,7 @@ Ext.define('com.trackplus.itemNavigator.SimpleTreeGridViewPlugin',{
 	expandCollapseItem:function(node,expanded){
 		var me=this;
 		var id=node.data.id;
-		if((id+'').indexOf('g')!=-1){
+		if((id+'').indexOf('g')!==-1){
 			//group
 			me.expandGroup(id.substring(1),expanded);
 		}else{
@@ -260,14 +252,14 @@ Ext.define('com.trackplus.itemNavigator.SimpleTreeGridViewPlugin',{
 	},
 	afterItemExpandHandler:function(node, index, item){
 		var me=this;
-		if(me.invalidExpandCollapse==true){
+		if(me.invalidExpandCollapse===true){
 			return;
 		}
 		me.expandCollapseItem(node,true);
 	},
 	afterItemCollapseHandler:function(node, index, item, eOpts){
 		var me=this;
-		if(me.invalidExpandCollapse==true){
+		if(me.invalidExpandCollapse===true){
 			return;
 		}
 		me.expandCollapseItem(node,false);
@@ -326,11 +318,11 @@ Ext.define('com.trackplus.itemNavigator.SimpleTreeGridViewPlugin',{
 		var me=this;
 		var sortField = column.dataIndex.substring(1);
 		//false = ascending, true = descending
-		var sortOrder = (direction=='DESC');
+		var sortOrder = (direction==='DESC');
 		me.model.layout.sortField=sortField;
 		me.model.layout.sortOrder=sortOrder;
 		me.model.layout.sortWithSO=column.sortWithSO;
-		if (me.model.queryContext!=null) {
+		if (me.model.queryContext) {
 			filterType = me.model.queryContext.queryType;
 			filterID = me.model.queryContext.queryID;
 		}
@@ -364,16 +356,16 @@ Ext.define('com.trackplus.itemNavigator.SimpleTreeGridViewPlugin',{
 	getSorters:function(){
 		var me=this;
 		var sorters=null;
-		if(me.model.layout.sortField!=null){
+		if(me.model.layout.sortField){
 			var sortField="f"+me.model.layout.sortField;
 			var sortDirection;
-			if(me.model.layout.sortOrder==true){
+			if(me.model.layout.sortOrder===true){
 				sortDirection='DESC';
 			}else{
 				sortDirection='ASC';
 			}
 			sorters=[];
-			if(me.model.layout.sortWithSO==true){
+			if(me.model.layout.sortWithSO===true){
 				sorters.push({
 					property:sortField,
 					direction :sortDirection,
@@ -400,7 +392,7 @@ Ext.define('com.trackplus.itemNavigator.SimpleTreeGridViewPlugin',{
 		var store=Ext.create('Ext.data.TreeStore', {
 			fields:fields,
 			autoLoad: false,
-			sorters:me.getSorters(),
+			//sorters:me.getSorters(),
 			root: {
 				expanded: true,
 				text:"",
@@ -419,17 +411,17 @@ Ext.define('com.trackplus.itemNavigator.SimpleTreeGridViewPlugin',{
 		var root=me.view.getStore().getRootNode();
 		root.cascadeBy(function (node) {
 			var idx=node.data['workItemIndex'];
-			if(idx!=null){
+			if(idx){
 				if(idx>maxIndex){
 					maxIndex=idx;
 					maxNode=node;
 				}
-				if(idx==workItemIndex){
+				if(idx===workItemIndex){
 					selectedNode=node;
 				}
 			}
 		});
-		if(selectedNode!=null){
+		if(selectedNode){
 			return selectedNode;
 		}
 		return maxNode;
@@ -441,10 +433,10 @@ Ext.define('com.trackplus.itemNavigator.SimpleTreeGridViewPlugin',{
 		var shortFields=me.model.layout.shortFields;
 		var columnModel=new Array(0);
 		var layoutData;
-		if(me.model.layout.indexNumber==true){
+		if(me.model.layout.indexNumber===true){
 			var count=me.model.totalCount;
 			var size=0;
-			if(count==null||count==0){
+			if(CWHF.isNull(count)||count===0){
 				size=21;
 			}else{
 				size=(count+"").length*5+17;
@@ -466,153 +458,24 @@ Ext.define('com.trackplus.itemNavigator.SimpleTreeGridViewPlugin',{
 			var col=me.createColumn(i,layoutData,sortable,me.useTree);
 			if(i>0){
 				me.cellInlineCtr.setColumnEditor(shortFields[i], col);
-				var uniformizedFieldType = me.getUniformizedFieldType(layoutData.extJsRendererClass);
-				if (uniformizedFieldType != null) {
-					var renderer = me.getRendererForSpecificColumns(uniformizedFieldType);
-					if (renderer != null) {
+				var uniformizedFieldType = me.cellInlineCtr.getUniformizedFieldType(layoutData.extJsRendererClass);
+				if (uniformizedFieldType ) {
+					var renderer = me.cellInlineCtr.getRendererForSpecificColumns(uniformizedFieldType);
+					if (renderer) {
 						col.renderer = renderer;
 					}
 				}
 			}
 			columnModel.push(col);
-
 		}
 		return columnModel;
-	},
-
-	getRendererForSpecificColumns: function(uniformizedFieldType) {
-		var me = this;
-		var renderer = null;
-
-	    if(uniformizedFieldType == me.UNIFORMIZED_FIELD_TYPES.datePicker) {
-	    	renderer = function (value, metaData, record, row, col, store, gridView) {
-	    		if(value != null && value != "") {
-		    		var valueDate = Ext.Date.parse(value, com.trackplus.TrackplusConfig.DateFormat);
-		    		var isProject = false;
-		    		if(record.data.isProject != null) {
-		    			isProject = record.data.isProject;
-		    		}
-		    		if(!isProject) {
-		    			return Ext.util.Format.date(valueDate, com.trackplus.TrackplusConfig.DateFormat);
-		    		}
-	    		}else {
-	    			return "";
-	    		}
-	    	};
-	    }
-	    if(uniformizedFieldType == me.UNIFORMIZED_FIELD_TYPES.singleSelect) {
-	    	renderer = function (val, metaData) {
-	    		var combo = metaData.column.getEditor();
-	    		if(val && combo && combo.store && combo.displayField){
-	    			var valueFieldInt = parseInt(val);
-	    			var index = combo.store.findExact(combo.valueField, valueFieldInt);
-	    			if(index >= 0){
-	    				return combo.store.getAt(index).get(combo.displayField);
-	    			}
-	    		}
-	    		return val;
-	    	};
-	    }
-	    if(uniformizedFieldType == me.UNIFORMIZED_FIELD_TYPES.checkBox) {
-	    	renderer = function (val, metaData) {
-	    		var checkBox = metaData.column.getEditor();
-	    		if (val == 'true' || val == 'false') {
-	    			if(checkBox.checked) {
-	    				return getText('common.boolean.Y');
-	    			}else {
-	    				return getText('common.boolean.N');
-	    			}
-	    		}else {
-	    			return val;
-	    		}
-	    	};
-	    }
-	    return renderer;
 	},
 
 	dataChangeSuccess:function(opts){
 		var me = this;
 		me.cellInlineCtr.dataChangeSuccess();
-	},
-
-	getUniformizedFieldType: function(extJsRendererClass) {
-		var me = this;
-		switch(extJsRendererClass) {
-		    case "com.aurel.trackplus.field.SynopsisTypeRenderer":
-		        return me.UNIFORMIZED_FIELD_TYPES.simpleTextField;
-		        break;
-		    case "com.aurel.trackplus.field.PersonPickerRenderer":
-		    case "com.aurel.trackplus.field.StateRenderer":
-		    case "com.aurel.trackplus.field.PriorityRenderer":
-		    case "com.aurel.trackplus.field.SelectTypeRenderer":
-		    	return me.UNIFORMIZED_FIELD_TYPES.singleSelect;
-		    	break;
-		    case "com.aurel.trackplus.field.DateTypeRenderer":
-		    case "com.aurel.trackplus.field.StartDateRenderer":
-		    case "com.aurel.trackplus.field.EndDateRenderer":
-		    case "com.aurel.trackplus.field.StartDateTargetRenderer":
-		    case "com.aurel.trackplus.field.EndDateTargetRenderer":
-		    	return me.UNIFORMIZED_FIELD_TYPES.datePicker;
-		    	break;
-		    case "com.aurel.trackplus.field.CheckBoxTypRenderer":
-		    	return me.UNIFORMIZED_FIELD_TYPES.checkBox;
-		    case "com.aurel.trackplus.field.DurationRenderer":
-		    	return me.UNIFORMIZED_FIELD_TYPES.numberEditor;
-		    default:
-		        return null;
-		}
 	}
 
-});
-
-Ext.define('com.trackplus.itemNavigator.CheckboxModel',{
-	extend: 'Ext.selection.CheckboxModel',
-	updateHeaderState: function() {
-		var me = this,
-			store = me.store,
-			storeCount = store.getCount(),
-			views = me.views,
-			hdSelectStatus = false,
-			selectedCount = 0,
-			selected, len, i;
-		var selectedGroups=0;
-		var items = me.store.getRange();
-		for(var i=0;i<items.length;i++){
-			if(items[i].get('group')==true){
-				selectedGroups++;
-			}
-		}
-
-		if (!store.buffered && storeCount > 0) {
-			selected = me.selected;
-			hdSelectStatus = true;
-			for (i = 0, len = selected.getCount(); i < len; ++i) {
-				if (!me.storeHasSelected(selected.getAt(i))) {
-					break;
-				}
-				++selectedCount;
-			}
-			hdSelectStatus = storeCount === selectedCount+ selectedGroups;
-		}
-
-		if (views && views.length) {
-			me.toggleUiHeader(hdSelectStatus);
-		}
-	},
-	deselectAll:function(){
-		var me=this;
-		//this.selectedGroups=0;
-		me.callParent(arguments);
-	},
-
-	listeners:{
-		beforeselect:function(selModel, record, index) {
-			return record.get('group') != true;
-		},
-		beforedeselect:function(selModel, record, index) {
-			return record.get('group') != true;
-		}
-	}
 });
 
 function openAttachments(workItemID,attachmentIds){
@@ -621,7 +484,7 @@ function openAttachments(workItemID,attachmentIds){
 	for(var i=0;i<selections.length;i++){
 		var attachID=selections[i];
 		var attachmentURI='downloadAttachment.action?workItemID='+workItemID+'&attachKey='+attachID;
-		if(i==0){
+		if(i===0){
 			window.open(attachmentURI,'attachmentWindow');
 		}else{
 			window.open(attachmentURI);

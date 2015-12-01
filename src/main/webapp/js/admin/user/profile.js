@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -24,14 +24,13 @@ Ext.define('com.trackplus.admin.user.Profile',{
 	extend:'Ext.Base',
 	config: {
 		context: 1,
-		isUser: true //this flag is set in case of adding new user from person.js. If true this is a real user otherwise this is a client user.
+		isUser: false  //this flag is set in case of adding new user from person.js. If true this is a real user otherwise this is a client user.
 	},
 	personId: null,
 	constructor: function(config) {
 		var me = this;
 		var config = config || {};
-		me.initialConfig = config;
-		Ext.apply(me, config);
+		this.initConfig(config);
 	},
 
 	CONTEXT:{
@@ -58,7 +57,7 @@ Ext.define('com.trackplus.admin.user.Profile',{
 	 * @return {Ext.button.Button} The save button
 	 */
 	createSaveButton:function(){
-		if(this.btnSave==null){
+		if(CWHF.isNull(this.btnSave)){
 			this.btnSave=new Ext.button.Button({
 				overflowText:getText('common.btn.save'),
 				tooltip:getText('common.btn.save'),
@@ -94,16 +93,16 @@ Ext.define('com.trackplus.admin.user.Profile',{
 	},
 
 	changeLdap:function() {
-		var ldapCmp = this.getWrappedControl("tab.main", "fslogin", "main.ldapUser");
+		var ldapCmp = this.getWrappedControl("tab_main", "fslogin", "mainLdapUser");
 		var ldapChecked = ldapCmp.getValue();
-		this.getControl("tab.main", "fslogin", "main.passwd").setDisabled(ldapChecked);
-		this.getControl("tab.main", "fslogin", "main.passwd2").setDisabled(ldapChecked);
+		this.getControl("tab_main", "fslogin", "mainPasswd").setDisabled(ldapChecked);
+		this.getControl("tab_main", "fslogin", "mainPasswd2").setDisabled(ldapChecked);
 	},
 	changeLdapSelReg:function(check, newValue, oldValue){
 	  	var me=this;
 		var ldapChecked = check.getValue();
-		me.selfRegForm.getComponent("main.passwd").setDisabled(ldapChecked);
-		me.selfRegForm.getComponent("main.passwd2").setDisabled(ldapChecked);
+		me.selfRegForm.getComponent("mainPasswd").setDisabled(ldapChecked);
+		me.selfRegForm.getComponent("mainPasswd2").setDisabled(ldapChecked);
 	},
 
 	/**
@@ -112,7 +111,7 @@ Ext.define('com.trackplus.admin.user.Profile',{
 	 */
 	createTabMain:function() {
 		var panel=new Ext.form.Panel({
-			itemId:'tab.main',
+			itemId:'tab_main',
 			title:getText('admin.user.profile.lbl.tabMain'),
 			layout: {
 				type: 'anchor'
@@ -134,7 +133,7 @@ Ext.define('com.trackplus.admin.user.Profile',{
 				layout: 'anchor',
 				items: [
 				        CWHF.createTextFieldWithHelp('admin.user.profile.lbl.userName','main.userName',
-								{enableKeyEvents:true,allowBlank:false,maxLength:60,afterLabelTextTpl:this.reqTpl},
+								{itemId:'mainUserName', enableKeyEvents:true,allowBlank:false,maxLength:60,afterLabelTextTpl:this.reqTpl},
 								//listeners:
 								{
 									//keyup: {
@@ -148,7 +147,7 @@ Ext.define('com.trackplus.admin.user.Profile',{
 									}
 								//}
 						),
-						CWHF.createCheckboxWithHelp('admin.user.profile.lbl.ldapUser', 'main.ldapUser', {},
+						CWHF.createCheckboxWithHelp('admin.user.profile.lbl.ldapUser', 'main.ldapUser', {itemId:'mainLdapUser'},
 								{change:{
 										fn: this.changeLdap,
 										scope: this
@@ -156,9 +155,9 @@ Ext.define('com.trackplus.admin.user.Profile',{
 								}
 						),
 						CWHF.createTextField('admin.user.profile.lbl.passwd','main.passwd',
-										{inputType:'password',minLength:5, id:'main.passwd',afterLabelTextTpl:this.reqTpl}),
+										{inputType:'password',minLength:5, id:'mainPasswd',afterLabelTextTpl:this.reqTpl}),
 						CWHF.createTextField('admin.user.profile.lbl.passwd2','main.passwd2',
-										{inputType:'password',vtype:'password',initialPassField:'main.passwd',afterLabelTextTpl:this.reqTpl})
+										{itemId:'mainPasswd2',inputType:'password',vtype:'password',initialPassField:'main.passwd',afterLabelTextTpl:this.reqTpl})
 					]
 			}, {
 				xtype: 'fieldset',
@@ -193,9 +192,9 @@ Ext.define('com.trackplus.admin.user.Profile',{
 						 //}
 						}),
 					CWHF.createComboWithHelp('admin.user.profile.lbl.locale',
-							'main.locale',{idType:'string'}),
+							'main.locale',{itemId:'mainLocale', idType:'string'}),
 					CWHF.createComboWithHelp('admin.user.profile.lbl.usertz',
-							'main.userTz',{idType:'string'})]
+							'main.userTz',{itemId:'mainUserTz', idType:'string'})]
 			}]
 		});
 		return panel;
@@ -207,17 +206,17 @@ Ext.define('com.trackplus.admin.user.Profile',{
 	 * @return {Ext.form.Panel} A panel for this tab
 	 */
 	changeNoEmail:function() {
-		var noEmailCmp =this.getWrappedControl("tab.remail", "fsremail1", "remail.noEmail");
+		var noEmailCmp =this.getWrappedControl("tab_remail", "fsremail1", "remailNoEmail");
 		var noEmailChecked = noEmailCmp.getValue();
 		// Get all components to disable or enable
-		this.getControl("tab.remail", "fsremail1", "remail.prefEmailType").setDisabled(noEmailChecked);
-		this.getHelpWrapper("tab.remail", "fsremail2", "remail.remindMeAsOriginator").setDisabled(noEmailChecked);
-		this.getHelpWrapper("tab.remail", "fsremail2", "remail.remindMeAsManager").setDisabled(noEmailChecked);
-		this.getHelpWrapper("tab.remail", "fsremail2", "remail.remindMeAsResponsible").setDisabled(noEmailChecked);
-		this.getHelpWrapper("tab.remail", "fsremail3", "remail.remindPriorityLevel").setDisabled(noEmailChecked);
-		this.getHelpWrapper("tab.remail", "fsremail3", "remail.remindSeverityLevel").setDisabled(noEmailChecked);
-		//this.getHelpWrapper("tab.remail", "fsremail3", "remail.emailLead").setDisabled(noEmailChecked);
-		this.getHelpWrapper("tab.remail", "fsremail3", "remail.remindMeOnDays").setDisabled(noEmailChecked);
+		this.getControl("tab_remail", "fsremail1", "remailPrefEmailType").setDisabled(noEmailChecked);
+		this.getHelpWrapper("tab_remail", "fsremail2", "remailRemindMeAsOriginator").setDisabled(noEmailChecked);
+		this.getHelpWrapper("tab_remail", "fsremail2", "remailRemindMeAsManager").setDisabled(noEmailChecked);
+		this.getHelpWrapper("tab_remail", "fsremail2", "remailRemindMeAsResponsible").setDisabled(noEmailChecked);
+		this.getHelpWrapper("tab_remail", "fsremail3", "remailRemindPriorityLevel").setDisabled(noEmailChecked);
+		this.getHelpWrapper("tab_remail", "fsremail3", "remailRemindSeverityLevel").setDisabled(noEmailChecked);
+		//this.getHelpWrapper("tab_remail", "fsremail3", "remailEmailLead").setDisabled(noEmailChecked);
+		this.getHelpWrapper("tab_remail", "fsremail3", "remailRemindMeOnDays").setDisabled(noEmailChecked);
 	},
 	/**
 	 * Creates the e-mail tab of the user profile.
@@ -225,7 +224,7 @@ Ext.define('com.trackplus.admin.user.Profile',{
 	 */
 	createTabEmail:function(){
 		var panel=new Ext.Panel({
-			id:'tab.remail',
+			id:'tab_remail',
 			title:getText('admin.user.profile.lbl.tabEmail'),
 			layout: {
 				type: 'anchor'
@@ -240,14 +239,13 @@ Ext.define('com.trackplus.admin.user.Profile',{
 				collapsible: false,
 				//defaults: {anchor: '100%'},
 				layout: 'anchor',
-				items: [CWHF.createCheckboxWithHelp('admin.user.profile.lbl.noEmail','remail.noEmail', {},
+				items: [CWHF.createCheckboxWithHelp('admin.user.profile.lbl.noEmail','remail.noEmail', {itemId:'remailNoEmail'},
 							{change: {fn: this.changeNoEmail, scope:this}}
 						),
-						CWHF.getRadioGroup('remail.prefEmailType',
-								'admin.user.profile.lbl.prefEmailType',
+						CWHF.getRadioGroup('admin.user.profile.lbl.prefEmailType',
 								400,
 								[{boxLabel:"HTML", name:"remail.prefEmailType", inputValue:"HTML", checked:true},
-								 {boxLabel:"Plain", name:"remail.prefEmailType", inputValue:"Plain"}])
+								 {boxLabel:"Plain", name:"remail.prefEmailType", inputValue:"Plain"}],{itemId:'remailPrefEmailType'})
 					]
 			}, {
 				xtype: 'fieldset',
@@ -257,9 +255,9 @@ Ext.define('com.trackplus.admin.user.Profile',{
 				collapsible: false,
 				//defaults: {anchor: '100%'},
 				layout: 'anchor',
-				items: [CWHF.createCheckboxWithHelp('admin.user.profile.lbl.remindMeAsOriginator','remail.remindMeAsOriginator'),
-						CWHF.createCheckboxWithHelp('admin.user.profile.lbl.remindMeAsManager', 'remail.remindMeAsManager'),
-						CWHF.createCheckboxWithHelp('admin.user.profile.lbl.remindMeAsResponsible','remail.remindMeAsResponsible')]
+				items: [CWHF.createCheckboxWithHelp('admin.user.profile.lbl.remindMeAsOriginator','remail.remindMeAsOriginator', {itemId:'remailRemindMeAsOriginator'}),
+						CWHF.createCheckboxWithHelp('admin.user.profile.lbl.remindMeAsManager', 'remail.remindMeAsManager', {itemId:'remailRemindMeAsManager'}),
+						CWHF.createCheckboxWithHelp('admin.user.profile.lbl.remindMeAsResponsible','remail.remindMeAsResponsible', {itemId:'remailRemindMeAsResponsible'})]
 			}, {
 				xtype: 'fieldset',
 				itemId:'fsremail3',
@@ -269,13 +267,13 @@ Ext.define('com.trackplus.admin.user.Profile',{
 				//defaults: {anchor: '100%'},
 				layout: 'anchor',
 				items: [CWHF.createComboWithHelp('admin.user.profile.lbl.remindPriorityLevel','remail.remindPriorityLevel',
-												null,null,'remail.remindPriorityLevel'),
+												{itemId:'remailRemindPriorityLevel'},null),
 						CWHF.createComboWithHelp('admin.user.profile.lbl.remindSeverityLevel','remail.remindSeverityLevel',
-												null,null,'remail.remindSeverityLevel'),
+												{itemId:'remailRemindSeverityLevel'},null),
 						CWHF.createNumberFieldWithHelp('admin.user.profile.lbl.emailLead', 'remail.emailLead',
-												0, -100, 100,{width:this.labelWidth+30,hideTrigger:true}),
+												0, -100, 100,{width:this.labelWidth+30,hideTrigger:true,itemId:'remailEmailLead'}),
 						CWHF.createComboWithHelp('admin.user.profile.lbl.remindMeOnDays','remail.remindMeOnDays',
-												{multiSelect:true},null,'remail.remindMeOnDays')]
+												{multiSelect:true,itemId:'remailRemindMeOnDays'},null)]
 			}]
 		});
 
@@ -328,11 +326,11 @@ Ext.define('com.trackplus.admin.user.Profile',{
 	        }
 	    };
 	    iconWrapperItems =  [icon,  modifyBtn];
-	    if (this.context==2) {
+	    if (this.context===2) {
 	        //add user: although the icon file is saved in the db, can't be saved directly into person because it does not exist yet
 	        //after saving the person the iconKey and iconName should be set on the new personBean
-	        iconWrapperItems.push(CWHF.createHiddenField("iconKey"));
-	        iconWrapperItems.push(CWHF.createHiddenField("iconName"));
+	        iconWrapperItems.push(CWHF.createHiddenField("iconKey",{itemId:"iconKey"}));
+	        iconWrapperItems.push(CWHF.createHiddenField("iconName",{itemId:"iconName"}));
 	    }
 		var iconWrapper=Ext.create('Ext.form.FieldContainer',{
 			combineErrors: true,
@@ -349,14 +347,14 @@ Ext.define('com.trackplus.admin.user.Profile',{
 		//If new user is client  user then the home page is cockpit,
 		var userHomePageCockpit = false;
 		var userHomePageItemNavigator = true;
-		if(this.isUser != null) {
-			if(!this.isUser) {
-				var userHomePageCockpit = true;
-				var userHomePageItemNavigator = false;
+		//if (this.isUser) {
+			if(!this.getIsUser()) {
+				userHomePageCockpit = true;
+				userHomePageItemNavigator = false;
 			}
-		}
+		//}
 		var panel=new Ext.Panel({
-			id:'tab.other',
+			id:'tab_other',
 			title:getText('admin.user.profile.lbl.tabOther'),
 			layout: {
 				type: 'anchor'
@@ -377,18 +375,18 @@ Ext.define('com.trackplus.admin.user.Profile',{
 	                    "other.department", [], null,
 	                    {//allowBlank:false,
 	                     labelWidth: this.labelWidth,
-	                     width: 550
-	                        //margin:'0 0 5 0',
+	                     width: 550,
+	                     itemId: 'otherDepartment'
 	                    }),
 						CWHF.createTextField('admin.user.profile.lbl.phone','other.phone'),
 						CWHF.createTextField('admin.user.profile.lbl.employeeId', 'other.employeeId'),
 	                    iconWrapper,
 						CWHF.createNumberField('admin.user.profile.lbl.workingHours','other.workingHours',2,0,24,
-								{labelWidth:this.labelWidth, width:this.labelWidth+80}),
+								{labelWidth:this.labelWidth, width:this.labelWidth+80,itemId:'otherWorkingHours'}),
 						CWHF.createNumberField('admin.user.profile.lbl.hourlyWage','other.hourlyWage',2,0,null,
-								{labelWidth:this.labelWidth, width:this.labelWidth+80}),
+								{labelWidth:this.labelWidth, width:this.labelWidth+80,itemId:'otherHourlyWage'}),
 						CWHF.createNumberField('admin.user.profile.lbl.extraHourWage','other.extraHourWage',2,0,null,
-								{labelWidth:this.labelWidth, width:this.labelWidth+80})]
+								{labelWidth:this.labelWidth, width:this.labelWidth+80,itemId:'otherExtraHourWage'})]
 			}, {
 				xtype: 'fieldset',
 				itemId: 'fsother2',
@@ -398,18 +396,18 @@ Ext.define('com.trackplus.admin.user.Profile',{
 				defaultType: 'textfield',
 				//defaults: {anchor: '100%'},
 				layout: 'anchor',
-				items: [CWHF.createComboWithHelp('admin.user.profile.lbl.csvEncoding','other.csvEncoding',{data:options, idType:'string'}),
+				items: [CWHF.createComboWithHelp('admin.user.profile.lbl.csvEncoding','other.csvEncoding',{itemId:'otherCsvEncoding', data:options, idType:'string'}),
 						CWHF.createTextFieldWithHelp('admin.user.profile.lbl.csvSeparator','other.csvSeparator',
 								{width:this.labelWidth+20,enforceMaxLength:true,maxLength:1}),
 						CWHF.createCheckboxWithHelp('admin.user.profile.lbl.saveAttachments','other.saveAttachments'),
 						CWHF.createComboWithHelp('admin.user.profile.lbl.designPath',
-								'other.designPath',{idType:'string'}),
+								'other.designPath',{itemId:'otherDesignPath', idType:'string'}),
 						CWHF.createCheckboxWithHelp('admin.user.profile.lbl.activateInlineEdit', 'other.activateInlineEdit'),
 						CWHF.createCheckboxWithHelp('admin.user.profile.lbl.activateLayout', 'other.activateLayout'),
-						CWHF.getRadioGroupWithHelp('other.homePage','admin.user.profile.lbl.homePage', this.textFieldWidth,
+						CWHF.getRadioGroupWithHelp('admin.user.profile.lbl.homePage', this.textFieldWidth,
 							[{boxLabel: getText('menu.cockpit'), name: 'other.homePage', inputValue: 'cockpit', checked:userHomePageCockpit},
-							 {boxLabel: getText('menu.findItems'), name: 'other.homePage', inputValue: 'itemNavigator', checked:userHomePageItemNavigator}]),
-						CWHF.createComboWithHelp('admin.user.manage.lbl.userLevel','other.userLevel')
+							 {boxLabel: getText('menu.findItems'), name: 'other.homePage', inputValue: 'itemNavigator', checked:userHomePageItemNavigator}],{itemId:"otherHomePage"}),
+						CWHF.createComboWithHelp('admin.user.manage.lbl.userLevel','other.userLevel',{itemId:'otherUserLevel'})
 					]
 			}, {
 				xtype: 'fieldset',
@@ -421,11 +419,7 @@ Ext.define('com.trackplus.admin.user.Profile',{
 				//defaults: {anchor: '100%'},
 				layout: 'anchor',
 				items: [CWHF.createNumberFieldWithHelp('admin.user.profile.lbl.sessionTimeout',
-							'other.sessionTimeout', 0, 1, 99999, {width:this.labelWidth+40,hideTrigger:true,disabled:true})/*,
-						CWHF.createNumberFieldWithHelp('admin.user.profile.lbl.autoLoadTime',
-							'other.autoLoadTime', 0, 10, 300, {width:this.labelWidth+40, hideTrigger:true}),
-						CWHF.createCheckboxWithHelp('admin.user.profile.lbl.dashboardTimer',
-							'other.showDashboardTimer', {width:this.labelWidth+40})*/]
+							'other.sessionTimeout', 0, 1, 99999, {width:this.labelWidth+40,hideTrigger:true,disabled:true,itemId:'otherSessionTimeout'})]
 			}, {
 	                xtype: 'fieldset',
 	                itemId: 'fsother4',
@@ -435,7 +429,7 @@ Ext.define('com.trackplus.admin.user.Profile',{
 	                defaultType: 'textfield',
 	                //defaults: {anchor: '100%'},
 	                layout: 'anchor',
-	                items: [CWHF.createComboWithHelp('admin.user.profile.lbl.substitutePerson','other.substituteID')]
+	                items: [CWHF.createComboWithHelp('admin.user.profile.lbl.substitutePerson','other.substituteID', {itemId:'otherSubstituteID'})]
 	            }
 	        ]
 		});
@@ -447,13 +441,13 @@ Ext.define('com.trackplus.admin.user.Profile',{
 	    var height = 250;
 	    var loadUrl = 'avatar.action';
 	    var loadParams = {personID:this.personId, context:this.context};
-	    if (this.context==2) {
+	    if (this.context===2) {
 	        var hiddenIconKey = targetEl.ownerCt.getComponent("iconKey");
-	        if (hiddenIconKey!=null) {
+	        if (hiddenIconKey) {
 	            loadParams["iconKey"] = hiddenIconKey.getValue();
 	        }
 	        var hiddenIconName = targetEl.ownerCt.getComponent("iconName");
-	        if (hiddenIconName!=null) {
+	        if (hiddenIconName) {
 	            loadParams["iconName"] = hiddenIconName.getValue();
 	        }
 	    }
@@ -507,10 +501,11 @@ Ext.define('com.trackplus.admin.user.Profile',{
 	    var picFiles = [
 	        iconWrapper,
 	        CWHF.createLabelComponent('admin.user.profile.lbl.avatarName',
-	            'avatarName', {labelWidth:this.labelWidth}),
+	            'avatarName', {itemId:'avatarName',labelWidth:this.labelWidth}),
 	        CWHF.createFileField('admin.user.profile.lbl.avatarNew', 'iconFile',
-	            {allowBlank:false,
-	                labelWidth:this.labelWidth})
+	            {itemId:"iconFile",
+	        	 allowBlank:false,
+	             labelWidth:this.labelWidth})
 	    ];
 	    return Ext.create('Ext.form.Panel', {
 	            bodyStyle: 'padding:5px',
@@ -581,22 +576,22 @@ Ext.define('com.trackplus.admin.user.Profile',{
 	    //empty the file upload component (after either upload or delete)
 	    formPanel.getComponent('iconFile').setValue('');
 	    var toolbars = this.win.getDockedItems('toolbar[dock="bottom"]');
-	    if (toolbars!=null) {
+	    if (toolbars) {
 	        //disable delete button if no icon is specified
-	        toolbars[0].getComponent(1).setDisabled(data.iconName==null || data.iconName=="");
+	        toolbars[0].getComponent(1).setDisabled(CWHF.isNull(data.iconName) || data.iconName==="");
 	    }
-	    if (extraConfig!=null) {
+	    if (extraConfig) {
 	        //actualize the avatar icon on the user profile
 	        var avatarIcon = extraConfig.avatarIcon;
-	        if (avatarIcon!=null) {
+	        if (avatarIcon) {
 	            avatarIcon.setSrc(data.icon);
-	            if (this.context==2) {
+	            if (this.context===2) {
 	                var iconKey = avatarIcon.ownerCt.getComponent("iconKey");
-	                if (iconKey!=null) {
+	                if (iconKey) {
 	                    iconKey.setValue(data.iconKey);
 	                }
 	                var hiddenIconName = avatarIcon.ownerCt.getComponent("iconName");
-	                if (hiddenIconName!=null) {
+	                if (hiddenIconName) {
 	                    hiddenIconName.setValue(data.iconName);
 	                }
 	            }
@@ -653,7 +648,7 @@ Ext.define('com.trackplus.admin.user.Profile',{
 			clientValidation:false,
 			success: function(form, action) {
 				try{
-					if(this.btnSave==null){
+					if(CWHF.isNull(this.btnSave)){
 						this.createSaveButton();
 					}
 					this.btnSave.setDisabled(false);
@@ -680,7 +675,7 @@ Ext.define('com.trackplus.admin.user.Profile',{
 			layout:'fit',
 			items:[tabPanel]
 		};
-		if (extraCfg!=null) {
+		if (extraCfg) {
 			//add extra panel configuration
 			for (propertyName in extraCfg) {
 				formCfg[propertyName] = extraCfg[propertyName];
@@ -712,7 +707,7 @@ Ext.define('com.trackplus.admin.user.Profile',{
 			}
 		});
 		tabPanel.add(this.createTabMain());
-		if (this.context != this.CONTEXT.SELFREGISTRATION) {
+		if (this.context !== this.CONTEXT.SELFREGISTRATION) {
 			tabPanel.add(this.createTabEmail());
 			tabPanel.add(this.createTabOther());
 			//tabPanel.add(this.createTabWatchlist());
@@ -764,7 +759,7 @@ Ext.define('com.trackplus.admin.user.Profile',{
 			},
 			failure: function(form, action) {
 				borderLayout.setLoading(false);
-				if (action.failureType!='client') {
+				if (action.failureType!=='client') {
 					this.handleErrors(action.result.errors);
 				}
 				CWHF.showMsgError(getText('admin.user.profile.err.errorSave'));
@@ -777,11 +772,11 @@ Ext.define('com.trackplus.admin.user.Profile',{
 	},
 	validateUser:function(selfRegForm,url){
 		var urlStr='userProfile!validateUser.action';
-		if(url!=null){
+		if(url){
 			urlStr=url;
 		}
 		var form=this.mainForm;
-		if(selfRegForm==true){
+		if(selfRegForm===true){
 			form=this.selfRegForm;
 		}else{
 			var tabBar=this.getTabPanel().getTabBar();
@@ -798,8 +793,8 @@ Ext.define('com.trackplus.admin.user.Profile',{
 			success: function(form, action) {
 			},
 			failure: function(form, action) {
-				if (action.failureType!='client') {
-					if(selfRegForm==true){
+				if (action.failureType!=='client') {
+					if(selfRegForm===true){
 						this.handleErrorsSelfReg(action.result.errors);
 					}else{
 						this.handleErrors(action.result.errors);
@@ -814,68 +809,65 @@ Ext.define('com.trackplus.admin.user.Profile',{
 	 *
 	 */
 	postDataLoadCombos: function(lData, form) {
-
 		tabPanel = form.getComponent(0);
-		var mainTab = tabPanel.getComponent('tab.main');
-		var emailTab = tabPanel.getComponent('tab.remail');
-		var otherTab = tabPanel.getComponent('tab.other');
+		var mainTab = tabPanel.getComponent('tab_main');
+		var emailTab = tabPanel.getComponent('tab_remail');
+		var otherTab = tabPanel.getComponent('tab_other');
 
-		if (lData['main.adminOrGuest']==true) {
-			this.getWrappedControl("tab.main", "fslogin", "main.userName").setReadOnly(true);
+		if (lData['main.adminOrGuest']===true) {
+			this.getWrappedControl("tab_main", "fslogin", "mainUserName").setReadOnly(true);
 		}
-		var locale = this.getWrappedControl("tab.main", "fsname", "main.locale");
+		var locale = this.getWrappedControl("tab_main", "fsname", "mainLocale");
 		locale.store.loadData(lData['main.locales']);
-		locale.setValue(lData['main.locale']);
+		var selectedLocale = lData['main.locale'];
+		if(selectedLocale === '') {
+			selectedLocale = 'browser';
+		}
+		locale.setValue(selectedLocale);
 
-		var timezones = this.getWrappedControl("tab.main", "fsname", "main.userTz");
+		var timezones = this.getWrappedControl("tab_main", "fsname", "mainUserTz");
 		timezones.store.loadData(lData['main.timeZones']);
 		timezones.setValue(lData['main.userTz']);
 
-		this.getHelpWrapper("tab.main", "fslogin", "main.ldapUser").setDisabled(!lData['main.ldapOn'] || lData['main.forceLdap']);
+		this.getHelpWrapper("tab_main", "fslogin", "mainLdapUser").setDisabled(!lData['main.ldapOn'] || lData['main.forceLdap']);
 
-		if (lData['context'] == this.CONTEXT.SELFREGISTRATION) {
-			if (emailTab != null) {
+		if (lData['context'] === this.CONTEXT.SELFREGISTRATION) {
+			if (emailTab ) {
 				emailTab.setDisabled(true);
 			}
-			if (otherTab != null) {
+			if (otherTab ) {
 				otherTab.setDisabled(true);
 			}
 		}
-		var prios = this.getWrappedControl("tab.remail", "fsremail3", "remail.remindPriorityLevel");
+		var prios = this.getWrappedControl("tab_remail", "fsremail3", "remailRemindPriorityLevel");
 		prios.store.loadData(lData['remail.remindPriorityLevels']);
 		prios.setValue(lData['remail.remindPriorityLevel']);
 
-		var sevs = this.getWrappedControl("tab.remail", "fsremail3", "remail.remindSeverityLevel");
+		var sevs = this.getWrappedControl("tab_remail", "fsremail3", "remailRemindSeverityLevel");
 		sevs.store.loadData(lData['remail.remindSeverityLevels']);
 		sevs.setValue(lData['remail.remindSeverityLevel']);
 
-		var days = this.getWrappedControl("tab.remail", "fsremail3", "remail.remindMeOnDays");
+		var days = this.getWrappedControl("tab_remail", "fsremail3", "remailRemindMeOnDays");
 		days.store.loadData(lData['remail.remindMeOnDaysList']);
 		days.setValue(lData['remail.remindMeOnDays']);
 
-		/*var deps = this.getWrappedControl("tab.other", "fsother1", "other.department");
-		deps.store.loadData(lData['other.departments']);
-		deps.setValue(lData['other.department']);*/
+		var deps = this.getWrappedControl("tab_other", "fsother1", "otherDepartment");
+		deps.updateMyOptions(lData['departmentTree']);
+		deps.setValue(lData['department']);
 
-		var deps = this.getWrappedControl("tab.other", "fsother1", "other.department");
-	    deps.updateData(lData["departmentTree"]);
-	    deps.setValue(lData["department"]);
-		//deps.setValue(lData['departmentLabel']);
-		//deps.departmentID = lData['department'];
-
-		var des = this.getWrappedControl("tab.other", "fsother2", "other.designPath");
+		var des = this.getWrappedControl("tab_other", "fsother2", "otherDesignPath");
 		des.store.loadData(lData['other.designPaths']);
 		des.setValue(lData['other.designPath']);
-		if (lData['context'] == this.CONTEXT.USERADMINEDIT || lData['context'] == this.CONTEXT.USERADMINADD ) {
-			this.getHelpWrapper("tab.other", "fsother3", "other.sessionTimeout").setDisabled(false);
+		if (lData['context'] === this.CONTEXT.USERADMINEDIT || lData['context'] === this.CONTEXT.USERADMINADD ) {
+			this.getHelpWrapper("tab_other", "fsother3", "otherSessionTimeout").setDisabled(false);
 		} else {
-			this.getHelpWrapper("tab.other", "fsother3", "other.sessionTimeout").setDisabled(true);
+			this.getHelpWrapper("tab_other", "fsother3", "otherSessionTimeout").setDisabled(true);
 		}
 		tabPanel.setActiveTab(mainTab);
 
 		//this.applyMyDomainVType(lData['main.domainPat']);
 		//add userEmail only now bacause of the vtype
-		this.getControl("tab.main", "fslogin").add(CWHF.createTextFieldWithHelp('admin.user.profile.lbl.userEmail','main.userEmail',
+		this.getControl("tab_main", "fslogin").add(CWHF.createTextFieldWithHelp('admin.user.profile.lbl.userEmail','main.userEmail',
 				{vtype:'email',vtypeText:getText('admin.user.profile.err.emailAddress.format'), allowBlank:false, maxLength:60,afterLabelTextTpl:this.reqTpl,value:lData["main.userEmail"],
 					listeners: {
 						blur: {
@@ -890,19 +882,19 @@ Ext.define('com.trackplus.admin.user.Profile',{
 			)
 		);
 		//this.validateUser();
-	    var avatarIcon = this.getControl("tab.other", "fsother1", "iconPanel", "avatarIcon")
+	    var avatarIcon = this.getControl("tab_other", "fsother1", "iconPanel", "avatarIcon")
 	    var iconUrl = lData["other.iconUrl"];
-	    if (iconUrl!=null)  {
+	    if (iconUrl)  {
 	        avatarIcon.setSrc(iconUrl);
 	    }
-		var userLevel = this.getWrappedControl("tab.other", "fsother2", "other.userLevel");
-	    if (userLevel!=null) {
+		var userLevel = this.getWrappedControl("tab_other", "fsother2", "otherUserLevel");
+	    if (userLevel) {
 	        userLevel.store.loadData(lData['userLevelList']);
 	        userLevel.setValue(lData['other.userLevel']);
 			userLevel.setDisabled(lData['readOnly']);
 	    }
-	    var substitutePerson = this.getWrappedControl("tab.other", "fsother4", "other.substituteID");
-	    if (substitutePerson!=null) {
+	    var substitutePerson = this.getWrappedControl("tab_other", "fsother4", "otherSubstituteID");
+	    if (substitutePerson) {
 	        substitutePerson.store.loadData(lData['other.substituteList']);
 	        substitutePerson.setValue(lData['other.substituteID']);
 	    }
@@ -936,8 +928,8 @@ Ext.define('com.trackplus.admin.user.Profile',{
 			password: function(val, field) {
 				if (field.initialPassField) {
 					// var pwd = field.up('form').down('#' + field.initialPassField);
-					var pwd = Ext.getCmp(field.initialPassField);
-					return (val == pwd.getValue());
+					var pwd = Ext.getCmp('mainPasswd');
+					return (val === pwd.getValue());
 				}
 				return true;
 			},
@@ -948,21 +940,21 @@ Ext.define('com.trackplus.admin.user.Profile',{
 	handleErrorsSelfReg:function(errors){
 		var me=this;
 		var errStr='';
-		if (errors!=null && errors.length>0) {
+		if (errors && errors.length>0) {
 			for(var i=0;i<errors.length;i++){
 				var error=errors[i];
 				var id=error.id;
 				var inputComp=null;
-				if(id!=null){
+				if(id){
 					inputComp=CWHF.getWrappedControl.apply(me.selfRegForm, [id]);
 				}
-				if(inputComp!=null){
+				if(inputComp){
 					inputComp.markInvalid(error.label);
 				}else{
 					errStr+=error.label+"</br>";
 				}
 			}
-			if(errStr!=''){
+			if(errStr!==''){
 				CWHF.showMsgError(error.label);
 			}
 		}
@@ -971,25 +963,25 @@ Ext.define('com.trackplus.admin.user.Profile',{
 	handleErrors:function(errors){
 		var errStr='';
 		var tabErrors=new Array();
-		if (errors!=null && errors.length>0) {
+		if (errors && errors.length>0) {
 			for(var i=0;i<errors.length;i++){
 				var error=errors[i];
 				var id=error.id;
 				var inputComp=null;
-				if(id!=null){
+				if(id){
 					inputComp=Ext.getCmp(id);
 					var prefix=id.substring(0,id.indexOf('.'));
 					if(!Ext.Array.contains(tabErrors,prefix)){
 						tabErrors.push(prefix);
 					}
 				}
-				if(inputComp!=null){
+				if(inputComp){
 					inputComp.markInvalid(error.label);
 				}else{
 					errStr+=error.label+"</br>";
 				}
 			}
-			if(errStr!=''){
+			if(errStr!==''){
 				CWHF.showMsgError(error.label);
 			}
 			this.markErrorTabs(tabErrors);
@@ -1001,7 +993,7 @@ Ext.define('com.trackplus.admin.user.Profile',{
 			for(var i=0;i<tabErrors.length;i++){
 				var tabID='tab.'+tabErrors[i];
 				var tabComp=this.getControl(tabID);
-				if(tabComp!=null){
+				if(tabComp){
 					tabErrorsCmp.push(tabComp);
 				}
 			}
@@ -1031,14 +1023,14 @@ Ext.define('com.trackplus.admin.user.Profile',{
 			bodyStyle:{
 				padding:'10px'
 			},
-			itemId: 'panel.selfreg',
+			itemId: 'panel_selfreg',
 			/*style:{
 				borderBottom:'1px solid #D0D0D0'
 			}, */
 			items:[
 			CWHF.createTextFieldWithHelp('admin.user.profile.lbl.userName','main.userName',
-						{enableKeyEvents:true,allowBlank:false,
-						listeners:
+						{itemId:'mainUserName',enableKeyEvents:true,allowBlank:false},
+						{listeners:
 						{
 							//keyup: {
 							blur: {
@@ -1059,9 +1051,9 @@ Ext.define('com.trackplus.admin.user.Profile',{
 						}
 				),
 				CWHF.createTextField('admin.user.profile.lbl.passwd','main.passwd',
-								{inputType:'password',minLength:5, id:'main.passwd'}),
+								{inputType:'password',minLength:5, itemId: 'mainPasswd', id:'mainPasswd'}),
 				CWHF.createTextField('admin.user.profile.lbl.passwd2','main.passwd2',
-								{inputType:'password',vtype:'password',initialPassField:'main.passwd'}),
+								{inputType:'password',vtype:'password', itemId: 'mainPasswd2', initialPassField:'main.passwd'}),
 				CWHF.createTextFieldWithHelp('admin.user.profile.lbl.userEmail','main.userEmail',{vtype:'email',allowBlank:false}),
 				CWHF.createTextField('admin.user.profile.lbl.lastName','main.lastName',  {allowBlank:false},
 					//{listeners:
@@ -1087,8 +1079,8 @@ Ext.define('com.trackplus.admin.user.Profile',{
 							}
 					 //}
 					}),
-				CWHF.createComboWithHelp('admin.user.profile.lbl.locale','main.locale',{idType:'string'}),
-				CWHF.createComboWithHelp('admin.user.profile.lbl.usertz','main.userTz',{idType:'string'})
+				CWHF.createComboWithHelp('admin.user.profile.lbl.locale','main.locale',{itemId:'mainLocale', idType:'string'}),
+				CWHF.createComboWithHelp('admin.user.profile.lbl.usertz','main.userTz',{itemId:'mainUserTz', idType:'string'})
 			]
 		});
 		me.selfRegForm=form;
@@ -1103,7 +1095,7 @@ com.trackplus.admin.user.selfRegistrationAfterSubmit=function(params, result){
 	var emailSent=result.emailSent;
 	var email=result.email;
 	var message="";
-	if(emailSent==true){
+	if(emailSent===true){
 		message=getText("logon.register.msg.registeredWithEmailSent",email);
 	}else{
 		message=getText("logon.register.msg.registeredNoEmailSent");
@@ -1148,16 +1140,16 @@ com.trackplus.admin.user.createSelfRegistrationDialog=function(){
 				profile.jsonData=action.result.data;
 				var lData=action.result.data;
 
-				var locale =CWHF.getWrappedControl.call(formPanel,"main.locale");
+				var locale =CWHF.getWrappedControl.call(formPanel,"mainLocale");
 				locale.store.loadData(lData['main.locales']);
 				locale.setValue(lData['main.locale']);
 
-				var timezones = CWHF.getWrappedControl.call(formPanel, "main.userTz");
-				if(timezones!=null){
+				var timezones = CWHF.getWrappedControl.call(formPanel, "mainUserTz");
+				if(timezones){
 					timezones.store.loadData(lData['main.timeZones']);
 					timezones.setValue(lData['main.userTz']);
 				}
-				CWHF.getWrappedControl.call(formPanel, "main.ldapUser").setDisabled(!lData['main.ldapOn'] || lData['main.forceLdap']);
+				CWHF.getWrappedControl.call(formPanel, "mainLdapUser").setDisabled(!lData['main.ldapOn'] || lData['main.forceLdap']);
 			}catch(ex){}
 		},
 		failure:function(form, action){

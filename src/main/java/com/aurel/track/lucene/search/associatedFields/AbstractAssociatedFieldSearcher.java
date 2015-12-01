@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.lucene.analysis.Analyzer;
@@ -54,7 +55,7 @@ import com.aurel.track.lucene.search.LuceneSearcher;
  */
 public abstract class AbstractAssociatedFieldSearcher
 	extends AbstractLookupFieldSearcher implements ILookupFieldSearcher {
-	
+
 	private static final Logger LOGGER = LogManager.getLogger(AbstractAssociatedFieldSearcher.class);
 	/**
 	 * Gets the index searcher ID
@@ -67,21 +68,21 @@ public abstract class AbstractAssociatedFieldSearcher
 	 * @return
 	 */
 	protected abstract String getLuceneFieldName();
-	
+
 	/**
 	 * Gets the lucene document's 'internal' text field names
 	 * An associated entity might have more then one 'internal' text field to be searched in
 	 * The end user should not know about these fields
 	 * @return
 	 */
-	protected abstract String[] getSearchFieldNames(); 
-	
+	protected abstract String[] getSearchFieldNames();
+
 	/**
 	 * Gets the lucene document field name containing the workItemID field
 	 * @return
 	 */
 	protected abstract String getWorkItemFieldName();
-	
+
 	/**
 	 * Gets the lucene document field name containing the workItemID field
 	 * @param document
@@ -90,16 +91,17 @@ public abstract class AbstractAssociatedFieldSearcher
 	protected String getAdditionalWorkItemFieldName(Document document) {
 		return null;
 	}
-	
+
 	/**
 	 * Preprocess an explicit field
-	 * @param analyzer 
+	 * @param analyzer
 	 * @param toBeProcessedString a part of the user entered query string
 	 * @param locale
 	 * @param indexStart the index to start looking for fieldName
 	 * @return
 	 */
-	public String preprocessExplicitField(Analyzer analyzer, 
+	@Override
+	public String preprocessExplicitField(Analyzer analyzer,
 			String toBeProcessedString, Locale locale, int indexStart) {
 		String fieldName = getLuceneFieldName();
 		int indexFound = LuceneSearcher.fieldNameIndex(toBeProcessedString, fieldName, indexStart);
@@ -115,13 +117,13 @@ public abstract class AbstractAssociatedFieldSearcher
 		if (processedFieldValue==null || "".equals(processedFieldValue)) {
 			return toBeProcessedString;
 		}
-		StringBuffer original = new StringBuffer(toBeProcessedString);
+		StringBuilder original = new StringBuilder(toBeProcessedString);
 		//get the user entered value of the field
 		String issueNoFieldName = LuceneUtil.getFieldName(SystemFields.ISSUENO);
 		original.replace(indexFound, beginReplaceIndex + originalFieldValue.length(), issueNoFieldName + LuceneSearcher.FIELD_NAME_VALUE_SEPARATOR + processedFieldValue);
 		return preprocessExplicitField(analyzer, original.toString(), locale, beginReplaceIndex + processedFieldValue.length());
 	}
-	
+
 	/**
 	 * Preprocess the toBeProcessedString when no field is specified
 	 * @param analyzer
@@ -129,6 +131,7 @@ public abstract class AbstractAssociatedFieldSearcher
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public Query getNoExplicitFieldQuery(Analyzer analyzer, String toBeProcessedString, Locale locale) {
 		Query query = null;
 		String workItemsFound = searchNoExplicitField(analyzer, toBeProcessedString, locale);
@@ -140,13 +143,14 @@ public abstract class AbstractAssociatedFieldSearcher
 			try {
 				query = queryParser.parse(queryString);
 			} catch (ParseException e) {
-				LOGGER.warn("Parsing without explicit field the " + getLuceneFieldName() +  "  for " + queryString + " field failed with " + e.getMessage(), e);
+				LOGGER.warn("Parsing without explicit field the " + getLuceneFieldName() +  "  for " + queryString + " field failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		return query;
 	}
-	
-	
+
+
 	/**
 	 * Get the OR separated IDs which match the specified field's user entered string
 	 * @param analyzer
@@ -156,6 +160,7 @@ public abstract class AbstractAssociatedFieldSearcher
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	protected String searchExplicitField(Analyzer analyzer, String fieldName,
 			String fieldValue, Integer fieldID, Locale locale) {
 		IndexSearcher indexSearcher = null;
@@ -174,7 +179,8 @@ public abstract class AbstractAssociatedFieldSearcher
 				indexSearcher.search(query, collector);
 				scoreDocs = collector.topDocs().scoreDocs;
 			} catch (IOException e) {
-				LOGGER.warn("Searching the " + getLuceneFieldName() + " failed with " + e.getMessage(), e);
+				LOGGER.warn("Searching the " + getLuceneFieldName() + " failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				return fieldValue;
 			}
 			if (scoreDocs==null || scoreDocs.length==0) {
@@ -183,19 +189,20 @@ public abstract class AbstractAssociatedFieldSearcher
 			if (scoreDocs.length>LuceneSearcher.MAX_BOOLEAN_CLAUSES) {
 				LOGGER.warn("Maximum number of boolean clauses was exceeded");
 			}
-			
-			Set<Integer> workItemIDs = new HashSet<Integer>(); 
+
+			Set<Integer> workItemIDs = new HashSet<Integer>();
 			for (int i = 0; i < scoreDocs.length; i++) {
 				int docID = scoreDocs[i].doc;
 				Document doc;
 				try {
 					doc = indexSearcher.doc(docID);
 				} catch (IOException e) {
-					LOGGER.error("Getting the documents from index searcher for " + getLuceneFieldName() + "  failed with " + e.getMessage(), e);
+					LOGGER.error("Getting the documents from index searcher for " + getLuceneFieldName() + "  failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 					return fieldValue;
-				} /*finally {
-					LuceneSearcher.closeIndexSearcherAndUnderlyingIndexReader(indexSearcher, getLuceneFieldName());
-				}*/
+				}
+
+
 				String workItemFieldName = getWorkItemFieldName();
 				String workItemIDStr = doc.get(workItemFieldName);
 				Integer workItemID = null;
@@ -204,6 +211,7 @@ public abstract class AbstractAssociatedFieldSearcher
 						workItemID = Integer.valueOf(workItemIDStr);
 						workItemIDs.add(workItemID);
 					} catch (Exception e) {
+						LOGGER.debug(e);
 					}
 				}
 				//by links there are two workitems for bidirectional links
@@ -219,17 +227,18 @@ public abstract class AbstractAssociatedFieldSearcher
 						}
 					}
 				}
-				
+
 			}
 			return LuceneSearcher.createORDividedIDs(workItemIDs);
 		} catch(Exception e) {
-			LOGGER.warn("Getting the " + getLuceneFieldName() + " field " + fieldValue + " failed with " + e.getMessage(), e);
+			LOGGER.warn("Getting the " + getLuceneFieldName() + " field " + fieldValue + " failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			return fieldValue;
 		} finally {
 			LuceneSearcher.closeIndexSearcherAndUnderlyingIndexReader(indexSearcher, getLuceneFieldName());
 		}
 	}
-	
+
 	/**
 	 * Get the OR separated IDs which match the user entered string
 	 * @param analyzer
@@ -237,11 +246,12 @@ public abstract class AbstractAssociatedFieldSearcher
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	protected String searchNoExplicitField(Analyzer analyzer, String fieldValue, Locale locale) {
 		return searchExplicitField(analyzer, null, fieldValue, null, locale);
 	}
-	
-	
+
+
 	/**
 	 * Gets the lucene query object
 	 * @param fieldValue
@@ -256,14 +266,16 @@ public abstract class AbstractAssociatedFieldSearcher
 				try {
 					query = queryParser.parse(fieldValue);
 				} catch (ParseException e) {
-					LOGGER.error("Parsing the query string '" + fieldValue + "' for  " + getLuceneFieldName() + " failed with " + e.getMessage(), e);
+					LOGGER.error("Parsing the query string '" + fieldValue + "' for  " + getLuceneFieldName() + " failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 			} else {
 				BooleanClause.Occur[] orFlags = LuceneSearcher.getOrFlagsArray(searchFieldNames.length);
 				try {
 					query = MultiFieldQueryParser.parse(fieldValue, searchFieldNames, orFlags, analyzer);
 				} catch (ParseException e) {
-					LOGGER.error("Parsing the query string '" + fieldValue + "' for " + getLuceneFieldName() + " failed with " + e.getMessage(), e);
+					LOGGER.error("Parsing the query string '" + fieldValue + "' for " + getLuceneFieldName() + " failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 			}
 		}

@@ -1,0 +1,124 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="Track+ can integrate with your source code version control system, for example CVS, Subversion, or Perforce. To establish links, add item numbers to your version control system submits like „#&lt;item ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="task"/><meta name="DC.Title" content="Subversion version control"/><meta name="abstract" content="Track+ can integrate with your source code version control system, for example CVS, Subversion, or Perforce. To establish links, add item numbers to your version control system submits like „#&lt;item no.&gt;, e.g. „#4711“. This section describes for Subversion (SVN) how to proceed."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="Track+ can integrate with your source code version control system, for example CVS, Subversion, or Perforce. To establish links, add item numbers to your version control system submits like „#&lt;item no.&gt;, e.g. „#4711“. This section describes for Subversion (SVN) how to proceed."/><meta name="indexterms" content="version control, Subversion, version control, Subversion, version control, SVN, SVN"/><meta name="DC.subject" content="version control, Subversion, SVN"/><meta name="keywords" content="version control, Subversion, SVN"/><meta name="DC.Relation" scheme="URI" content="../../../Topics/04ForProjectAdmins/vc/settingVC.html"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="id15versionControlSvn"/><link rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Subversion version control</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()" id="id15versionControlSvn">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../../Topics/04ForProjectAdmins/vc/settingVC.html" title="With Track+ you can link files in a version control repository like Subversion, GIT or CVS to items."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Version control</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../../Topics/04ForProjectAdmins/vc/../../../Topics/04ForProjectAdmins/Chapter4Wrapper.html" title="Track+ for space administrators">Track+ for space administrators</a> / <a class="navheader_parent_path" href="../../../Topics/04ForProjectAdmins/vc/settingVC.html" title="With Track+ you can link files in a version control repository like Subversion, GIT or CVS to items.">Version control</a></td></tr></tbody></table>
+
+    <h1 class="title topictitle1">Subversion version control</h1>
+
+    
+    
+    <div class="body taskbody"><p class="shortdesc"><span class="ph"><span class="ph">Track+</span></span> can integrate
+        with your source code version control system, for example CVS, Subversion, or Perforce. To
+        establish links, add item numbers to your version control system submits like „#&lt;item
+        no.&gt;, e.g. „#4711“. This section describes for Subversion (SVN) how to proceed.</p>
+
+        <div class="section prereq p">
+            <p class="p">You must know how to connect to your version control system. Typically you already
+                have used that information when you set up your version control client software.</p>
+
+            <p class="p">You must be logged in as space administrator, system manager or system
+                administrator.</p>
+
+        </div>
+
+        <ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd"><span class="ph">In the top toolbar select <span class="ph menucascade"><span class="ph uicontrol">Administration</span> &gt; <span class="ph uicontrol">Workspaces</span></span>.</span> Alternatively click on the
+                    <span class="q">"Workspaces"</span> bar in the left navigation area.</span>
+                <div class="itemgroup stepxmp">
+                    <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="../figures/manageSpace1.png" height="120" width="302"/></div><br/>
+                        
+                    </div>
+
+                </div>
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">Select a workspace in the leftmost navigation area.</span>
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">In the second navigation column click on <span class="q">"Version control"</span>. </span>
+                <div class="itemgroup info">
+                    <div class="note attention"><span class="attentiontitle">Attention:</span> The version control node will only be available of the
+                        space type for this space supports this feature.</div>
+
+                    <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/versionControl_SVN1.png" height="327" width="579"/></div><br/>
+                        
+                    </div>
+
+                </div>
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">Select one of the supported version control systems, in this case Subversion.
+                    The list may vary. Additional systems can be supported via plug-ins.</span>
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">Select a version control web viewer, if you have any installed. <span class="ph"><span class="ph">Track+</span></span> directly supports viewVC, WebSVN, and
+                    Sventon. With a version control web viewer you will be able to go from an item
+                    directly to associated change sets or files.</span>
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">Enter the correct links for your version control web viewer. In particular,
+                    replace the „SERVER“ variable with your server URL.</span>
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">Fill in the connection information (here shown for SVN connected via the
+                    svn+ssh connection method).</span>
+                <div class="itemgroup info">
+                    <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/versionControl_SVN2.png" height="77" width="323"/></div><br/>
+                        
+                    </div>
+
+                </div>
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">There may be additional connection information required. In the case of the
+                    svn+ssh connection method we can choose to use a public/private key pair. In
+                    this case, copy the private key (in
+                    OpenSSH format)
+                    into the provided area. If the key is protected via a pass phrase, enter it into
+                    the pass phrase field.</span>
+                <div class="itemgroup info">
+                    <div class="note attention"><span class="attentiontitle">Attention:</span> You need to copy the entire private key file in OpenSSH
+                        format there. It does not suffice to copy the key itself, as you may be used
+                        from the authorized_keys file.</div>
+
+                    <div class="p">
+                        <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/versionControl_SVN3.png" height="167" width="377"/></div><br/>
+                            
+                        </div>
+
+                    </div>
+
+                </div>
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">Test your connection. The save the configuration by clicking on the „Save“
+                    button in the toolbar.</span>
+            </li>
+</ol>
+
+        <div class="section result">
+            <p class="p">Your space is now directly linked to your version control system. When editing item
+                there will be a tab showing all files including their meta information that are
+                related to this item. Please not that it may take some time before any commits to
+                the Subversion repository show up in <span class="ph"><span class="ph">Track+</span></span>,
+                since <span class="ph"><span class="ph">Track+</span></span> needs to scan the repository on a
+                regular basis to retrieve this information. The time this takes depends on the size
+                and number of your Subversion repositories.</p>
+
+        </div>
+
+    </div>
+
+<div class="related-links"/>
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../../Topics/04ForProjectAdmins/vc/settingVC.html" title="With Track+ you can link files in a version control repository like Subversion, GIT or CVS to items."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Version control</span></a></span>  </div>
+</body>
+</html>

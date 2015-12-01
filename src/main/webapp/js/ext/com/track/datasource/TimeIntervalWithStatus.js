@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -113,7 +113,7 @@ Ext.define("js.ext.com.track.datasource.TimeIntervalWithStatus",{
 			width: this.width,
 			height: 100,
 			fieldLabel:this.statusLabelKey,
-			disabled: this.calculationMode == this.NEW
+			disabled: this.calculationMode === this.NEW
 		});
 
 		//If selected chart type is status over time
@@ -142,7 +142,7 @@ Ext.define("js.ext.com.track.datasource.TimeIntervalWithStatus",{
 			labelSeparator:this.labelSeparator,
 			labelWidth: this.labelWidth,
 			checked: this.grouping,
-			disabled: this.calculationMode == this.NEW,
+			disabled: this.calculationMode === this.NEW,
 			listeners: {
 				'change':{
 					fn: function (newValue, oldValue, eOpts ){
@@ -183,7 +183,7 @@ Ext.define("js.ext.com.track.datasource.TimeIntervalWithStatus",{
 			width: this.width,
 			value: this.groupingFirstLabel,
 			hidden: !this.grouping,
-			disabled: this.calculationMode == this.NEW
+			disabled: this.calculationMode === this.NEW
 
 		});
 
@@ -198,7 +198,7 @@ Ext.define("js.ext.com.track.datasource.TimeIntervalWithStatus",{
 			height: 100,
 			fieldLabel:this.statusLabelKey,
 			hidden: !this.grouping,
-			disabled: this.calculationMode == this.NEW,
+			disabled: this.calculationMode === this.NEW,
 			margin: '5 0 0 0'
 		});
 
@@ -211,7 +211,7 @@ Ext.define("js.ext.com.track.datasource.TimeIntervalWithStatus",{
 			width: this.width,
 			value: this.groupingSecondLabel,
 			hidden: !this.grouping,
-			disabled: this.calculationMode == this.NEW,
+			disabled: this.calculationMode === this.NEW,
 			margin: '12 0 0 0'
 		});
 
@@ -226,7 +226,7 @@ Ext.define("js.ext.com.track.datasource.TimeIntervalWithStatus",{
 			height: 100,
 			fieldLabel:this.statusLabelKey,
 			hidden: !this.grouping,
-			disabled: this.calculationMode == this.NEW,
+			disabled: this.calculationMode === this.NEW,
 			margin: '5 0 0 0'
 		});
 
@@ -238,7 +238,7 @@ Ext.define("js.ext.com.track.datasource.TimeIntervalWithStatus",{
 			width: this.width,
 			value: this.groupingThirdLabel,
 			hidden: !this.grouping,
-			disabled: this.calculationMode == this.NEW,
+			disabled: this.calculationMode === this.NEW,
 			margin: '12 0 0 0'
 		});
 
@@ -252,7 +252,7 @@ Ext.define("js.ext.com.track.datasource.TimeIntervalWithStatus",{
 			height: 100,
 			fieldLabel:this.statusLabelKey,
 			hidden: !this.grouping,
-			disabled: this.calculationMode == this.NEW,
+			disabled: this.calculationMode === this.NEW,
 			margin: '5 0 0 0'
 		});
 		this.groupingFourthLabelComp = CWHF.createTextField('statusOverTime.prompt.groupName',this.groupingFourthLabelName,{
@@ -263,7 +263,7 @@ Ext.define("js.ext.com.track.datasource.TimeIntervalWithStatus",{
 			width: this.width,
 			value: this.groupingFourthLabel,
 			hidden: !this.grouping,
-			disabled: this.calculationMode == this.NEW,
+			disabled: this.calculationMode === this.NEW,
 			margin: '12 0 0 0'
 		});
 
@@ -277,7 +277,7 @@ Ext.define("js.ext.com.track.datasource.TimeIntervalWithStatus",{
 			height: 100,
 			fieldLabel:this.statusLabelKey,
 			hidden: !this.grouping,
-			disabled: this.calculationMode == this.NEW,
+			disabled: this.calculationMode === this.NEW,
 			margin: '5 0 0 0'
 		});
 		this.groupingFifthLabelComp = CWHF.createTextField('statusOverTime.prompt.groupName',this.groupingFifthLabelName,{
@@ -288,7 +288,7 @@ Ext.define("js.ext.com.track.datasource.TimeIntervalWithStatus",{
 			width: this.width,
 			value: this.groupingFifthLabel,
 			hidden: !this.grouping,
-			disabled: this.calculationMode == this.NEW,
+			disabled: this.calculationMode === this.NEW,
 			margin: '12 0 0 0'
 		});
 

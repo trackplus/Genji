@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -51,6 +51,7 @@ public class TTextBoxSettingsPeer
      * @param objectID
      * @return
      */
+    @Override
     public TTextBoxSettingsBean loadByPrimaryKey(Integer objectID)  {    	
     	TTextBoxSettings tTextBoxSettings = null;
     	try {
@@ -70,6 +71,7 @@ public class TTextBoxSettingsPeer
 	 * @param textBoxSettingsBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TTextBoxSettingsBean textBoxSettingsBean)
 	{
 		TTextBoxSettings tTextBoxSettings;		
@@ -78,7 +80,7 @@ public class TTextBoxSettingsPeer
 			tTextBoxSettings.save();
 			return tTextBoxSettings.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a textbox settings failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a textbox settings failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -96,7 +98,7 @@ public class TTextBoxSettingsPeer
 			tTextBoxSettings.save();
 			return tTextBoxSettings.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Inserting of a textbox settings failed with " + e.getMessage(), e);
+			LOGGER.error("Inserting of a textbox settings failed with " + e.getMessage());
 			return null;
 		}
 	}*/
@@ -113,7 +115,7 @@ public class TTextBoxSettingsPeer
 			tTextBoxSettings = TTextBoxSettings.createTTextBoxSettings(textBoxSettingsBean);
 			tTextBoxSettings.save();			
 		} catch (Exception e) {
-			LOGGER.error("Updating of a textbox settings failed with " + e.getMessage(), e);
+			LOGGER.error("Updating of a textbox settings failed with " + e.getMessage());
 			
 		}
 	}*/
@@ -122,6 +124,7 @@ public class TTextBoxSettingsPeer
 	 * Deletes by configID
 	 * @param configID
 	 */
+	@Override
 	public void delete(Integer configID) {        
     	Criteria crit = new Criteria();
         crit.add(CONFIG, configID);
@@ -165,6 +168,7 @@ public class TTextBoxSettingsPeer
 	 * @param configID
 	 * @return
 	 */
+    @Override
     public List<TTextBoxSettingsBean> loadByConfig(Integer configID) {		
 		Criteria crit = new Criteria();
         crit.add(CONFIG, configID);
@@ -185,6 +189,7 @@ public class TTextBoxSettingsPeer
 	 * @param parameterCode
 	 * @return
 	 */
+    @Override
     public TTextBoxSettingsBean loadByConfigAndParameter(Integer configID, Integer parameterCode)
 	{	
 		List textBoxSettingsList =  null;
@@ -225,6 +230,7 @@ public class TTextBoxSettingsPeer
 	 * @param configIDs
 	 * @return
 	 */
+    @Override
     public List<TTextBoxSettingsBean> loadByConfigList(List configIDs) {
     	//Map textBoxSettingsMap = new HashMap();
     	if (configIDs==null || configIDs.isEmpty()) {
@@ -257,12 +263,13 @@ public class TTextBoxSettingsPeer
      * Loads all TextBoxSettings from table
      * @return
      */
+    @Override
     public List<TTextBoxSettingsBean> loadAll() {    	
 		Criteria crit = new Criteria();
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all text box settings failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all text box settings failed with " + e.getMessage());
 			return null;
 		}		
 	}

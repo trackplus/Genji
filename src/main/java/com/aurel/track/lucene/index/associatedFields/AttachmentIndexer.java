@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -51,7 +51,7 @@ import com.aurel.track.lucene.index.associatedFields.textExctractor.TextExtracto
  *
  */
 public class AttachmentIndexer extends AbstractAssociatedFieldIndexer {
-	
+
 	private static final Logger LOGGER = LogManager.getLogger(AttachmentIndexer.class);
 	private static AttachmentIndexer instance;
 	/**
@@ -64,27 +64,30 @@ public class AttachmentIndexer extends AbstractAssociatedFieldIndexer {
 		}
 		return instance;
 	}
-	
+
 	/**
 	 * Gets the index writer ID
 	 * @return
 	 */
+	@Override
 	protected int getIndexWriterID() {
 		return LuceneUtil.INDEXES.ATTACHMENT_INDEX;
 	}
-	
+
 	/**
-	 * Loads all indexable entitities for reindex
+	 * Loads all indexable entities for reindex
 	 * @return
 	 */
-	protected List loadAllIndexable() {
+	@Override
+	protected List<TAttachmentBean> loadAllIndexable() {
 		return AttachBL.loadAll();
 	}
-	
+
 	/**
 	 * Gets the the unique identifier fieldName
 	 * @return
 	 */
+	@Override
 	protected String getObjectIDFieldName() {
 		return LuceneUtil.ATTACHMENT_INDEX_FIELDS.ATTACHMENTID;
 	}
@@ -92,23 +95,26 @@ public class AttachmentIndexer extends AbstractAssociatedFieldIndexer {
 	 * Gets the fieldName containing the workItemID field
 	 * @return
 	 */
+	@Override
 	protected String getWorkItemFieldName() {
 		return LuceneUtil.ATTACHMENT_INDEX_FIELDS.ISSUENO;
 	}
-	
+
 	/**
-	 * Gets the associated field name for logging purposes  
+	 * Gets the associated field name for logging purposes
 	 * @return
 	 */
+	@Override
 	protected String getLuceneFieldName() {
 		return LuceneUtil.ATTACHMENT;
 	}
-	
+
 	/**
 	 * Adds an attachment to the attachment index
-	 * Used by attaching a new file to the workItem 
+	 * Used by attaching a new file to the workItem
 	 * @param attachFile
 	 */
+	@Override
 	public void addToIndex(Object object, boolean add) {
 		if (!LuceneUtil.isUseLucene() || !LuceneUtil.isIndexAttachments() || object==null) {
 			return;
@@ -134,7 +140,8 @@ public class AttachmentIndexer extends AbstractAssociatedFieldIndexer {
 					indexWriter.deleteDocuments(keyTerm);
 					indexWriter.commit();
 				} catch (IOException e) {
-					LOGGER.error("Removing the attachment " + objectID + " failed with " + e.getMessage(), e);
+					LOGGER.error("Removing the attachment " + objectID + " failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 			}
 		}
@@ -144,19 +151,22 @@ public class AttachmentIndexer extends AbstractAssociatedFieldIndexer {
 				indexWriter.addDocument(doc);
 			}
 		} catch (IOException e) {
-			LOGGER.error("Adding an attachment to the index failed with " + e.getMessage(), e);
+			LOGGER.error("Adding an attachment to the index failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		try {
 			indexWriter.commit();
 		} catch (IOException e) {
-			LOGGER.error("Flushing the attachment failed with " + e.getMessage(), e);
+			LOGGER.error("Flushing the attachment failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 	}
 	/**
-	 * Adds all attachments of a workItem to the attachment index 
+	 * Adds all attachments of a workItem to the attachment index
 	 * Used after saving a new issue which has also attachments
-	 * @param attachFile 
+	 * @param attachFile
 	 */
+	@Override
 	protected Document createDocument(Object entity) {
 		TAttachmentBean attach = (TAttachmentBean)entity;
 		Integer attachmentID = null;
@@ -178,7 +188,7 @@ public class AttachmentIndexer extends AbstractAssociatedFieldIndexer {
 					String extension = LuceneFileExtractor.getExtension(attachmentName);
 					if (LuceneFileExtractor.isStringExtension(extension)) {
 						ITextExtractor textExtractor = TextExtractorFactory.getInstance().getTextExtractor(extension);
-						String content = textExtractor.getText(attachmentFile, extension); //LuceneFileExtractor.getStringContent(attachmentFile, extension);
+						String content = textExtractor.getText(attachmentFile, extension);
 						if (content!=null && !"".equals(content)) {
 							LOGGER.debug("AttachmentName " + attachmentName + " indexed by string content");
 							return createAttachmentDocument(attachmentID, workItemID, attachmentName, fileName, description, content);
@@ -186,7 +196,7 @@ public class AttachmentIndexer extends AbstractAssociatedFieldIndexer {
 					} else {
 						if (LuceneFileExtractor.isReaderExtension(extension)) {
 							Reader reader = LuceneFileExtractor.getReader(attachmentFile);
-							if (reader!=null) {	
+							if (reader!=null) {
 								LOGGER.debug("AttachmentName " + attachmentName + " indexed by reader");
 								return createAttachmentDocument(attachmentID, workItemID, attachmentName, fileName, description, reader);
 							}
@@ -199,7 +209,7 @@ public class AttachmentIndexer extends AbstractAssociatedFieldIndexer {
 				}
 			}
 		} catch (Exception e) {
-			LOGGER.error("Indexing the attachment for workItem " + workItemID + 
+			LOGGER.info("Indexing the attachment for workItem " + workItemID +
 					" attachment: fileName " + fileName + " attachmentName " + attachmentName + " failed with " + e.getMessage());
 			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
@@ -252,8 +262,9 @@ public class AttachmentIndexer extends AbstractAssociatedFieldIndexer {
 		}
 		return null;
 	}
+
 	/**
-	 * Returns an attachment document based on reader content. 
+	 * Returns an attachment document based on reader content.
 	 * @param issueNo
 	 * @param originalName
 	 * @param realName
@@ -290,22 +301,24 @@ public class AttachmentIndexer extends AbstractAssociatedFieldIndexer {
 					" issueNo " + issueNo +
 					" originalName " + originalName +
 					" realName " + realName +
-					" description " + description + 
+					" description " + description +
 					" reader not null " + Boolean.valueOf(reader!=null).toString() +
 					" failed with " + e.getMessage());
 			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		return null;
 	}
+
 	/**
 	 * Removes the indexes for a list of workItems
 	 * @param workItemIDs
-	 */	
+	 */
+	@Override
 	public synchronized void deleteByWorkItems(List<Integer> workItemIDs) {
 		if (!LuceneUtil.isIndexAttachments()) {
 			return;
 		}
 		super.deleteByWorkItems(workItemIDs);
 	}
-	
+
 }

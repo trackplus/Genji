@@ -317,6 +317,10 @@
 		<action name="macroIssueAction" class="com.aurel.track.macro.MacroIssueAction">
 			<interceptor-ref name="editStack" />
 		</action>
+		
+		<action name="getCustomerInfo" class="com.aurel.track.report.GetCustomerInfoAction">
+			<interceptor-ref name="defaultNoAuth" />
+		</action>
 	
 	</package>
 	 <package name="struts-navigator-rest" extends="struts-track-base" namespace="/rest">

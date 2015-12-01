@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -32,6 +32,8 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import com.aurel.track.beans.TPersonBean;
+
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -41,6 +43,7 @@ import com.aurel.track.errors.ErrorData;
 import com.aurel.track.fieldType.runtime.base.CustomCompositeBaseRT;
 import com.aurel.track.fieldType.runtime.base.SelectContext;
 import com.aurel.track.fieldType.types.FieldTypeManager;
+import com.aurel.track.item.massOperation.MassOperationBL;
 import com.aurel.track.json.JSONUtility;
 
 /**
@@ -62,6 +65,7 @@ public class CompositeSelectBulkSetter extends AbstractBulkSetter {
 	 * the control for rendering the bulk value
 	 * @return
 	 */
+	@Override
 	public String getSetterValueControlClass() {
 		switch (relation) {
 		case BulkRelations.SET_TO:
@@ -78,11 +82,21 @@ public class CompositeSelectBulkSetter extends AbstractBulkSetter {
 	 */
 	protected String getNameWithMergedKey(String baseName, Integer fieldID, Integer listID, Integer parameterCode) {
 		StringBuilder stringBuilder = new StringBuilder();
-		//stringBuilder.append(baseName).append("[");
 		stringBuilder.append(baseName).append(".").append(encodeListSpecificKey(listID, parameterCode));
 		return stringBuilder.toString();
 	}
 	
+	/**
+	 * Builds the name of the client side controls for submit
+	 * @param baseName
+	 * @param index
+	 * @return
+	 */
+	protected String getItemIdWithMergedKey(String baseName, Integer fieldID, Integer listID, Integer parameterCode) {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append(baseName).append(encodeListSpecificKey(listID, parameterCode));
+		return stringBuilder.toString();
+	}
 	
 	protected String encodeListSpecificKey(Integer listID, Integer parameterCode) {
 		//the key should start with string otherwise it is not set by struts!!! (bug?)
@@ -104,7 +118,7 @@ public class CompositeSelectBulkSetter extends AbstractBulkSetter {
 	 * @param locale
 	 * @return
 	 */
-	public String getJsonValuesForList(String baseName, Object value,
+	public String getJsonValuesForList(String baseName, String baseItemID, Object value,
 		Object dataSource, Integer listID) {
 		Integer fieldID = getFieldID();
 		StringBuilder stringBuilder = new StringBuilder();
@@ -126,6 +140,8 @@ public class CompositeSelectBulkSetter extends AbstractBulkSetter {
 							stringBuilder.append("{");
 							JSONUtility.appendStringValue(stringBuilder, JSONUtility.JSON_FIELDS.NAME,
 									getNameWithMergedKey(baseName, fieldID, listID, parameterCode));
+							JSONUtility.appendStringValue(stringBuilder, JSONUtility.JSON_FIELDS.ITEMID,
+									getItemIdWithMergedKey(baseItemID, fieldID, listID, parameterCode));
 							JSONUtility.appendILabelBeanList(stringBuilder, JSONUtility.JSON_FIELDS.DATA_SOURCE, partDataSource);
 							Integer[] listValues = null;
 							Integer listValue = null;
@@ -179,7 +195,6 @@ public class CompositeSelectBulkSetter extends AbstractBulkSetter {
 			if (dataSourceMap!=null) {
 				boolean allIssuesFromTheSameProject = dataSourceMap.keySet().size()==1;
 				Map<Integer, SortedMap<Integer, Integer[]>> valueMap = (Map<Integer, SortedMap<Integer, Integer[]>>)value;
-				//stringBuilder.append("listsJson").append(":[");	
 				JSONUtility.appendFieldName(stringBuilder, "listsJson").append(":[");
 				for (Iterator<Integer> itrList = dataSourceMap.keySet().iterator(); itrList.hasNext();) {
 					stringBuilder.append("{");
@@ -195,13 +210,14 @@ public class CompositeSelectBulkSetter extends AbstractBulkSetter {
 						}
 						JSONUtility.appendIntegerValue(stringBuilder, "listID", listID);
 						JSONUtility.appendFieldName(stringBuilder, "parts").append(":[");
-						//stringBuilder.append("parts:").append("[");
 						for (Iterator<Integer> itrPart = compositeListDataSource.keySet().iterator(); itrPart.hasNext();) {
 							Integer parameterCode = itrPart.next();
 							List<ILabelBean> partDataSource = compositeListDataSource.get(parameterCode);
 							stringBuilder.append("{");
 							JSONUtility.appendStringValue(stringBuilder, JSONUtility.JSON_FIELDS.NAME,
 									getNameWithMergedKey(baseName, fieldID, listID, parameterCode));
+							JSONUtility.appendStringValue(stringBuilder, JSONUtility.JSON_FIELDS.ITEMID,
+									getItemIdWithMergedKey(MassOperationBL.VALUE_BASE_ITEMID, fieldID, listID, parameterCode));
 							JSONUtility.appendILabelBeanList(stringBuilder, JSONUtility.JSON_FIELDS.DATA_SOURCE, partDataSource);
 							Integer[] listValues = null;
 							Integer listValue = null;
@@ -239,6 +255,7 @@ public class CompositeSelectBulkSetter extends AbstractBulkSetter {
 		return stringBuilder.toString();
 	}
 
+	@Override
 	public Object fromDisplayString(Map<String, String> displayStringMap, Locale locale) {
 		Map<Integer, SortedMap<Integer, Integer[]>> actualValuesMap = new HashMap<Integer, SortedMap<Integer,Integer[]>>();
 		if (displayStringMap == null) {
@@ -272,7 +289,8 @@ public class CompositeSelectBulkSetter extends AbstractBulkSetter {
 											valuesForList.put(parameterCode, new Integer[] { intValue });
 										} catch (Exception e) {
 											LOGGER.warn("Converting the " + displayStringMapValue + " for fieldID " + getFieldID() +
-												" and list " + listID +  " to Integer from display string failed with " + e.getMessage(), e);
+												" and list " + listID +  " to Integer from display string failed with " + e.getMessage());
+											LOGGER.debug(ExceptionUtils.getStackTrace(e));
 										}
 									}
 								}
@@ -331,9 +349,11 @@ public class CompositeSelectBulkSetter extends AbstractBulkSetter {
 									Integer listID =  issueTypeToListMap.get(issueTypeID);
 									if (listID!=null) {
 										SortedMap<Integer, Integer[]> compositeListMap = valueMap.get(listID);
-										for (int i = 0; i < noOfParts; i++) {
-											Integer localParameterCode = Integer.valueOf(i+1);
-											workItemBean.setAttribute(fieldID, localParameterCode, compositeListMap.get(localParameterCode));
+										if (compositeListMap!=null) {
+											for (int i = 0; i < noOfParts; i++) {
+												Integer localParameterCode = Integer.valueOf(i+1);
+												workItemBean.setAttribute(fieldID, localParameterCode, compositeListMap.get(localParameterCode));
+											}
 										}
 									}
 								}

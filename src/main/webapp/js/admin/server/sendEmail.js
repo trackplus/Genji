@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -54,7 +54,7 @@ Ext.define('com.trackplus.admin.server.SendEmail',{
 
 	getToolbar:function(){
 		var me=this;
-		if(me.btnSend==null){
+		if(CWHF.isNull(me.btnSend)){
 			me.initButtons();
 		}
 		return [me.btnCC,me.btnBCC,me.btnSend];
@@ -81,7 +81,7 @@ Ext.define('com.trackplus.admin.server.SendEmail',{
 			iconCls:cssClass,
 			text:label,
 			handler:handler,
-			enableToggle:enableToggle!=null?enableToggle==true:false,
+			enableToggle:enableToggle?enableToggle===true:false,
 			scope:me
 		});
 	},
@@ -240,6 +240,7 @@ Ext.define('com.trackplus.admin.server.SendEmail',{
 		var bodyCfg={
 			region:'center',
 			margin:'0 0 0 0',
+			cls:'rteField',
 			border:false
 			/*cls:'ckeField100Percent'*/
 		};
@@ -301,7 +302,7 @@ Ext.define('com.trackplus.admin.server.SendEmail',{
 						break;
 					}
 				}
-				if(errorMessage!=null){
+				if(errorMessage){
 					CWHF.showMsgError(errorMessage);
 				}
 			}
@@ -329,7 +330,7 @@ Ext.define('com.trackplus.admin.server.SendEmail',{
 		me.currentTxtTo=txtTo;
 		var personPikerDialog=Ext.create('com.trackplus.util.PersonPickerDialog',{
 			title:title,
-			data:null,
+			options:null,
 			includeEmail:true,
 			includeGroups:true,
 			handler:me.addPersonHandler,
@@ -339,12 +340,12 @@ Ext.define('com.trackplus.admin.server.SendEmail',{
 	},
 	addPersonHandler:function(value,displayValue){
 		var me=this;
-		if(displayValue==null){
+		if(CWHF.isNull(displayValue)){
 			return ;
 		}
 		var oldValue=me.currentTxtTo.getValue();
 		var newValue="";
-		if(oldValue!=null&&oldValue!=''){
+		if(oldValue&&oldValue!==''){
 			newValue=oldValue+";"
 		}
 		newValue+=displayValue.join('; ');

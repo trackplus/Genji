@@ -1,0 +1,265 @@
+/*silver trackHtmlEditorArea*/
+/*base htmleditor area */
+/* line 3, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+html, body {
+  background-color: transparent;
+}
+
+/* line 7, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+body {
+  font-family: Tahoma,Verdana,Arial,Helvetica,sans-serif;
+  font-size: 12px;
+  color: #3A394B;
+  margin: 0;
+  padding: 3px 0 0 3px;
+  background-color: #ffffff;
+}
+
+/* IE5.x needs this */
+/* line 17, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+p, td {
+  font-size: 12px;
+}
+
+/* line 21, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+p {
+  margin-top: 2px;
+  margin-bottom: 8px;
+}
+
+/* line 26, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+h1 {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* line 31, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+h2 {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333333;
+  margin: 0 0 5px 0;
+}
+
+/* line 38, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+h3 {
+  font-size: 13px;
+  font-weight: bold;
+  color: #444444;
+  margin: 5px 0 0 0;
+}
+
+/* line 45, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+h4 {
+  font-size: 12px;
+  font-weight: bold;
+  margin: 0 0 17px 0;
+  background: url(img/dots.gif) repeat-x left bottom;
+  padding: 0 0 5px 0;
+}
+
+/* line 53, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+h4.splitPanel {
+  margin: 15px 0 10px 0;
+}
+
+/* line 57, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+input, textarea, select {
+  font-family: Verdana,Arial,Helvetica,sans-serif;
+  font-size: 11px;
+}
+
+/* line 62, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+form {
+  margin: 0;
+  padding: 0;
+}
+
+/* line 67, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+a {
+  color: #1D5090;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/* line 73, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+a:active {
+  color: #BF2128;
+}
+
+/* line 77, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+a:hover {
+  color: #BF2128;
+}
+
+/* line 81, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+a.regular {
+  color: #1d5090;
+  text-decoration: underline;
+  font-weight: normal;
+  background: url(img/arrow-small2.gif) no-repeat 0 4px;
+  padding: 0 0 0 15px;
+  margin: 0 0 2px 0;
+  display: block;
+}
+
+/* line 91, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+a.regular:hover, a.regular:active {
+  text-decoration: underline;
+  color: #BF2128;
+}
+
+/* line 96, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+ul {
+  margin: 10px 0 10px 10px;
+  padding: 0;
+  list-style-type: none;
+}
+
+/* line 103, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+ul li {
+  background: url(img/list.gif) no-repeat 0 0.5em;
+  line-height: 1.5em;
+  margin: 0;
+  padding: 0 0 2px 12px;
+}
+
+/* line 109, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+ol li {
+  line-height: 1.5em;
+  margin: 0;
+}
+
+/* line 113, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+ol {
+  /*list-style-type:decimal;*/
+}
+
+/* line 116, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+ol ol {
+  list-style-type: lower-alpha;
+}
+
+/* line 119, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+ol ol ol {
+  list-style-type: lower-roman;
+}
+
+/* Color helpers to add a bit more flexibility  */
+/* line 125, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+.color1 {
+  background: #EEF0F5;
+}
+
+/* line 129, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+.color2 {
+  background: #EEEDED;
+}
+
+/* line 133, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+.color3 {
+  background: #bec0c6;
+}
+
+/* line 137, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+.color4 {
+  background: #fff;
+}
+
+/* line 141, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+.greyed {
+  color: #909090;
+}
+
+/* line 146, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+a.synopsis_blue {
+  color: #1D5090;
+  font-weight: normal;
+}
+
+/* line 151, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+a.synopsis_blue:active {
+  color: #1D5090;
+}
+
+/* line 155, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+a.synopsis_blue:hover {
+  color: #BF2128;
+  background: none;
+  text-decoration: underline;
+}
+
+/* line 161, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+a.synopsis_red {
+  color: #BF2128;
+}
+
+/* line 165, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+a.synopsis_red:active {
+  color: #BF2128;
+}
+
+/* line 169, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+a.synopsis_red:hover {
+  color: #1D5090;
+  background: none;
+  text-decoration: underline;
+}
+
+/* line 175, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+a.synopsisClosedNotOnPlan {
+  color: #1D5090;
+  font-weight: normal;
+}
+
+/* line 180, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+a.synopsisClosedNotOnPlan:active {
+  color: #1D5090;
+}
+
+/* line 184, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+a.synopsisClosedNotOnPlan:hover {
+  color: #BF2128;
+  background: none;
+  text-decoration: underline;
+}
+
+/* line 191, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+.visible {
+  display: block;
+}
+
+/* line 192, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+.invisible {
+  display: none;
+}
+
+/* line 196, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+.code-text {
+  font-family: courier new,courier,monospace;
+  font-size: 12px;
+  text-align: left;
+}
+
+/* Old styles */
+/* line 206, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+.background-gray {
+  background-color: #EEF0F5;
+  padding: 1px;
+}
+
+/* line 211, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+.background-darkgray {
+  background-color: #BEC0C6;
+  padding: 3px;
+}
+
+/* line 216, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+.cke_top {
+  padding: 5px 5px 0 5px;
+}
+
+/* line 219, ../../../../themes/sass/partials/_base-trackHtmlEditorArea.scss */
+span.disabled {
+  color: #808080;
+}

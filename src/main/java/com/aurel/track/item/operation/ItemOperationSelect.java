@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -71,19 +71,23 @@ public abstract class ItemOperationSelect implements ItemOperation{
 		this(fieldID,true,true,false,locale);
 		
 	}
+	@Override
 	public String getPluginID() {
 		return pluginID;
 	}
+	@Override
 	public String getName() {
 		return name;
 	}
 
+	@Override
 	public String getIcon() {
 		/*if(iconName!=null){
 			return IconPathHelper.getListIconPathForURL(iconName,contextPath);
 		}*/
 		return null;
 	}
+	@Override
 	public String getIconCls() {
 		return iconName;
 	}
@@ -94,6 +98,7 @@ public abstract class ItemOperationSelect implements ItemOperation{
 		}
 		return 2;
 	}
+	@Override
 	public List<MenuItem> getChildren(TPersonBean personBean, Locale locale, Integer nodeID) {
 		List<MenuItem> menuItems=new ArrayList<MenuItem>();
 		List<ILabelBean> currentOptions=getOptionsInternal(personBean,locale,nodeID);
@@ -140,6 +145,7 @@ public abstract class ItemOperationSelect implements ItemOperation{
 		return null;
 	}
 
+	@Override
 	public void execute(int[] workItemIds, Integer nodeObjectID, Map<String, String> params, Integer personID, Locale locale) throws ItemOperationException {
 		executeInternal(fieldID,workItemIds,nodeObjectID,params,personID,locale);
 	}
@@ -159,6 +165,7 @@ public abstract class ItemOperationSelect implements ItemOperation{
 		}
 	}
 
+	@Override
 	public boolean canDrop(int[] workItemIds, Integer nodeObjectID) {
 		//Object fieldValue= workItemIds.getAttribute(fieldID);
 		if(nodeObjectID==null){
@@ -168,6 +175,7 @@ public abstract class ItemOperationSelect implements ItemOperation{
 		return true;//!nodeObjectID.equals(fieldValue);
 	}
 
+	@Override
 	public List<ReportBean> filter(List<ReportBean> reportBeans, Integer nodeObjectID){
 		List<ReportBean> result=new ArrayList<ReportBean>();
 		if(nodeObjectID==null){

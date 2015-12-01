@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -99,7 +99,6 @@ public abstract class MailHandler extends Thread {
 		/**
 		 * derived fields
 		 */
-		//the complete subject in the previous versions: equivalent of ${marker}[${{project}] ${changeDetail}
 		static String SUBJECT = "subject";
 		//this will be parsed at a possible replay
 		static String MARKER = "marker";
@@ -356,7 +355,6 @@ public abstract class MailHandler extends Thread {
 				boolean emailSent = sendEmailOnPerson(personBean, personLocale, sendFrom, null,replayToPerson, mailTemplateBean.getObjectID(), root);
 				if (emailSent) {
 					LOGGER.debug("E-mail sent to the subtitute person to be notified directly " + personBean.getLabel()  + "("+  personID + ")");
-					//emailsSentToSubstitutesToNotifyDirectly.add(personBean.getObjectID());
 				} else {
 					//sending the e-mail was not successful, add it to the Cc list
 					LOGGER.debug("E-mail not  sent to the subtitute person to be notified directly " + personBean.getLabel()  + "("+  personID + "). Added as Cc");
@@ -438,7 +436,6 @@ public abstract class MailHandler extends Thread {
 			}
 			return false;
 		}
-		//Map<String, Object> root = getRootContext(sendToPerson, personLocale, plainEmail, pickerRoles, localizedFieldChangesMap);
 		if (root==null) {
 			//do not send mail (no notification needed)
 			LOGGER.debug("Root context is null for person " + sendToPerson.getName() + " (" + personID + ")");
@@ -450,7 +447,7 @@ public abstract class MailHandler extends Thread {
 			subjectTemplate.process(root, subjectWriter);
 			LOGGER.debug("Subject template processed.");
 		} catch (Exception e) {
-			LOGGER.warn("Processing the subject template " + bodyTemplate.getName() + " failed with " + e.getMessage(), e);
+			LOGGER.warn("Processing the subject template " + bodyTemplate.getName() + " failed with " + e.getMessage());
 			LOGGER.debug("Processed template: " + subjectWriter.toString());
 			return false;
 		}
@@ -462,7 +459,7 @@ public abstract class MailHandler extends Thread {
 			bodyTemplate.process(root, bodyWriter);
 			LOGGER.debug("Body template processed.");
 		} catch (Exception e) {
-			LOGGER.warn("Processing the body template " + bodyTemplate.getName() + " failed with " + e.getMessage(), e);
+			LOGGER.warn("Processing the body template " + bodyTemplate.getName() + " failed with " + e.getMessage());
 			LOGGER.debug("Processed template: " + bodyWriter.toString());
 			return false;
 		}
@@ -526,7 +523,6 @@ public abstract class MailHandler extends Thread {
 			sendFromPersonbean.setEmail(emailAddress);
 		} else {
 			// we use the one who changed the item as sender address
-			//sendFromPersonbean = changedByPerson;
 			sendFromPersonbean = new TPersonBean(changedByPerson.getFirstName(), changedByPerson.getLastName(), changedByPerson.getEmail()) ;
 			if (sendFromPersonbean.getLastName()==null) {
 				sendFromPersonbean.setLastName("");
@@ -572,7 +568,7 @@ public abstract class MailHandler extends Thread {
 		try {
 			return Html2Text.getNewInstance().convert(text);
 		} catch (Exception e) {
-			LOGGER.warn("Converting the HTML to plain text failed with " + e.getMessage(), e);
+			LOGGER.warn("Converting the HTML to plain text failed with " + e.getMessage());
 			return text;
 		}
 	}

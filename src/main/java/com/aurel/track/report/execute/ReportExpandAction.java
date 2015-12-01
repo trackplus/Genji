@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -64,6 +64,7 @@ public class ReportExpandAction extends ActionSupport implements Preparable, Ses
 	/**
      * Prepares the reportBeans
      */
+	@Override
 	public void prepare() throws Exception {		
 
     }
@@ -103,7 +104,6 @@ public class ReportExpandAction extends ActionSupport implements Preparable, Ses
 			allItemsExpandedInEffect = allItemsExpanded.booleanValue();
 		}
 		if (workItemID != null) {
-			//ReportBean reportBean = reportBeans.getItem(workItemID);
 			//if (reportBean!=null) {
 			Set<Integer> otherItems = (Set<Integer>)session.get(OTHER_ITEMS_SET);
 				if (otherItems==null) {
@@ -111,7 +111,6 @@ public class ReportExpandAction extends ActionSupport implements Preparable, Ses
 					session.put(OTHER_ITEMS_SET, otherItems);
 				}
 				//register the expand/collapse for the next recalculation of ReportBeans 				
-				//boolean isExpanded = reportBean.isExpanded();
 				if (allItemsExpandedInEffect) {
 					if (expanded) {					
 						otherItems.remove(workItemID);
@@ -127,7 +126,6 @@ public class ReportExpandAction extends ActionSupport implements Preparable, Ses
 				}
 				//after an reportBean expand/collapse the ReportBeans structure will not be recalculated
 				//so the needed modifications on the reportBean and his ancestors should be made here recursively
-				//reportBean.setExpanded(!isExpanded);				
 			//}
 		}
 		JSONUtility.encodeJSONSuccess(ServletActionContext.getResponse());
@@ -184,6 +182,7 @@ public class ReportExpandAction extends ActionSupport implements Preparable, Ses
 	/**
 	 * @param session the session to set
 	 */
+	@Override
 	public void setSession(Map session) {
 		this.session = session;
 	}

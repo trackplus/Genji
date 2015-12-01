@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -112,7 +112,6 @@ public class FilterAction extends ActionSupport implements Preparable, SessionAw
 	private Map<Integer, Integer> parenthesisClosedMap;	
 	private SortedMap<Integer, Integer> fieldExpressionOrderMap = new TreeMap<Integer, Integer>();
 	
-	//private boolean fromSession;
     /**
      * Used in:
      * 1. edit() method: 
@@ -126,6 +125,7 @@ public class FilterAction extends ActionSupport implements Preparable, SessionAw
     //right click on filter in item navigator accordion, filter section
     private boolean fromNavigatorContextMenu;
     
+	@Override
 	public void prepare() {
 		personBean = (TPersonBean) session.get(Constants.USER_KEY);
 		locale=(Locale) session.get(Constants.LOCALE_KEY);
@@ -252,97 +252,6 @@ public class FilterAction extends ActionSupport implements Preparable, SessionAw
 					if (filterFacade==null) {
 						filterFacade = TreeFilterFacade.getInstance();
 					}
-					/*if (fromSession) {
-						//render the modified instant filter from item navigator after clicking on "Apply"
-						FilterUpperTO filterUpperTO = (FilterUpperTO)session.get(FilterBL.FILTER_UPPER_APPLY_EDIT + filterID + "_" + filterType);
-						if (filterUpperTO!=null) {
-							//all upper filter fields 
-							List<Integer> definedFilterFields = FilterBL.getUpperFilterFields();
-							//if a custom select does not have value selected (nothing submitted) still should be added as customSelectSimpleFields
-							//for loading the datasource for those lists  (see loadFilterSelects)
-							Map<Integer, Integer> customSelectSimpleFields = filterUpperTO.getCustomSelectSimpleFields();
-							if (customSelectSimpleFields==null) {
-								customSelectSimpleFields = new HashMap<Integer, Integer>();
-								filterUpperTO.setCustomSelectSimpleFields(customSelectSimpleFields);
-							}
-							for (Integer customSelectFieldID : customSelectSimpleFields.keySet()) {
-								if (!definedFilterFields.contains(customSelectFieldID)) {
-									definedFilterFields.add(customSelectFieldID);
-								}
-							}
-							for (Integer fieldID : definedFilterFields) {
-								boolean isCustomSelect = FieldBL.isCustomSelect(fieldID);
-								if (isCustomSelect && !customSelectSimpleFields.containsKey(fieldID)) {
-									customSelectSimpleFields.put(fieldID, FieldBL.getSystemOptionType(fieldID));
-								}
-							}
-							//simple expression filter fields (definedFilterFields without select fields)
-							List<Integer> simpleExpressionFields = FilterBL.getUpperFilterFields();
-							filterUpperTO.setUpperFields(definedFilterFields);
-							//gets the submitted simple fields (those having non null values)
-							List<FieldExpressionSimpleTO> fieldExpressionSimplesSubmitted = filterUpperTO.getFieldExpressionSimpleList();
-							Map<Integer, FieldExpressionSimpleTO> simpleExpressionsSubmittedMap = new HashMap<Integer, FieldExpressionSimpleTO>();
-							if (fieldExpressionSimplesSubmitted!=null && !fieldExpressionSimplesSubmitted.isEmpty()) {
-								for (FieldExpressionSimpleTO fieldExpressionSimpleTO : fieldExpressionSimplesSubmitted) {
-									Integer fieldID = fieldExpressionSimpleTO.getField();
-									simpleExpressionsSubmittedMap.put(fieldID, fieldExpressionSimpleTO);
-									if (!definedFilterFields.contains(fieldID)) {
-										//add the fields having values even if not any more marked as "appear in filter"
-										definedFilterFields.add(fieldID);
-										simpleExpressionFields.add(fieldID);
-									}
-								}
-							}
-							//1. prepare upper part selects and some hardcoded fields for rendering
-							FilterSelectsListsLoader.loadFilterSelects(filterUpperTO, personBean, locale, false, false);
-							//2. prepare simple expressions for rendering
-							Set<Integer> directProcesFields = FilterBL.getDirectProcessFields();
-							//remove the directly processed fields in 1. loadFilterSelects()
-							simpleExpressionFields.removeAll(directProcesFields);
-							if (simpleExpressionFields!=null) {
-								for (Iterator<Integer> iterator = simpleExpressionFields.iterator(); iterator.hasNext();) {
-									Integer fieldID = (Integer) iterator.next();
-									if (FieldBL.isCustomSelect(fieldID)) {
-										//the custom selects are also directly processed
-										iterator.remove();
-									}
-								}
-							}
-							Map<Integer, String> fieldLabelsMap = FieldRuntimeBL.getLocalizedDefaultFieldLabels(simpleExpressionFields, locale);
-							List<FieldExpressionSimpleTO> fieldExpressionSimpleToRender = new LinkedList<FieldExpressionSimpleTO>();
-							for (Integer fieldID : simpleExpressionFields) {
-								Integer selectedMatcher = null;
-								Object value = null;
-								FieldExpressionSimpleTO fieldExpressionSimple = simpleExpressionsSubmittedMap.get(fieldID);
-								if (fieldExpressionSimple!=null) {
-									selectedMatcher = fieldExpressionSimple.getSelectedMatcher();
-									value = fieldExpressionSimple.getValue();
-								}
-								fieldExpressionSimpleToRender.add(FieldExpressionBL.loadFilterExpressionSimple(fieldID, filterUpperTO.getSelectedProjects(),
-										filterUpperTO.getSelectedIssueTypes(), selectedMatcher,
-										true, false, personBean, locale, fieldLabelsMap, value));
-							}
-							filterUpperTO.setFieldExpressionSimpleList(fieldExpressionSimpleToRender);
-							//3. prepare the tree part for rendering
-							QNode rootNode = (QNode)session.get(FilterBL.TREE_APPLY_EDIT + filterID + "_" + filterType);
-							List<FieldExpressionInTreeTO>  fieldExpressionInTreeList = null;
-							if (rootNode!=null) {
-								fieldExpressionInTreeList = new ArrayList<FieldExpressionInTreeTO>();
-								TreeFilterLoaderBL.transformTreeToExpressionList(rootNode, 
-										new Stack<QNode>(), new Stack<FieldExpressionInTreeTO>(), fieldExpressionInTreeList);
-								Integer[] projectIDs = filterUpperTO.getSelectedProjects();
-								Integer[] itemTypeIDs = filterUpperTO.getSelectedIssueTypes();
-								FieldExpressionBL.loadFilterExpressionInTreeList(fieldExpressionInTreeList, projectIDs, itemTypeIDs, modifiable, personBean, locale, false, false);
-							}
-							JSONUtility.encodeJSON(servletResponse, FilterJSON.getTreeFilterJSON(null, null,
-									null, null, 
-									false, null, null, modifiable,
-									filterUpperTO, true, 
-									fieldExpressionInTreeList,
-									personBean.getObjectID(), projectID, locale));
-							return null;
-						}
-					}*/
 				} else {
 					if (add) {
 						//add from item navigator menu (accordion left), filter context menu 
@@ -547,10 +456,12 @@ public class FilterAction extends ActionSupport implements Preparable, SessionAw
 		this.node = node;
 	}
 
+	@Override
 	public void setSession(Map<String, Object> session) {
 		this.session = session;
 	}
 
+	@Override
 	public void setServletResponse(HttpServletResponse servletResponse) {
 		this.servletResponse = servletResponse;
 	}
@@ -702,9 +613,6 @@ public class FilterAction extends ActionSupport implements Preparable, SessionAw
 		this.fromNavigatorContextMenu = fromNavigatorContextMenu;
 	}
 
-	/*public void setFromSession(boolean fromSession) {
-		this.fromSession = fromSession;
-	}*/
     
 	
 	

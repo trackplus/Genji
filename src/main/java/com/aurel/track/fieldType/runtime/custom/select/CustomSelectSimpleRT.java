@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -97,6 +98,7 @@ public class CustomSelectSimpleRT extends CustomSelectBaseRT {
 	 * Whether the values are based on custom lists or system lists
 	 * @return
 	 */
+	@Override
 	public boolean isCustomPicker() {
 		return false;
 	}
@@ -105,6 +107,7 @@ public class CustomSelectSimpleRT extends CustomSelectBaseRT {
 	 * Whether the list entries have dynamic icons
 	 * @return
 	 */
+	@Override
 	public boolean hasDynamicIcons() {
 		return true;
 	}
@@ -113,6 +116,7 @@ public class CustomSelectSimpleRT extends CustomSelectBaseRT {
 	 * Gets the iconCls class for label bean if dynamicIcons is false
 	 * @param labelBean
 	 */
+	@Override
 	public String getIconCls(ILabelBean labelBean) {
 		return null;
 	}
@@ -121,6 +125,7 @@ public class CustomSelectSimpleRT extends CustomSelectBaseRT {
 	 * Whether the datasource for the picker is tree or list
 	 * @return
 	 */
+	@Override
 	public boolean isTree() {
 		return false;
 	}
@@ -129,6 +134,7 @@ public class CustomSelectSimpleRT extends CustomSelectBaseRT {
 	 * Which field from the record contains the valid value 
 	 * @return
 	 */
+	@Override
 	public int getValueType() {
 		return ValueType.CUSTOMOPTION;
 	}
@@ -138,6 +144,7 @@ public class CustomSelectSimpleRT extends CustomSelectBaseRT {
 	 * The CustomSelects are stored under their own fieldIDs   
 	 * @return
 	 */
+	@Override
 	public Integer getDropDownMapFieldKey(Integer fieldID) {
 		return fieldID;
 	}
@@ -179,6 +186,7 @@ public class CustomSelectSimpleRT extends CustomSelectBaseRT {
 	 * @param selectContext 
 	 * @return
 	 */
+	@Override
 	public List loadEditDataSource(SelectContext selectContext)	{
 		TWorkItemBean workItemBean = selectContext.getWorkItemBean();
 		Integer[] currentOptions = CustomSelectUtil.getSelectedOptions(
@@ -223,6 +231,7 @@ public class CustomSelectSimpleRT extends CustomSelectBaseRT {
 	 * @param selectContext 
 	 * @return
 	 */
+	@Override
 	public List loadCreateDataSource(SelectContext selectContext){
 		List<ILabelBean> dataSource = loadDataSource(selectContext);
 		return LocalizeUtil.localizeDropDownList(dataSource, selectContext.getLocale());
@@ -284,6 +293,7 @@ public class CustomSelectSimpleRT extends CustomSelectBaseRT {
 	 * @param localLookupContainer 
 	 * @return
 	 */
+	@Override
 	public Comparable getSortOrderValue(Integer fieldID, Integer parameterCode, Object value, 
 			Integer workItemID, LocalLookupContainer localLookupContainer) {
 		Integer[] optionIDs = CustomSelectUtil.getSelectedOptions(value);
@@ -320,7 +330,8 @@ public class CustomSelectSimpleRT extends CustomSelectBaseRT {
 					}
 				} catch (Exception e) {
 					LOGGER.warn("The field number " + fieldID + " and parametercode "+ parameterCode + 
-							" doesn't implement the ISortedBean interface " + e.getMessage(), e);
+							" doesn't implement the ISortedBean interface " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 			}
 			//SortedMap<Integer, Comparable> comparableMap = new TreeMap<Integer, Comparable>();
@@ -368,6 +379,7 @@ public class CustomSelectSimpleRT extends CustomSelectBaseRT {
 	 * @param parameterCode for composite selects
 	 * @return the datasource (list or tree)
 	 */	
+	@Override
 	public Object getMatcherDataSource(IMatcherValue matcherValue, MatcherDatasourceContext matcherDatasourceContext, Integer parameterCode) {
 		List<ILabelBean> optionList = new LinkedList<ILabelBean>();
 		Integer fieldID = matcherValue.getField();
@@ -430,7 +442,8 @@ public class CustomSelectSimpleRT extends CustomSelectBaseRT {
 				try {
 					actualValuesMap = (Map<Integer, Object>)matcherValue.getValue();
 				} catch (Exception e) {
-					LOGGER.warn("ValueModified: converting the matcherValue values to map failed with " + e.getMessage(), e);
+					LOGGER.warn("ValueModified: converting the matcherValue values to map failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 				if (actualValuesMap != null) {
 					if (actualValuesMap.get(parameterCode)==null && optionList!=null && !optionList.isEmpty()) {
@@ -524,6 +537,7 @@ public class CustomSelectSimpleRT extends CustomSelectBaseRT {
 	 * @param personBean
 	 * @param locale
 	 */
+	@Override
 	public void loadFieldChangeDatasourceAndValue(WorkflowContext workflowContext,
 			FieldChangeValue fieldChangeValue, 
 			Integer parameterCode, TPersonBean personBean, Locale locale) {
@@ -653,6 +667,7 @@ public class CustomSelectSimpleRT extends CustomSelectBaseRT {
 	 * Creates a new empty serializableLabelBean
 	 * @return
 	 */
+	@Override
 	public ISerializableLabelBean getNewSerializableLabelBean() {
 		return new TOptionBean();
 	}
@@ -668,6 +683,7 @@ public class CustomSelectSimpleRT extends CustomSelectBaseRT {
 	 * @param componentPartsMap
 	 * @return
 	 */
+	@Override
 	public Integer getLookupIDByLabel(Integer fieldID,
 			Integer projectID, Integer issueTypeID, 
 			Locale locale, String label, 
@@ -710,6 +726,7 @@ public class CustomSelectSimpleRT extends CustomSelectBaseRT {
 	 * @param serializableBeanAllowedContext
 	 * @return
 	 */
+	@Override
 	public boolean lookupBeanAllowed(Integer objectID, 
 			SerializableBeanAllowedContext serializableBeanAllowedContext) {
 		return true;
@@ -720,6 +737,7 @@ public class CustomSelectSimpleRT extends CustomSelectBaseRT {
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public List<ILabelBean> getDataSource(Integer fieldID) {
 		return (List)OptionBL.loadAll();
 	}
@@ -729,6 +747,7 @@ public class CustomSelectSimpleRT extends CustomSelectBaseRT {
 	 * Typically fields which are typically unique should not be groupable
 	 * @return
 	 */
+	@Override
 	public boolean isGroupable() {
 		return !isReallyMultiple;
 	}

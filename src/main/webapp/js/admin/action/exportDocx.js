@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -36,7 +36,7 @@ Ext.define("com.trackplus.admin.action.ExportDocx",{
 
 	createExportForm: function(fromTree, record) {
 		var recordData = null;
-		if (record!=null) {
+		if (record) {
 			recordData = record.data;
 		}
 		var width = 500;
@@ -83,9 +83,9 @@ Ext.define("com.trackplus.admin.action.ExportDocx",{
 
 	getFormPanel: function(fromTree, selectedEntryID) {
 	  	var items = [CWHF.createCombo("admin.actions.exportDocx.templates", "docxTemplateList",
-	  					{idType:"string", labelWidth:150, blankText:getText("admin.actions.exportDocx.docxTemplateNotSelected")}),
+	  					{idType:"string", labelWidth:150, blankText:getText("admin.actions.exportDocx.docxTemplateNotSelected"), itemId:"docxTemplateList"}),
 					CWHF.createFileField("admin.actions.exportDocx.newTemplate", "docxTemplate",
-						{labelWidth:150, blankText:getText("admin.actions.exportDocx.docxTemplateNotBrowsed")})];
+						{itemId:"docxTemplate", labelWidth:150, blankText:getText("admin.actions.exportDocx.docxTemplateNotBrowsed")})];
 		return Ext.create('Ext.form.Panel', {
 			bodyStyle: 'padding:5px',
 			//url: 'listOptionIcon!upload.action',
@@ -104,7 +104,7 @@ Ext.define("com.trackplus.admin.action.ExportDocx",{
 
 	exportHandler:function(win, submitUrl, submitUrlParams) {
 		var submitUrl = this.getUrlWithTemplate(submitUrl);
-		if (submitUrlParams!=null) {
+		if (submitUrlParams) {
 			for (submitUrlParam in submitUrlParams) {
 				submitUrl = submitUrl + "&" + submitUrlParam + "=" + submitUrlParams[submitUrlParam];
 			}
@@ -122,10 +122,10 @@ Ext.define("com.trackplus.admin.action.ExportDocx",{
 		var theForm = this.formEdit.getForm();
 		var templatesCombo = this.formEdit.getComponent("docxTemplateList");
 		var selectedTemplate = templatesCombo.getValue();
-		if (selectedTemplate==null) {
+		if (CWHF.isNull(selectedTemplate)) {
 			templatesCombo.allowBlank = false;
 			var docxTemplate = this.formEdit.getComponent("docxTemplate");
-			if (docxTemplate!=null) {
+			if (docxTemplate) {
 				docxTemplate.allowBlank = true;
 			}
 			theForm.isValid();
@@ -142,16 +142,16 @@ Ext.define("com.trackplus.admin.action.ExportDocx",{
 	    var templatesCombo = formPanel.getComponent("docxTemplateList");
 	    templatesCombo.store.loadData(data["existingTemplates"]);
 	    var uploadedTemplate = data["docxTemplateList"];
-	    //if (uploadedTemplate!=null) {
+	    //if (uploadedTemplate) {
 	    	templatesCombo.setValue(uploadedTemplate);
 	    //}
 		formPanel.getComponent("docxTemplate").setValue('');
 		var toolbars = this.win.getDockedItems('toolbar[dock="bottom"]');
-		if (toolbars!=null) {
+		if (toolbars) {
 			//disable delete button if no icon is specified
-			toolbars[0].getComponent(0).setDisabled(uploadedTemplate==null);
-			toolbars[0].getComponent(2).setDisabled(uploadedTemplate==null);
-			toolbars[0].getComponent(3).setDisabled(uploadedTemplate==null);
+			toolbars[0].getComponent(0).setDisabled(CWHF.isNull(uploadedTemplate));
+			toolbars[0].getComponent(2).setDisabled(CWHF.isNull(uploadedTemplate));
+			toolbars[0].getComponent(3).setDisabled(CWHF.isNull(uploadedTemplate));
 		}
 	},
 
@@ -159,10 +159,10 @@ Ext.define("com.trackplus.admin.action.ExportDocx",{
 		var theForm = this.formEdit.getForm();
 		var docxTemplate = this.formEdit.getComponent("docxTemplate");
 		var docxTemplateValue = docxTemplate.getValue();
-		if (docxTemplateValue==null || docxTemplateValue=="") {
+		if (CWHF.isNull(docxTemplateValue) || docxTemplateValue==="") {
 			docxTemplate.allowBlank = false;
 			var templatesCombo = this.formEdit.getComponent("docxTemplateList");
-			if (templatesCombo!=null) {
+			if (templatesCombo) {
 				templatesCombo.allowBlank = true;
 			}
 			theForm.isValid();
@@ -194,10 +194,10 @@ Ext.define("com.trackplus.admin.action.ExportDocx",{
 		var theForm = this.formEdit.getForm();
 		var templatesCombo = this.formEdit.getComponent("docxTemplateList");
 		var selectedTemplate = templatesCombo.getValue();
-		if (selectedTemplate==null) {
+		if (CWHF.isNull(selectedTemplate)) {
 			templatesCombo.allowBlank = false;
 			var docxTemplate = this.formEdit.getComponent("docxTemplate");
-			if (docxTemplate!=null) {
+			if (docxTemplate) {
 				docxTemplate.allowBlank = true;
 			}
 			theForm.isValid();

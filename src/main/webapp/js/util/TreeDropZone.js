@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -38,7 +38,7 @@ Ext.define('com.trackplus.util.TreeDropZone',{
 		var node = e.getTarget(this.view.getItemSelector()),
 		mouseY, nodeList, testNode, i, len, box;
 		if (!node) {
-			mouseY = e.getPageY();
+			mouseY = e.getY();
 			for (i = 0, nodeList = this.view.getNodes(), len = nodeList.length; i < len; i++) {
 				testNode = nodeList[i];
 				box = Ext.fly(testNode).getBox();
@@ -72,8 +72,11 @@ Ext.define('com.trackplus.util.TreeDropZone',{
 		if (this.valid) {
 			this.valid = false;
 		}
-		if(this.overRecord!=null){
-			Ext.fly(this.overRecord).removeCls('my-row-highlight-class');
+		if(this.overRecord){
+			var cmp=Ext.fly(this.overRecord);
+			if(cmp) {
+				cmp.removeCls('my-row-highlight-class');
+			}
 		}
 	},
 
@@ -122,15 +125,15 @@ Ext.define('com.trackplus.util.TreeDropZone',{
 		}
 		var view = this.view;
 		var targetNode = view.getRecord(node);
-		if(me.isValidNode!=null&&(typeof me.isValidNode == 'function')){
-			if (this.isValidNodeScope==null) {
+		if(me.isValidNode&&(typeof me.isValidNode === 'function')){
+			if (CWHF.isNull(this.isValidNodeScope)) {
 				return me.isValidNode.call(me,targetNode);
 			} else {
 				return me.isValidNode.call(this.isValidNodeScope,targetNode);
 			}
 		}
 		var canDrop=targetNode.data['canDrop'];
-		if(canDrop!=null){
+		if(canDrop){
 			return canDrop===true;
 		};
 		return true;

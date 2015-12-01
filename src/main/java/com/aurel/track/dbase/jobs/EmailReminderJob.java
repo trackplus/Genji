@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -70,6 +70,7 @@ public class EmailReminderJob implements Job{
 	 * configured for herself, collect this issue.
 	 * Once through, mail her the collection, if it is not empty.
 	 */
+	@Override
 	public void execute(JobExecutionContext context) {
 		LOGGER.debug("execute EmailReminderJob....");
 		if (ClusterBL.getIAmTheMaster()) {
@@ -79,7 +80,7 @@ public class EmailReminderJob implements Job{
 			try {
 				getReminders(fireTime, nextFireTime);
 			} catch (Exception e) {
-				LOGGER.error("Problem with running scheduler " + e.getMessage(), e);
+				LOGGER.error("Problem with running scheduler " + e.getMessage());
 			}
 		}
 	}
@@ -129,7 +130,6 @@ public class EmailReminderJob implements Job{
 		List<TWorkItemBean> originatorList = new ArrayList<TWorkItemBean>();
 		List<TWorkItemBean> managerList = new ArrayList<TWorkItemBean>();
 		List<TWorkItemBean> responsibleList = new ArrayList<TWorkItemBean>();
-		//Set<Integer> projects = new HashSet<Integer>();
 		//1. daily reminder as RACI role 
 		if (dailyReminder && isRemindDue(personBean)) {
 			Date dailyReminderEndDateLimit = getDailyReminderEndDateLimit(personBean.getEmailLead());
@@ -215,7 +215,6 @@ public class EmailReminderJob implements Job{
 		
 		try {
 			if (itemsFound) {
-				//List<TProjectBean> projectBeanList = ProjectBL.loadByProjectIDs(GeneralUtils.createIntegerListFromCollection(projects));
 				//Map<Integer, TProjectBean> projectBeanMap = GeneralUtils.createMapFromList(projectBeanList);
 				ReminderEventParam params = new ReminderEventParam();
 				params.setOriginatorItems(originatorList);
@@ -223,7 +222,6 @@ public class EmailReminderJob implements Job{
 				params.setResponsibleItems(responsibleList);
 				params.setPersonDateBasketItemsMap(personDateBasketItemsMap);
 				params.setPersonTimeBasketItemsMap(personTimeBasketItemsMap);
-				//params.setReminderBasketItems(reminderBasketItems);
 				//params.setDelegatedBasketItems(delegatedBasketItems);
 				//params.setProjects(projectBeanMap);
 				params.setReceiver(personBean);
@@ -256,9 +254,7 @@ public class EmailReminderJob implements Job{
 	
 	private static Date getDailyReminderEndDateLimit(Integer lead) {
 		Calendar calendar = Calendar.getInstance();
-		//Date today = calendar.getTime();
 		CalendarUtil.clearTime(calendar);
-		//Integer lead = personBean.getEmailLead();
 		if (lead==null) {
 			lead = Integer.valueOf(1);
 		}
@@ -272,7 +268,6 @@ public class EmailReminderJob implements Job{
 	 * @return
 	 */
 	private static boolean isRemindDue(TPersonBean personBean) {
-		//boolean todayDueDay = false;
 		List<Integer> reminderDays = personBean.getReminderDays();
 		if (reminderDays==null || reminderDays.isEmpty()) {
 			return false;
@@ -282,7 +277,6 @@ public class EmailReminderJob implements Job{
 		int noOfDay = calToday.get(Calendar.DAY_OF_WEEK);
 		for (Integer reminderDay : reminderDays) {
 			if (reminderDay==noOfDay) {
-				//todayDueDay = true;
 				//break;
 				if (LOGGER.isDebugEnabled()) {
 					LOGGER.debug("Reminder is due for person " + personBean.getName());
@@ -294,21 +288,5 @@ public class EmailReminderJob implements Job{
 			LOGGER.debug("Reminder is not due for person " + personBean.getName());
 		}
 		return false;
-		/*if (!todayDueDay) {
-			return false;
-		}
-		Date lastReminded = personBean.getEmailLastReminded();
-		if (lastReminded==null) {
-			return true;
-		}
-		Calendar calLastReminded = new GregorianCalendar();
-		calLastReminded.setTime(lastReminded);
-		if (calLastReminded.get(Calendar.YEAR) == calToday.get(Calendar.YEAR) 
-				&& calLastReminded.get(Calendar.MONTH) == calToday.get(Calendar.MONTH)
-				&& calLastReminded.get(Calendar.DATE) == calToday.get(Calendar.DATE)) {
-			//already sent for today
-			return false;
-		}
-		return true;*/
 	}
 }

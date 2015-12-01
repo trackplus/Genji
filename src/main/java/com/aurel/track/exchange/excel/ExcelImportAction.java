@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -100,6 +100,7 @@ public class ExcelImportAction extends ActionSupport
 	private Map<String, Boolean> overwriteMap = new HashMap<String, Boolean>();
 
 
+	@Override
 	public void prepare() throws Exception {
 		locale = (Locale)session.get(Constants.LOCALE_KEY);
         personBean =  (TPersonBean) session.get(Constants.USER_KEY);
@@ -152,11 +153,14 @@ public class ExcelImportAction extends ActionSupport
 			lastSavedIdentifierFieldIDIsSet = (Set<Integer>)objectInputStream.readObject();
 			objectInputStream.close();
 		} catch (FileNotFoundException e) {
-			LOGGER.warn("Creating the input stream for mapping failed with " + e.getMessage(), e);
+			LOGGER.warn("Creating the input stream for mapping failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		} catch (IOException e) {
-			LOGGER.warn("Saving the mapping failed with " + e.getMessage(), e);
+			LOGGER.warn("Saving the mapping failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		} catch (ClassNotFoundException e) {
-			LOGGER.warn("Class not found for  the mapping " + e.getMessage(), e);
+			LOGGER.warn("Class not found for  the mapping " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 
 		if (workbook==null) {
@@ -168,10 +172,8 @@ public class ExcelImportAction extends ActionSupport
 			//for example the sheet contains no columns at all
 			columNameToFieldIDMap = new HashMap<String, Integer>();
 		}
-		//boolean deleteFile = false;
 		try {
 			Map<Integer, String> columnIndexToColumNameMap = ExcelFieldMatchBL.getFirstRowHeaders(workbook, selectedSheet);
-			//Map<Integer, SortedSet<Integer>> compositeIndexes = ExcelImportBL.getCompositeIndexes(workbook, selectedSheet);
 			Map<Integer, Integer> columnIndexToFieldIDMap = ExcelImportBL.getColumnIndexToFieldID(columNameToFieldIDMap, columnIndexToColumNameMap);
 			Map<Integer, Integer> fieldIDToColumnIndexMap = ExcelImportBL.reverseMap(columnIndexToFieldIDMap);
 			List<ErrorData> errorDataList = ExcelImportBL.validateRequiredColumns(workbook, selectedSheet,
@@ -187,7 +189,6 @@ public class ExcelImportAction extends ActionSupport
 				//either results in a error which should be resolved in the excel file
 				//consequently a new upload cannot be avoided before re-import
 				//or everything is fine and in this case no new import is needed
-				//deleteFile = true;
 				//with any other return a
 				//grid errors
 				Map<Integer, SortedMap<Integer, SortedMap<String, ErrorData>>> gridErrorsMap =
@@ -237,7 +238,6 @@ public class ExcelImportAction extends ActionSupport
 							List<String> rowErrors = ExcelImportBL.renderRowErrors(validationErrorsMap, fieldIDToColumnIndexMap, locale);
 							JSONUtility.encodeJSON(servletResponse,
 									ImportJSON.importErrorMessageListJSON(rowErrors, ImportJSON.ERROR_CODES.ERROR_MESSAGES, false));
-                            //deleteFile = false;
 							return null;
 						} else {
 								if (overwriteMap==null) {
@@ -251,7 +251,6 @@ public class ExcelImportAction extends ActionSupport
 								//render conflicts
 								//do not disable Finish and do not delete the file instead resolve the conflicts and import again
 								JSONUtility.encodeJSON(servletResponse, ExcelImportJSON.getExcelConflictsJSON(confictsMap, locale, false));
-								//deleteFile = false;
 								return null;
 							} else {
 								//no conflicts or conflict handling is set (overwriteMap was submitted)
@@ -302,10 +301,6 @@ public class ExcelImportAction extends ActionSupport
 					LocalizeUtil.getLocalizedTextFromApplicationResources("admin.actions.importTp.err.failed", locale), true));
 		}
 		//delete the uploaded excel file
-		/*if (deleteFile) {
-			File file = new File(excelMappingsDirectory, fileName);
-			file.delete();
-		} */
 		return null;
 	}
 
@@ -313,53 +308,9 @@ public class ExcelImportAction extends ActionSupport
 	 * The following method remove ISSUE No. from identifier mappings.
 	 *  Identifier mapping: Column to issue field
 	 */
-	/*public void removeIssueNoFromMapping() {
-		String excelMappingsDirectory = AttachBL.getExcelImportDirBase() + personID;
-		Workbook workbook = ExcelFieldMatchBL.loadWorkbook(excelMappingsDirectory, fileName);
-		Set<Integer> lastSavedIdentifierFieldIDIsSet = null;
-		Map<String, Integer> columNameToFieldIDMap = null;
-		try {
-			File file = new File(excelMappingsDirectory, mappingFileName);
-			FileInputStream fileInputStream = new FileInputStream(file);
-			ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-			columNameToFieldIDMap = (Map<String,Integer>)objectInputStream.readObject();
-			lastSavedIdentifierFieldIDIsSet = (Set<Integer>)objectInputStream.readObject();
-			objectInputStream.close();
-			fileInputStream.close();
-			Iterator<Map.Entry<String,Integer>> iter = columNameToFieldIDMap.entrySet().iterator();
-			lastSavedIdentifierFieldIDIsSet.remove(SystemFields.ISSUENO);
-			while (iter.hasNext()) {
-			    Map.Entry<String,Integer> entry = iter.next();
-			    if(entry.getValue().equals(SystemFields.ISSUENO)){
-			        iter.remove();
-			    }
-			}
-
-		} catch (FileNotFoundException e) {
-			LOGGER.warn("Creating the input stream for mapping failed with " + e.getMessage(), e);
-		} catch (IOException e) {
-			LOGGER.warn("Saving the mapping failed with " + e.getMessage(), e);
-		} catch (ClassNotFoundException e) {
-			LOGGER.warn("Class not found for  the mapping " + e.getMessage(), e);
-		}
-
-		try {
-			FileOutputStream fos = new FileOutputStream (new File(excelMappingsDirectory, mappingFileName));
-			ObjectOutputStream out = new ObjectOutputStream(fos);
-			out.writeObject(columNameToFieldIDMap);
-			out.writeObject(lastSavedIdentifierFieldIDIsSet);
-			out.close();
-			fos.close();
-		} catch (FileNotFoundException e) {
-			LOGGER.warn("Creating the output stream for mapping failed with " + e.getMessage(), e);
-		} catch (IOException e) {
-			LOGGER.warn("Saving the mapping failed with " + e.getMessage(), e);
-		}
-
-		JSONUtility.encodeJSONSuccess();
-	}*/
 
 
+	@Override
 	public void setSession(Map<String, Object> session) {
 		this.session = session;
 	}
@@ -401,6 +352,7 @@ public class ExcelImportAction extends ActionSupport
 		this.overwriteMap = overwriteMap;
 	}
 
+	@Override
 	public void setServletResponse(HttpServletResponse servletResponse) {
 		this.servletResponse = servletResponse;
 	}

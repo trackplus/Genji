@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -57,17 +57,17 @@ public class NewLinkedItemActionPlugin extends NewItemChildActionPlugin {
 		Integer projectID=form.getProjectID();
 		Integer parentID=form.getParentID();
 		WorkItemContext workItemContext=ItemBL.createNewItem(projectID, issueTypeID, personID, accessLevelFlag, locale);
-		HashMap<String, Object>newlyCreatedLinkSettings = (HashMap<String, Object>) form.getNewlyCreatedLinkSettings();
+		HashMap<String, Object> newlyCreatedLinkSettings = (HashMap<String, Object>) form.getNewlyCreatedLinkSettings();
 		Integer newParentID = null;
 		String linkTypeWithDirection = null;
 		String description = null;
-		Map<Integer, String> parametersMap = null;
+		Map<String, String> parametersMap = null;
 		//In case of Add linked item  we need to check if parametrs are valids for 
 		//creating the link. Otherwise will be created a dummy link.
 		if(newlyCreatedLinkSettings!=null) {
 			newParentID = (Integer)newlyCreatedLinkSettings.get("linkedWorkItemID");
 			linkTypeWithDirection = (String)newlyCreatedLinkSettings.get("linkTypeWithDirection");
-			parametersMap = (HashMap<Integer, String>)newlyCreatedLinkSettings.get("parametersMap");
+			parametersMap = (Map<String, String>)newlyCreatedLinkSettings.get("parametersMap");
 			description = (String)newlyCreatedLinkSettings.get("description");
 		}
 		if (parentID!=null) {
@@ -112,7 +112,7 @@ public class NewLinkedItemActionPlugin extends NewItemChildActionPlugin {
 	 * @param locale
 	 */
 	private void createLinkBasedOnClientSettings(Integer parentID, String linkTypeWithDirection, TWorkItemLinkBean workItemLinkBean, 
-			String description, Map<Integer, String> parametersMap, Integer personID, Locale locale) {
+			String description, Map<String, String> parametersMap, Integer personID, Locale locale) {
 		LOGGER.debug("The linked item is " + parentID);
 		Integer linkType=MergeUtil.getFieldID(linkTypeWithDirection);
 		String linkTypePluginString = LinkTypeBL.getLinkTypePluginString(linkType);		

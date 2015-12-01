@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -84,7 +84,6 @@ public class ItemAction extends ActionSupport implements Preparable, SessionAwar
 
 	//session map
 	private Map<String,Object> session;
-	//private Map request;
 	private Locale locale;
 	private TPersonBean tPerson;
 	private Integer personID;
@@ -115,7 +114,7 @@ public class ItemAction extends ActionSupport implements Preparable, SessionAwar
 	/* Links */
 	private String linkTypeWithDirection;
 	private Integer linkedWorkItemID;
-	private Map<Integer, String> parametersMap;
+	private Map<String, String> parametersMap;
 
 	private Map application;
 
@@ -125,6 +124,7 @@ public class ItemAction extends ActionSupport implements Preparable, SessionAwar
 	private String layoutCls="com.trackplus.layout.PrintItemLayout";
 	private String pageTitle="item.view.title";
 
+	@Override
 	public void setSession(Map<String, Object> session) {
 		this.session=session;
 	}
@@ -132,6 +132,7 @@ public class ItemAction extends ActionSupport implements Preparable, SessionAwar
 	/**
 	 * prepare the item
 	 */
+	@Override
 	public void prepare() throws Exception {
 		locale = (Locale) session.get(Constants.LOCALE_KEY);
 		tPerson = (TPersonBean) session.get(Constants.USER_KEY);
@@ -315,7 +316,6 @@ public class ItemAction extends ActionSupport implements Preparable, SessionAwar
 			JSONUtility.appendBooleanValue(sb, "canFinish", canFinish);
 			JSONUtility.appendStringValue(sb, "finishLabel", finishLabel);
 			JSONUtility.appendFieldName(sb, "jsonData").append(":").append(jsonData);
-			//sb.append("jsonData:").append(jsonData);
 			sb.append("}");
 		}else{
 			Boolean accessLevelFlag = Boolean.FALSE;
@@ -454,9 +454,7 @@ public class ItemAction extends ActionSupport implements Preparable, SessionAwar
 			return INPUT;
 		}
 		//check for readPermission
-		//ErrorData errorData = ItemBL2.hasReadPermission(personID, workItemBean);
 		//Check for access permission
-		//if (errorData!=null) {
 		if (!AccessBeans.isAllowedToRead(workItemBean, personID)) {
 			StringBuilder sb=new StringBuilder();
 			sb.append("{");
@@ -464,14 +462,9 @@ public class ItemAction extends ActionSupport implements Preparable, SessionAwar
 			params.add(ItemBL.getItemNo(workItemBean));
 			JSONUtility.appendStringValue(sb,"error",getText("report.reportError.error.noReadRight", params),true);
 			sb.append("}");
-			//ErrorHandlerStruts2Adapter.handleErrorData(errorData, this);
 			initData=sb.toString();
 			return INPUT;
 		}
-		/*ErrorData editPermissionErrorData = ItemBL2.hasEditPermission(personID, workItemBean);
-		if (editPermissionErrorData!=null) {
-			//editable = false;
-		}*/
 		/*ErrorData disabledErrorData = ItemBL2.isEnabled(personID, workItemBean);
 		if (disabledErrorData!=null) {
 			//enabledToChange = false;
@@ -520,7 +513,7 @@ public class ItemAction extends ActionSupport implements Preparable, SessionAwar
 			JSONUtility.appendIntegerValue(sb, "workItemID", newWorkItemID,true);
 			sb.append("}");
 		} catch (PluginItemActionException e) {
-			LOGGER.error("Error saving item in first step:"+e.getMessage(), e);
+			LOGGER.error("Error saving item in first step:"+e.getMessage());
 			if(LOGGER.isDebugEnabled()){
 				LOGGER.error(ExceptionUtils.getStackTrace(e));
 			}
@@ -610,7 +603,6 @@ public class ItemAction extends ActionSupport implements Preparable, SessionAwar
 		JSONUtility.appendStringValue(sb, "synopsis", workItem.getSynopsis());
 
 		JSONUtility.appendBooleanValue(sb, "synopsisReadonly", ItemBL.isSynopsysReadonly(workItemContext));
-		//JSONUtility.appendStringValue(sb, "issueNoLabel", FieldRuntimeBL.getLocalizedDefaultFieldLabel(SystemFields.INTEGER_ISSUENO, locale));
 	    String workItemIDDisplay=null;
 		if(workItem.getObjectID()!=null){
 			if(useProjectSpecificID){
@@ -864,15 +856,16 @@ public class ItemAction extends ActionSupport implements Preparable, SessionAwar
 		return application;
 	}
 
+	@Override
 	public void setApplication(Map application) {
 		this.application = application;
 	}
 
-	public Map<Integer, String> getParametersMap() {
+	public Map<String, String> getParametersMap() {
 		return parametersMap;
 	}
 
-	public void setParametersMap(Map<Integer, String> parametersMap) {
+	public void setParametersMap(Map<String, String> parametersMap) {
 		this.parametersMap = parametersMap;
 	}
 

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -197,7 +197,6 @@ public class MsProjectLinkTypeBL {
 		}
 		for(int i = 0; i < links.size(); i++) {
 			TWorkItemLinkBean actualLinkBean = links.get(i);
-			//if(msProjectIdMap.containsKey(actualLinkBean.getLinkType())) {
 			if (msProjectLinkTypeIDs.contains(actualLinkBean.getLinkType())) {
 				int dependencyType = actualLinkBean.getIntegerValue1();
 				int predWorkItemId = actualLinkBean.getLinkPred();
@@ -798,7 +797,7 @@ public class MsProjectLinkTypeBL {
 					parents.add(parentWorkItem);
 				}
 			} catch (ItemLoaderException e) {
-				LOGGER.error("Error: " + e.getMessage(), e);
+				LOGGER.error("Error: " + e.getMessage());
 			}
 			parentID = null;
 			parentID = parentWorkItem.getSuperiorworkitem();
@@ -1067,15 +1066,6 @@ public class MsProjectLinkTypeBL {
 
 	
 
-	/*public static Double getHoursPerWorkingDayForWorkItem(TWorkItemBean workItemBean) {
-		if (workItemBean!=null) {
-			Integer projectID = workItemBean.getProjectID();
-			if (projectID!=null) {
-				return ProjectBL.getHoursPerWorkingDay(projectID);
-			}
-		}
-		return new Double(AccountingBL.DEFAULTHOURSPERWORKINGDAY);
-	}*/
 
 
 	/**
@@ -1153,21 +1143,6 @@ public class MsProjectLinkTypeBL {
 	private static Integer getNumberOfDaysBetweenTaskBasedOnLinkType(TWorkItemLinkBean link, TWorkItemBean pred, TWorkItemBean succ) {
 		int dependencyType = link.getIntegerValue1();
 		int numberOfWorkDays = 0;
-		/*Date predStartDate = getStartDate(pred);
-		if (predStartDate==null) {
-			return null;
-		}
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(predStartDate);
-		cal.add(Calendar.DAY_OF_YEAR, -1);
-		predStartDate = cal.getTime();
-		Date succStartDate = getStartDate(succ);
-		if (succStartDate==null) {
-			return null;
-		}
-		cal.setTime(succStartDate);
-		cal.add(Calendar.DAY_OF_YEAR, -1);
-		succStartDate = cal.getTime();*/
 
 		Calendar cal;
 		Date predDate;
@@ -1324,7 +1299,7 @@ public class MsProjectLinkTypeBL {
 
 	public static void setStartDate(TWorkItemBean bean, Date newStartDate) {
 		if (bean!=null) {
-			boolean showBaseline = ApplicationBean.getApplicationBean().getSiteBean().getShowBaseline();
+			boolean showBaseline = ApplicationBean.getInstance().getSiteBean().getShowBaseline();
 			if(showBaseline) {
 				bean.setTopDownStartDate(newStartDate);
 			}else {

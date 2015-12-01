@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -61,6 +61,7 @@ public class ProjectTypeRoleAssignmentFacade extends ProjectTypeSimpleAssignment
 	 * @param projectTypeID
 	 * @return
 	 */
+	@Override
 	public Set<Integer> getAssignedIDsByProjectTypeID(Integer projectTypeID) {
 		Set<Integer> roleIDs = new HashSet<Integer>();
 		List<TPRoleBean> pRoleBeans = pRoleDAO.loadByProjectType(projectTypeID);
@@ -76,6 +77,7 @@ public class ProjectTypeRoleAssignmentFacade extends ProjectTypeSimpleAssignment
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public List<ILabelBean> getAllAssignables(Locale locale) {
 		return (List)RoleBL.loadVisible(locale);
 	}
@@ -84,6 +86,7 @@ public class ProjectTypeRoleAssignmentFacade extends ProjectTypeSimpleAssignment
 	 * Gets the key for the assignment info 
 	 * @return
 	 */
+	@Override
 	public String getAssignmentInfoKey() {
 		return "admin.customize.projectType.lbl.assignmentInfoRole";
 	}
@@ -93,6 +96,7 @@ public class ProjectTypeRoleAssignmentFacade extends ProjectTypeSimpleAssignment
 	 * If static the getIconCssClass() should return a non null value
 	 * @return
 	 */
+	@Override
 	public boolean isDynamicIcon() {
 		return false;
 	}
@@ -101,6 +105,7 @@ public class ProjectTypeRoleAssignmentFacade extends ProjectTypeSimpleAssignment
 	 * Get icon css class
 	 * @return
 	 */
+	@Override
 	public String getIconCssClass() {
 		return IconClass.ROLE;
 	}
@@ -112,6 +117,7 @@ public class ProjectTypeRoleAssignmentFacade extends ProjectTypeSimpleAssignment
 	 * @param assignedID
 	 * @return
 	 */
+	@Override
 	public Object createAssignmentBean(Integer projectTypeID, Integer itemTypeID, Integer assignedID) {
 		TPRoleBean pRoleBean = new TPRoleBean();
 		pRoleBean.setProjectType(projectTypeID);
@@ -124,6 +130,7 @@ public class ProjectTypeRoleAssignmentFacade extends ProjectTypeSimpleAssignment
 	 * @param assignmentBean
 	 * @return
 	 */
+	@Override
 	public Integer save(Object assignmentBean) {
 		return pRoleDAO.save((TPRoleBean)assignmentBean);
 	}
@@ -134,6 +141,7 @@ public class ProjectTypeRoleAssignmentFacade extends ProjectTypeSimpleAssignment
 	 * @param itemTypeID
 	 * @param assignedIDs
 	 */
+	@Override
 	public void delete(Integer projectTypeID, Integer itemTypeID, List<Integer> assignedIDs) {
 		pRoleDAO.delete(projectTypeID, assignedIDs);
 	}

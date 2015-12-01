@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -77,7 +77,6 @@ public class LocalizeJSON{
 				if (debugDatabase) {
 					LOGGER.debug("DefaultResourceBundle found for: "+bundleName);
 				}
-				//Enumeration<String> keys= defaultResourceBundle.getKeys();
 				Set<String> keys = defaultResourceBundle.keySet();
 				if (ResourceBundleManager.DATABASE_RESOURCES.equals(bundleName) && (keys==null || keys.isEmpty())) {
 					//the database resources was not loaded: probably the first access to the login page was too early (before initializing the database) and the empty bundle is cached
@@ -85,9 +84,7 @@ public class LocalizeJSON{
 					LOGGER.debug("Clear cache for " + bundleName);
 				}
 				int count=0;
-				//while (keys.hasMoreElements()) {
 				for (String key : keys) {
-					//String key=keys.nextElement();
 					String resource = null;
 					if (resourceBundle != null) {
 						try {

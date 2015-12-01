@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -56,8 +56,8 @@ private static CloseDependsOnLinkType instance;
 		return instance;
 	}
 	
+	@Override
 	public int getPossibleDirection() {
-		//return LINK_DIRECTION.LEFT_TO_RIGHT;
 		return LINK_DIRECTION.RIGHT_TO_LEFT;
 	}
 
@@ -72,6 +72,7 @@ private static CloseDependsOnLinkType instance;
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public List<ErrorData> validateBeforeIssueSave(TWorkItemBean workItemBean, 
 			TWorkItemBean workItemBeanOriginal, Integer person, 
 			List<TWorkItemLinkBean> mePredToSuccLinksOfType,
@@ -86,31 +87,17 @@ private static CloseDependsOnLinkType instance;
 			if (newStatusFlag.intValue()==TStateBean.STATEFLAGS.CLOSED && oldStatusFlag.intValue()!=TStateBean.STATEFLAGS.CLOSED) {
 				//test whether is has open linked issues in the getRestrictedDirectionBeforeIssueSave() direction
 				if (workItemBean.getObjectID()!=null) {
-					//Iterator<TWorkItemLinkBean> iterator;
 					//int restrictedDirection = getPossibleDirection();
 					//gather the link successors to validate
 					Set<Integer> linkedWorkItemIDs = new HashSet<Integer>();
-					/*if (mePredToSuccLinksOfType!=null) {
-						iterator = mePredToSuccLinksOfType.iterator();
-						while (iterator.hasNext()) {
-							TWorkItemLinkBean workItemLinkBean = iterator.next();
-							if (workItemLinkBean.getLinkDirection().intValue()==restrictedDirection) {
-								linkedWorkItemIDs.add(workItemLinkBean.getLinkSucc());
-							}
-						}
-					}*/
 					if (meSuccFromPredLinksOfType!=null) {
 						//if this is not null the link is bidirectional
-						//int reverseRestrictedDirection = LinkTypeBL.getReverseDirection(restrictedDirection);
 						//if (restrictedDirection!=reverseRestrictedDirection) {
 							Iterator<TWorkItemLinkBean> iterator = meSuccFromPredLinksOfType.iterator();
 							while (iterator.hasNext()) {
 								TWorkItemLinkBean workItemLinkBean = iterator.next();
-								//if (workItemLinkBean.getLinkDirection().intValue()==reverseRestrictedDirection) {
 									linkedWorkItemIDs.add(workItemLinkBean.getLinkPred());
-								//}
 							}
-						//}
 					}
 					int[] workItemIDs = GeneralUtils.createIntArrFromSet(linkedWorkItemIDs);
 					if (workItemDAO.isAnyWorkItemOpen(workItemIDs)) {
@@ -123,10 +110,12 @@ private static CloseDependsOnLinkType instance;
 		return errorsList;
 	}
 	
+	@Override
 	public boolean selectableForQueryResultSuperset() {
 		return true;
 	}
 
+	@Override
 	public boolean isHierarchical() {
 		return false;
 	}

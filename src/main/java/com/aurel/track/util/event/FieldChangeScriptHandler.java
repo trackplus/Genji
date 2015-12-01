@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -92,6 +92,7 @@ public class FieldChangeScriptHandler implements Serializable, IEventSubscriber 
 	 * At the same time can be more events in the list 
 	 * (IEventSubscriber.getInterestedEvents())
 	 */
+	@Override
 	public List<Integer> getInterestedEvents() {
 		Set<Integer> fieldChangeEvents = new HashSet<Integer>();
 		List<TScriptsBean> fieldChangeScripts = ScriptAdminBL.getScriptsByType(TScriptsBean.SCRIPT_TYPE.FIELD_CHANGE);
@@ -131,13 +132,13 @@ public class FieldChangeScriptHandler implements Serializable, IEventSubscriber 
 	 * Execute the script as handling the event
 	 * IEventSubscriber.update()
 	 */
+	@Override
 	public boolean update(List<Integer> events, Object eventContextObject) {
 		Map<String, Object> eventContextMap = (Map<String, Object>)eventContextObject;
 		if (events!=null && !events.isEmpty()) {
 			//we suppose that script handlers are triggered always by one single event
 			Integer event = events.get(0);
 			if (event.intValue()>IEventSubscriber.FIELD_CHANGED) {
-				//new FieldChangeScriptHandlerExample().handleEvent((Map)eventContextObject);
 				Integer fieldID = Integer.valueOf(event.intValue()-IEventSubscriber.FIELD_CHANGED);
 				List<String> scriptHandlers = fieldToToHandlerNames.get(fieldID);
 				if (scriptHandlers!=null) {

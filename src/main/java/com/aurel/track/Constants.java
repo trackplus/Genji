@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -47,11 +47,14 @@ import com.aurel.track.prop.ApplicationBean;
  * Class <b>Constants</b> defines some constants being used throughout the
  * application and particularly in the JSP code.<br>
  * @author Joerg Friedrich <joerg.friedrich@computer.org>
- * @version $Revision: 1229 $ $Date: 2015-08-15 12:23:23 +0200 (Sat, 15 Aug 2015) $
+ * @version $Revision: 1729 $ $Date: 2015-11-02 18:15:47 +0100 (Mon, 02 Nov 2015) $
  */
 public final class Constants {
 	private static final Logger LOGGER = LogManager.getLogger(Constants.class);
 
+	private Constants() {
+
+	}
     /**
      * <b>DATABASE_KEY</b>: the application scope attribute under
      * which the database controller (datasource) is stored.
@@ -77,13 +80,11 @@ public final class Constants {
 	public static final String APPLICATION_BEAN = "APPLICATION_BEAN";
     public static final String SESSION_BEAN = "SESSION_BEAN";
 
-	//public static final String DBASESERVLET = "DBASESERVLET";
-
 	/// name of the forward URL that might be used after login
 	public static final String POSTLOGINFORWARD = "POSTLOGINFORWARD";
 
 	public static final String DESIGN_DIRECTORY = "design";
-	public static final String DEFAULTDESIGNPATH  = "silver";//"classic";
+	public static final String DEFAULTDESIGNPATH  = "silver";//"classic"
 
 	public static final int MAX_ISSUE_NUMBER_GC = 10000;
 
@@ -142,18 +143,6 @@ public final class Constants {
 
 	public static void setParameterizedQuery(boolean parameterizedQuery) {
 		Constants.parameterizedQuery = parameterizedQuery;
-	}
-
-
-	/*
-	 *  Routine to immediately publish all configuration values changed to
-	 *  the system without any need for application reboot
-	 */
-	public static void setConstants(TSiteBean site){
-
-		setGroovyScriptEngine();
-
-        return;
 	}
 
 

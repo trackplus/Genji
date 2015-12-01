@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -82,6 +82,7 @@ public class TSystemStatePeer
 	 * @param label
 	 * @return
 	 */
+	@Override
 	public List<TSystemStateBean> loadByLabel(Integer entityFlag, String label) {		
         Criteria crit = new Criteria();
         crit.add(LABEL, label);
@@ -89,7 +90,7 @@ public class TSystemStatePeer
     	try {
     		return convertTorqueListToBeanList(doSelect(crit));
         } catch (Exception e) {
-            LOGGER.error("Loading the system state " + entityFlag +  " by label " + label +  " failed with " + e.getMessage(), e);
+            LOGGER.error("Loading the system state " + entityFlag +  " by label " + label +  " failed with " + e.getMessage());
             return null;
         }        
 	}
@@ -101,6 +102,7 @@ public class TSystemStatePeer
 	 * @param excludeObjectID
 	 * @return
 	 */
+	@Override
 	public List<TSystemStateBean> loadBySymbol(Integer listID, String symbol, Integer excludeObjectID) {		
         Criteria crit = new Criteria();
         crit.add(ENTITYFLAG, listID);
@@ -125,6 +127,7 @@ public class TSystemStatePeer
      * @param stateFlags 
      * @throws Exception
      */
+    @Override
     public List<TSystemStateBean> loadWithStateFlagForEntity(int entityFlag, int[] stateFlags) {	        	  
     	Criteria crit = new Criteria();
         crit.add(OBJECTID, new Integer(0), Criteria.GREATER_THAN);
@@ -137,7 +140,7 @@ public class TSystemStatePeer
         try {
         	return convertTorqueListToBeanList(doSelect(crit));
         } catch(Exception e) {
-	    	LOGGER.error("Exception when trying to get the TSystemStates with specific stateFlags and for an entityFlag " + entityFlag + ": " + e.getMessage(), e);
+	    	LOGGER.error("Exception when trying to get the TSystemStates with specific stateFlags and for an entityFlag " + entityFlag + ": " + e.getMessage());
 	    	return null;
 	    }	   
     }    
@@ -147,6 +150,7 @@ public class TSystemStatePeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TSystemStateBean loadByPrimaryKey(Integer objectID) {
 		TSystemState systemState = null;
     	try {
@@ -167,6 +171,7 @@ public class TSystemStatePeer
      * @param entityFlag defines the entity, the state refers to 
      * @throws Exception
      */
+    @Override
     public List<TSystemStateBean> loadAllForEntityFlag(Integer entityFlag) {    	
         Criteria crit = new Criteria();
         crit.add(BaseTSystemStatePeer.OBJECTID, new Integer(0), Criteria.GREATER_THAN);
@@ -176,7 +181,7 @@ public class TSystemStatePeer
         try {
         	return convertTorqueListToBeanList(doSelect(crit));
         } catch(Exception e) {
-	    	LOGGER.error("Exception when trying to get all the TSystemStates for an entityFlag " + entityFlag + ": " + e.getMessage(), e);
+	    	LOGGER.error("Exception when trying to get all the TSystemStates for an entityFlag " + entityFlag + ": " + e.getMessage());
 	    	return null;
 	    }
 	    
@@ -187,6 +192,7 @@ public class TSystemStatePeer
 	 * Load by roleIDs
 	 * @return
 	 */
+	@Override
 	public List<TSystemStateBean> loadByStateIDs(List<Integer> primaryKeys) {
 		List list = new ArrayList();
 		if (primaryKeys==null || primaryKeys.isEmpty()) {
@@ -199,7 +205,7 @@ public class TSystemStatePeer
         try {
         	list = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the system states by keys " + primaryKeys + " failed with " + e.getMessage(), e); 
+			LOGGER.error("Loading the system states by keys " + primaryKeys + " failed with " + e.getMessage()); 
 		}
 		return convertTorqueListToBeanList(list);
 	}
@@ -209,6 +215,7 @@ public class TSystemStatePeer
 	 * @param entityID
 	 * @return
 	 */
+	@Override
 	public int getStatusFlag(Integer entityID, int entityFlag) {
     	List systemStates = new ArrayList();
     	Criteria crit = new Criteria();
@@ -242,13 +249,14 @@ public class TSystemStatePeer
 	 * Loads all SystemStateBeans
 	 * @return 
 	 */
+	@Override
 	public List<TSystemStateBean> loadAll() {    	
         Criteria crit = new Criteria();        
     	try {
     		return convertTorqueListToBeanList(doSelect(crit));
         }
         catch (Exception e) {
-            LOGGER.error("Loading of all systemStateBeans failed with " + e.getMessage(), e);
+            LOGGER.error("Loading of all systemStateBeans failed with " + e.getMessage());
             return null;
         }		
 	}
@@ -258,6 +266,7 @@ public class TSystemStatePeer
 	 * @param entityID
 	 * @return
 	 */
+	@Override
 	public Integer getNextSortOrder(Integer entityID) {
 		Integer sortOrder = null;
 		String max = "max(" + SORTORDER + ")";
@@ -281,6 +290,7 @@ public class TSystemStatePeer
 	 * @param systemStateBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TSystemStateBean systemStateBean) {
 		TSystemState tSystemState;		
 		try {
@@ -288,11 +298,12 @@ public class TSystemStatePeer
 			tSystemState.save();
 			return tSystemState.getObjectID();			
 		} catch (Exception e) {
-			LOGGER.error("Saving of systemState failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of systemState failed with " + e.getMessage());
 			return null;
 		}	
 	}
 	
+	@Override
 	public boolean hasDependentData(Integer pkey) {
 		return ReflectionHelper.hasDependentData(replacePeerClasses, replaceFields, pkey);
 	}
@@ -303,6 +314,7 @@ public class TSystemStatePeer
      * @param oldOID
      * @param newOID
      */
+    @Override
     public void replace(Integer oldOID, Integer newOID) {   	
     	if (newOID!=null) {
     		ReflectionHelper.replace(replacePeerClasses, replaceFields, oldOID, newOID);    		
@@ -313,6 +325,7 @@ public class TSystemStatePeer
 	 * Deletes a state from the TState table 
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		ReflectionHelper.delete(deletePeerClasses, deleteFields, objectID);
 	}
@@ -321,6 +334,7 @@ public class TSystemStatePeer
 	 * Returns the sort order column name
 	 * @return
 	 */
+	@Override
 	public String getSortOrderColumn() {
 		return "SORTORDER";
 	}
@@ -329,6 +343,7 @@ public class TSystemStatePeer
 	 * Returns the table name
 	 * @return
 	 */
+	@Override
 	public String getTableName() {
 		return TABLE_NAME;
 	}

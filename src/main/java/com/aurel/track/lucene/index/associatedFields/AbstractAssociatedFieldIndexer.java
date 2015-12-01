@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -25,6 +25,7 @@ package com.aurel.track.lucene.index.associatedFields;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.lucene.document.Document;
@@ -92,6 +93,7 @@ public abstract class AbstractAssociatedFieldIndexer implements IAssociatedField
 	/**
 	 * Reindexes all
 	 */
+	@Override
 	public synchronized void reIndexAll() {
 		IndexWriter indexWriter = null;
 		try {
@@ -111,16 +113,17 @@ public abstract class AbstractAssociatedFieldIndexer implements IAssociatedField
 							indexWriter.addDocument(doc);
 						}
 					} catch (IOException e) {
-						LOGGER.error("Adding entry to the index failed with " + e.getMessage(), e);
+						LOGGER.error("Adding entry to the index failed with " + e.getMessage());
+						LOGGER.debug(ExceptionUtils.getStackTrace(e));
 					}
 				}
 				LOGGER.debug("Reindexing " + allIndexableEntries.size() +
 						" " + getLuceneFieldName() +  "s completed.");
 			}
 		} catch (Exception e) {
-			LOGGER.error("Reindexing failed with " + e.getMessage(), e);
+			LOGGER.error("Reindexing failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		} finally {
-			//LuceneIndexer.closeWriter(indexWriter);
 			LuceneIndexer.initWriter(false, getIndexWriterID());
 		}
 	}
@@ -129,6 +132,7 @@ public abstract class AbstractAssociatedFieldIndexer implements IAssociatedField
 	 * Deletes a document by key
 	 * @param objectID
 	 */
+	@Override
 	public void deleteByKey(Integer objectID) {
 		if (!ClusterBL.indexInstantly()) {
 			LOGGER.debug("Index instantly is false by deleting the " + getLuceneFieldName() + " with entryID " + objectID);
@@ -148,12 +152,14 @@ public abstract class AbstractAssociatedFieldIndexer implements IAssociatedField
 			try {
 				indexWriter.deleteDocuments(keyTerm);
 			} catch (IOException e) {
-				LOGGER.error("Deleting the " + getLuceneFieldName() + " with ID " + objectID + " failed with " + e.getMessage(), e);
+				LOGGER.error("Deleting the " + getLuceneFieldName() + " with ID " + objectID + " failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 			try {
 				indexWriter.commit();
 			} catch (IOException e) {
-				LOGGER.error("Flushing the indexWriter after removing a " + getLuceneFieldName() + " with ID " + objectID + "  failed with " + e.getMessage(), e);
+				LOGGER.error("Flushing the indexWriter after removing a " + getLuceneFieldName() + " with ID " + objectID + "  failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 	}
@@ -162,6 +168,7 @@ public abstract class AbstractAssociatedFieldIndexer implements IAssociatedField
 	 * Removes the indexes for a list of workItems
 	 * @param workItemIDs
 	 */	
+	@Override
 	public void deleteByWorkItems(List<Integer> workItemIDs) {
 		IndexWriter indexWriter = null;
 		try {
@@ -187,7 +194,8 @@ public abstract class AbstractAssociatedFieldIndexer implements IAssociatedField
 				try {
 					indexWriter.deleteDocuments(keyTerm);
 				} catch (IOException e) {
-					LOGGER.error("Removing by workItemID " + workItemID + " failed with " + e.getMessage(), e);
+					LOGGER.error("Removing by workItemID " + workItemID + " failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 				String additionalWorkitemField = getAdditionalFieldName();
 				if (additionalWorkitemField!=null) {
@@ -199,7 +207,8 @@ public abstract class AbstractAssociatedFieldIndexer implements IAssociatedField
 					try {
 						indexWriter.deleteDocuments(keyTerm);
 					} catch (IOException e) {
-						LOGGER.error("Removing by workItemID " + workItemID + " failed with " + e.getMessage(), e);
+						LOGGER.error("Removing by workItemID " + workItemID + " failed with " + e.getMessage());
+						LOGGER.debug(ExceptionUtils.getStackTrace(e));
 					}
 				}
 			}
@@ -209,7 +218,8 @@ public abstract class AbstractAssociatedFieldIndexer implements IAssociatedField
 		try {
 			indexWriter.commit();
 		} catch (IOException e) {
-			LOGGER.error("Flushing the indexWriter after removing a list of workItemBeans  failed with " + e.getMessage(), e);
+			LOGGER.error("Flushing the indexWriter after removing a list of workItemBeans  failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 	}
 }

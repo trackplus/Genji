@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -31,7 +31,7 @@ Ext.define('com.trackplus.screen.ItemTabView',{
 	initComponent: function(){
 		var me=this;
 		me.callParent();
-		if(me.oneTab==true){
+		if(me.oneTab===true){
 			me.margin= '0 0 17 0';
 			me.region='center';
 		}else{
@@ -55,7 +55,7 @@ Ext.define('com.trackplus.screen.ItemScreenController', {
 	fieldDataMap : new Object(),
 	constructor : function(config) {
 		this.callParent(arguments);
-		this.addEvents('editMode','lastModified','clickOnParent');
+		//this.addEvents('editMode','lastModified','clickOnParent');
 	},
 	refreshScreenModel : function(screenView, screenModel, selectedTab) {
 		var me = this;
@@ -77,7 +77,7 @@ Ext.define('com.trackplus.screen.ItemScreenController', {
 			fieldConfig = me.dataModel.fieldConfigs['f' + fieldID];
 			fieldConfig['name'] = "fieldValues.f" + fieldID;
 			var extClassName = aFieldData.extClassName;
-			if (me.readOnlyMode||fieldConfig['readonly']==true) {
+			if (me.readOnlyMode||fieldConfig['readonly']===true) {
 				extClassName = aFieldData.extReadOnlyClassName;
 				editable=me.dataModel.inlineEdit&&!fieldConfig.readonly;
 			}
@@ -96,7 +96,7 @@ Ext.define('com.trackplus.screen.ItemScreenController', {
 				valueVAlign : aFieldData.valueVAlign,
 				hideLabel   : aFieldData.hideLabel
 			});
-			if (me.fieldTypeRenderersMap['f' + fieldID] != null||fieldID==17) {
+			if (me.fieldTypeRenderersMap['f' + fieldID] ||fieldID===17) {
 				aField = Ext.create('Ext.form.Label', {
 					text : 'Field "'+fieldConfig.label+'" already on screen!'
 				});
@@ -108,13 +108,15 @@ Ext.define('com.trackplus.screen.ItemScreenController', {
 					fieldTypeRenderer.addListener('dblclick',me.fieldDblclick,me);
 				}
 				fieldTypeRenderer.addListener('afterRender',me.fieldAfterRender,me,{parentView:parentView});
+				fieldTypeRenderer.addListener('finishedUpload',me.finishedUploadHandler,me);
+
 				aField = fieldTypeRenderer.getView.call(fieldTypeRenderer);
 				me.fieldTypeRenderersMap['f' + fieldID] = fieldTypeRenderer;
 			}
 			aField.colspan = aFieldData.colSpan;
 			aField.rowspan = aFieldData.rowSpan;
 			aField.addCls("screenField");
-			if(fieldID==16){//parent
+			if(fieldID===16){//parent
 				fieldTypeRenderer.addListener('clickOnParent',me.clickOnParentHandler,me);
 			}
 
@@ -126,8 +128,8 @@ Ext.define('com.trackplus.screen.ItemScreenController', {
 			var extClassNameEditable=aFieldData.extClassName;
 			var wrapperItems=[];
 			wrapperItems.push(aField);
-			if(extClassNameEditable=='com.aurel.trackplus.field.CompositeTypeRenderer'){
-				if(fieldValue!=null){
+			if(extClassNameEditable==='com.aurel.trackplus.field.CompositeTypeRenderer'){
+				if(fieldValue){
 					for(var i=0;i<fieldConfig.jsonData.parts.length;i++){
 						var hiddenField=CWHF.createHiddenField(fieldName+"_"+(i+1),{value:fieldValue[''+(i+1)]});
 						wrapperItems.push(hiddenField);
@@ -151,7 +153,7 @@ Ext.define('com.trackplus.screen.ItemScreenController', {
 					afterrender:{
 						fn:function(cmp){
 							var html="";
-							if(fieldConfig.tooltip!=null&&fieldConfig.tooltip!=''){
+							if(fieldConfig.tooltip&&fieldConfig.tooltip!==''){
 								html=fieldConfig.tooltip+"<br/>"+getText('item.view.dblClickToEditField');
 							}else{
 								html=getText('item.view.dblClickToEditField');
@@ -174,7 +176,7 @@ Ext.define('com.trackplus.screen.ItemScreenController', {
 			if(me.dataModel.inlineEdit&&!aFieldData.empty){
 				aField.addCls('readOnlyField');
 			}
-			if(fieldConfig!=null&&fieldConfig.tooltip!=null&&fieldConfig.tooltip!=''){
+			if(fieldConfig&&fieldConfig.tooltip&&fieldConfig.tooltip!==''){
 				aField.addListener('afterrender',function(cmp){
 					Ext.create('Ext.tip.ToolTip', {
 						target: cmp.el,
@@ -225,7 +227,7 @@ Ext.define('com.trackplus.screen.ItemScreenController', {
 				wrapper.removeAll(true);
 				wrapper.add(aField);
 				wrapper.removeCls("editableFieldWrapper");
-				wrapper.ownerCt.doLayout();
+				wrapper.ownerCt.updateLayout();
 				el.fadeIn({
 					opacity: 1, //can be any value between 0 and 1 (e.g. .5)
 					easing: 'easeOut',
@@ -234,19 +236,21 @@ Ext.define('com.trackplus.screen.ItemScreenController', {
 						fieldTypeRenderer.focus();
 					}
 				});
-				if(me.editMode==false){
+				if(me.editMode===false){
 					me.fireEvent('editMode');
 					me.editMode=true;
 				}
 			}
 		});
-
-
+	},
+	finishedUploadHandler:function(){
+		var me=this;
+		me.fireEvent('finishedUpload');
 	},
 	fieldAfterRender:function(fieldID,opts){
 		var me=this;
 		var parentView=opts.parentView;
-		parentView.ownerCt.doLayout();
+		parentView.ownerCt.updateLayout();
 	},
 	clickOnParentHandler:function(parentID){
 		var me=this;
@@ -257,9 +261,9 @@ Ext.define('com.trackplus.screen.ItemScreenController', {
 		var modelFieldValues = me.dataModel.fieldValues;
 		var fieldConfigs = me.dataModel.fieldConfigs;
 		var fieldConfig = fieldConfigs["f"+fieldID];
-		if (fieldConfig!=null && fieldConfig.clientSideRefresh) {
+		if (fieldConfig && fieldConfig.clientSideRefresh) {
 			//client side refresh
-			if (fieldTypeRenderer.refreshDependentFields!=null) {
+			if (fieldTypeRenderer.refreshDependentFields) {
 				fieldTypeRenderer.refreshDependentFields.call(me, fieldID, fieldValues, oldFieldValues, fieldTypeRenderer, modelFieldValues, false);
 			}
 		} else {
@@ -307,7 +311,7 @@ Ext.define('com.trackplus.screen.ItemScreenController', {
 		var data = {};
 		var fieldName = "f"+fieldID;
 		var fieldConfig = me.dataModel.fieldConfigs[fieldName];
-		if (fieldConfig!=null) {
+		if (fieldConfig) {
 			//field to update is present on form
 			data.fieldConfigs = {};
 			data.fieldConfigs[fieldName] = fieldConfig;
@@ -340,7 +344,7 @@ Ext.define('com.trackplus.screen.ItemScreenController', {
 	},
 
 	parseDate: function(dateStr, nowIfNull) {
-		if (dateStr==null || dateStr.length==0) {
+		if (CWHF.isNull(dateStr) || dateStr.length===0) {
 			if (nowIfNull) {
 				return new Date();
 			} else {
@@ -361,7 +365,7 @@ Ext.define('com.trackplus.screen.ItemScreenController', {
 		var me=this;
 		var startDate = me.parseDate(startDateStr, false);
 		//var endDate = me.parseDate(endDateStr, false);
-		if (startDate==null || endDate==null) {
+		if (CWHF.isNull(startDate) || CWHF.isNull(endDate)) {
 			return null;
 		}
 		var i=0;
@@ -373,7 +377,7 @@ Ext.define('com.trackplus.screen.ItemScreenController', {
 	        } else {
 	        	//end date explicitly set on Saturday or Sunday: take this week end day(s) as working day
 	        	if (startDate>=endDate) {
-	        		if (day==6) {
+	        		if (day===6) {
 	        			//add one day for task ending on Saturday
 	        			i++;
 	        		} else {
@@ -385,7 +389,7 @@ Ext.define('com.trackplus.screen.ItemScreenController', {
 		}
 		return i;
 	},
-	
+
 	getDateFromModel: function(model, fieldID, isFromGantt) {
 		var me = this;
 		var date = null;
@@ -416,11 +420,11 @@ Ext.define('com.trackplus.screen.ItemScreenController', {
 			}
 		}
 
-		if(lastModified!=null){
+		if(lastModified){
 			me.fireEvent('lastModified',lastModified);
 		}
 
-		if(fieldsToReload.length==0){
+		if(fieldsToReload.length===0){
 			return false;
 		}
 		me.screenView.setLoading(true);
@@ -470,7 +474,7 @@ Ext.define('com.trackplus.screen.ItemScreenController', {
 			me.dataModel.fieldDisplayValues[f]=fieldDisplayValues[f];
 			fieldCfg['name'] = "fieldValues.f" + fieldConfigs[f].fieldID;
 			var fieldTypeRenderer=me.fieldTypeRenderersMap[f];
-			if(fieldTypeRenderer!=null) {
+			if(fieldTypeRenderer) {
 				//suspend events becasue setting the value would trigger triggering the change event (possibly infinit cycle)
 				fieldTypeRenderer.suspendEvents(false);
 				fieldTypeRenderer.update.call(fieldTypeRenderer,{
@@ -482,12 +486,12 @@ Ext.define('com.trackplus.screen.ItemScreenController', {
 				fieldTypeRenderer.resumeEvents();
 			}
 			var wrapper=me.fieldTypeWrappersMap[f];
-			if(wrapper!=null){
+			if(wrapper){
 				var hiddenField=null;
 				if(wrapper.items.getCount()>1){
 					hiddenField=wrapper.items.getAt(1);
 				}
-				if(hiddenField!=null){
+				if(hiddenField){
 					hiddenField.setValue(fieldValues[f])
 				}
 			}

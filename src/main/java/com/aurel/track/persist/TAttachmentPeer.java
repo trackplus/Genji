@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -69,13 +69,14 @@ public class TAttachmentPeer extends com.aurel.track.persist.BaseTAttachmentPeer
 	 *  Gets all attachments
 	 * @return
 	 */
+	@Override
 	public List<TAttachmentBean> loadAll() {
 		List<TAttachment> torqueList = null;
 		Criteria crit = new Criteria();
 		try {
 			torqueList = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all attachements failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all attachements failed with " + e.getMessage());
 		}
 		return convertTorqueListToBeanList(torqueList);
 	}
@@ -83,13 +84,14 @@ public class TAttachmentPeer extends com.aurel.track.persist.BaseTAttachmentPeer
 	/**
 	 * Load the attachment with given Id
 	 */
+	@Override
 	public TAttachmentBean loadByID(Integer objectID) {
 		TAttachment tobject = null;
 		try{
 			tobject = retrieveByPK(objectID);
 		}
 		catch(Exception e){
-			LOGGER.error("Loading of a attachment by primary key " + objectID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading of a attachment by primary key " + objectID + " failed with " + e.getMessage());
 		} 
 		if (tobject!=null){
 			return tobject.getBean();
@@ -100,6 +102,7 @@ public class TAttachmentPeer extends com.aurel.track.persist.BaseTAttachmentPeer
 	/**
 	 * Load the attachment with given Id
 	 */
+	@Override
 	public TAttachmentBean loadByIDWithDimensions(Integer objectID) {
 		TAttachment tobject = null;
 		TAttachmentBean image = null;
@@ -110,25 +113,24 @@ public class TAttachmentPeer extends com.aurel.track.persist.BaseTAttachmentPeer
 			String diskFileName=AttachBL.getFullFileName(null,objectID, itemID);
 			File imageFile = new File(diskFileName);
 			try {
-				try(ImageInputStream in = ImageIO.createImageInputStream(imageFile)){
-				    final Iterator<ImageReader> readers = ImageIO.getImageReaders(in);
-				    if (readers.hasNext()) {
-				        ImageReader reader = readers.next();
-				        try {
-				            reader.setInput(in);
-				            image.setHeight(reader.getHeight(0));
-							image.setWidth(reader.getWidth(0));;
-				        } finally {
-				            reader.dispose();
-				        }
-				    }
-				} 
+				ImageInputStream in = ImageIO.createImageInputStream(imageFile);
+			    final Iterator<ImageReader> readers = ImageIO.getImageReaders(in);
+			    if (readers.hasNext()) {
+			        ImageReader reader = readers.next();
+			        try {
+			            reader.setInput(in);
+			            image.setHeight(reader.getHeight(0));
+						image.setWidth(reader.getWidth(0));;
+			        } finally {
+			            reader.dispose();
+			        }
+			    }
 			} catch (IOException e) {
-				LOGGER.error("Could not read attached image file " + imageFile.getAbsolutePath(), e);
+				LOGGER.error("Could not read attached image file " + imageFile.getAbsolutePath());
 			}
 		}
 		catch(Exception e){
-			LOGGER.error("Loading of a attachment by primary key " + objectID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading of a attachment by primary key " + objectID + " failed with " + e.getMessage());
 		} 
 		return image;   
 	}
@@ -136,6 +138,7 @@ public class TAttachmentPeer extends com.aurel.track.persist.BaseTAttachmentPeer
 	/**
 	 * Obtain the attachments for an item
 	 */
+	@Override
 	public List<TAttachmentBean> loadByWorkItemKey(Integer itemID) {
 		List<TAttachment> torqueList = null;
 		Criteria crit = new Criteria();
@@ -143,10 +146,11 @@ public class TAttachmentPeer extends com.aurel.track.persist.BaseTAttachmentPeer
 		try {
 			torqueList = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading attachements for:"+itemID+" failed with " + e.getMessage(), e);
+			LOGGER.error("Loading attachements for:"+itemID+" failed with " + e.getMessage());
 		}
 		return convertTorqueListToBeanList(torqueList);
 	}
+	@Override
 	public int countByWorkItemID(Integer workItemID){
 		String COUNT = "count(" + OBJECTID + ")";
 		Criteria crit = new Criteria();
@@ -155,7 +159,7 @@ public class TAttachmentPeer extends com.aurel.track.persist.BaseTAttachmentPeer
 		try {
 			return ((Record) doSelectVillageRecords(crit).get(0)).getValue(1).asInt();
 		} catch (Exception e) {
-			LOGGER.error("Counting attachements by workItemID " + workItemID +  " failed with " + e.getMessage(), e);
+			LOGGER.error("Counting attachements by workItemID " + workItemID +  " failed with " + e.getMessage());
 			return 0;
 		}
 	}
@@ -165,6 +169,7 @@ public class TAttachmentPeer extends com.aurel.track.persist.BaseTAttachmentPeer
 	 * @param attachmentIDs
 	 * @return
 	 */
+	@Override
 	public List<TAttachmentBean> loadByAttachmentIDs(List<Integer> attachmentIDs) {
 		List<TAttachmentBean> attachmentsList = new ArrayList<TAttachmentBean>();
 		if (attachmentIDs==null || attachmentIDs.isEmpty()) {
@@ -192,6 +197,7 @@ public class TAttachmentPeer extends com.aurel.track.persist.BaseTAttachmentPeer
 		return attachmentsList;
 	}
 	
+	@Override
 	public List<TAttachmentBean> loadByWorkItemKeys(int[] workItemIDs){
 		List<TAttachmentBean> attachmentsList = new ArrayList<TAttachmentBean>();
 		if (workItemIDs==null || workItemIDs.length==0) {
@@ -236,6 +242,7 @@ public class TAttachmentPeer extends com.aurel.track.persist.BaseTAttachmentPeer
 	 * @param personID
 	 * @return
 	 */
+	@Override
 	public List<TAttachmentBean> loadTreeFilterAttachments(FilterUpperTO filterUpperTO, RACIBean raciBean, Integer personID) {
 		Integer[] selectedProjects = filterUpperTO.getSelectedProjects();
 		if (selectedProjects==null  || selectedProjects.length==0) {
@@ -246,7 +253,7 @@ public class TAttachmentPeer extends com.aurel.track.persist.BaseTAttachmentPeer
 		try {
 			return getFilterAttachments(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the attachments for tree filter failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the attachments for tree filter failed with " + e.getMessage());
 			return new ArrayList<TAttachmentBean>();
 		}
 	}
@@ -259,16 +266,18 @@ public class TAttachmentPeer extends com.aurel.track.persist.BaseTAttachmentPeer
 	 * @param errors
 	 * @return
 	 */
+	@Override
 	public List<TAttachmentBean> loadTQLFilterAttachments(String tqlExpression, TPersonBean personBean, Locale locale, List<ErrorData> errors) {
 		Criteria crit = TqlBL.createCriteria(tqlExpression, personBean, locale, errors);
 		try {
 			return getFilterAttachments(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the attachments for TQL filter " + tqlExpression + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the attachments for TQL filter " + tqlExpression + " failed with " + e.getMessage());
 			return new ArrayList<TAttachmentBean>();
 		}
 	}
 	
+	@Override
 	public Integer save(TAttachmentBean attach) {
 		try {
 			TAttachment tobject = BaseTAttachment.createTAttachment(attach);
@@ -278,10 +287,11 @@ public class TAttachmentPeer extends com.aurel.track.persist.BaseTAttachmentPeer
 			tobject.save();
 			return tobject.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a attachment failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a attachment failed with " + e.getMessage());
 			return null;
 		}	
 	}
+	@Override
 	public void delete(Integer objectID) {
 		try {
 			doDelete(SimpleKey.keyFor(objectID));

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -74,9 +74,7 @@ public class ActivityStreamAction extends ActionSupport implements Preparable, S
 	public String flatActivity(){
 		HttpServletRequest request = org.apache.struts2.ServletActionContext.getRequest();
 		String personPath=person.getDesignPath();
-		//if(personPath==null){
 		personPath="silver";
-		//}
 		iconsPath= request.getContextPath()+"/design/"+personPath;
 		ActivityStream activityStream=new ActivityStream();
 		TDashboardFieldBean dashboardItem=(TDashboardFieldBean) DashboardFieldRuntimeBL.getInstance().loadField(dashboardID);

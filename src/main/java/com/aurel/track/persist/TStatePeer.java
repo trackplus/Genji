@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -98,6 +98,7 @@ public class TStatePeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TStateBean loadByPrimaryKey(Integer objectID) {
 		TState tState = null;
 		try {
@@ -117,13 +118,14 @@ public class TStatePeer
 	 * @param label
 	 * @return
 	 */
+	@Override
 	public List<TStateBean> loadByLabel(String label) {
 		Criteria crit = new Criteria();
 		crit.add(LABEL, label);
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (Exception e) {
-			LOGGER.error("Loading the state by label " + label +  " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the state by label " + label +  " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -133,6 +135,7 @@ public class TStatePeer
 	 * @param stateIDs
 	 * @return
 	 */
+	@Override
 	public List<TStateBean> loadByKeys(Object[] stateIDs) {
 		if (stateIDs==null || stateIDs.length==0) {
 			return new LinkedList<TStateBean>();
@@ -143,7 +146,7 @@ public class TStatePeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the states by keys " + stateIDs + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the states by keys " + stateIDs + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -152,6 +155,7 @@ public class TStatePeer
 	 * Loads all stateBeans  
 	 * @return
 	 */
+	@Override
 	public List<TStateBean> loadAll() {
 		Criteria crit = new Criteria();
 		crit.add(PKEY, Integer.valueOf(0), Criteria.GREATER_THAN);
@@ -159,7 +163,7 @@ public class TStatePeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all states failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all states failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -169,6 +173,7 @@ public class TStatePeer
 	 * @param stateFlag
 	 * @return
 	 */
+	@Override
 	public List<TStateBean> loadByStateFlag(int stateFlag) {
 		Criteria crit = new Criteria();
 		crit.add(PKEY, new Integer(0), Criteria.GREATER_THAN);
@@ -177,7 +182,7 @@ public class TStatePeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading states by stateFlag " + stateFlag + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading states by stateFlag " + stateFlag + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -187,6 +192,7 @@ public class TStatePeer
 	 * @param stateFlags
 	 * @return
 	 */
+	@Override
 	public List<TStateBean> loadByStateFlags(int[] stateFlags) {
 		if (stateFlags==null || stateFlags.length==0) {
 			return new LinkedList<TStateBean>();
@@ -198,7 +204,7 @@ public class TStatePeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading states by stateFlags " + stateFlags + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading states by stateFlags " + stateFlags + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -207,6 +213,7 @@ public class TStatePeer
 	 * Gets the next available sortorder
 	 * @return
 	 */
+	@Override
 	public Integer getNextSortOrder() {
 		Integer sortOrder = null;
 		String max = "max(" + SORTORDER + ")";
@@ -229,6 +236,7 @@ public class TStatePeer
 	 * @param stateBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TStateBean stateBean) {
 		TState tState;
 		try {
@@ -236,11 +244,12 @@ public class TStatePeer
 			tState.save();
 			return tState.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a state bean failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a state bean failed with " + e.getMessage());
 			return null;
 		}	
 	}
 	
+	@Override
 	public boolean hasDependentData(Integer pkey) {
 		return ReflectionHelper.hasDependentData(replacePeerClasses, replaceFields, pkey);
 	}
@@ -251,6 +260,7 @@ public class TStatePeer
 	 * @param oldOID
 	 * @param newOID
 	 */
+	@Override
 	public void replace(Integer oldOID, Integer newOID) {
 		ReflectionHelper.replace(replacePeerClasses, replaceFields, oldOID, newOID);
 	}
@@ -259,6 +269,7 @@ public class TStatePeer
 	 * Deletes a state from the TState table 
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		new TCardFieldOptionPeer().deleteOptionForField(SystemFields.INTEGER_STATE, objectID);
 		LastExecutedBL.deleteByFilterIDAndFilterType(objectID, QUERY_TYPE.STATUS);
@@ -271,33 +282,12 @@ public class TStatePeer
 	 * @param projects
 	 * @return
 	 */
-	/*public List<TStateBean> loadUsedByProject(Integer[] projects) {
-		List<TStateBean> statusList = new ArrayList<TStateBean>();
-		if (projects==null || projects.length==0) {
-			return new ArrayList<TStateBean>();
-		}
-		List<int[]> projectChunkList = GeneralUtils.getListOfChunks(projects);
-		Iterator<int[]> iterator = projectChunkList.iterator();
-		while (iterator.hasNext()) {
-			int[] projectIDChunk = iterator.next(); 
-			Criteria criteria = new Criteria();
-			criteria.addJoin(PKEY, TWorkItemPeer.STATE);
-			criteria.addIn(TWorkItemPeer.PROJECTKEY, projectIDChunk);
-			criteria.addAscendingOrderByColumn(TStatePeer.SORTORDER);
-			criteria.setDistinct();
-			try {
-				statusList.addAll(convertTorqueListToBeanList(doSelect(criteria)));
-			} catch (Exception e) {
-				LOGGER.error("Getting the used states for projects " + projectIDChunk + " failed with " + e.getMessage(), e);
-			}
-		}
-		return statusList;
-	}*/
 	
 	/**
 	 * Returns the sort order column name
 	 * @return
 	 */
+	@Override
 	public String getSortOrderColumn() {
 		return "SORTORDER";
 	}
@@ -306,6 +296,7 @@ public class TStatePeer
 	 * Returns the table name
 	 * @return
 	 */
+	@Override
 	public String getTableName() {
 		return TABLE_NAME;
 	}

@@ -58,24 +58,24 @@ version="2.5">
 		<servlet-name>AxisServlet</servlet-name>
 		<servlet-class>
 			org.apache.axis2.transport.http.AxisServlet</servlet-class>
-		<load-on-startup>2</load-on-startup>
+		<load-on-startup>1</load-on-startup>
 	</servlet>
 
 	<servlet>
 		<servlet-name>JspSupportServlet</servlet-name>
 		<servlet-class>org.apache.struts2.views.JspSupportServlet</servlet-class>
-		<load-on-startup>3</load-on-startup>
+		<load-on-startup>1</load-on-startup>
 	</servlet>
 
 	<servlet>
 		<servlet-name>ReportXMLServlet</servlet-name>
 		<servlet-class>com.aurel.track.servlet.ReportXMLServlet</servlet-class>
-		<load-on-startup>4</load-on-startup>
+		<load-on-startup>3</load-on-startup>
 	</servlet>
     <servlet>
         <servlet-name>ReadyTesterServlet</servlet-name>
         <servlet-class>com.aurel.track.dbase.ReadyTesterServlet</servlet-class>
-        <load-on-startup>5</load-on-startup>
+        <load-on-startup>3</load-on-startup>
     </servlet>
 
     <servlet>

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -66,101 +66,16 @@ Ext.define('js.ext.com.track.dashboard.AverageTimeToCloseItem',{
 		me.callParent();
     },
 
-    defineTheme: function(gradID) {
-    	var colors = ['url(#' + gradID + '0)',
-    	              'url(#' + gradID + '1)',
-                      'url(#' + gradID + '2)',
-                      'url(#' + gradID + '3)',
-                      'url(#' + gradID + '4)',
-                      'url(#' + gradID + '5)',
-                      'url(#' + gradID + '6)',
-                      'url(#' + gradID + '7)',
-                      'url(#' + gradID + '8)'];
-
-    	Ext.define('Ext.chart.theme.Trackplus', {
-	    	extend: 'Ext.chart.theme.Base',
-	    	constructor: function(config) {
-	    	this.callParent([Ext.apply({
-	    		axis: {
-	    			fill: '#000',
-	            	'stroke-width': 1
-	    		},
-	            axisLabelTop: {
-	            	fill: '#000',
-	            	font: '11px Arial'
-	            },
-	            axisLabelLeft: {
-	            	fill: '#000',
-	            	font: '11px Arial'
-	            },
-	            axisLabelRight: {
-	            	fill: '#000',
-	            	font: '11px Arial'
-	            },
-	            axisLabelBottom: {
-	            	fill: '#000',
-	            	font: '11px Arial'
-	            },
-	            axisTitleTop: {
-	            	fill: '#000',
-	            	font: '11px Arial'
-	            },
-	            axisTitleLeft: {
-	            	fill: '#000',
-	            	font: '11px Arial'
-	            },
-	            axisTitleRight: {
-	            	fill: '#000',
-	            	font: '11px Arial'
-	            },
-	            axisTitleBottom: {
-	            	fill: '#000',
-	            	font: '11px Arial'
-	            },
-	            series: {
-	            	'stroke-width': 1
-	            },
-	            seriesLabel: {
-	            	font: '12px Arial',
-	            	fill: '#333'
-	            },
-	            marker: {
-	            	stroke: '#555',
-	            	fill: '#000',
-	            	radius: 3,
-	            	size: 3
-	            },
-	            colors: colors,
-	            	seriesThemes: [{
-	            		fill: colors[0]
-	            	}, {
-	            		fill: colors[1]
-	            	}],
-	            	markerThemes: [{
-	            		fill: '#084594',
-	            		type: 'circle'
-	            	}, {
-	            		fill: '#2171B5',
-	            		type: 'cross'
-	            	}, {
-	            		fill: '#4292C6',
-	            		type: 'plus'
-	            	}]
-	            }, config)]);
-	        }
-	    });
-    },
-
     createHtmlString:function(){
     	var me=this;
     },
 
     createChildren:function(){
     	var me = this;
-		if(me.jsonData.tooManyItems==true){
+		if(me.jsonData.tooManyItems===true){
 			return [me.createErrorCmp(getText('cockpit.err.tooManyItems'))];
 		}
-		if(me.jsonData.empty == false) {
+		if(me.jsonData.empty === false) {
 			myChart = me.createChart();
 		}else {
 			myChart = me.createEmptyChart();
@@ -171,14 +86,26 @@ Ext.define('js.ext.com.track.dashboard.AverageTimeToCloseItem',{
     createChart: function() {
     	var me = this;
     	var gradID = Math.random().toString(36).substring(7);
-    	me.defineTheme(gradID);
 
     	var chartData = me.jsonData.chartData;
         var maxValue = me.calculateMaxValue(chartData);
         var jsonArg1 = me.createYAxeCommonConfig(maxValue);
         var jsonArg2 = me.createXAxeCommonConfig();
 
-        var fieldsForStore = JSON.parse('[{"name": "date", "type":"string"}, {"name": "avgTime", "type":"Numeric"}, {"name": "respTimeLimitValue", "type":"Numeric"}]');
+//        var fieldsForStore = JSON.parse('[{"name": "date", "type":"string"}, {"name": "avgTime", "type":"int"}, {"name": "respTimeLimitValue", "type":"int"}]');
+        var fieldsForStore = [];
+        fieldsForStore.push({
+        	name: "date",
+        	"type":"string"
+        });
+        fieldsForStore.push({
+        	name: "avgTime"
+        });
+        fieldsForStore.push({
+        	name: "respTimeLimitValue",
+        	type:"int"
+        });
+
         var store = Ext.create('Ext.data.Store', {
             id:'store',
             fields: fieldsForStore,
@@ -189,23 +116,47 @@ Ext.define('js.ext.com.track.dashboard.AverageTimeToCloseItem',{
         axesArray.push(jsonArg2);
         var axesJSONArray = JSON.parse(JSON.stringify(axesArray));
         me.myChart =
-        	Ext.create('Ext.chart.Chart', {
+        	Ext.create('Ext.chart.CartesianChart', {
         	theme: 'Trackplus',
             gradients: me.getGradients(gradID),
             background: {
                 fill:'white'
             },
             legend: {
-            	position: 'bottom'
+            	docked: 'bottom',
+            	tpl: [
+            	   '<table><tr class="x-legend-container">',
+     	           		'<tpl for=".">',
+     	           			'<tr>',
+     	           				'<td class="x-legend-item">',
+     	           					'<div class="x-legend-item-marker {[ values.disabled ? Ext.baseCSSPrefix + \'legend-inactive\' : \'\' ]}">',
+     	           						'<div style="cursor:pointer; display: inline-block;width:10px;height:10px;background:{mark};"></div>',
+     	           						'<div style= "margin-left: 2px; cursor:pointer; display: inline-block;">{name}</div>',
+     	                  			'</div>',
+     	                  		'</td>',
+     	                  	'</tr>',
+     	                 '</tpl>',
+     	            '</table>'
+     	         ],
+     	         itemSelector: 'td',
+     	         style: {
+     	        	 borderColor: '#000000',
+     	        	 borderStyle: 'solid'
+     	         },
+     	         border: '1px',
+     	         margin: '0 0 5 0'
             },
             height: me.jsonData.height,
             animate: true,
             store: store,
-            axes: axesJSONArray
+            axes: axesJSONArray,
+            border: false,
+            bodyBorder: false
         });
-
-        me.myChart.series.add(me.createSeries('avgTime', 0, getText('averageTimeToCloseItem.series.avg.time.to.close')));
-        me.myChart.series.add(me.createSeries('respTimeLimitValue', 1,  getText('averageTimeToCloseItem.series.resp.time.limit')));
+        var seriesArr = [];
+        seriesArr.push(me.createSeries('avgTime', 0, getText('averageTimeToCloseItem.series.avg.time.to.close')));
+        seriesArr.push(me.createSeries('respTimeLimitValue', 1,  getText('averageTimeToCloseItem.series.resp.time.limit')));
+        me.myChart.setSeries(seriesArr);
 		return me.myChart;
     },
 
@@ -214,11 +165,11 @@ Ext.define('js.ext.com.track.dashboard.AverageTimeToCloseItem',{
     	var chartWidth = me.lastBox.width;
     	legenXValue = 0;
 
-    	if(me.jsonData.selectedEffortType == 1) {
+    	if(me.jsonData.selectedEffortType === 1) {
     		legenXValue = chartWidth - me.LEGEND_WIDTH_EFFORT_TYPE_TIME - me.LEGEN_RIGHT_OFFSET;
-    	}if(me.jsonData.selectedEffortType == 2) {
+    	}if(me.jsonData.selectedEffortType === 2) {
     		legenXValue = chartWidth - me.LEGEND_WIDTH_EFFORT_TYPE_NO_ITEMS - me.LEGEN_RIGHT_OFFSET;
-    	}if(me.jsonData.selectedEffortType == 3) {
+    	}if(me.jsonData.selectedEffortType === 3) {
     		legenXValue = chartWidth - me.LEGEND_WIDTH_EFFORT_TYPE_STORY_POINT - me.LEGEN_RIGHT_OFFSET;
     	}
     	return legenXValue;
@@ -278,7 +229,7 @@ Ext.define('js.ext.com.track.dashboard.AverageTimeToCloseItem',{
     createYAxeCommonConfig: function(maxValue) {
     	var me = this;
     	var jsonArg1 = {
-    		type: 'Numeric',
+    		type: 'numeric',
     	    position: 'left',
     	    grid: true,
     	    minimum: '0',
@@ -310,7 +261,7 @@ Ext.define('js.ext.com.track.dashboard.AverageTimeToCloseItem',{
         	},
         	grid: true
         };
-        if (me.jsonData.reportingInterval== "1" &&  me.jsonData.empty == false) {
+        if (me.jsonData.reportingInterval=== "1" &&  me.jsonData.empty === false) {
         	jsonArg2.type = 'Time';
             jsonArg2.fields = 'date';
             jsonArg2.dateFormat = 'M d';
@@ -322,13 +273,13 @@ Ext.define('js.ext.com.track.dashboard.AverageTimeToCloseItem',{
             jsonArg2.step = stepType;
 
         //Axes specific configuration WEEKLY  GRANULARITY
-        }else if (me.jsonData.reportingInterval== "2" &&  me.jsonData.empty == false) {
-            jsonArg2.type = 'Category';
+        }else if (me.jsonData.reportingInterval=== "2" &&  me.jsonData.empty === false) {
+            jsonArg2.type = 'category';
             jsonArg2.fields = 'date';
 
         //Axes specific configuration MONTHLY  GRANULARITY*/
-        } else if(me.jsonData.empty == false) {
-            jsonArg2.type = 'Category';
+        } else if(me.jsonData.empty === false) {
+            jsonArg2.type = 'category';
             jsonArg2.fields = 'date';
         }
         return jsonArg2;
@@ -340,7 +291,7 @@ Ext.define('js.ext.com.track.dashboard.AverageTimeToCloseItem',{
         for(var i = 0; i <  chartdata.length; i++){
             var obj =  chartdata[i];
             for(var key in obj){
-                if ( key != "date") {
+                if ( key !== "date") {
                     if (parseInt(obj[key]) > parseInt(maxValue)) {
                         maxValue = obj[key];
                     }
@@ -356,7 +307,7 @@ Ext.define('js.ext.com.track.dashboard.AverageTimeToCloseItem',{
     	me.defineTheme(gradID);
         var store = Ext.create('Ext.data.Store', {
             id: 'store',
-            fields: [{"name": "date", "type":"Time"}],
+            fields: [{"name": "date", "type":"date"}],
             data: [{"date":"2013-01-01"}]
         });
         myChart = Ext.create('Ext.chart.Chart', {
@@ -371,14 +322,14 @@ Ext.define('js.ext.com.track.dashboard.AverageTimeToCloseItem',{
                 position: 'left',
                 title:getText('statusOverTime.prompt.emptyChart'),
                 labelTitle: {font: 'bold 10px Arial'},
-                type: 'Numeric',
+                type: 'numeric',
                 minimum: 0,
                 maximum: 4,
                 majorTickSteps: 1 // one less than max
             },{
                 id: 'bottom',
                 position: 'bottom',
-                type: 'Category',
+                type: 'category',
                 fields: 'date',
                 title:getText('statusOverTime.prompt.emptyChart'),
                 labelTitle: {font: 'bold 10px Arial'}
@@ -389,24 +340,25 @@ Ext.define('js.ext.com.track.dashboard.AverageTimeToCloseItem',{
 
     createSeries: function(name, nr, seriesTitle) {
     	var me = this;
-
     	var series = {
-    		showMarkers: nr == 0 ? true : false,
-	        type: nr == 0 ? 'column' : 'line',
-	        style: me.getSeriesStyle(nr),
-	        smooth: false,
+    		showMarkers: nr === 0 ? true : false,
+    		type: nr === 0 ? 'bar' : 'line',
 	        stacked: true,
 	        shadowAttributes: false,
 	        xField: 'date',
 	        yField: name,
-	        title: seriesTitle
+	        title: seriesTitle,
+	        style: {
+	        	'stroke-width': nr === 0 ? 1 : 5,
+                opacity: 0.85
+            }
     	};
     	return series;
     },
 
     getSeriesStyle: function(nr) {
         var style = {};
-    	if(nr == 0) {
+    	if(nr === 0) {
     		style.stroke = COLORS[nr];
     		style.fill = COLORS[nr];
     		style['stroke-width']  = SERIES_STROKE_WIDTH;

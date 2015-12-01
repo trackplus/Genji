@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -76,22 +76,22 @@ import com.aurel.track.util.emailHandling.Html2Text;
 
 /**
  * Utility methods for lucene indexing
- * Reindexing runs in his own thread  
+ * Reindexing runs in his own thread
  * @author Tamas Ruff
  *
  */
 public class LuceneIndexer implements Runnable {
 	private static final Logger LOGGER = LogManager.getLogger(LuceneIndexer.class);
 	/**
-	 * DAO classes 
+	 * DAO classes
 	 */
 	private static WorkItemDAO workItemDAO = DAOFactory.getFactory().getWorkItemDAO();
-	
+
 	private static boolean halt;
 	private boolean finished = true;
-	
+
 	/**
-	 * the writers for each index 
+	 * the writers for each index
 	 */
 	private static IndexWriter workItemWriter;
 	private static IndexWriter notLocalizedLookupWriter;
@@ -101,12 +101,12 @@ public class LuceneIndexer implements Runnable {
 	private static IndexWriter expenseWriter;
 	private static IndexWriter budgetPlanWriter;
 	private static IndexWriter linkWriter;
-	
-	
+
+
 	public static void halt() {
 		halt = true;
 	}
-	
+
 	/**
 	 * @return Returns the halt.
 	 */
@@ -120,7 +120,7 @@ public class LuceneIndexer implements Runnable {
 	public static void setHalt(boolean haltFlag) {
 		halt = haltFlag;
 	}
-	
+
 	public boolean isFinished() {
 		return finished;
 	}
@@ -128,6 +128,7 @@ public class LuceneIndexer implements Runnable {
 	/**
 	 * The run method of the thread
 	 */
+	@Override
 	public void run() {
 		finished = false;
 		reIndex();
@@ -137,7 +138,7 @@ public class LuceneIndexer implements Runnable {
 	private static IndexWriter getWorkItemIndexWriter() {
 		return workItemWriter;
 	}
-	
+
 	public static IndexWriter getIndexWriter(int index) {
 		IndexWriter indexWriter = null;
 		switch (index) {
@@ -168,12 +169,12 @@ public class LuceneIndexer implements Runnable {
 		}
 		return indexWriter;
 	}
-	
+
 	/*************************************writer initializers*************************************/
 	/**
-	 * Initializes an IndexWriter. 
+	 * Initializes an IndexWriter.
 	 * It will be called from the following places:
-	 * 	-	on system startup workItemWriter should be initialized! 
+	 * 	-	on system startup workItemWriter should be initialized!
 	 * 						created = false if no reindex at startup
 	 * 						created = true if reindex at startup
 	 * 	-	before explicit reIndexing: created = true
@@ -199,7 +200,8 @@ public class LuceneIndexer implements Runnable {
 				//release the lock
 				indexWriter.close();
 			} catch (IOException e) {
-				LOGGER.error("Closing the IndexWriter for index " + index + " failed with " + e.getMessage(), e);
+				LOGGER.error("Closing the IndexWriter for index " + index + " failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		try {
@@ -214,8 +216,8 @@ public class LuceneIndexer implements Runnable {
 			indexWriter = new IndexWriter(indexDirectory, indexWriterConfig);
 		} catch (OverlappingFileLockException e) {
 			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("OverlappingFileLockException " + e);
-				LOGGER.error(ExceptionUtils.getStackTrace(e));
+				LOGGER.debug("OverlappingFileLockException " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 			if (!created) {
 				//try again this time with created = true
@@ -228,7 +230,8 @@ public class LuceneIndexer implements Runnable {
 					//close it in order to reopen it for modifications
 					indexWriter.close();
 				} catch (IOException e1) {
-					LOGGER.error("Creating the IndexWriter for index " + index + " failed with " + e.getMessage(), e);
+					LOGGER.error("Creating the IndexWriter for index " + index + " failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 				//try again this time with created = false
 				try {
@@ -237,10 +240,12 @@ public class LuceneIndexer implements Runnable {
 					//indexWriter = new IndexWriter(indexDirectory, analyzer, false, IndexWriter.MaxFieldLength.UNLIMITED);
 					indexWriter = new IndexWriter(indexDirectory, indexWriterConfig);
 				} catch (IOException e1) {
-					LOGGER.error("Creating the IndexWriter for index " + index + " failed with " + e.getMessage(), e);
+					LOGGER.error("Creating the IndexWriter for index " + index + " failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 			} else {
-				LOGGER.error("Creating the IndexWriter for index " + index + " failed with " + e.getMessage(), e);
+				LOGGER.error("Creating the IndexWriter for index " + index + " failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		} catch (IOException e) {
 			//tried probably with created = false, when the index structure doesn't exist yet
@@ -258,7 +263,8 @@ public class LuceneIndexer implements Runnable {
 					//close it in order to reopen it for modifications
 					indexWriter.close();
 				} catch (IOException e1) {
-					LOGGER.error("Creating the IndexWriter for index " + index + " failed with " + e.getMessage(), e);
+					LOGGER.error("Creating the IndexWriter for index " + index + " failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 				//try again this time with created = false
 				try {
@@ -267,10 +273,12 @@ public class LuceneIndexer implements Runnable {
 					//indexWriter = new IndexWriter(indexDirectory, analyzer, false, IndexWriter.MaxFieldLength.UNLIMITED);
 					indexWriter = new IndexWriter(indexDirectory, indexWriterConfig);
 				} catch (IOException e1) {
-					LOGGER.error("Creating the IndexWriter for index " + index + " failed with " + e.getMessage(), e);
+					LOGGER.error("Creating the IndexWriter for index " + index + " failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 			} else {
-				LOGGER.error("Creating the IndexWriter for index " + index + " failed with " + e.getMessage(), e);
+				LOGGER.error("Creating the IndexWriter for index " + index + " failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		switch (index) {
@@ -303,11 +311,11 @@ public class LuceneIndexer implements Runnable {
 		}
 		return indexWriter;
 	}
-	
+
 	private static IndexWriter initWorkItemIndexWriter(boolean created) {
 		return initWriter(created, LuceneUtil.INDEXES.WORKITEM_INDEX);
 	}
-	
+
 	/**
 	 * Initialize all the IndexWriters (by starting the application) for modifications
 	 * @param created
@@ -322,9 +330,9 @@ public class LuceneIndexer implements Runnable {
 		initWriter(created, LuceneUtil.INDEXES.BUDGET_PLAN_INDEX);
 		initWriter(created, LuceneUtil.INDEXES.LINK_INDEX);
 	}
-	
+
 	/**
-	 * All IndexWriters should be closed by system shutdown in order to release the locks 
+	 * All IndexWriters should be closed by system shutdown in order to release the locks
 	 * @return
 	 */
 	public static void closeWriters() {
@@ -333,7 +341,8 @@ public class LuceneIndexer implements Runnable {
 				//release the lock
 				workItemWriter.close();
 			} catch (IOException e) {
-				LOGGER.error("Closing the IndexWriter for workitems failed with " + e.getMessage(), e);
+				LOGGER.error("Closing the IndexWriter for workitems failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		if (notLocalizedLookupWriter!=null) {
@@ -341,7 +350,8 @@ public class LuceneIndexer implements Runnable {
 				//release the lock
 				notLocalizedLookupWriter.close();
 			} catch (IOException e) {
-				LOGGER.error("Closing the IndexWriter for not localized list fields failed with " + e.getMessage(), e);
+				LOGGER.error("Closing the IndexWriter for not localized list fields failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		if (localizedLookupWriter!=null) {
@@ -349,7 +359,8 @@ public class LuceneIndexer implements Runnable {
 				//release the lock
 				localizedLookupWriter.close();
 			} catch (IOException e) {
-				LOGGER.error("Closing the IndexWriter for not localized list fields failed with " + e.getMessage(), e);
+				LOGGER.error("Closing the IndexWriter for not localized list fields failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		if (externalLookupWriter!=null) {
@@ -357,7 +368,8 @@ public class LuceneIndexer implements Runnable {
 				//release the lock
 				externalLookupWriter.close();
 			} catch (IOException e) {
-				LOGGER.error("Closing the IndexWriter for external lists fields failed with " + e.getMessage(), e);
+				LOGGER.error("Closing the IndexWriter for external lists fields failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		if (attachmentWriter!=null) {
@@ -365,7 +377,8 @@ public class LuceneIndexer implements Runnable {
 				//release the lock
 				attachmentWriter.close();
 			} catch (IOException e) {
-				LOGGER.error("Closing the IndexWriter for attachments failed with " + e.getMessage(), e);
+				LOGGER.error("Closing the IndexWriter for attachments failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		if (expenseWriter!=null) {
@@ -373,7 +386,8 @@ public class LuceneIndexer implements Runnable {
 				//release the lock
 				expenseWriter.close();
 			} catch (IOException e) {
-				LOGGER.error("Closing the IndexWriter for expense failed with " + e.getMessage(), e);
+				LOGGER.error("Closing the IndexWriter for expense failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		if (budgetPlanWriter!=null) {
@@ -381,7 +395,8 @@ public class LuceneIndexer implements Runnable {
 				//release the lock
 				budgetPlanWriter.close();
 			} catch (IOException e) {
-				LOGGER.error("Closing the IndexWriter for budget/plan failed with " + e.getMessage(), e);
+				LOGGER.error("Closing the IndexWriter for budget/plan failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		if (linkWriter!=null) {
@@ -389,130 +404,11 @@ public class LuceneIndexer implements Runnable {
 				//release the lock
 				linkWriter.close();
 			} catch (IOException e) {
-				LOGGER.error("Closing the IndexWriter for link failed with " + e.getMessage(), e);
+				LOGGER.error("Closing the IndexWriter for link failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 	}
-	/**
-	 * Initializes an IndexWriter. 
-	 * It will be called from the following places:
-	 * 	-	on system startup workItemWriter should be initialized! 
-	 * 						created = false if no reindex at startup
-	 * 						created = true if reindex at startup
-	 * 	-	before explicit reIndexing: created = true
-	 * 	-	after reindexing: create = false;
-	 * 	During the adding/editing/deleting of index data the IndexWriter should be initialized with created = false!
-	 * @param create
-	 * @param index
-	 */
-	/*public static IndexWriter initWriter(boolean create, int index) {
-		Directory indexDirectory = LuceneUtil.getIndexDirectory(index);
-		if (indexDirectory == null) {
-			LOGGER.error("Can not find or create the index directory for workitems");
-			return null;
-		}
-		Analyzer analyzer = LuceneUtil.getAnalyzer(); 
-		if (analyzer==null) {
-			LOGGER.error("Analyzer is null");
-			return null;
-		}
-		IndexWriter indexWriter = null;
-		
-		try {
-			OpenMode openMode = null;
-			if (create) {
-				openMode = OpenMode.CREATE;
-			} else {
-				openMode = OpenMode.APPEND;
-			}
-			IndexWriterConfig indexWriterConfig = new IndexWriterConfig(LuceneUtil.VERSION, analyzer);
-			indexWriterConfig.setOpenMode(openMode);
-			indexWriter = new IndexWriter(indexDirectory, indexWriterConfig);
-		} catch (OverlappingFileLockException e) {
-			//file still locked
-			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("OverlappingFileLockException " + e);
-				LOGGER.error(ExceptionUtils.getStackTrace(e));
-			}
-			if (!create) {
-				//try again this time with created = true
-				try {
-					//open for create
-					IndexWriterConfig indexWriterConfig = new IndexWriterConfig(LuceneUtil.VERSION, analyzer);
-					indexWriterConfig.setOpenMode(OpenMode.CREATE);
-					indexWriter = new IndexWriter(indexDirectory, indexWriterConfig);
-					//close it in order to reopen it for modifications
-					indexWriter.close();
-				} catch (IOException e1) {
-					LOGGER.error("Creating the IndexWriter for index " + index + " failed with " + e.getMessage(), e);
-				}
-				//try again this time with created = false
-				try {
-					IndexWriterConfig indexWriterConfig = new IndexWriterConfig(LuceneUtil.VERSION, analyzer);
-					indexWriterConfig.setOpenMode(OpenMode.APPEND);
-					indexWriter = new IndexWriter(indexDirectory, indexWriterConfig);
-				} catch (IOException e1) {
-					LOGGER.error("Creating the IndexWriter for index " + index + " failed with " + e.getMessage(), e);
-				}
-			} else {
-				LOGGER.error("Creating the IndexWriter for index " + index + " failed with " + e.getMessage(), e);
-			}
-		} catch (IOException e) {
-			//index not exist
-			//tried probably with created = false, when the index structure doesn't exist yet
-			//it is the case when by startup the useLucene is active but reindexOnStartup not
-			//we should try to open the writers with false (for modifications) in order to not to destroy the possible existing index
-			//but when the index doesn't exists yet the opening of the writer with false fails. And this is the case now.
-			if (!create) {
-				//try again this time with created = true
-				try {
-					//open for create
-					IndexWriterConfig indexWriterConfig = new IndexWriterConfig(LuceneUtil.VERSION, analyzer);
-					indexWriterConfig.setOpenMode(OpenMode.CREATE);
-					indexWriter = new IndexWriter(indexDirectory, indexWriterConfig);
-					//close it in order to reopen it for modifications
-					closeWriter(indexWriter);
-				} catch (IOException e1) {
-					LOGGER.error("Creating the IndexWriter for index " + index + " failed with " + e.getMessage(), e);
-				}
-				//try again this time with created = false
-				try {
-					IndexWriterConfig indexWriterConfig = new IndexWriterConfig(LuceneUtil.VERSION, analyzer);
-					indexWriterConfig.setOpenMode(OpenMode.CREATE_OR_APPEND);
-					indexWriter = new IndexWriter(indexDirectory, indexWriterConfig);
-				} catch (IOException e1) {
-					LOGGER.error("Creating the IndexWriter for index " + index + " failed with " + e.getMessage(), e);
-				}
-			} else {
-				LOGGER.error("Creating the IndexWriter for index " + index + " failed with " + e.getMessage(), e);
-			}
-		}
-		return indexWriter;
-	}*/
-	
-	
-	
-	/**
-	 * Initializes the expense writer.  
-	 *	-	reIndexing from scratch: created = true
-	 *	-	updating the index: create = false;
-	 * @param created
-	 */
-	
-	
-	/*public static void closeWriter(IndexWriter indexWriter) {
-		if (indexWriter!=null) {
-			try {
-				indexWriter.close();
-			} catch (CorruptIndexException e) {
-				LOGGER.error("Closing the index writer failed with CorruptIndexException " + e.getMessage(), e);
-				LOGGER.debug(ExceptionUtils.getStackTrace(e));
-			} catch (IOException e) {
-				LOGGER.error("Closing the index writer failed with IOException " + e.getMessage(), e);
-				LOGGER.debug(ExceptionUtils.getStackTrace(e));
-			}
-		}
-	}*/
 	
 	/**
 	 * Gets the associated field indexers
@@ -561,9 +457,9 @@ public class LuceneIndexer implements Runnable {
 	}
 
 	/*************************************reindex methods*************************************/
-	
-	/** 
-	 * Reindexes all workitems. 
+
+	/**
+	 * Reindexes all workitems.
 	 * The custom attributes and the history beans should be set for each workItemBean
 	 */
 	public synchronized void reIndexWorkItems() {
@@ -580,7 +476,7 @@ public class LuceneIndexer implements Runnable {
 				while (fromID<maxWorkItemID) {
 					List<TWorkItemBean> workItemChunk = workItemDAO.getNextChunk(fromID, chunkInterval);
 					if (workItemChunk!=null) {
-						LOGGER.info("Reindexing workitems between " + fromID + " and "  + (fromID + chunkInterval) + 
+						LOGGER.info("Reindexing workitems between " + fromID + " and "  + (fromID + chunkInterval) +
 								", a total number of " + workItemChunk.size() + " workitems.");
 						noOfWorkItems += workItemChunk.size();
 						addToWorkItemIndex(indexWriter, workItemChunk);
@@ -590,12 +486,13 @@ public class LuceneIndexer implements Runnable {
 			}
 			LOGGER.info("Reindexing " + noOfWorkItems + " workitems completed.");
 		} catch (Exception e) {
-			LOGGER.error("Reindexing issues failed with " + e.getMessage(), e);
+			LOGGER.error("Reindexing issues failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		} finally {
 			initWorkItemIndexWriter(false);
 		}
 	}
-	
+
 	private static String getComments(StringBuffer workItemOldComments, String newComment) {
 		if (workItemOldComments==null) {
 			workItemOldComments = new StringBuffer();
@@ -605,26 +502,26 @@ public class LuceneIndexer implements Runnable {
 		}
 		return workItemOldComments.toString();
 	}
-	
-	
+
+
 	/*************************************workitem index writer methods***********************************/
-	
+
 	/**
 	* Only the system attributes are set for the workItems
-	* set the custom attributes and the comments 
+	* set the custom attributes and the comments
 	* to prepare them for indexing
 	*/
 	private static List<TWorkItemBean> prepareWorkItemBeans(List<TWorkItemBean> workItemBeans) {
 		List<Integer> workItemIDs = GeneralUtils.createIntegerListFromBeanList(workItemBeans);
 		int[] arrWorkItemIDs = GeneralUtils.createIntArrFromIntegerList(workItemIDs);
 		//get the comments for all workItems
-		Map<Integer, StringBuffer> workItemsCommentsMap = 
-			HistoryLoaderBL.getByWorkItemsLongTextField(workItemIDs, 
+		Map<Integer, StringBuffer> workItemsCommentsMap =
+			HistoryLoaderBL.getByWorkItemsLongTextField(workItemIDs,
 					SystemFields.INTEGER_COMMENT, HistoryLoaderBL.LONG_TEXT_TYPE.ISPLAIN);
 		//get attribute values for all workItems
 		List<TAttributeValueBean> allAttributeValueBeansList = AttributeValueBL.loadByWorkItemKeys(arrWorkItemIDs);
 		Map<Integer, Map<String, Object>> attributeValueBeansMap = AttributeValueBL.prepareAttributeValueMapForWorkItems(allAttributeValueBeansList, null, null);
-		//gather the fields in a set to avoid calling processLoad for each attributeValueBean 
+		//gather the fields in a set to avoid calling processLoad for each attributeValueBean
 		//(each part of a composite or each value of a multiple select)
 		Map<Integer, Set<Integer>> fieldSetMap = AttributeValueBL.getFieldIDsSetForWorkItems(allAttributeValueBeansList);
 		if (workItemBeans!=null) {
@@ -643,12 +540,12 @@ public class LuceneIndexer implements Runnable {
 		}
 		return workItemBeans;
 	}
-	
+
 	/**
-	 * Adds a list of TWorkItems to the workItem index 
+	 * Adds a list of TWorkItems to the workItem index
 	 * Used by recreating the index
 	 * @param indexWriter
-	 * @param workItemBeans the beans are considered to be fully prepared: 
+	 * @param workItemBeans the beans are considered to be fully prepared:
 	 * 			i.e. history beans and custom attributes are set
 	 */
 	private static void addToWorkItemIndex(IndexWriter indexWriter, List<TWorkItemBean> workItemBeans) {
@@ -667,7 +564,7 @@ public class LuceneIndexer implements Runnable {
 				if (!LuceneUtil.isUseLucene()) {
 					return;
 				}
-				//addToWorkItemIndex(TWorkItemBean workItemBean) could be used, 
+				//addToWorkItemIndex(TWorkItemBean workItemBean) could be used,
 				//but we do not use it because of the superfluous flushes
 				//we make flush and optimize only after each workItem is added
 				Document document = createWorkItemDocument(workItemBean);
@@ -676,19 +573,21 @@ public class LuceneIndexer implements Runnable {
 						indexWriter.addDocument(document);
 					}
 				} catch (IOException e) {
-					LOGGER.error("Adding a workItem document for workItemBean " + workItemBean.getObjectID() + " failed with " + e.getMessage(), e);				
+					LOGGER.error("Adding a workItem document for workItemBean " + workItemBean.getObjectID() + " failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 			}
 			try {
 				indexWriter.commit();
 			} catch (IOException e) {
-				LOGGER.error("Flushing the IndexWriter after adding all workItemBeanss failed with " + e.getMessage(), e);
+				LOGGER.error("Flushing the IndexWriter after adding all workItemBeanss failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 	}
-	
+
 	/**
-	 * Adds a list of TWorkItems to the workItem index 
+	 * Adds a list of TWorkItems to the workItem index
 	 * Used by recreating the index
 	 * @param workItemBeans
 	 * @param fieldID the beans are considered to be fully prepared:
@@ -722,7 +621,7 @@ public class LuceneIndexer implements Runnable {
 				if (!LuceneUtil.isUseLucene()) {
 					return;
 				}
-				//addToWorkItemIndex(TWorkItemBean workItemBean) could be used, 
+				//addToWorkItemIndex(TWorkItemBean workItemBean) could be used,
 				//but we do not use it because of the superfluous flushes
 				//we make flush and optimize only after each workItem is added
 				Document document = createWorkItemDocument(workItemBean);
@@ -731,18 +630,20 @@ public class LuceneIndexer implements Runnable {
 						indexWriter.addDocument(document);
 					}
 				} catch (IOException e) {
-					LOGGER.error("Adding a workItem document for workItemBean " + workItemBean.getObjectID() + " failed with IOException" + e.getMessage(), e);
+					LOGGER.error("Adding a workItem document for workItemBean " + workItemBean.getObjectID() + " failed with IOException" + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 			}
 			try {
 				indexWriter.commit();
 			} catch (IOException e) {
-				LOGGER.error("Flushing the workItemBeans failed with " + e.getMessage(), e);
+				LOGGER.error("Flushing the workItemBeans failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
-			
+
 		}
 	}
-	
+
 	/**
 	 * Updates the workItemBean index with a modified TWorkItemBean
 	 * Deletes the old document and create a new one
@@ -767,13 +668,13 @@ public class LuceneIndexer implements Runnable {
 		deleteFromWorkItemIndex(workItemBeans, fieldID, false);
 		addToWorkItemIndex(workItemBeans, fieldID);
 	}
-	
+
 	/**
 	 * Adds a TWorkItem to the workitem index
 	 * Used by creating a new and by updating (delete old and create new) of an existing workItem
-	 * Although workItemBean contains no history bean it is not needed 
-	 * because by creating only an "emtpy" state change history is created. 
-	 * However it contains the custom attribute values.  
+	 * Although workItemBean contains no history bean it is not needed
+	 * because by creating only an "emtpy" state change history is created.
+	 * However it contains the custom attribute values.
 	 * @param workItemBean
 	 */
 	public static synchronized void addToWorkItemIndex(TWorkItemBean workItemBean, boolean deleteExisting) {
@@ -803,21 +704,23 @@ public class LuceneIndexer implements Runnable {
 				indexWriter.deleteDocuments(term);
 				indexWriter.commit();
 			} catch (IOException e) {
-				LOGGER.error("Removing a workItembean " + workItemID + " from the index failed with " + e.getMessage(), e);
+				LOGGER.error("Removing a workItembean " + workItemID + " from the index failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
-		
+
 		List<Integer> workItemIDsList = new ArrayList<Integer>();
 		workItemIDsList.add(workItemBean.getObjectID());
-		Map<Integer, StringBuffer> workItemsCommentsMap = 
-			HistoryLoaderBL.getByWorkItemsLongTextField(workItemIDsList, 
+		Map<Integer, StringBuffer> workItemsCommentsMap =
+			HistoryLoaderBL.getByWorkItemsLongTextField(workItemIDsList,
 					SystemFields.INTEGER_COMMENT, HistoryLoaderBL.LONG_TEXT_TYPE.ISPLAIN);
 		String actualComment = workItemBean.getComment();
 		String actualCommentPlain = "";
 		try {
 			actualCommentPlain = Html2Text.getNewInstance().convert(actualComment);
 		} catch (Exception e) {
-			LOGGER.warn("Transforming the actual comment to plain text failed with " + e.getMessage(), e);
+			LOGGER.warn("Transforming the actual comment to plain text failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			actualCommentPlain = workItemBean.getComment();
 		}
 		workItemBean.setComment(getComments(workItemsCommentsMap.get(workItemBean.getObjectID()), actualCommentPlain));
@@ -828,19 +731,21 @@ public class LuceneIndexer implements Runnable {
 			try {
 				indexWriter.addDocument(doc);
 			} catch (IOException e) {
-				LOGGER.error("Adding a workItemBean " + workItemBean.getObjectID() + " to the index failed with " + e.getMessage(), e);
-			} 
+				LOGGER.error("Adding a workItemBean " + workItemBean.getObjectID() + " to the index failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
+			}
 		}
 		try {
 			indexWriter.commit();
 		} catch (IOException e) {
-			LOGGER.error("Flushing the workItemBean failed with " + e.getMessage(), e);
+			LOGGER.error("Flushing the workItemBean failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 	}
-	
+
 	/**
 	 * Removes a list of TWorkItems from the workitem index
-	 * Used by deleting a project (for deleting all of its workitems) 
+	 * Used by deleting a project (for deleting all of its workitems)
 	 * @param workItemBeans
 	 * @return
 	 */
@@ -858,10 +763,10 @@ public class LuceneIndexer implements Runnable {
 		}
 		if (LOGGER.isDebugEnabled()) {
 			if (deleteProject) {
-				LOGGER.debug("Delete " + workItemBeans.size() + 
+				LOGGER.debug("Delete " + workItemBeans.size() +
 						" workItems from workItemIndex after deleting a project with all items " + fieldID);
 			} else {
-				LOGGER.debug("Delete " + workItemBeans.size() + 
+				LOGGER.debug("Delete " + workItemBeans.size() +
 					" workItems from workItemIndex after changing a dependency for field " + fieldID + " to add them again");
 			}
 		}
@@ -877,7 +782,8 @@ public class LuceneIndexer implements Runnable {
 				try {
 					indexWriter.deleteDocuments(term);
 				} catch (Exception e) {
-					LOGGER.error("Removing a workItemBean " + workItemID + " from the index failed with " + e.getMessage(), e);
+					LOGGER.error("Removing a workItemBean " + workItemID + " from the index failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 			}
 		} catch (Exception e) {
@@ -885,17 +791,18 @@ public class LuceneIndexer implements Runnable {
 		try {
 			indexWriter.commit();
 		} catch (IOException e) {
-			LOGGER.error("Flushing the deleting of workItemBeans failed with " + e.getMessage(), e);
+			LOGGER.error("Flushing the deleting of workItemBeans failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 	}
-	
+
 	/*************************************create document methods***********************************/
-	
+
 	/**
 	 * Creates the Lucene searchable document for a workItem.
 	 * The field names for lucene fields should be normalized (replace the spaces)
 	 * The custom attributes and the comments of the workItem should be populated
-	 * @param workItemBean 
+	 * @param workItemBean
 	 */
 	private static Document createWorkItemDocument(TWorkItemBean workItemBean) {
 		String luceneFieldName;
@@ -907,7 +814,7 @@ public class LuceneIndexer implements Runnable {
 		if (workItemID==null) {
 			return null;
 		}
-		
+
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("Creating the workItem document by id " + workItemID);
 		}
@@ -922,8 +829,8 @@ public class LuceneIndexer implements Runnable {
 				if (fieldBean!=null) {
 					luceneFieldName = fieldBean.getName();
 					fieldTypeRT = FieldTypeManager.getFieldTypeRT(fieldID);
-					//it might be that the workItemBean.getAttribute(fieldID) is null but the 
-					//fieldTypeRT.getLuceneValue(workItemBean.getAttribute(fieldID)) is not null. 
+					//it might be that the workItemBean.getAttribute(fieldID) is null but the
+					//fieldTypeRT.getLuceneValue(workItemBean.getAttribute(fieldID)) is not null.
 					//For example by checkboxes: null means false/No
 					if (fieldTypeRT!=null) {
 						String fieldName = LuceneUtil.normalizeFieldName(luceneFieldName);
@@ -940,7 +847,7 @@ public class LuceneIndexer implements Runnable {
 			}
 			//index all not null custom fields
 			//each single field value and each part of a composite field values
-			//are saved in separate lucene fields 
+			//are saved in separate lucene fields
 			Map<String, Object> customAttributes = workItemBean.getCustomAttributeValues();
 			if (customAttributes!=null && !customAttributes.isEmpty()) {
 				Iterator<String> iterator = customAttributes.keySet().iterator();
@@ -958,7 +865,8 @@ public class LuceneIndexer implements Runnable {
 								try {
 									parameterCode = Integer.valueOf(parameterCodeStr);
 								} catch (Exception e) {
-									LOGGER.error("Converting the parameterCode " + parameterCodeStr + " to an integer failed with " + e.getMessage(), e);
+									LOGGER.error("Converting the parameterCode " + parameterCodeStr + " to an integer failed with " + e.getMessage());
+									LOGGER.debug(ExceptionUtils.getStackTrace(e));
 								}
 							}
 						}
@@ -970,14 +878,15 @@ public class LuceneIndexer implements Runnable {
 							luceneFieldName = LuceneUtil.normalizeFieldName(fieldBean.getName());
 						} else {
 							//part of a composite custom field
-							//the lucene field name is synthetized from the composite field and the parameter code 
+							//the lucene field name is synthetized from the composite field and the parameter code
 							luceneFieldName = LuceneUtil.synthetizeCompositePartFieldName(
 									LuceneUtil.normalizeFieldName(fieldBean.getName()), parameterCode);
 							try {
 								customCompositeFieldTypeRT = (CustomCompositeBaseRT)fieldTypeRT;
 							} catch (Exception e) {
-								LOGGER.error("The type of the fieldTypeRT is " + fieldTypeRT.getClass().getName() + 
-										". Casting it to CustomCompositeFieldTypeRT failed with " + e.getMessage(), e);
+								LOGGER.error("The type of the fieldTypeRT is " + fieldTypeRT.getClass().getName() +
+										". Casting it to CustomCompositeFieldTypeRT failed with " + e.getMessage());
+								LOGGER.debug(ExceptionUtils.getStackTrace(e));
 							}
 							if (customCompositeFieldTypeRT!=null) {
 								fieldTypeRT = customCompositeFieldTypeRT.getCustomFieldType(parameterCode.intValue());
@@ -999,11 +908,12 @@ public class LuceneIndexer implements Runnable {
 			}
 			return document;
 		} catch (Exception e) {
-			LOGGER.error("Indexing the workItem " + workItemID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Indexing the workItem " + workItemID + " failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Creates a new field for document
 	 * @param fieldTypeRT

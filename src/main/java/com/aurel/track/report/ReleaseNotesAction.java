@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -74,10 +74,12 @@ public class ReleaseNotesAction extends ActionSupport implements Preparable, Ses
 	private List selectedIssueTypes;
 
 
+	@Override
 	public void setSession(Map<String, Object> session) {
 		this.session=session;
 	}
 
+	@Override
 	public void prepare() throws Exception {
 		personBean = (TPersonBean) session.get(Constants.USER_KEY);
 		locale=(Locale) session.get(Constants.LOCALE_KEY);
@@ -157,7 +159,7 @@ public class ReleaseNotesAction extends ActionSupport implements Preparable, Ses
 			return;
 		}
 		boolean useProjectSpecificIDs = false;
-		if (ApplicationBean.getApplicationBean().getSiteBean().getProjectSpecificIDsOn()) {
+		if (ApplicationBean.getInstance().getSiteBean().getProjectSpecificIDsOn()) {
 			useProjectSpecificIDs = true;
 		}
 		try {
@@ -222,7 +224,6 @@ public class ReleaseNotesAction extends ActionSupport implements Preparable, Ses
 			buf.append("<ul class='it"+group.getIssueType().getObjectID()+"'>\n");
 			for (TWorkItemBean item: group.getWorkItems()) {
 				if (useProjectSpecificIDs) {
-					//TProjectBean projectBean = projectBeansMap.get(item.getProjectID());
 					TProjectBean projectBean = LookupContainer.getProjectBean(item.getProjectID());
 					String projectPrefix = null;
 					if (projectBean!=null) {
@@ -275,13 +276,6 @@ public class ReleaseNotesAction extends ActionSupport implements Preparable, Ses
 		this.project = project;
 	}
 
-	/*public String getRelease() {
-		return release;
-	}
-
-	public void setRelease(String release) {
-		this.release = release;
-	}*/
 
 	public List getSelectedIssueTypes() {
 		return selectedIssueTypes;
@@ -291,19 +285,14 @@ public class ReleaseNotesAction extends ActionSupport implements Preparable, Ses
 		selectedIssueTypes = StringArrayParameterUtils.splitSelection(types);	
 	}
 	
+	@Override
 	public void setServletResponse(HttpServletResponse servletResponse) {
 		this.servletResponse = servletResponse;
 	}
 	
+	@Override
 	public void setServletRequest(HttpServletRequest servletRequest) {
 		this.servletRequest = servletRequest;
 	}
 
-	/*public String getReleaseId() {
-		return releaseId;
-	}
-
-	public void setReleaseId(String releaseId) {
-		this.releaseId = releaseId;
-	}*/
 }

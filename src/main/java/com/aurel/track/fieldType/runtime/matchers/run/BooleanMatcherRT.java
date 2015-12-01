@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -23,6 +23,7 @@
 
 package com.aurel.track.fieldType.runtime.matchers.run;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.torque.util.Criteria;
@@ -54,6 +55,7 @@ public class BooleanMatcherRT extends AbstractMatcherRT {
 	 * @param attributeValue
 	 * @return
 	 */
+	@Override
 	public boolean match(Object attributeValue) {				
 		Boolean nullMatch = nullMatcher(attributeValue);
 		if (nullMatch!=null) {
@@ -67,7 +69,8 @@ public class BooleanMatcherRT extends AbstractMatcherRT {
 			attributeValueBoolean = (Boolean)attributeValue;
 		} catch(Exception e) {
 			LOGGER.error("Converting the attribute value " + attributeValue + " of type " + 
-					attributeValue.getClass().getName() + " to Boolean failed with " + e.getMessage(), e);
+					attributeValue.getClass().getName() + " to Boolean failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			return false;
 		}
 		switch (relation) {
@@ -85,6 +88,7 @@ public class BooleanMatcherRT extends AbstractMatcherRT {
 	 * @param crit
 	 * @param index used for aliasing the joined attribute value table
 	 */
+	@Override
 	public void addCriteria(Criteria crit) {
 		String columnName = null;
 		switch (fieldID.intValue()) {

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -22,11 +22,9 @@
 
 package com.aurel.track.util;
 
-import static org.junit.Assert.*;
-
 import java.util.Date;
-
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class EqualUtilsTest {
 	
@@ -42,32 +40,26 @@ public class EqualUtilsTest {
 	@Test 
 	public void testEqual(){
 		assertTrue(EqualUtils.equal(1, 1));
-		
 	}
 	
 	@Test 
 	public void testNotEqualdouble(){
 		assertFalse(EqualUtils.notEqual(1.1, 1.1));
 		assertTrue(EqualUtils.notEqual(1.1, 1.2));
-		
 	}
-	
 	
 	@Test
 	public void testValueModified(){
-	Object o1 = new Object();
-	Object o2 = new Object();
-	
+		Object o1 = new Object();
+		Object o2 = new Object();
 	
 		assertTrue(EqualUtils.valueModified(o1,o2));
-		
 	}
 	
 	@Test
 	public void testEqualstring(){
 		assertFalse(EqualUtils.equal("string1", "string2"));
 		assertTrue(EqualUtils.equal("string1","string1"));
-		
 	}
 	
 	@Test
@@ -80,7 +72,6 @@ public class EqualUtilsTest {
 	public void testEqualStrict(){
 		assertFalse(EqualUtils.equalStrict("string1", "string2"));
 		assertTrue(EqualUtils.equalStrict("string1","string1"));
-		
 		assertFalse(EqualUtils.equalStrict("String", ""));	
 	}
 	
@@ -119,9 +110,5 @@ public class EqualUtilsTest {
 		date1 = null;
 		
 		assertFalse(EqualUtils.notEqualDateNeglectTime(date1,date2));
-		
-		
 	}
-	
-
 }

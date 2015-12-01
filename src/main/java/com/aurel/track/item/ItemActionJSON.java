@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -92,7 +92,6 @@ public class ItemActionJSON {
 		JSONUtility.appendStringValue(sb, "synopsis", form.getSynopsis());
 		JSONUtility.appendStringValue(sb, "description", form.getDescription());
 
-		//JSONUtility.appendStringValue(sb, "projectDisplayValue", form.getProjectDisplayValue());
 		JSONUtility.appendStringValue(sb, "projectLabel", form.getProjectLabel());
 		JSONUtility.appendStringValue(sb, "projectTooltip", form.getProjectTooltip());
 		JSONUtility.appendStringValue(sb, "issueTypeLabel", form.getIssueTypeLabel());
@@ -100,8 +99,7 @@ public class ItemActionJSON {
 		JSONUtility.appendBooleanValue(sb, "fixedIssueType", form.isFixedIssueType());
 
 		sb.append("\"projectTree\":");
-		//sb.append(JSONUtility.encodeJSONIntegerStringBeanList(form.getProjectList()));
-        sb.append(JSONUtility.getTreeHierarchyJSON(form.getProjectTree(), false, false));
+        sb.append(JSONUtility.getTreeHierarchyJSON(form.getProjectTree(), false, true));
 		sb.append(",");
 
 		sb.append("\"issueTypeList\":");

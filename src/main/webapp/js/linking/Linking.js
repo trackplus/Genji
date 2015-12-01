@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -36,7 +36,7 @@ Ext.define('com.trackplus.linking.LinkingController', {
 	},
 	createView: function () {
 		var me = this;
-		if (me.view == null) {
+		if (CWHF.isNull(me.view)) {
 			me.view=Ext.create('com.trackplus.linking.LinkingView',{
 				model:me.model
 			});
@@ -73,19 +73,44 @@ Ext.define('com.trackplus.linking.LinkingView', {
 		return [me.northPanel,me.centerPanel];
 	},
 	createNorthPanel:function(){
-		var me=this;
-		var columnsQueryID=me.model['columnsQueryID'];
-		var rowsQueryID=me.model['rowsQueryID'];
-		var linkTypeWithDirection=me.model['linkTypeWithDirection'];
-
-		me.cmbColumnsQuery=me.createFilterPickerCfg("linking.lbl.verticalQuery",'columnsQueryID',columnsQueryID);
-		me.cmbRowsQuery=me.createFilterPickerCfg("linking.lbl.horizontalQuery",'rowsQueryID',rowsQueryID);
+		var me = this;
+		var columnFilterID = me.model['columnFilterID'];
+		var rowFilterID = me.model['rowFilterID'];
+		var linkTypeWithDirection = me.model['linkTypeWithDirection'];
+		var columnFilterTree = me.model["columnFilterTree"];
+		var rowFilterTree = me.model["rowFilterTree"];
+		me.cmbColumFilter = CWHF.createSingleTreePicker(null, "columnFilterID", columnFilterTree, columnFilterID);
+		var radioColumnItems = CWHF.getRadioButtonItems(me.model["linkFlags"],
+				"columnLinkedFlag", "id", "label", me.model["columnLinkedFlag"], false, false);
+		me.radioColumnGroup = CWHF.getRadioGroup("linking.lbl.columnLinkedFlag", 600, radioColumnItems, {labelWidth:150});
+		var columnPanel = Ext.create('Ext.form.FieldContainer', {
+	        fieldLabel : getText('linking.lbl.columnFilter'),
+	        labelWidth : 150,
+	        labelAlign : "right",
+	        labelStyle : {
+		        overflow : 'hidden'
+	        },
+	        layout : 'hbox',
+	        items : [ me.cmbColumFilter, me.radioColumnGroup ]
+	    });
+		me.cmbRowFilter = CWHF.createSingleTreePicker(null, "rowFilterID", rowFilterTree, rowFilterID);
+		var radioRowItems = CWHF.getRadioButtonItems(me.model["linkFlags"],
+				"rowLinkedFlag", "id", "label", me.model["rowLinkedFlag"], false, false);
+		me.radioRowGroup = CWHF.getRadioGroup("linking.lbl.rowLinkedFlag", 600, radioRowItems, {labelWidth:150});
+		var rowPanel = Ext.create('Ext.form.FieldContainer', {
+	        fieldLabel : getText('linking.lbl.rowFilter'),
+	        labelWidth : 150,
+	        labelAlign : "right",
+	        labelStyle : {
+		        overflow : 'hidden'
+	        },
+	        layout : 'hbox',
+	        items : [ me.cmbRowFilter, me.radioRowGroup ]
+	    });
 		me.cmbLinkType = CWHF.createCombo("linking.lbl.linkType", "linkTypeWithDirection",
-			{labelWidth:150, width:500, idType:"string"});
+			{labelWidth:150, width:500, idType:"string", allowBlank:false});
 		me.cmbLinkType.store.loadData(me.model["linkTypesList"],false);
-
 		me.cmbLinkType.setValue(linkTypeWithDirection);
-
 		me.btnApply=Ext.create('Ext.button.Button', {
 			overflowText: getText('linking.lbl.search'),
 			text:getText('linking.lbl.search'),
@@ -101,15 +126,17 @@ Ext.define('com.trackplus.linking.LinkingView', {
 			border:false,
 			margin:'10 0 5 0',
 			bodyBorder:false,
-			items:[me.cmbRowsQuery,me.cmbColumnsQuery,me.cmbLinkType,me.btnApply]
+			items:[rowPanel, columnPanel, me.cmbLinkType, me.btnApply]
 		});
 	},
 	applyHandler:function(){
 		var me=this;
-		var columnsQueryID=me.cmbColumnsQuery.getValue();
-		var rowsQueryID=me.cmbRowsQuery.getValue();
+		var columnFilterID=me.cmbColumFilter.getValue();
+		var columnLinkedFlag = CWHF.getSelectedRadioButtonValue(me.radioColumnGroup);
+		var rowFilterID=me.cmbRowFilter.getValue();
+		var rowLinkedFlag = CWHF.getSelectedRadioButtonValue(me.radioRowGroup);
 		var linkTypeWithDirection=me.cmbLinkType.getValue();
-		if(columnsQueryID==null||rowsQueryID==null){
+		if(CWHF.isNull(columnFilterID)||CWHF.isNull(rowFilterID)){
 			return false;
 		}
 		var urlStr="linking!search.action";
@@ -118,15 +145,17 @@ Ext.define('com.trackplus.linking.LinkingView', {
 		Ext.Ajax.request({
 			url: urlStr,
 			params:{
-				columnsQueryID:columnsQueryID,
-				rowsQueryID:rowsQueryID,
+				columnFilterID:columnFilterID,
+				columnLinkedFlag:columnLinkedFlag,
+				rowFilterID:rowFilterID,
+				rowLinkedFlag:rowLinkedFlag,
 				linkTypeWithDirection:linkTypeWithDirection
 			},
 			disableCaching:true,
 			success: function(response){
 				var dataAJAX=Ext.decode(response.responseText);
 				me.emptyCols=null;
-				if(dataAJAX.success==true){
+				if(dataAJAX.success===true){
 					var itemsRows=dataAJAX.data.itemsRows
 					var itemsColumns=dataAJAX.data.itemsColumns;
 					var links=dataAJAX.data.links;
@@ -141,27 +170,27 @@ Ext.define('com.trackplus.linking.LinkingView', {
 						row['id']=itemsRows[i].id;
 						row['workItemID']=itemsRows[i].objectID;
 						var hasLinks=false;
-						if(links!=null) {
+						if(links) {
 							for (var j = 0; j < itemsColumns.length; j++) {
 								var rowData = '';
 								var key = itemsRows[i].objectID + '_' + itemsColumns[j].objectID;
-								if (links[key] != null) {
+								if (links[key] ) {
 									rowData = links[key];
 									hasLinks=true;
 								}
 								row['f' + itemsColumns[j].objectID] = rowData;
 								var found=false;
 								for(var x in links){
-									if(x.indexOf('_'+itemsColumns[j].objectID)!=-1){
+									if(x.indexOf('_'+itemsColumns[j].objectID)!==-1){
 										found=true;
 									}
 								}
-								if(found==false){
+								if(found===false){
 									emptyCols.push(j);
 								}
 							}
 						}
-						if(hasLinks==false){
+						if(hasLinks===false){
 							emptyRows.push(itemsRows[i].objectID);
 						}
 						data.push(row);
@@ -181,7 +210,7 @@ Ext.define('com.trackplus.linking.LinkingView', {
 				}else{
 					me.centerPanel.removeAll(true);
 					var  message=dataAJAX.errorMessage;
-					if(message=='tooManyItems'){
+					if(message==='tooManyItems'){
 						message=getText('itemov.err.tooManyItems');
 					}
 					var pan=Ext.create('Ext.Component',{
@@ -216,7 +245,7 @@ Ext.define('com.trackplus.linking.LinkingView', {
 			border:false,
 			bodyBorder:false,
 			columnLines :true,
-			cls:'simpleGridView gridNoBorder',
+			cls:'linkingGrid simpleGridView gridNoBorder',
 			viewConfig: {
 				stripeRows: true
 			},
@@ -233,8 +262,8 @@ Ext.define('com.trackplus.linking.LinkingView', {
 		var fields=new Array();
 		fields.push({name:'f'});
 		fields.push({name:'id'});
-		fields.push({name:'workItemID',type:'int',useNull:true});
-		if(itemsColumns!=null){
+		fields.push({name:'workItemID',type:'int',allowNull:true});
+		if(itemsColumns){
 			for(var i=0;i<itemsColumns.length;i++){
 				fields.push({name:'f'+itemsColumns[i].objectID});
 			}
@@ -259,7 +288,6 @@ Ext.define('com.trackplus.linking.LinkingView', {
 				metaData.tdAttr = 'data-qtip="' + tooltip+ '"';
 				return value;
 			}
-
 		}));
 		for(var i=0;i<itemsColumns.length;i++){
 			var item=itemsColumns[i];
@@ -268,7 +296,7 @@ Ext.define('com.trackplus.linking.LinkingView', {
 				header=header.substring(0,17)+"...";
 			}
 			var col=Ext.create('Ext.grid.column.Column',{
-				header:header,
+				text:header,
 				tooltip :item.id+"<B> : </B>"+ item.title,
 				draggable :false,
 				menuDisabled:true,
@@ -276,28 +304,30 @@ Ext.define('com.trackplus.linking.LinkingView', {
 				width:25,
 				dataIndex:'f'+item.objectID,
 				resizable:false,
+				align:'center',
 				renderer:function(value,metaData,record,rowIndex,colIndex,store,view){
-					if(colIndex==0){
-						if(me.emptyRows!=null){
+					if(colIndex===0){
+						if(me.emptyRows){
 							var workItemID=record.data.workItemID;
 							if(Ext.Array.contains(me.emptyRows, workItemID)){
 								metaData.tdCls = 'linkingEmptyRow';
 							}
 						}
 					}
-					if(rowIndex==0){
-						if(me.emptyCols!=null){
+					if(rowIndex===0){
+						if(me.emptyCols){
 							if(Ext.Array.contains(me.emptyCols, colIndex)){
 								metaData.tdCls =metaData.tdCls+ ' linkingEmptyCol';
 							}
 						}
 					}
-					if(value!=null&&value!='') {
+					if(value&&value!=='') {
 						var imgName = "arrow_bent.png";
 						var tooltip=model.linksDescription[value];
-						if(tooltip!=null){
+						if(tooltip){
 							metaData.tdAttr = 'data-qtip="' + tooltip+ '"';
 						}
+						metaData.tdCls =metaData.tdCls+ ' linkingCell';
 						return '<img src="' + com.trackplus.TrackplusConfig.icon16Path + imgName + '">';
 					}
 					return value;
@@ -310,23 +340,25 @@ Ext.define('com.trackplus.linking.LinkingView', {
 	onCellContextMenu:function(gridView,td, cellIndex, record, tr, rowIndex, e, eOpts){
 		var me=this;
 		var workItemID=record.data.workItemID;
-		if(workItemID!=null&&workItemID!=-1){
+		if(workItemID&&workItemID!==-1){
 			me.lastTDOriginaClass=td.className;
 			td.className = td.className + " linkCellFocus";
 			me.lastTD=td;
 			var popupMenu=me.createPopupCell(record.data,gridView,cellIndex);
-			if(popupMenu!=null){
+			if(popupMenu){
 				popupMenu.addListener('hide',function(){
 					me.lastTD.className=me.lastTDOriginaClass;
 				})
 				popupMenu.showAt(e.getXY());
 			}
 		}
+		e.stopEvent();
+		return true;
 	},
 	onItemDblClick:function(view, td,cellIndex,record, tr, rowIndex,e){
 		var me=this;
 		var workItemID=record.data.workItemID;
-		if(workItemID!=null&&workItemID!=-1){
+		if(workItemID&&workItemID!==-1){
 			var me=this;
 			var actionID=-2;//PRINT
 			var itemAction=Ext.create('com.trackplus.item.ItemActionDialog',{
@@ -344,7 +376,7 @@ Ext.define('com.trackplus.linking.LinkingView', {
 	},
 	createPopupCell:function(rowData,grid,cellIndex){
 		var me=this;
-		if(me.popupMenu!=null){
+		if(me.popupMenu){
 			me.popupMenu.destroy();
 			me.popupMenu=null;
 			delete me.popupMenu;
@@ -365,7 +397,7 @@ Ext.define('com.trackplus.linking.LinkingView', {
 		var editable=rowData["editable"];
 		var linkable=rowData["linkable"];
 		if(!me.readOnly){
-			if(linkData==null||linkData=='') {
+			if(CWHF.isNull(linkData)||linkData==='') {
 				items.push({
 					text: getText('common.btn.addLink'),
 					iconCls: 'links16',
@@ -383,13 +415,13 @@ Ext.define('com.trackplus.linking.LinkingView', {
 							success: function (response) {
 								borderLayout.setLoading(false);
 								var data=Ext.decode(response.responseText);
-								if(data.success==true){
+								if(data.success===true){
 									me.applyHandler();
 								} else {
 									var errors = data.errors;
-									if (errors!=null) {
+									if (errors) {
 										linkedWorkItemTitle = errors.linkedWorkItemTitle;
-										if (linkedWorkItemTitle!=null) {
+										if (linkedWorkItemTitle) {
 											Ext.MessageBox.show({
 												title: getText('common.err.failure'),
 												msg: linkedWorkItemTitle,
@@ -435,7 +467,6 @@ Ext.define('com.trackplus.linking.LinkingView', {
 			}
 			items.push('-');
 		}
-
 		items.push({
 			text: getText('item.action.viewInNewTab'),
 			iconCls:'itemAction_viewAll16',
@@ -445,39 +476,8 @@ Ext.define('com.trackplus.linking.LinkingView', {
 			}
 		});
 		return items;
-	},
-
-	createFilterPickerCfg:function(label,name,queryID,extraCfg){
-		var cfg={
-			allowBlank:false,
-			labelWidth:150,
-			labelAlign:'right',
-			//width:300
-			width:500,
-			margin: '0 0 5 0'
-		};
-		if(extraCfg!=null){
-			for (var propertyName in extraCfg) {
-				cfg[propertyName] = extraCfg[propertyName];
-			}
-		}
-		var picker = CWHF.createSingleTreePicker(label,name, [], queryID, cfg);
-		Ext.Ajax.request({
-			url: "categoryPicker.action",
-			params: {node:"issueFilter"},
-			success: function(response){
-				var filterTree = Ext.decode(response.responseText);
-				picker.updateData(filterTree);
-				picker.setValue(queryID);
-			},
-			failure: function(response){
-				com.trackplus.util.requestFailureHandler(response);
-			}
-		});
-		return picker;
 	}
 });
-
 
 Ext.define('com.trackplus.layout.LinkingLayout',{
 	extend:'com.trackplus.layout.BaseLayout',

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -108,6 +108,7 @@ public abstract class TimePeriodDatasource extends BasicDatasource {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public String getDatasourceExtraParams(Map<String, Object> savedParamsMap,
 			DatasourceDescriptor datasourceDescriptor, Map<String, Object> contextMap,
 			TPersonBean personBean, Locale locale) {
@@ -160,6 +161,7 @@ public abstract class TimePeriodDatasource extends BasicDatasource {
 	 * @param savedParamsMap output parameter: parameters transformed to the actual types
 	 * @return
 	 */
+	@Override
 	protected String loadParamObjectsAndPropertyStringsAndFromStringArrParams(
 			Map<String, String[]> params, Locale locale, Map<String, Object> savedParamsMap) {
 		String paramSettings = super.loadParamObjectsAndPropertyStringsAndFromStringArrParams(params, locale, savedParamsMap);
@@ -196,6 +198,7 @@ public abstract class TimePeriodDatasource extends BasicDatasource {
 	 * @param paramSettings
 	 * @return
 	 */
+	@Override
 	protected Map<String, Object> loadParamObjectsFromPropertyStrings(String paramSettings) {
 		Map<String, Object> paramsMap = super.loadParamObjectsFromPropertyStrings(paramSettings);
 		if (paramSettings!=null) {

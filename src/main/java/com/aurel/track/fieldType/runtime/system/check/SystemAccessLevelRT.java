@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -25,6 +25,7 @@ package com.aurel.track.fieldType.runtime.system.check;
 
 import java.util.Locale;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -64,6 +65,7 @@ public class SystemAccessLevelRT extends SystemInputBaseRT {
 	 * Here not really meaningful because this field will be never historized 
 	 * @return
 	 */
+	@Override
 	public int getValueType() {
 		return ValueType.INTEGER;
 	}
@@ -97,6 +99,7 @@ public class SystemAccessLevelRT extends SystemInputBaseRT {
 	 * @param locale 
 	 * @return
 	 */
+	@Override
 	public String getShowValue(Integer fieldID, Integer parameterCode, Object value, 
 			Integer workItemID, LocalLookupContainer localLookupContainer, Locale locale) {
 		return getShowValue(value, locale);
@@ -119,7 +122,8 @@ public class SystemAccessLevelRT extends SystemInputBaseRT {
 			intValue = (Integer)value;
 		} catch (Exception e) {
 			LOGGER.warn("Casting the value type " + value.getClass().getName() +
-				" to Integer failed with " + e.getMessage(), e);
+				" to Integer failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		if (intValue!=null && TWorkItemBean.ACCESS_LEVEL_PRIVATE.equals(intValue)) {
 			keySuffix=BooleanFields.TRUE_VALUE;
@@ -142,6 +146,7 @@ public class SystemAccessLevelRT extends SystemInputBaseRT {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public String getShowISOValue(Integer fieldID, Integer parameterCode, Object value, 
 			Integer workItemID, LocalLookupContainer localLookupContainer, Locale locale) {
 		if (value==null) {
@@ -152,7 +157,8 @@ public class SystemAccessLevelRT extends SystemInputBaseRT {
 			intValue = (Integer)value;
 		} catch (Exception e) {
 			LOGGER.error("Casting the value type " + value.getClass().getName() +
-				" to Integer failed with " + e.getMessage(), e);
+				" to Integer failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		if (intValue!=null && TWorkItemBean.ACCESS_LEVEL_PRIVATE.equals(intValue)) {
 			return new Boolean(true).toString();
@@ -232,6 +238,7 @@ public class SystemAccessLevelRT extends SystemInputBaseRT {
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public IActivityConfig getFieldChangeConfig(Integer fieldID) {
 		return new AccessLevelFieldChangeConfig(fieldID);
 	}
@@ -241,6 +248,7 @@ public class SystemAccessLevelRT extends SystemInputBaseRT {
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public IActivityExecute getFieldChangeApply(Integer fieldID) {
 		return new AccessLevelFieldChangeApply(fieldID);
 	}
@@ -250,6 +258,7 @@ public class SystemAccessLevelRT extends SystemInputBaseRT {
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public IValueConverter getFieldValueConverter(Integer fieldID) {
 		return new IntegerSetterConverter(fieldID);
 	}
@@ -267,6 +276,7 @@ public class SystemAccessLevelRT extends SystemInputBaseRT {
 	 * Whether the field might be matched in for an excel column
 	 * @return
 	 */
+	@Override
 	public boolean mightMatchExcelColumn() {
 		return false;
 	}
@@ -277,6 +287,7 @@ public class SystemAccessLevelRT extends SystemInputBaseRT {
 	 * @param workItemBean the lucene value might depend on other fields of the workItem
 	 * @return
 	 */
+	@Override
 	public String getLuceneValue(Object value, TWorkItemBean workItemBean) {
 		String luceneValue = LuceneUtil.BOOLEAN_NO;
 		if (value==null) {
@@ -286,7 +297,8 @@ public class SystemAccessLevelRT extends SystemInputBaseRT {
 		try {
 			intValue = (Integer)value;
 		} catch (Exception e) {
-			LOGGER.error("Converting the value " + value +  "of class " + value.getClass().getName() + " to Integer failed with " + e.getMessage(), e);
+			LOGGER.error("Converting the value " + value +  "of class " + value.getClass().getName() + " to Integer failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		if (intValue!=null && intValue.intValue()==1) {
 			luceneValue=LuceneUtil.BOOLEAN_YES;
@@ -298,6 +310,7 @@ public class SystemAccessLevelRT extends SystemInputBaseRT {
 	 * Whether the field should be stored
 	 * @return
 	 */
+	@Override
 	public int getLuceneStored() {
 		return LuceneUtil.STORE.NO;
 	}
@@ -306,6 +319,7 @@ public class SystemAccessLevelRT extends SystemInputBaseRT {
 	 * Whether the field should be tokenized
 	 * @return
 	 */
+	@Override
 	public int getLuceneTokenized() {
 		return LuceneUtil.TOKENIZE.NO;
 	}
@@ -314,6 +328,7 @@ public class SystemAccessLevelRT extends SystemInputBaseRT {
 	 * Returns the lookup entity type related to the fieldType
 	 * @return
 	 */
+	@Override
 	public int getLookupEntityType() {
 		return LuceneUtil.LOOKUPENTITYTYPES.DIRECTBOOLEAN;
 	}

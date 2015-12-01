@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -65,6 +65,7 @@ public class TBasketPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TBasketBean loadByPrimaryKey(Integer objectID) {
 		TBasket tBasket = null;
     	try {
@@ -84,13 +85,14 @@ public class TBasketPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public List<TBasketBean> loadByPrimaryKeys(Set<Integer> objectIDs) {
 		Criteria crit = new Criteria();     
 		crit.addIn(OBJECTID, objectIDs.toArray());
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch(Exception e) {
-			LOGGER.error("Loading all main baskets failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all main baskets failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -99,13 +101,14 @@ public class TBasketPeer
 	 * Loads the main baskets   
 	 * @return
 	 */
+	@Override
 	public List<TBasketBean> loadMainBaskets() {
 		Criteria crit = new Criteria();        
          crit.add(PARENTBASKET, (Object)null, Criteria.ISNULL);
         try {
         	return convertTorqueListToBeanList(doSelect(crit));
         } catch(Exception e) {
-			LOGGER.error("Loading all main baskets failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all main baskets failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -114,6 +117,7 @@ public class TBasketPeer
 	 * Loads child baskets of a parent basket   
 	 * @return
 	 */
+	@Override
 	public List<TBasketBean> loadChildBaskets(Integer basketID) {
 		Criteria crit = new Criteria();        
         crit.addAscendingOrderByColumn(LABEL);        
@@ -121,11 +125,12 @@ public class TBasketPeer
     	try {
     		return convertTorqueListToBeanList(doSelect(crit));
         } catch (Exception e) {
-            LOGGER.error("Loading child baskets of the parent basket " + basketID +  " failed with " + e.getMessage(), e);
+            LOGGER.error("Loading child baskets of the parent basket " + basketID +  " failed with " + e.getMessage());
             return null;
         }	
 	}
 
+	@Override
 	public TBasketBean loadBasketByItemAndPerson(Integer itemID,Integer personID){
 		TBasketBean basketBean = null;
 		Criteria crit = new Criteria();
@@ -138,11 +143,12 @@ public class TBasketPeer
 				basketBean=((TBasket)lst.get(0)).getBean();
 			}
 		} catch (Exception e) {
-			LOGGER.error("Loading  basket by itemID:"+itemID+" and personID:" + personID +  " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading  basket by itemID:"+itemID+" and personID:" + personID +  " failed with " + e.getMessage());
 			basketBean=null;
 		}
 		return basketBean;
 	}
+	@Override
 	public List<TBasketBean> loadBasketsByItemsAndPerson(int[] workItemIDs,Integer personID){
 		List basketList =  new ArrayList();
 		if (workItemIDs==null || workItemIDs.length==0) {
@@ -163,7 +169,7 @@ public class TBasketPeer
 			try {
 				basketList.addAll(doSelect(criteria));
 			} catch(Exception e) {
-				LOGGER.error("Loading the basket by workItemIDs failed with " + e.getMessage(), e);
+				LOGGER.error("Loading the basket by workItemIDs failed with " + e.getMessage());
 			}
 		}
 		return convertTorqueListToBeanList(basketList);
@@ -174,13 +180,14 @@ public class TBasketPeer
 	 * @param basketBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TBasketBean basketBean) {			
 		try {			
 			TBasket tBasket = BaseTBasket.createTBasket(basketBean);			
 			tBasket.save();
 			return tBasket.getObjectID();			
 		} catch (Exception e) {
-			LOGGER.error("Saving of a basket failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a basket failed with " + e.getMessage());
 			return null;
 		}	
 	}
@@ -190,6 +197,7 @@ public class TBasketPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public boolean hasDependentData(Integer objectID) {
 		return ReflectionHelper.hasDependentData(replacePeerClasses, replaceFields, objectID);
 	}
@@ -198,13 +206,14 @@ public class TBasketPeer
 	 * Deletes a basketBean from the TBasket table 
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		Criteria  criteria = new Criteria();
 		criteria.add(OBJECTID, objectID);
 		try {
 			doDelete(criteria);
 		} catch (TorqueException e) {
-			LOGGER.error("Deleting the basket " + objectID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Deleting the basket " + objectID + " failed with " + e.getMessage());
 		}
 	}
 	
@@ -214,6 +223,7 @@ public class TBasketPeer
 	 * @param oldBasketID
 	 * @param newBasketID
 	 */
+	@Override
 	public void replace(Integer oldBasketID, Integer newBasketID) {
 		ReflectionHelper.replace(replacePeerClasses, replaceFields, oldBasketID, newBasketID);    
 	}

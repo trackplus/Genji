@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -41,13 +41,11 @@ public class StyleUtil {
 	private static final Logger LOGGER = LogManager.getLogger(StyleUtil.class);
 	
 	public static interface STANDARD_STYLE_NAMES {
-		//public static String NORMAL_NAME = "Normal";
 		
 		public static String HEADING_NAME = "heading";
 		//for image caption
 		public static String CAPTION_NAME = "caption";
 		//for inline content
-		//public static String QUOTE_NAME = "Quote";
 		
 		public static String SUBTLE_EMPHASIS = "Subtle Emphasis";
 		
@@ -80,7 +78,7 @@ public class StyleUtil {
 		try {
 			styles = styleDefinitionsPart.getContents();
 		} catch (Docx4JException e) {
-			LOGGER.error("Getting the styles contents failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the styles contents failed with " + e.getMessage());
 			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
         if (styles!=null) {
@@ -89,18 +87,6 @@ public class StyleUtil {
 				Style.Name name = style.getName();
 				String styleName = name.getVal();
 				if (styleName!=null) {
-					/*if (styleName.equals(STANDARD_STYLE_NAMES.NORMAL_NAME)) {
-						outlinelevelToStyleName.put(STANDARD_STYLE_KEYS.NORMAL_KEY, sytleID);
-					} else {
-						if (styleName.equals(STANDARD_STYLE_NAMES.CAPTION_NAME)) {
-							outlinelevelToStyleName.put(STANDARD_STYLE_KEYS.CAPTION_KEY, sytleID);
-						} else {
-							if (styleName.equals(STANDARD_STYLE_NAMES.QUOTE_NAME)) {
-								outlinelevelToStyleName.put(STANDARD_STYLE_KEYS.QUOTE_KEY, sytleID);
-							} else {
-								if (styleName.equals(STANDARD_STYLE_NAMES.SUBTLE_EMPHASIS)) {
-									outlinelevelToStyleName.put(STANDARD_STYLE_KEYS.SUBTLE_EMPHASIS_KEY, sytleID);
-								} else {*/
 									PPr pPr = style.getPPr();
 									if (pPr!=null) {
 										 OutlineLvl outlineLvl = pPr.getOutlineLvl();
@@ -111,10 +97,6 @@ public class StyleUtil {
 											 LOGGER.debug("StyleID for level " + level + " is: " + sytleID);
 										 }
 									}
-								/*}
-							}
-						}
-					}*/
 				}
 			}
         }
@@ -135,7 +117,7 @@ public class StyleUtil {
 		try {
 			styles = styleDefinitionsPart.getContents();
 		} catch (Docx4JException e) {
-			LOGGER.error("Getting the styles contents failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the styles contents failed with " + e.getMessage());
 			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
         if (styles!=null) {
@@ -209,74 +191,11 @@ public class StyleUtil {
 	
 	
 	 
-   /*static void setStyles(WordprocessingMLPackage newPkg) {
-		java.io.InputStream is = null;
-		try {
-			is = ResourceUtils.getResource("com/aurel/track/exchange/docx/exporter/KnownStyles.xml");
-		} catch (IOException e) {
-			LOGGER.error("Getting the KnownStyles.xml failed with " + e.getMessage(), e);
-			LOGGER.debug(ExceptionUtils.getStackTrace(e));
-		}                  
-	    JAXBContext jc = Context.jc;
-	    Unmarshaller unmarshaller = null;
-		try {
-			unmarshaller = jc.createUnmarshaller();
-		} catch (JAXBException e) {
-			LOGGER.error("Creating a JAXB unmarshaller failed with " + e.getMessage(), e);
-			LOGGER.debug(ExceptionUtils.getStackTrace(e));
-		}         
-	    try {
-			unmarshaller.setEventHandler(new JaxbValidationEventHandler());
-		} catch (JAXBException e) {
-			LOGGER.error("Setting the event handler for JAXB unmarshaller failed with " + e.getMessage(), e);
-			LOGGER.debug(ExceptionUtils.getStackTrace(e));
-		}
-	    Styles styles =  null;
-	    try {
-			styles = (Styles)unmarshaller.unmarshal(is);
-		} catch (JAXBException e) {
-			LOGGER.error("Unmarshalling the KnownStyles.xml failed with " + e.getMessage(), e);
-			LOGGER.debug(ExceptionUtils.getStackTrace(e));
-		} 
-	    StyleDefinitionsPart styleDefinitionsPart = null;
-		try {
-			styleDefinitionsPart = new StyleDefinitionsPart();
-		} catch (InvalidFormatException e) {
-			LOGGER.error("Creating the styles definition part failed with " + e.getMessage(), e);
-			LOGGER.debug(ExceptionUtils.getStackTrace(e));
-		}
-	    styleDefinitionsPart.setPackage(newPkg);
-	    styleDefinitionsPart.setJaxbElement(styles);
-	    try {
-			newPkg.getMainDocumentPart().addTargetPart(styleDefinitionsPart);
-		} catch (InvalidFormatException e) {
-			LOGGER.error("Adding the target part to MainDocumentPart failed with " + e.getMessage(), e);
-			LOGGER.debug(ExceptionUtils.getStackTrace(e));
-		}
-	}*/
     
     /**
      *  First we create the package, then we alter the style sheet and add some
      *  styled paragraphs. Finally we save the package.
      */
-    /*public static void main (String[] args) throws Docx4JException {
-        wordMLPackage = WordprocessingMLPackage.createPackage();
-        alterStyleSheet();
-        wordMLPackage.getMainDocumentPart().addStyledParagraphOfText("Title",
-            "Hello World! This title is now in Arial.");
-        wordMLPackage.getMainDocumentPart().addStyledParagraphOfText("Subtitle",
-            "Subtitle, this subtitle is now Arial too");
-        wordMLPackage.getMainDocumentPart().addStyledParagraphOfText("Heading1",
-            "As is Heading1");
-        wordMLPackage.getMainDocumentPart().addStyledParagraphOfText("Heading2",
-            "Heading2 is now Arial, no longer bold and has an underline " +
-            "and fontsize 12");
-        wordMLPackage.getMainDocumentPart().addStyledParagraphOfText("Heading3",
-            "Heading3 is now Arial");
-        wordMLPackage.getMainDocumentPart().addStyledParagraphOfText("Normal",
-            "And normal text has changed to Arial and fontsize 10");
-        wordMLPackage.save(new java.io.File("src/main/files/HelloWord12.docx") );
-    }*/
  
     /**
      *  This method alters the default style sheet that is part of each document.
@@ -289,25 +208,6 @@ public class StyleUtil {
      *
      *  @param wordMLPackage
      */
-    /*public static void alterStyleSheet() {
-        StyleDefinitionsPart styleDefinitionsPart =
-            wordMLPackage.getMainDocumentPart().getStyleDefinitionsPart();
-        Styles styles = styleDefinitionsPart.getJaxbElement();
- 
-        List<Style>  stylesList = styles.getStyle();
-        for (Style style : stylesList) {
-            if (style.getStyleId().equals("Normal")) {
-                alterNormalStyle(style);
-            } else if (style.getStyleId().equals("Heading2")) {
-                alterHeading2Style(style);
-            } else if (style.getStyleId().equals("Heading1") ||
-                    style.getStyleId().equals("Heading3") ||
-                    style.getStyleId().equals("Title") ||
-                    style.getStyleId().equals("Subtitle")) {
-                getRunPropertiesAndRemoveThemeInfo(style);
-            }
-        }
-    }*/
  
     /**
      *  First we create a run properties object as we want to remove nearly all of
@@ -315,34 +215,13 @@ public class StyleUtil {
      *  run properties on the given style. As in previous examples, the font size
      *  is defined to be in half-point size.
      */
-    /*private static void alterNormalStyle(Style style) {
-        // we want to change (or remove) almost all the run properties of the
-        // normal style, so we create a new one.
-        RPr rpr = new RPr();
-        changeFontToArial(rpr);
-        changeFontSize(rpr, 20);
-        style.setRPr(rpr);
-    }*/
  
     /**
      *  For this style, we get the existing run properties from the style and
      *  remove the theme font information from them. Then we also remove the bold
      *  styling, change the font size (half-points) and add an underline.
      */
-    /*private static void alterHeading2Style(Style style) {
-        RPr rpr = getRunPropertiesAndRemoveThemeInfo(style);
-        removeBoldStyle(rpr);
-        changeFontSize(rpr, 24);
-        addUnderline(rpr);
-    }*/
  
-    /*private static RPr getRunPropertiesAndRemoveThemeInfo(Style style) {
-        // We only want to change some settings, so we get the existing run
-        // properties from the style.
-        RPr rpr = style.getRPr();
-        removeThemeFontInformation(rpr);
-        return rpr;
-    }*/
  
     /**
      *  Change the font of the given run properties to Arial.
@@ -354,12 +233,6 @@ public class StyleUtil {
      *
      *  @param runProperties
      */
-    /*private static void changeFontToArial(RPr runProperties) {
-        RFonts runFont = new RFonts();
-        runFont.setAscii("Arial");
-        runFont.setHAnsi("Arial");
-        runProperties.setRFonts(runFont);
-    }*/
  
     /**
      * Change the font size of the given run properties to the given value.
@@ -367,11 +240,6 @@ public class StyleUtil {
      * @param runProperties
      * @param fontSize  Twice the size needed, as it is specified as half-point value
      */
-    /*private static void changeFontSize(RPr runProperties, int fontSize) {
-        HpsMeasure size = new HpsMeasure();
-        size.setVal(BigInteger.valueOf(fontSize));
-        runProperties.setSz(size);
-    }*/
  
     /**
      * Removes the theme font information from the run properties.
@@ -380,28 +248,16 @@ public class StyleUtil {
      *
      * @param runProperties
      */
-    /*private static void removeThemeFontInformation(RPr runProperties) {
-        runProperties.getRFonts().setAsciiTheme(null);
-        runProperties.getRFonts().setHAnsiTheme(null);
-    }*/
  
     /**
      * Removes the Bold styling from the run properties.
      *
      * @param runProperties
      */
-    /*private static void removeBoldStyle(RPr runProperties) {
-        runProperties.getB().setVal(false);
-    }*/
  
     /**
      * Adds a single underline to the run properties.
      *
      * @param runProperties
      */
-    /*private static void addUnderline(RPr runProperties) {
-        U underline = new U();
-        underline.setVal(UnderlineEnumeration.SINGLE);
-        runProperties.setU(underline );
-    }*/
 }

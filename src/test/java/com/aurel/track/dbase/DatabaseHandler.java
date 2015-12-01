@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -223,7 +223,7 @@ public class DatabaseHandler extends Mockito {
 	}
 	
 	public static void setupContext() throws Exception {
-		ApplicationBean.getApplicationBean().setServletContext(ctx);
+		ApplicationBean.getInstance().setServletContext(ctx);
 		String resPath = realPath.replace("/webapps", "");
 		
 		when (ctx.getResource("/dbase/Derby/track-schema.sql")).thenReturn(new URL("file:///" +  realPath + "/dbase/Derby/track-schema.sql"));
@@ -321,13 +321,6 @@ public class DatabaseHandler extends Mockito {
 					path = path.replace("/webapp","");
 				}
 				
-//				if (ppath.startsWith("/WEB-INF/classes/resources") && !ppath.startsWith("/WEB-INF/classes/resources/ExportTemplates")) {
-//					path = "file:///" + realPath.substring(0,realPath.lastIndexOf("/"))+"/"+ppath;
-//					path = path.replace("/WEB-INF/classes/resources", "/resources/resources");
-//				} else if (path.startsWith("file://") && path.contains("webapp/resources/")){
-//					path = "file:///" + realPath + "/" + ppath;
-//					path = path.replace("/webapp/resources/", "/resources/resources/");
-//				}
 				return new URL(path);
 			}
 		});
@@ -366,8 +359,8 @@ public class DatabaseHandler extends Mockito {
 		
 		setupContext();
 
-		ApplicationBean.getApplicationBean().setInTestMode(true);
-		ApplicationBean.getApplicationBean().setAppType(1);
+		ApplicationBean.getInstance().setInTestMode(true);
+		ApplicationBean.getInstance().setAppType(1);
 		
 		UpdateDbSchema.doUpdateOrCreateFromScratch(ctx);
 		InitDatabase.initDatabase("502", ctx);

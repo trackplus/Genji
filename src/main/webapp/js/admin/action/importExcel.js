@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -51,7 +51,7 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 			titleKey = "admin.actions.importExcel.title.errorAndConflict";
 			break;
 		}
-		if (titleKey!=null) {
+		if (titleKey) {
 			return getText(titleKey);
 		} else {
 			return '';
@@ -73,20 +73,20 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 	},
 
 	getImportWizardUrl: function(card, reload) {
-		if (card==1) {
+		if (card===1) {
 			return 'excelUploadRender.action';
 		} else {
-			if (card==2) {
+			if (card===2) {
 				return 'excelUpload.action';
 			} else {
-				if (card==3) {
+				if (card===3) {
 					if (reload) {
 						return "excelInvalidValueHandling.action";
 					} else {
 						return "excelFieldMatch!save.action";
 					}
 				} else {
-					if (card==4) {
+					if (card===4) {
 						return "excelImport.action";
 					}
 				}
@@ -96,9 +96,9 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 
 	getDataBeforeCardDelete: function(cardNo, reload) {
 	    var params = null;
-	    if (cardNo==4) {
+	    if (cardNo===4) {
 	        params = {fileName:this.fileName, selectedSheet: this.selectedSheet};
-	        if (reload && this.workItemIDFieldIDs!=null) {
+	        if (reload && this.workItemIDFieldIDs) {
 	            var overwriteMap = new Object();
 	            var card4 = this.wizardPanel.getComponent("card4");
 	            var errorAndConflictPanel = card4.getComponent('errorAndConflict');
@@ -122,7 +122,7 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 	 * return false and optionally show an alert box if there is a validation problem which prevents navigating to the next card
 	 */
 	loadDataForCard: function(cardNo, reload, params) {
-		if (cardNo==1) {
+		if (cardNo===1) {
 			//for the very first card nothing to submit only render (load)
 			var panel1 = this.wizardPanel.getComponent('card1');
 			panel1.add(this.getImportWizardItemsForCard(cardNo));
@@ -141,7 +141,7 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 			});
 		} else {
 			//from card to each card starts with a submit
-			if (cardNo==2) {
+			if (cardNo===2) {
 				var panel1 = this.wizardPanel.getComponent('card1');
 				if (!panel1.getForm().isValid()) {
 					// Ext.MessageBox.alert('',
@@ -167,7 +167,7 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 				this.uploadDone = true;
 				this.submitFromCardToCardMessageOnFailure(1, 2, null, reload, true);
 			} else {
-				if (cardNo==3) {
+				if (cardNo===3) {
 					var cardToSubmit = 2;
 					if (reload) {
 						cardToSubmit = 3;
@@ -175,8 +175,8 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 					var params = {fileName:this.fileName, selectedSheet: this.selectedSheet, reload: reload};
 					this.submitFromCardToCardMessageOnFailure(cardToSubmit, 3, params, reload, true);
 				} else {
-					if (cardNo==4) {
-	                    if (params==null) {
+					if (cardNo===4) {
+	                    if (CWHF.isNull(params)) {
 	                        params = {fileName:this.fileName, selectedSheet: this.selectedSheet};
 	                    }
 						this.submitFromCardToCard(3, 4, params, false, 300000);//5 minutes timeout
@@ -192,16 +192,20 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 	 * Additional items can be added once the data is back from the server
 	 */
 	getImportWizardItemsForCard: function(card) {
-		if (card==1) {
-			return this.getImportWizardCard1Items();
+		if (card===1) {
+			var items = this.getImportWizardCard1Items();
+			if(items && items.length > 0) {
+				items[0].setMargin('2 0 0 0');
+			}
+			return items;
 		} else {
-			if (card==2) {
+			if (card===2) {
 				return this.getExcelMappingItems();
 			} else {
-				if (card==3) {
+				if (card===3) {
 						return this.getExcelInvalidHandlingItems();
 				} else {
-					if (card==4) {
+					if (card===4) {
 						return  this.getExcelErrorAndConflictHandlingItems();
 					}
 				}
@@ -210,17 +214,17 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 	},
 
 	postDataProcess: function(panel, jsonResult, cardTo, cardFrom) {
-		if (cardTo==1) {
+		if (cardTo===1) {
 			this.postProcessCard1(panel, jsonResult);
 		} else {
-			if (cardTo==2) {
+			if (cardTo===2) {
 				this.postProcessExcelMapping(panel, jsonResult);
 				this.actualizeToolbar(this.wizardPanel);
 			} else {
-				if (cardTo==3) {
+				if (cardTo===3) {
 					this.postProcessInvalidHandling(panel, jsonResult, cardTo, cardFrom);
 				} else {
-					if (cardTo==4) {
+					if (cardTo===4) {
 						this.postProcessExcelErrorAndConflictHandling(panel, jsonResult);
 					}
 				}
@@ -257,7 +261,7 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 	            margin:"0 0 0 0",
 	            html: getText("admin.actions.importExcel.fieldMatch.message")},
 	        CWHF.createCombo('admin.actions.importExcel.fieldMatch.lbl.sheet', 'selectedSheet',
-				{labelWidth:250, width:470, margin: '5 0 0 70', labelAlign:"right"},
+				{labelWidth:250, width:470, margin: '5 0 0 70', labelAlign:"right", itemId:"selectedSheet"},
 				{select: {fn: this.reloadExcelFieldMapping, scope:this}}),
 				Ext.create('Ext.form.Panel', panelConfig)];
 	},
@@ -288,8 +292,8 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 		items.push({xtype: 'label',
 			html: '<b>'+getText('admin.actions.importExcel.fieldMatch.lbl.isIdentifier')+'</b>'
 			});
-		if (panel!=null) {
-			if (excelFieldMapperExpressions!=null) {
+		if (panel) {
+			if (excelFieldMapperExpressions) {
 				//var mappingExpressionPanels = [];
 				Ext.Array.forEach(excelFieldMapperExpressions, function(mappingExpression) {
 					var columnIndex = mappingExpression.columnIndex;
@@ -303,7 +307,8 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 					});
 					items.push(CWHF.createCombo(null,
 							'columnIndexToFieldIDMap[' + columnIndex + ']',
-							{width:200,
+							{itemId:'columnMapping' + columnIndex,
+							width:200,
 							data:fieldList,
 							value:mappingExpression.fieldID},
 							{select: {fn: this.setIsIdentifier, scope:this,
@@ -312,6 +317,7 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 								possibleIdentifiers: data['possibleIdentifiers'],
 								mandatoryIdentifiers: data['mandatoryIdentifiers']}},
 								'columnMapping'+columnIndex));
+
 					items.push(CWHF.createCheckbox('','columnIndexIsIdentifierMap[' + columnIndex + ']',
 							{itemId:'columnIsIdentifier'+columnIndex, width: 100, padding: '0 0 0 20',
 						disabled:mappingExpression.identifierDisabled, value:mappingExpression.isIdentifier}));
@@ -357,13 +363,13 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 		var possibleIdentifiers = options.possibleIdentifiers;
 		var mandatoryIdentifiers = options.mandatoryIdentifiers;
 		var mappingPanel = panel.getComponent('mappings');
-		if (mappingPanel!=null) {
+		if (mappingPanel) {
 			var fieldMapper = mappingPanel.getComponent("columnMapping" + columnIndex);
 			var columnIsIdentifier = mappingPanel.getComponent("columnIsIdentifier" + columnIndex);
 			//var selectedIndex = fieldMapper.selectedIndex;
 			//var selectedValue = fieldMapper.options[selectedIndex].value;
 			var selectedValue = fieldMapper.getValue();
-			if (selectedValue==null || ""==selectedValue) {
+			if (CWHF.isNull(selectedValue)|| ""===selectedValue) {
 				//the empty entry -> field is not mapped
 				columnIsIdentifier.setValue(false);
 				columnIsIdentifier.setDisabled(true);
@@ -417,7 +423,7 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 	},
 
 	postProcessInvalidHandling: function(panel, jsonResult, cardTo, cardFrom) {
-		if (cardFrom==2) {
+		if (cardFrom===2) {
 			this.postProcessInvalidHandlingFirstTime(panel, jsonResult)
 		} else {
 			this.postProcessInvalidHandlingUpdate(panel, jsonResult);
@@ -432,7 +438,7 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 		var fieldList = data['fieldList'];
 		var possibleValues = data['possibleValues'];
 		var invalidValueHandlingList = data['invalidValueHandlingList'];
-		if (panel!=null) {
+		if (panel) {
 			var invalidValueHandlingPanel = panel.getComponent("invalidValueHandlingPanel");
 			items = [];
 			items.push({xtype: 'label',
@@ -443,7 +449,7 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 					html: '<b>'+getText('admin.actions.importExcel.invalidValueHadling.lbl.defaultfieldValue')+'</b>',
 					colspan: 2
 				});
-			if (fieldList!=null) {
+			if (fieldList) {
 				Ext.Array.forEach(fieldList, function(fieldBean) {
 					var fieldId = fieldBean.id;
 					var possibleFieldValues = possibleValues['fieldID'+fieldId];
@@ -458,24 +464,25 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 					var invalidValueHandlingRadioButtons = CWHF.getRadioButtonItems(invalidValueHandlingList,
 							'invalidValueHandlingMap[' + fieldId + ']', 'id', 'label', invalidValueHandlingValue, false, true);
 					var invalidValueHandlingRadioGroup =
-						CWHF.getRadioGroup('invalidValueHandling'+fieldId, '', 250, invalidValueHandlingRadioButtons, null,
+						CWHF.getRadioGroup('', 250, invalidValueHandlingRadioButtons, {itemId:'invalidValueHandling'+fieldId},
 							{change: {fn: this.onInvalidHandlingChange, scope:this,
 								panel: invalidValueHandlingPanel,
 								fieldId: fieldId}});
 					items.push(invalidValueHandlingRadioGroup);
 					var control;
-					if (fieldId==1) {
+					if (fieldId===1) {
 	                    control = CWHF.createSingleTreePicker(null,
 	                        "defaultValuesMap[" + fieldId + "]", possibleValueList, defaultFieldValue,
 	                        {allowBlank:false,
-	                         disabled:invalidValueHandlingValue==2,
+	                         disabled:invalidValueHandlingValue===2,
 	                         itemId:'defaultValues'+fieldId
 	                        }, {select:{fn: this.onProjectSelect, scope:this,
 	                            fieldId: fieldId}});
 					} else {
 						control = CWHF.createCombo(null,
 								'defaultValuesMap[' + fieldId + ']',
-								{disabled:invalidValueHandlingValue==2,
+								{disabled:invalidValueHandlingValue===2,
+									itemId: 'defaultValues' + fieldId,
 									width:200,
 									maxWidth: 250,
 									data:possibleValueList,
@@ -515,17 +522,17 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 		var data = jsonResult.data;
 		var fieldList = data['fieldList'];
 		var possibleValues = data['possibleValues'];
-		if (panel!=null) {
+		if (panel) {
 			var invalidValueHandlingPanel = panel.getComponent("invalidValueHandlingPanel");
-			if (fieldList!=null) {
+			if (fieldList) {
 				Ext.Array.forEach(fieldList, function(fieldId) {
 					var possibleFieldValues = possibleValues['fieldID'+fieldId];
 					//var invalidValueHandlingValue = possibleFieldValues['invalidValueHandlingValue'];
 					var possibleValueList = possibleFieldValues['possibleFieldValues'];
 					var defaultFieldValue = possibleFieldValues['defaultFieldValue'];
-					if (fieldId!=1) {
+					if (fieldId!==1) {
 						control = invalidValueHandlingPanel.getComponent('defaultValues' + fieldId);
-						if (control!=null) {
+						if (control) {
 							control.getStore().loadData(possibleValueList);
 							control.setValue(defaultFieldValue);
 						}
@@ -546,18 +553,18 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 		var checkedRadioValue = null;
 		if (checkedArr.length>0) {
 			checkedRadio = checkedArr[0];
-			if (checkedRadio!=null) {
+			if (checkedRadio) {
 				checkedRadioValue = checkedRadio.getSubmitValue();
 			}
 		}
-		fieldSelect.setDisabled(checkedRadioValue==2);
+		fieldSelect.setDisabled(checkedRadioValue===2);
 		this.onRefreshInvalidHandling(fieldId);
 	},
 
 
 
 	onRefreshInvalidHandling: function(fieldId) {
-		if (fieldId==1 || fieldId==2) {
+		if (fieldId===1 || fieldId===2) {
 			//reload is needed only for project or issueType change
 			//most of the other lists depend on project and issueType
 			this.loadDataForCard(3, true);
@@ -623,9 +630,9 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 		//previous.setDisabled(disableFinal);
 		var errorAndConflictPanel = panel.getComponent('errorAndConflict');
 		var errorCode = data['errorCode'];
-		if (errorCode==null) {
+		if (CWHF.isNull(errorCode)) {
 			var message = data['message'];
-			if (message!=null) {
+			if (message) {
 				var errorPanel = errorAndConflictPanel.getComponent('errorPanel');
 				errorPanel.add({xtype: 'label',
 					html: '<b>' + message + '</b>'
@@ -657,12 +664,12 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 			//grid and row errors
 			var errorPanel = errorAndConflictPanel.getComponent('errorPanel');
 			var gridErrors = data['gridErrors'];
-			if (gridErrors!=null) {
+			if (gridErrors) {
 				for ( var i = 0; i < gridErrors.length; i++) {
 					var gridError = gridErrors[i];
 					var errorMessage = gridError['errorMessage'];
 					var locationList = gridError['locationList'];
-					if (locationList!=null) {
+					if (locationList) {
 						errorPanel.add({xtype: 'label',
 							html: '<b>' + errorMessage + '</b>'
 							});
@@ -673,7 +680,7 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 						}
 					}
 					var solutionMessage = gridError['solutionMessage'];
-					if (solutionMessage!=null) {
+					if (solutionMessage) {
 						errorPanel.add({xtype: 'label',
 							html: '<br><b>' + solutionMessage + '</b>'
 							});
@@ -681,7 +688,7 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 				}
 			}
 			var rowErrors = data['rowErrors'];
-			if (rowErrors!=null) {
+			if (rowErrors) {
 				for (var i = 0; i < rowErrors.length; i++) {
 					var rowError = rowErrors[i];
 					var errorMessage = rowError['errorMessage'];
@@ -699,11 +706,11 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 			//field conflicts
 			var errorMessage = data['errorMessage'];
 			var conflicts = data['conflicts'];
-			if (conflicts!=null) {
+			if (conflicts) {
 				var conflictPanel = errorAndConflictPanel.getComponent('conflictPanel');
 				var conflictResolutionList = data['conflictResolutionList'];
 				items = [];
-					if (errorMessage!=null) {
+					if (errorMessage) {
 					items.push({xtype: 'label',
 						html: errorMessage,
 						colspan: 7
@@ -733,8 +740,7 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 				}, this);
 				var conflictResolutionRadioButtons = CWHF.getRadioButtonItems(conflictResolutionListBold,
 						'conflictResoultionEntry', 'id', 'label', false, false, true);
-				var conflictResolutionRadioGroup = CWHF.getRadioGroup(
-						'conflictResoultionRadioGroup', '', 300, conflictResolutionRadioButtons, null,
+				var conflictResolutionRadioGroup = CWHF.getRadioGroup('', 300, conflictResolutionRadioButtons, {itemId:'conflictResoultionRadioGroup'},
 						{change: {fn: this.onExcelConflictHandlingForAll, scope:this,
 							panel: conflictPanel, /*conflictResolutionList:conflictResolutionList,*/ conflicts:conflicts}});
 				items.push(conflictResolutionRadioGroup);
@@ -743,7 +749,7 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 					var row = conflict['row'];
 					var fields = conflict['fields'];
 					Ext.Array.forEach(fields, function(field, index) {
-						if (index==0) {
+						if (index===0) {
 							items.push({xtype: 'label',
 								html: row,
 								rowspan: fields.length
@@ -769,8 +775,7 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 						this.workItemIDFieldIDs.push(workItemIDFieldID);
 						var conflictResolutionRadioButtons = CWHF.getRadioButtonItems(conflictResolutionList,
 								'overwriteMap['+workItemIDFieldID + "]", 'id', 'label', false, false, true);
-						var conflictResolutionRadioGroup = CWHF.getRadioGroup(
-								'conflictResoultion'+workItemIDFieldID, '', 300, conflictResolutionRadioButtons);
+						var conflictResolutionRadioGroup = CWHF.getRadioGroup('', 300, conflictResolutionRadioButtons,{itemId:'conflictResoultion'+workItemIDFieldID});
 						items.push(conflictResolutionRadioGroup);
 					}, this);
 				}, this);
@@ -787,7 +792,7 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 	        msg : getText('admin.actions.importExcel.err.importNotFoundWorkItems'),
 	        buttons : Ext.MessageBox.YESNO,
 	        fn : function(btn) {
-	            if (btn == "yes") {
+	            if (btn === "yes") {
 					Ext.Ajax.request({
 				        url : "excelImport!removeIssueNoFromMapping.action",
 				        disableCaching : true,
@@ -801,7 +806,7 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 				    });
 
 	            }
-	            if (btn == "no") {
+	            if (btn === "no") {
 					 me.win.close();
 				 }
 	        },
@@ -825,8 +830,8 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 				//Once setValue fixed remove this cycle
 				Ext.Array.forEach(radioGroup.items.items, function(item, index) {
 					//radioGroup.items.items.each(function(item){
-						//item.setValue(item.inputValue == conflictResolutionValue);
-					item.setRawValue(item.inputValue == conflictResolutionValue);
+						//item.setValue(item.inputValue === conflictResolutionValue);
+					item.setRawValue(item.inputValue === conflictResolutionValue);
 				});
 			}, this)
 		}, this)
@@ -837,7 +842,7 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 	 */
 	actualizeToolbar: function(panel) {
 		var me = this;
-		if(me.win!=null) {
+		if(me.win) {
 		var layout = panel.getLayout();
 		var activeItem = layout.getActiveItem();
 		var index = panel.items.indexOf(activeItem);
@@ -845,25 +850,25 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 
 		var toolbar = me.win.getDockedItems('toolbar[dock="bottom"]');
 		var previous = toolbar[0].getComponent('previous');
-		if (previous!=null) {
+		if (previous) {
 			previous.setDisabled(!layout.getPrev());
 		}
 		var next = toolbar[0].getComponent('next');
-		if (next!=null) {
+		if (next) {
 			next.setDisabled((index+1)>=(numItems-1));
 		}
 		var finish = toolbar[0].getComponent('finish');
-		if (finish!=null) {
-			finish.setDisabled((index+1)!=(numItems-1));
+		if (finish) {
+			finish.setDisabled((index+1)!==(numItems-1));
 		}
 //		var indicator = toolbar[0].getComponent('indicator');
-//		if (indicator!=null) {
+//		if (indicator) {
 //			var indicatorText = getText("common.lbl.wizard.step", (index + 1), numItems);
 //			panel.setTitle(this.getTitle(index + 1));
 //			indicator.update(indicatorText);
 //		}
 
-		if(me.win!=null) {
+		if(me.win) {
 			me.win.setTitle(this.getTitle(index + 1));
 		}
 		}
@@ -956,7 +961,7 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 	 * Handler for closing the window
 	 */
 	doneHandler:function(scope) {
-		if (this.itemNavigatorController!=null) {
+		if (this.itemNavigatorController) {
 			this.itemNavigatorController.refresh.call(this.itemNavigatorController);
 		}
 		this.win.close();
@@ -969,7 +974,7 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 	createPopUpDialog: function(files, itemNavigatorController) {
 		var me = this;
 		this.itemNavigatorController = itemNavigatorController;
-		if(files==null) {
+		if(CWHF.isNull(files)) {
 			var windowParameters = {
 				title: "",
 				width: me.dialogWidth,
@@ -981,7 +986,7 @@ Ext.define('com.trackplus.admin.action.ImportExcel',{
 			window.showWindowByConfig(me);
 		}else {
 			var file = null;
-			if(files != null && files.length > 0){
+			if(files  && files.length > 0){
 				file = files[0];
 			}
 

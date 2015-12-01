@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -84,11 +84,13 @@ public class MailTemplateEditAction extends ActionSupport implements Preparable,
 	private String layoutCls="com.trackplus.layout.MailTemplateEditLayout";
 	private String pageTitle="admin.customize.mailTemplate.edit.title";
 
+	@Override
 	public void prepare() {
 		locale = (Locale) session.get(Constants.LOCALE_KEY);
 	}
 
 
+	@Override
 	public String execute() {
 		initData=prepareInitData();
 		return SUCCESS;
@@ -178,6 +180,7 @@ public class MailTemplateEditAction extends ActionSupport implements Preparable,
 	public void setTheLocale(String theLocale) {
 		this.theLocale = theLocale;
 	}
+	@Override
 	public void setServletResponse(HttpServletResponse servletResponse) {
 		this.servletResponse = servletResponse;
 	}
@@ -194,6 +197,7 @@ public class MailTemplateEditAction extends ActionSupport implements Preparable,
 		this.uploadFile = uploadFile;
 	}
 
+	@Override
 	public void setSession(Map<String, Object> session) {
 		this.session = session;
 	}

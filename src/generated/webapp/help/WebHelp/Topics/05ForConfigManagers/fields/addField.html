@@ -1,0 +1,106 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="This section describes how to add a custom property to your installation. You must be logged in as system manager or system administrator. Note: If you want to add an property of type list or cascaded ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="task"/><meta name="DC.Title" content="Adding a custom property"/><meta name="abstract" content="This section describes how to add a custom property to your installation."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="This section describes how to add a custom property to your installation."/><meta name="indexterms" content="custom property, add"/><meta name="DC.subject" content="custom property, add"/><meta name="keywords" content="custom property, add"/><meta name="DC.Relation" scheme="URI" content="../../../Topics/05ForConfigManagers/fields/manageFields.html"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="id14addField"/><link rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Adding a custom property</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()" id="id14addField">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../../Topics/05ForConfigManagers/fields/manageFields.html" title="This section describes how to add, overwrite, modify, and delete custom properties."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Managing custom properties</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../../Topics/05ForConfigManagers/fields/../../../Topics/05ForConfigManagers/fields/customFields.html" title="Items have properties. There are several system properties predefined which you can modify, for example change their label or set default values. Beyond these pre-defined properties you can define custom properties. There are a number of property types like text properties, numeric properties, selections, and date properties provided with Track+. It is possible to extend the number of property types using the Track+ plug-in architecture.">Item properties</a> / <a class="navheader_parent_path" href="../../../Topics/05ForConfigManagers/fields/manageFields.html" title="This section describes how to add, overwrite, modify, and delete custom properties.">Managing custom properties</a></td></tr></tbody></table>
+
+    <h1 class="title topictitle1">Adding a custom property</h1>
+
+    
+    
+    <div class="body taskbody"><p class="shortdesc">This section describes how to
+        add a custom property to your
+        installation.</p>
+
+        <div class="section prereq p"><p class="p">You must be logged in as system manager or system administrator.</p>
+
+            <div class="note note"><span class="notetitle">Note:</span> If you want to add an property of type list or cascaded list, you must
+                have created that list before you start the procedure described below (see <a class="xref" href="../lists/manageCustomLists.html" title="You can define any number of selection lists which you can use for custom properties of the proper type. You can store these lists either in a global scope, visible to anybody, or in a workspace scope, visible only to users that can access that workspace.">Managing lists for custom properties</a>).</div>
+</div>
+
+        <ol class="ol steps"><li class="li step stepexpand">
+                    <span class="ph cmd"><span class="ph">In the top toolbar select <span class="ph menucascade"><span class="ph uicontrol">Administration</span> &gt; <span class="ph uicontrol">Customize</span> &gt; <span class="ph uicontrol">Item properties</span></span>.</span> Alternatively click on the
+                        <span class="q">"Customize"</span>/<span class="q">"Item properties"</span> bar in the left navigation
+                        area.</span>
+                    <div class="itemgroup stepxmp">
+                        <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="../figures/customizeAttributes.png" height="256" width="362"/></div><br/>
+                            
+                        </div>
+
+                    </div>
+                </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">In the property navigation area click on the leaf node where you want to add
+                    the custom property.</span>
+                <div class="itemgroup stepxmp"><p class="p">In the example shown here we will add a custom property to item type <span class="q">"Requirement"</span>.</p>
+<div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/addField1.png" height="181" width="383"/></div><br/>
+                            
+                    </div>
+</div>
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">Click on the „Add“ button at the toolbar.</span>
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">Fill out the form that appears on the right.Select the type of property you
+                    want to create, and give it a name. Under this name properties will be
+                    searchable later on. </span>
+                <div class="itemgroup info"><p class="p">Name: Under this name the properties will be referenced in reports and in search operations.</p>
+
+                    <p class="p">Property type: Select from the list of available types. </p>
+<div class="note important"><span class="importanttitle">Important:</span> You cannot change the type of an property once you have created
+                        it!</div>
+
+                    <p class="p">Description:Optional field just for administration and book keeping
+                        purposes.</p>
+<div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/addField3.png" height="194" width="258"/></div><br/>
+                            
+                    </div>
+</div>
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">Enter a label for this property, and optionally a tool tip. This label will
+                    appear on the input forms where you place the property.</span>
+                <div class="itemgroup info"><div class="note note"><span class="notetitle">Note:</span> If you mark the property as required, and it appears on an input form
+                        that is associated with a „Create item“ action, the user has to enter a
+                        value here. If the property does not appear on any form, there is no error
+                        message.</div>
+</div>
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">If you select <span class="q">"Explicit history"</span>, changes to this item property will be kept
+                separate from other property changes. This is only useful if you later on need to analyze the change
+                history for this property. If not checked, the changes are recorded together with
+                changes to other properties which is typically sufficient and more efficient. </span>
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">Fill out the property type specific configuration part, for example enter
+                    default values, or minimum and maximum values.</span>
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">Click on the „Save“ button in the toolbar.</span>
+            </li>
+</ol>
+
+        <div class="section result"><p class="p">Your new custom property has been added to the <span class="ph"><span class="ph">Track+</span></span>system. This property is available to all
+                projects, if they like to use it, that is even though in this example you defined it
+                at a project level, it is automatically propagated to the system level for
+                reuse.</p>
+<div class="note note"><span class="notetitle">Note:</span> Before you can use your new property, you have to add it to at
+                least one input form, using the interactive form designer.</div>
+</div>
+
+    </div>
+
+<div class="related-links"/>
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../../Topics/05ForConfigManagers/fields/manageFields.html" title="This section describes how to add, overwrite, modify, and delete custom properties."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Managing custom properties</span></a></span>  </div>
+</body>
+</html>

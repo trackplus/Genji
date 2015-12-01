@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -36,6 +36,7 @@ Ext.define('com.trackplus.admin.server.LdapController',{
 		var config = config || {};
 		me.initialConfig = config;
 		Ext.apply(me, config);
+		this.initConfig(config);
 	},
 	view:null,
 	createView:function(){
@@ -46,7 +47,7 @@ Ext.define('com.trackplus.admin.server.LdapController',{
 			textFieldWidthShort:me.textFieldWidthShort,
 			alignR:me.alignR,
 			FieldSetWidth:me.FieldSetWidth,
-			controller:me
+			ldapController:me
 		});
 		return me.view;
 	},
@@ -58,35 +59,35 @@ Ext.define('com.trackplus.admin.server.LdapController',{
 	 */
 	changeLDAPon:function() {
 		// Get the main enable/disable check box
-		var ldap = CWHF.getWrappedControl.call(this.view,"fsLdap", "ldap.enabled");
+		var ldap = CWHF.getWrappedControl.call(this.view,"fsLdap", "ldapEnabled");
 		var ldapEnabled = ldap.getValue();
 
 		// Get all components to disable or enable
-		var serverURL = CWHF.getHelpWrapper.call(this.view, "fsLdap", "ldap.serverURL");
+		var serverURL = CWHF.getHelpWrapper.call(this.view, "fsLdap", "ldapServerURL");
 		serverURL.setDisabled(!ldapEnabled);
 
-		var attributeLoginName = CWHF.getHelpWrapper.call(this.view, "fsLdap", "ldap.attributeLoginName");
+		var attributeLoginName = CWHF.getHelpWrapper.call(this.view, "fsLdap", "ldapAttributeLoginName");
 		attributeLoginName.setDisabled(!ldapEnabled);
 
-		var bindDN = CWHF.getHelpWrapper.call(this.view, "fsLdap", "ldap.bindDN");
+		var bindDN = CWHF.getHelpWrapper.call(this.view, "fsLdap", "ldapBindDN");
 		bindDN.setDisabled(!ldapEnabled);
 
-		var password = CWHF.getControl.call(this.view, "fsLdap", "ldap.password");
+		var password = CWHF.getControl.call(this.view, "fsLdap", "ldapPassword");
 		password.setDisabled(!ldapEnabled);
 
-		var forceLdap = CWHF.getHelpWrapper.call(this.view, "fsLdap", "ldap.force");
+		var forceLdap = CWHF.getHelpWrapper.call(this.view, "fsLdap", "ldapForce");
 		forceLdap.setDisabled(!ldapEnabled);
 
-		var btnTest = CWHF.getControl.call(this.view,"fsLdapTest", "ldap.testConnection");
-		var txtLoginNameTest = CWHF.getControl.call(this.view,"fsLdapTest", "ldap.loginNameTest");
-		var txtPasswordTest = CWHF.getControl.call(this.view,"fsLdapTest", "ldap.passwordTest");
+		var btnTest = CWHF.getControl.call(this.view,"fsLdapTest", "ldapTestConnection");
+		var txtLoginNameTest = CWHF.getControl.call(this.view,"fsLdapTest", "ldapLoginNameTest");
+		var txtPasswordTest = CWHF.getControl.call(this.view,"fsLdapTest", "ldapPasswordTest");
 		btnTest.setDisabled(!ldapEnabled);
 		txtLoginNameTest.setDisabled(!ldapEnabled);
 		txtPasswordTest.setDisabled(!ldapEnabled);
 	},
 	testLdap:function(){
 		var me=this;
-		if(me.siteCfgController!=null){
+		if(me.siteCfgController){
 			me.siteCfgController.testLdap.call(me.siteCfgController);
 		}
 	},
@@ -96,9 +97,9 @@ Ext.define('com.trackplus.admin.server.LdapController',{
 	},
 	failureHandler:function(form, action){
 		var me=this;
-		if(action.result!=null&&action.result.errors!=null){
+		if(action.result&&action.result.errors){
 			for(var i=0;i<action.result.errors.length;i++){
-				if(action.result.errors[i].controlPath==null||action.result.errors[i].controlPath.length==0){
+				if(CWHF.isNull(action.result.errors[i].controlPath)||action.result.errors[i].controlPath.length===0){
 					me.view.errorBox.update(action.result.errors[i].errorMessage);
 					me.view.errorBox.setVisible(true);
 					break;
@@ -116,9 +117,9 @@ Ext.define('com.trackplus.admin.server.LdapView',{
 		textFieldWidthShort:320,
 		alignR:"right",
 		FieldSetWidth:600,
-		controller:null
+		ldapController:null
 	},
-	itemId:'tab.ldap',
+	itemId:'tab_ldap',
 	title:getText('admin.server.config.tabLDAP'),
 	checkEmailTest:null,
 	txtEmailTestTo:null,
@@ -135,14 +136,14 @@ Ext.define('com.trackplus.admin.server.LdapView',{
 		var testBtn={xtype:'button',
 			style:{marginTop:'10px', marginBottom: '5px', marginLeft: (me.labelWidth+5)+'px'},
 			iconCls: 'check16',
-			itemId: 'ldap.testConnection',
+			itemId: 'ldapTestConnection',
 			text:getText('admin.server.config.ldapTest'),
 			handler:function(){
-				me.controller.testLdap.call(me.controller);
+				me.ldapController.testLdap.call(me.ldapController);
 			}
 		};
-		var txtLoginNameText=CWHF.createTextField('admin.server.config.ldapLoginNameTest','ldap.loginNameTest',{disabled:true});
-		var txtPasswordTest=CWHF.createTextField('admin.server.config.ldapPasswordTest','ldap.passwordTest',{inputType:'password'});
+		var txtLoginNameText=CWHF.createTextField('admin.server.config.ldapLoginNameTest','ldap.loginNameTest',{disabled:true, itemId:"ldapLoginNameTest"});
+		var txtPasswordTest=CWHF.createTextField('admin.server.config.ldapPasswordTest','ldap.passwordTest',{inputType:'password', itemId:"ldapPasswordTest"});
 		me.errorBox=Ext.create('Ext.Component',{
 			html: '',
 			margin:'5 5 5 5',
@@ -186,20 +187,20 @@ Ext.define('com.trackplus.admin.server.LdapView',{
 					CWHF.createCheckboxWithHelp('admin.server.config.automaticGuestLogin',
 							'otherSiteConfig.automaticGuestLogin'),
 					CWHF.createCheckboxWithHelp('admin.server.config.isLDAPOn',
-							'ldap.enabled', {},
+							'ldap.enabled', {itemId:"ldapEnabled"},
 							{change:function(){
-								me.controller.changeLDAPon.call(me.controller);
+								me.ldapController.changeLDAPon.call(me.ldapController);
 							}}),
 					CWHF.createTextFieldWithHelp('admin.server.config.ldapServerURL',
-							'ldap.serverURL'),
+							'ldap.serverURL', {itemId:"ldapServerURL"}),
 					CWHF.createTextFieldWithHelp('admin.server.config.ldapLoginName',
-							'ldap.attributeLoginName'),
+							'ldap.attributeLoginName', {itemId:"ldapAttributeLoginName"}),
 					CWHF.createTextFieldWithHelp('admin.server.config.ldapBindDn',
-							'ldap.bindDN'),
+							'ldap.bindDN', {itemId:"ldapBindDN"}),
 					CWHF.createTextField('admin.server.config.ldapBindPass',
-						'ldap.password',{inputType:'password'}),
+						'ldap.password',{inputType:'password', itemId:"ldapPassword"}),
 					CWHF.createCheckboxWithHelp('admin.server.config.isForceLdap',
-						'ldap.force')]
+						'ldap.force', {itemId:"ldapForce"})]
 		},testArea
 		];
 	}

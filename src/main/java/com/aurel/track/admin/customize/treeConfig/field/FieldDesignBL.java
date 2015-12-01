@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -211,17 +211,6 @@ public class FieldDesignBL {
 			required = fieldAlwaysRequired || fieldConfigBean.isRequiredString();
 			history = fieldConfigBean.isHistoryString();
 			canDelete = isOwner(personBean, fieldBean);
-			/*if (personBean.isSys()) {
-				canDelete = true;
-			} else {
-				if (personBean.isProjAdmin()) {
-					//was the field created by the currently logged person?
-					//if not - do not allow to delete even if it has no dependences at all
-					if (fieldBean.getOwner()!=null && personBean.getObjectID().equals(fieldBean.getOwner())) {
-						canDelete = true;
-					}
-				}
-			}*/
 			isCustomField = fieldBean.isCustomString();
 			if (isCustomField) {
 				FieldType fieldType = FieldType.fieldTypeFactory(originalFieldTypeString);
@@ -481,13 +470,6 @@ public class FieldDesignBL {
 			if (!add) {
 				//first delete the settings: important mainly by general settings like user picker
 				fieldTypeDT.deleteSettings(fieldConfigID);
-				/*FieldType fieldTypeInstance = FieldTypeManager.getFieldType(fieldID);
-				if (fieldTypeInstance.getCompatibleFieldTypes()!=null) {
-					//1. after changing the field type for existing field to a compatible field the screens should be refreshed because of the possible different renderer
-					//2. same if multiple flag is modified (different renderer) but 2. is a subset of 1.
-					//In case of changing UserPicker, or UserPickerBehalf wee need to clear screen cache to be reloaded with right config.
-					ItemScreenCache.getInstance().clearCache();
-				}*/
 			}
 			fieldTypeDT.saveSettings(settings, fieldConfigID);
 		}

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -116,7 +116,8 @@ public class PredefinedQueryBL {
 		try {
 			filterExpression = filterFacade.getFilterExpression(null, filterUpperTO, null);
 		} catch (Exception e) {
-			LOGGER.info("Getting the all issues expression failed with " + e.getMessage(), e);
+			LOGGER.info("Getting the all issues expression failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		return filterExpression;
 	}
@@ -134,7 +135,8 @@ public class PredefinedQueryBL {
 		try {
 			filterExpression = filterFacade.getFilterExpression(null, filterUpperTO, null);
 		} catch (Exception e) {
-			LOGGER.info("Getting the unresolved issues expression failed with " + e.getMessage(), e);
+			LOGGER.info("Getting the unresolved issues expression failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		return filterExpression;
 	}
@@ -176,7 +178,8 @@ public class PredefinedQueryBL {
 		try {
 			filterExpression = filterFacade.getFilterExpression(null, filterUpperTO, fieldExpressionInTreeTOList);
 		} catch (Exception e) {
-			LOGGER.info("Getting my issues expression failed with " + e.getMessage(), e);
+			LOGGER.info("Getting my issues expression failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		return filterExpression;
 	}
@@ -195,7 +198,8 @@ public class PredefinedQueryBL {
 		try {
 			filterExpression = filterFacade.getFilterExpression(null, filterUpperTO, null);
 		} catch (Exception e) {
-			LOGGER.info("Getting the manager issues expression failed with " + e.getMessage(), e);
+			LOGGER.info("Getting the manager issues expression failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		return filterExpression;
 	}
@@ -214,7 +218,8 @@ public class PredefinedQueryBL {
 		try {
 			filterExpression = filterFacade.getFilterExpression(null, filterUpperTO, null);
 		} catch (Exception e) {
-			LOGGER.info("Getting the responsible issues expression failed with " + e.getMessage(), e);
+			LOGGER.info("Getting the responsible issues expression failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		return filterExpression;
 	}
@@ -233,7 +238,8 @@ public class PredefinedQueryBL {
 		try {
 			filterExpression = filterFacade.getFilterExpression(null, filterUpperTO, null);
 		} catch (Exception e) {
-			LOGGER.info("Getting the author issues expression failed with " + e.getMessage(), e);
+			LOGGER.info("Getting the author issues expression failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		return filterExpression;
 	}
@@ -252,7 +258,8 @@ public class PredefinedQueryBL {
 		try {
 			filterExpression = filterFacade.getFilterExpression(null, filterUpperTO, null);
 		} catch (Exception e) {
-			LOGGER.info("Getting the consulted/informed issues expression failed with " + e.getMessage(), e);
+			LOGGER.info("Getting the consulted/informed issues expression failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		return filterExpression;
 	}
@@ -274,7 +281,8 @@ public class PredefinedQueryBL {
 		try {
 			filterExpression = filterFacade.getFilterExpression(null, filterUpperTO, fieldExpressionInTreeTOList);
 		} catch (Exception e) {
-			LOGGER.info("Getting the meeting issues expression failed with " + e.getMessage(), e);
+			LOGGER.info("Getting the meeting issues expression failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		return filterExpression;
 	}
@@ -299,7 +307,8 @@ public class PredefinedQueryBL {
 		try {
 			filterExpression = filterFacade.getFilterExpression(null, filterUpperTO, null);
 		} catch (Exception e) {
-			LOGGER.info("Getting the unscheduled issues expression failed with " + e.getMessage(), e);
+			LOGGER.info("Getting the unscheduled issues expression failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		return filterExpression;
 	}
@@ -324,7 +333,8 @@ public class PredefinedQueryBL {
 		try {
 			filterExpression = filterFacade.getFilterExpression(null, filterUpperTO, null);
 		} catch (Exception e) {
-			LOGGER.info("Getting the recently closed issues expression failed with " + e.getMessage(), e);
+			LOGGER.info("Getting the recently closed issues expression failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		return filterExpression;
 	}
@@ -347,7 +357,8 @@ public class PredefinedQueryBL {
 		try {
 			filterExpression = filterFacade.getFilterExpression(null, filterUpperTO, null);
 		} catch (Exception e) {
-			LOGGER.info("Getting the recently added issues expression failed with " + e.getMessage(), e);
+			LOGGER.info("Getting the recently added issues expression failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		return filterExpression;
 	}
@@ -370,7 +381,8 @@ public class PredefinedQueryBL {
 		try {
 			filterExpression = filterFacade.getFilterExpression(null, filterUpperTO, null);
 		} catch (Exception e) {
-			LOGGER.info("Getting the recently updated issues expression failed with " + e.getMessage(), e);
+			LOGGER.info("Getting the recently updated issues expression failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		return filterExpression;
 	}

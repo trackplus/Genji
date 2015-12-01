@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -25,6 +25,7 @@ package com.aurel.track.fieldType.runtime.custom.picker;
 
 import java.util.Locale;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -46,6 +47,7 @@ public abstract class CustomPickerRT extends CustomSelectBaseRT {
 	/**
 	 * The value for the picker should be an entry of system option
 	 */
+	@Override
 	public int getValueType() {
 		return ValueType.SYSTEMOPTION;
 	}
@@ -54,6 +56,7 @@ public abstract class CustomPickerRT extends CustomSelectBaseRT {
 	 * Whether the values are based on custom lists or system lists
 	 * @return
 	 */
+	@Override
 	public boolean isCustomPicker() {
 		return true;
 	}
@@ -62,6 +65,7 @@ public abstract class CustomPickerRT extends CustomSelectBaseRT {
 	 * Whether the list entries have dynamic icons
 	 * @return
 	 */
+	@Override
 	public boolean hasDynamicIcons() {
 		return false;
 	}
@@ -72,6 +76,7 @@ public abstract class CustomPickerRT extends CustomSelectBaseRT {
 	 * the same key in the dropdownMap (the key of the SystemSelect field)
 	 * @return
 	 */
+	@Override
 	public Integer getDropDownMapFieldKey(Integer fieldID) {
 		return getSystemOptionType();
 	}
@@ -119,7 +124,8 @@ public abstract class CustomPickerRT extends CustomSelectBaseRT {
 				optionIDs = (Integer[])value;
 			} catch (Exception e) {
 				LOGGER.warn("Casting the value type " + value.getClass().getName() +
-						" to Integer[] failed with " + e.getMessage(), e);
+						" to Integer[] failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				return "";
 			}
 			return LookupContainer.getNotLocalizedLookupCommaSepatatedString(getSystemOptionType(), optionIDs, locale);
@@ -137,6 +143,7 @@ public abstract class CustomPickerRT extends CustomSelectBaseRT {
 	 * @param locale 
 	 * @return
 	 */
+	@Override
 	public String getShowValue(Integer fieldID, Integer parameterCode, Object value, 
 			Integer workItemID, LocalLookupContainer localLookupContainer, Locale locale) {
 		StringBuffer showValue = new StringBuffer();
@@ -182,6 +189,7 @@ public abstract class CustomPickerRT extends CustomSelectBaseRT {
 	 * @param localLookupContainer 
 	 * @return
 	 */
+	@Override
 	public Comparable getSortOrderValue(Integer fieldID, Integer parameterCode, Object value, 
 			Integer workItemID, LocalLookupContainer localLookupContainer) {
 		Integer[] optionIDs = CustomSelectUtil.getSelectedOptions(value);
@@ -230,7 +238,8 @@ public abstract class CustomPickerRT extends CustomSelectBaseRT {
 				//it is Integer[] because IntegerArrayMatcherConverter is used
 				integerArr = (Integer[])matchValue;
 			} catch (Exception e) {
-				LOGGER.warn("Converting the " + matchValue +  " to Integer[] failed with " + e.getMessage(), e);
+				LOGGER.warn("Converting the " + matchValue +  " to Integer[] failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 			if (integerArr!=null) {
 				Integer[] actualMatchValue = getMatchValue(integerArr, matcherContext);

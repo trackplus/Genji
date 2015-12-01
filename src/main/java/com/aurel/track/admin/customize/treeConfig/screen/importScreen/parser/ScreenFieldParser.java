@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -79,17 +79,17 @@ public class ScreenFieldParser extends ParserFactory //implements IParser
 			 parser.parse(file, this);
 		 } 
 		 catch(SAXException e) {
-			 LOGGER.error("Parsing Sax Exception:" + e.getMessage(), e);
+			 LOGGER.error("Parsing Sax Exception:" + e.getMessage());
 		 }
 		 catch(ParserConfigurationException e) {
-			 LOGGER.error("Parse Configuration Exception:" + e.getMessage(), e);
+			 LOGGER.error("Parse Configuration Exception:" + e.getMessage());
 		 }
 		 catch (IOException e) {
-			 LOGGER.error("IO exception:" + e.getMessage(), e);
+			 LOGGER.error("IO exception:" + e.getMessage());
 		 }
 		 catch (Exception e)
 		 {
-			 LOGGER.error("Error parsing file " +file.getName() + " :" + e.getMessage(), e);
+			 LOGGER.error("Error parsing file " +file.getName() + " :" + e.getMessage());
 		 }
 		 return screenFieldBeans;
 	}

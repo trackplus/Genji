@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -47,8 +47,8 @@ import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 
 import com.aurel.track.beans.ILabelBean;
@@ -67,7 +67,6 @@ import com.aurel.track.util.DownloadUtil;
 import com.aurel.track.util.IntegerStringBean;
 import com.aurel.track.util.IntegerStringBooleanBean;
 import com.aurel.track.util.LabelValueBean;
-import com.aurel.track.util.Support;
 import com.aurel.track.util.TreeNode;
 import com.aurel.track.util.numberFormatter.DoubleWithDecimalDigitsNumberFormatUtil;
 import com.aurel.track.util.numberFormatter.PercentNumberFormatUtil;
@@ -79,20 +78,20 @@ import com.aurel.track.util.numberFormatter.PercentNumberFormatUtil;
 public class JSONUtility {
 
 	private static final Logger LOGGER = LogManager.getLogger(JSONUtility.class);
-	
+
 	//send formated version to client
 	public static interface DELETE_ERROR_CODES {
 		public static int NEED_REPLACE = 1;
 		public static int NO_RIGHT_TO_DELETE = 2;
 		public static int NOT_EMPTY_WARNING = 3;
 	}
-	
+
 	public static interface EDIT_ERROR_CODES {
 		public static int NEED_CONFIRMATION = 4;
 		public static int RECOMMENDED_REPLACE = 5;
 	}
 	public static int ERROR_CODE_NO_USER_LOGIN= -1000;
-	
+
 	/**
 	 * The most common used JSON fields
 	 */
@@ -106,10 +105,11 @@ public class JSONUtility {
 		static final String RECORDS = "records";
 		static final String DATA = "data";
 		static final String TITLE = "title";
-		
-		
+
+
 		static final String ID = "id";
 		static final String OBJECT_ID = "objectID";
+		static final String ITEMID = "itemId";
 		static final String LABEL = "label";
 		static final String SYMBOL = "symbol";
 		static final String SELECTED = "selected";
@@ -119,15 +119,15 @@ public class JSONUtility {
 		static final String USE_ICON_CLS = "useIconCls";
 		static final String ICON_URL_PREFIX = "iconUrlPrefix";
 		static final String DESCRIPTION = "description";
-		
+
 		//the tree uses text for label
 		static final String TEXT = "text";
 		static final String NODE = "node";
 		static final String SHOW_GRID = "showGrid";
-		
-		
+
+
 		static final String DISABLED = "disabled";
-		
+
 		static final String LEAF = "leaf";
 		static final String CHECKED = "checked";
 		static final String SELECTABLE = "selectable";
@@ -135,35 +135,35 @@ public class JSONUtility {
 		static final String ICON = "icon";
 		static final String ICONCLS = "iconCls";
 		static final String QTIP = "qtip";
-		
+
 		static final String CHILDREN = "children";
-		
+
 		//for tooltip
 		static final String TT = "TT";
-		
+
 		static final String REPLACEMENT_WARNING = "replacementWarning";
 		static final String REPLACEMENT_LABEL = "replacementListLabel";
 		static final String REPLACEMENT_LIST_LABEL = "replacementListLabel";
 		static final String REPLACEMENT_LIST = "replacementList";
         static final String REPLACEMENT_TREE = "replacementTree";
-		
+
 		static final String REMOVE_OPTIONS = "removeOptions";
-		
+
 		/**
-		 * The suffix for the help wrapper container 
+		 * The suffix for the help wrapper container
 		 */
 		static final String WRP = ".wrp";
-		
+
 		/**
 		 * The itemId of the wrapper container
 		 */
 		static final String PAN_WARPPER = "panWrapper";
-		
+
 		//wizard parameters
 		//static final String ACTUAL_STEP = "actualStep";
 		//static final String TOTAL_STEP = "totalStep";
 	}
-	
+
 	public static List<String> getPathInHelpWrapper(String controlName) {
 		List<String> path = new LinkedList<String>();
 		path.add(controlName + JSON_FIELDS.WRP);
@@ -171,14 +171,14 @@ public class JSONUtility {
 		path.add(controlName);
 		return path;
 	}
-	
+
 	/*
 	 * This helper method encodes a field name. It is quoted with double quotes if it contains
-	 * special characters ".", "'", "-", and " " (space). Otherwise the field name is taken without 
+	 * special characters ".", "'", "-", and " " (space). Otherwise the field name is taken without
 	 * quotes.
 	 */
 	public static StringBuilder appendFieldName(StringBuilder stringBuilder, String fieldName) {
-		/*if (fieldName.contains(" ") || fieldName.contains("'") 
+		/*if (fieldName.contains(" ") || fieldName.contains("'")
 			|| fieldName.contains("-") || fieldName.contains(".")) {
 			return stringBuilder.append("\"").append(fieldName).append("\"");
 		}
@@ -187,9 +187,9 @@ public class JSONUtility {
 		//}
 	}
 	public static String escapeFieldName(String fieldName) {
-		return new StringBuilder().append("\"").append(fieldName).append("\"").toString();		
+		return new StringBuilder().append("\"").append(fieldName).append("\"").toString();
 	}
-	
+
 	/**
 	 * Appends a string type field. Example: <code>fieldName:"The value of the field",</code>.</br>
 	 * Special characters are properly escaped, a comma is added as the last character.
@@ -200,7 +200,7 @@ public class JSONUtility {
 	public static void appendStringValue(StringBuilder sb, String name, String value){
 		appendStringValue(sb, name, value, false);
 	}
-	
+
 	/**
 	 * Appends a string type field. Example: <code>fieldName:"The value of the field"</code>.</br>
 	 * Special characters are properly escaped.
@@ -217,8 +217,8 @@ public class JSONUtility {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Appends a JSON field. Example: <code>fieldName:"The value of the field",</code>.</br>
 	 * Special characters are properly escaped, a comma is added as the last character.
@@ -229,8 +229,8 @@ public class JSONUtility {
 	public static void appendJSONValue(StringBuilder sb, String name, String value){
 		appendJSONValue(sb, name, value, false);
 	}
-	
-	
+
+
 	/**
 	 * Appends a JSON field. Example: <code>fieldName:"The value of the field"</code>.</br>
 	 * Special characters are properly escaped.
@@ -247,7 +247,7 @@ public class JSONUtility {
 			}
 		}
 	}
-	
+
 	/**
 	 * Appends an integer type field. Example: <code>fieldName:2345,</code>.</br>
 	 * @param sb - the field name and value are appended to this <code>StringBuilder</code>
@@ -257,7 +257,7 @@ public class JSONUtility {
 	public static void appendIntegerValue(StringBuilder sb, String name, Integer value){
 		appendIntegerValue(sb, name, value, false);
 	}
-	
+
 	/**
 	 * Appends an integer type field. Example: <code>fieldName:1234,</code>.</br>
 	 * @param sb - the field name and value are appended to this <code>StringBuilder</code>
@@ -309,9 +309,9 @@ public class JSONUtility {
 	 * @param list - the field value(s)
 	 */
 	public static void appendIntegerListAsArray(StringBuilder sb, String name, List<Integer> list){
-		appendIntegerListAsArray(sb, name, list, false);	
-	}	
-	
+		appendIntegerListAsArray(sb, name, list, false);
+	}
+
 	/**
 	 * Appends a list of integers. Example: <code>fieldName:[1234, 5678, 9123],</code>.</br>
 	 * Note: there is always a comma added in the end, so this element cannot be the
@@ -336,9 +336,9 @@ public class JSONUtility {
 			if (!last) {
 				sb.append(",");
 			}
-		}		
-	}	
-	
+		}
+	}
+
 	/**
 	 * Appends a list of integers from a set. Example: <code>fieldName:[1234, 5678, 9123],</code>.</br>
 	 * Note: there is always a comma added in the end, so this element cannot be the
@@ -348,7 +348,7 @@ public class JSONUtility {
 	 * @param set - the field value(s)
 	 */
 	public static void appendIntegerSetAsArray(StringBuilder sb, String name, Set<Integer> set){
-		appendIntegerSetAsArray(sb, name, set, false);	
+		appendIntegerSetAsArray(sb, name, set, false);
 	}
 
 	/**
@@ -375,9 +375,9 @@ public class JSONUtility {
 			if (!last) {
 				sb.append(",");
 			}
-		}		
-	}	
-	
+		}
+	}
+
 	/**
 	 * Appends a list of integers from an Integer array. Example: <code>fieldName:[1234, 5678, 9123],</code>.</br>
 	 * Note: There is always a comma added in the end, so this element cannot be the
@@ -404,7 +404,7 @@ public class JSONUtility {
 			}
 		}
 	}
-	
+
 	/**
 	 * Appends a list of integers from an Integer array. Example: <code>fieldName:[1234, 5678, 9123],</code>.</br>
 	 * Note: There is always a comma added in the end, so this element cannot be the
@@ -416,7 +416,7 @@ public class JSONUtility {
 	public static void appendIntegerArrayAsArray(StringBuilder sb, String name, Integer[] intArr){
 		appendIntegerArrayAsArray(sb, name, intArr, false);
 	}
-	
+
 	/**
 	 * Appends a list of integers from an int array. Example: <code>fieldName:[1234, 5678, 9123],</code>.</br>
 	 * Note: There is always a comma added in the end, so this element cannot be the
@@ -434,12 +434,12 @@ public class JSONUtility {
 				if (i<intArr.length-1) {
 					sb.append(",");
 				}
-			}			
+			}
 			sb.append("]");
 			sb.append(",");
 		}
 	}
-	
+
 	/**
 	 * Appends a list of integers from an object array. Example: <code>fieldName:[1234, 5678, 9123],</code>.</br>
 	 * Note: There is always a comma added in the end, so this element cannot be the
@@ -498,7 +498,7 @@ public class JSONUtility {
 		sb.append("]");
 		return  sb.toString();
 	}
-	
+
 	/**
 	 * Appends a list of integers from an integer list. Example: <code>fieldName:1234, 5678, 9123,</code>.</br>
 	 * Note: There is always a comma added in the end, so this element cannot be the
@@ -521,9 +521,9 @@ public class JSONUtility {
 			sb.append("\"");
 			sb.append(",");
 		}
-	}	
-	
-	
+	}
+
+
 	/**
 	 * Appends a double type field. Example: <code>fieldName:12.08,</code>.</br>
 	 * @param sb - the field name and value are appended to this <code>StringBuilder</code>
@@ -533,8 +533,8 @@ public class JSONUtility {
 	public static void appendDoubleValue(StringBuilder sb, String name, Double value){
 		appendDoubleValue(sb, name, value,false);
 	}
-	
-	
+
+
 	/**
 	 * Appends a double type field. Example: <code>fieldName:12.08,</code>.</br>
 	 * @param sb - the field name and value are appended to this <code>StringBuilder</code>
@@ -551,7 +551,7 @@ public class JSONUtility {
 			}
 		}
 	}
-	
+
 	/**
 	 * Appends a localized date type field. Example: <code>fieldName:"11.8.2012",</code>.</br>
 	 * @param sb - the field name and value are appended to this <code>StringBuilder</code>
@@ -560,7 +560,7 @@ public class JSONUtility {
 	 * @param locale - the locale used to format the date
 	 */
 	public static void appendLocaleFormattedDoubleValue(StringBuilder sb, String name, Double doubleVal, Locale locale) {
-		appendLocaleFormattedDoubleValue(sb, name, doubleVal, locale, false);		
+		appendLocaleFormattedDoubleValue(sb, name, doubleVal, locale, false);
 	}
 
 	/**
@@ -579,7 +579,7 @@ public class JSONUtility {
 			}
 		}
 	}
-	
+
 	/**
 	 * Appends a localized date type field. Example: <code>fieldName:"11.8.2012",</code>.</br>
 	 * @param sb - the field name and value are appended to this <code>StringBuilder</code>
@@ -588,7 +588,7 @@ public class JSONUtility {
 	 * @param locale - the locale used to format the date
 	 */
 	public static void appendLocaleFormattedPercentValue(StringBuilder sb, String name, Double doubleVal, Locale locale) {
-		appendLocaleFormattedPercentValue(sb, name, doubleVal, locale, false);		
+		appendLocaleFormattedPercentValue(sb, name, doubleVal, locale, false);
 	}
 
 	/**
@@ -607,7 +607,7 @@ public class JSONUtility {
 			}
 		}
 	}
-	
+
 	/**
 	 * Appends a date type field. Example: <code>fieldName:"2012-08-11",</code>.</br>
 	 * @param sb - the field name and value are appended to this <code>StringBuilder</code>
@@ -617,7 +617,7 @@ public class JSONUtility {
 	public static void appendDateValue(StringBuilder sb, String name, Date value){
 		appendDateValue(sb, name, value, false);
 	}
-	
+
 	/**
 	 * Appends a date type field. Example: <code>fieldName:"2012-08-11",</code>.</br>
 	 * @param sb - the field name and value are appended to this <code>StringBuilder</code>
@@ -633,7 +633,7 @@ public class JSONUtility {
 			}
 		}
 	}
-	
+
 	/**
 	 * Appends a date time type field. Example: <code>fieldName:"2012-08-11 12:27",</code>.</br>
 	 * @param sb - the field name and value are appended to this <code>StringBuilder</code>
@@ -643,7 +643,7 @@ public class JSONUtility {
 	public static void appendDateTimeValue(StringBuilder sb, String name, Date value){
 		appendDateTimeValue(sb, name, value, false);
 	}
-	
+
 	/**
 	 * Appends a date time type field. Example: <code>fieldName:"2012-08-11 12:27",</code>.</br>
 	 * @param sb - the field name and value are appended to this <code>StringBuilder</code>
@@ -659,7 +659,7 @@ public class JSONUtility {
 			}
 		}
 	}
-	
+
 	/**
 	 * Appends a localized date type field. Example: <code>fieldName:"11.8.2012",</code>.</br>
 	 * @param sb - the field name and value are appended to this <code>StringBuilder</code>
@@ -668,7 +668,7 @@ public class JSONUtility {
 	 * @param locale - the locale used to format the date
 	 */
 	public static void appendLocaleFormattedDateValue(StringBuilder sb, String name, Date date, Locale locale) {
-		appendLocaleFormattedDateValue(sb, name, date, locale, false);		
+		appendLocaleFormattedDateValue(sb, name, date, locale, false);
 	}
 
 	/**
@@ -687,8 +687,8 @@ public class JSONUtility {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Appends a boolean type field. Example: <code>fieldName:true,</code>.</br>
 	 * @param sb - the field name and value are appended to this <code>StringBuilder</code>
@@ -698,7 +698,7 @@ public class JSONUtility {
 	public static void appendBooleanValue(StringBuilder sb, String name, boolean value){
 		appendBooleanValue(sb, name, value, false);
 	}
-	
+
 	/**
 	 * Appends a boolean type field. Example: <code>fieldName:true,</code>.</br>
 	 * @param sb - the field name and value are appended to this <code>StringBuilder</code>
@@ -712,9 +712,9 @@ public class JSONUtility {
 			sb.append(",");
 		}
 	}
-	
+
 	/**
-	 * Returns a JSON string constructed from a list of {@link com.aurel.track.beans.ILabelBean ILabelBean}. 
+	 * Returns a JSON string constructed from a list of {@link com.aurel.track.beans.ILabelBean ILabelBean}.
 	 * Example: <code>fieldName:[id:12345, label:"first label", id:3456, label: "second label],</code>.</br>
 	 * @param name - the field name
 	 * @param labelBeanList - the field value(s)
@@ -724,9 +724,9 @@ public class JSONUtility {
 		JSONUtility.appendILabelBeanList(stringBuilder, name, labelBeanList);
 		return stringBuilder.toString();
 	}
-	
+
 	/**
-	 * Returns a JSON string constructed from a list of {@link com.aurel.track.beans.ILabelBean ILabelBean}. 
+	 * Returns a JSON string constructed from a list of {@link com.aurel.track.beans.ILabelBean ILabelBean}.
 	 * Example: <code>fieldName:[id:12345, label:"first label", id:3456, label: "second label],</code>.</br>
 	 * @param sb - the field name and value are appended to this <code>StringBuilder</code>
 	 * @param name - the field name
@@ -735,10 +735,10 @@ public class JSONUtility {
 	public static void appendILabelBeanList(StringBuilder sb, String name, List<ILabelBean> list){
 		appendILabelBeanList(sb, name, list, false);
 	}
-	
+
 	/**
 	 * Appends a JSON string constructed from a list of {@link com.aurel.track.beans.ILabelBean ILabelBean} to
-	 * a <code>StringBuilder</code>.</br> 
+	 * a <code>StringBuilder</code>.</br>
 	 * Example: <code>fieldName:[id:12345, label:"first label", id:3456, label: "second label],</code>.</br>
 	 * @param sb - the field name and value are appended to this <code>StringBuilder</code>
 	 * @param name - the field name
@@ -812,9 +812,9 @@ public class JSONUtility {
 		//stringBuilder.append("}");
 		return stringBuilder.toString();
 	}
-	
+
 	/**
-	 * Encode 
+	 * Encode
 	 * @param fieldID
 	 * @param labelBeanList
 	 * @return
@@ -840,9 +840,9 @@ public class JSONUtility {
 		sb.append("]");
 		return sb.toString();
 	}
-	
+
 	/**
-	 * Gets the JSON string for tree folder children 
+	 * Gets the JSON string for tree folder children
 	 * @param children
 	 * @return
 	 */
@@ -865,8 +865,8 @@ public class JSONUtility {
 		stringBuilder.append("]");//end data
 		return stringBuilder.toString();
 	}
-	
-	
+
+
 	/**
 	 * Get JSON with the tree hierarchy: supposes the nodes are already sorted
 	 * @param nodes
@@ -874,8 +874,8 @@ public class JSONUtility {
 	 */
 	public static String getTreeHierarchyJSON(List<TreeNode> nodes) {
 		return getTreeHierarchyJSON(nodes, false, false, null);
-	}	
-	
+	}
+
 	/**
 	 * Get JSON with the tree hierarchy: supposes the nodes are already sorted
 	 * @param nodes
@@ -884,7 +884,7 @@ public class JSONUtility {
 	public static String getTreeHierarchyJSON(List<TreeNode> nodes, boolean useCheck, boolean useSelectable) {
 		return getTreeHierarchyJSON(nodes, useCheck, useSelectable, null);
 	}
-	
+
 	public static String getTreeHierarchyJSON(List<TreeNode> nodes, boolean useCheck, boolean useSelectable, Integer level) {
 		StringBuilder stringBuilder=new StringBuilder();
 		stringBuilder.append("[");
@@ -894,7 +894,7 @@ public class JSONUtility {
 				stringBuilder.append("{");
 				JSONUtility.appendStringValue(stringBuilder, JSONUtility.JSON_FIELDS.ID, treeNode.getId());
 				JSONUtility.appendStringValue(stringBuilder, JSONUtility.JSON_FIELDS.TEXT, treeNode.getLabel());
-				JSONUtility.appendStringValue(stringBuilder, JSONUtility.JSON_FIELDS.ICONCLS, treeNode.getIcon());				
+				JSONUtility.appendStringValue(stringBuilder, JSONUtility.JSON_FIELDS.ICONCLS, treeNode.getIcon());
 				if(level!=null){
 					JSONUtility.appendStringValue(stringBuilder,"cls", "treeItem-level-"+level);
 				}
@@ -926,7 +926,7 @@ public class JSONUtility {
 		stringBuilder.append("]");//end data
 		return stringBuilder.toString();
 	}
-	
+
 	public static void appendIssueTypeBeanList(StringBuilder sb, String name, List<TListTypeBean> list){
 		appendIssueTypeBeanList(sb, name, list, false);
 	}
@@ -958,9 +958,9 @@ public class JSONUtility {
 			sb.append(",");
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Appends a list of IntegerStringBean
 	 * @param sb
@@ -970,7 +970,7 @@ public class JSONUtility {
 	public static void appendIntegerStringBeanList(StringBuilder sb, String name, List<IntegerStringBean> list) {
 		appendIntegerStringBeanList(sb, name, list, false);
 	}
-	
+
 	/**
 	 * Appends a list of IntegerStringBean
 	 * @param sb
@@ -981,7 +981,7 @@ public class JSONUtility {
 	public static void appendIntegerStringBeanList(StringBuilder sb, String name, List<IntegerStringBean> list, boolean last) {
 		appendJSONValue(sb,name,encodeJSONIntegerStringBeanList(list),last);
 	}
-	
+
 	/**
 	 * Appends a list of IntegerStringBean
 	 * @param sb
@@ -991,7 +991,7 @@ public class JSONUtility {
 	public static void appendBooleanStringBeanList(StringBuilder sb, String name, List<BooleanStringBean> list) {
 		appendBooleanStringBeanList(sb, name, list, false);
 	}
-	
+
 	/**
 	 * Appends a list of IntegerStringBean
 	 * @param sb
@@ -1002,7 +1002,7 @@ public class JSONUtility {
 	public static void appendBooleanStringBeanList(StringBuilder sb, String name, List<BooleanStringBean> list, boolean last){
 		appendJSONValue(sb,name,encodeJSONBooleanStringBeanList(list),last);
 	}
-	
+
 	/**
 	 * Appends a list of LabelValueBean
 	 * @param sb
@@ -1012,7 +1012,7 @@ public class JSONUtility {
 	public static void appendLabelValueBeanList(StringBuilder sb, String name, List<LabelValueBean> list){
 		appendLabelValueBeanList(sb, name, list, false);
 	}
-	
+
 	/**
 	 * Appends a list of LabelValueBean
 	 * @param sb
@@ -1023,7 +1023,7 @@ public class JSONUtility {
 	public static void appendLabelValueBeanList(StringBuilder sb, String name, List<LabelValueBean> list, boolean last){
 		appendJSONValue(sb,name,encodeJSONLabelValueBeanList(list),last);
 	}
-	
+
 	/**
 	 * Appends
 	 * @param sb
@@ -1033,7 +1033,7 @@ public class JSONUtility {
 	public static void appendIntegerStringMap(StringBuilder sb, String name, Map<Integer, String> map){
 		appendIntegerStringMap(sb, name, map, false);
 	}
-	
+
 	/**
 	 * Appends
 	 * @param sb
@@ -1041,7 +1041,7 @@ public class JSONUtility {
 	 * @param map
 	 * @param last
 	 */
-	public static void appendIntegerStringMap(StringBuilder sb, String name, Map<Integer, String> map, boolean last){		
+	public static void appendIntegerStringMap(StringBuilder sb, String name, Map<Integer, String> map, boolean last){
 		appendFieldName(sb, name).append(":[");
 		if(map!=null){
 			for (Iterator<Integer> iterator = map.keySet().iterator(); iterator.hasNext();) {
@@ -1101,10 +1101,10 @@ public class JSONUtility {
 	 * @param name
 	 * @param map
 	 */
-	public static void appendIntegerBooleanMap(StringBuilder sb, String name, Map<Integer, Boolean> map){		
-		appendIntegerBooleanMap(sb, name, map, false);			
+	public static void appendIntegerBooleanMap(StringBuilder sb, String name, Map<Integer, Boolean> map){
+		appendIntegerBooleanMap(sb, name, map, false);
 	}
-	
+
 	/**
 	 * Appends
 	 * @param sb
@@ -1112,14 +1112,14 @@ public class JSONUtility {
 	 * @param map
 	 * @param last
 	 */
-	public static void appendIntegerBooleanMap(StringBuilder sb, String name, Map<Integer, Boolean> map, boolean last){		
+	public static void appendIntegerBooleanMap(StringBuilder sb, String name, Map<Integer, Boolean> map, boolean last){
 		appendFieldName(sb, name).append(":{");
 		if(map!=null){
 			for (Iterator<Integer> iterator = map.keySet().iterator(); iterator.hasNext();) {
-				Integer key = iterator.next();				
+				Integer key = iterator.next();
 				sb.append(key);
 				sb.append(":");
-				sb.append(map.get(key));				
+				sb.append(map.get(key));
 				if (iterator.hasNext()) {
 					sb.append(",");
 				}
@@ -1130,12 +1130,12 @@ public class JSONUtility {
 			sb.append(",");
 		}
 	}
-	
-	
-	public static void appendStringList(StringBuilder sb, String name, List<String> list){		
+
+
+	public static void appendStringList(StringBuilder sb, String name, List<String> list){
 		appendStringList(sb, name, list, false);
 	}
-	
+
 	public static void appendStringList(StringBuilder sb, String name, List<String> list, boolean last){
 		appendFieldName(sb, name);
 		sb.append(":[");
@@ -1158,35 +1158,35 @@ public class JSONUtility {
 			sb.append(",");
 		}
 	}
-	
+
 	/**
 	 * Creates the JSON with replacement list
 	 * @param success
 	 * @param label the label of the entity to be deleted
-	 * @param replacementWarningLabel the entity type to be deleted 
-	 * @param replacementFieldLabel the label for the replacement combo 
+	 * @param replacementWarningLabel the entity type to be deleted
+	 * @param replacementFieldLabel the label for the replacement combo
 	 * @param replacementList the replacement list
-	 * @param errorMessage when no replacement entry was selected 
+	 * @param errorMessage when no replacement entry was selected
 	 * @param locale
 	 * @return
 	 */
-	public static String createReplacementListJSON(boolean success, String label, String replacementWarningLabel, 
-			String replacementFieldLabel, List<ILabelBean> replacementList, String errorMessage, Locale locale){	
+	public static String createReplacementListJSON(boolean success, String label, String replacementWarningLabel,
+			String replacementFieldLabel, List<ILabelBean> replacementList, String errorMessage, Locale locale){
 		StringBuilder sb=new StringBuilder();
 		sb.append("{");
-		JSONUtility.appendBooleanValue(sb, JSONUtility.JSON_FIELDS.SUCCESS, success);		
+		JSONUtility.appendBooleanValue(sb, JSONUtility.JSON_FIELDS.SUCCESS, success);
 		sb.append(JSONUtility.JSON_FIELDS.DATA).append(":{");
 		if (errorMessage!=null) {
 			JSONUtility.appendStringValue(sb, JSONUtility.JSON_FIELDS.ERROR_MESSAGE, errorMessage);
 		}
-		String warning = LocalizeUtil.getParametrizedString("common.lbl.replacementWarning", 
+		String warning = LocalizeUtil.getParametrizedString("common.lbl.replacementWarning",
 				new Object[] {replacementWarningLabel, label}, locale);
 		warning = warning + " " +  LocalizeUtil.getLocalizedTextFromApplicationResources("common.lbl.cancelDeleteAlert", locale);
 		JSONUtility.appendStringValue(sb, JSONUtility.JSON_FIELDS.REPLACEMENT_WARNING, warning);
-		String listLabel = LocalizeUtil.getParametrizedString("common.lbl.replacement", 
+		String listLabel = LocalizeUtil.getParametrizedString("common.lbl.replacement",
 				new Object[] {replacementFieldLabel}, locale);
 		JSONUtility.appendStringValue(sb, JSONUtility.JSON_FIELDS.REPLACEMENT_LIST_LABEL, listLabel);
-		JSONUtility.appendILabelBeanList(sb, JSONUtility.JSON_FIELDS.REPLACEMENT_LIST, replacementList, true);		
+		JSONUtility.appendILabelBeanList(sb, JSONUtility.JSON_FIELDS.REPLACEMENT_LIST, replacementList, true);
 		sb.append("}");
 		sb.append("}");
 		return sb.toString();
@@ -1196,35 +1196,35 @@ public class JSONUtility {
 	 * Creates the JSON with replacement list by deleting more entities at once
 	 * @param success
 	 * @param label the label of the entity to be deleted
-	 * @param replacementWarningLabel the entity type to be deleted 
-	 * @param replacementFieldLabel the label for the replacement combo 
+	 * @param replacementWarningLabel the entity type to be deleted
+	 * @param replacementFieldLabel the label for the replacement combo
 	 * @param replacementList the replacement list
-	 * @param errorMessage when no replacement entry was selected 
+	 * @param errorMessage when no replacement entry was selected
 	 * @param locale
 	 * @return
 	 */
-	public static String createReplacementListJSON(boolean success, int totalNumber, String entities, String replacementEntity, 
-			List<ILabelBean> replacementList, String errorMessage, Locale locale){	
+	public static String createReplacementListJSON(boolean success, int totalNumber, String entities, String replacementEntity,
+			List<ILabelBean> replacementList, String errorMessage, Locale locale){
 		StringBuilder sb=new StringBuilder();
 		sb.append("{");
-		JSONUtility.appendBooleanValue(sb, JSONUtility.JSON_FIELDS.SUCCESS, success);		
+		JSONUtility.appendBooleanValue(sb, JSONUtility.JSON_FIELDS.SUCCESS, success);
 		sb.append(JSONUtility.JSON_FIELDS.DATA).append(":{");
 		if (errorMessage!=null) {
 			JSONUtility.appendStringValue(sb, JSONUtility.JSON_FIELDS.ERROR_MESSAGE, errorMessage);
 		}
-		String warning = LocalizeUtil.getParametrizedString("common.lbl.replacementWarningMore", 
+		String warning = LocalizeUtil.getParametrizedString("common.lbl.replacementWarningMore",
 				new Object[] {String.valueOf(totalNumber), entities, replacementEntity}, locale);
 		warning = warning + " " + LocalizeUtil.getLocalizedTextFromApplicationResources("common.lbl.cancelDeleteAlert", locale);
 		JSONUtility.appendStringValue(sb, JSONUtility.JSON_FIELDS.REPLACEMENT_WARNING, warning);
-		String listLabel = LocalizeUtil.getParametrizedString("common.lbl.replacement", 
+		String listLabel = LocalizeUtil.getParametrizedString("common.lbl.replacement",
 				new Object[] {replacementEntity}, locale);
 		JSONUtility.appendStringValue(sb, JSONUtility.JSON_FIELDS.REPLACEMENT_LIST_LABEL, listLabel);
-		JSONUtility.appendILabelBeanList(sb, JSONUtility.JSON_FIELDS.REPLACEMENT_LIST, replacementList, true);		
+		JSONUtility.appendILabelBeanList(sb, JSONUtility.JSON_FIELDS.REPLACEMENT_LIST, replacementList, true);
 		sb.append("}");
 		sb.append("}");
 		return sb.toString();
 	}
-	
+
     /**
      * Creates the JSON with replacement list
      * @param success
@@ -1241,7 +1241,7 @@ public class JSONUtility {
         StringBuilder sb=new StringBuilder();
         sb.append("{");
         JSONUtility.appendBooleanValue(sb, JSONUtility.JSON_FIELDS.SUCCESS, success);
-        sb.append(JSONUtility.JSON_FIELDS.DATA).append(":{");
+        JSONUtility.appendFieldName(sb, JSONUtility.JSON_FIELDS.DATA).append(":{");
         if (errorMessage!=null) {
             JSONUtility.appendStringValue(sb, JSONUtility.JSON_FIELDS.ERROR_MESSAGE, errorMessage);
         }
@@ -1269,7 +1269,7 @@ public class JSONUtility {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 	}
-	
+
 	public static void encodeJSON(HttpServletResponse httpServletResponse, String text) {
 		try {
 			JSONUtility.prepareServletResponseJSON(httpServletResponse, true);
@@ -1281,17 +1281,17 @@ public class JSONUtility {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 	}
-	
+
 	public static void prepareServletResponseJSON(HttpServletResponse httpServletResponse){
 		prepareServletResponseJSON(httpServletResponse, true);
 	}
-	
+
 	public static void prepareServletResponseJSON(HttpServletResponse httpServletResponse, boolean jsonContentType){
 		try {
 			httpServletResponse.reset();
 			httpServletResponse.setCharacterEncoding("UTF-8");
 		} catch (Exception e) {
-			//when the <s:action/> is present on the jsp 
+			//when the <s:action/> is present on the jsp
 			//(mainly getting root nodes the same response object is used, and second time it can't be reseted)
 		}
 		if (jsonContentType) {
@@ -1311,13 +1311,13 @@ public class JSONUtility {
 			httpServletResponse.setHeader("Cache-Control", "no-cache");
 		}*/
 	}
-	
+
 	/**
 	 * Gets a JSON success with node
-	 * @param node 
+	 * @param node
 	 * @return
 	 */
-	public static String encodeJSONSuccessAndNode(String node){	
+	public static String encodeJSONSuccessAndNode(String node){
 		StringBuilder sb=new StringBuilder();
 		sb.append("{");
 		JSONUtility.appendBooleanValue(sb, JSONUtility.JSON_FIELDS.SUCCESS, true);
@@ -1325,7 +1325,7 @@ public class JSONUtility {
 		sb.append("}");
 		return sb.toString();
 	}
-	
+
 	/**
 	 * Gets the JSON success with id
 	 * @param id
@@ -1339,7 +1339,7 @@ public class JSONUtility {
 		sb.append("}");
 		return sb.toString();
 	}
-	
+
 	public static String encodeJSONSuccess(boolean success){
 		StringBuilder sb=new StringBuilder();
 		sb.append("{");
@@ -1347,7 +1347,7 @@ public class JSONUtility {
 		sb.append("}");
 		return sb.toString();
 	}
-	
+
 	public static String encodeJSONSuccess(){
 		StringBuilder sb=new StringBuilder();
 		sb.append("{");
@@ -1356,11 +1356,11 @@ public class JSONUtility {
 		sb.append("}");
 		return sb.toString();
 	}
-	
+
 	public static String encodeJSONSuccess(String confirmationMessage){
 		StringBuilder sb=new StringBuilder();
 		sb.append("{");
-		appendBooleanValue(sb, JSON_FIELDS.SUCCESS, true);	
+		appendBooleanValue(sb, JSON_FIELDS.SUCCESS, true);
 		appendStringValue(sb, JSON_FIELDS.ERROR_MESSAGE, confirmationMessage, true);
 		sb.append("}");
 		return sb.toString();
@@ -1369,7 +1369,7 @@ public class JSONUtility {
 	public static void encodeJSONSuccess(HttpServletResponse httpServletResponse) {
 		encodeJSONSuccess(httpServletResponse,true);
 	}
-	
+
 	public static void encodeJSONSuccess(HttpServletResponse httpServletResponse, boolean jsonContentType) {
 		try {
 			JSONUtility.prepareServletResponseJSON(httpServletResponse, jsonContentType);
@@ -1384,9 +1384,9 @@ public class JSONUtility {
 		return encodeJSONFailure(errorMessage,null);
 	}
 
-	
-	
-	
+
+
+
 	public static String encodeJSONFailure(Integer errorCode){
 		StringBuilder sb=new StringBuilder();
 		sb.append("{");
@@ -1397,7 +1397,7 @@ public class JSONUtility {
 		sb.append("}");
 		return sb.toString();
 	}
-	
+
 	public static String encodeJSONFailure(String errorMessage, Integer errorCode){
 		StringBuilder sb=new StringBuilder();
 		sb.append("{");
@@ -1425,7 +1425,7 @@ public class JSONUtility {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		}
 	}
-	
+
 	public static String encodeJSONBoolean(boolean booleanValue){
 		StringBuilder sb=new StringBuilder();
 		sb.append("{");
@@ -1434,7 +1434,7 @@ public class JSONUtility {
 		sb.append("}");
 		return sb.toString();
 	}
-	
+
 	public static String encodeJsonErrors(List<LabelValueBean> fieldNameToErrorMessageList) {
 		StringBuilder sb=new StringBuilder();
 		sb.append("{");
@@ -1443,7 +1443,7 @@ public class JSONUtility {
 		sb.append("}");
 		return sb.toString();
 	}
-	
+
 	/**
 	 * Renders the error messages to controls by name
 	 * errorData.getFieldName() should be specified
@@ -1471,8 +1471,8 @@ public class JSONUtility {
 		sb.append("}");
 		return sb.toString();
 	}
-	
-	
+
+
 	public static String encodeJsonError(String fieldName, String errorMessage) {
 		StringBuilder sb=new StringBuilder();
 		sb.append("{");
@@ -1483,11 +1483,11 @@ public class JSONUtility {
 		sb.append("}");
 		return sb.toString();
 	}
-	
+
 	/**
 	 * Method to create a JSON response object in case that there have been problems
 	 * found in validation process.
-	 * 
+	 *
 	 * @param httpServletResponse the response the JSON object has to be embedded in
 	 * @param errors a list of label value beans. Label is error message, value is field name.
 	 */
@@ -1517,7 +1517,7 @@ public class JSONUtility {
 			PrintWriter out = httpServletResponse.getWriter();
 			out.println(sb);
 		} catch (IOException e) {
-			LOGGER.error(Support.readStackTrace(e));
+			LOGGER.error(e);
 		}
 	}
 	public static void appendErrorsExtJS(StringBuilder sb,List<LabelValueBean> errors){
@@ -1538,7 +1538,7 @@ public class JSONUtility {
 	/**
 	 * Method to create a JSON response object in case that there have been problems
 	 * found in validation process.
-	 * 
+	 *
 	 * @param httpServletResponse the response the JSON object has to be embedded in
 	 * @param errors a list of label value beans. Label is error message, value is field name.
 	 */
@@ -1546,7 +1546,7 @@ public class JSONUtility {
 		encodeJSONErrorsExtJS(httpServletResponse,errors,true);
 	}
 
-	
+
 	public static String encodeJSONErrors(String clientCode, String message){
 		StringBuilder sb=new StringBuilder();
 		sb.append("{");
@@ -1558,7 +1558,7 @@ public class JSONUtility {
 		sb.append("}");
 		return sb.toString();
 	}
-	
+
 	public static String encodeJSONLabelValueBeanList(List<LabelValueBean> list){
 		StringBuilder sb=new StringBuilder();
 		sb.append("[");
@@ -1567,7 +1567,7 @@ public class JSONUtility {
 				LabelValueBean labelBean = iterator.next();
 				sb.append("{");
 				boolean last = labelBean.getLabel() == null ? true : false;
-				appendStringValue(sb, JSON_FIELDS.ID, labelBean.getValue(), last);				
+				appendStringValue(sb, JSON_FIELDS.ID, labelBean.getValue(), last);
 				appendStringValue(sb, JSON_FIELDS.LABEL, labelBean.getLabel(), true);
 				sb.append("}");
 				if (iterator.hasNext()) {
@@ -1578,7 +1578,7 @@ public class JSONUtility {
 		sb.append("]");
 		return sb.toString();
 	}
-	
+
 	public static String encodeJSONLabelValueBeanArray(LabelValueBean[] list){
 		StringBuilder sb=new StringBuilder();
 		sb.append("[");
@@ -1637,7 +1637,7 @@ public class JSONUtility {
 		sb.append("]");
 		return sb.toString();
 	}
-	
+
 	public static String encodeJSONBooleanStringBeanList(List<BooleanStringBean> list){
 		StringBuilder sb=new StringBuilder();
 		sb.append("[");
@@ -1656,7 +1656,7 @@ public class JSONUtility {
 		sb.append("]");
 		return sb.toString();
 	}
-	
+
 	public static String encodeJSONIntegerStringBooleanBeanList(List<IntegerStringBooleanBean> list){
 		StringBuilder sb=new StringBuilder();
 		sb.append("[");
@@ -1676,10 +1676,10 @@ public class JSONUtility {
 		sb.append("]");
 		return sb.toString();
 	}
-	
-	
-	
-	
+
+
+
+
 	public static String  encodeJSONToolbarItemsList(List<ToolbarItem> list){
 		StringBuilder sb=new StringBuilder();
 		sb.append("[");
@@ -1729,14 +1729,14 @@ public class JSONUtility {
 		sb.append("]");
 		return sb.toString();
 	}
-	
+
 	/**
 	 * Decodes the records string into and id based map of JSON objects
 	 * @param records
 	 * @param idField
 	 * @return
 	 */
-	public static Map<String, JSONObject> decodeToJsonRecordsMap(String records, String idField) {		
+	public static Map<String, JSONObject> decodeToJsonRecordsMap(String records, String idField) {
 		JSON json = null;
 		try {
 			json = JSONSerializer.toJSON(records);
@@ -1744,27 +1744,27 @@ public class JSONUtility {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		} catch (Exception e) {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
-		}		
+		}
 		Map<String, JSONObject> jsonObjectsMap = new HashMap<String, JSONObject>();
 		if (json == null) {
 			return jsonObjectsMap;
 		}
 		if (json.isArray()) {
 			JSONArray jsonArray = (JSONArray)json;
-			Iterator<JSONObject> iterator = jsonArray.iterator();		
+			Iterator<JSONObject> iterator = jsonArray.iterator();
 			while (iterator.hasNext()) {
-				JSONObject jsonObject = iterator.next();		
+				JSONObject jsonObject = iterator.next();
 				jsonObjectsMap.put(jsonObject.getString(idField), jsonObject);
-			}						
+			}
 		} else {
 			if (!json.isEmpty()) {
 				JSONObject jsonObject = (JSONObject)json;
 				jsonObjectsMap.put(jsonObject.getString(idField), jsonObject);
 			}
-		}		
+		}
 		return jsonObjectsMap;
 	}
-	
+
 	/**
 	 * Decodes the records string into and id based map of JSON objects
 	 * @param records
@@ -1778,14 +1778,14 @@ public class JSONUtility {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		} catch (Exception e) {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
-		}		
+		}
 		List<JSONObject> jsonObjectsList = new ArrayList<JSONObject>();
 		if (json != null  && !json.equals(JSONNull.getInstance()) && !json.isEmpty()) {
 			if (json.isArray()) {
 				JSONArray jsonArray = (JSONArray)json;
 				Iterator<JSONObject> iterator = jsonArray.iterator();
 				while (iterator.hasNext()) {
-					JSONObject jsonObject = iterator.next();	
+					JSONObject jsonObject = iterator.next();
 					jsonObjectsList.add(jsonObject);
 				}
 			} else {
@@ -1795,41 +1795,41 @@ public class JSONUtility {
 		}
 		return jsonObjectsList;
 	}
-	
+
 	/**
 	 * Decodes the records string into and id based map of JSON objects
 	 * @param jsonString
 	 * @return
 	 */
-	public static JSONObject decodeToJsonObject(String jsonString) {		
-		JSON json = null;		
+	public static JSONObject decodeToJsonObject(String jsonString) {
+		JSON json = null;
 		try {
 			json = JSONSerializer.toJSON(jsonString);
 		} catch (JSONException e) {
-			LOGGER.error(e.getMessage(), e);
+			LOGGER.error(e.getMessage());
 			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		} catch (Exception e) {
-			LOGGER.error(e.getMessage(), e);
+			LOGGER.error(e.getMessage());
 			LOGGER.debug(ExceptionUtils.getStackTrace(e));
-		}		
-		
-		if (json != null  && !json.equals(JSONNull.getInstance()) && !json.isEmpty()) {					
-			return (JSONObject)json;					
 		}
-		return null; 
+
+		if (json != null  && !json.equals(JSONNull.getInstance()) && !json.isEmpty()) {
+			return (JSONObject)json;
+		}
+		return null;
 	}
-	
-	
+
+
 	/**
 	 * Appends a list of IntegerStringBean
 	 * @param sb
 	 * @param name
 	 * @param list
 	 */
-	public static void appendIntegerStringBooleanBeanList(StringBuilder sb, String name, List<IntegerStringBooleanBean> list){		
-		appendIntegerStringBooleanBeanList(sb, name, list, false);			
+	public static void appendIntegerStringBooleanBeanList(StringBuilder sb, String name, List<IntegerStringBooleanBean> list){
+		appendIntegerStringBooleanBeanList(sb, name, list, false);
 	}
-	
+
 	/**
 	 * Appends a list of IntegerStringBean
 	 * @param sb
@@ -1837,11 +1837,11 @@ public class JSONUtility {
 	 * @param list
 	 * @param last
 	 */
-	public static void appendIntegerStringBooleanBeanList(StringBuilder sb, String name, List<IntegerStringBooleanBean> list, boolean last){		
+	public static void appendIntegerStringBooleanBeanList(StringBuilder sb, String name, List<IntegerStringBooleanBean> list, boolean last){
 		appendJSONValue(sb,name,encodeJSONIntegerStringBooleanBeanList(list),last);
 	}
-	
-	
+
+
 	public static String encodeIssueTypes(List<TListTypeBean> issueTypes){
 		StringBuilder sb=new StringBuilder();
 		sb.append("[");
@@ -1869,10 +1869,10 @@ public class JSONUtility {
 		return sb.toString();
 	}
 
-	
+
 	/**
 	 * Appends a JSON encoded HTML list of error messages from LabelValueBean(s). The values are ignored,
-	 * only the labels are being used. 
+	 * only the labels are being used.
 	 * @param sb StringBuilder where the text is appended
 	 * @param name the name of the property (like <code>msg: 'the label'</code>)
 	 * @param errors the list of errors as LabelValueBean objects
@@ -1890,9 +1890,9 @@ public class JSONUtility {
 			}
 			msg.append("</ul>");
 			JSONUtility.appendStringValue(sb,name,msg.toString(),last);
-		}	
+		}
 	}
-	
+
 	/**
 	 * This method properly escapes an special characters so that the returned String conforms
 	 * to JSON notation.
@@ -1937,8 +1937,6 @@ public class JSONUtility {
                                 sb.append("\\t");
                                 break;
 //                        case '/':
-//                                sb.append("\\/");
-//                                break;
                         default:
                 //Reference: http://www.unicode.org/versions/Unicode5.1.0/
                                 if((ch>='\u0000' && ch<='\u001F') || (ch>='\u007F' && ch<='\u009F') || (ch>='\u2000' && ch<='\u20FF')){

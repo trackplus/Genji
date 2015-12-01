@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -38,7 +38,6 @@ import com.aurel.track.dao.torque.SimpleCriteria;
 import com.workingdogs.village.Record;
 
 // Local classes
-// import com.aurel.track.persist.map.*;
 
 /** 
  */
@@ -99,7 +98,7 @@ public class TTrailPeer
     	}
     	catch(Exception e)    	
     	{
-    		LOGGER.error("Loading of a trail by primary key " + objectID + " failed with " + e.getMessage(), e);
+    		LOGGER.error("Loading of a trail by primary key " + objectID + " failed with " + e.getMessage());
     	} 
     	if (tTrail!=null)
 		{
@@ -111,6 +110,7 @@ public class TTrailPeer
     /**
 	 * Gets the maximal objectID
 	 */
+	@Override
 	public Integer getMaxObjectID() {
 		String max = "max(" + TRAILKEY + ")";
 		Criteria crit = new Criteria();		
@@ -118,7 +118,7 @@ public class TTrailPeer
 		try {
 			return ((Record) doSelectVillageRecords(crit).get(0)).getValue(1).asIntegerObj();
 		} catch (Exception e) {
-			LOGGER.error("Getting the maximal objectID failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the maximal objectID failed with " + e.getMessage());
 		}
 		return null;
 	}
@@ -129,6 +129,7 @@ public class TTrailPeer
 	 * @param chunkInterval
 	 * @return
 	 */
+	@Override
 	public List<TTrailBean> getNextChunk(Integer actualValue, Integer chunkInterval) {
 		List torqueList = new ArrayList();
 		SimpleCriteria crit = new SimpleCriteria();
@@ -140,7 +141,7 @@ public class TTrailPeer
 		try {
 			torqueList = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the trail changes from " + actualValue + " to " + toValue + " failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the trail changes from " + actualValue + " to " + toValue + " failed with " + e.getMessage());
 		}
 		return convertTorqueListToBeanList(torqueList);
 	}
@@ -149,6 +150,7 @@ public class TTrailPeer
 	 * Load all TrailBeans 
 	 * @return
 	 */
+	@Override
 	public List loadAll() {
 		List torqueList = new ArrayList();
 		Criteria crit = new Criteria();
@@ -156,7 +158,7 @@ public class TTrailPeer
 		try {
 			torqueList = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the trail changes for all workItems failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the trail changes for all workItems failed with " + e.getMessage());
 		}
 		return convertTorqueListToBeanList(torqueList);
 	}
@@ -175,7 +177,7 @@ public class TTrailPeer
 		try {
 			torqueList = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the trail changes for workItems failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the trail changes for workItems failed with " + e.getMessage());
 		}
 		return convertTorqueListToBeanList(torqueList);
 	}*/
@@ -186,6 +188,7 @@ public class TTrailPeer
 	 * @param trailBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TTrailBean trailBean) {
 		TTrail tTrail;		
 		try {
@@ -193,7 +196,7 @@ public class TTrailPeer
 			tTrail.save();
 			return tTrail.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a trail failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a trail failed with " + e.getMessage());
 			return null;
 		}	
 	}    
@@ -215,7 +218,7 @@ public class TTrailPeer
 		try {
 			torqueList = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the trail changes for workItem " + workItemID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the trail changes for workItem " + workItemID + " failed with " + e.getMessage());
 		}
 		//get the persons map 		
 		crit.clear();

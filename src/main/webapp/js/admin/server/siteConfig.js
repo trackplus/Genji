@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -53,7 +53,7 @@ Ext.define('com.trackplus.admin.server.SiteConfig',{
 	 */
 	createSaveButton:function(){
 		var me=this;
-		if(me.btnSave==null){
+		if(CWHF.isNull(me.btnSave)){
 			me.btnSave=new Ext.button.Button({
 				overflowText:getText('common.btn.save'),
 				tooltip:getText('common.btn.save'),
@@ -102,32 +102,32 @@ Ext.define('com.trackplus.admin.server.SiteConfig',{
 		return me.emailOutgoingController.createView.call(me.emailOutgoingController);
 	},
 
-	
+
 	/**
 	 * Enable or disable input elements for full text search panel
 	 */
 	changeFtsOn:function() {
 		var me=this;
 		// Get the main enable/disable check box
-		var fts = this.getWrappedControl("tab.fullTextSearch",
-				"fsFullTextSearch", "fullTextSearch.useLucene");
+		var fts = this.getWrappedControl("tab_fullTextSearch",
+				"fsFullTextSearch", "fullTextSearchUseLucene");
 		var ftsEnabled = fts.getValue();
 
 		// Get all components to disable or enable
-		var reindexOnStartup = this.getHelpWrapper("tab.fullTextSearch",
-				"fsFullTextSearch", "fullTextSearch.reindexOnStartup");
+		var reindexOnStartup = this.getHelpWrapper("tab_fullTextSearch",
+				"fsFullTextSearch", "fullTextSearchReindexOnStartup");
 		reindexOnStartup.setDisabled(!ftsEnabled);
 
-		var indexAttachments = this.getHelpWrapper("tab.fullTextSearch",
-				"fsFullTextSearch", "fullTextSearch.indexAttachments");
+		var indexAttachments = this.getHelpWrapper("tab_fullTextSearch",
+				"fsFullTextSearch", "fullTextSearchIndexAttachments");
 		indexAttachments.setDisabled(!ftsEnabled);
 
-		var indexPath = this.getHelpWrapper("tab.otherSiteConfig",
-				"fsDirectories", "fullTextSearch.indexPath");
+		var indexPath = this.getHelpWrapper("tab_otherSiteConfig",
+				"fsDirectories", "fullTextSearchIndexPath");
 		indexPath.setDisabled(!ftsEnabled);
 
-		var analyzer = this.getHelpWrapper("tab.fullTextSearch",
-				"fsFullTextSearch", "fullTextSearch.analyzer");
+		var analyzer = this.getHelpWrapper("tab_fullTextSearch",
+				"fsFullTextSearch", "fullTextSearchAnalyzer");
 		analyzer.setDisabled(!ftsEnabled);
 	},
 
@@ -139,7 +139,7 @@ Ext.define('com.trackplus.admin.server.SiteConfig',{
 	createTabTextSearch:function(){
 		var me=this;
 		var panel=new Ext.Panel({
-			itemId:'tab.fullTextSearch',
+			itemId:'tab_fullTextSearch',
 			title:getText('admin.server.config.tabTextSearch'),
 			layout: {
 				type: 'anchor'
@@ -160,16 +160,16 @@ Ext.define('com.trackplus.admin.server.SiteConfig',{
 				defaults: {anchor: '100%'},
 				layout: 'anchor',
 				items: [CWHF.createCheckboxWithHelp('admin.server.config.useLucene',
-							'fullTextSearch.useLucene', {},
+							'fullTextSearch.useLucene', {itemId:'fullTextSearchUseLucene'},
 							{change:function(){
 								me.changeFtsOn.call(me);
 							}}),
 						CWHF.createCheckboxWithHelp('admin.server.config.reindexOnStartup',
-							'fullTextSearch.reindexOnStartup'),
+							'fullTextSearch.reindexOnStartup',{itemId:'fullTextSearchReindexOnStartup'}),
 						CWHF.createCheckboxWithHelp('admin.server.config.indexAttachments',
-						'fullTextSearch.indexAttachments'),
+						'fullTextSearch.indexAttachments',{itemId:'fullTextSearchIndexAttachments'}),
 						CWHF.createComboWithHelp('admin.server.config.analyzer',
-								'fullTextSearch.analyzer',{idType:'string'})]
+								'fullTextSearch.analyzer',{idType:'string', itemId:"fullTextSearchAnalyzer"})]
 			}]
 		});
 		return panel;
@@ -203,7 +203,7 @@ Ext.define('com.trackplus.admin.server.SiteConfig',{
 	createTabOther:function(){
 		var me=this;
 		var panel=new Ext.Panel({
-			itemId:'tab.otherSiteConfig',
+			itemId:'tab_otherSiteConfig',
 			title:getText('admin.server.config.tabOther'),
 			layout: {
 				type: 'anchor'
@@ -222,7 +222,7 @@ Ext.define('com.trackplus.admin.server.SiteConfig',{
 						CWHF.createTextFieldWithHelp('admin.server.config.backupDir',
 								'otherSiteConfig.backupDir'),
 						CWHF.createTextFieldWithHelp('admin.server.config.indexPath',
-								'fullTextSearch.indexPath'),
+								'fullTextSearch.indexPath', {itemId:"fullTextSearchIndexPath"}),
 						CWHF.createTextFieldWithHelp('admin.server.config.serverURL',
 								'otherSiteConfig.serverURL')]
 			}, {
@@ -234,7 +234,7 @@ Ext.define('com.trackplus.admin.server.SiteConfig',{
 				defaults: {anchor: '100%'},
 				layout: 'anchor',
 				items: [CWHF.createNumberFieldWithHelp('admin.server.config.attachmentMaxSize',
-							'otherSiteConfig.maxAttachmentSize', 2, 0, 9999, {hideTrigger:true})]
+							'otherSiteConfig.maxAttachmentSize', 2, 0, 9999, {hideTrigger:true,itemId:'otherSiteConfigMaxAttachmentSize'})]
 //						CWHF.createNumberFieldWithHelp('admin.server.config.descriptionLength',
 //							'otherSiteConfig.descriptionLength', 0, 0, 9999, {hideTrigger:true})]
 			},
@@ -254,10 +254,9 @@ Ext.define('com.trackplus.admin.server.SiteConfig',{
 
 	getVariousSettings:function() {
 		var settingsItems = [CWHF.createCheckboxWithHelp('admin.server.config.isSelfRegisterAllowed', 'otherSiteConfig.selfRegisterAllowed'),
-			//CWHF.createCheckboxWithHelp('admin.server.config.automaticGuestLogin', 'otherSiteConfig.automaticGuestLogin'),
 			CWHF.createCheckboxWithHelp('admin.server.config.projectSpecificIDsOn', 'otherSiteConfig.projectSpecificIDsOn')];
-		if (com.trackplus.TrackplusConfig.appType != APPTYPE_BUGS
-				&& com.trackplus.TrackplusConfig.appType != APPTYPE_DESK) {
+		if (com.trackplus.TrackplusConfig.appType !== APPTYPE_BUGS
+				&& com.trackplus.TrackplusConfig.appType !== APPTYPE_DESK) {
 			//although forced to be set for Genji and Teamdesk (on server side), do not show the checkbox for them
 			settingsItems.push(CWHF.createCheckboxWithHelp('admin.server.config.summaryItemsBehavior', 'otherSiteConfig.summaryItemsBehavior'));
 			//not set for Genji and Teamdesk
@@ -298,7 +297,7 @@ Ext.define('com.trackplus.admin.server.SiteConfig',{
 		});
 		var form=Ext.create('Ext.form.Panel', {
 			url:'saveAdminSiteConfig!save.action',
-			margins: '3 0 0 0',
+			margin: '3 0 0 0',
 			//standardSubmit:true,
 			border: false,
 			baseCls:'x-plain',
@@ -322,7 +321,7 @@ Ext.define('com.trackplus.admin.server.SiteConfig',{
 					//call postDataProcess only after window is rendered because
 					//some fields (like labelEl) are available only after the window is rendered
 					me.btnSave.setDisabled(false);
-					if (me.postDataProcess!=null) {
+					if (me.postDataProcess) {
 						me.postDataProcess.call(this, action.result.data, me.formPanel, me.extraConfig);
 					}
 				}catch(ex){}
@@ -337,14 +336,11 @@ Ext.define('com.trackplus.admin.server.SiteConfig',{
 	postDataProcess: function(data, panel) {
 		//license tab
 		var me=this;
-
 		//outgoingEmail tab
 		me.emailOutgoingController.postDataProcess.call(me.emailOutgoingController,data);
-
 		//incomingEmail tab
-
 		//fullTextSearch tab
-		var analyzer = this.getWrappedControl("tab.fullTextSearch", "fsFullTextSearch", "fullTextSearch.analyzer");
+		var analyzer = this.getWrappedControl("tab_fullTextSearch", "fsFullTextSearch", "fullTextSearchAnalyzer");
 		analyzer.store.loadData(data["fullTextSearch.analyzers"]);
 		analyzer.setValue(data["fullTextSearch.analyzer"]);
 		this.changeFtsOn();
@@ -360,7 +356,7 @@ Ext.define('com.trackplus.admin.server.SiteConfig',{
 			var headerCm=tabBar.getComponent(i);
 			headerCm.removeCls("errorTab");
 		}
-		if(me.ldapController!=null){
+		if(me.ldapController){
 			me.ldapController.clearErrorTabs.call(me.ldapController);
 		}
 	},
@@ -393,19 +389,19 @@ Ext.define('com.trackplus.admin.server.SiteConfig',{
 		var me=this;
 		var errStr='';
 		var tabErrors=new Array();
-		if (errors!=null && errors.length>0){
+		if (errors && errors.length>0){
 			for(var i=0;i<errors.length;i++){
 				var error=errors[i];
 				var controlPath = error.controlPath;
 				var inputComp=null;
-				if(controlPath!=null&&controlPath.length>0){
+				if(controlPath&&controlPath.length>0){
 					inputComp=this.getControl.apply(this, controlPath);
 					var tabId = controlPath[0];
 					if(!Ext.Array.contains(tabErrors,tabId)){
 						tabErrors.push(tabId);
 					}
 				}
-				if(inputComp!=null){
+				if(inputComp){
 					inputComp.markInvalid(error.errorMessage);
 				}
 				errStr+=error.label+"</br>";
@@ -420,7 +416,7 @@ Ext.define('com.trackplus.admin.server.SiteConfig',{
 		if(tabErrors.length>0){
 			for(var i=0;i<tabErrors.length;i++){
 				var tabComp=this.getControl(tabErrors[i]);
-				if(tabComp!=null){
+				if(tabComp){
 					tabErrorsCmp.push(tabComp);
 				}
 			}
@@ -484,13 +480,13 @@ Ext.define('com.trackplus.admin.server.SiteConfig',{
 			},
 			failure: function(form, action) {
 				borderLayout.setLoading(false);
-				if(action.result!=null&&action.result.errors!=null){
+				if(action.result&&action.result.errors){
 					me.handleErrors(action.result.errors);
 				}else{
 					CWHF.showMsgError(getText("admin.server.config.mailReceivingTestFailure"));
 				}
-				if(failureHandler!=null){
-					failureHandler.call(failureScope==null?me:failureScope,form, action);
+				if(failureHandler){
+					failureHandler.call(CWHF.isNull(failureScope)?me:failureScope,form, action);
 				}
 
 			}

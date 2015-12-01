@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -48,6 +48,7 @@ public class TCardPanelPeer
     extends com.aurel.track.persist.BaseTCardPanelPeer implements CardPanelDAO {
 
 	private static final Logger LOGGER = LogManager.getLogger(TCardPanelPeer.class);
+	@Override
 	public TCardPanelBean loadByPerson(Integer personID){
 		List<TCardPanel> panels = null;
 
@@ -56,7 +57,7 @@ public class TCardPanelPeer
 		try {
 			panels = doSelect(crit);
 		} catch(Exception e) {
-			LOGGER.error("Loading by person  " + personID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading by person  " + personID + " failed with " + e.getMessage());
 		}
 		if (panels!=null && !panels.isEmpty()) {
 			return ((TCardPanel)panels.get(0)).getBean();
@@ -64,6 +65,7 @@ public class TCardPanelPeer
 			return null;
 		}
 	}
+	@Override
 	public TCardPanelBean loadByPrimaryKey(Integer objectID){
 		TCardPanel tobject = null;
 		try{
@@ -78,6 +80,7 @@ public class TCardPanelPeer
 		}
 		return null;
 	}
+	@Override
 	public TCardPanelBean loadFullByPrimaryKey(Integer objectID){
 		TCardPanelBean panelBean=null;
 		Connection con = null;
@@ -95,7 +98,6 @@ public class TCardPanelPeer
 		return panelBean;
 	}
 	public static List<IField> loadFullChildren(Integer objectID, Connection con) throws TorqueException {
-		//LOGGER.debug("Load children for panel:"+objectID);
 		Criteria critChild = new Criteria();
 		critChild.add(BaseTCardFieldPeer.CARDPANEL,objectID);
 		List<IField> result=new ArrayList<IField>();
@@ -110,16 +112,18 @@ public class TCardPanelPeer
 	}
 
 
+	@Override
 	public Integer save(TCardPanelBean cardPanelBean){
 		try {
 			TCardPanel tobject = BaseTCardPanel.createTCardPanel(cardPanelBean);
 			tobject.save();
 			return tobject.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a cardPanelBean failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a cardPanelBean failed with " + e.getMessage());
 			return null;
 		}
 	}
+	@Override
 	public void delete(Integer objectID){
 		try {
 			doDelete(SimpleKey.keyFor(objectID));

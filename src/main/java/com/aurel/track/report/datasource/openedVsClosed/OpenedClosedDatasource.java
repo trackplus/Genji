@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -66,6 +66,7 @@ public class OpenedClosedDatasource extends TimeIntervalWithStatusDatasource {
 	 * @return
 	 * @throws TooManyItemsToLoadException 
 	 */
+	@Override
 	public Object getDatasource(Map<String, String[]> parameters, DatasourceDescriptor datasourceDescriptor,
 			Map<String, Object> contextMap, Map<String, Object> templateDescriptionMap,
 			Integer templateID, TPersonBean personBean, Locale locale) throws TooManyItemsToLoadException {
@@ -88,7 +89,6 @@ public class OpenedClosedDatasource extends TimeIntervalWithStatusDatasource {
 			//if no status selected select all closed statuses
 			selectedStatusList = GeneralUtils.createIntegerListFromBeanList(StatusBL.loadClosedStates());
 		}
-		//List stateChangeBeansList = stateChangeDAO.loadForWorkItemsInTimeInterval(dateFrom, dateTo, workItemIDs, selectedStatusList);				 	
 		List<HistorySelectValues> historySelectValuesList = HistoryTransactionBL.getByWorkItemsFieldNewValuesDates(
 				workItemIDs, SystemFields.INTEGER_STATE, selectedStatusList, dateFrom, dateTo);
 		
@@ -106,7 +106,6 @@ public class OpenedClosedDatasource extends TimeIntervalWithStatusDatasource {
 		
 		SortedMap<Integer, SortedMap<Integer, Integer>> periodStatusChanges = OpenedClosedBL.getNumbersInTimeIntervalMap(historySelectValuesList, selectedTimeInterval);		   	
 		addZerosForEmptyIntervals(dateFrom, dateTo, selectedTimeInterval, periodStatusChanges, true);
-		//transformPeriodsToDates(periodStatusChanges, selectedTimeInterval);
 		
 		OpenedClosedBL.openedClosedJavaBean(openedClosedTimeSliceMap, 
 				transformPeriodsToDates(periodStatusChanges, selectedTimeInterval), false);
@@ -116,6 +115,7 @@ public class OpenedClosedDatasource extends TimeIntervalWithStatusDatasource {
 	/**
 	 * Serializes the datasource in an XML file
 	 */
+	@Override
 	public void serializeDatasource(OutputStream outputStream,
 			Object datasource) {
 		ReportBeansToXML.convertToXml(outputStream, (Document)datasource);
@@ -129,6 +129,7 @@ public class OpenedClosedDatasource extends TimeIntervalWithStatusDatasource {
 	 * @param locale 
 	 * @return
 	 */
+	@Override
 	protected String getTimeIntervalExtraParams(Map<String, Object> savedParamsMap,
 			DatasourceDescriptor datasourceDescriptor,
 			TPersonBean personBean, Locale locale) {

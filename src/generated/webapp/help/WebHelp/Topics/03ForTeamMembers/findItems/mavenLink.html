@@ -1,0 +1,124 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="Maven is a widely used build project management system that can automatically generate project documentation. Maven can incorporate information from other system and relate them to Maven builds or ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="task"/><meta name="DC.Title" content="Creating a link for Maven"/><meta name="DC.Relation" scheme="URI" content="../../../Topics/03ForTeamMembers/itemNavigator/findingItems.html"/><meta name="DC.Relation" scheme="URI" content="../../../Topics/05ForConfigManagers/manageFilters.html"/><meta name="DC.Creator" content="Steinbeis Technical Documentation"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="id131ME0R085Y"/><link rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Creating a link for Maven</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()" id="id131ME0R085Y">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../../Topics/03ForTeamMembers/itemNavigator/findingItems.html" title="A Track+ database may contain thousands of items even for a single project. Track+ permits you to select subsets of items by means of „views“ and display them in an item navigator. This way you only see those items you are interested in."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Finding items</span></a></span>  
+<span class="navparent"><a class="link" href="../../../Topics/05ForConfigManagers/manageFilters.html" title="You can define any number of filters and reuse them for selection a set of items. You can modify these filters anytime later on and publish them so that others can use them. You can create parametrized filters that predefine most conditions and ask for one or more parameters when they are being used."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Managing filters</span></a></span>  </div></td><td width="75%"/></tr></tbody></table>
+
+	<h1 class="title topictitle1">Creating a link for Maven</h1>
+
+	
+	<div class="body taskbody">
+		<div class="section context">
+			<p class="p">Maven is a widely used build project management system that can
+				automatically generate project documentation. Maven can
+				incorporate information from other system and relate them to
+				Maven builds or releases.</p>
+
+			<p class="p">To incorporate information from <span class="ph"><span class="ph">Track+</span></span> into Maven, you need the
+				<span class="ph"><span class="ph">Track+</span></span> Maven changes plug-in and install it into your Maven
+				installation. Then you can create a Maven changes link and copy
+				it into the proper place in your Maven pom file.</p>
+
+			<p class="p">The two main tags you have to change are the mapping of item
+				types to Maven action types, and the query URL.</p>
+
+			<pre class="pre codeblock">
+&lt;build&gt;
+	&lt;plugins&gt;
+		&lt;plugin&gt;
+			&lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+			&lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+			&lt;configuration&gt;
+				&lt;source&gt;1.5&lt;/source&gt;
+				&lt;target&gt;1.5&lt;/target&gt;
+			&lt;/configuration&gt;
+		&lt;/plugin&gt;
+		&lt;plugin&gt;
+			&lt;groupId&gt;com.trackplus.mvn.plugin&lt;/groupId&gt;
+			&lt;artifactId&gt;trackplusChanges&lt;/artifactId&gt;
+			&lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+			&lt;configuration&gt;
+				&lt;query&gt;http://gandalf:8080/track/xml/report?query=nKsW4DXl5WsX...%3D&lt;/query&gt;
+				&lt;!--default action type--&gt;
+				&lt;defaultType&gt;fix&lt;/defaultType&gt;
+				&lt;!-- mapping between <span class="ph"><span class="ph">Track+</span></span> item type --&gt;
+				&lt;!-- and Maven action type             --&gt;
+				&lt;issueTypesMap&gt;
+					&lt;Task&gt;fix&lt;/Task&gt;
+					&lt;ProblemReport&gt;fix&lt;/ProblemReport&gt;
+					&lt;Requirements&gt;add&lt;/Requirements&gt;
+				&lt;/issueTypesMap&gt;
+			&lt;/configuration&gt;
+			&lt;executions&gt;
+				&lt;execution&gt;
+					&lt;phase&gt;compile&lt;/phase&gt;
+					&lt;goals&gt;
+						&lt;goal&gt;changes-generate&lt;/goal&gt;
+					&lt;/goals&gt;
+				&lt;/execution&gt;
+			&lt;/executions&gt;
+		&lt;/plugin&gt;
+	&lt;/plugins&gt;
+&lt;/build&gt;
+			</pre>
+
+		</div>
+
+		<ol class="ol steps" id="id131ME0R085Y__permLinkSteps01"><li class="li step stepexpand">
+				<span class="ph cmd"><span class="ph">Select menu <span class="ph menucascade"><span class="ph uicontrol">Find items</span> &gt; <span class="ph uicontrol">Manage filters</span></span>.</span></span>
+				<div class="itemgroup stepxmp"><div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" id="id131ME0R085Y__image_rsx_qdm_3k" src="figures/manageFilters.png" height="245" width="198"/></div><br/>
+					
+				</div>
+</div>
+			</li>
+<li class="li step stepexpand">
+				<span class="ph cmd">Select the filter you want to create a permanent link
+					for from the list of filters available.</span>
+				<div class="itemgroup stepxmp">
+					<div class="fig fignone"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/permanentLink1.png" height="154" width="297"/></div><br/>
+						
+					</div>
+
+				</div>
+			</li>
+<li class="li step stepexpand">
+				<span class="ph cmd">Click on the link icon in the toolbar area.</span>
+			</li>
+<li class="li step stepexpand">
+				<span class="ph cmd">Select that you want to create a Maven link.</span>
+			</li>
+<li class="li step stepexpand">
+				<span class="ph cmd">In case you have a parametrized filter, select that you want to add parameters to the
+					query. Anything else doesn't make sense for a Maven link. </span>
+			</li>
+<li class="li step stepexpand">
+				<span class="ph cmd">Choose that the user should not stay logged in after running the query. Anything else
+					doesn't make sense for a Maven link.</span>
+				<div class="itemgroup stepxmp">
+					<div class="fig fignone"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/permanentLink2.png" height="137" width="263"/></div><br/>
+						
+					</div>
+
+				</div>
+			</li>
+<li class="li step stepexpand">
+				<span class="ph cmd">Copy the link shown to where you want to use it.</span>
+			</li>
+</ol>
+
+	</div>
+
+<div class="related-links"/>
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../../Topics/03ForTeamMembers/itemNavigator/findingItems.html" title="A Track+ database may contain thousands of items even for a single project. Track+ permits you to select subsets of items by means of „views“ and display them in an item navigator. This way you only see those items you are interested in."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Finding items</span></a></span>  
+<span class="navparent"><a class="link" href="../../../Topics/05ForConfigManagers/manageFilters.html" title="You can define any number of filters and reuse them for selection a set of items. You can modify these filters anytime later on and publish them so that others can use them. You can create parametrized filters that predefine most conditions and ask for one or more parameters when they are being used."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Managing filters</span></a></span>  </div>
+</body>
+</html>

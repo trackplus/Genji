@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -35,7 +35,7 @@ Ext.define('com.trackplus.layout.ResetPasswordLayout',{
 				if (field.initialPassField) {
 					// var pwd = field.up('form').down('#' + field.initialPassField);
 					var pwd = Ext.getCmp(field.initialPassField);
-					return (val == pwd.getValue());
+					return (val === pwd.getValue());
 				}
 				return true;
 			},
@@ -62,7 +62,7 @@ Ext.define('com.trackplus.layout.ResetPasswordLayout',{
 	saveSuccess:function(form, action){
 		var me=this;
 		var data=null;
-		if(action!=null){
+		if(action){
 			data=action.result.data;
 		}
 		var title=getText("logon.resetPassword.title");
@@ -80,7 +80,7 @@ Ext.define('com.trackplus.layout.ResetPasswordLayout',{
 				var licURL = loginActionResponseJSON.data.licURL;
 				var ftever=action.result.data.ftever;
 				var licURL=action.result.data.licURL;
-				if(JSONUrl != null && JSONUrl != "") {
+				if(JSONUrl  && JSONUrl !== "") {
 					if (ftever) {
 						Ext.MessageBox.show({
 						    msg: getText('logon.getLicense'),
@@ -136,9 +136,9 @@ Ext.define('com.trackplus.layout.ResetPasswordLayout',{
 				padding: '10px'
 			},
 			items: [CWHF.createTextField('admin.user.profile.lbl.passwd','passwd',
-					{inputType:'password',minLength:5, id:'passwd',allowBlank:false}),
+					{itemId:'passwd', inputType:'password',minLength:5, id:'passwd',allowBlank:false}),
 				CWHF.createTextField('admin.user.profile.lbl.passwd2','passwd2',
-					{inputType:'password',vtype:'password',initialPassField:'passwd',allowBlank:false}),
+					{itemId:'passwd2', inputType:'password',vtype:'password',initialPassField:'passwd',allowBlank:false}),
 				btnReset
 			]
 		});

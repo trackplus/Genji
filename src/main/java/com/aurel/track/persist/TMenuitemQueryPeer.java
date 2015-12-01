@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -59,6 +59,7 @@ public class TMenuitemQueryPeer
 	 * @param queryIDs
 	 * @return
 	 */
+	@Override
 	public List<TMenuitemQueryBean> loadByPersonAndQueries(Integer personID, List<Integer> queryIDs) {
 		if (personID==null || queryIDs==null || queryIDs.isEmpty()) {
 			return new LinkedList<TMenuitemQueryBean>();
@@ -84,6 +85,7 @@ public class TMenuitemQueryPeer
 	 * @param personIDs
 	 * @return
 	 */
+	@Override
 	public List<TMenuitemQueryBean> loadByPersons(List<Integer> personIDs) {
 		if (personIDs==null || personIDs.isEmpty()) {
 			return new LinkedList<TMenuitemQueryBean>();
@@ -109,6 +111,7 @@ public class TMenuitemQueryPeer
 	 * @param queryIDs
 	 * @return
 	 */
+	@Override
 	public List<TMenuitemQueryBean> loadByPersonsAndQueries(List<Integer> personIDs, List<Integer> queryIDs) {
 		if (personIDs==null || personIDs.isEmpty() || queryIDs==null || queryIDs.isEmpty()) {
 			return new LinkedList<TMenuitemQueryBean>();
@@ -134,6 +137,7 @@ public class TMenuitemQueryPeer
 	 * @param queryID
 	 * @return
 	 */
+	@Override
 	public TMenuitemQueryBean loadByPersonAndQuery(Integer personID, Integer queryID) {
 		Criteria crit = new Criteria();
 		crit.add(PERSON, personID);
@@ -155,6 +159,7 @@ public class TMenuitemQueryPeer
 	 * @param menuitemQueryBean 
 	 * @return
 	 */
+	@Override
 	public Integer save(TMenuitemQueryBean menuitemQueryBean) {
 		TMenuitemQuery tMenuitemQuery;
 		try {
@@ -162,7 +167,7 @@ public class TMenuitemQueryPeer
 			tMenuitemQuery.save();
 			return tMenuitemQuery.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a menuitemQueryBean failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a menuitemQueryBean failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -174,6 +179,7 @@ public class TMenuitemQueryPeer
 	 * @param queryID 
 	 * @return
 	 */
+	@Override
 	public void delete(Integer personID, Integer queryID) {
 		Criteria crit = new Criteria();
 		crit.add(PERSON, personID);

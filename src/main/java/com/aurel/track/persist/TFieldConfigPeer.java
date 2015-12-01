@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -75,6 +75,7 @@ public class TFieldConfigPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TFieldConfigBean loadByPrimaryKey(Integer objectID) {
 		TFieldConfig tFieldConfig = null;
 		try {
@@ -93,13 +94,14 @@ public class TFieldConfigPeer
 	 * Gets all the TFieldConfigBean's  from the TFieldConfig table	
 	 * @return
 	 */
+	@Override
 	public List<TFieldConfigBean> loadAll() {
 		Criteria criteria = new Criteria();
 		criteria.addAscendingOrderByColumn(LABEL);
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all field configs failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all field configs failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -109,13 +111,14 @@ public class TFieldConfigPeer
 	 * Gets all the TFieldConfigBean's with explicit history from the TFieldConfig table	
 	 * @return
 	 */
+	@Override
 	public List<TFieldConfigBean> loadAllWithExplicitHistory() {
 		Criteria criteria = new Criteria();
 		criteria.add(HISTORY, BooleanFields.TRUE_VALUE);
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all field configs failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all field configs failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -125,6 +128,7 @@ public class TFieldConfigPeer
 	 * @param fieldIDList
 	 * @return
 	 */
+	@Override
 	public List<TFieldConfigBean> loadByFieldConfigIDs(List<Integer> fieldConfigIDsList) {
 		List<TFieldConfigBean> fieldConfigBeansList = new ArrayList<TFieldConfigBean>();
 		if (fieldConfigIDsList==null || fieldConfigIDsList.isEmpty()) {
@@ -156,35 +160,19 @@ public class TFieldConfigPeer
 	 * @param fieldID
 	 * @return
 	 */
-	/*public boolean isLabelUnique(String label, Integer fieldID) {
-		List fieldConfigsList = null;
-		Criteria crit = new Criteria();
-		if (fieldID!=null) {
-			crit.add(FIELDKEY, fieldID, Criteria.NOT_EQUAL);
-		}
-		crit.add(LABEL, label);
-		try {
-			fieldConfigsList = doSelect(crit);
-		} catch (TorqueException e) {
-			LOGGER.error("Verifying the uniqueness of the label " + label + " and field " + fieldID + " failed with " + e.getMessage(), e);
-		}
-		if (fieldConfigsList==null || fieldConfigsList.isEmpty()) {
-			return true;
-		}
-		return false;
-	}*/
 	
 	/**
 	 * Saves a field config in the TFieldConfig table
 	 * @param fieldConfigBean
 	 */
+	@Override
 	public Integer save(TFieldConfigBean fieldConfigBean) {
 		try {
 			TFieldConfig tFieldConfig = BaseTFieldConfig.createTFieldConfig(fieldConfigBean);
 			tFieldConfig.save();
 			return tFieldConfig.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a field config failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a field config failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -194,11 +182,12 @@ public class TFieldConfigPeer
 	 * @param fieldConfigBean
 	 * @param deep
 	 */
+	@Override
 	public TFieldConfigBean copy(TFieldConfigBean fieldConfigBean, boolean deep) {
 		try {
 			return (BaseTFieldConfig.createTFieldConfig(fieldConfigBean).copy(deep)).getBean();
 		} catch (TorqueException e) {
-			LOGGER.error("Deep " + deep + " copying a field config failed with " + e.getMessage(), e);
+			LOGGER.error("Deep " + deep + " copying a field config failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -209,6 +198,7 @@ public class TFieldConfigPeer
 	 * then deletes the field config itself
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		ReflectionHelper.delete(deletePeerClasses, deleteFields, objectID);
 	}
@@ -223,7 +213,7 @@ public class TFieldConfigPeer
 		try {
 			list = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the list of TFieldConfigs to be deleted failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the list of TFieldConfigs to be deleted failed with " + e.getMessage());
 		}			
 		if (list == null || list.size() < 1) {
 			return;
@@ -265,6 +255,7 @@ public class TFieldConfigPeer
 	 * 					is true: filter by custom fields 
 	 * @return
 	 */
+	@Override
 	public List<TFieldConfigBean> loadAllByFieldType(Integer issueType, Integer projectType, Integer project, Boolean isCustom) {
 		Criteria criteria = new Criteria();
 		if (isCustom!=null) {
@@ -293,6 +284,7 @@ public class TFieldConfigPeer
 	 * @param project include into filtering even if null
 	 * @return
 	 */
+	@Override
 	public List<TFieldConfigBean> loadAllByIssueType(Integer issueType, Integer projectType, Integer project) {
 		Criteria criteria = new Criteria();
 		//add issueType filter only if issueType is specified
@@ -328,6 +320,7 @@ public class TFieldConfigPeer
 	 * @param projectType if specified filter by projectType otherwise only be sure to not to be null (all projectType specific configurations)
 	 * @return
 	 */
+	@Override
 	public List<TFieldConfigBean> loadAllByProjectType(Integer projectType) {
 		Criteria criteria = new Criteria();
 		if (projectType==null) {
@@ -338,7 +331,7 @@ public class TFieldConfigPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the field configs by projectType " + projectType + "  failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the field configs by projectType " + projectType + "  failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -348,6 +341,7 @@ public class TFieldConfigPeer
 	 * @param project if specified filter by project otherwise only be sure to not to be null (all project specific configurations)
 	 * @return
 	 */
+	@Override
 	public List<TFieldConfigBean> loadAllByProject(Integer project) {
 		Criteria criteria = new Criteria();
 		if (project==null) {
@@ -358,7 +352,7 @@ public class TFieldConfigPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the field configs by project " + project + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the field configs by project " + project + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -368,6 +362,7 @@ public class TFieldConfigPeer
 	 * @param project if specified filter by project otherwise only be sure that project is not null (all project specific configurations)
 	 * @return
 	 */
+	@Override
 	public List<TFieldConfigBean> loadAllByProjects(List<Integer> projects) {
 		Criteria criteria = new Criteria();
 		if (projects==null || projects.isEmpty()) {
@@ -378,7 +373,7 @@ public class TFieldConfigPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the field configs by projects " + projects + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the field configs by projects " + projects + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -389,6 +384,7 @@ public class TFieldConfigPeer
 	 * @param field
 	 * @return
 	 */
+	@Override
 	public TFieldConfigBean loadDefault(Integer field) {
 		List fieldConfigList = null;
 		Criteria criteria = new Criteria();
@@ -417,6 +413,7 @@ public class TFieldConfigPeer
 	 * @param fieldIDList
 	 * @return
 	 */
+	@Override
 	public List<TFieldConfigBean> loadDefaultForFields(List<Integer> fieldIDList) {
 		if (fieldIDList==null || fieldIDList.isEmpty()) {
 			return new LinkedList<TFieldConfigBean>();
@@ -429,7 +426,7 @@ public class TFieldConfigPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the default field config for fieldID list failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the default field config for fieldID list failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -439,6 +436,7 @@ public class TFieldConfigPeer
 	 * @param fieldIDSet
 	 * @return
 	 */
+	@Override
 	public List<TFieldConfigBean> loadAllForFields(Set<Integer> fieldIDSet) {
 		if (fieldIDSet==null || fieldIDSet.isEmpty()) {
 			return new LinkedList<TFieldConfigBean>();
@@ -448,7 +446,7 @@ public class TFieldConfigPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the all field configs for fieldID list of length " + fieldIDSet.size() + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the all field configs for fieldID list of length " + fieldIDSet.size() + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -458,13 +456,14 @@ public class TFieldConfigPeer
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public List<TFieldConfigBean> loadAllForField(Integer fieldID) {
 		Criteria criteria = new Criteria();
 		criteria.add(FIELDKEY, fieldID);
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the all field configs for fieldID  " + fieldID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the all field configs for fieldID  " + fieldID + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -475,6 +474,7 @@ public class TFieldConfigPeer
 	 * @param issueType
 	 * @return
 	 */
+	@Override
 	public TFieldConfigBean loadByIssueType(Integer field, Integer issueType) {
 		List fieldConfigList = null;
 		Criteria criteria = new Criteria();
@@ -507,6 +507,7 @@ public class TFieldConfigPeer
 	 * @param projectType
 	 * @return
 	 */
+	@Override
 	public TFieldConfigBean loadByProjectType(Integer field, Integer projectType) {
 		List fieldConfigList = null;
 		Criteria criteria = new Criteria();
@@ -539,6 +540,7 @@ public class TFieldConfigPeer
 	 * @param project
 	 * @return
 	 */
+	@Override
 	public TFieldConfigBean loadByProject(Integer field, Integer project) {
 		List fieldConfigList = null;
 		Criteria criteria = new Criteria();
@@ -572,6 +574,7 @@ public class TFieldConfigPeer
 	 * @param projectType
 	 * @return
 	 */
+	@Override
 	public TFieldConfigBean loadByIssueTypeAndProjectType(Integer field, Integer issueType, Integer projectType) {
 		List fieldConfigList =  null;
 		Criteria criteria = new Criteria();
@@ -602,6 +605,7 @@ public class TFieldConfigPeer
 	 * @param project
 	 * @return
 	 */
+	@Override
 	public TFieldConfigBean loadByIssueTypeAndProject(Integer field, Integer issueType, Integer project) {
 		List fieldConfigList =  null;
 		Criteria criteria = new Criteria();
@@ -636,9 +640,11 @@ public class TFieldConfigPeer
 	 * @param cfg
 	 * @return
 	 */
+	@Override
 	public List<TFieldConfigBean> loadByFieldConfigParameters(TFieldConfigBean cfg){
 		return loadByFieldConfigParameters(cfg,false);
 	}
+	@Override
 	public List<TFieldConfigBean> loadByFieldConfigParameters(TFieldConfigBean cfg,boolean ignoreCustom){
 		Integer projectTypeID=null;
 		Integer projectID=null;
@@ -664,7 +670,7 @@ public class TFieldConfigPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading  fieldConfigs failed with " + e.getMessage(), e);
+			LOGGER.error("Loading  fieldConfigs failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -676,6 +682,7 @@ public class TFieldConfigPeer
 	 * Gets the list of default TFieldConfigBeans 
 	 * @return
 	 */
+	@Override
 	public List<TFieldConfigBean> loadDefault() {
 		Criteria criteria = new Criteria();
 		criteria.add(ISSUETYPE, (Object)null, Criteria.ISNULL);
@@ -684,7 +691,7 @@ public class TFieldConfigPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the default field configs failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the default field configs failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -694,6 +701,7 @@ public class TFieldConfigPeer
 	 * @param issueType
 	 * @return
 	 */
+	@Override
 	public List<TFieldConfigBean> loadByIssueType(Integer issueType) {
 		Criteria criteria = new Criteria();
 		criteria.add(ISSUETYPE, issueType);
@@ -708,6 +716,7 @@ public class TFieldConfigPeer
 		}
 			
 	}
+	@Override
 	public List<TFieldConfigBean> loadByIssueTypes(Object[] issueTypeIDs){
 		List torqueList = null;
 		if (issueTypeIDs!=null && issueTypeIDs.length!=0) {
@@ -718,7 +727,7 @@ public class TFieldConfigPeer
 			try {
 				torqueList = doSelect(crit);
 			} catch (TorqueException e) {
-				LOGGER.error("Loading the field configs by issueTypes  failed with  " + e.getMessage(), e);
+				LOGGER.error("Loading the field configs by issueTypes  failed with  " + e.getMessage());
 			}
 		}
 		return convertTorqueListToBeanList(torqueList);
@@ -731,6 +740,7 @@ public class TFieldConfigPeer
 	 * @param projectType
 	 * @return
 	 */
+	@Override
 	public List<TFieldConfigBean> loadByProjectType(Integer projectType) {
 		Criteria criteria = new Criteria();
 		criteria.add(ISSUETYPE, (Object)null, Criteria.ISNULL);
@@ -750,6 +760,7 @@ public class TFieldConfigPeer
 	 * @param project
 	 * @return
 	 */
+	@Override
 	public List<TFieldConfigBean> loadByProject(Integer project) {
 		Criteria criteria = new Criteria();
 		criteria.add(ISSUETYPE, (Object)null, Criteria.ISNULL);
@@ -770,6 +781,7 @@ public class TFieldConfigPeer
 	 * @param projectType
 	 * @return
 	 */
+	@Override
 	public List<TFieldConfigBean> loadByIssueTypeAndProjectType(Integer issueType, Integer projectType) {
 		Criteria criteria = new Criteria();
 		criteria.add(ISSUETYPE, issueType);
@@ -790,6 +802,7 @@ public class TFieldConfigPeer
 	 * @param project
 	 * @return
 	 */
+	@Override
 	public List<TFieldConfigBean> loadByIssueTypeAndProject(Integer issueType, Integer project) {
 		Criteria criteria = new Criteria();
 		criteria.add(ISSUETYPE, issueType);
@@ -811,6 +824,7 @@ public class TFieldConfigPeer
 	 * @param fieldIDs
 	 * @return
 	 */
+	@Override
 	public List<TFieldConfigBean> loadByIssueTypesAndFields(List<Integer> issueTypes, List<Integer> fieldIDs) {
 		if (issueTypes==null || issueTypes.isEmpty() || fieldIDs==null || fieldIDs.isEmpty()) {
 			return new LinkedList<TFieldConfigBean>();
@@ -834,6 +848,7 @@ public class TFieldConfigPeer
 	 * @param fieldIDs
 	 * @return
 	 */
+	@Override
 	public List<TFieldConfigBean> loadByProjectTypesAndFields(List<Integer> projectTypes, List<Integer> fieldIDs) {
 		if (projectTypes==null || projectTypes.isEmpty() || fieldIDs==null || fieldIDs.isEmpty()) {
 			return new LinkedList<TFieldConfigBean>();
@@ -856,6 +871,7 @@ public class TFieldConfigPeer
 	 * @param fieldIDs
 	 * @return
 	 */
+	@Override
 	public List<TFieldConfigBean> loadByProjectsAndFields(List<Integer> projects, List<Integer> fieldIDs) {
 		if (projects==null || projects.isEmpty() || fieldIDs==null || fieldIDs.isEmpty()) {
 			return new LinkedList<TFieldConfigBean>();

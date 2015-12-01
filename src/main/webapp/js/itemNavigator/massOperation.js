@@ -3,52 +3,47 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /* $Id:$ */
 
-//controller
-Ext.define('com.trackplus.itemNavigator.MassOperationController',{
-	extend:'Ext.Base',
+Ext.define("com.trackplus.itemNavigator.MassOperationController",{
+	extend:"Ext.Base",
 	config: {
-		model:null,
-		itemNavigatorController: null
+		copy: null,
+		selectedIssueIDs: null
 	},
-	copy:false,
-	selectedIssueIDs:[],
+	itemNavigatorController: null,
 	constructor : function(cfg) {
 		var config = cfg || {};
-		this.initialConfig = config;
-		Ext.apply(this, config);
-		this.copy=this.model.copy;
-		this.selectedIssueIDs=this.model.selectedIssueIDs;
+		this.initConfig(config);
 	},
 	getTitle: function() {
-		if (this.copy){
-			return getText('common.btn.bulkCopy');
+		if (this.getCopy()){
+			return getText("common.btn.bulkCopy");
 		}else{
-			return getText('common.btn.bulkEdit');
+			return getText("common.btn.bulkEdit");
 		}
 	},
 
 	getSaveLabel: function() {
-		if (this.copy) {
-			return getText('common.btn.copy');
-		}else{
-			return getText('common.btn.save');
+		if (this.getCopy()) {
+			return getText("common.btn.copy");
+		} else {
+			return getText("common.btn.save");
 		}
 	},
 
@@ -66,9 +61,9 @@ Ext.define('com.trackplus.itemNavigator.MassOperationController',{
 	showDialog: function() {
 		var width = 900;
 		var height = 600;
-		var loadParams = {selectedIssueIDs:this.selectedIssueIDs, bulkCopy:this.copy};
+		var loadParams = {selectedIssueIDs:this.getSelectedIssueIDs(), bulkCopy:this.getCopy()};
 		var load = {loadUrl:"massOperationEdit.action", loadUrlParams:loadParams};
-		var submitParams = {selectedIssueIDs:this.selectedIssueIDs, bulkCopy:this.copy};
+		var submitParams = {selectedIssueIDs:this.getSelectedIssueIDs(), bulkCopy:this.getCopy()};
 		var submit = {
 					submitUrl:"massOperationEdit!save.action",
 					submitUrlParams:submitParams,
@@ -95,14 +90,14 @@ Ext.define('com.trackplus.itemNavigator.MassOperationController',{
     preSubmitProcess: function(submitUrlParams, panel) {
         var massOperationExpressionPanels = panel.items;
         var startAt = 1;
-        if (this.copy) {
+        if (this.getCopy()) {
             startAt=2;
         }
         for ( var i=startAt;i<massOperationExpressionPanels.getCount();i++ ) {
             var expressionPanel = massOperationExpressionPanels.getAt(i);
             var numberOfItems = expressionPanel.items.getCount();
             var valueControl = expressionPanel.items.getAt(numberOfItems-1);
-            if (valueControl!=null && valueControl.beforeSubmit!=null && !valueControl.isDisabled()) {
+            if (valueControl && !valueControl.isDisabled() && valueControl.beforeSubmit) {
                 valueControl.beforeSubmit.call(this);
             }
         }
@@ -122,14 +117,14 @@ Ext.define('com.trackplus.itemNavigator.MassOperationController',{
 	},
 
 	populateFieldExpressions: function(scope, massOperationMainPanel, data) {
-		if (massOperationMainPanel!=null) {
+		if (massOperationMainPanel) {
 			var massOperationPanels = [{
 				xtype: 'component',
 				cls:"infoBox_bottomBorder",
 				border:true,
 				html: getText("itemov.massOperation.lbl.numberOfSelectedIssues") + '&nbsp;'+data['numberOfSelectedIssues']
 			}];
-			if (this.copy) {
+			if (this.getCopy()) {
 				var labelWidth=175;
 				var width=labelWidth+25;
 				var enableCopyAttachments = true;//data['enableCopyAttachments'];
@@ -155,16 +150,16 @@ Ext.define('com.trackplus.itemNavigator.MassOperationController',{
 				});
 			}
 			var massOperationExpressions = data['expressions'];
-			if (massOperationExpressions!=null) {
-				//massOperationPanels.push(this.createMassOperationHeader());
+			if (massOperationExpressions) {
 				for(var i=0;i<massOperationExpressions.length;i++){
 					var expression=massOperationExpressions[i];
 					var cls='massOperationPanel';
-					if(i%2==1){
+					if(i%2===1){
 						cls="massOperationOddPanel";
 					}
 					var expressionPanel = this.createMassOperationExpression(scope,
 							expression, massOperationMainPanel,cls);
+					//massOperationMainPanel.add(expressionPanel);
 					massOperationPanels.push(expressionPanel);
 				}
 				//add all panels at once
@@ -175,11 +170,11 @@ Ext.define('com.trackplus.itemNavigator.MassOperationController',{
 
 	changeCopyWatchers: function(checkboxField, newValue, oldValue, options) {
 		var consultedPanel = this.formEdit.getComponent("expressionPanel-1");
-		if (consultedPanel!=null) {
-			var consultedCheckBox = consultedPanel.getComponent("selectedFieldMap.pseudoField1");
-			if (consultedCheckBox!=null) {
+		if (consultedPanel) {
+			var consultedCheckBox = consultedPanel.getComponent("selectedFieldItemIdpseudoField1");
+			if (consultedCheckBox) {
 				consultedCheckBox.setDisabled(newValue);
-				if (newValue==true) {
+				if (newValue===true) {
 					this.changeFieldSelection(consultedCheckBox, false, true, {panel:consultedPanel, field:"-1"})
 				} else {
 					this.changeFieldSelection(consultedCheckBox, consultedCheckBox.getValue(), false, {panel:consultedPanel, field:"-1"})
@@ -187,11 +182,11 @@ Ext.define('com.trackplus.itemNavigator.MassOperationController',{
 			}
 		}
 		var informedPanel = this.formEdit.getComponent("expressionPanel-2");
-		if (informedPanel!=null) {
-			var informedCheckBox = informedPanel.getComponent("selectedFieldMap.pseudoField2");
-			if (informedCheckBox!=null) {
+		if (informedPanel) {
+			var informedCheckBox = informedPanel.getComponent("selectedFieldItemIdpseudoField2");
+			if (informedCheckBox) {
 				informedCheckBox.setDisabled(newValue);
-				if (newValue==true) {
+				if (newValue===true) {
 					this.changeFieldSelection(informedCheckBox, false, true, {panel:informedPanel, field:"-2"})
 				} else {
 					this.changeFieldSelection(informedCheckBox, informedCheckBox.getValue(), false, {panel:informedPanel, field:"-2"})
@@ -231,7 +226,7 @@ Ext.define('com.trackplus.itemNavigator.MassOperationController',{
 	 */
 	createMassOperationExpression: function(scope, bulkExpression, massOperationMainPanel,cls) {
 		var expressionPanel = Ext.create("Ext.panel.Panel", {
-			itemId: 'expressionPanel' + bulkExpression['field'],
+			itemId: "expressionPanel" + bulkExpression["field"],
 			border:false,
 			bodyBorder:false,
 			cls:cls,
@@ -241,22 +236,23 @@ Ext.define('com.trackplus.itemNavigator.MassOperationController',{
 				align: 'top'//'stretch'
 			}
 		});
-		var fieldSelection = CWHF.createCheckbox(null, bulkExpression['fieldName'], {margin:'0 0 0 5',width:24,border:true,cls:'massOperationCheck'},
+		var fieldSelection = CWHF.createCheckbox(null, bulkExpression["fieldName"], {itemId:bulkExpression["fieldItemId"], margin:'0 0 0 5',width:24,border:true,cls:"massOperationCheck"},
 				{change: {fn: this.changeFieldSelection,
 					scope:this,
-					panel:expressionPanel, field:bulkExpression['field'], massOperationMainPanel:massOperationMainPanel}});
+					panel:expressionPanel, field:bulkExpression["field"], massOperationMainPanel:massOperationMainPanel}});
 		expressionPanel.add(fieldSelection);
 		var disabled = true;
-		var jsonConfig = bulkExpression['jsonConfig'];
-		if (jsonConfig!=null && jsonConfig.disabled!=null) {
+		var jsonConfig = bulkExpression["jsonConfig"];
+		if (jsonConfig && jsonConfig.disabled) {
 			disabled = jsonConfig.disabled;
 		}
-		var setterCombo = CWHF.createCombo(bulkExpression['fieldLabel'],
-				bulkExpression['relationName'],
-				{disabled:disabled,
+		var setterCombo = CWHF.createCombo(bulkExpression["fieldLabel"],
+				bulkExpression["relationName"],
+				{	itemId: bulkExpression["relationItemId"],
+					disabled:disabled,
 					width:350,
-					data:bulkExpression['setterRelations'],
-					value:bulkExpression['selectedRelation'],
+					data:bulkExpression["setterRelations"],
+					value:bulkExpression["selectedRelation"],
 					labelWidth:150,
 					margin:'2 5 2 5',
 					labelIsLocalized:true
@@ -264,16 +260,16 @@ Ext.define('com.trackplus.itemNavigator.MassOperationController',{
 				{select: {fn: this.changeSetter, scope:scope,
 					panel:expressionPanel, bulkExpression:bulkExpression}});
 		expressionPanel.add(setterCombo);
-		this.addValuePart(scope, bulkExpression.valueRenderer, bulkExpression.jsonConfig, bulkExpression, expressionPanel, setterCombo);
+		this.addValuePart(scope, bulkExpression.valueRenderer, bulkExpression.jsonConfig, bulkExpression, expressionPanel, false);
 		return expressionPanel;
 	},
 
 
 	getComponentItemID: function(baseName, field) {
 		if (field>0) {
-			return baseName + ".field" + field;
+			return baseName + "field" + field;
 		} else {
-			return baseName + ".pseudoField" + Math.abs(field);
+			return baseName + "pseudoField" + Math.abs(field);
 		}
 	},
 
@@ -281,64 +277,64 @@ Ext.define('com.trackplus.itemNavigator.MassOperationController',{
 		var projectIDs = null;
 		var expressionPanel = options.panel;
 		var field = options.field;
-		var setterCombo = expressionPanel.getComponent(this.getComponentItemID("setterRelationMap",field));
-		if (setterCombo!=null) {
+		var setterCombo = expressionPanel.getComponent(this.getComponentItemID("setterRelationItemId",field));
+		if (setterCombo) {
 			setterCombo.setDisabled(!newValue);
 		}
-		var valuePart = expressionPanel.getComponent(this.getComponentItemID("displayValueMap",field));
-		if (valuePart!=null) {
+		var valuePart = expressionPanel.getComponent(this.getComponentItemID("valueItemID",field));
+		if (valuePart) {
 			valuePart.setDisabled(!newValue);
 		}
-		if (field==1 || field==2) {
+		if (field===1 || field===2) {
 			var params = new Object();
-			if (field==1) {
-				params['projectRefresh'] = true;
+			if (field===1) {
+				params["projectRefresh"] = true;
 				if (newValue) {
 					//get the submit value not the visible label value
-					params['projectID'] = valuePart.getSubmitValue();
+					params["projectID"] = valuePart.getSubmitValue();
 				}
 				this.refreshContext(expressionPanel, params, field/*, newValue*/);
 			} else {
-				if (field==2) {
-					params['issueTypeRefresh'] = true;
+				if (field===2) {
+					params["issueTypeRefresh"] = true;
 					if (newValue) {
-						params['issueTypeID'] = valuePart.getValue();
+						params["issueTypeID"] = valuePart.getValue();
 					}
 					this.refreshContext(expressionPanel, params, field/*, false*/);
 				}
 			}
 		}
-		if (field==19 || field==20 || field==29 || field==30) {
+		if (field===19 || field===20 || field===29 || field===30) {
 			//disable opposite date
 			var massOperationMainPanel = options.massOperationMainPanel;
-			if (massOperationMainPanel!=null) {
+			if (massOperationMainPanel) {
 				var adjustValue = false;
 				var datePanel = massOperationMainPanel.getComponent('expressionPanel' + field);
-				if (datePanel!=null) {
-					var valuePart = expressionPanel.getComponent(this.getComponentItemID("displayValueMap", field));
-					if (valuePart!=null) {
+				if (datePanel) {
+					var valuePart = expressionPanel.getComponent(this.getComponentItemID("valueItemID", field));
+					if (valuePart) {
 						adjustValue = valuePart.getAdjustCheckBoxValue();
 						if (adjustValue) {
 							var oppositeDateField = null;
-							if (field==19) {
+							if (field===19) {
 								oppositeDateField = 20;
 							} else {
-								if (field==20) {
+								if (field===20) {
 									oppositeDateField = 19;
 								} else {
-									if (field==29) {
+									if (field===29) {
 										oppositeDateField = 30;
 									} else {
-										if (field==30) {
+										if (field===30) {
 											oppositeDateField = 29;
 										}
 									}
 								}
 							}
 							var oppositeDatePanel = massOperationMainPanel.getComponent('expressionPanel' + oppositeDateField);
-							if (oppositeDatePanel!=null) {
-								var oppositeFieldCheckBox = oppositeDatePanel.getComponent(this.getComponentItemID("selectedFieldMap", oppositeDateField));
-								if (oppositeFieldCheckBox!=null) {
+							if (oppositeDatePanel) {
+								var oppositeFieldCheckBox = oppositeDatePanel.getComponent(this.getComponentItemID("selectedFieldItemId", oppositeDateField));
+								if (oppositeFieldCheckBox) {
 									var oppositeFieldCheckBoxDisabled = false;
 									if (!newValue) {
 										oppositeFieldCheckBoxDisabled = false;
@@ -346,12 +342,12 @@ Ext.define('com.trackplus.itemNavigator.MassOperationController',{
 										oppositeFieldCheckBoxDisabled = adjustValue;
 									}
 									oppositeFieldCheckBox.setDisabled(oppositeFieldCheckBoxDisabled);
-									var setterCombo = oppositeDatePanel.getComponent(this.getComponentItemID("setterRelationMap", oppositeDateField));
-									if (setterCombo!=null) {
+									var setterCombo = oppositeDatePanel.getComponent(this.getComponentItemID("setterRelationItemId", oppositeDateField));
+									if (setterCombo) {
 										setterCombo.setDisabled(oppositeFieldCheckBoxDisabled || !oppositeFieldCheckBox.getValue());
 									}
-									var valuePart = oppositeDatePanel.getComponent(this.getComponentItemID("displayValueMap", oppositeDateField));
-									if (valuePart!=null) {
+									var valuePart = oppositeDatePanel.getComponent(this.getComponentItemID("valueItemID", oppositeDateField));
+									if (valuePart) {
 										valuePart.setDisabled(oppositeFieldCheckBoxDisabled || !oppositeFieldCheckBox.getValue());
 									}
 								}
@@ -363,74 +359,89 @@ Ext.define('com.trackplus.itemNavigator.MassOperationController',{
 		}
 	},
 
-	refreshContext: function(expressionPanel, params, field/*, projectFieldWasSelected*/) {
+	refreshContext: function(expressionPanel, params, field) {
 		var mainPanel = expressionPanel.ownerCt;
-		if (field==1) {
-			params['issueTypeID'] = this.getContextField(mainPanel, 2);
+		if (field===1) {
+			params["issueTypeID"] = this.getContextField(mainPanel, 2);
 		} else {
-			if (field==2) {
-				params['projectID'] = this.getContextField(mainPanel, 1)
+			if (field===2) {
+				params["projectID"] = this.getContextField(mainPanel, 1)
 			}
 		}
-		params['selectedIssueIDs'] = this.selectedIssueIDs;
+		params["selectedIssueIDs"] = this.getSelectedIssueIDs();
 		mainPanel.setLoading(true);
 		Ext.Ajax.request({
-			url: 'massOperationEdit.action',
+			url: "massOperationEdit.action",
 			params: params,
 			scope: this,
 			disableCaching:true,
 			success: function(response) {
 				var responseJson = Ext.decode(response.responseText);
-				massOperationExpressions = responseJson.data['expressions'];
-				if (mainPanel!=null) {
-					if (massOperationExpressions!=null) {
-						var projectPanel = mainPanel.getComponent('expressionPanel1');
+				massOperationExpressions = responseJson.data["expressions"];
+				if (mainPanel) {
+					mainPanel.setLoading(false);
+					if (massOperationExpressions) {
+						var projectPanel = mainPanel.getComponent("expressionPanel1");
 						var projectFieldWasSelected = false;
-						if (projectPanel!=null) {
-                             var fieldNameCheckbox = projectPanel.getComponent("selectedFieldMap.field1");
-                             if (fieldNameCheckbox!=null) {
+						if (projectPanel) {
+                             var fieldNameCheckbox = projectPanel.getComponent("selectedFieldItemIdfield1");
+                             if (fieldNameCheckbox) {
                             	 projectFieldWasSelected = fieldNameCheckbox.getValue();
                              }
 						}
 						var releaseNoticedFound = false;
 						var releaseScheduledFound = false;
-						Ext.Array.forEach(massOperationExpressions, function(expression) {
+						Ext.Array.forEach(massOperationExpressions, function(expression, ind) {
 							var field = expression.field;
-							if (field==8) {
+							if (field===8) {
 								releaseNoticedFound = true;
 							} else {
-								if (field==9) {
+								if (field===9) {
 									releaseScheduledFound = true;
 								}
 							}
-							var disabled = expression.jsonConfig['disabled'];
-							var expressionPanel = mainPanel.getComponent('expressionPanel' + field);
-                            if (expressionPanel!=null) {
-                                var selectedFieldName = expression['fieldName'];
-                                var fieldNameCheckbox = expressionPanel.getComponent(selectedFieldName);
-                                fieldNameCheckbox.setDisabled(projectFieldWasSelected);
-                                fieldNameCheckbox.setValue(!disabled);
-                                var setterRelationName = expression['relationName'];
-                                var setterRelationCombo = expressionPanel.getComponent(setterRelationName);
-                                setterRelationCombo.setDisabled(disabled);
-                                var valueComponentName = expression.valueName;
-                                var valueComponent = expressionPanel.getComponent(valueComponentName);
-                                if (valueComponent!=null) {
-                                    //the value will not be removed from Ext.form.Basic only from the UI
+							var disabled = expression.jsonConfig["disabled"];
+							var expressionPanel = mainPanel.getComponent("expressionPanel" + field);
+                            if (expressionPanel) {
+                            	//the field existed before context refresh
+                                var selectedFieldItemId = expression["fieldItemId"];
+                            	var fieldNameCheckbox = expressionPanel.getComponent(selectedFieldItemId);
+                            	if (fieldNameCheckbox) {
+                            		if (this.isRelease(field)) {
+                            			//for releases enforce the server side disabled
+                            			fieldNameCheckbox.setDisabled(projectFieldWasSelected);
+                            			//do not trigger listeners
+                            			fieldNameCheckbox.setRawValue(!disabled);
+                            			var setterRelationItemId = expression["relationItemId"];
+    	                                var setterRelationCombo = expressionPanel.getComponent(setterRelationItemId);
+    	                                if (setterRelationCombo) {
+    	                                	setterRelationCombo.setDisabled(disabled);
+    	                                }
+                            		} else {
+                            			//only the datasources should be refreshed for non release dependences (the field selections should not be modified after project change)  
+                                    	//leave the field's previous disabled status
+                            			disabled = !fieldNameCheckbox.getValue();
+                            		}
+                            	}
+	                            var valueComponentItemId = expression.valueItemId;
+                                var valueComponent = expressionPanel.getComponent(valueComponentItemId);
+                                //var oldDisabled = null;
+                                if (valueComponent) {
+                                	//the value will not be removed from Ext.form.Basic only from the UI
                                     //workaround: set the fields to disabled to not to be submitted then remove the component
                                     valueComponent.setDisabled(true);
                                     expressionPanel.remove(valueComponent);
                                 }
-                                if (expression.valueRenderer!=null) {
-                                    this.addValuePart(this, expression.valueRenderer, expression.jsonConfig,
-                                            expression, expressionPanel, setterRelationCombo);
+                                if (expression.valueRenderer) {
+                                    this.addValuePart(this, expression.valueRenderer, expression.jsonConfig, expression, expressionPanel, true, disabled);
                                 }
                             } else {
-                                var issueType = mainPanel.getComponent('expressionPanel2');
-                                if (issueType!=null) {
+                            	//the field is new exists only in the new context (project)
+                                var issueType = mainPanel.getComponent("expressionPanel2");
+                                if (issueType) {
                                     var index = mainPanel.items.indexOf(issueType);
-                                    if (index!=null) {
-                                    	if (field!=8 && field!=9) {
+                                    if (index) {
+                                    	if (field!==8 && field!==9) {
                                     		//releases before item type, other dependent lists after item type
                                     		index = index+1;
                                     	}
@@ -441,10 +452,10 @@ Ext.define('com.trackplus.itemNavigator.MassOperationController',{
                                 } else {
                                     mainPanel.add(this.createMassOperationExpression(this, expression, mainPanel, null));
                                 }
-                                var expressionPanel = mainPanel.getComponent('expressionPanel' + field);
-                                if (expressionPanel!=null) {
-                                    var selectedFieldName = expression['fieldName'];
-                                    var fieldNameCheckbox = expressionPanel.getComponent(selectedFieldName);
+                                var expressionPanel = mainPanel.getComponent("expressionPanel" + field);
+                                if (expressionPanel) {
+                                    var selectedFieldItemId = expression["fieldItemId"];
+                                    var fieldNameCheckbox = expressionPanel.getComponent(selectedFieldItemId);
                                     fieldNameCheckbox.setDisabled(projectFieldWasSelected);
                                     fieldNameCheckbox.setValue(!disabled);
                                 }
@@ -452,20 +463,19 @@ Ext.define('com.trackplus.itemNavigator.MassOperationController',{
 						}, this);
 						//remove the release fields if they are not defined in the new project
 						if (!releaseNoticedFound) {
-							var expressionPanel = mainPanel.getComponent('expressionPanel8');
-							if (expressionPanel!=null) {
+							var expressionPanel = mainPanel.getComponent("expressionPanel8");
+							if (expressionPanel) {
 								mainPanel.remove(expressionPanel);
 							}
 						}
 						if (!releaseScheduledFound) {
-							var expressionPanel = mainPanel.getComponent('expressionPanel9');
-							if (expressionPanel!=null) {
+							var expressionPanel = mainPanel.getComponent("expressionPanel9");
+							if (expressionPanel) {
 								mainPanel.remove(expressionPanel);
 							}
 						}
 					}
 				}
-				mainPanel.setLoading(false);
 			},
 			failure: function(result){
 				mainPanel.setLoading(false);
@@ -482,60 +492,63 @@ Ext.define('com.trackplus.itemNavigator.MassOperationController',{
 
 	getContextField: function(mainPanel, fieldID) {
 		var fieldComponent = this.getFieldComponent(mainPanel, fieldID);
-		if (fieldComponent!=null && !fieldComponent.isDisabled()) {
+		if (fieldComponent && !fieldComponent.isDisabled()) {
 			return fieldComponent.getValue();
 		}
 		return null;
 	},
 
 	getFieldComponent: function(mainPanel, fieldID) {
-		var contextPanel = mainPanel.getComponent('expressionPanel' + fieldID);
-		if (contextPanel!=null) {
-			return contextPanel.getComponent(this.getComponentItemID("displayValueMap", fieldID));
+		var contextPanel = mainPanel.getComponent("expressionPanel" + fieldID);
+		if (contextPanel) {
+			return contextPanel.getComponent(this.getComponentItemID("valueItemID", fieldID));
 		}
 		return null;
 	},
 
+	isRelease: function(field) {
+		 return field===8 || field===9
+	},
+	
 	/**
 	 * Reload the value part of a bulk expression after changing the setter
 	 * or after changing any or the composite select part
 	 */
 	changeSetter: function(combo, records, options) {
 		var fieldID = options.bulkExpression.field;
-		var valueComponentName = options.bulkExpression.valueName;
-		var valueComponent = options.panel.getComponent(valueComponentName);
+		var valueComponentItemId = options.bulkExpression.valueItemId;
+		var valueComponent = options.panel.getComponent(valueComponentItemId);
 		var value = null;
-		if (valueComponent!=null) {
+		if (valueComponent) {
 			value = valueComponent.getFieldValueJson();
 		}
-
 		var relationID = combo.getValue();
 		var params = value;
-		if (value==null) {
+		if (CWHF.isNull(value)) {
 			params = new Object();
 		}
-		params['fieldID'] = fieldID;
-		params['relationID'] = relationID;
-		params['issueTypeID'] = this.getContextField(combo.ownerCt.ownerCt, 2);
-		params['projectID'] = this.getContextField(combo.ownerCt.ownerCt, 1);
-		params['selectedIssueIDs'] = this.selectedIssueIDs;
+		params["fieldID"] = fieldID;
+		params["relationID"] = relationID;
+		params["issueTypeID"] = this.getContextField(combo.ownerCt.ownerCt, 2);
+		params["projectID"] = this.getContextField(combo.ownerCt.ownerCt, 1);
+		params["selectedIssueIDs"] = this.getSelectedIssueIDs();
 		Ext.Ajax.request({
-			url: 'massOperationFieldSetterAction.action',
+			url: "massOperationFieldSetterAction.action",
 			params: params,
 			scope: this,
 			disableCaching:true,
 			success: function(response){
 				var responseJson = Ext.decode(response.responseText);
-				if (valueComponent!=null) {
+				if (valueComponent) {
 					//the value will not be removed from Ext.form.Basic only from the UI
 					//workaround: set the fields to disabled to not to be submitted then remove the component
 					valueComponent.setDisabled(true);
 					options.panel.remove(valueComponent, true);
 				}
-				if (responseJson.valueRenderer!=null && responseJson.valueRenderer!="") {
+				if (responseJson.valueRenderer && responseJson.valueRenderer!=="") {
 					options.bulkExpression.valueRenderer = responseJson.valueRenderer;
 					this.addValuePart(this, responseJson.valueRenderer, responseJson.jsonConfig,
-						options.bulkExpression, options.panel, combo);
+						options.bulkExpression, options.panel, false);
 				}
 			},
 			failure: function(result){
@@ -554,38 +567,24 @@ Ext.define('com.trackplus.itemNavigator.MassOperationController',{
 	 * Configures and adds the value part (the dynamic part) to the filter expressions by first rendering of
 	 * simple or "in tree" field expressions and after changing the matcher or the field
 	 */
-	addValuePart: function(scope, valueRenderer, jsonConfig, bulkExpression, expressionPanel, setterRelationCombo) {
-		if (bulkExpression.valueRenderer!=null && bulkExpression.valueRenderer!="") {
-			if (jsonConfig!=null) {
-				//the jsonConfig coming from the server for each bulkExpression or after a matcher or field change
-				//is set with further parameters used by cascadingSelectMatcher
+	addValuePart: function(scope, valueRenderer, jsonConfig, bulkExpression, expressionPanel, contextRefresh, oldDisabled) {
+		if (bulkExpression.valueRenderer && bulkExpression.valueRenderer!=="") {
+			if (jsonConfig) {
 				jsonConfig.scope=scope;
-				jsonConfig.selectHandler=this.changeCompositePart;
-				jsonConfig.expressionPanel=expressionPanel;
-				jsonConfig.bulkExpression=bulkExpression;
-				jsonConfig.setterRelationCombo = setterRelationCombo;
-				jsonConfig.selectedIssueIDs = this.selectedIssueIDs;
-				var valueControl = Ext.create(valueRenderer, {
-					jsonData:jsonConfig,
-					margin:'2 0 2 0'
-				});
-				if (jsonConfig["fieldID"]==1) {
-					//project picker
-					valueControl.postProcessSelectScope = this;
-					valueControl.postProcessSelect = function() {
-						var params = new Object();
-						params['projectRefresh'] = true;
-						//get the submit value not the visible label value
-						var projectID = valueControl.getSubmitValue();
-						params['projectID'] = projectID;
-						this.refreshContext(expressionPanel, params, 1/*, true*/);
-					};
+				jsonConfig.selectedIssueIDs = this.getSelectedIssueIDs();
+				var valueControlConfig = {
+						jsonData:jsonConfig,
+						margin:'2 0 2 0',
+						fieldID: bulkExpression.field,
+						itemId: bulkExpression.valueItemId,
+						relationItemId: bulkExpression.relationItemId
+				};
+				var valueControl = Ext.create(valueRenderer, valueControlConfig);
+				if (!this.isRelease(bulkExpression.field) && contextRefresh) {
+					//overwrite the server side disabled
+					valueControl.setDisabled(oldDisabled);
 				}
-				/*var oldValueControlName = jsonConfig['name'];
-				var oldValueControl = expressionPanel.getComponent(oldValueControlName);
-				if (oldValueControl!=null) {
-					expressionPanel.remove(oldValueControl);
-				}*/
+				valueControl.scope = scope;
 				expressionPanel.add(valueControl);
 			}
 		}

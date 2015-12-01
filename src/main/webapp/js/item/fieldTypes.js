@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -38,6 +38,7 @@ Ext.define('com.aurel.trackplus.field.FieldConfig',{
 		var config = config || {};
 		me.initialConfig = config;
 		Ext.apply(me, config);
+		this.initConfig(config);
 	}
 });
 Ext.define('com.aurel.trackplus.field.TypeRenderer',{
@@ -67,11 +68,13 @@ Ext.define('com.aurel.trackplus.field.TypeRenderer',{
 		var config = config || {};
 		me.initialConfig = config;
 		Ext.apply(me, config);
+		this.initConfig(config);
 		this.mixins.observable.constructor.call(this, config);
+		/*this.initConfig(config);
 		this.addEvents('valueChange');
 		this.addEvents('dblclick');
 		this.addEvents('layoutChange');
-		this.addEvents('afterRender');
+		this.addEvents('afterRender');*/
 	},
 	getOriginalValue:function(){
 		return this.value;
@@ -81,8 +84,8 @@ Ext.define('com.aurel.trackplus.field.TypeRenderer',{
 	getValue:function(){
 		var me=this;
 		var value=null;
-		if(me.view!=null){
-			if(me.view.getSubmitValue!=null&&Ext.isFunction(me.view.getSubmitValue)){
+		if(me.view){
+			if(me.view.getSubmitValue&&Ext.isFunction(me.view.getSubmitValue)){
 				value=me.view.getSubmitValue.call(me.view);
 			}
 		}
@@ -90,7 +93,7 @@ Ext.define('com.aurel.trackplus.field.TypeRenderer',{
 	},
 	getView:function(){
 		var me=this;
-		if(me.view==null){
+		if(CWHF.isNull(me.view)){
 			me.view=me.createView();
 			me.view.addListener('render',function(c){
 				c.getEl().on('dblclick', function(){
@@ -116,27 +119,27 @@ Ext.define('com.aurel.trackplus.field.TypeRenderer',{
 	},
 	focus:function(){
 		var me=this;
-		if(me.view!=null){
-			if(me.view.focus!=null&&Ext.isFunction(me.view.focus)){
+		if(me.view){
+			if(me.view.focus&&Ext.isFunction(me.view.focus)){
 				me.view.focus.call(me.view);
 			}
 		}
 	},
 	markInvalid:function(str){
 		var me=this;
-		if(me.view!=null){
-			if(me.view.markInvalid!=null&&Ext.isFunction(me.view.markInvalid)){
+		if(me.view){
+			if(me.view.markInvalid&&Ext.isFunction(me.view.markInvalid)){
 				me.view.markInvalid.call(me.view,str);
 			}
 		}
 	},
 	markConflict:function(newValue){
 		var me=this;
-		if(newValue==null){
+		if(CWHF.isNull(newValue)){
 			newValue='';
 		}
 		var str=getText('common.err.concurrentSave.conflict',newValue);
-		if(me.view!=null){
+		if(me.view){
 			me.view.addCls('fieldConflict');
 			me.setToolTip(str);
 		}
@@ -144,7 +147,7 @@ Ext.define('com.aurel.trackplus.field.TypeRenderer',{
 	markModifiedByMe:function(){
 		var me=this;
 		var str=getText('common.err.concurrentSave.modifiedByMe');
-		if(me.view!=null){
+		if(me.view){
 			me.view.addCls('modifiedByMe');
 			me.setToolTip(str);
 		}
@@ -152,7 +155,7 @@ Ext.define('com.aurel.trackplus.field.TypeRenderer',{
 	markModifiedByOther:function(newValue){
 		var me=this;
 		var str=getText('common.err.concurrentSave.modifiedByOther');
-		if(me.view!=null){
+		if(me.view){
 			me.view.addCls('modifiedByOther');
 			me.view.setValue(newValue);
 			me.setToolTip(str);
@@ -160,17 +163,17 @@ Ext.define('com.aurel.trackplus.field.TypeRenderer',{
 	},
 	setToolTip:function(str){
 		var me=this;
-		if(str==null){
-			if(me.tip==null){
+		if(CWHF.isNull(str)){
+			if(CWHF.isNull(me.tip)){
 				me.tip.destroy();
 				delete me.tip;
 			}
 			return;
 		}
-		if(me.view!=null){
+		if(me.view){
 			var domEl=me.view.getEl();
-			if(domEl!=null){
-			if(me.tip==null){
+			if(domEl){
+			if(CWHF.isNull(me.tip)){
 					var tip = Ext.create('Ext.tip.ToolTip', {
 						target: domEl,
 						html: str
@@ -224,7 +227,7 @@ Ext.define('com.aurel.trackplus.field.TextFieldTypeRenderer',{
 		var name=me.fieldConfig.name;
 		var required=me.fieldConfig.required;
 		var requiredMarkup=me.requiredMarkup;
-		if(required==false){
+		if(required===false){
 			// label=label+me.requiredHtmlTxt;
 			requiredMarkup='';
 		}
@@ -248,7 +251,7 @@ Ext.define('com.aurel.trackplus.field.TextFieldTypeRenderer',{
 		var hidden=me.fieldConfig.invisible;
 		var required=me.fieldConfig.required;
 		var requiredMarkup=me.requiredMarkup;
-		if(required==false){
+		if(required===false){
 			requiredMarkup='';
 		}
 		me.view.setFieldLabel(label);
@@ -268,11 +271,11 @@ Ext.define('com.aurel.trackplus.field.TextAreaTypeRenderer',{
 		var name=me.fieldConfig.name;
 		var required=me.fieldConfig.required;
 		var requiredMarkup=me.requiredMarkup;
-		if(required==false){
+		if(required===false){
 			requiredMarkup='';
 		}
 		var txtValue='';
-		if(me.value!=null){
+		if(me.value){
 			txtValue=me.value;
 		}
 		me.txtArea=Ext.create('Ext.form.field.TextArea',{
@@ -326,13 +329,13 @@ Ext.define('com.aurel.trackplus.field.TextAreaTypeRenderer',{
 		var hidden=me.fieldConfig.invisible;
 		var required=me.fieldConfig.required;
 		var requiredMarkup=me.requiredMarkup;
-		if(required==false){
+		if(required===false){
 			requiredMarkup='';
 		}
 		me.view.setFieldLabel(label);
 		me.view.afterLabelTextTpl=requiredMarkup;
 		var txtValue='';
-		if(me.value!=null){
+		if(me.value){
 			txtValue=me.value;
 		}
 		me.txtArea.setValue(txtValue);
@@ -370,7 +373,7 @@ Ext.define('com.aurel.trackplus.field.SynopsisTypeRenderer',{
 		var hidden=me.fieldConfig.invisible;
 		var required=me.fieldConfig.required;
 		var requiredMarkup=me.requiredMarkup;
-		if(required==false){
+		if(required===false){
 			requiredMarkup='';
 		}
 		me.view.setFieldLabel(label);
@@ -390,7 +393,7 @@ Ext.define('com.aurel.trackplus.field.DateTypeRenderer',{
 		var name=me.fieldConfig.name;
 		var required=me.fieldConfig.required;
 		var requiredMarkup=me.requiredMarkup;
-		if(required==false){
+		if(required===false){
 			requiredMarkup='';
 		}
 		var data=me.fieldConfig.jsonData;
@@ -419,7 +422,7 @@ Ext.define('com.aurel.trackplus.field.DateTypeRenderer',{
 		var hidden=me.fieldConfig.invisible;
 		var required=me.fieldConfig.required;
 		var requiredMarkup=me.requiredMarkup;
-		if(required==false){
+		if(required===false){
 			requiredMarkup='';
 		}
 		me.view.setFieldLabel(label);
@@ -438,7 +441,7 @@ Ext.define('com.aurel.trackplus.field.DateTypeRenderer',{
 	}/*,
 	afterRender:function(fieldCmp){
 		var me=this;
-		if (me.fieldID==20 || me.fieldID==30) {
+		if (me.fieldID===20 || me.fieldID===30) {
 			var fieldValues={};
 			fieldValues["f"+me.fieldID]=fieldCmp.getValue();
 			me.fireEvent("valueChange", me.fieldID, fieldValues, null, me);
@@ -467,11 +470,12 @@ Ext.define("com.aurel.trackplus.field.EndDateRenderer",{
 		}
 
 		var oldEndDate = null;
-		if (oldFieldValues!=null) {
+		if (oldFieldValues) {
 			oldEndDate = me.getDateFromModel(oldFieldValues, "f"+fieldID, isFromGantt);//oldFieldValues["f"+fieldID];
 		}
 		var startDate = me.getDateFromModel(modelFieldValues, "f"+startDateFieldID, isFromGantt);//modelFieldValues["f"+startDateFieldID];
-		if (newEndDate==null || newEndDate.length==0 || startDate==null || startDate.length==0) {
+		if (CWHF.isNull(newEndDate)|| newEndDate.length===0
+				|| CWHF.isNull(startDate) || startDate.length===0) {
 			me.updateField(durationFieldID, null, "", modelFieldValues);
 		} else {
 			if (newEndDate !== oldEndDate) {
@@ -517,13 +521,13 @@ Ext.define("com.aurel.trackplus.field.StartDateRenderer", {
 		}
 
 		var oldStartDate = null;
-		if (oldFieldValues!=null) {
+		if (oldFieldValues) {
 			oldStartDate = me.getDateFromModel(oldFieldValues, "f"+fieldID, isFromGantt);//oldFieldValues["f"+fieldID];
 		}
 		var duration = modelFieldValues["f"+durationFieldID];
-		if (duration!=null) {
+		if (duration) {
 			var endDate = me.getDateFromModel(modelFieldValues, "f"+endDateFieldID, isFromGantt);//modelFieldValues["f"+endDateFieldID];
-			if (newStartDate==null || newStartDate.length==0 || endDate==null || endDate.length==0) {
+			if (CWHF.isNull(newStartDate) || newStartDate.length===0 || CWHF.isNull(endDate) || endDate.length===0) {
 				me.updateField(durationFieldID, null, "", modelFieldValues);
 			} else {
 				if (newStartDate !== oldStartDate) {
@@ -586,11 +590,11 @@ Ext.define('com.aurel.trackplus.field.HtmlTypeRenderer',{
 		var name=me.fieldConfig.name;
 		var required=me.fieldConfig.required;
 		var requiredMarkup=me.requiredMarkup;
-		if(required==false){
+		if(required===false){
 			requiredMarkup='';
 		}
 		var txtValue='';
-		if(me.value!=null){
+		if(me.value){
 			txtValue=me.value;
 		}
 		var otherCfg={
@@ -598,7 +602,7 @@ Ext.define('com.aurel.trackplus.field.HtmlTypeRenderer',{
 			afterLabelTextTpl: requiredMarkup,
 			labelAlign:me.labelHAlign,
 			hideLabel :me.hideLabel,
-			cls :'labelVerticalAlign-'+me.labelVAlign+
+			cls :'rteField labelVerticalAlign-'+me.labelVAlign+
 				' valueVerticalAlign-'+me.valueVAlign+' valueAlign-'+me.valueHAlign,
 			labelStyle:{overflow:'hidden'},
 			value:txtValue,
@@ -611,7 +615,12 @@ Ext.define('com.aurel.trackplus.field.HtmlTypeRenderer',{
 		var ckeditorCfg={
 			//resize_enabled:true
 			workItemID:me.workItemID,
-			projectID:me.projectID
+			projectID:me.projectID,
+			useInlineTask:true,
+			useBrowseImage:true,
+			finishedUploadHandler:function(data){
+				me.fireEvent("finishedUpload");
+			}
 		}
 		me.txtArea=CWHF.createRichTextEditorField(name,otherCfg,false,false,ckeditorCfg);
 		return me.txtArea;
@@ -625,7 +634,7 @@ Ext.define('com.aurel.trackplus.field.HtmlTypeRenderer',{
 		var hidden=me.fieldConfig.invisible;
 		var required=me.fieldConfig.required;
 		var requiredMarkup=me.requiredMarkup;
-		if(required==false){
+		if(required===false){
 			requiredMarkup='';
 		}
 		me.view.setFieldLabel(label);
@@ -633,43 +642,44 @@ Ext.define('com.aurel.trackplus.field.HtmlTypeRenderer',{
 		CWHF.refreshRTEditorValue(me.view,me.value);
 		me.view.allowBlank=!required;
 		me.view.hidden=hidden;
-	},
-	initEditor:function(c){
-		var me=this;
-		me.replaceTextArea(me.idDescription+"-inputEl");
-	},
-	replaceTextArea:function(idDescription,sLang){
-		var me=this;
-		var toolbarFCKStartExpanded=true;
-		if ( sLang == null ){
-			sLang="en";
-		}
-		var o=CKEDITOR.instances[idDescription];
-		if (o){
-			CKEDITOR.remove(o);
-		}
-		me.ckEditor=CKEDITOR.replace(idDescription,{
-			customConfig:sBasePath+'cktrackplusconfig.js',
-			contentsCss:com.trackplus.TrackplusConfig.htmlEditorCSS,
-			language:sLang/*,
-			toolbarStartupExpanded:toolbarFCKStartExpanded*/
-		});
-		me.ckEditor.on('blur', function(e) {
-			me.ckEditor.updateElement();
-		});
-		me.ckEditor.on('instanceReady', function(e) {
-			me.fireEvent('afterRender',me.fieldID);
-		});
-	},
-	getValue:function(){
-		var me=this;
-		var value=null;
-		if(me.ckEditor!=null){
-			value=me.ckEditor.getData();
-			me.ckEditor.updateElement();
-		}
-		return value;
 	}
+
+	//initEditor:function(c){
+	//	var me=this;
+	//	me.replaceTextArea(me.idDescription+"-inputEl");
+	//},
+	//replaceTextArea:function(idDescription,sLang){
+	//	var me=this;
+	//	var toolbarFCKStartExpanded=true;
+	//	if (CWHF.isNull(sLang)){
+	//		sLang="en";
+	//	}
+	//	var o=CKEDITOR.instances[idDescription];
+	//	if (o){
+	//		CKEDITOR.remove(o);
+	//	}
+	//	me.ckEditor=CKEDITOR.replace(idDescription,{
+	//		customConfig:sBasePath+'cktrackplusconfig.js',
+	//		contentsCss:com.trackplus.TrackplusConfig.htmlEditorCSS,
+	//		language:sLang/*,
+	//		toolbarStartupExpanded:toolbarFCKStartExpanded*/
+	//	});
+	//	me.ckEditor.on('blur', function(e) {
+	//		me.ckEditor.updateElement();
+	//	});
+	//	me.ckEditor.on('instanceReady', function(e) {
+	//		me.fireEvent('afterRender',me.fieldID);
+	//	});
+	//},
+	//getValue:function(){
+	//	var me=this;
+	//	var value=null;
+	//	if(me.ckEditor){
+	//		value=me.ckEditor.getData();
+	//		me.ckEditor.updateElement();
+	//	}
+	//	return value;
+	//}
 });
 
 
@@ -682,17 +692,17 @@ Ext.define('com.aurel.trackplus.field.SelectTypeRenderer',{
 		var name=me.fieldConfig.name;
 		var required=me.fieldConfig.required;
 		var requiredMarkup=me.requiredMarkup;
-		if(required==false){
+		if(required===false){
 			// label=label+me.requiredHtmlTxt;
 			requiredMarkup='';
 		}
 		var data=me.fieldConfig.jsonData;
 		var options=data.list;
-		if(required==false&&options!=null&&options.length>0){
+		if(required===false&&options&&options.length>0){
 			options.unshift({id:null,label:''});
 		}
 		var forceSelection=false;
-		if(me.fieldConfig.jsonData.forceSelection!=null){
+		if(me.fieldConfig.jsonData.forceSelection){
 			forceSelection=me.fieldConfig.jsonData.forceSelection;
 		}
 		var cmbCfg={
@@ -706,7 +716,7 @@ Ext.define('com.aurel.trackplus.field.SelectTypeRenderer',{
 			labelStyle:{overflow:'hidden'},
 			store:Ext.create('Ext.data.Store', {
 				fields:[
-					{type: 'int', name: 'id',useNull:true},
+					{type: 'int', name: 'id',allowNull:true},
 					{type: 'string', name: 'label'}
 				],
 				data:options
@@ -722,7 +732,7 @@ Ext.define('com.aurel.trackplus.field.SelectTypeRenderer',{
 			anyMatch:true,
 			grow:true
 		}
-		if(required==false){
+		if(required===false){
 			cmbCfg.tpl= new Ext.XTemplate('<tpl for=".">' + '<li style="min-height:22px;" class="x-boundlist-item" role="option">' + '{label}' + '</li></tpl>');
 		}
 		var cmb=Ext.create('Ext.form.ComboBox',cmbCfg);
@@ -736,13 +746,13 @@ Ext.define('com.aurel.trackplus.field.SelectTypeRenderer',{
 		var hidden=me.fieldConfig.invisible;
 		var required=me.fieldConfig.required;
 		var requiredMarkup=me.requiredMarkup;
-		if(required==false){
+		if(required===false){
 			//label=label+me.requiredHtmlTxt;
 			requiredMarkup='';
 		}
 		var data=me.fieldConfig.jsonData;
 		var options=data.list;
-		if(required==false&&options!=null&&options.length>0){
+		if(required===false&&options&&options.length>0){
 			options.unshift({id:null,label:''});
 		}
 		me.view.setFieldLabel(label);
@@ -770,7 +780,7 @@ Ext.define('com.aurel.trackplus.field.CrmContactRenderer',{
 		var name=me.fieldConfig.name;
 		var required=me.fieldConfig.required;
 		var requiredMarkup=me.requiredMarkup;
-		if(required==false){
+		if(required===false){
 			requiredMarkup='';
 		}
 		var data=me.fieldConfig.jsonData;
@@ -831,7 +841,7 @@ Ext.define('com.aurel.trackplus.field.CrmContactRenderer',{
 		var hidden=me.fieldConfig.invisible;
 		var required=me.fieldConfig.required;
 		var requiredMarkup=me.requiredMarkup;
-		if(required==false){
+		if(required===false){
 			requiredMarkup='';
 		}
 		var data=me.fieldConfig.jsonData;
@@ -860,8 +870,8 @@ Ext.define('com.aurel.trackplus.field.ExtensibleSelectTypeRenderer',{
 		cmb.getSubmitValue=function(){
 			var v=this.getValue();
 			var record=this.findRecordByValue(v);
-			if(record==false){
-				return v==null?"":"'"+v+"'";
+			if(record===false){
+				return CWHF.isNull(v)?"":"'"+v+"'";
 			}else{
 				return v;
 			}
@@ -884,24 +894,27 @@ Ext.define('com.aurel.trackplus.field.MultipleSelectPickerRenderer',{
 		var name=me.fieldConfig.name;
 		var required=me.fieldConfig.required;
 		var requiredMarkup=me.requiredMarkup;
-		if(required==false){
+		if(required===false){
 			requiredMarkup='';
 		}
 		var data=me.fieldConfig.jsonData;
 		var options=data.list;
-		/*if(required==false&&options!=null&&options.length>0){
+		/*if(required===false&&options&&options.length>0){
 			options.unshift({id:null,label:''});
 		}*/
 		var optionLength=0;
-		if(options!=null){
+		if(options){
 			optionLength=options.length;
 		}
+		var iconFieldID=me.getIconFieldID();
+		console.log("me.useIconCls="+me.useIconCls);
+		console.log("me.getUseIconCls()="+me.getUseIconCls());
 		var picker =Ext.create('com.trackplus.util.MultipleSelectPicker',{
-			data:options,
+			options:options,
 			includeSearch:optionLength>=7,
 			labelStyle:{overflow:'hidden'},
 			labelWidth:100,
-			width:me.pikerWidth,
+			width:me.getPikerWidth(),
 			name:name,
 			value:me.value,
 			fieldLabel:label,
@@ -910,8 +923,8 @@ Ext.define('com.aurel.trackplus.field.MultipleSelectPickerRenderer',{
 				' valueVerticalAlign-'+me.valueVAlign+' valueAlign-'+me.valueHAlign,
 			useNull:true,
 			afterLabelTextTpl:requiredMarkup,
-			useIconCls:me.useIconCls,
-			iconUrlPrefix:me.iconFieldID==null?null:'optionIconStream.action?fieldID='+me.iconFieldID+"&optionID="
+			useIconCls:me.getUseIconCls(),
+			iconUrlPrefix:CWHF.isNull(iconFieldID)?null:'optionIconStream.action?fieldID='+iconFieldID+"&optionID="
 		});
 		picker.addListener('change',me.valueChange,me);
 		return picker;
@@ -931,7 +944,7 @@ Ext.define('com.aurel.trackplus.field.MultipleSelectPickerRenderer',{
 		var hidden=me.fieldConfig.invisible;
 		var required=me.fieldConfig.required;
 		var requiredMarkup=me.requiredMarkup;
-		if(required==false){
+		if(required===false){
 			//label=label+me.requiredHtmlTxt;
 			requiredMarkup='';
 		}
@@ -939,10 +952,10 @@ Ext.define('com.aurel.trackplus.field.MultipleSelectPickerRenderer',{
 		me.view.setFieldLabel(label);
 		me.view.afterLabelTextTpl=requiredMarkup;
 		var options=data.list;
-		if(required==false&&options!=null&&options.length>0){
+		if(required===false&&options&&options.length>0){
 			options.unshift({id:null,label:''});
 		}
-		me.view.updateData(options);
+		me.view.updateMyOptions(options);
 		me.view.setValue(value,true);
 		me.view.allowBlank=!required;
 		me.view.hidden=hidden;
@@ -958,7 +971,7 @@ Ext.define('com.aurel.trackplus.field.MultipleSelectTypeRenderer',{
 		var name=me.fieldConfig.name;
 		var required=me.fieldConfig.required;
 		var requiredMarkup=me.requiredMarkup;
-		if(required==false){
+		if(required===false){
 			requiredMarkup='';
 		}
 		var data=me.fieldConfig.jsonData;
@@ -998,7 +1011,7 @@ Ext.define('com.aurel.trackplus.field.MultipleSelectTypeRenderer',{
 		var hidden=me.fieldConfig.invisible;
 		var required=me.fieldConfig.required;
 		var requiredMarkup=me.requiredMarkup;
-		if(required==false){
+		if(required===false){
 			requiredMarkup='';
 		}
 		me.view.setFieldLabel(label);
@@ -1020,7 +1033,7 @@ Ext.define('com.aurel.trackplus.field.ReleasePickerRenderer',{
 		var required=me.fieldConfig.required;
 		var requiredMarkup=me.requiredMarkup;
 		var includeClear=!required;
-		if(required==false){
+		if(required===false){
 			requiredMarkup='';
 		}
 		var data=me.fieldConfig.jsonData;
@@ -1046,7 +1059,7 @@ Ext.define('com.aurel.trackplus.field.ReleasePickerRenderer',{
 		var hidden=me.fieldConfig.invisible;
 		var required=me.fieldConfig.required;
 		var requiredMarkup=me.requiredMarkup;
-		if(required==false){
+		if(required===false){
 			requiredMarkup='';
 		}
 		me.view.setFieldLabel(label);
@@ -1076,7 +1089,7 @@ Ext.define('com.aurel.trackplus.field.ProjectPickerRenderer',{
         var name=me.fieldConfig.name;
         var required=me.fieldConfig.required;
         var requiredMarkup=me.requiredMarkup;
-        if(required==false){
+        if(required===false){
             requiredMarkup='';
         }
         var data=me.fieldConfig.jsonData;
@@ -1104,7 +1117,7 @@ Ext.define('com.aurel.trackplus.field.ProjectPickerRenderer',{
         var hidden=me.fieldConfig.invisible;
         var required=me.fieldConfig.required;
         var requiredMarkup=me.requiredMarkup;
-        if(required==false){
+        if(required===false){
             requiredMarkup='';
         }
         me.view.setFieldLabel(label);
@@ -1124,7 +1137,7 @@ Ext.define('com.aurel.trackplus.field.ItemPickerRenderer',{
         var name=me.fieldConfig.name;
         var required=me.fieldConfig.required;
         var requiredMarkup=me.requiredMarkup;
-        if(required==false){
+        if(required===false){
             requiredMarkup='';
         }
         var data=me.fieldConfig.jsonData;
@@ -1151,7 +1164,7 @@ Ext.define('com.aurel.trackplus.field.ItemPickerRenderer',{
         var hidden=me.fieldConfig.invisible;
         var required=me.fieldConfig.required;
         var requiredMarkup=me.requiredMarkup;
-        if(required==false){
+        if(required===false){
             requiredMarkup='';
         }
         me.view.setFieldLabel(label);
@@ -1172,7 +1185,6 @@ Ext.define('com.aurel.trackplus.field.ParentTypeRenderer',{
 	constructor : function(config) {
 		var me=this;
 		me.callParent(arguments);
-		this.addEvents('clickOnParent');
 	},
 	createView:function(){
 		var me=this;
@@ -1180,12 +1192,12 @@ Ext.define('com.aurel.trackplus.field.ParentTypeRenderer',{
 		var hidden=me.fieldConfig.invisible;
 		var name=me.fieldConfig.name;
 		var data=me.fieldConfig.jsonData;
-		var itemID=me.value;
-		if(data.projectSpecificID!=null&&data.projectSpecificID!=''){
+		var itemID=me.getValue();
+		if(data.projectSpecificID&&data.projectSpecificID!==''){
 			itemID=data.projectSpecificID;
 		}
 		var displayValue="";
-		if(itemID!=null){
+		if(itemID){
 			displayValue=itemID+': '+data.title;
 		}
 		me.idField= Ext.create('Ext.form.field.Hidden',{
@@ -1212,11 +1224,11 @@ Ext.define('com.aurel.trackplus.field.ParentTypeRenderer',{
 			iconCls:'delete16',
 			cls:'insideFiledCointainer',
 			handler:me.clearParent,
-			hidden:(me.value==null||me.value==''),
+			hidden:(CWHF.isNull(me.value)||me.value===''),
 			scope:me
 		});
 		var items=[];
-		if(me.readOnly==false){
+		if(me.getReadOnly()===false){
 			items.push(me.idField);
 			items.push(me.btnClear);
 		}
@@ -1224,10 +1236,10 @@ Ext.define('com.aurel.trackplus.field.ParentTypeRenderer',{
 		return Ext.create('Ext.form.FieldContainer',{
 			combineErrors: true,
 			fieldLabel: label,
-			labelAlign:me.labelHAlign,
-			hideLabel :me.hideLabel,
-			cls :'labelVerticalAlign-'+me.labelVAlign+
-				' valueVerticalAlign-'+me.valueVAlign+' valueAlign-'+me.valueHAlign,
+			labelAlign:me.getLabelHAlign(),
+			hideLabel :me.getHideLabel(),
+			cls :'labelVerticalAlign-'+me.getLabelVAlign()+
+				' valueVerticalAlign-'+me.getValueVAlign()+' valueAlign-'+me.getValueHAlign(),
 			labelStyle:{overflow:'hidden'},
 			layout: 'hbox',
 			defaults: {
@@ -1244,21 +1256,20 @@ Ext.define('com.aurel.trackplus.field.ParentTypeRenderer',{
 		var label=me.fieldConfig.label;
 		var hidden=me.fieldConfig.invisible;
 		var requiredMarkup=me.fieldConfig.required;
-		var itemID=me.value;
 		var data=me.fieldConfig.jsonData;
 		var itemID=me.value;
-		if(data.projectSpecificID!=null&&data.projectSpecificID!=''){
+		if(data.projectSpecificID&&data.projectSpecificID!==''){
 			itemID=data.projectSpecificID;
 		}
 		var displayValue="";
-		if(itemID!=null){
+		if(itemID){
 			displayValue=itemID+': '+data.title;
 		}
 		me.idField.setValue(me.value);
 		me.labelField.setLabel(displayValue);
 		me.view.setFieldLabel(label);
 		me.view.afterLabelTextTpl=requiredMarkup;
-		me.btnClear.setVisible(me.value!=null&&me.value!="");
+		me.btnClear.setVisible(me.value&&me.value!=="");
 		me.view.hidden=hidden;
 	},
 	clearParent:function(){
@@ -1267,8 +1278,8 @@ Ext.define('com.aurel.trackplus.field.ParentTypeRenderer',{
 		me.idField.setValue(null);
 		me.labelField.setLabel(null);
 		me.btnClear.setVisible(false);
-		me.view.doLayout();
-		me.view.ownerCt.doLayout();
+		me.view.updateLayout();
+		me.view.ownerCt.updateLayout();
 	},
 	clickOnParent:function(){
 		var me=this;
@@ -1297,7 +1308,7 @@ Ext.define('com.aurel.trackplus.field.IntegerTypeRenderer',{
 		var name=me.fieldConfig.name;
 		var required=me.fieldConfig.required;
 		var requiredMarkup=me.requiredMarkup;
-		if(required==false){
+		if(required===false){
 			requiredMarkup='';
 		}
 		var data=me.fieldConfig.jsonData;
@@ -1316,8 +1327,8 @@ Ext.define('com.aurel.trackplus.field.IntegerTypeRenderer',{
 				value:me.value,
 				hidden:hidden
 			};
-		if (data!=null) {
-			if (data.minValue!=null) {
+		if (data) {
+			if (data.minValue) {
 				numberFieldConfig.minValue = data.minValue;
 			}
 		}
@@ -1331,7 +1342,7 @@ Ext.define('com.aurel.trackplus.field.IntegerTypeRenderer',{
 		var hidden=me.fieldConfig.invisible;
 		var required=me.fieldConfig.required;
 		var requiredMarkup=me.requiredMarkup;
-		if(required==false){
+		if(required===false){
 			requiredMarkup='';
 		}
 		me.view.setFieldLabel(label);
@@ -1382,12 +1393,12 @@ Ext.define('com.aurel.trackplus.field.DurationRenderer',{
 				endDate = Ext.util.Format.date(endDate, com.trackplus.TrackplusConfig.DateFormat);
 			}
 
-			if (newDuration!=null) {
-				if (startDate!=null && startDate.length>0) {
+			if (newDuration) {
+				if (startDate && startDate.length>0) {
 					endDate = me.addWeekdays(me.parseDate(startDate, true), newDuration, true);
 					me.updateField(endDateFieldID, endDate, endDate, modelFieldValues);
 				} else {
-					if (endDate!=null && endDate.length>0) {
+					if (endDate && endDate.length>0) {
 						startDate = me.addWeekdays(me.parseDate(endDate, true), newDuration, false);
 						me.updateField(startDateFieldID, startDate, startDate, modelFieldValues);
 					} else {
@@ -1427,7 +1438,7 @@ Ext.define('com.aurel.trackplus.field.CheckBoxTypRenderer',{
 		var name=me.fieldConfig.name;
 		var required=me.fieldConfig.required;
 		var requiredMarkup=me.requiredMarkup;
-		if(required==false){
+		if(required===false){
 			requiredMarkup='';
 		}
 		return Ext.create('Ext.form.field.Checkbox',{
@@ -1446,7 +1457,7 @@ Ext.define('com.aurel.trackplus.field.CheckBoxTypRenderer',{
 			inputValue:'true',
 			uncheckedValue:'false',
 			value:me.value,
-			checked:me.value==true,
+			checked:me.value===true,
 			hidden:hidden
 		});
 	},
@@ -1456,7 +1467,7 @@ Ext.define('com.aurel.trackplus.field.CheckBoxTypRenderer',{
 		var hidden=me.fieldConfig.invisible;
 		var required=me.fieldConfig.required;
 		var requiredMarkup=me.requiredMarkup;
-		if(required==false){
+		if(required===false){
 			requiredMarkup='';
 		}
 		me.view.setFieldLabel(label);
@@ -1477,7 +1488,7 @@ Ext.define('com.aurel.trackplus.field.CompositeTypeRenderer',{
 		var name=me.fieldConfig.name;
 		var required=me.fieldConfig.required;
 		var requiredMarkup=me.requiredMarkup;
-		if(required==false){
+		if(required===false){
 			requiredMarkup='';
 		}
 		var data=me.fieldConfig.jsonData;
@@ -1495,7 +1506,7 @@ Ext.define('com.aurel.trackplus.field.CompositeTypeRenderer',{
 					name:me.fieldConfig.name+"_"+(i+1),
 					jsonData:data.parts[i].jsonData
 				},
-				value:me.value==null?null:me.value[''+(i+1)]
+				value:CWHF.isNull(me.value)?null:me.value[''+(i+1)]
 			});
 			if(hasDependences){
 				partRenderer.addListener('valueChange',me.partValueChange,me);
@@ -1528,7 +1539,6 @@ Ext.define('com.aurel.trackplus.field.CompositeTypeRenderer',{
 	},
 	partValueChange:function(fieldID){
 		var me=this;
-		//alert("partValueChange:fieldID="+fieldID+" paramaterCode="+parameterCode+", newValue="+newValue+" ,oldValue="+oldValue);
 		var fieldValues={};
 		for(var i=0;i<me.parts.length;i++){
 			var part=me.parts[i];
@@ -1542,14 +1552,14 @@ Ext.define('com.aurel.trackplus.field.CompositeTypeRenderer',{
 		var hidden=me.fieldConfig.invisible;
 		var required=me.fieldConfig.required;
 		var requiredMarkup=me.requiredMarkup;
-		if(required==false){
+		if(required===false){
 			requiredMarkup='';
 		}
 		me.view.setFieldLabel(label);
 		me.view.afterLabelTextTpl=requiredMarkup;
 		var data=me.fieldConfig.jsonData;
 		for(var i=0;i<me.parts.length;i++){
-			me.parts[i].value= me.value==null?null:me.value[''+(i+1)];
+			me.parts[i].value= CWHF.isNull(me.value)?null:me.value[''+(i+1)];
 			me.parts[i].fieldConfig.jsonData=data.parts[i].jsonData;
 			me.parts[i].refreshView();
 		}
@@ -1572,35 +1582,36 @@ Ext.define('com.aurel.trackplus.field.SingleSelectPickerRenderer',{
 		var name=me.fieldConfig.name;
 		var required=me.fieldConfig.required;
 		var requiredMarkup=me.requiredMarkup;
-		if(required==false){
+		if(required===false){
 			requiredMarkup='';
 		}
 		var data=me.fieldConfig.jsonData;
 		var options=data.list;
-		if(required==false&&options!=null&&options.length>0){
+		if(required===false&&options&&options.length>0){
 			options.unshift({id:null,label:''});
 		}
 
 		var releaseTree = data["releaseTree"];
 		var optionLength=0;
-		if(options!=null){
+		if(options){
 			optionLength=options.length;
 		}
+		var iconFieldID=me.getIconFieldID();
 		var picker =Ext.create('com.trackplus.util.SingleSelectPicker',{
-			data:options,
+			options:options,
 			includeSearch:optionLength>=7,
 			cls :'labelVerticalAlign-'+me.labelVAlign+
 				' valueVerticalAlign-'+me.valueVAlign+' valueAlign-'+me.valueHAlign,
 			labelStyle:{overflow:'hidden'},
 			labelWidth:100,
-			width:me.pikerWidth,
+			width:me.getPikerWidth(),
 			name:name,
 			value:me.value,
 			fieldLabel:label,
 			labelAlign:me.labelHAlign,
 			afterLabelTextTpl:requiredMarkup,
-			useIconCls:me.useIconCls,
-			iconUrlPrefix:me.iconFieldID==null?null:'optionIconStream.action?fieldID='+me.iconFieldID+"&optionID="
+			useIconCls:me.getUseIconCls(),
+			iconUrlPrefix:CWHF.isNull(iconFieldID)?null:'optionIconStream.action?fieldID='+iconFieldID+"&optionID="
 		});
 		picker.addListener('change',me.valueChange,me);
 		return picker;
@@ -1620,7 +1631,7 @@ Ext.define('com.aurel.trackplus.field.SingleSelectPickerRenderer',{
 		var hidden=me.fieldConfig.invisible;
 		var required=me.fieldConfig.required;
 		var requiredMarkup=me.requiredMarkup;
-		if(required==false){
+		if(required===false){
 			//label=label+me.requiredHtmlTxt;
 			requiredMarkup='';
 		}
@@ -1628,10 +1639,10 @@ Ext.define('com.aurel.trackplus.field.SingleSelectPickerRenderer',{
 		me.view.setFieldLabel(label);
 		me.view.afterLabelTextTpl=requiredMarkup;
 		var options=data.list;
-		if(required==false&&options!=null&&options.length>0){
+		if(required===false&&options&&options.length>0){
 			options.unshift({id:null,label:''});
 		}
-		me.view.updateData(options);
+		me.view.updateMyOptions(options);
 		me.view.setValue(value,true);
 		me.view.allowBlank=!required;
 		me.view.hidden=hidden;

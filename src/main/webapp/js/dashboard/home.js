@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -46,7 +46,7 @@ Ext.define('com.trackplus.layout.HomeLayout',{
 		me.onReady(function(){
 			if (com.trackplus.TrackplusConfig.user.configureCockpit) {
 				var dashToolbar=[me.createEditDashButton()];
-				if (com.trackplus.TrackplusConfig.appType != APPTYPE_BUGS) {
+				if (com.trackplus.TrackplusConfig.appType !== APPTYPE_BUGS) {
 					dashToolbar.push(me.createResetDashButton());
 					dashToolbar.push(me.createSaveAsTemplateDashButton());
 				}
@@ -170,7 +170,7 @@ com.trackplus.dashboard.openResetDialog=function(options,urlStr,params,handlerCa
 				//buttons:{yes : yesLabel, no : noLabel},
 				buttons: Ext.MessageBox.YESNO,
 				fn: function(btn){
-					if(btn=="yes"){
+					if(btn==="yes"){
 						var deletedItems=id;
 						Ext.Ajax.request({
 							url: urlDeleteItems,
@@ -210,7 +210,7 @@ com.trackplus.dashboard.openResetDialog=function(options,urlStr,params,handlerCa
 		}
 	});
 	cmb.addListener('select',function( combo, records, eOpts){
-		if(records!=null&&records.length>0){
+		if(records&&records.length>0){
 			var selected=records[0].data['selected'];
 			var id=records[0].data['id'];
 			btnDelete.setDisabled(!selected);
@@ -234,7 +234,7 @@ com.trackplus.dashboard.openResetDialog=function(options,urlStr,params,handlerCa
 		 },*/
 		items:[cmb]
 	});
-	if(com.trackplus.dashboard.resetWin!=null){
+	if(com.trackplus.dashboard.resetWin){
 		com.trackplus.dashboard.resetWin.destroy();
 	}
 	com.trackplus.dashboard.resetWin = Ext.create('Ext.window.Window',{
@@ -264,8 +264,8 @@ com.trackplus.dashboard.openResetDialog=function(options,urlStr,params,handlerCa
 					params:params,
 					success: function(form, action) {
 						com.trackplus.dashboard.resetWin.destroy();
-						if(handlerCallback!=null){
-							handlerCallback.call(scopeCallBack==null?this:scopeCallBack);
+						if(handlerCallback){
+							handlerCallback.call(CWHF.isNull(scopeCallBack)?this:scopeCallBack);
 						}
 					},
 					failure: function(form, action) {
@@ -281,7 +281,7 @@ com.trackplus.dashboard.openResetDialog=function(options,urlStr,params,handlerCa
 
 com.trackplus.dashboard.saveAsDefault=function(projectID,entityType,handlerCallback,scopeCallBack){
 	var urlStr='dashboardTemplate!copyAsTemplateDashboard.action';
-	if(projectID!=null){
+	if(projectID){
 		urlStr=urlStr+"?projectID="+projectID+"&entityType="+entityType;
 	}
 	borderLayout.setLoading(true);
@@ -301,7 +301,7 @@ com.trackplus.dashboard.saveAsDefault=function(projectID,entityType,handlerCallb
 
 com.trackplus.dashboard.openSaveAsDefaultDialog=function(data,handlerCallback,scopeCallBack){
 	var items=[
-		CWHF.createHiddenField('dashboardID',{labelWidth:150,value:data.id}),
+		CWHF.createHiddenField('dashboardID',{itemId:'dashboardID',labelWidth:150,value:data.id}),
 		CWHF.createTextField('common.lbl.name','name', {labelWidth:150,anchor:'100%', allowBlank:false,value:data.name}),
 		CWHF.createTextAreaField('common.lbl.description','description', {labelWidth:150,anchor:'100%',value:data.description})
 	];
@@ -327,7 +327,7 @@ com.trackplus.dashboard.openSaveAsDefaultDialog=function(data,handlerCallback,sc
 		items:items
 	});
 	var urlStr="dashboardTemplate!saveAsTemplateDashboard.action";
-	if(com.trackplus.dashboard.resetWin!=null){
+	if(com.trackplus.dashboard.resetWin){
 		com.trackplus.dashboard.resetWin.destroy();
 	}
 	com.trackplus.dashboard.resetWin = Ext.create('Ext.window.Window',{
@@ -356,8 +356,8 @@ com.trackplus.dashboard.openSaveAsDefaultDialog=function(data,handlerCallback,sc
 					url:urlStr,
 					success: function(form, action) {
 						com.trackplus.dashboard.resetWin.destroy();
-						if(handlerCallback!=null){
-							handlerCallback.call(scopeCallBack==null?this:scopeCallBack);
+						if(handlerCallback){
+							handlerCallback.call(CWHF.isNull(scopeCallBack)?this:scopeCallBack);
 						}else{
 							CWHF.showMsgInfo(getText('cockpit.saveAsTemplate.successMessage'));
 						}

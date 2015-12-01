@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -40,7 +40,7 @@ Ext.define('com.trackplus.itemNavigator.ItemDialogManager',{
 		var me=this;
 		if(me.allDialogs.length>0){
 			var prevDialog;
-			if(me.lastActiveDialog!=null){
+			if(me.lastActiveDialog){
 				prevDialog=me.lastActiveDialog;
 			}else{
 				prevDialog=me.allDialogs[me.allDialogs.length-1];
@@ -69,7 +69,7 @@ Ext.define('com.trackplus.itemNavigator.ItemDialogManager',{
 		var navCtx=me.navigateContexts[dialogIndex];
 		var nextItem=me.navigable.navigate.call(me.navigable,workItemID,navCtx.workItemIndex,direction);
 
-		if(nextItem!=null){
+		if(nextItem){
 			var nextWorkItemID=nextItem.workItemID;
 			var nextWorkItemIndex=nextItem.workItemIndex;
 			if(me.usePosition){
@@ -85,8 +85,8 @@ Ext.define('com.trackplus.itemNavigator.ItemDialogManager',{
 			navCtx.workItemIndex=nextWorkItemIndex;
 			navCtx.nextItem=nextItem1;
 			navCtx.prevItem=prevItem1;
-			itemAction.disabledNext=(nextItem1==null);
-			itemAction.disabledPrev=(prevItem1==null);
+			itemAction.disabledNext=(CWHF.isNull(nextItem1));
+			itemAction.disabledPrev=(CWHF.isNull(prevItem1));
 			itemAction.reExecute();
 			if(me.usePosition){
 				me.navigable.selectItemByIndex.call(me.navigable,nextWorkItemIndex);
@@ -95,7 +95,7 @@ Ext.define('com.trackplus.itemNavigator.ItemDialogManager',{
 			}
 		}else{
 			var msg="";
-			if(direction=='next'){
+			if(direction==='next'){
 				msg=getText('itemov.err.noNextAvailable');
 				itemAction.setDisabledNextButton(true);
 			}else{
@@ -107,25 +107,25 @@ Ext.define('com.trackplus.itemNavigator.ItemDialogManager',{
 	},
 	itemChangeHandler:function(fields){
 		var me=this;
-		if(me.navigable!=null){
+		if(me.navigable){
 			me.navigable.itemChangeHandler.call(me.navigable,fields);
 		}
 	},
 	clickOnChildHandler:function(workItemID){
 		var me=this;
-		if(me.navigable!=null){
+		if(me.navigable){
 			me.navigable.openItem.call(me.navigable,workItemID);
 		}
 	},
 	clickOnLinkHandler:function(workItemID){
 		var me=this;
-		if(me.navigable!=null){
+		if(me.navigable){
 			me.navigable.openItem.call(me.navigable,workItemID);
 		}
 	},
 	clickOnParentdHandler:function(parentID){
 		var me=this;
-		if(me.navigable!=null){
+		if(me.navigable){
 			me.navigable.openItem.call(me.navigable,parentID);
 		}
 	},
@@ -133,7 +133,7 @@ Ext.define('com.trackplus.itemNavigator.ItemDialogManager',{
 		var me=this;
 		me.lastActiveDialog=itemAction;
 		var workItemID=itemAction.workItemID;
-		if(me.navigable!=null){
+		if(me.navigable){
 			me.navigable.selectItem.call(me.navigable,workItemID);
 		}
 	},
@@ -141,7 +141,7 @@ Ext.define('com.trackplus.itemNavigator.ItemDialogManager',{
 		var me=this;
 		var workItemID=itemAction.workItemID;
 		me.lastActiveDialog=null;
-		/*if(me.navigable!=null){
+		/*if(me.navigable){
 			me.navigable.deselectItem.call(me.navigable,workItemID);
 		}*/
 	},
@@ -163,33 +163,33 @@ Ext.define('com.trackplus.itemNavigator.ItemDialogManager',{
 		var me=this;
 		var workItemID = itemAction.workItemID;
 		var actionID = itemAction.actionID;
-		if (workItemID!=null && actionID!=null) {
+		if (workItemID && actionID) {
 			var savedSuccessfully=false;
-			if(options!=null){
+			if(options){
 				savedSuccessfully=options.savedSuccessfully;
 			}
 			//alert("savedSuccessfully="+savedSuccessfully);
 			//2:edit, 3:move, 5:change status
-			if (savedSuccessfully==false && (actionID==2 || actionID==3 || actionID==5)) {
+			if (savedSuccessfully===false && (actionID===2 || actionID===3 || actionID===5)) {
 				//cancel or X button after opening the item with edit/move/status change form
 				me.releaseItemLock(workItemID);
 			}
 		}
-		if(me.lastActiveDialog==itemAction){
+		if(me.lastActiveDialog===itemAction){
 			me.lastActiveDialog=null;
 		}
 		var idx=Ext.Array.indexOf(me.allDialogs,itemAction);
 		me.navigateContexts=Ext.Array.erase( me.navigateContexts, idx, 1);
 		me.allDialogs=Ext.Array.remove(me.allDialogs,itemAction);
-		/*if(me.navigable!=null){
+		/*if(me.navigable){
 			me.navigable.deselectItem.call(me.navigable,itemAction.workItemID);
 		}*/
 	},
 	findNextItem:function(workItemID,direction,keepPosition){
 		var me=this;
 		var nextItemID=null;
-		if(me.navigable!=null){
-			nextItemID=me.navigable.navigate.call(me.navigable,workItemID,direction==null?'next':direction,keepPosition);
+		if(me.navigable){
+			nextItemID=me.navigable.navigate.call(me.navigable,workItemID,CWHF.isNull(direction)?'next':direction,keepPosition);
 		}
 		return nextItemID;
 	}

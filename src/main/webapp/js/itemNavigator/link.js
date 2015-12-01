@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -26,7 +26,7 @@ Ext.define('com.trackplus.issue.Link',{
         itemNavigatorController: null,
 		workItemIDs: null,
 		fromGantt: false,
-		gantt: null,
+		ganttController: null,
 		dependencyType: null,
 		crossProject: null
 	},
@@ -35,6 +35,7 @@ Ext.define('com.trackplus.issue.Link',{
 		var config = config || {};
 		me.initialConfig = config;
 		Ext.apply(me, config);
+		me.initConfig(config);
 	},
 
 	/**
@@ -45,7 +46,7 @@ Ext.define('com.trackplus.issue.Link',{
 		var load = {loadUrl:"itemLink!editItemLink.action", loadUrlParams: {fromGantt:this.fromGantt}};
 		var submitUrlParams = {workItemIDs: this.workItemIDs, fromGantt: this.fromGantt, crossProject: this.crossProject};
 		var submit = null;
-		if(me.gantt != null) {
+		if(me.ganttController ) {
 			submit = {submitHandler: me.ganttSpecialSubmitHandler, refreshAfterSubmitHandler: this.refreshAfterSubmitOrCancelHandler, submitButtonText:getText('common.btn.save'), submitUrlParams:submitUrlParams};
 		}else {
 			submit = {specialSubmitFailHandler:this.submitFailHandler, refreshAfterSubmitHandler:this.refresh, submitUrl:"itemLink!saveLinkFromIssueNavigator.action", submitUrlParams:submitUrlParams,
@@ -57,7 +58,7 @@ Ext.define('com.trackplus.issue.Link',{
 				load:load,
 				submit: submit,
 				items: this.getLinkPanelItems(),
-				isFormPanel:false,
+//				isFormPanel:false,
 				refreshAfterCancel: true,
 				postDataProcess:this.postDataLoadCombos};
 		var windowConfig = Ext.create('com.trackplus.util.WindowConfig', windowParameters);
@@ -67,57 +68,56 @@ Ext.define('com.trackplus.issue.Link',{
 	},
 	refreshAfterSubmitOrCancelHandler:function() {
 		var me = this;
-		if(me.fromGantt == true) {
-			me.gantt.removeLastAddedDependency();
+		if(me.fromGantt === true) {
+			me.ganttController.removeLastAddedDependency();
 		}
 	},
 	refresh:function(scope, result, submit) {
 		var me = this;
-		if (this.itemNavigatorController!=null) {
+		if (this.itemNavigatorController) {
 			this.itemNavigatorController.refresh.call(this.itemNavigatorController);
 		}
 	},
 	loadFailHandler:function() {
 		var me = this;
-		if(me.fromGantt == true) {
-			me.gantt.removeLastAddedDependency();
+		if(me.fromGantt === true) {
+			me.ganttController.removeLastAddedDependency();
 		}
 	},
 
 	ganttSpecialSubmitHandler: function() {
 		var me = this;
-		var formValues = this.windowConfig.getFormPanel().getValues();
+		var formValues = this.windowConfig.formPanel.getValues();
 		var newLinkProperties = {};
 		newLinkProperties.description = formValues.description;
 		newLinkProperties.linkTypeWithDirection = formValues.linkTypeWithDirection;
-
-		newLinkProperties.linkType = formValues['parametersMap[0]'];
-		newLinkProperties.lag = formValues['parametersMap[1]'];
-		newLinkProperties.lagUnit = formValues['parametersMap[2]'];
-		me.gantt.adjustNewlyCreatedLink(newLinkProperties);
+		newLinkProperties.linkType = formValues["parametersMap['DependencyType']"];
+		newLinkProperties.lag = formValues["parametersMap['Lag']"];
+		newLinkProperties.lagUnit = formValues["parametersMap['Lagformat']"];
+		me.ganttController.adjustNewlyCreatedLink(newLinkProperties);
 		this.windowConfig.win.close();
 	},
 
 	submitFailHandler:function(result) {
 		var me = this;
-		if(me.fromGantt == true) {
-			me.gantt.removeLastAddedDependency();
+		if(me.fromGantt === true) {
+			me.ganttController.removeLastAddedDependency();
 		}
 	},
 
 	postDataLoadCombos: function(data, panel) {
 		var linkTypeWithDirection = panel.getComponent("linkTypeWithDirection");
-		if (linkTypeWithDirection!=null) {
+		if (linkTypeWithDirection) {
 			linkTypeWithDirection.store.loadData(data["linkTypesList"]);
 			linkTypeWithDirection.setValue(data["linkTypeWithDirection"]);
 		}
         this.replaceSpecificPart(panel, data["linkTypeJSClass"], data["specificData"]);
-        if(this.dependencyType != null) {
+        if(this.dependencyType ) {
         	var dependencyCombo = panel.getComponent("specificPart");
         	dependencyCombo.items.items[0].setValue(this.getDependencyComboValueFromGanttValue(this.dependencyType));
         	dependencyCombo.items.items[0].setReadOnly(true);
         }
-        if(data.linkTypesList.length == 0) {
+        if(data.linkTypesList.length === 0) {
         	this.loadFailHandler();
         }
 	},
@@ -170,20 +170,20 @@ Ext.define('com.trackplus.issue.Link',{
 	 */
 	replaceSpecificPart: function(panel, specificLinkTypeClass, specificData) {
 		var specificPart = panel.getComponent("specificPart");
-		if (specificPart!=null) {
+		if (specificPart) {
             specificPart.setDisabled(true);
 			panel.remove(specificPart, true);
 		}
-		if (specificLinkTypeClass!=null) {
+		if (specificLinkTypeClass) {
 			var specificPart = Ext.create(specificLinkTypeClass,{
 				margin:'0 5 5 0'
 			});
-			if (specificPart!=null) {
+			if (specificPart) {
 				panel.insert(1, specificPart);
-				//specificData["labelWidth"] = 100;
+				specificData["labelWidth"] = 100;
 				specificPart.onDataReady(specificData);
-				panel.doLayout();
+				panel.updateLayout();
 			}
 		}
 	}
-})
+});

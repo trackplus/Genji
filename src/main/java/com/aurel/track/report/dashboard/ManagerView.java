@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -59,10 +59,8 @@ public class ManagerView extends BasePluginDashboardView {
 	
 	private static final Logger LOGGER = LogManager.getLogger(ManagerView.class);
 	
-	//private static WorkItemDAO workItemDAO = DAOFactory.getFactory().getWorkItemDAO();
 	//private static final String PARAMSKEY="pI";
 	
-	//private Map theListMap = new HashMap();
    
 	//Runtime link attribute names
 	private static interface LINK_PARAMETERS {
@@ -164,13 +162,11 @@ public class ManagerView extends BasePluginDashboardView {
 			if (managerItems != null) {
 				// Calculate the total number of issues grouped by priorities...
 				abstractGrouping = GroupingFactory.getGrouping(SystemFields.PRIORITY, projectIndex);
-				//Map linkParametersMap = prepareLinkParametersMap(personID, projectID,  new Integer(SystemFields.PRIORITY),release);
 				List groupByPriorities=abstractGrouping.groupItems(managerItems,locale);
 				prjWrapper.setList(groupByPriorities);
 
 				// Calculate the total number of issues grouped by responsibles...
 				abstractGrouping = GroupingFactory.getGrouping(SystemFields.RESPONSIBLE, projectIndex);
-				//linkParametersMap = prepareLinkParametersMap(personID, projectID, new Integer(SystemFields.RESPONSIBLE),release);
 				List groupByUser=abstractGrouping.groupItems(managerItems,locale);
 				prjWrapper.setSecondList(groupByUser);
 

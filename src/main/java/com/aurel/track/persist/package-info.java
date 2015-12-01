@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (C) 2015 Steinbeis GmbH & Co. KG.
+ * All rights reserved. 
+ *
+ * This program and the accompanying materials are made 
+ * available under the terms of the Genji License v2.0
+ * which is available at http://www.trackplus.com/tpl-v20.html
+ *
+ * $Id: package-info.java 1661 2015-10-25 20:06:43Z friedric $
+ *******************************************************************************/
 /**
  *   The persist package contains the O/R mapping layer based on Torque, and some business logic.
  *   You should not use these classes directly, but rather work with the DAO interface, or better yet,

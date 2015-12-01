@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -108,8 +108,7 @@ public class ClusterBL {
 	}
 	
 	public static boolean isCluster() {
-		return ApplicationBean.getApplicationBean().isCluster();
-		//return true;
+		return ApplicationBean.getInstance().isCluster();
 	}
 	
 	/**
@@ -236,18 +235,6 @@ public class ClusterBL {
 	 * clean the timed out users
 	 * @param passAwayTimeout
 	 */
-	/*private static void cleanLoggedInUsersTable(Integer passAwayTimeout)  {
-		List<TLoggedInUsersBean> loggedInUsers = loggedInUsersDAO.loadAll();
-		if (loggedInUsers!=null) {
-			for (TLoggedInUsersBean loggedInUsersBean : loggedInUsers) {
-				Date lastUpdate = loggedInUsersBean.getLastUpdate();
-				Date now = new Date();
-				if (lastUpdate==null || lastUpdate!=null && (now.getTime() - lastUpdate.getTime())/1000 > (passAwayTimeout + 30)) {
-					loggedInUsersDAO.deleteByID(loggedInUsersBean.getObjectID());
-				}
-			}
-		}
-	}*/	
 	
 	/**
 	 * This will remove any entries that haven't been updated for some time.
@@ -374,7 +361,6 @@ public class ClusterBL {
 		//update only the cache (after changing a sort order, icon etc. which does not affect the full text index directly)
 		public static int UPDATE_CACHE = 4;
 		//reload all entities
-		//public static int RELOAD_ALL = 5;
 	}
 
 	/**

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -59,7 +59,7 @@ import com.aurel.track.util.PropertiesHelper;
  */
 public class TPersonBean
 extends com.aurel.track.beans.base.BaseTPersonBean
-	implements Serializable, IBeanID, ISortedBean, 
+	implements Serializable, IBeanID, ISortedBean,
 		ISerializableLabelBean, Comparable
 {
 	public static interface PERSON_CATEGORY {
@@ -82,45 +82,44 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 		public static final String EXTERNAL_ACTIVE = "E";
 		public static final String EXTERNAL_INACTIVE = "X";
 	}
-	
+
 	public static interface USERLEVEL {
 		public static final Integer CLIENT = Integer.valueOf(0);
 		public static final Integer FULL = Integer.valueOf(1);
 		public static final Integer SYSADMIN = Integer.valueOf(2);
 		public static final Integer SYSMAN = Integer.valueOf(3);
 	}
-	
+
 	public static Integer DEFAULT_USERLEVEL=USERLEVEL.FULL;
-	
+
 	public static interface EMAIL {
 		public static final Integer YES_EMAIL_PLEASE = Integer.valueOf(0);
 		public static final Integer NO_EMAIL_PLEASE = Integer.valueOf(1);
 	}
-	
-	public static String GUEST_USER = "guest"; 
+
+	public static String GUEST_USER = "guest";
 	public static String ADMIN_USER = "admin";
 	//workflow user
 	public static String WORKFLOW_USER = "workflow";
 	public static String WORKFLOW_FIRST_NAME = "Genji System";
 	public static String WORKFLOW_LAST_NAME = "Workflow";
 	public static int WORKFLOW_USER_ID = -1;
-	
+
 	public static final String LAST_LOGIN = "LastLogin";
 	public static final String IS_SYSADM = "SYSA";
-	
+
 	private static final long serialVersionUID = 1L;
-	private static final Logger LOGGER = LogManager.getLogger(TPersonBean.class);	
-	
+	private static final Logger LOGGER = LogManager.getLogger(TPersonBean.class);
+
 	// the properties currently supported by this bean
-	//TODO move the other such properties from TPerson as soon as the TPersonBean 
-	//will be stored in the session instead of the torque TPerson  
-	//public static final String REPORT_SORTFIELD = "ReportSortField";
-	//public static final String REPORT_SORTORDER = "ReportSortOrder";	
+	//TODO move the other such properties from TPerson as soon as the TPersonBean
+	//will be stored in the session instead of the torque TPerson
+	//public static final String REPORT_SORTORDER = "ReportSortOrder";
 	//public static final String REPORT_GROUPBYFIELD = "ReportGroupByField";
-	
+
 	public static final String CSV_CHAR = "CsvChar";
 	public static final String CSV_ENCODING = "CsvEncoding";
-	
+
 	public static final String RICH_TEXT_EDITOR_EXPANDED="richTextEditorExpanded";
 	public static final String HISTORY_FULL="historyFull";
 	public static final String SHOW_COMMENTS_HISTORY="showCommentsHistory";
@@ -147,14 +146,14 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 	public static final String WIKI_EDITABLE_MODE = "wikiEditableMode";
 	public static final String WIKI_LAST_DOCUMENT = "wikiLastDocument";
 	public static final String LINKING_LAST_SEARCH = "linkingLastSearch";
-	
+
 	public static final String DOCX_LAST_TEMPLATE = "docxLastTemplate";
-		
+
 	public static final String NAME_SEPARATOR = ", ";
-	private boolean isProjAdmin = false; 
+	private boolean isProjAdmin = false;
 	private boolean isAnonimous = false;
 	private Date lastButOneLogin = null;
-	
+
 	private boolean failure;
 	private String failureDescription;
 	private String fullName=null;
@@ -164,28 +163,28 @@ extends com.aurel.track.beans.base.BaseTPersonBean
      * Whether the number of project role based items are above the configured limit
      */
     private Boolean projectRoleItemsAboveLimit;
-    
+
     /**
      * Whether the number of RACI items are above the configured limit
      */
     private Boolean raciRoleItemsAboveLimit;
-	
+
     private String plainPwd;
-	
-    private Map<String, Boolean> licensedFeaturesMap = new HashMap<String, Boolean>(); 
+
+    private Map<String, Boolean> licensedFeaturesMap = new HashMap<String, Boolean>();
 
 	public TPersonBean() {
 		super();
 		this.moreProperties = PropertiesHelper.getProperties(getPreferences());
 	}
-	
+
 	public TPersonBean(String firstName, String lastName, String email) {
 		this.setFirstName(firstName);
 		this.setLastName(lastName);
 		this.setEmail(email);
 		this.moreProperties = new Properties();
 	}
-	
+
 	/**
 	 * Gets the user level map for person
 	 * @return
@@ -202,7 +201,7 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 		}
 		return userLevelMap;
 	}
-	
+
 	public List<Integer> getSubstitutedPersons() {
 		return substitutedPersons;
 	}
@@ -246,8 +245,8 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 	}
 	public void setProjAdmin(boolean isProjAdmin) {
 		this.isProjAdmin = isProjAdmin;
-	}	
-	
+	}
+
 	public boolean isAnonimous() {
 		return isAnonimous;
 	}
@@ -257,12 +256,12 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 	public boolean isGroup() {
 		return BooleanFields.TRUE_VALUE.equals(getIsgroup());
 	}
-	
+
 	public void setIsGroupBool(boolean isGroup) {
 		setIsgroup(BooleanFields.fromBooleanToString(isGroup));
 	}
 
-	
+
 	/**
 	 * Returns true if person wants to use LDAP
 	 * @return true if person wants to use LDAP, false if not
@@ -272,11 +271,11 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 		return (enc.encodePassword(Constants.LdapUserPwd, getSalt()).equals(getPasswd())
 				|| enc.encodePassword1(Constants.LdapUserPwd).equals(getPasswd()));
 	}
-	
+
 	public void setIsLdapUser() {
 		setPasswdEncrypted(Constants.LdapUserPwd);
 	}
-	
+
 	/**
 	 * Get the full name (lastname, firstname) of a TPerson
 	 * Fullname is appended by a '*' if TPerson is marked as deleted
@@ -292,7 +291,7 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 		}
 		return fullName;
 	}
-	
+
 	/**
 	 * Get the full name (lastname, firstname) of a TPerson
 	 * Fullname is appended by a '*' if TPerson is marked as deleted
@@ -304,8 +303,8 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 		} else {
 			StringBuffer fullSimpleName = new StringBuffer();
 			if (getLastName()!=null) {
-				fullSimpleName.append(getLastName());	
-			}		
+				fullSimpleName.append(getLastName());
+			}
 			if (getFirstName()!=null) {
 				fullSimpleName.append(" ");
 				fullSimpleName.append(getFirstName());
@@ -313,7 +312,7 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 			return fullSimpleName.toString();
 		}
 	}
-	
+
 	/**
 	 * Get the full name (lastname, firstname) of a TPerson
 	 * @return the full name
@@ -324,8 +323,8 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 		} else {
 			StringBuffer fullSimpleName = new StringBuffer();
 			if (getLastName()!=null) {
-				fullSimpleName.append(getLastName());	
-			}		
+				fullSimpleName.append(getLastName());
+			}
 			if (getFirstName()!=null) {
 				fullSimpleName.append(", ");
 				fullSimpleName.append(getFirstName());
@@ -333,7 +332,7 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 			return fullSimpleName.toString();
 		}
 	}
-	
+
 	/**
 	 * Get the full name (firstname lastname) of a TPerson
 	 * with no further additional flags
@@ -345,8 +344,8 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 		} else {
 			StringBuffer fullSimpleName = new StringBuffer();
 			if (getFirstName()!=null) {
-				fullSimpleName.append(getFirstName());	
-			}		
+				fullSimpleName.append(getFirstName());
+			}
 			if (getLastName()!=null) {
 				fullSimpleName.append(" ");
 				fullSimpleName.append(getLastName());
@@ -354,9 +353,9 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 			return fullSimpleName.toString();
 		}
 	}
-	
+
 	/**
-	 * Helper method for building the fullname 
+	 * Helper method for building the fullname
 	 * @param lastName
 	 * @param firstName
 	 * @param deactivated
@@ -368,7 +367,7 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 		StringBuilder fullName = new StringBuilder();
 		if (lastName!=null) {
 			fullName.append(lastName);
-		}		
+		}
 		if (firstName!=null && !"".equals(firstName)) {
 			fullName.append(NAME_SEPARATOR);
 			fullName.append(firstName);
@@ -376,18 +375,14 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 		fullName.append(getMarker(deactivated, isSysAdmin));
 		return fullName.toString();
 	}
-			
+
 	public static String DEACTIVATED = " *";
-	//public static String SYS_ADM = " !";
-	
+
 	private StringBuilder getMarker(boolean deactivated, boolean isSysAdmin) {
 		StringBuilder marker = new StringBuilder("");
 		if (deactivated) {
 			marker.append(DEACTIVATED);
 		}
-		/*if (isSysAdmin) {
-			marker.append(SYS_ADM);
-		}*/
 		return marker;
 	}
 
@@ -397,7 +392,7 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 	public boolean isDisabled() {
 		return BooleanFields.TRUE_VALUE.equals(getDeleted());
 	}
-	
+
 	public void setDisabled(boolean disabled) {
 		if (disabled) {
 			setDeleted(BooleanFields.TRUE_VALUE);
@@ -405,25 +400,25 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 			setDeleted(BooleanFields.FALSE_VALUE);
 		}
 	}
-	
+
 	public boolean isExternal() {
 		return USERLEVEL.CLIENT.equals(getUserLevel());
 	}
-	
+
 	public boolean isSysAdmin() {
-		if (getObjectID()==null || 
-				getObjectID().equals(MatcherContext.LOGGED_USER_SYMBOLIC) || 
+		if (getObjectID()==null ||
+				getObjectID().equals(MatcherContext.LOGGED_USER_SYMBOLIC) ||
 				getObjectID().equals(MatcherContext.PARAMETER)) {
 			//a new user or the symbolic user is newer system admin
 			return false;
 		}
 		if (getObjectID().intValue() < 100 && getObjectID().intValue()>0) {
-			//user below 100 are always sysAdmins independently of the UserLevel 
+			//user below 100 are always sysAdmins independently of the UserLevel
 			return true;
 		}
 		return USERLEVEL.SYSADMIN.equals(getUserLevel());
 	}
-	
+
 	public void setSysAdmin(boolean sysAdmin) {
 		if (sysAdmin) {
 			setUserLevel(USERLEVEL.SYSADMIN);
@@ -431,12 +426,11 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 			setUserLevel(USERLEVEL.FULL);
 		}
 	}
-	
+
 	public boolean isSysManager() {
-		//return isSysMan;
 		return USERLEVEL.SYSMAN.equals(getUserLevel());
 	}
-	
+
 	public void setSysManager(boolean sysMan) {
 		if (sysMan) {
 			setUserLevel(USERLEVEL.SYSMAN);
@@ -444,7 +438,7 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 			setUserLevel(USERLEVEL.FULL);
 		}
 	}
-	
+
 	/**
 	 * Whether the user is either system administrator or system manager
 	 * @return
@@ -452,16 +446,16 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 	public boolean isSys() {
 		return isSysAdmin() || isSysManager();
 	}
-	
+
 	public boolean isAlwaysSaveAttachment() {
 		return PropertiesHelper.getBooleanProperty(getMoreProperties(), TPersonBean.ALWAYS_SAVE_ATTACHMENT);
 	}
-	
+
 	public void setAlwaysSaveAttachment(Boolean value) {
 		setPreferences(PropertiesHelper.setBooleanProperty(getPreferences(), TPersonBean.ALWAYS_SAVE_ATTACHMENT, value));
 	}
-	
-	
+
+
 	/**
 	 * @return Returns the noEmailPlease.
 	 */
@@ -473,7 +467,7 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 			return false;
 		}
 	}
-	
+
 	/**
 	 * @param noEmailPlease The noEmailPlease to set.
 	 */
@@ -485,7 +479,7 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 			super.setNoEmailPlease(EMAIL.YES_EMAIL_PLEASE);
 		}
 	}
-	
+
 	/**
 	 * Remind me as originator
 	 * @param remindMe
@@ -497,7 +491,7 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 			setRemindMeAsOriginator(BooleanFields.FALSE_VALUE);
 		}
 	}
-	
+
 	public boolean getRemindMeAsOriginatorBool() {
 		return BooleanFields.TRUE_VALUE.equals(getRemindMeAsOriginator().toUpperCase());
 	}
@@ -511,13 +505,13 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 			setRemindMeAsManager(BooleanFields.TRUE_VALUE);
 		} else {
 			setRemindMeAsManager(BooleanFields.FALSE_VALUE);
-		}	
+		}
 	}
-	
+
 	public boolean getRemindMeAsManagerBool() {
 		return BooleanFields.TRUE_VALUE.equals(getRemindMeAsManager().toUpperCase());
 	}
-	
+
 	/**
 	 * Remind me as responsible
 	 * @param remindMe
@@ -527,28 +521,31 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 			setRemindMeAsResponsible(BooleanFields.TRUE_VALUE);
 		} else {
 			setRemindMeAsResponsible(BooleanFields.FALSE_VALUE);
-		}	
+		}
 	}
-	
+
 	public boolean getRemindMeAsResponsibleBool() {
 		return BooleanFields.TRUE_VALUE.equals(getRemindMeAsResponsible().toUpperCase());
 	}
-	
+
+	@Override
 	public Comparable getSortOrderValue() {
 		return getFullName();
 	}
-	
+
+	@Override
 	public String getLabel() {
 		return getFullName();
 	}
-	
+
+	@Override
 	public void setPreferences(String _moreProps) {
 		moreProperties = PropertiesHelper.getProperties(_moreProps);
 		super.setPreferences(_moreProps);
 	}
-	
+
 	protected Properties moreProperties = null;
-	
+
 	public Properties getMoreProperties() {
 		if (moreProperties == null) {
 			moreProperties = PropertiesHelper.getProperties(getPreferences());
@@ -558,7 +555,7 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 		}
 		return moreProperties;
 	}
-	
+
 	public Date getLastLogin() {
 		Date lastLogin = null;
 		long lastLoginDateInMilliseconds = 0;
@@ -568,7 +565,7 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 			try {
 				lastLoginDateInMilliseconds = new Long(strLastLogin).longValue();
 			} catch (Exception e) {
-				LOGGER.error("Loading the last login from preferences failed with " + e.getMessage(), e);
+				LOGGER.error("Loading the last login from preferences failed with " + e.getMessage());
 			}
 			if (lastLoginDateInMilliseconds>0) {
 				lastLogin = new Date(lastLoginDateInMilliseconds);
@@ -576,7 +573,7 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 		}
 		return lastLogin;
 	}
-	
+
 	public void setLastLogin(Date lastLogin) {
 		String preferences = getPreferences();
 		if (lastLogin==null) {
@@ -586,7 +583,7 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 		String strLastLogin = new Long(lastLogin.getTime()).toString();
 		setPreferences(PropertiesHelper.setProperty(preferences, LAST_LOGIN, strLastLogin));
 	}
-	
+
 	/**
 	 * @return the lastButOneLogin
 	 */
@@ -603,79 +600,40 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 	public void setLastButOneLogin(Date lastButOneLogin) {
 		this.lastButOneLogin = lastButOneLogin;
 	}
-	
+
 	/**
 	 * Get the sorted by field
 	 *
 	 * @return
 	 */
-	/*public Integer getReportSortField() {
-		String sortFieldStr = PropertiesHelper.getProperty(getMoreProperties(), REPORT_SORTFIELD);
-		Integer sortField = null;
-		if (sortFieldStr!=null) {
-			try {
-				sortField = Integer.valueOf(sortFieldStr);
-			} catch (Exception e) {
-				LOGGER.error("Report sort field not an integer " + e.getMessage(), e);
-			}
-		}
-		return sortField;
-	}*/
-	
+
 	/**
 	 * Get the sort order
 	 *
 	 * @return
 	 */
-	/*public Boolean getReportSortOrder() {
-		String sortOrderStr = PropertiesHelper.getProperty(getMoreProperties(), REPORT_SORTORDER);
-		Boolean sortOrder = null;
-		if (sortOrderStr!=null) {
-			try {
-				sortOrder = Boolean.valueOf(sortOrderStr);
-			} catch (Exception e) {
-				LOGGER.error("Report sort field not an integer " + e.getMessage(), e);
-			}
-		}
-		return sortOrder;
-	}*/
-	
+
 	/**
 	 * Set the sort order
 	 * @param sortOrder
 	 */
-	/*public void setReportSortOrder(Boolean sortOrder) {
-		if (sortOrder!=null) {
-			setPreferences(PropertiesHelper.setProperty(getPreferences(), 
-					REPORT_SORTORDER, sortOrder.toString()));
-		}
-	}*/
-	
+
 	/**
 	 * Get the sorted by field
 	 * @return
 	 */
-	/*public String getReportGroupByField() {
-		return PropertiesHelper.getProperty(getMoreProperties(), REPORT_GROUPBYFIELD);
-	}*/
-	
+
 	/**
 	 * Set the the sorted by field
 	 * @param groupByFieldString
 	 */
-	/*public void setReportGroupByField(String groupByFieldString) {
-		if (groupByFieldString!=null) {
-			setPreferences(PropertiesHelper.setProperty(getPreferences(), 
-					REPORT_GROUPBYFIELD, groupByFieldString));
-		}
-	}*/
-	
+
 	/**
 	 * The character used for comma separated value files, e.g. Excel exports
 	 * @return
 	 */
 	public Character getCsvCharacter() {
-		String preferences = getPreferences(); 
+		String preferences = getPreferences();
 		String csv = PropertiesHelper.getProperty(getMoreProperties(), CSV_CHAR);
 		if (csv == null || csv.length() < 1) {
 			  return new Character(';');
@@ -684,18 +642,18 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 			return new Character(csv.charAt(0));
 		}
 	}
-	
+
 	/**
 	 * The character used for comma separated value files, e.g. Excel exports
 	 * @return
 	 */
 	public void setCsvCharacter(String csvSeparator) {
 		if (csvSeparator!=null) {
-			setPreferences(PropertiesHelper.setProperty(getPreferences(), 
+			setPreferences(PropertiesHelper.setProperty(getPreferences(),
 					CSV_CHAR, csvSeparator));
 		}
 	}
-	
+
 	/**
 	 * The character used for comma separated value files, e.g. Excel exports
 	 * @return
@@ -703,19 +661,19 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 	public String getCsvEncoding() {
 		return PropertiesHelper.getProperty(getMoreProperties(), CSV_ENCODING);
 	}
-	
+
 	/**
 	 * The character used for comma separated value files, e.g. Excel exports
 	 * @return
 	 */
 	public void setCsvEncoding(String csvEncoding) {
 		if (csvEncoding!=null) {
-			setPreferences(PropertiesHelper.setProperty(getPreferences(), 
+			setPreferences(PropertiesHelper.setProperty(getPreferences(),
 				CSV_ENCODING, csvEncoding));
 		}
 	}
-	
-	
+
+
 	/**
 	 * The character used for comma separated value files, e.g. Excel exports
 	 * @return
@@ -723,21 +681,22 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 	public String getLastSelectedView() {
 		return PropertiesHelper.getProperty(getMoreProperties(), ITEM_NAVIGATOR_LAST_SELECTED_VIEW);
 	}
-	
+
 	/**
 	 * The character used for comma separated value files, e.g. Excel exports
 	 * @return
 	 */
 	public void setLastSelectedView(String lastSelectedView) {
 		if (lastSelectedView!=null) {
-			setPreferences(PropertiesHelper.setProperty(getPreferences(), 
+			setPreferences(PropertiesHelper.setProperty(getPreferences(),
 				ITEM_NAVIGATOR_LAST_SELECTED_VIEW, lastSelectedView));
 		}
 	}
-	
+
 	/**
 	 * Used by sorting sets of personBeans by group and fullName
 	 */
+	@Override
 	public int compareTo(Object o) {
 		TPersonBean personBean = (TPersonBean)o;
 		if (getIsgroup()==null && personBean.getIsgroup()==null) {
@@ -748,14 +707,14 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 		}
 		if (personBean.getIsgroup()==null) {
 			return 1;
-		}				
+		}
 		if (getIsgroup().equals(personBean.getIsgroup())) {
-			return getFullName().compareTo(personBean.getFullName()); 
+			return getFullName().compareTo(personBean.getFullName());
 		} else {
 			return getIsgroup().compareTo(personBean.getIsgroup());
 		}
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		TPersonBean personBean = (TPersonBean)o;
@@ -764,7 +723,7 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 		}
 		return getObjectID().equals(personBean.getObjectID());
 	}
-	
+
 	@Override
 	public int hashCode() {
 		if (getObjectID() == null) {
@@ -773,7 +732,7 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 			return getObjectID();
 		}
 	}
-	
+
 	public boolean isRichTextEditorExpanded() {
 		return PropertiesHelper.getBooleanProperty(getMoreProperties(), RICH_TEXT_EDITOR_EXPANDED);
 	}
@@ -812,9 +771,6 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 	}
 
 	public void setAutoLoadTime(Integer autoLoadTime) {
-		/*if (autoLoadTime == null) {
-			autoLoadTime = Integer.valueOf(120);
-		}*/
 		setPreferences(PropertiesHelper.setIntegerProperty(getPreferences(), AUTOLOAD_TIME, autoLoadTime));
 	}
 
@@ -822,7 +778,7 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 		return PropertiesHelper.getBooleanProperty(getMoreProperties(), SHOW_DASHBOARD_TIMER);
 	}
 
-	public void setShowDashboardTimer(boolean showDashboardTimer) {		
+	public void setShowDashboardTimer(boolean showDashboardTimer) {
 		setPreferences(PropertiesHelper.setBooleanProperty(getPreferences(), SHOW_DASHBOARD_TIMER, showDashboardTimer));
 	}
 
@@ -833,7 +789,7 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 	public void setEnableQueryLayout(boolean enableQueryLayout) {
 		setPreferences(PropertiesHelper.setBooleanProperty(getPreferences(), ENABLE_QUERY_LAYOUT, enableQueryLayout));
 	}
-	
+
 	public boolean isPaginate() {
 		return PropertiesHelper.getBooleanProperty(getMoreProperties(), ITEM_NAVIGATOR_PAGINATE);
 	}
@@ -868,15 +824,8 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 	public void setHomePage(String homePage) {
 		setPreferences(PropertiesHelper.setProperty(getPreferences(), HOME_PAGE, homePage));
 	}
-	
-	/*public boolean getPrivateProject() {
-		return PropertiesHelper.getBooleanProperty(getPreferences(), PRIVATE_PROJECT);
-	}
 
-	public void setPrivateProject(boolean privateProject) {
-		setPreferences(PropertiesHelper.setBooleanProperty(getPreferences(), PRIVATE_PROJECT, privateProject));
-	}*/
-	
+
 	public String getUserTimeZoneId() {
 		String utz = PropertiesHelper.getProperty(getMoreProperties(), USERTZ);
 		if (utz == null || "".equals(utz)) {
@@ -884,11 +833,11 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 		}
 		return utz;
 	}
-	
+
 	public void setUserTimeZoneId(String userTz) {
 		setPreferences(PropertiesHelper.setProperty(getPreferences(), USERTZ, userTz));
 	}
-	
+
 	/**
 	 * Gets the design path selected by the user
 	 * @return
@@ -901,7 +850,7 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 			return designPath;
 		}
 	}
-	
+
 	/**
 	 * Sets the design path selected by the user
 	 * @param designPath
@@ -913,8 +862,8 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 		}
 		setPreferences(PropertiesHelper.setProperty(preferences, DESIGNPATH, designPath));
 	}
-	
-	
+
+
 	public Locale getLocale() {
 		// This is just for transport from TPerson.
 		// The locale itself will come for TPerson.
@@ -922,9 +871,9 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 		if (loc == null || "".equals(loc)) {
 			return Locale.getDefault();
 		}
-		return LocaleHandler.getLocaleFromString(loc); 
+		return LocaleHandler.getLocaleFromString(loc);
 	}
-	
+
 	public void setLocale(Locale locale) {
 		if (locale!=null) {
 			setPreferences(PropertiesHelper.setProperty(getPreferences(), LOCALE, locale.toString()));
@@ -938,20 +887,16 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 		}
 		return ProfileBL.EMAIL_TYPE.PLAIN.equals(preferredEmail);
 	}
-	
+
 
 	/*
 	 * The following methods are provided for the Spring security framework
 	 */
-//	public GrantedAuthority[] getAuthorities() {
-//		GrantedAuthorityImpl ga[] = {new GrantedAuthorityImpl("ROLE_USER")};
-//		return ga;
-//	}
 
 	public String getPassword() {
 		return this.getPasswd();
 	}
-	
+
 	public String getPlainPwd() {
 		return plainPwd;
 	}
@@ -960,7 +905,7 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 		this.plainPwd = plainPwd;
 	}
 
-	
+
 	public Map<String, Boolean> getLicensedFeaturesMap() {
 		return licensedFeaturesMap;
 	}
@@ -991,11 +936,11 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 	public boolean isEnabled() {
 		return !isDisabled();
 	}
-	
+
 	public List<Integer> getReminderDays()
 	{
 		List<Integer> reminderDays = new ArrayList<Integer>(7);
-		String preferences = getPreferences(); 
+		String preferences = getPreferences();
 		String strReminderDays = PropertiesHelper.getProperty(getMoreProperties(), REMINDER_DAYS);
 		if (strReminderDays!=null) {
 			reminderDays = new ArrayList<Integer>(strReminderDays.length());
@@ -1004,7 +949,7 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 				try {
 					reminderDays.add(Integer.valueOf(new Character(dayNo).toString()).intValue());
 				} catch(Exception e) {
-					
+
 				}
 			}
 		}
@@ -1027,18 +972,18 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 		setPreferences(PropertiesHelper.setProperty(preferences, REMINDER_DAYS, strReminderDays));
 	}
 
-	
+
 	/**
 	 * Extends the standard setter method by converting the password to
 	 * its encrypted form first. A unique salt is generated for each user.
 	 * @param ppasswd the password to set
-	 */   
+	 */
 	public void setPasswdEncrypted(String ppasswd) {
 		TpPasswordEncoder enc = new TpPasswordEncoder();
 		setSalt(UUID.randomUUID().toString());
 		super.setPasswd(enc.encodePassword(ppasswd, getSalt()));
 	}
-	
+
 	/** Returns true if this person has system administrator rights */
 	public boolean getIsSysAdmin() {
 		if (getObjectID()==null) {
@@ -1046,12 +991,12 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 			return false;
 		}
 		if (getObjectID().intValue() < 100) {
-			//user below 100 are always sysAdmins independently of the UserLevel 
+			//user below 100 are always sysAdmins independently of the UserLevel
 			return true;
 		}
 		return USERLEVEL.SYSADMIN.equals(getUserLevel());
 	}
-	
+
 	/** Set to true if this person has system administrator rights */
 	public void setIsSysAdmin(boolean value) {
 		if (value) {
@@ -1059,9 +1004,9 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 		} else {
 			setUserLevel(USERLEVEL.FULL);
 		}
-		
+
 	}
-	
+
 	/**
 	 * Get the sorted by field
 	 * @return
@@ -1069,22 +1014,23 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 	public String getDocxLastTemplate() {
 		return PropertiesHelper.getProperty(getMoreProperties(), DOCX_LAST_TEMPLATE);
 	}
-	
+
 	/**
 	 * Set the the sorted by field
 	 * @param groupByFieldString
 	 */
 	public void setDocxLastTemplate(String docxLastTemplate) {
 		if (docxLastTemplate!=null) {
-			setPreferences(PropertiesHelper.setProperty(getPreferences(), 
+			setPreferences(PropertiesHelper.setProperty(getPreferences(),
 					DOCX_LAST_TEMPLATE, docxLastTemplate));
 		}
 	}
-	
+
 	/**
 	 * Serialize a label bean to a map
 	 * @return
 	 */
+	@Override
 	public Map<String, String> serializeBean() {
 		Map<String, String> attributesMap = new HashMap<String, String>();
 		attributesMap.put("objectID", getObjectID().toString());
@@ -1121,7 +1067,7 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 		Date emailLastReminded = getEmailLastReminded();
 		if (emailLastReminded!=null) {
 			attributesMap.put("emailLastReminded", DateTimeUtils.getInstance().formatISODate(emailLastReminded));
-		}	  
+		}
 		attributesMap.put("emailRemindMe", getEmailRemindMe());
 		attributesMap.put("prefEmailType", getPrefEmailType());
 		attributesMap.put("prefLocale", getPrefLocale());
@@ -1132,7 +1078,7 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 		attributesMap.put("remindMeAsOriginator", getRemindMeAsOriginator());
 		attributesMap.put("remindMeAsManager", getRemindMeAsManager());
 		attributesMap.put("remindMeAsResponsible", getRemindMeAsResponsible());
-		
+
 		Integer emailRemindPriorityLevel = getEmailRemindPriorityLevel();
 		if (emailRemindPriorityLevel!=null) {
 			attributesMap.put("emailRemindPriorityLevel", emailRemindPriorityLevel.toString());
@@ -1140,7 +1086,7 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 		Integer emailRemindSeverityLevel = getEmailRemindSeverityLevel();
 		if (emailRemindSeverityLevel!=null) {
 			attributesMap.put("emailRemindSeverityLevel", emailRemindSeverityLevel.toString());
-		}		
+		}
 		Double hoursPerWorkDay = getHoursPerWorkDay();
 		if (hoursPerWorkDay!=null) {
 			attributesMap.put("hoursPerWorkDay", hoursPerWorkDay.toString());
@@ -1164,12 +1110,13 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 		}
 		return attributesMap;
 	}
-	
+
 	/**
-	 * De-serialze the labelBean 
+	 * De-serialze the labelBean
 	 * @param attributes
 	 * @return
 	 */
+	@Override
 	public ISerializableLabelBean deserializeBean(Map<String, String> attributes) {
 		TPersonBean personBean = new TPersonBean();
 		String strObjectID = attributes.get("objectID");
@@ -1204,7 +1151,7 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 		personBean.setEmailRemindMe(attributes.get("emailRemindMe"));
 		personBean.setPrefEmailType(attributes.get("prefEmailType"));
 		personBean.setPrefLocale(attributes.get("prefLocale"));
-			
+
 		String strNoEmailPlease = attributes.get("noEmailPlease");
 		if (strNoEmailPlease!=null) {
 			personBean.setNoEmailPlease(new Integer(strNoEmailPlease));
@@ -1212,7 +1159,7 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 		personBean.setRemindMeAsOriginator(attributes.get("remindMeAsOriginator"));
 		personBean.setRemindMeAsManager(attributes.get("remindMeAsManager"));
 		personBean.setRemindMeAsResponsible(attributes.get("remindMeAsResponsible"));
-			
+
 		String strEmailRemindPriorityLevel = attributes.get("emailRemindPriorityLevel");
 		if (strEmailRemindPriorityLevel!=null) {
 			personBean.setEmailRemindPriorityLevel(new Integer(strEmailRemindPriorityLevel));
@@ -1241,15 +1188,16 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 		}
 		return personBean;
 	}
-	
+
 	/**
-	 * Whether two label beans are equivalent 
+	 * Whether two label beans are equivalent
 	 * @param serializableLabelBean
 	 * @param matchesMap	key: fieldID_paramaterCode
-	 * 						value: map of already mapped external vs. internal objectIDs 
+	 * 						value: map of already mapped external vs. internal objectIDs
 	 * @return
 	 */
-	public boolean considerAsSame(ISerializableLabelBean serializableLabelBean, 
+	@Override
+	public boolean considerAsSame(ISerializableLabelBean serializableLabelBean,
 			Map<String, Map<Integer, Integer>> matchesMap) {
 		if (serializableLabelBean==null) {
 			return false;
@@ -1266,41 +1214,42 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 		}
 		//for admin and guest users the names are enough
 		if (externUserName!=null && internUserName!=null) {
-			return externUserName.equals(internUserName) && 
+			return externUserName.equals(internUserName) &&
 				(ADMIN_USER.equals(externUserName) || GUEST_USER.equals(externUserName));
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Saves a serializableLabelBean into the database
 	 * @param serializableLabelBean
 	 * @param matchesMap
 	 * @return
 	 */
-	public Integer saveBean(ISerializableLabelBean serializableLabelBean, 
-			Map<String, Map<Integer, Integer>> matchesMap) {		
+	@Override
+	public Integer saveBean(ISerializableLabelBean serializableLabelBean,
+			Map<String, Map<Integer, Integer>> matchesMap) {
 		TPersonBean personBean = (TPersonBean)serializableLabelBean;
 		//deactivate the newly created persons
 		personBean.setDeleted(BooleanFields.TRUE_VALUE);
 		Integer departmentID = personBean.getDepartmentID();
 		if (departmentID!=null) {
-			Map<Integer, Integer> departmentMap = 
+			Map<Integer, Integer> departmentMap =
 				matchesMap.get(ExchangeFieldNames.DEPARTMENT);
 			personBean.setDepartmentID(departmentMap.get(departmentID));
 		}
 		Integer priorityLevel = personBean.getEmailRemindPriorityLevel();
 		if (priorityLevel!=null) {
-			Map<Integer, Integer> priorityMap = 
+			Map<Integer, Integer> priorityMap =
 				matchesMap.get(MergeUtil.mergeKey(SystemFields.INTEGER_PRIORITY, null));
 			personBean.setEmailRemindPriorityLevel(priorityMap.get(priorityLevel));
 		}
 		Integer severityLevel = personBean.getEmailRemindSeverityLevel();
 		if (severityLevel!=null) {
-			Map<Integer, Integer> severityMap = 
+			Map<Integer, Integer> severityMap =
 				matchesMap.get(MergeUtil.mergeKey(SystemFields.INTEGER_SEVERITY, null));
 			personBean.setEmailRemindSeverityLevel(severityMap.get(severityLevel));
-		}		
+		}
 		return PersonBL.save((TPersonBean)serializableLabelBean);
 	}
 
@@ -1317,7 +1266,7 @@ extends com.aurel.track.beans.base.BaseTPersonBean
 		}
 		boolean userIsOK = false;
 		TpPasswordEncoder enc = new TpPasswordEncoder();
-		if (ApplicationBean.getApplicationBean().getSiteBean().getIsLDAPOnBool() && this.isLdapUser()) {
+		if (ApplicationBean.getInstance().getSiteBean().getIsLDAPOnBool() && this.isLdapUser()) {
 			userIsOK = LdapUtil.authenticate(this.getLoginName().trim(),
 					ppassword);
 		}

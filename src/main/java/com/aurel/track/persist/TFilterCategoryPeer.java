@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -81,6 +81,7 @@ public class TFilterCategoryPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TFilterCategoryBean loadByPrimaryKey(Integer objectID){
 		TFilterCategory filterCategory = null;
     	try {
@@ -100,6 +101,7 @@ public class TFilterCategoryPeer
 	 * @param categoryIDs
 	 * @return
 	 */
+	@Override
 	public List<TFilterCategoryBean> loadByKeys(List<Integer> categoryIDs) {
 		if (categoryIDs==null || categoryIDs.isEmpty()) {
 			return new LinkedList<TFilterCategoryBean>();			
@@ -117,7 +119,7 @@ public class TFilterCategoryPeer
 			try {
 				torqueList.addAll(doSelect(criteria));
 			} catch(Exception e) {
-				LOGGER.error("Loading the filter categories for " + categoryIDChunks.length +  " failed with " + e.getMessage(), e);}			
+				LOGGER.error("Loading the filter categories for " + categoryIDChunks.length +  " failed with " + e.getMessage());}			
 		}
 		return convertTorqueListToBeanList(torqueList);
 	}
@@ -132,6 +134,7 @@ public class TFilterCategoryPeer
 	 * @param label
 	 * @return
 	 */
+	@Override
 	public List<TFilterCategoryBean> loadByLabel(Integer repository, Integer filterType,
 			Integer parentID, Integer projectID, Integer personID, String label) {
 		List<TFilterCategory> categories = null;		
@@ -169,6 +172,7 @@ public class TFilterCategoryPeer
 	 * @param personID
 	 * @return
 	 */
+	@Override
 	public List<TFilterCategoryBean> loadRootCategories(Integer repository, 
 			Integer filterType, Integer projectID, Integer personID) {
 		List<TFilterCategory> categories = null;
@@ -199,6 +203,7 @@ public class TFilterCategoryPeer
 	 * @param projectIDs
 	 * @return
 	 */
+	@Override
 	public List<TFilterCategoryBean> loadProjectRootCategories(List<Integer> projectIDs, Integer filterType) {
 		List<TFilterCategoryBean> categories = new LinkedList<TFilterCategoryBean>();				
 		if (projectIDs==null || projectIDs.isEmpty()) {
@@ -231,6 +236,7 @@ public class TFilterCategoryPeer
 	 * @param parentID
 	 * @return
 	 */
+	@Override
 	public List<TFilterCategoryBean> loadByParent(Integer parentID) {
 		List<TFilterCategory> categories = new ArrayList<TFilterCategory>();		
 		Criteria criteria = new Criteria();
@@ -250,6 +256,7 @@ public class TFilterCategoryPeer
 	 * @param parentIDs
 	 * @return
 	 */
+	@Override
 	public List<TFilterCategoryBean> loadByParents(List<Integer> parentIDs) {
 		List<TFilterCategoryBean> categories = new LinkedList<TFilterCategoryBean>();		
 		
@@ -280,6 +287,7 @@ public class TFilterCategoryPeer
 	 * @param filterCategoryBean 
 	 * @return
 	 */
+	@Override
 	public Integer save(TFilterCategoryBean filterCategoryBean) {
 		TFilterCategory filterCategory;		
 		try {
@@ -287,7 +295,7 @@ public class TFilterCategoryPeer
 			filterCategory.save();
 			return filterCategory.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a filterCategory failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a filterCategory failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -297,6 +305,7 @@ public class TFilterCategoryPeer
      * is used in other tables in the database.
      * @param oldOID object identifier of list type to be replaced
      */
+    @Override
     public boolean hasDependenData(Integer oldOID) {
         return ReflectionHelper.hasDependentData(dependentDataClasses, dependentDataFields, oldOID);                       
     }
@@ -306,6 +315,7 @@ public class TFilterCategoryPeer
 	 * @param objectID 
 	 * @return
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		ReflectionHelper.delete(deletePeerClasses, deleteFields, objectID);				
 	}
@@ -321,7 +331,7 @@ public class TFilterCategoryPeer
 		try {
 			list = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the list of TFilterCategoryBean to be deleted failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the list of TFilterCategoryBean to be deleted failed with " + e.getMessage());
 			throw e;
 		}			                        
 		if (list!=null && !list.isEmpty()) {
@@ -338,6 +348,7 @@ public class TFilterCategoryPeer
 	 * Delete all private tree queries of a person
 	 * @param personID
 	 */
+	@Override
 	public void deletePrivateFilterCategories(Integer personID) {
 		Criteria criteria = new Criteria();        
         criteria.add(CREATEDBY, personID);
@@ -345,7 +356,7 @@ public class TFilterCategoryPeer
         try {
 			doDelete(criteria);
 		} catch (TorqueException e) {
-			LOGGER.error("Deleting the private filter categories failed with " +e.getMessage(), e);
+			LOGGER.error("Deleting the private filter categories failed with " +e.getMessage());
 		}                      
 	}
 	

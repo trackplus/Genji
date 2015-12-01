@@ -1,0 +1,91 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="When you import an MS Project plan there can be conflicts with existing tasks. Track+ follows specific rules to resolve such conflicts. During synchronization of an MS Project file with a Track+ ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="concept"/><meta name="DC.Title" content="MS Project import conflict resolution rules"/><meta name="abstract" content="When you import an MS Project plan there can be conflicts with existing tasks. Track+ follows specific rules to resolve such conflicts."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="When you import an MS Project plan there can be conflicts with existing tasks. Track+ follows specific rules to resolve such conflicts."/><meta name="indexterms" content="conflict resolution, MS Project import, MS Project import, conflict resolution, import, MS Project conflicts"/><meta name="DC.subject" content="conflict resolution, MS Project import, import, MS Project conflicts"/><meta name="keywords" content="conflict resolution, MS Project import, import, MS Project conflicts"/><meta name="DC.Relation" scheme="URI" content="../../Topics/04ForProjectAdmins/Chapter4Wrapper.html"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="msprojectImportRules"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>MS Project import conflict resolution rules</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()" id="msprojectImportRules">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../Topics/04ForProjectAdmins/Chapter4Wrapper.html" title="Track+ for space administrators"><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Track+ for space administrators</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../Topics/04ForProjectAdmins/Chapter4Wrapper.html" title="Track+ for space administrators">Track+ for space administrators</a></td></tr></tbody></table>
+
+ <h1 class="title topictitle1">MS Project import conflict resolution rules</h1>
+
+ 
+ 
+ <div class="body conbody"><p class="shortdesc">When you import an MS Project plan there can be conflicts with existing tasks. <span class="ph"><span class="ph">Track+</span></span>
+  follows specific rules to resolve such conflicts.</p>
+
+  <p class="p">During synchronization of an MS Project file with a <span class="ph"><span class="ph">Track+</span></span>
+   database, conflicts
+   can occur. This section describes the main conflict handling scenarios.</p>
+
+  <p class="p">If a task exists in <span class="ph"><span class="ph">Track+</span></span>, and has been deleted from MS
+   Project, you are asked if you want to mark this task as deleted in <span class="ph"><span class="ph">Track+</span></span> as well, as long as it is still open.</p>
+
+  <p class="p">If a task has been deleted in <span class="ph"><span class="ph">Track+</span></span>, but still exists in MS
+   Project, you will be asked if you want to restore the task in <span class="ph"><span class="ph">Track+</span></span></p>
+
+  <p class="p">The following fields can be modified in either <span class="ph"><span class="ph">Track+</span></span> or MS
+   Project, and the changes will be synchronized:</p>
+
+  <ul class="ul">
+   <li class="li">
+    <p class="p">Planned value for work</p>
+
+   </li>
+
+   <li class="li">
+    <p class="p">Remaining estimated work</p>
+
+   </li>
+
+   <li class="li">
+    <p class="p">Start date</p>
+
+   </li>
+
+   <li class="li">
+    <p class="p">End date (due date)</p>
+
+   </li>
+
+   <li class="li">
+    <p class="p">Task dependency links</p>
+
+   </li>
+
+   <li class="li">
+    <p class="p">Task title</p>
+
+   </li>
+
+  </ul>
+
+  <p class="p">When either of work, start date or end date was modified in <span class="ph"><span class="ph">Track+</span></span> after the last MS Project modification date, you will be
+   able to choose the correct value during the import conflict resolution process.</p>
+
+  <p class="p">Conflict resolution for task dependency links is solely based on the last modification date. If
+   a dependency link was modified in MS Project, it overwrites the <span class="ph"><span class="ph">Track+</span></span> link if the MS Project file was modified later than the
+   link was modified in <span class="ph"><span class="ph">Track+</span></span>. Otherwise the <span class="ph"><span class="ph">Track+</span></span> link will be left unchanged.</p>
+
+  <p class="p">The same behaviour holds if links were deleted. If a link was deleted from the MS Project file
+   it will also be deleted from <span class="ph"><span class="ph">Track+</span></span> if the MS Project file
+   modification came later than the last modification if the <span class="ph"><span class="ph">Track+</span></span> link.</p>
+
+  <p class="p">When there is a conflict with the tasks title, the <span class="ph"><span class="ph">Track+</span></span>
+   title is left unchanged.</p>
+
+  <p class="p">Data for actual work is never imported from MS Project files into <span class="ph"><span class="ph">Track+</span></span>, since this is data that is typically modified by a large
+   number of team members, and not by a project manager. Actual work is however exported to MS
+   Project files so that it can be analyzed by the project administrator.</p>
+
+ </div>
+
+<div class="related-links"/>
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../Topics/04ForProjectAdmins/Chapter4Wrapper.html" title="Track+ for space administrators"><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Track+ for space administrators</span></a></span>  </div>
+</body>
+</html>

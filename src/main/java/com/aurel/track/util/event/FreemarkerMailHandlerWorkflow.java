@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -72,7 +72,6 @@ import com.aurel.track.util.event.parameters.AfterItemSaveEventParam;
 	 */
 	public class FreemarkerMailHandlerWorkflow extends MailHandler {
 		private static final Logger LOGGER = LogManager.getLogger(FreemarkerMailHandlerWorkflow.class);
-		//private AfterItemSaveEventParam afterItemSaveEventParam;
 		private TWorkItemBean workItemNew = null;
 		private TWorkItemBean workItemOld = null;
 		//to not to load it from the database for every email
@@ -81,7 +80,6 @@ import com.aurel.track.util.event.parameters.AfterItemSaveEventParam;
 	private FreemarkerMailHandlerWorkflow(List<Integer> events, AfterItemSaveEventParam afterItemSaveEventParam) {
 		super(afterItemSaveEventParam.getWorkItemNew(), afterItemSaveEventParam.getWorkItemOld(), afterItemSaveEventParam.getLocale());
 		this.afterItemSaveEventParam = afterItemSaveEventParam;
-		//workItemContext = afterItemSaveEventParam.getWorkItemContext();
 		this.workItemNew = afterItemSaveEventParam.getWorkItemNew();
 		this.workItemOld = afterItemSaveEventParam.getWorkItemOld();
 		if (workItemNew!=null && workItemNew.getProjectID()!=null && 
@@ -146,6 +144,7 @@ import com.aurel.track.util.event.parameters.AfterItemSaveEventParam;
 	 * Get the resource key of the detailed explanation
 	 * @return
 	 */
+	@Override
 	protected String getChangeDetailKey() {
 		if (isCreated /*|| isCopy*/) {
 			return "item.mail.subject.new";
@@ -162,6 +161,7 @@ import com.aurel.track.util.event.parameters.AfterItemSaveEventParam;
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	protected Object[] getChangeDetailParameters(String itemID, TWorkItemBean workItemBean, SortedMap<Integer, FieldChange> fieldChangesMap,  Locale locale) {
 		FieldChange stateChange = fieldChangesMap.get(SystemFields.INTEGER_STATE);
 		String newStateLabel = "";
@@ -180,6 +180,7 @@ import com.aurel.track.util.event.parameters.AfterItemSaveEventParam;
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	protected SortedMap<Integer, FieldChange> getLocalizedFieldChangesMap(AfterItemSaveEventParam afterItemSaveEventParam, Locale locale) {
 		return HistorySaverBL.getLocalizedFieldChanges(afterItemSaveEventParam, locale, false);
 	}
@@ -220,7 +221,6 @@ import com.aurel.track.util.event.parameters.AfterItemSaveEventParam;
 		/**
 		 * get the localized fieldChanges for actualLocale
 		 */
-		//SortedMap<Integer, FieldChange> localizedFieldChangesMap = HistorySaverBL.getLocalizedFieldChanges(afterItemSaveEventParam, actualLocale, false);
 		LOGGER.debug("The number of fields for person " + personID + " is " + localizedFieldChangesCloneMap.size());
 		
 		

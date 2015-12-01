@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -53,6 +53,7 @@ public class TNavigatorColumnPeer
 	 * @param navigatorLayoutID
 	 * @return
 	 */
+	@Override
 	public TNavigatorColumnBean loadByPrimaryKey(Integer navigatorColumnID) {
 		TNavigatorColumn tNavigatorColumn = null;
 		try {
@@ -72,6 +73,7 @@ public class TNavigatorColumnPeer
 	 * @param navigatorLayoutID
 	 * @return
 	 */
+	@Override
 	public List<TNavigatorColumnBean> loadByLayout(Integer navigatorLayoutID) {
 		Criteria crit = new Criteria();
 		crit.add(NAVIGATORLAYOUT, navigatorLayoutID);
@@ -79,7 +81,7 @@ public class TNavigatorColumnPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading navigator fields for layout "+ navigatorLayoutID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading navigator fields for layout "+ navigatorLayoutID + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -90,6 +92,7 @@ public class TNavigatorColumnPeer
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public List<TNavigatorColumnBean> loadByLayoutAndField(Integer navigatorLayoutID, Integer fieldID) {
 		Criteria crit = new Criteria();
 		crit.add(NAVIGATORLAYOUT, navigatorLayoutID);
@@ -97,7 +100,7 @@ public class TNavigatorColumnPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading navigator fields for layout "+ navigatorLayoutID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading navigator fields for layout "+ navigatorLayoutID + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -107,6 +110,7 @@ public class TNavigatorColumnPeer
 	 * @param navigatorLayoutBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TNavigatorColumnBean navigatorFieldsBean) {
 		try {
 			TNavigatorColumn navigatorColumn = TNavigatorColumn.createTNavigatorColumn(navigatorFieldsBean);
@@ -126,6 +130,7 @@ public class TNavigatorColumnPeer
 	 * @param  objectID
 	 * @return
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		Criteria crit = new Criteria();
 		crit.add(OBJECTID, objectID);
@@ -141,6 +146,7 @@ public class TNavigatorColumnPeer
 	 * @param layoutID
 	 * @return
 	 */
+	@Override
 	public void deleteByLayout(Integer layoutID) {
 		Criteria crit = new Criteria();
 		crit.add(NAVIGATORLAYOUT, layoutID);

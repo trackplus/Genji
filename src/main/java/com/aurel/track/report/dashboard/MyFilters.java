@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -44,13 +44,14 @@ public class MyFilters extends BasePluginDashboardView {
 	public static final String PROJECT_ID="projectID";
 	public static final String ENTITY_FLAG="entityFlag";
 
-	//private static QueryRepositoryDAO queryRepositoryDAO = DAOFactory.getFactory().getQueryRepositoryDAO();
 
+	@Override
 	public String getPluginID() {
 		//for backward compatibility (it is stored in the TDashboardField)
 		return "com.aurel.track.report.dashboard.TqlItems";
 	}
 
+	@Override
 	protected boolean isUseConfig(){
 		return true;
 	}
@@ -67,10 +68,8 @@ public class MyFilters extends BasePluginDashboardView {
 	
 	private static List<LabelValueBean> getFilters(TPersonBean user, Locale locale) {
 		//reports filter only
-		//int[] queryTypes=new int[] {TQueryRepositoryBean.QUERY_PURPOSE.REPORT_FILTER};
 		//List<TQueryRepositoryBean> allFilters = queryRepositoryDAO.loadMenuitemQueries(user.getObjectID(),queryTypes,true);
 		List<TQueryRepositoryBean> allFilters =  FilterBL.loadMyMenuFilters(user.getObjectID(), locale);
-		//LocalizeUtil.localizeDropDownList(allFilters, locale);
 		List<LabelValueBean> filterView = new ArrayList<LabelValueBean>();
 		for (int i = 0; i < allFilters.size(); ++i) {
 			TQueryRepositoryBean filterBean = allFilters.get(i);
@@ -79,6 +78,7 @@ public class MyFilters extends BasePluginDashboardView {
 		}
 		return filterView;
 	}
+	@Override
 	public List<ReportBean> getIssues(Map<String, String> configParams, Map<String, String> filterParams, TPersonBean personBean, Locale locale) throws TooManyItemsToLoadException{
 		List<ReportBean> result=new ArrayList<ReportBean>();
 		Integer queryID=BasePluginDashboardBL.parseInteger(filterParams,QUERY_ID);

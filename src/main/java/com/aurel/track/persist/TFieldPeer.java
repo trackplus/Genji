@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -90,29 +90,13 @@ public class TFieldPeer
 	};
 	
 	
-	/*private static Class[] replacePeerClasses = {
-		TReportLayoutPeer.class,
-		TAttributeValuePeer.class,
-		TRoleFieldPeer.class,
-		TFieldConfigPeer.class, //overrided doDelete
-		TScreenFieldPeer.class,
-		TFieldPeer.class	
-	};
-	
-	private static String[] replaceFields = {
-		TReportLayoutPeer.REPORTFIELD,
-		TAttributeValuePeer.FIELDKEY,
-		TRoleFieldPeer.FIELDKEY,
-		TFieldConfigPeer.FIELDKEY,
-		TScreenFieldPeer.FIELDKEY,
-		TFieldPeer.OBJECTID
-	};*/
 	
 	/**
 	 * Loads the field by primary key
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TFieldBean loadByPrimaryKey(Integer objectID) {
 		TField tField = null;
 		try {
@@ -132,13 +116,14 @@ public class TFieldPeer
 	 * @param name
 	 * @return
 	 */
+	@Override
 	public List<TFieldBean> loadByName(String name) {
 		Criteria crit = new Criteria();
 		crit.add(NAME, name);
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all fields failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all fields failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -148,6 +133,7 @@ public class TFieldPeer
 	 * @param names
 	 * @return
 	 */
+	@Override
 	public List<TFieldBean> loadByNames(List<String> names) {
 		if (names==null || names.isEmpty()) {
 			return new LinkedList<TFieldBean>();
@@ -157,7 +143,7 @@ public class TFieldPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all fields failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all fields failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -166,12 +152,13 @@ public class TFieldPeer
 	 * Loads all fields
 	 * @return 
 	 */
+	@Override
 	public List<TFieldBean> loadAll() {
 		Criteria crit = new Criteria();
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all fields failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all fields failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -180,13 +167,14 @@ public class TFieldPeer
 	 * Loads all active fields from TField table 
 	 * @return 
 	 */
+	@Override
 	public List<TFieldBean> loadActive() {
 		Criteria crit = new Criteria();
 		crit.add(DEPRECATED, (Object)BooleanFields.TRUE_VALUE, Criteria.NOT_EQUAL);
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading active fields failed with " + e.getMessage(), e);
+			LOGGER.error("Loading active fields failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -195,13 +183,14 @@ public class TFieldPeer
 	 * Loads all custom fields from TField table
 	 * @return
 	 */
+	@Override
 	public List<TFieldBean> loadCustom() {
 		Criteria crit = new Criteria();
 		crit.add(ISCUSTOM, BooleanFields.TRUE_VALUE);
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading custom fields failed with " + e.getMessage(), e);
+			LOGGER.error("Loading custom fields failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -210,13 +199,14 @@ public class TFieldPeer
 	 * Loads all system fields from TField table
 	 * @return
 	 */
+	@Override
 	public List<TFieldBean> loadSystem() {
 		Criteria crit = new Criteria();
 		crit.add(ISCUSTOM, (Object)BooleanFields.TRUE_VALUE, Criteria.NOT_EQUAL);
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading system fields failed with " + e.getMessage(), e);
+			LOGGER.error("Loading system fields failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -225,13 +215,14 @@ public class TFieldPeer
 	 * Loads all system fields from TField table
 	 * @return
 	 */
+	@Override
 	public List<TFieldBean> loadFilterFields() {
 		Criteria crit = new Criteria();
 		crit.add(FILTERFIELD, BooleanFields.TRUE_VALUE);
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading filter fields failed with " + e.getMessage(), e);
+			LOGGER.error("Loading filter fields failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -241,6 +232,7 @@ public class TFieldPeer
 	 * @param workItemID
 	 * @return
 	 */
+	@Override
 	public List<TFieldBean> loadSpecifiedCustomFields(Integer workItemID) {
 		Criteria crit = new Criteria();
 		crit.addJoin(OBJECTID, BaseTAttributeValuePeer.FIELDKEY);
@@ -248,7 +240,7 @@ public class TFieldPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading custom fields failed with " + e.getMessage(), e);
+			LOGGER.error("Loading custom fields failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -259,6 +251,7 @@ public class TFieldPeer
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public boolean isNameUnique(String name, Integer fieldID) {
 		List<TField> fieldsList = null;
 		Criteria crit = new Criteria();
@@ -269,7 +262,7 @@ public class TFieldPeer
 		try {
 			fieldsList = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Verifying the uniqueness of the name " + name + " and field " + fieldID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Verifying the uniqueness of the name " + name + " and field " + fieldID + " failed with " + e.getMessage());
 		}
 		if (fieldsList==null || fieldsList.isEmpty()) {
 			return true;
@@ -282,6 +275,7 @@ public class TFieldPeer
 	 * @param fieldBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TFieldBean fieldBean) {
 		TField tField;
 		try {
@@ -289,7 +283,7 @@ public class TFieldPeer
 			tField.save();
 			return tField.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a field failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a field failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -301,6 +295,7 @@ public class TFieldPeer
 	 * Is deletable should return true before calling this method
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		//TODO make it into a transaction
 		//delete from triggers
@@ -328,7 +323,7 @@ public class TFieldPeer
 				new TFieldPeer().delete(field.getObjectID());
 			}
 		} catch (TorqueException e) {
-			LOGGER.error("Cascade deleteing the field configs failed with " + e.getMessage(), e);
+			LOGGER.error("Cascade deleteing the field configs failed with " + e.getMessage());
 		}
 		FieldTypeManager.getInstance().invalidateCache();
 	}
@@ -340,20 +335,17 @@ public class TFieldPeer
 	 * If configs exist it does not matter (it will be deleted) 
 	 * @param fieldId
 	 */
+	@Override
 	public boolean isDeletable(Integer objectID) {
 		return !ReflectionHelper.hasDependentData(dependentPeerClasses, dependentFields, objectID);
 	}
 	
-	/*public void replaceField(Integer oldFieldID, Integer newFieldID) {
-		new TNotifyFieldPeer().updateByField(oldFieldID, newFieldID, 
-				NotifyTriggerBL.ACTIONTYPE.EDIT_ISSUE, NotifyTriggerBL.FIELDTYPE.ISSUE_FIELD);
-		ReflectionHelper.replace(replacePeerClasses, replaceFields, oldFieldID, newFieldID);
-	}*/
 	
 	/**
 	 * Sets the deprecated flag
 	 * @param fieldId
 	 */
+	@Override
 	public void setDeprecated(Integer objectID, boolean deactivate) {
 		TFieldBean fieldBean = loadByPrimaryKey(objectID); 
 		if (deactivate) {
@@ -372,6 +364,7 @@ public class TFieldPeer
 	 * @param screenID
 	 * @return
 	 */
+	@Override
 	public List<TFieldBean> loadAllFields(Integer screenID){
 		Criteria crit = new Criteria();
 		crit.add(BaseTScreenPeer.OBJECTID,screenID);
@@ -383,11 +376,12 @@ public class TFieldPeer
 		try	{
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch(TorqueException e){
-			LOGGER.error("Load all  fields from screen:"+screenID+" failed with " + e.getMessage(), e);
+			LOGGER.error("Load all  fields from screen:"+screenID+" failed with " + e.getMessage());
 			return null;
 		}
 	}
 
+	@Override
 	public List<TFieldBean> loadAllFieldsOnCard(Integer cardPanelID){
 		Criteria crit = new Criteria();
 		crit.add(BaseTCardPanelPeer.OBJECTID,cardPanelID);
@@ -397,7 +391,7 @@ public class TFieldPeer
 		try	{
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch(TorqueException e){
-			LOGGER.error("Load all  fields from card :"+cardPanelID+" failed with " + e.getMessage(), e);
+			LOGGER.error("Load all  fields from card :"+cardPanelID+" failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -407,6 +401,7 @@ public class TFieldPeer
 	 * @param screenIDs
 	 * @return
 	 */
+	@Override
 	public List<TFieldBean> loadByScreens(Object[] screenIDs) {
 		if (screenIDs!=null && screenIDs.length>0) {
 			Criteria crit = new Criteria();
@@ -419,7 +414,7 @@ public class TFieldPeer
 			try	{
 				return convertTorqueListToBeanList(doSelect(crit));
 			} catch(TorqueException e){
-				LOGGER.error("Load all  fields from screens: "+screenIDs.length+" failed with " + e.getMessage(), e);
+				LOGGER.error("Load all  fields from screens: "+screenIDs.length+" failed with " + e.getMessage());
 			}
 		}
 		return null;
@@ -430,6 +425,7 @@ public class TFieldPeer
 	 * @param fieldIDs
 	 * @return
 	 */
+	@Override
 	public List<TFieldBean> loadByFieldIDs(Object[] fieldIDs) {
 		if (fieldIDs!=null && fieldIDs.length>0) {
 			Criteria crit = new Criteria();
@@ -438,7 +434,7 @@ public class TFieldPeer
 				return convertTorqueListToBeanList(doSelect(crit));
 			}
 			catch(TorqueException e){
-				LOGGER.error("Load all  fields by fieldIDs: "+fieldIDs.length+" failed with " + e.getMessage(), e);
+				LOGGER.error("Load all  fields by fieldIDs: "+fieldIDs.length+" failed with " + e.getMessage());
 			}
 		}
 		return null;
@@ -450,6 +446,7 @@ public class TFieldPeer
 	 * @param screenID
 	 * @return
 	 */
+	@Override
 	public List<TFieldBean> loadAllCustomFields(Integer screenID){
 		Criteria crit = new Criteria();
 		crit.add(BaseTScreenPeer.OBJECTID,screenID);
@@ -462,7 +459,7 @@ public class TFieldPeer
 			return convertTorqueListToBeanList(doSelect(crit));
 		}
 		catch(TorqueException e){
-			LOGGER.error("Load all custom fields from screen:"+screenID+" failed with " + e.getMessage(), e);
+			LOGGER.error("Load all custom fields from screen:"+screenID+" failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -471,6 +468,7 @@ public class TFieldPeer
 	 * @param screenTab
 	 * @return
 	 */
+	@Override
 	public List<TFieldBean> loadCustomFieldsFromTab(Integer screenTabID) {
 		Criteria crit = new Criteria();
 		crit.add(ISCUSTOM, BooleanFields.TRUE_VALUE);
@@ -482,7 +480,7 @@ public class TFieldPeer
 			return convertTorqueListToBeanList(doSelect(crit));
 		}
 		catch(TorqueException e){
-			LOGGER.error("Load all custom fields from screenTan:"+screenTabID+" failed with " + e.getMessage(), e);
+			LOGGER.error("Load all custom fields from screenTan:"+screenTabID+" failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -491,13 +489,14 @@ public class TFieldPeer
 	 * Load the fields defined only in a project type
 	 * @return
 	 */
+	@Override
 	public List<TFieldBean> loadByProjectType(Integer projectTypeID) {
 		Criteria crit = new Criteria();
 		crit.add(PROJECTTYPE, projectTypeID);
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading project type fields for " + projectTypeID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading project type fields for " + projectTypeID + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -506,13 +505,14 @@ public class TFieldPeer
 	 * Load the fields defined only in a project
 	 * @return
 	 */
+	@Override
 	public List<TFieldBean> loadByProject(Integer projectID) {
 		Criteria crit = new Criteria();
 		crit.add(PROJECT, projectID);
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading project fields for " + projectID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading project fields for " + projectID + " failed with " + e.getMessage());
 			return null;
 		}
 	}

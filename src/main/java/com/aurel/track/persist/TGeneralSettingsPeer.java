@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -52,6 +52,7 @@ public class TGeneralSettingsPeer
      * @param roleID
      * @return
      */
+    @Override
     public TGeneralSettingsBean loadByPrimaryKey(Integer objectID)  {    	
     	TGeneralSettings tGeneralSettings = null;
     	try {
@@ -71,6 +72,7 @@ public class TGeneralSettingsPeer
 	 * @param generalSettingsBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TGeneralSettingsBean generalSettingsBean)
 	{
 		TGeneralSettings tGeneralSettings;		
@@ -79,7 +81,7 @@ public class TGeneralSettingsPeer
 			tGeneralSettings.save();
 			return tGeneralSettings.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a general settings failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a general settings failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -89,6 +91,7 @@ public class TGeneralSettingsPeer
 	 * Deletes the records from the TGeneralSettings table by a config
 	 * @param configID
 	 */
+    @Override
     public void deleteByConfig(Integer configID) {        
     	Criteria crit = new Criteria();
         crit.add(CONFIG, configID);
@@ -105,6 +108,7 @@ public class TGeneralSettingsPeer
 	 * @param configID
 	 * @return
 	 */
+    @Override
     public List<TGeneralSettingsBean> loadByConfig(Integer configID) {
 		List generalSettingsList =  null;
 		Criteria crit = new Criteria();
@@ -124,6 +128,7 @@ public class TGeneralSettingsPeer
 	 * @param parameterCode
 	 * @return
 	 */
+    @Override
     public TGeneralSettingsBean loadSingleByConfigAndParameter(Integer configID, Integer parameterCode) {	
 		List generalSettingsList =  null;
 		Criteria crit = new Criteria();
@@ -161,6 +166,7 @@ public class TGeneralSettingsPeer
 	 * @param parameterCode
 	 * @return
 	 */
+    @Override
     public List<TGeneralSettingsBean> loadListByConfigAndParameter(Integer configID, Integer parameterCode) {	
 		List generalSettingsList =  null;
 		Criteria crit = new Criteria();
@@ -184,6 +190,7 @@ public class TGeneralSettingsPeer
 	 * @param configIDs
 	 * @return
 	 */
+    @Override
     public List<TGeneralSettingsBean> loadByConfigList(List<Integer> configIDs) { 
     	if (configIDs==null || configIDs.isEmpty()) {
     		return new ArrayList<TGeneralSettingsBean>();
@@ -206,6 +213,7 @@ public class TGeneralSettingsPeer
 	 * @param configIDs
 	 * @return
 	 */
+	@Override
 	public List<TGeneralSettingsBean> loadByConfigListAndParametercode(List<Integer> configIDs, Integer parameterCode) {
 		if (configIDs==null || configIDs.isEmpty()) {
     		return new ArrayList<TGeneralSettingsBean>();
@@ -226,12 +234,13 @@ public class TGeneralSettingsPeer
 	    * Loads all generalsettings	from table
 		* @return
 		*/
+	@Override
 	public List<TGeneralSettingsBean> loadAll() {		
 		Criteria criteria = new Criteria();
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all field configs failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all field configs failed with " + e.getMessage());
 			return null;
 		}		
 	}

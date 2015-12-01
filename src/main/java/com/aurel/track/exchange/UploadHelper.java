@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Locale;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.struts2.ServletActionContext;
@@ -49,12 +50,12 @@ public class UploadHelper {
 		try {
 			inputStream = new FileInputStream(uploadFile);
 		} catch (FileNotFoundException e) {
-			LOGGER.error("Getting the input stream for the  uploaded file failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the input stream for the  uploaded file failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			JSONUtility.encodeJSON(ServletActionContext.getResponse(),
 					JSONUtility.encodeJSONFailure(LocalizeUtil.getLocalizedTextFromApplicationResources("admin.actions.importTp.err.failed", locale)));
 			return null;
 		}
-		//String importDirectoryForPerson = importDirectory + String.valueOf(personID);
 		UploadHelper.ensureDir(targetPath);
 		File targetFile = new File(targetPath, uploadFileFileName);
         if (targetFile.exists())  {
@@ -71,7 +72,8 @@ public class UploadHelper {
 			inputStream.close();
 			outputStream.close();
 		} catch (Exception e) {
-			LOGGER.error("Saving the file " + uploadFileFileName + " to the temporary directory " + targetPath + " failed with " +e.getMessage(), e);
+			LOGGER.error("Saving the file " + uploadFileFileName + " to the temporary directory " + targetPath + " failed with " +e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			JSONUtility.encodeJSON(ServletActionContext.getResponse(),
 					JSONUtility.encodeJSONFailure(LocalizeUtil.getLocalizedTextFromApplicationResources("admin.actions.importTp.err.failed", locale)));
 			return null;

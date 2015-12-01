@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -37,10 +37,6 @@ import com.aurel.track.dao.BaseLineDAO;
 import com.aurel.track.dao.torque.SimpleCriteria;
 import com.workingdogs.village.Record;
 
-// import java.util.*;
-// import com.workingdogs.village.*;
-// import org.apache.torque.map.*;
-// import org.apache.torque.pool.DBConnection;
 
 // Local classes
 
@@ -75,7 +71,7 @@ public class TBaseLinePeer
     	}
     	catch(Exception e)    	
     	{
-    		LOGGER.error("Loading of a baseline by primary key " + objectID + " failed with " + e.getMessage(), e);
+    		LOGGER.error("Loading of a baseline by primary key " + objectID + " failed with " + e.getMessage());
     	} 
     	if (tBaseLine!=null)
 		{
@@ -94,7 +90,7 @@ public class TBaseLinePeer
 		try {
 			return ((Record) doSelectVillageRecords(crit).get(0)).getValue(1).asIntegerObj();
 		} catch (Exception e) {
-			LOGGER.error("Getting the maximal objectID failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the maximal objectID failed with " + e.getMessage());
 		}
 		return null;
 	}
@@ -116,7 +112,7 @@ public class TBaseLinePeer
 		try {
 			torqueList = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the base line changes from " + actualValue + " to " + toValue + " failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the base line changes from " + actualValue + " to " + toValue + " failed with " + e.getMessage());
 		}
 		return convertTorqueListToBeanList(torqueList);
 	}
@@ -132,7 +128,7 @@ public class TBaseLinePeer
 		try {
 			torqueList = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the base line changes for all workItems failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the base line changes for all workItems failed with " + e.getMessage());
 		}
 		return convertTorqueListToBeanList(torqueList);
 	}
@@ -151,7 +147,7 @@ public class TBaseLinePeer
 		try {
 			torqueList = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the base line changes for workItems failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the base line changes for workItems failed with " + e.getMessage());
 		}
 		return convertTorqueListToBeanList(torqueList);
 	}*/
@@ -168,7 +164,7 @@ public class TBaseLinePeer
 			tBaseLine.save();
 			return tBaseLine.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a baseline failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a baseline failed with " + e.getMessage());
 			return null;
 		}	
 	}
@@ -190,7 +186,7 @@ public class TBaseLinePeer
 		try {
 			torqueList = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the base lines for workItem " + workItemID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the base lines for workItem " + workItemID + " failed with " + e.getMessage());
 		}
 		//get the persons map 		
 		crit.clear();

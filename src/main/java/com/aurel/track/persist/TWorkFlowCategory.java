@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -37,7 +37,7 @@ import org.apache.torque.om.Persistent;
  * 
  * @author Sergej Redel <sergej@schoene-hochzeit.com>
  * @author Martin Bierkoch <martin.bierkoch@gmx.de>
- * @version $Revision: 3495 $ $Date: 2012-03-15 18:23:21 +0100 (Do, 15 Mrz 2012) $
+ * @version $Revision: 1661 $ $Date: 2015-10-25 21:06:43 +0100 (Sun, 25 Oct 2015) $
  */
 public  class TWorkFlowCategory
     extends com.aurel.track.persist.BaseTWorkFlowCategory

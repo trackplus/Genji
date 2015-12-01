@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -23,14 +23,21 @@
 package com.aurel.track.linking;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 
+import com.aurel.track.admin.customize.category.CategoryBL;
+import com.aurel.track.admin.customize.category.CategoryPickerBL;
 import com.aurel.track.admin.customize.category.filter.FilterBL;
 import com.aurel.track.admin.customize.category.filter.QNode;
 import com.aurel.track.admin.customize.category.filter.TreeFilterFacade;
@@ -58,8 +65,10 @@ import com.aurel.track.json.JSONUtility;
 import com.aurel.track.linkType.ILinkType;
 import com.aurel.track.linkType.LinkTypeBL;
 import com.aurel.track.util.GeneralUtils;
+import com.aurel.track.util.IntegerStringBean;
 import com.aurel.track.util.LabelValueBean;
 import com.aurel.track.util.PropertiesHelper;
+import com.aurel.track.util.TreeNode;
 
 /**
  * Business logic for link matrix
@@ -68,18 +77,32 @@ import com.aurel.track.util.PropertiesHelper;
  */
 public class LinkMatrixBL {
 	private static final Logger LOGGER = LogManager.getLogger(LinkMatrixBL.class);
+
+	/**
+	 * Which items to show in rows/columns
+	 * @author Tamas
+	 *
+	 */
+	public static interface LINKED_FLAG {
+		public static final int ALL = 1;
+		public static final int ONLY_LINKED = 2;
+		public static final int ONLY_NOT_LINKED = 3;
+	}
+
 	/**
 	 * Render the link matrix page
 	 */
 	static String loadConfig(TPersonBean personBean, Locale locale) {
 		Integer columnFilterID=null;
 		Integer rowsFilterID=null;
+		Integer columnLinkedFlag = LINKED_FLAG.ALL;
+		Integer rowLinkedFlag = LINKED_FLAG.ALL;
 		String linkTypeWithDirection=null;
 		String lastQuery= PropertiesHelper.getProperty(personBean.getMoreProperties(), TPersonBean.LINKING_LAST_SEARCH);
 		if(lastQuery!=null){
 			String[] stringArr = lastQuery.split(";");
-			if(stringArr!=null&&stringArr.length==3){
-				try{
+			if (stringArr!=null && stringArr.length==5){
+				try {
 					columnFilterID=Integer.parseInt(stringArr[0]);
 					if (columnFilterID!=null) {
 						if (FilterBL.loadByPrimaryKey(columnFilterID)==null) {
@@ -87,17 +110,31 @@ public class LinkMatrixBL {
 							columnFilterID = null;
 						}
 					}
-				}catch (Exception ex){}
-				try{
-					rowsFilterID=Integer.parseInt(stringArr[1]);
+				} catch (Exception ex) {
+					LOGGER.warn("Getting the column filter failed with"  + ex.getMessage());
+				}
+				try {
+					columnLinkedFlag = Integer.parseInt(stringArr[1]);
+				} catch (Exception ex) {
+					LOGGER.warn("Getting the column linked flag failed with"  + ex.getMessage());
+				}
+				try {
+					rowsFilterID=Integer.parseInt(stringArr[2]);
 					if (rowsFilterID!=null) {
 						if (FilterBL.loadByPrimaryKey(rowsFilterID)==null) {
 							LOGGER.debug("Row filter " + rowsFilterID + " was deleted");
 							rowsFilterID = null;
 						}
 					}
-				}catch (Exception ex){}
-				linkTypeWithDirection=stringArr[2];
+				} catch (Exception ex) {
+					LOGGER.warn("Getting the row filter failed with"  + ex.getMessage());
+				}
+				try {
+					rowLinkedFlag = Integer.parseInt(stringArr[3]);
+				} catch (Exception ex) {
+					LOGGER.warn("Getting the row linked flag failed with"  + ex.getMessage());
+				}
+				linkTypeWithDirection=stringArr[4];
 			}
 		}
 		List<LabelValueBean> linkTypes = LinkTypeBL.getLinkTypeNamesList(locale, false, false);
@@ -115,9 +152,16 @@ public class LinkMatrixBL {
 				linkTypeWithDirection = null;
 			}
 		}
-		return LinkMatrixJSON.getConfigJSON(columnFilterID, rowsFilterID, linkTypeWithDirection, linkTypes);
+
+		List<TreeNode> filterTree = CategoryPickerBL.getPickerNodesEager(personBean, false, false, null,
+	            true, null, null, locale, CategoryBL.CATEGORY_TYPE.ISSUE_FILTER_CATEGORY);
+		List<IntegerStringBean> linkFlags = new ArrayList<IntegerStringBean>(3);
+		linkFlags.add(new IntegerStringBean("linking.opt.all", LINKED_FLAG.ALL));
+		linkFlags.add(new IntegerStringBean("linking.opt.onlyLinked", LINKED_FLAG.ONLY_LINKED));
+		linkFlags.add(new IntegerStringBean("linking.opt.onlyNotLinked", LINKED_FLAG.ONLY_NOT_LINKED));
+		return LinkMatrixJSON.getConfigJSON(filterTree, columnFilterID, columnLinkedFlag, rowsFilterID, rowLinkedFlag, linkFlags, linkTypeWithDirection, linkTypes);
 	}
-	
+
 	/**
 	 * Add the item types with typeflag document to the filter (normally they are not allowed to see in Genji)
 	 * @param filterID
@@ -166,21 +210,29 @@ public class LinkMatrixBL {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Load the link matrix
 	 * @return
 	 */
-	static String loadLinks(Integer columnsQueryID, Integer rowsQueryID, String linkTypeWithDirection, TPersonBean personBean, Locale locale) {
-		if(columnsQueryID==null&&rowsQueryID==null&&linkTypeWithDirection==null){
+	static String loadLinks(Integer columnFilterID, Integer columnLinkedFlag, Integer rowFilterID, Integer rowLinkedFlag, String linkTypeWithDirection, TPersonBean personBean, Locale locale) {
+		if (columnFilterID==null && rowFilterID==null && linkTypeWithDirection==null){
 			String errorMessage="All fields are required";
 			JSONUtility.encodeJSONFailure(ServletActionContext.getResponse(),errorMessage);
-			return  null;
+			return null;
+		}
+		if (columnLinkedFlag==null) {
+			columnLinkedFlag = LINKED_FLAG.ALL;
+		}
+		if (rowLinkedFlag==null) {
+			rowLinkedFlag = LINKED_FLAG.ALL;
 		}
 		//store last query
 		StringBuffer lastSearch=new StringBuffer();
-		lastSearch.append(columnsQueryID).append(";");
-		lastSearch.append(rowsQueryID).append(";");
+		lastSearch.append(columnFilterID).append(";");
+		lastSearch.append(columnLinkedFlag).append(";");
+		lastSearch.append(rowFilterID).append(";");
+		lastSearch.append(rowLinkedFlag).append(";");
 		lastSearch.append(linkTypeWithDirection);
 		String preferences = personBean.getPreferences();
 		personBean.setPreferences(PropertiesHelper.setProperty(preferences, TPersonBean.LINKING_LAST_SEARCH, lastSearch.toString()));
@@ -193,12 +245,12 @@ public class LinkMatrixBL {
 			isInline = linkType.isInline();
 			LOGGER.debug("Link type is inline: " + isInline);
 		}
-		List<TWorkItemBean> itemsColumns = null;
+		List<TWorkItemBean> columnItemBeans = null;
 		try {
 			if (isInline) {
-				itemsColumns = getItemsIncludingDocumentItemType(columnsQueryID, personBean, locale);
+				columnItemBeans = getItemsIncludingDocumentItemType(columnFilterID, personBean, locale);
 			} else {
-				itemsColumns = TreeFilterExecuterFacade.getSavedFilterWorkItemBeans(columnsQueryID, locale, personBean, new LinkedList<ErrorData>(), false);
+				columnItemBeans = TreeFilterExecuterFacade.getSavedFilterWorkItemBeans(columnFilterID, locale, personBean, new LinkedList<ErrorData>(), false);
 			}
 		} catch (TooManyItemsToLoadException e1) {
 			LOGGER.info("Number of items to load " + e1.getItemCount());
@@ -206,12 +258,12 @@ public class LinkMatrixBL {
 			JSONUtility.encodeJSONFailure(ServletActionContext.getResponse(),errorMessage);
 			return  null;
 		}
-		List<TWorkItemBean> itemsRows = null;
+		List<TWorkItemBean> rowItemBeans = null;
 		try {
 			if (isInline) {
-				itemsRows = getItemsIncludingDocumentItemType(rowsQueryID, personBean, locale);
+				rowItemBeans = getItemsIncludingDocumentItemType(rowFilterID, personBean, locale);
 			} else {
-				itemsRows = TreeFilterExecuterFacade.getSavedFilterWorkItemBeans(rowsQueryID, locale, personBean, new LinkedList<ErrorData>(), false);
+				rowItemBeans = TreeFilterExecuterFacade.getSavedFilterWorkItemBeans(rowFilterID, locale, personBean, new LinkedList<ErrorData>(), false);
 			}
 		} catch (TooManyItemsToLoadException e1) {
 			LOGGER.info("Number of items to load " + e1.getItemCount());
@@ -219,10 +271,10 @@ public class LinkMatrixBL {
 			JSONUtility.encodeJSONFailure(ServletActionContext.getResponse(),errorMessage);
 			return null;
 		}
-		List<Integer> workItemIDsColumns=GeneralUtils.createIntegerListFromBeanList(itemsColumns);
-		List<Integer> workItemIDsRows=GeneralUtils.createIntegerListFromBeanList(itemsRows);
-		LOGGER.debug("Vertical items found(columns):" + itemsColumns.size());
-		LOGGER.debug("Horizontal items found(rows):" + itemsRows.size());
+		List<Integer> workItemIDsColumns=GeneralUtils.createIntegerListFromBeanList(columnItemBeans);
+		List<Integer> workItemIDsRows=GeneralUtils.createIntegerListFromBeanList(rowItemBeans);
+		LOGGER.debug("Vertical items found (columns):" + columnItemBeans.size());
+		LOGGER.debug("Horizontal items found (rows):" + rowItemBeans.size());
 		List<Integer> linkTypes=new ArrayList<Integer>();
 		linkTypes.add(linkTypeID);
 		boolean bidirectional=LinkTypeBL.isBidirectional(linkTypeID);
@@ -253,6 +305,122 @@ public class LinkMatrixBL {
 		}
 		Integer inlineLinkType=InlineItemLinkBL.getInlineItemLinkType();
 		boolean readOnly=linkTypeID.equals(inlineLinkType);
-		return LinkMatrixJSON.getLoadMatrixJSON(itemsColumns, itemsRows, linkList, reverseLinkList, workItemIDsRows, linkDirection,readOnly);
+		Map<String, String> linksDescription = new HashMap<String, String>();
+		Map<String, String> linksMap = getLinksMap(columnItemBeans,  columnLinkedFlag, rowItemBeans, rowLinkedFlag, linkList, reverseLinkList, linkDirection, /*workItemIDsRows,*/ linksDescription);
+		return LinkMatrixJSON.getLoadMatrixJSON(columnItemBeans, rowItemBeans, linksMap, linksDescription, readOnly);
+	}
+
+
+
+	/**
+	 * Gets the linked itemID_itemID -> itemLinkID map
+	 * @param columnItemBeans
+	 * @param columnLinkedFlag
+	 * @param rowItemBeans
+	 * @param rowLinkedFlag
+	 * @param linkList
+	 * @param reverseLinkList
+	 * @param linkDirection
+	 * @param linksDescription
+	 * @return
+	 */
+	private static Map<String, String> getLinksMap(List<TWorkItemBean> columnItemBeans, Integer columnLinkedFlag, List<TWorkItemBean> rowItemBeans, Integer rowLinkedFlag,
+			List<TWorkItemLinkBean> linkList, List<TWorkItemLinkBean> reverseLinkList,
+			Integer linkDirection, /*List<Integer> workItemIDsRows,*/ Map<String, String> linksDescription) {
+		Map<String, String> linksMap = new HashMap<String, String>();
+		Set<Integer> rowIDSet = new HashSet<Integer>();
+		Set<Integer> columnIDSet = new HashSet<Integer>();
+		if (linkList!=null && !linkList.isEmpty()){
+			for(TWorkItemLinkBean workItemLinkBean:linkList) {
+				Integer rowItemID = null;
+				Integer columnItemID = null;
+				if (linkDirection.intValue()==ILinkType.LINK_DIRECTION.UNIDIRECTIONAL_OUTWARD) {
+					rowItemID = workItemLinkBean.getLinkPred();
+					columnItemID = workItemLinkBean.getLinkSucc();
+				} else {
+					rowItemID = workItemLinkBean.getLinkSucc();
+					columnItemID = workItemLinkBean.getLinkPred();
+				}
+				if (rowItemID!=null) {
+					rowIDSet.add(rowItemID);
+				}
+				if (columnItemID!=null) {
+					columnIDSet.add(columnItemID);
+				}
+
+				if (columnLinkedFlag.intValue()!=LINKED_FLAG.ONLY_NOT_LINKED && rowLinkedFlag.intValue()!=LINKED_FLAG.ONLY_NOT_LINKED) {
+					if (workItemLinkBean.getDescription()!=null) {
+						linksDescription.put(workItemLinkBean.getObjectID().toString(), workItemLinkBean.getDescription());
+					}
+					String key = rowItemID + "_" + columnItemID;
+
+					linksMap.put(key,workItemLinkBean.getObjectID().toString());
+				}
+
+			}
+		}
+		if (reverseLinkList!=null && !reverseLinkList.isEmpty()) {
+			for(TWorkItemLinkBean workItemLinkBean:reverseLinkList) {
+				Integer rowItemID = null;
+				Integer columnItemID = null;
+				if (linkDirection.intValue()==ILinkType.LINK_DIRECTION.UNIDIRECTIONAL_OUTWARD) {
+					rowItemID = workItemLinkBean.getLinkSucc();
+					columnItemID = workItemLinkBean.getLinkPred();
+				} else {
+					rowItemID = workItemLinkBean.getLinkPred();
+					columnItemID = workItemLinkBean.getLinkSucc();
+				}
+				if (rowItemID!=null) {
+					rowIDSet.add(rowItemID);
+				}
+				if (columnItemID!=null) {
+					columnIDSet.add(columnItemID);
+				}
+				if (columnLinkedFlag.intValue()!=LINKED_FLAG.ONLY_NOT_LINKED && rowLinkedFlag.intValue()!=LINKED_FLAG.ONLY_NOT_LINKED) {
+					if (workItemLinkBean.getDescription()!=null) {
+						linksDescription.put(workItemLinkBean.getObjectID().toString(),workItemLinkBean.getDescription());
+					}
+					String key = rowItemID + "_" + columnItemID;;
+					linksMap.put(key,workItemLinkBean.getObjectID().toString());
+				}
+			}
+		}
+		switch (rowLinkedFlag) {
+		case LINKED_FLAG.ONLY_LINKED:
+			for (Iterator<TWorkItemBean> iterator = rowItemBeans.iterator(); iterator.hasNext();) {
+				TWorkItemBean rowItemBean = iterator.next();
+				if (!rowIDSet.contains(rowItemBean.getObjectID())) {
+					iterator.remove();
+				}
+			}
+			break;
+		case LINKED_FLAG.ONLY_NOT_LINKED:
+			for (Iterator<TWorkItemBean> iterator = rowItemBeans.iterator(); iterator.hasNext();) {
+				TWorkItemBean rowItemBean = iterator.next();
+				if (rowIDSet.contains(rowItemBean.getObjectID())) {
+					iterator.remove();
+				}
+			}
+			break;
+		}
+		switch (columnLinkedFlag) {
+		case LINKED_FLAG.ONLY_LINKED:
+			for (Iterator<TWorkItemBean> iterator = columnItemBeans.iterator(); iterator.hasNext();) {
+				TWorkItemBean columnItemBean = iterator.next();
+				if (!columnIDSet.contains(columnItemBean.getObjectID())) {
+					iterator.remove();
+				}
+			}
+			break;
+		case LINKED_FLAG.ONLY_NOT_LINKED:
+			for (Iterator<TWorkItemBean> iterator = columnItemBeans.iterator(); iterator.hasNext();) {
+				TWorkItemBean columnItemBean = iterator.next();
+				if (columnIDSet.contains(columnItemBean.getObjectID())) {
+					iterator.remove();
+				}
+			}
+			break;
+		}
+		return linksMap;
 	}
 }

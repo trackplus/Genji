@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -51,6 +51,7 @@ public class TMailTemplateDefPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TMailTemplateDefBean loadByPrimaryKey(Integer objectID) {
 		TMailTemplateDef tMailTemplateDef = null;
 		try {
@@ -65,16 +66,18 @@ public class TMailTemplateDefPeer
 		return null;
 	}
 
+	@Override
 	public List<TMailTemplateDefBean> loadByTemplate(Integer templateID) {
 		Criteria crit = new Criteria();
 		crit.add(MAILTEMPLATE , templateID);
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading mail templates failed with " + e.getMessage(), e);
+			LOGGER.error("Loading mail templates failed with " + e.getMessage());
 			return null;
 		}
 	}
+	@Override
 	public List<TMailTemplateDefBean> loadByTemplateTypeAndLocale(Integer templateID,boolean plain,String locale){
 		Criteria crit = new Criteria();
 		crit.add(MAILTEMPLATE , templateID);
@@ -83,7 +86,7 @@ public class TMailTemplateDefPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading mail templates failed with " + e.getMessage(), e);
+			LOGGER.error("Loading mail templates failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -92,22 +95,24 @@ public class TMailTemplateDefPeer
 	 * Gets all mail templates
 	 * @return
 	 */
+	@Override
 	public List<TMailTemplateDefBean> loadAll() {
 		Criteria crit = new Criteria();
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all mail templates def failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all mail templates def failed with " + e.getMessage());
 			return null;
 		}
 	}
+	@Override
 	public List<TMailTemplateDefBean> loadByIDs(List<Integer> idList){
 		Criteria crit = new Criteria();
 		crit.addIn(OBJECTID, idList);
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading mail template defs failed with " + e.getMessage(), e);
+			LOGGER.error("Loading mail template defs failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -117,15 +122,15 @@ public class TMailTemplateDefPeer
 	 * @param mailTemplateDefBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TMailTemplateDefBean mailTemplateDefBean) {
 		TMailTemplateDef tMailTemplateDef;
-		// System.out.println(mailTemplateDefBean.getMailBody());
 		try {
 			tMailTemplateDef = BaseTMailTemplateDef.createTMailTemplateDef(mailTemplateDefBean);
 			tMailTemplateDef.save();
 			return tMailTemplateDef.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of mail template def failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of mail template def failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -135,13 +140,14 @@ public class TMailTemplateDefPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		Criteria crit = new Criteria();
 		crit.add(OBJECTID, objectID);
 		try {
 			doDelete(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Deleting the mail template def " + objectID +  " failed with " + e.getMessage(), e);
+			LOGGER.error("Deleting the mail template def " + objectID +  " failed with " + e.getMessage());
 		}
 	}
 

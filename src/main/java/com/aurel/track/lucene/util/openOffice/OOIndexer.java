@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -69,6 +69,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.w3c.dom.Document;
@@ -98,16 +99,19 @@ public class OOIndexer {
 		try {
 			builder = documentBuilderfactory.newDocumentBuilder();
 		} catch (ParserConfigurationException e) {
-			LOGGER.info("Building the document builder from factory failed with " + e.getMessage(), e);
+			LOGGER.info("Building the document builder from factory failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			return null;
 		}
 		try
 		{
 			document = builder.parse(file);				
 		} catch (SAXException e) {
-			LOGGER.info("Parsing the XML document " + file.getPath() + " failed with " + e.getMessage(), e);				
+			LOGGER.info("Parsing the XML document " + file.getPath() + " failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		} catch (IOException e) {
-			LOGGER.info("Reading the XML document " + file.getPath() + " failed with " + e.getMessage(), e);
+			LOGGER.info("Reading the XML document " + file.getPath() + " failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}		
 		if (document==null)
 		{
@@ -124,13 +128,15 @@ public class OOIndexer {
 			transformer.setOutputProperty ("{http://xml.apache.org/xslt}indent-amount", "2");
 		}
 		catch (TransformerConfigurationException e) {
-			LOGGER.warn("Creating the transformer failed with TransformerConfigurationException: " + e.getMessage(), e);
+			LOGGER.warn("Creating the transformer failed with TransformerConfigurationException: " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			return null;
 		}						
 		try {
 			transformer.transform (new DOMSource (document), new StreamResult (result));
 		}  catch (TransformerException e) {
-			LOGGER.warn("Transform failed with TransformerException: " + e.getMessage(), e);
+			LOGGER.warn("Transform failed with TransformerException: " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		return result.getBuffer().toString();								
 	}
@@ -240,7 +246,8 @@ public class OOIndexer {
 				zipFile.close();
 			} catch (IOException e) {
 				deleteDir(new File(destination));
-				LOGGER.error(e.getMessage(), e);
+				LOGGER.error(e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		} else {
 			LOGGER.info("There is already a file by that name");

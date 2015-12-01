@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -24,7 +24,7 @@
 Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
 	extend:'com.trackplus.admin.customize.treeConfig.TreeConfig',
 	config: {
-		rootID:''
+		rootID:'_'
 	},
 	baseAction: "fieldConfigItemDetail",
 	confirmDeleteEntity:true,
@@ -36,9 +36,8 @@ Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
 
 	constructor: function(config) {
 		var config = config || {};
-		this.initialConfig = config;
-		Ext.apply(this, config);
-		this.init();
+		this.initConfig(config);
+		this.initBase();
 	},
 
 	/**
@@ -88,7 +87,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
 	 * Which actions to enable/disable depending on tree selection
 	 */
 	getToolbarActionChangesForTreeNodeSelect: function(selectedNode) {
-		if (selectedNode!=null) {
+		if (selectedNode) {
 			var leaf = selectedNode.isLeaf();
 			var inheritedConfig=selectedNode.data['inheritedConfig'];
 			var defaultConfig=selectedNode.data['defaultConfig'];
@@ -269,7 +268,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
 			fieldConfigFieldset.getComponent('history').setDisabled(inheritedConfig || !data.renderHistory);
 		//}
 		var specificItem = panel.getComponent("specificItem");
-		if (specificItem!=null) {
+		if (specificItem) {
 			//the value will not be removed from Ext.form.Basic only from the UI
 			//workaround: set the fields to disabled to not to be submitted then remove the component
 			//it seems to be enough to disable the panel not necessarily the components one by one
@@ -277,10 +276,10 @@ Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
 			panel.remove(specificItem);
 		}
 		var specificFieldConfigClass = data['specificFieldConfigClass'];
-		if (specificFieldConfigClass!=null && specificFieldConfigClass!="") {
+		if (specificFieldConfigClass && specificFieldConfigClass!=="") {
 			this.addSpecificConfig(panel, specificFieldConfigClass, this.fieldSetWidth);
 			var specificItem = panel.getComponent("specificItem");
-			if (specificItem!=null) {
+			if (specificItem) {
 				//specificItem.setWidth(this.fieldSetWidth);
 				data['node'] = this.selectedNodeID;
 				data['labelWidth'] = this.labelWidth;
@@ -293,15 +292,15 @@ Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
 	 * Add the field type specific configuration
 	 */
 	addSpecificConfig: function(panel, specificFieldConfigClass, width) {
-		if (specificFieldConfigClass!=null) {
+		if (specificFieldConfigClass) {
 			var specificItem = Ext.create(specificFieldConfigClass,{
 				// margin:'0 0 0 5',
 				width: width
 			});
 			specificItem.setTitle(getText('admin.customize.field.config.detail.lbl.specificConfig'));
-			if (specificItem!=null) {
+			if (specificItem) {
 				panel.add(specificItem);
-				panel.doLayout();
+				panel.updateLayout();
 			}
 		}
 	},
@@ -323,7 +322,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
 	onSave: function(extraConfig) {
 		this.prepareValidate(this.centerPanel, true);
 		this.centerPanel.getForm().submit({
-			url: this.baseAction + '!save.action',
+			url: this.getBaseAction() + '!save.action',
 			params: this.getNodeParam(extraConfig),
 			scope: this,
 			success: function(form, action) {
@@ -371,7 +370,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
 		this.prepareValidate(this.centerPanel, false);
 		this.centerPanel.getForm().submit({
 			fromCenterPanel:true,
-			url : this.baseAction + '!load.action',
+			url : this.getBaseAction() + '!load.action',
 			scope: this,
 			params: this.getNodeParam(),
 			success : function(form, action) {
@@ -397,7 +396,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
 	getNodeParam: function(extraConfig) {
 		var saveParams = this.callParent(arguments);
 		var renameConfirmed = false;
-		if (extraConfig!=null) {
+		if (extraConfig) {
 			renameConfirmed = extraConfig.renameConfirmed;
 			if (renameConfirmed) {
 				saveParams['renameConfirmed'] = renameConfirmed;
@@ -410,7 +409,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
 	 * Rename a field
 	 */
 	renameField: function(btn) {
-		if (btn == 'yes') {
+		if (btn === 'yes') {
 			this.onSave.call(this, {renameConfirmed:true});
 		}
 	},
@@ -420,7 +419,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
 	 */
 	refreshAfterSaveSuccess: function(result) {
 		errorMessage = result.errorMessage;
-		if (errorMessage!=null) {
+		if (errorMessage) {
 			/*Ext.MessageBox.confirm(
 				getText('admin.customize.field.config.detail.lbl.rename'),
 				errorMessage, this.renameField, this)*/
@@ -441,7 +440,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
 			} else {
 				//save an existing field configuration: no tree refresh needed
 				var nodeToReload=this.tree.getStore().getNodeById(result.node);
-				if (nodeToReload!=null) {
+				if (nodeToReload) {
 					this.treeNodeSelect(/*this.tree, [nodeToReload]*/null, nodeToReload);
 				}
 			}
@@ -453,13 +452,13 @@ Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
 	 * Once the path is expanded the refreshTreeOpenBranches is called
 	 */
 	expandAscendentPath: function(pathToExpand, node, actualParent) {
-		if (actualParent!=null) {
+		if (actualParent) {
 			actualParent.expand(false);
 		}
-		if (pathToExpand!=null && pathToExpand.length>0) {
+		if (pathToExpand && pathToExpand.length>0) {
 			var parentNodeID = pathToExpand.shift();
 			parentNode=this.tree.getStore().getNodeById(parentNodeID);
-					/*if (parentNode==null) {
+					/*if (CWHF.isNull(parentNode)) {
 						//when called from on project/project type configuration the field_field can't be found
 						//but still you should expand starting from the selected project/project type
 						this.expandAscendentPath(pathToExpand, node, parentNode);
@@ -490,7 +489,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
 	 */
 	onDelete: function() {
 		var selectedRecords = this.getSelectedRecords(true);
-		if (selectedRecords!=null) {
+		if (selectedRecords) {
 			var isLeaf = this.selectedIsLeaf(true);
 			if (isLeaf) {
 				var extraConfig = {fromTree:true, isLeaf:isLeaf};
@@ -514,7 +513,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
 		var nodeToSelect = selectedRecords.parentNode;
 		var parentNode = null;
 		//parent node of the node to be selected
-		if (nodeToSelect!=null) {
+		if (nodeToSelect) {
 			parentNode = nodeToSelect.parentNode;
 		}
 		return {root:this.tree.getRootNode(), parentNode:nodeToSelect, nodeIdToSelect:nodeToSelect.data['id']}

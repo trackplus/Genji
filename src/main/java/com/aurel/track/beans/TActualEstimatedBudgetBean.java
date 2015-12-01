@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -70,6 +70,7 @@ public class TActualEstimatedBudgetBean
 	//TODO remove it if field added in the database
 	//private Integer adjust = new Integer(TActualEstimatedBudgetBean.ADJUSTOPTIONS.AUTOADJUST); //the default is leave existing
 	
+	@Override
 	public String getLabel() {
 		return null;
 	}
@@ -83,6 +84,7 @@ public class TActualEstimatedBudgetBean
 	 * It should be one of the HISTORY_TYPE constants
 	 * @return
 	 */
+	@Override
 	public int getType() {
 		return HistoryBean.HISTORY_TYPE.REMAINING_PLAN_CHANGE;
 	}
@@ -132,6 +134,7 @@ public class TActualEstimatedBudgetBean
 	/**
 	 * @return the changedByName
 	 */
+	@Override
 	public String getChangedByName() {
 		return changedByName;
 	}
@@ -139,6 +142,7 @@ public class TActualEstimatedBudgetBean
 	/**
 	 * @param changedByName the changedByName to set
 	 */
+	@Override
 	public void setChangedByName(String changedByName) {
 		this.changedByName = changedByName;
 	}
@@ -146,6 +150,7 @@ public class TActualEstimatedBudgetBean
 	/**
 	 * @return the currency
 	 */
+	@Override
 	public String getCurrency() {
 		return currency;
 	}
@@ -153,6 +158,7 @@ public class TActualEstimatedBudgetBean
 	/**
 	 * @param currency the currency to set
 	 */
+	@Override
 	public void setCurrency(String currency) {
 		this.currency = currency;
 	}
@@ -160,6 +166,7 @@ public class TActualEstimatedBudgetBean
 	/**
 	 *  Get the description of the change
 	 */
+	@Override
 	public String getDescription() {
 		return null;
 	}
@@ -168,6 +175,7 @@ public class TActualEstimatedBudgetBean
 	 * Set the description of the change
 	 * @param description
 	 */
+	@Override
 	public void setDescription(String description) {
 	}
 
@@ -176,6 +184,7 @@ public class TActualEstimatedBudgetBean
 	 * @param labelBean
 	 * @return
 	 */
+	@Override
 	public Map<String, String> serializeBean() {
 		Map<String, String> attributesMap = new HashMap<String, String>();
 		attributesMap.put("objectID", getObjectID().toString());
@@ -223,6 +232,7 @@ public class TActualEstimatedBudgetBean
 	 * @param attributes
 	 * @return
 	 */
+	@Override
 	public TActualEstimatedBudgetBean deserializeBean(Map<String, String> attributes) {
 		TActualEstimatedBudgetBean actualEstimatedBudgetBean = new TActualEstimatedBudgetBean();
 		String strObjectID = attributes.get("objectID");
@@ -297,12 +307,14 @@ public class TActualEstimatedBudgetBean
 		}
 	}
 
+	@Override
 	public boolean considerAsSame(ISerializableLabelBean serializableLabelBean,
 			Map<String, Map<Integer, Integer>> matchesMap) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
+	@Override
 	public Integer saveBean(ISerializableLabelBean serializableLabelBean,
 			Map<String, Map<Integer, Integer>> matchesMap) {
 		TActualEstimatedBudgetBean actualEstimatedBudgetBean = (TActualEstimatedBudgetBean)serializableLabelBean;

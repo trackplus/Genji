@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -51,12 +51,13 @@ public class TChildIssueTypePeer
 	 * Loads all TChildIssueTypeBean 
 	 * @return
 	 */
+	@Override
 	public List<TChildIssueTypeBean> loadAll() {	
 		Criteria crit = new Criteria();
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all childIssueTypeBean failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all childIssueTypeBean failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -66,6 +67,7 @@ public class TChildIssueTypePeer
 	 * @param childIssueTypes
 	 * @return
 	 */
+	@Override
 	public List<TChildIssueTypeBean> loadByChildAssignments(List<Integer> childIssueTypes) {
 		if (childIssueTypes!=null && !childIssueTypes.isEmpty()) {
 			Criteria crit = new Criteria();
@@ -73,7 +75,7 @@ public class TChildIssueTypePeer
 			try {
 				return convertTorqueListToBeanList(doSelect(crit));
 			} catch (Exception e) {
-				LOGGER.error("Loading issueTypes by childIssueTypes failed with " + e.getMessage(), e);
+				LOGGER.error("Loading issueTypes by childIssueTypes failed with " + e.getMessage());
 				return null;
 			}
 		}
@@ -85,13 +87,14 @@ public class TChildIssueTypePeer
 	 * @param parentIssueType
 	 * @return
 	 */
+	@Override
 	public List<TChildIssueTypeBean> loadByChildAssignmentsByParent(Integer parentIssueType) {
 		Criteria crit = new Criteria();
 		crit.add(ISSUETYPEPARENT, parentIssueType);
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (Exception e) {
-			LOGGER.error("Loading issueTypes by parentIssueType failed with " + e.getMessage(), e);
+			LOGGER.error("Loading issueTypes by parentIssueType failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -101,6 +104,7 @@ public class TChildIssueTypePeer
 	 * @param childIssueTypeBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TChildIssueTypeBean childIssueTypeBean) {
 		TChildIssueType childIssueType;
 		try {
@@ -109,7 +113,7 @@ public class TChildIssueTypePeer
 			return childIssueType.getObjectID();
 			
 		} catch (Exception e) {
-			LOGGER.error("Saving of an childIssueTypeBean failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of an childIssueTypeBean failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -119,6 +123,7 @@ public class TChildIssueTypePeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		Criteria crit = new Criteria();
 		crit.add(OBJECTID, objectID);
@@ -135,6 +140,7 @@ public class TChildIssueTypePeer
 	 * @param childIssueTypeID
 	 * @return
 	 */
+	@Override
 	public void delete(Integer parentIssueTypeID, List<Integer> childIssueTypeIDs) {
 		if (parentIssueTypeID==null || childIssueTypeIDs==null || childIssueTypeIDs.isEmpty()) {
 			return;

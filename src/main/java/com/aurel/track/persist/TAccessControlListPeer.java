@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -43,7 +43,6 @@ import com.workingdogs.village.DataSetException;
 import com.workingdogs.village.Record;
 
 // Local classes
-// import com.aurel.track.persist.map.*;
 
 /** 
  *
@@ -62,6 +61,7 @@ public class TAccessControlListPeer
 	 * @param roleID
 	 * @return
 	 */
+	@Override
 	public List<TAccessControlListBean> loadByProjectAndRole(Integer projectID, Integer roleID) {
 		Criteria crit = new Criteria();
 		crit.add(PROJKEY, projectID);
@@ -69,7 +69,7 @@ public class TAccessControlListPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the role assignments for project " + projectID + " and role " + roleID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the role assignments for project " + projectID + " and role " + roleID + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -79,13 +79,14 @@ public class TAccessControlListPeer
 	 * @param personID
 	 * @return
 	 */
+	@Override
 	public List<TAccessControlListBean> loadByPerson(Integer personID) {
 		Criteria crit = new Criteria();
 		crit.add(PERSONKEY, personID);
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the role assignments for person " + personID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the role assignments for person " + personID + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -95,27 +96,13 @@ public class TAccessControlListPeer
 	 * @param personID
 	 * @return
 	 */
-	/*public List<TAccessControlListBean> loadByPersonAndProjectStatusFlag(Integer personID, int[] projectStatusFlag) {
-		Criteria crit = new Criteria();
-		crit.add(PERSONKEY, personID);
-		if (projectStatusFlag!=null && projectStatusFlag.length!=0) {
-			crit.addJoin(PROJKEY, TProjectPeer.PKEY);
-			crit.addJoin(TProjectPeer.STATUS, TSystemStatePeer.OBJECTID);
-			crit.addIn(TSystemStatePeer.STATEFLAG, projectStatusFlag);
-		}
-		try {
-			return convertTorqueListToBeanList(doSelect(crit));
-		} catch (TorqueException e) {
-			LOGGER.error("Getting the role assignments for person " + personID + " and projectStatusFlags failed with " + e.getMessage(), e);
-			return null;
-		}
-	}*/
 	
 	/**
 	 * Loads a list of AccessControlListBeans by persons
 	 * @param personIDs
 	 * @return
 	 */
+	@Override
 	public List<TAccessControlListBean> loadByPersons(List<Integer> personIDs) {
 		Criteria crit = new Criteria();
 		if (personIDs!=null && !personIDs.isEmpty()) {
@@ -126,7 +113,7 @@ public class TAccessControlListPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the role assignments for persons " + personIDs.size() +  " failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the role assignments for persons " + personIDs.size() +  " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -136,6 +123,7 @@ public class TAccessControlListPeer
 	 * @param personIDs
 	 * @return
 	 */
+	@Override
 	public List<TAccessControlListBean> loadByPersonsAndProjectStatusFlag(List<Integer> personIDs, int[] projectStatusFlag) {
 		Criteria crit = new Criteria();
 		if (personIDs!=null && !personIDs.isEmpty()) {
@@ -151,7 +139,7 @@ public class TAccessControlListPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the role assignments for persons " + personIDs.size() + " and projectStatusFlags failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the role assignments for persons " + personIDs.size() + " and projectStatusFlags failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -161,13 +149,14 @@ public class TAccessControlListPeer
 	 * @param projectID
 	 * @return
 	 */
+	@Override
 	public List<TAccessControlListBean> loadByProject(Integer projectID) {
 		Criteria criteria = new Criteria();
 		criteria.add(PROJKEY, projectID);
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the rights by project " + projectID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the rights by project " + projectID + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -179,6 +168,7 @@ public class TAccessControlListPeer
 	 * @param projectStatusFlag
 	 * @return
 	 */
+	@Override
 	public List<TAccessControlListBean> loadByPersonRightInAnyProjectWithStatusFlag(List<Integer> personIDs, int[] arrRights, int[] projectStatusFlag) {
 		if (personIDs==null || personIDs.isEmpty()) {
 			return new LinkedList<TAccessControlListBean>();
@@ -195,7 +185,7 @@ public class TAccessControlListPeer
 		try { 
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch(Exception e) {
-			LOGGER.error("Getting the right for a person in project with statusflag failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the right for a person in project with statusflag failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -207,6 +197,7 @@ public class TAccessControlListPeer
 	 * @param projectStatusFlag possible status flags. If null it does not matter 
 	 * @return
 	 */
+	@Override
 	public boolean hasPersonRightInAnyProjectWithStatusFlag(
 			List<Integer> personIDs, int[] arrRights, int[] projectStatusFlag) {
 		List<TAccessControlList> tACLList = null;
@@ -225,7 +216,7 @@ public class TAccessControlListPeer
 		try { 
 			tACLList = doSelect(crit);
 		} catch(Exception e) {
-			LOGGER.error("Getting the right for a person in project with statusflag failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the right for a person in project with statusflag failed with " + e.getMessage());
 		}
 		if (tACLList!=null && !tACLList.isEmpty()) {
 			return true;
@@ -239,6 +230,7 @@ public class TAccessControlListPeer
 	 * @param arrRights 
 	 * @return
 	 */
+	@Override
 	public boolean hasPersonRightInNonPrivateProject(
 			List<Integer> personIDs, int[] arrRights) {
 		List<TAccessControlList> tACLList = null;
@@ -254,7 +246,7 @@ public class TAccessControlListPeer
 		try { 
 			tACLList = doSelect(crit);
 		} catch(Exception e) {
-			LOGGER.error("Getting the right for a person in non private project failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the right for a person in non private project failed with " + e.getMessage());
 		}
 		if (tACLList!=null && !tACLList.isEmpty()) {
 			return true;
@@ -269,6 +261,7 @@ public class TAccessControlListPeer
 	 * @param arrRights
 	 * @return
 	 */
+	@Override
 	public List<Record> getProjectIssueTypeRecords(List<Integer> personIDs, Integer[] projectIDs, int[] arrRights) {
 		List<Record> projectIssueTypeRecords = new LinkedList<Record>();
 		if (projectIDs==null || projectIDs.length==0) {
@@ -277,7 +270,6 @@ public class TAccessControlListPeer
 		List<int[]> projectIDChunksList = GeneralUtils.getListOfChunks(projectIDs);
 		for (int[] projectIDChunk : projectIDChunksList) {
 			Criteria crit = new Criteria();
-			//crit.addJoin(TProjectPeer.PKEY, PROJKEY);
 			crit.addIn(PERSONKEY, personIDs);
 			crit.addIn(PROJKEY, projectIDChunk);
 			// add the rights criteria
@@ -290,7 +282,7 @@ public class TAccessControlListPeer
 			try { 
 				projectIssueTypeRecords.addAll(doSelectVillageRecords(crit));
 			} catch(Exception e) {
-				LOGGER.error("Getting all involved roles failed with " + e.getMessage(), e);
+				LOGGER.error("Getting all involved roles failed with " + e.getMessage());
 			}
 		}
 		return projectIssueTypeRecords;
@@ -302,6 +294,7 @@ public class TAccessControlListPeer
 	 * @param arrRights an array of rights, null means any right
 	 * @return
 	 */
+	@Override
 	public List<TAccessControlListBean> loadByProjectsAndRights(Integer[] projects, int[] arrRights) {
 		List<TAccessControlListBean> tAclList = new LinkedList<TAccessControlListBean>();
 		if (projects==null || projects.length==0) {
@@ -324,12 +317,11 @@ public class TAccessControlListPeer
 				//no explicit right specified but any right with any flag set would suffice
 				crit.add(TRolePeer.EXTENDEDACCESSKEY, (Object)AccessBeans.anyRightFilterString(), Criteria.LIKE);
 			}
-			//crit.addSelectColumn(BaseTAccessControlListPeer.PERSONKEY);
 			//crit.setDistinct();
 			try { 
 				tAclList.addAll(convertTorqueListToBeanList(doSelect(crit)));
 			} catch(Exception e) {
-				LOGGER.error("Getting all involved roles failed with " + e.getMessage(), e);
+				LOGGER.error("Getting all involved roles failed with " + e.getMessage());
 			}
 		}
 		return tAclList;
@@ -368,6 +360,7 @@ public class TAccessControlListPeer
 	 * @param projectID 
 	 * @return
 	 */
+	@Override
 	public Map<Integer, Integer> loadNumberOfPersonsInRolesForProject(Integer projectID) {
 		Map<Integer, Integer> numberOfPersonsInRoles = new HashMap<Integer, Integer>();
 		Criteria crit = new Criteria();
@@ -380,7 +373,7 @@ public class TAccessControlListPeer
 		try {
 			records = doSelectVillageRecords(crit);
 		} catch(Exception e) {
-			LOGGER.error("Groupping the persons by roles in project " + projectID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Groupping the persons by roles in project " + projectID + " failed with " + e.getMessage());
 		}
 		try {
 			if (records!=null && !records.isEmpty()) {
@@ -391,7 +384,7 @@ public class TAccessControlListPeer
 				}
 			}
 		} catch (Exception e) {
-			LOGGER.error("Getting the number of persons by roles in project " + projectID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the number of persons by roles in project " + projectID + " failed with " + e.getMessage());
 		}
 		return numberOfPersonsInRoles;
 	}
@@ -402,6 +395,7 @@ public class TAccessControlListPeer
 	 * @param roleID
 	 * @return
 	 */
+	@Override
 	public Integer loadNumberOfPersonsInRoleForProject(Integer projectID, Integer roleID) {
 		Criteria crit = new Criteria();
 		crit.add(PROJKEY, projectID);
@@ -427,6 +421,7 @@ public class TAccessControlListPeer
 	 * @param selectedRoles when null or of length 0 it will be no filtered
 	 * @return
 	 */
+	@Override
 	public List<TAccessControlListBean> loadByPersonsAndProjects(List<Integer> selectedPersons, List<Integer> selectedProjects) {
 		List<TAccessControlListBean> accessControlListBeans = new LinkedList<TAccessControlListBean>();
 		if (selectedProjects==null || selectedProjects.isEmpty()) {
@@ -448,7 +443,7 @@ public class TAccessControlListPeer
 			try {
 				accessControlListBeans.addAll(convertTorqueListToBeanList(doSelect(crit)));
 			} catch (TorqueException e) {
-				LOGGER.error("Getting the directly assigned roles failed with " + e.getMessage(), e);
+				LOGGER.error("Getting the directly assigned roles failed with " + e.getMessage());
 			}
 		}
 		return accessControlListBeans;
@@ -461,6 +456,7 @@ public class TAccessControlListPeer
 	 * @param rights
 	 * @return
 	 */
+	@Override
 	public List<TAccessControlListBean> loadByPersonProjectsRight(List<Integer> personIDs, List<Integer> projectIDs, int[] rights) {
 		List<TAccessControlListBean> accessControlListBeans = new LinkedList<TAccessControlListBean>();	
 		if (projectIDs==null || projectIDs.isEmpty() || personIDs==null || personIDs.isEmpty()) {
@@ -481,7 +477,7 @@ public class TAccessControlListPeer
 			try {
 				accessControlListBeans.addAll(convertTorqueListToBeanList(doSelect(crit)));
 			} catch(Exception e) {
-				LOGGER.error("Getting the right for a user in a project failed with " + e.getMessage(), e);
+				LOGGER.error("Getting the right for a user in a project failed with " + e.getMessage());
 			}
 		}
 		return accessControlListBeans;
@@ -494,6 +490,7 @@ public class TAccessControlListPeer
 	 * @param role
 	 * @return
 	 */
+	@Override
 	public List<TAccessControlListBean> loadByPersonProjectsRole(List<Integer> personIDs, List<Integer> projectIDs, Integer role) {
 		List<TAccessControlListBean> accessControlListBeans = new LinkedList<TAccessControlListBean>();	
 		if (projectIDs==null || projectIDs.isEmpty() || personIDs==null || personIDs.isEmpty()) {
@@ -514,7 +511,7 @@ public class TAccessControlListPeer
 			try {
 				accessControlListBeans.addAll(convertTorqueListToBeanList(doSelect(crit)));
 			} catch(Exception e) {
-				LOGGER.error("Getting the role for a user in a project failed with " + e.getMessage(), e);
+				LOGGER.error("Getting the role for a user in a project failed with " + e.getMessage());
 			}
 		}
 		return accessControlListBeans;
@@ -528,6 +525,7 @@ public class TAccessControlListPeer
 	 * @param listType if null do not filter by	 
 	 * @return
 	 */
+	@Override
 	public List<TAccessControlListBean> loadByProjectsRolesListType(List<Integer> projectIDs,
 			Object[] roles, Integer listType) {
 		List<TAccessControlListBean> accessControlListBeans = new LinkedList<TAccessControlListBean>();
@@ -546,10 +544,6 @@ public class TAccessControlListPeer
 				crit.addJoin(ROLEKEY, TRoleListTypePeer.PROLE);
 				crit.add(TRoleListTypePeer.LISTTYPE, listType);
 			}		
-			/*if (excludeInactivePersons) {
-				crit.addJoin(PERSONKEY, TPersonPeer.PKEY);
-				crit.add(TPersonPeer.DELETED, (Object)BooleanFields.TRUE_VALUE, Criteria.NOT_EQUAL);
-			}*/		
 			try { 
 				accessControlListBeans.addAll(convertTorqueListToBeanList(doSelect(crit)));
 			} catch(Exception e) {
@@ -565,13 +559,14 @@ public class TAccessControlListPeer
 	 * @param fieldBean
 	 * @return
 	 */
+	@Override
 	public void save(TAccessControlListBean accessControlListBean) {
 		TAccessControlList tAccessControlList;
 		try {
 			tAccessControlList = BaseTAccessControlList.createTAccessControlList(accessControlListBean);
 			tAccessControlList.save();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a tacl failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a tacl failed with " + e.getMessage());
 		}
 	}
 	
@@ -581,6 +576,7 @@ public class TAccessControlListPeer
 	 * @param roleKey
 	 * @param personKey
 	 */
+	@Override
 	public void deleteByProjectRolePerson(Integer projectID, Integer roleID, Integer personID) {
 		Criteria crit = new Criteria();
 		crit.add(PROJKEY, projectID);

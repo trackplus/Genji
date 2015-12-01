@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -25,7 +25,6 @@
 
 Ext.define('com.trackplus.layout.BaseLayout',{
 	extend:'Ext.Base',
-
 	config: {
 		initData:{},
 		useToolbar:false,
@@ -39,6 +38,7 @@ Ext.define('com.trackplus.layout.BaseLayout',{
 		var config = config || {};
 		me.initialConfig = config;
 		Ext.apply(me, config);
+		this.initConfig(config);
 	},
 	createWestPanel:function(){
 		return null;
@@ -68,14 +68,15 @@ Ext.define('com.trackplus.layout.BorderLayout', {
 		layoutCls: 'com.trackplus.layout.BaseLayout',
 		initData: {}
 	},
-	controller: null,
+	borderLayoutController: null,
 	view: null,
 	constructor: function (config) {
 		var me = this;
 		var config = config || {};
 		me.initialConfig = config;
 		Ext.apply(me, config);
-		me.controller = Ext.create('com.trackplus.layout.BorderLayoutController', {
+		this.initConfig(config);
+		me.borderLayoutController = Ext.create('com.trackplus.layout.BorderLayoutController', {
 			layoutCls: me.layoutCls,
 			initData: me.initData
 		});
@@ -83,71 +84,71 @@ Ext.define('com.trackplus.layout.BorderLayout', {
 	},
 	historyChange: function (token) {
 		var me = this;
-		me.controller.historyChange(token);
+		me.borderLayoutController.historyChange(token);
 	},
 	setHelpContext: function (helpContext) {
-		this.controller.setHelpContext.call(this.controller, helpContext);
+		this.borderLayoutController.setHelpContext.call(this.borderLayoutController, helpContext);
 	},
 	addHistoryToken: function (token) {
 		Ext.History.add(token);
 	},
 	showHelp: function () {
-		this.controller.showHelp.call(this.controller);
+		this.borderLayoutController.showHelp.call(this.borderLayoutController);
 	},
 
 	createView: function () {
 		var me = this;
-		me.view = me.controller.createView.call(me.controller);
+		me.view = me.borderLayoutController.createView.call(me.borderLayoutController);
 		return me.view;
 	},
 	notifyReady: function () {
 		var me = this;
-		this.controller.notifyReady.call(this.controller);
+		this.borderLayoutController.notifyReady.call(this.borderLayoutController);
 		var bigToolbar = me.view.header.toolbar;
-		var baseLayout = this.controller.baseLayout;
-		if (baseLayout != -null) {
+		var baseLayout = this.borderLayoutController.baseLayout;
+		if (baseLayout !== -null) {
 			var selectedBtn = baseLayout.selectedGroup;
-			if (selectedBtn != null) {
+			if (selectedBtn ) {
 				var btn = bigToolbar.getComponent(selectedBtn);
-				if (btn != null) {
+				if (btn ) {
 					btn.toggle(true);
 				}
 			}
 		}
 	},
 	setLoading: function (arg) {
-		if(this.view!=null){
+		if(this.view){
 			this.view.setLoading(arg);
 		}
 	},
 	setCenterContent: function (component) {
-		this.controller.setCenterContent.call(this.controller, component);
+		this.borderLayoutController.setCenterContent.call(this.borderLayoutController, component);
 	},
 	getActiveToolbarList: function () {
-		return this.controller.getActiveToolbarList.call(this.controller);
+		return this.borderLayoutController.getActiveToolbarList.call(this.borderLayoutController);
 	},
 	createItemToolbarSeparator: function () {
-		return this.controller.createItemToolbarSeparator.call(this.controller);
+		return this.borderLayoutController.createItemToolbarSeparator.call(this.borderLayoutController);
 	},
 	setActiveToolbarList: function (items) {
-		this.controller.setActiveToolbarList.call(this.controller, items);
+		this.borderLayoutController.setActiveToolbarList.call(this.borderLayoutController, items);
 	},
 	setActiveToolbarActionList: function (items) {
-		this.controller.setActiveToolbarActionList.call(this.controller, items);
+		this.borderLayoutController.setActiveToolbarActionList.call(this.borderLayoutController, items);
 	},
 	setVisibleToolbar: function (visible) {
-		this.controller.setVisibleToolbar.call(this.controller, visible);
+		this.borderLayoutController.setVisibleToolbar.call(this.borderLayoutController, visible);
 	},
 	getWidth:function(){
 		var me=this;
-		if(me.view!=null){
+		if(me.view){
 			return me.view.getEl().getWidth();
 		}
 		return Ext.getBody().getWidth();;
 	},
 	getHeight:function(){
 		var me=this;
-		if(me.view!=null){
+		if(me.view){
 			return me.view.getEl().getHeight();
 		}
 		return Ext.getBody().getHeight();;
@@ -156,10 +157,10 @@ Ext.define('com.trackplus.layout.BorderLayout', {
 		var MARGIN=10;
 		var appWidth=borderLayout.getWidth();
 		var appHeight=borderLayout.getHeight();
-		if(appWidth!=null&&width>appWidth-2*MARGIN){
+		if(appWidth&&width>appWidth-2*MARGIN){
 			width=appWidth-2*MARGIN;
 		}
-		if(appHeight!=null&&height>appHeight-2*MARGIN){
+		if(appHeight&&height>appHeight-2*MARGIN){
 			height=appHeight-2*MARGIN;
 		}
 		return{
@@ -173,11 +174,11 @@ Ext.define('com.trackplus.layout.BorderLayout', {
 		var h=state.height;
 		var x=null;
 		var y=null;
-		if(state.pos!=null){
+		if(state.pos){
 			x=state.pos[0];
 			y=state.pos[1];
 		}
-		if(position!=null){
+		if(position){
 			dialog.x=position[0];
 			dialog.y=position[1];
 		}
@@ -188,11 +189,11 @@ Ext.define('com.trackplus.layout.BorderLayout', {
 		if(dialog.y<0){
 			dialog.y=10;
 		}
-		if(w!=size.width){
+		if(w!==size.width){
 			dialog.width=size.width;
 			dialog.x=10;
 		}
-		if(h!=size.height){
+		if(h!==size.height){
 			dialog.height=size.height;
 			dialog.y=10;
 		}
@@ -204,18 +205,18 @@ Ext.define('com.trackplus.layout.BorderLayout', {
 Ext.define('com.trackplus.layout.HeaderView',{
 	extend:'Ext.container.Container',
 	config:{
-		controller:null,
+		borderLayoutController:null,
 		externalAction:false,
 		anonymous:false
 	},
 	margins: '0 0 0 0',
-	cls:'x-panel-header-default',
+	cls:'x-panel-header-default headerMaster',
 	layout: {
 		type: 'hbox',
 		padding:'0',
-		align:'top'
+		align:'stretch'
 	},
-	id:'headerMaster',
+
 	initComponent: function(){
 		var me=this;
 		me.items=me.createChildren();
@@ -225,8 +226,8 @@ Ext.define('com.trackplus.layout.HeaderView',{
 	createToolbar:function(){
 		var me=this;
 		var items=[];
-		if(com.trackplus.TrackplusConfig.userName!=null){
-			if(me.externalAction==false) {
+		if(com.trackplus.TrackplusConfig.userName){
+			if(me.externalAction===false) {
 				var btnCockpitCfg={
 					xtype:'button',
 					//enableToggle:true,
@@ -246,14 +247,12 @@ Ext.define('com.trackplus.layout.HeaderView',{
 
 				var spacerElement = {
 					xtype: 'tbspacer',
-					//width: 20,
-					//height: 67,
 					cls: 'navigationSeperator'
 				};
 
 				if (com.trackplus.TrackplusConfig.user.hasCockpit) {
-				   items.push(btnCockpitCfg);
-				   items.push(spacerElement);
+					items.push(btnCockpitCfg);
+					items.push(spacerElement);
 				}
 
 				if (com.trackplus.TrackplusConfig.user.hasProjectCockpit) {
@@ -262,8 +261,6 @@ Ext.define('com.trackplus.layout.HeaderView',{
 						text: getText('menu.browseProjects'),
 						overflowText:getText('menu.browseProjects'),
 						tooltip:getText('menu.browseProjects.tt'),
-						//enableToggle:true,
-						//toggleGroup:'bigToolbar',
 						itemId:'browseProjects',
 						iconCls: 'browseProjects',
 						style: {
@@ -290,10 +287,6 @@ Ext.define('com.trackplus.layout.HeaderView',{
 						tooltip: getText('menu.reports.tt'),
 						itemId: 'reports',
 						iconCls: 'reports',
-						//iconAlign: 'top',
-						//enableToggle:true,
-						//toggleGroup:'bigToolbar',
-						//scale: 'large',
 						handler: function () {
 							window.location.href = 'reportConfig.action';
 						}
@@ -302,18 +295,18 @@ Ext.define('com.trackplus.layout.HeaderView',{
 					items.push(spacerElement);
 				}
 
-				if (com.trackplus.TrackplusConfig.user.administration) {
+				if(com.trackplus.TrackplusConfig.user.administration) {
 					items.push(me.createAdministrationCfg());
 					items.push({
-							xtype: 'tbspacer',
-							width: 25}
-					);
-				} else {
+						xtype: 'tbspacer',
+						width: 25
+					});
+				}else {
 					items.push("");
 				}
 				items.push(me.createNewItemMenuButton());
 
-				if (com.trackplus.TrackplusConfig.toolbarPlugins != null && com.trackplus.TrackplusConfig.toolbarPlugins.length > 0) {
+				if (com.trackplus.TrackplusConfig.toolbarPlugins !== undefined && com.trackplus.TrackplusConfig.toolbarPlugins.length > 0) {
 					items.push({
 							xtype: 'tbspacer',
 							width: 25}
@@ -333,7 +326,7 @@ Ext.define('com.trackplus.layout.HeaderView',{
 			layout: {
 				overflowHandler: 'Menu'
 			},
-			cls: 'navigation',
+			cls: 'navigation transparentToolbar',
 			enableOverflow: true,
 			border:false,
 			margin:'0 0 0 0',
@@ -359,7 +352,7 @@ Ext.define('com.trackplus.layout.HeaderView',{
 			//iconAlign: 'top',
 			//scale: 'large',
 			handler:function(){
-				if(tplugin.fullScreen==true){
+				if(tplugin.fullScreen===true){
 					window.location.href=tplugin.url;
 				}else{
 					window.location.href='customFrame.action?pluginID='+tplugin.id+'&url='+tplugin.url+'&title='+tplugin.name;
@@ -409,8 +402,8 @@ Ext.define('com.trackplus.layout.HeaderView',{
 				}
 			});
 		}
-		if (com.trackplus.TrackplusConfig.appType != APPTYPE_BUGS
-				&& com.trackplus.TrackplusConfig.appType != APPTYPE_DESK && com.trackplus.TrackplusConfig.user.alm==true) {
+		if (com.trackplus.TrackplusConfig.appType !== APPTYPE_BUGS
+				&& com.trackplus.TrackplusConfig.appType !== APPTYPE_DESK && com.trackplus.TrackplusConfig.user.alm===true) {
 			menu.push('-');
 			menu.push({
 				text: getText('menu.linking'),
@@ -436,7 +429,7 @@ Ext.define('com.trackplus.layout.HeaderView',{
 	createMyFiltersChildrenMenu:function(myMenuFilters){
 		var mnuMyFilters=[];
 		var filter;
-		if(myMenuFilters!=null){
+		if(myMenuFilters){
 			for(var i=0;i<myMenuFilters.length;i++){
 				filter=myMenuFilters[i];
 				var item={
@@ -444,7 +437,7 @@ Ext.define('com.trackplus.layout.HeaderView',{
                     tooltip:filter.tooltip,
                     iconCls:filter.iconCls//"treeFilter-ticon"
 				};
-				/*if(filter.children!=null&&filter.children.length>0){
+				/*if(filter.children&&filter.children.length>0){
 					var childrenMenu=this.createMyFiltersChildrenMenu(filter.children);
 					item.menu={items: childrenMenu}
 				}else{*/
@@ -477,7 +470,7 @@ Ext.define('com.trackplus.layout.HeaderView',{
 	createLastQueriesItems:function(lastQueries){
 		var me=this;
 		var menu=[];
-		if(lastQueries!=null){
+		if(lastQueries){
 			for(var i=0;i<lastQueries.length;i++){
 				menu.push(me.createQueryMenu(lastQueries[i]/*.id,lastQueries[i].label*/));
 			}
@@ -494,13 +487,13 @@ Ext.define('com.trackplus.layout.HeaderView',{
         var icon=lastQuery["icon"];
         var iconCls=lastQuery["iconCls"];
 		/*var iconCls='treeFilter-ticon';
-		if(queryType==2){//dashboard
+		if(queryType===2){//dashboard
 			iconCls='dashboard-ticon'
 		}
-		if(queryType==4){//basket
+		if(queryType===4){//basket
 			iconCls='basket-ticon';
 		}
-		if(queryType==5){//PROJECT_RELEASE= 5;
+		if(queryType===5){//PROJECT_RELEASE= 5;
 			var entityID=0;
 			try {
 				entityID=parseInt(queryID);
@@ -513,10 +506,10 @@ Ext.define('com.trackplus.layout.HeaderView',{
 				iconCls='release-ticon';
 			}
 		}
-		if(queryType==6){//SCHEDULED= 6;
+		if(queryType===6){//SCHEDULED= 6;
 			iconCls="schedule-ticon";
 		}
-        if (queryType==7) {
+        if (queryType===7) {
             iconCls="tqlPlusFilter-ticon";
         }*/
 		return {
@@ -536,7 +529,7 @@ Ext.define('com.trackplus.layout.HeaderView',{
 
 	updateLastExecutedQueries:function(lastQueries){
 		var me=this;
-		if(me.menuLastExecutedFilters != null) {
+		if(me.menuLastExecutedFilters ) {
 			me.menuLastExecutedFilters.menu=Ext.create('Ext.menu.Menu',{
 				items:me.createLastQueriesItems(lastQueries)
 			});
@@ -610,7 +603,7 @@ Ext.define('com.trackplus.layout.HeaderView',{
 			iconCls:'user-ticon',
 			handler:this.adminMenuHandler
 		}];
-		if (com.trackplus.TrackplusConfig.appType != APPTYPE_BUGS) {
+		if (com.trackplus.TrackplusConfig.appType !== APPTYPE_BUGS) {
 			userData.push({
 				id:'menu_usersSection_clients',
 				text:getText('menu.admin.users.clients'),
@@ -683,7 +676,7 @@ Ext.define('com.trackplus.layout.HeaderView',{
 			});
 		}
 		if (com.trackplus.TrackplusConfig.user.sys) {
-			if (com.trackplus.TrackplusConfig.appType != APPTYPE_BUGS) {
+			if (com.trackplus.TrackplusConfig.appType !== APPTYPE_BUGS) {
 				customizationData.push({
 					id:'menu_customizationSection_accounts',
 					text:getText('menu.admin.custom.account'),
@@ -699,7 +692,7 @@ Ext.define('com.trackplus.layout.HeaderView',{
 				iconCls:'automailc-ticon',
 				handler:this.adminMenuHandler
 			});
-			if (com.trackplus.TrackplusConfig.appType != APPTYPE_BUGS) {
+			if (com.trackplus.TrackplusConfig.appType !== APPTYPE_BUGS) {
 				customizationData.push({
 					id:'menu_customizationSection_linkTypes',
 					text:getText('menu.admin.custom.linkType'),
@@ -743,8 +736,8 @@ Ext.define('com.trackplus.layout.HeaderView',{
 			});
 		}
 		if (com.trackplus.TrackplusConfig.user.sys) {
-			if (com.trackplus.TrackplusConfig.appType != APPTYPE_BUGS
-					&& com.trackplus.TrackplusConfig.appType != APPTYPE_DESK) {
+			if (com.trackplus.TrackplusConfig.appType !== APPTYPE_BUGS
+					&& com.trackplus.TrackplusConfig.appType !== APPTYPE_DESK) {
 				customizationData.push({
 					id:'menu_customizationSection_objectStatus', script:true,
 					text:getText('menu.admin.custom.objectStatus'),
@@ -761,7 +754,7 @@ Ext.define('com.trackplus.layout.HeaderView',{
 				handler:this.adminMenuHandler
 			});
 		}
-		if (com.trackplus.TrackplusConfig.appType != APPTYPE_BUGS) {
+		if (com.trackplus.TrackplusConfig.appType !== APPTYPE_BUGS) {
 			if (com.trackplus.TrackplusConfig.user.sys ||
 				(com.trackplus.TrackplusConfig.user.projectAdmin &&
 					com.trackplus.TrackplusConfig.user.workflows)) {
@@ -775,7 +768,7 @@ Ext.define('com.trackplus.layout.HeaderView',{
 			}
 		}
 		if (com.trackplus.TrackplusConfig.user.sys) {
-			if (com.trackplus.TrackplusConfig.appType != APPTYPE_BUGS) {
+			if (com.trackplus.TrackplusConfig.appType !== APPTYPE_BUGS) {
 				customizationData.push({
 					id:'menu_customizationSection_scripts',
 					text:getText('menu.admin.custom.script'),
@@ -791,7 +784,7 @@ Ext.define('com.trackplus.layout.HeaderView',{
 					handler:this.adminMenuHandler
 				});
 			};
-			if (com.trackplus.TrackplusConfig.appType != APPTYPE_BUGS) {
+			if (com.trackplus.TrackplusConfig.appType !== APPTYPE_BUGS) {
 				customizationData.push({
 					id:'menu_customizationSection_mailTemplates',
 					text:getText('menu.admin.custom.mailTemplate'),
@@ -901,7 +894,7 @@ Ext.define('com.trackplus.layout.HeaderView',{
 		var idx=id.indexOf("_");
 		var sectionSelected=null;
 		var selectedNodeID=null;
-		if(idx!=-1){
+		if(idx!==-1){
 			sectionSelected=id.substring(0,idx);
 			selectedNodeID=id.substring(idx+1);
 		}else{
@@ -934,7 +927,7 @@ Ext.define('com.trackplus.layout.HeaderView',{
 				handler:me.createNewIssue,
 				scope:{
 					id:issueType.id,
-					controller:me.controller
+					borderLayoutController:me.borderLayoutController
 				}
 			});
 		}
@@ -947,7 +940,7 @@ Ext.define('com.trackplus.layout.HeaderView',{
 			handler:me.createNewIssue,
 			scope:{
 				id:null,
-				controller:me.controller
+				borderLayoutController:me.borderLayoutController
 			},
 			menu: mnuIssueType
 		};
@@ -955,11 +948,11 @@ Ext.define('com.trackplus.layout.HeaderView',{
 	createNewIssue:function(button){
 		var me=this;
 		var issueTypeID=me.id;
-		me.controller.createNewIssue.call(me.controller,issueTypeID,null,null,button);
+		me.borderLayoutController.createNewIssue.call(me.borderLayoutController,issueTypeID,null,null,button);
 	},
 
 	showHelp:function(){
-		this.controller.showHelp.call(this.controller);
+		this.borderLayoutController.showHelp.call(this.borderLayoutController);
 	},
 
 	createUserNameToolbar:function(){
@@ -970,19 +963,18 @@ Ext.define('com.trackplus.layout.HeaderView',{
 		//var warningIcon=new Ext.Toolbar.TextItem({text: '',ctCls :'warningIcon'});
 		var items=[];
 		items.push('->');
-		if(userName!=null&&userName!=''){
+		if(userName&&userName!==''){
 			items.push('<a class="loginName" href="admin.action?sectionSelected=myPreferenceSection&selectedNodeID=myProfile">'+userName+'</a>');
 			items.push({xtype: 'tbspacer', width: 5});
 			items.push('-');
 		}
 		items.push({
 			xtype:'button',text:help,
-			tabIndex:-10,
 			handler:function(){
 				me.showHelp();
 			}
 		});
-		if(userName!=null&&userName!=''){
+		if(userName&&userName!==''){
 			items.push('-');
 			items.push({
 				xtype:'button',text:logOff,
@@ -991,7 +983,7 @@ Ext.define('com.trackplus.layout.HeaderView',{
 				}
 			});
 		}else{
-			if(me.anonymous==true) {
+			if(me.anonymous===true) {
 				items.push('-');
 				items.push({
 					xtype:'button',text:getText('common.btn.login'),
@@ -1002,13 +994,14 @@ Ext.define('com.trackplus.layout.HeaderView',{
 			}
 		}
 		return Ext.create('Ext.toolbar.Toolbar',{
-			cls: 'metaNavi',
+			cls: 'metaNavi transparentToolbar',
+			border:false,
 			items:items
 		});
 	},
 	menuAppClickHandler:function(){
 		var me=this;
-		if(me.appPopupMenu==null){
+		if(CWHF.isNull(me.appPopupMenu)){
 			me.appPopupMenu = Ext.create('Ext.menu.Menu',{
 				floating:true,
 				items:me.getAppPopupMenuItems.call(me),
@@ -1019,7 +1012,7 @@ Ext.define('com.trackplus.layout.HeaderView',{
 	},
 	openCustomApp:function(){
 		var m=this;
-		if(m.useHeader==true){
+		if(m.useHeader===true){
 			window.location.href='externalAction.action?moduleID='+ m.id;
 		}else{
 			window.location.href=m.url;
@@ -1048,27 +1041,24 @@ Ext.define('com.trackplus.layout.HeaderView',{
 		var items=[];
 
 		var loggedInPersonUserLevel = com.trackplus.TrackplusConfig.loggedInPersonUserLevel;
-		if(loggedInPersonUserLevel == null) {
+		if(CWHF.isNull(loggedInPersonUserLevel)) {
 			loggedInPersonUserLevel = 1;
 		}
 		var clientUserLevelID = com.trackplus.TrackplusConfig.clientUserLevelID;
-		if(clientUserLevelID == null) {
+		if(CWHF.isNull(clientUserLevelID)) {
 			clientUserLevelID = 0;
 		}
-		if(com.trackplus.TrackplusConfig.userName!=null){
+		if(com.trackplus.TrackplusConfig.userName){
 			me.btnMenuApp=Ext.create('Ext.button.Button',{
 				iconCls: 'menuApp24',
 				scale:'medium',
 				handler:me.menuAppClickHandler,
 				scope:me,
-				disabled: loggedInPersonUserLevel == clientUserLevelID
+				tooltip:getText('menu.modulSelector.tt'),
+				disabled: loggedInPersonUserLevel === clientUserLevelID
 			});
 			items.push(
 				Ext.create('Ext.toolbar.Toolbar',{
-					style:{
-						backgroundImage:'url('+com.trackplus.TrackplusConfig.iconsPath+'triangle.png) !important'
-					},
-				//Ext.create('Ext.container.Container',{
 					cls: 'menuAppWrapper',
 					items:[me.btnMenuApp]
 				})
@@ -1083,14 +1073,14 @@ Ext.define('com.trackplus.layout.HeaderView',{
 		estPartItems.push(me.createUserNameToolbar());
 		var userName=com.trackplus.TrackplusConfig.userName;
 		var bottomItems=new Array();
-		bottomItems.push({
+		/*bottomItems.push({
 			xtype: 'component',
 			flex:1
-		});
-		if(userName!=null&&userName!=''){
-			var iniData=me.controller.initData;
+		});*/
+		if(userName&&userName!==''){
+			var iniData=me.borderLayoutController.initData;
 			var value=null;
-			if(iniData!=null){
+			if(iniData){
 				value=iniData.search;
 			}
 			bottomItems.push(
@@ -1101,7 +1091,6 @@ Ext.define('com.trackplus.layout.HeaderView',{
 					value:value,
 					width:213,
 					//flex:1,
-					style: {margin: '7px 0 0 0;'},
 					externalAction:me.externalAction
 				})
 			);
@@ -1115,28 +1104,30 @@ Ext.define('com.trackplus.layout.HeaderView',{
 			border: false,
 			cls: 'searchBar',
 			layout: {
-			type: 'hbox',
+				type: 'hbox',
 				padding:'0',
+				pack:'end',
 				align:'middle'
 			},
 			style: {
-				border:'none',
-				padding:'0px 5px 2px 2px'
+				border:'none'
 			},
 			items:bottomItems
 		});
 		var estPartCfg={
 			xtype: 'container',
 			margins: '0 0 0 0',
-			border: true,
-			layout:'anchor',
-			width:350,
-			defaults:{
-				anchor:'100%'
+			border: false,
+			layout:{
+				type:'vbox',
+				align:'stretch'
 			},
+			//layout:'anchor',
+			//defaults:{
+			//	anchor:'100%'
+			//},
 			items:estPartItems
 		};
-
 		items.push(estPartCfg);
 		return items;
 	},
@@ -1172,13 +1163,12 @@ Ext.define('com.trackplus.layout.FooterView',{
 Ext.define('com.trackplus.layout.BorderLayoutView',{
 	extend:'Ext.container.Viewport',
 	config:{
-		controller:null,
+		borderLayoutController:null,
 		useToolbar:false,
 		toolbarCls:null,
 		externalAction:false
 	},
 	layout: 'border',
-	renderTo: Ext.getBody(),
 	toolbar:null,
 	panelCenter:null,
 	header:null,
@@ -1193,13 +1183,10 @@ Ext.define('com.trackplus.layout.BorderLayoutView',{
 				comp.getEl().on('contextmenu', Ext.emptyFn, null, {preventDefault: true});
 			}
 			var shortcuts=com.trackplus.TrackplusConfig.shortcutsJSON;
-			if(shortcuts!=null&&shortcuts.length>0) {
+			if(shortcuts!==undefined&&shortcuts.length>0) {
 				comp.getEl().on('keydown', me.keyDownHandler, me);
 			}
-
 		});
-
-
 	},
 
 	onPageMouseDown: function(event) {
@@ -1209,23 +1196,23 @@ Ext.define('com.trackplus.layout.BorderLayoutView',{
 	showShortcutsHelp:function(){
 		var me=this;
 		var shortcuts=com.trackplus.TrackplusConfig.shortcutsJSON;
-		if(shortcuts!=null&&shortcuts.length>0) {
+		if(shortcuts&&shortcuts.length>0) {
 			var html='<table><tr><td width="200"></td><td width="100%"></td></tr>';
 			for(var i=0;i<shortcuts.length;i++) {
 				html=html+'<tr>'
 				var s = shortcuts[i];
 				var h = "";
-				if (s.ctrl == true) {
+				if (s.ctrl === true) {
 					h = getText('common.shortcut.ctrl');
 				}
-				if (s.alt == true) {
-					if (h != '') {
+				if (s.alt === true) {
+					if (h !== '') {
 						h =h +'+';
 					}
 					h = h+getText('common.shortcut.alt');
 				}
-				if (s.shift == true) {
-					if (h != '') {
+				if (s.shift === true) {
+					if (h !== '') {
 						h =h+ '+';
 					}
 					h =h+ getText('common.shortcut.shift');
@@ -1310,9 +1297,9 @@ Ext.define('com.trackplus.layout.BorderLayoutView',{
 		var alt=e.altKey;
 		var ctrl=e.ctrlKey;
 		var shift=e.shiftKey;
-		if(key==e.F1){
+		if(key===e.F1){
 			e.stopEvent();
-			if (ctrl == true) {
+			if (ctrl === true) {
 				me.showShortcutsHelp();
 			} else {
 				borderLayout.showHelp();
@@ -1321,7 +1308,7 @@ Ext.define('com.trackplus.layout.BorderLayoutView',{
 		var shortcuts=com.trackplus.TrackplusConfig.shortcutsJSON;
 		for(var i=0;i<shortcuts.length;i++){
 			var s=shortcuts[i];
-			if(s.ctrl==ctrl&&s.alt==alt&& s.shift==shift&& s.key==key){
+			if(s.ctrl===ctrl&&s.alt===alt&& s.shift===shift&& s.key===key){
 				var menuItemID=s.menuItemID;
 				e.stopEvent();
 				me.executeShortcut(menuItemID);
@@ -1367,7 +1354,7 @@ Ext.define('com.trackplus.layout.BorderLayoutView',{
 				break;
 			}
 			case me.MENU_ITEM.NEW_ITEM:{
-				me.controller.createNewIssue();
+				me.borderLayoutController.createNewIssue();
 				break;
 			}
 		}
@@ -1376,8 +1363,7 @@ Ext.define('com.trackplus.layout.BorderLayoutView',{
 		var me=this;
 		var items=[];
 		me.header=Ext.create('com.trackplus.layout.HeaderView',{
-			id:'headerMaster',
-			controller:me.controller,
+			borderLayoutController:me.borderLayoutController,
 			region:'north',
 			externalAction:me.externalAction,
 			anonymous:me.anonymous
@@ -1386,12 +1372,11 @@ Ext.define('com.trackplus.layout.BorderLayoutView',{
 		me.footer=Ext.create('com.trackplus.layout.FooterView',{
 			region:'south'
 		});
-		items.push(me.footer);
-		me.panelCenter=me.controller.createCenterPanel.call(me.controller);
+		me.panelCenter=me.borderLayoutController.createCenterPanel.call(me.borderLayoutController);
 		me.panelCenter.region='center';
 		if(me.useToolbar){
 			var cls='toolbarActions';
-			if(me.toolbarCls!=null){
+			if(me.toolbarCls){
 				cls+=' '+me.toolbarCls;
 			}
 			me.toolbar= Ext.create('Ext.toolbar.Toolbar', {
@@ -1404,7 +1389,7 @@ Ext.define('com.trackplus.layout.BorderLayoutView',{
 				defaults: {
 					cls:'toolbarItemAction',
 					//overCls:'toolbarItemAction-over',
-					scale:'medium',
+					scale:'small',
 					iconAlign: 'left',
 					enableToggle:false
 				}
@@ -1422,11 +1407,15 @@ Ext.define('com.trackplus.layout.BorderLayoutView',{
 			items.push(me.panelCenter);
 		}
 
-		var westPanel=me.controller.createWestPanel.call(me.controller);
-		if(westPanel!=null){
-			westPanel.region='west';
+		var westPanel=me.borderLayoutController.createWestPanel.call(me.borderLayoutController);
+		if(westPanel){
+			westPanel.setRegion('west');
+			westPanel.setMargin(Ext.isIE?'0 -4 0 0':'0 -5 0 0');
+			westPanel.addCls('borderLayout-westPanel');
 			items.push(westPanel);
 		}
+
+		items.push(me.footer);
 		return items;
 	},
 	updateLastExecutedQueries:function(lastQueries){
@@ -1450,11 +1439,11 @@ Ext.define('com.trackplus.layout.BorderLayoutController',{
 		var config = config || {};
 		me.initialConfig = config;
 		Ext.apply(me, config);
+		this.initConfig(config);
 		me.baseLayout=Ext.create(me.layoutCls,{
 			initData:me.initData,
 			borderLayoutController:me
 		});
-		//me.initAjaxRequest();
 	},
 	initAjaxRequest:function(){
 		var me = this;
@@ -1462,7 +1451,6 @@ Ext.define('com.trackplus.layout.BorderLayoutController',{
 	},
 	onBeforeRequest:function(conn, options, eOpts ){
 		var me = this;
-
 	},
 	historyChange:function(token){
 		var me=this;
@@ -1474,11 +1462,11 @@ Ext.define('com.trackplus.layout.BorderLayoutController',{
 	showHelp:function(){
 		var me=this;
 		var ctx=me.helpContext;
-		if(ctx==null){
+		if(CWHF.isNull(ctx)){
 			ctx='general';
 		}
 		var path=com.trackplus.TrackplusConfig.helpPaths[ctx];
-		if(path==null||path==""){
+		if(CWHF.isNull(path)||path===""){
 			alert("No help config for context:"+ctx);
 			return false;
 		}
@@ -1491,19 +1479,21 @@ Ext.define('com.trackplus.layout.BorderLayoutController',{
 		var me=this;
 		var externalAction=false;
 		var anonymous=false;
-		if(me.initData.externalAction==true){
+		if(me.initData.externalAction===true){
 			externalAction=true;
 		}
-		if(me.initData.anonymous==true){
+		if(me.initData.anonymous===true){
 			anonymous=true;
 		}
 		me.view = Ext.create('com.trackplus.layout.BorderLayoutView', {
-			controller: this,
+			borderLayoutController: this,
+			renderTo: Ext.getBody(),
 			externalAction:externalAction,
 			anonymous:anonymous,
-			useToolbar: me.baseLayout.useToolbar,
-			toolbarCls: me.baseLayout.toolbarCls
+			useToolbar: me.baseLayout.getUseToolbar(),
+			toolbarCls: me.baseLayout.getToolbarCls()
 		});
+
 		return me.view;
 	},
 	updateLastExecutedQueries:function(lastQueries){
@@ -1530,10 +1520,10 @@ Ext.define('com.trackplus.layout.BorderLayoutController',{
 	clearItemToolbar:function(){
 		var me=this;
 		var toolbar=me.view.toolbar;
-		if(toolbar!=null){
+		if(toolbar){
 			toolbar.removeAll.call(toolbar,true);
+			toolbar.updateLayout();
 		}
-		toolbar.doLayout();
 	},
 	createItemToolbarSeparator:function(){
 		return '-';
@@ -1543,16 +1533,18 @@ Ext.define('com.trackplus.layout.BorderLayoutController',{
 		me.clearItemToolbar();
 		var toolbar=me.view.toolbar;
 		var toolbarItems=[];
-		if(toolbarList!=null){
+		if(toolbarList){
 			for(var i=0;i<toolbarList.length;i++){
 				toolbarItems.push(toolbarList[i]);
-				if(me.baseLayout.useSelfToolbarSeparators==false&&i<toolbarList.length-1){
+				if(me.baseLayout.useSelfToolbarSeparators===false&&i<toolbarList.length-1){
 					// toolbarItems.push(me.createItemToolbarSeparator());
 				}
 			}
 		}
-		toolbar.add(toolbarItems);
-		toolbar.doLayout();
+		if(toolbar){
+			toolbar.add(toolbarItems);
+			toolbar.updateLayout ();
+		}
 	},
 	setVisibleToolbar:function(visible){
 		var me=this;
@@ -1566,7 +1558,7 @@ Ext.define('com.trackplus.layout.BorderLayoutController',{
 	setActiveToolbarActionList:function(actionList){
 		var me=this;
 		var toolbarList=[];
-		if(actionList!=null){
+		if(actionList){
 			for(var i=0;i<actionList.length;i++){
 				toolbarList.push(me.createActionToolbarItem(actionList[i]));
 			}
@@ -1590,7 +1582,7 @@ Ext.define('com.trackplus.layout.BorderLayoutController',{
 			var options = request.options;
 			var isFromCenter = options['fromCenterPanel'];
 			//alert('isFromCenter = '+isFromCenter);
-			if(isFromCenter==true){
+			if(isFromCenter===true){
 				//alert(options.url);
 				s+=options.url + ' ;';
 //				Ext.Ajax.abort(request);
@@ -1598,7 +1590,7 @@ Ext.define('com.trackplus.layout.BorderLayoutController',{
 				dif+=options.url;
 			}
 		}
-		if(s!=''){
+		if(s!==''){
 //			alert('urlToRemove = '+s);
 		}
 //		alert('dif = '+dif);
@@ -1607,7 +1599,7 @@ Ext.define('com.trackplus.layout.BorderLayoutController',{
 	replaceCenterContent:function(jsonData){
 		var me=this;
 		var url=jsonData.url;
-		if(url!=null&&url!=''){
+		if(url&&url!==''){
 			var useAJAX=jsonData.useAJAX;
 			var script=jsonData.script;
 			if(script){
@@ -1624,8 +1616,8 @@ Ext.define('com.trackplus.layout.BorderLayoutController',{
 	},
 	loadUrl:function(url,useAJAX){
 		var me=this;
-		if(url!=null&&url!=''){
-			if(useAJAX!=null&&useAJAX==true){
+		if(url&&url!==''){
+			if(useAJAX&&useAJAX===true){
 				me.clearItemToolbar();
 				me.view.panelCenter.removeAll();
 				me.view.panelCenter.getLoader().load({
@@ -1642,7 +1634,7 @@ Ext.define('com.trackplus.layout.BorderLayoutController',{
 		var me=this;
 		me.view.panelCenter.removeAll(true);
 		me.view.panelCenter.add(component);
-		me.view.panelCenter.doLayout();
+		me.view.panelCenter.updateLayout ();
 	},
 	createNewIssue:function(issueTypeID,projectID,releaseID,button,parentID,handler,scope,synopsis,description){
 		var me=this;
@@ -1651,16 +1643,16 @@ Ext.define('com.trackplus.layout.BorderLayoutController',{
 
 		var successHandler;
 		var myScope=me;
-		if(handler!=null){
+		if(handler){
 			successHandler=handler;
-			if(scope!=null){
+			if(scope){
 				myScope=scope;
 			}
 		}else {
 			successHandler = function (data) {
 				//window.location.href="printItem.action?workItemID="+data.workItemID;
 				CWHF.showMsgInfo(getText('item.msg.newItemCreated', data.workItemIDDisplay, data.title));
-				if (me.layoutCls == 'com.trackplus.layout.ItemNavigatorLayout' || me.layoutCls == 'com.trackplus.layout.WikiLayout') {
+				if (me.layoutCls === 'com.trackplus.layout.ItemNavigatorLayout' || me.layoutCls === 'com.trackplus.layout.WikiLayout') {
 					me.baseLayout.refresh.call(me.baseLayout);
 				} else {
 					//window.location.href="itemNavigator.action?queryType=3&queryID=101";//MyItems
@@ -1678,7 +1670,7 @@ Ext.define('com.trackplus.layout.BorderLayoutController',{
 			parentID:parentID,
 			synopsis:synopsis,
 			description:description,
-			createDialogBeforLoaded:false,
+			createDialogBeforeLoaded:false,
 			animateTarget:button,
 			modal:true
 		});
@@ -1702,7 +1694,7 @@ com.trackplus.SearchField=Ext.define('com.trackplus.SearchField', {
 	initComponent: function() {
 		this.callParent(arguments);
 		this.on('specialkey', function(f, e){
-			if(e.getKey() == e.ENTER){
+			if(e.getKey() === e.ENTER){
 				this.onTrigger2Click();
 			}
 		}, this);
@@ -1751,15 +1743,15 @@ com.trackplus.search=function(value, externalAction){
 		success: function(result){
 			var jsonData=Ext.decode(result.responseText);
 			if(jsonData.success===true) {
-				if(externalAction==true){
+				if(externalAction===true){
 					borderLayout.setLoading(false);
-					var externalLayout=borderLayout.controller.baseLayout;
+					var externalLayout=borderLayout.borderLayoutController.baseLayout;
 					if(Ext.isFunction(externalLayout.searchSuccessHandler)){
 						externalLayout.searchSuccessHandler(jsonData,value);
 						return true;
 					}
 				}
-				if (jsonData.workItem != null) {
+				if (jsonData.workItem ) {
 					window.location.href = "printItem.action?key=" + jsonData.workItem;
 				} else {
 					window.location.href = "itemNavigator.action";

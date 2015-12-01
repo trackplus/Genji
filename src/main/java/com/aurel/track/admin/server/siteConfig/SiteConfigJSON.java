@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -82,7 +82,7 @@ public class SiteConfigJSON{
 		OtherSiteConfigTO otherSiteConfigTO=SiteConfigBL.getOtherSiteConfigTO(siteBean);
 		sb.append(encodeOtherSiteConfigTO(otherSiteConfigTO));
 		
-		boolean ldapEnabled=(ApplicationBean.getApplicationBean().getEdition()>=2);
+		boolean ldapEnabled=(ApplicationBean.getInstance().getEdition()>=2);
 		JSONUtility.appendBooleanValue(sb,"ldapEnabled",ldapEnabled, true);
 		sb.append("}");
 		sb.append("}");
@@ -108,7 +108,7 @@ public class SiteConfigJSON{
 		LicenseTO licenseTO=SiteConfigBL.getLicenseTO(siteBean, appBean, locale);
 		sb.append(encodeLicenseTO(licenseTO, locale));
 		
-		boolean ldapEnabled=(ApplicationBean.getApplicationBean().getEdition()>=2);
+		boolean ldapEnabled=(ApplicationBean.getInstance().getEdition()>=2);
 		JSONUtility.appendBooleanValue(sb,"ldapEnabled",ldapEnabled, true);
 		sb.append("}");
 		sb.append("}");
@@ -251,9 +251,9 @@ public class SiteConfigJSON{
 		}
 		sb.append("],");
 		JSONUtility.appendFieldName(sb,JSONUtility.JSON_FIELDS.DATA).append(":{");
-		LicenseTO licenseTO=SiteConfigBL.getLicenseTO(ApplicationBean.getApplicationBean().getSiteBean(), ApplicationBean.getApplicationBean(), locale);
+		LicenseTO licenseTO=SiteConfigBL.getLicenseTO(ApplicationBean.getInstance().getSiteBean(), ApplicationBean.getInstance(), locale);
 		sb.append(encodeLicenseTO(licenseTO, locale));
-		boolean ldapEnabled=(ApplicationBean.getApplicationBean().getEdition()>=2);
+		boolean ldapEnabled=(ApplicationBean.getInstance().getEdition()>=2);
 		JSONUtility.appendBooleanValue(sb,"ldapEnabled",ldapEnabled, true);
 		sb.append("}}");
 		return sb.toString();

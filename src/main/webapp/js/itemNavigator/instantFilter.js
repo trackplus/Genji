@@ -3,24 +3,24 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /* $Id:$ */
 
-Ext.define("com.trackplus.itemNavigator.instantFilter",{
+Ext.define("com.trackplus.itemNavigator.InstantFilter",{
 	extend:"Ext.util.Observable",
 	config: {
 		filterName: null,
@@ -38,9 +38,11 @@ Ext.define("com.trackplus.itemNavigator.instantFilter",{
 		var config = cfg || {};
 		this.initialConfig = config;
 		this.events=[];
-		this.addEvents("applyFilter");
-		this.addEvents("cleanFilter");
+		//this.addEvents("applyFilter");
+		//this.addEvents("cleanFilter");
 		this.listeners = config.listeners;
+		Ext.apply(this, config);
+		this.initConfig(config);
 		this.callParent(arguments);
 	},
 	/**
@@ -67,7 +69,7 @@ Ext.define("com.trackplus.itemNavigator.instantFilter",{
 	loadFilter: function() {
 		var me=this;
 		var	 params = {};
-		if (this.filterID==null || this.filterType==null) {
+		if (CWHF.isNull(this.filterID) || CWHF.isNull(this.filterType)) {
 			params.add = true;
 		} else {
 			params.filterID = this.filterID;
@@ -88,7 +90,7 @@ Ext.define("com.trackplus.itemNavigator.instantFilter",{
 				//force the filter fields to be modifiable (save as is always possible)
 				data["modifiable"] = true;
 				var toolbars = me.filterPanel.getDockedItems('toolbar[dock="top"]');
-				if (toolbars!=null) {
+				if (toolbars) {
 					//if not modifiable disbale the save button
 					toolbars[0].getComponent(2).setDisabled(!modifiable);
 				}
@@ -196,7 +198,7 @@ Ext.define("com.trackplus.itemNavigator.instantFilter",{
 			success: function(form, action) {
 				me.filterPanel.setLoading(false);
 				var result = action.result;
-				if (result!=null) {
+				if (result) {
 					if (result.success) {
 						me.fireEvent.call(me,"applyFilter",{
 							filterType: me.filterType,
@@ -211,9 +213,9 @@ Ext.define("com.trackplus.itemNavigator.instantFilter",{
 			failure: function(form, action) {
 				me.filterPanel.setLoading(false);
 				result = action.result;
-				if (result!=null) {
+				if (result) {
 					var errorMessage = result.errorMessage;
-					if (errorMessage!=null) {
+					if (errorMessage) {
 						//only error message, no errorCode
 						com.trackplus.util.showError(result);
 					} else {
@@ -230,7 +232,7 @@ Ext.define("com.trackplus.itemNavigator.instantFilter",{
 	onClean: function() {
 		var me=this;
 		var params = {clearFilter:true};
-		if (this.filterID==null || this.filterType==null) {
+		if (CWHF.isNull(this.filterID) || CWHF.isNull(this.filterType)) {
 			params.instant = true;
 		} else {
 			params.filterID = this.filterID;
@@ -271,7 +273,7 @@ Ext.define("com.trackplus.itemNavigator.instantFilter",{
 	onSave: function() {
 		var me=this;
 		var params = {};
-		if (this.filterID==null || this.filterType==null) {
+		if (CWHF.isNull(this.filterID) || CWHF.isNull(this.filterType)) {
 			//params.instant = true;
 			params.add = true;
 		} else {
@@ -289,7 +291,7 @@ Ext.define("com.trackplus.itemNavigator.instantFilter",{
 			success: function(form, action) {
 				me.filterPanel.setLoading(false);
 				var result = action.result;
-				if (result!=null) {
+				if (result) {
 					if (result.success) {
 						CWHF.showMsgInfo(getText("admin.customize.queryFilter.successSave"));
 						//TODO reload content
@@ -301,9 +303,9 @@ Ext.define("com.trackplus.itemNavigator.instantFilter",{
 			failure: function(form, action) {
 				me.filterPanel.setLoading(false);
 				result = action.result;
-				if (result!=null) {
+				if (result) {
 					var errorMessage = result.errorMessage;
-					if (errorMessage!=null) {
+					if (errorMessage) {
 						//only error message, no errorCode
 						com.trackplus.util.showError(result);
 					} else {
@@ -363,7 +365,7 @@ Ext.define("com.trackplus.itemNavigator.instantFilter",{
 			success: function(form, action) {
 				me.filterPanel.setLoading(false);
 				var result = action.result;
-				if (result!=null) {
+				if (result) {
 					if (result.success) {
 						CWHF.showMsgInfo(getText("admin.customize.queryFilter.successSave"));
 						window.close();
@@ -376,9 +378,9 @@ Ext.define("com.trackplus.itemNavigator.instantFilter",{
 			failure: function(form, action) {
 				me.filterPanel.setLoading(false);
 				result = action.result;
-				if (result!=null) {
+				if (result) {
 					var errorMessage = result.errorMessage;
-					if (errorMessage!=null) {
+					if (errorMessage) {
 						//only error message, no errorCode
 						com.trackplus.util.showError(result);
 					} else {

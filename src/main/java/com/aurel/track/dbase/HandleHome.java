@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -120,7 +120,6 @@ public class HandleHome {
 		String home = getTrackplus_Home();
 		LOGGER.info("Server current working directory is " + System.getProperty("user.dir"));
 		copyPropertiesFile(context, TORQUE_FILE);
-		//copyPropertiesFile(context, USER_LEVELS_FILE);
 		copyPropertiesFile(context, FILTER_SUBSCRIPTIONS_FILE);
 		copyPropertiesFile(context, GENERAL_SETTINGS_FILE);
 		copyPropertiesFile(context, PDF_EXCEL_EXPORT_FILE);
@@ -158,11 +157,10 @@ public class HandleHome {
 		moveWordTemplates();
 		copyExportTemplates(context, WORD_TEMPLATES_DIR);
 		copyExportTemplates(context, LATEX_TEMPLATES_DIR);
-		// copyObject(context, "resources/"+LATEX_TEMPLATES_DIR, "missing.pdf", LATEX_TEMPLATES_DIR);
 
 		copyFAQTemplates(context);
 		copySSOFolder(context);
-		
+
 		copyLanguageProfiles(context, LANGUAGE_PROFILES_DIR);
 
 		File pluginDir = new File(home+File.separator+HandleHome.PLUGINS_DIR);
@@ -171,7 +169,7 @@ public class HandleHome {
 		//init torque again to get the database access for external databases configured in plugins (included before in classpath. see addPluginLocationsToClassPath)
 		InitDatabase.initTorque();
 	}
-	
+
 	/**
 	 * Copy the Torque.properties file to the TRACKPLUS_HOME directory
 	 * @param context
@@ -218,20 +216,18 @@ public class HandleHome {
 							LOGGER.error(ExceptionUtils.getStackTrace(servEx));
 						}
 					}
-					
+
 					if(fileName.endsWith(".sh") || fileName.endsWith(".cmd") ) {
 						File fileToCopyInHome = new File(tpHome + File.separator + templateBaseDir + File.separator  + fileName);
 						fileToCopyInHome.setExecutable(true);
 					}
-	
+
 					if(fileName.endsWith(".zip") || fileName.endsWith(".tlx") ) {
 						try {
 							File fileToCopyInHome = new File(tpHome + File.separator + templateBaseDir + File.separator  + fileName);
-							// if(!fileToCopyInHome.exists()) {
 								copyObject(context, "resources/"+templatePath, fileName, templateBaseDir);
 								File fileToUnzip = new File(tpHome + File.separator + templateBaseDir + File.separator  + fileName);
 								PluginUtils.unzipFileIntoDirectory(fileToUnzip, templatesDir);
-							// }
 						}catch(ServletException servEx) {
 							LOGGER.error(ExceptionUtils.getStackTrace(servEx));
 						}
@@ -240,7 +236,7 @@ public class HandleHome {
 			}
 		}
 	}
-	
+
 	private static void copyLanguageProfiles(ServletContext context, String templateBaseDir ) {
 		String tpHome = getTrackplus_Home();
 		File templatesDir = new File(tpHome+File.separator+templateBaseDir);
@@ -366,7 +362,7 @@ public class HandleHome {
 				Trackplus_Home = home;
 			}
 		} catch (Exception e) {
-			LOGGER.error(e.getMessage(), e);
+			LOGGER.error(e.getMessage());
 		}
 	}
 
@@ -384,36 +380,11 @@ public class HandleHome {
 	 * Get the path to the workflow graphs temporary directory
 	 * @return
 	 */
-	/*public static String getWorkFlowDirectory() {
-		return Trackplus_Home + File.separator + "WorkFlowGraphs";
-	}*/
 
 	/*
 	 * Cleans up the workflow directory from any old pictures that might
 	 * not have been caught by the cleanup when the session was closed.
 	 */
-	/*public static void cleanUpWorkflowDir(TSiteBean site) {
-		//clean up WorkFlowGraphs-directory
-		if (TClusterNodePeer.getIAmTheMaster()) {
-			String attachmentRootDir = site.getAttachmentRootDir();
-			if (attachmentRootDir == null) {
-				attachmentRootDir = "";
-			}
-
-			String directory = HandleHome.getWorkFlowDirectory();
-
-			File theWorkflowDir = new File(directory);
-			if (theWorkflowDir.exists()) {
-				String[] files=new File(directory).list();
-				LOGGER.debug("Cleaning up the WorkFlowGraphs directory");
-				for(int i=0;i<files.length;i++)
-				{
-					if(!new File(directory+ File.separator+files[i]).delete())
-						LOGGER.warn("could not delete file "+files[i]);
-				}
-			}
-		}
-	}*/
 
 	/**
 	 * Obtain the Torque.properties from TRACKPLUS_HOME or if not available from the WAR.
@@ -492,7 +463,7 @@ public class HandleHome {
 			in.close();
 
 		} catch (Exception e) {
-			LOGGER.error("Could not read " + propFile+". Exiting. " + e.getMessage(), e);
+			LOGGER.error("Could not read " + propFile+". Exiting. " + e.getMessage());
 			System.err.println("Could not read " + propFile+". Exiting. " + e.getMessage());
 			throw new ServletException(e);
 		}
@@ -527,7 +498,7 @@ public class HandleHome {
 			in.close();
 
 		} catch (Exception e) {
-			LOGGER.error("Could not read " + propFile+". Exiting. " + e.getMessage(), e);
+			LOGGER.error("Could not read " + propFile+". Exiting. " + e.getMessage());
 			System.err.println("Could not read " + propFile+". Exiting. " + e.getMessage());
 			throw new ServletException(e);
 		}
@@ -549,7 +520,6 @@ public class HandleHome {
 		try	{
 			// First check if we have a configuration file pointed to by the environment
 			if (trackplusHome!= null && !"".equals(trackplusHome)) {
-				//String fname = HandleHome.getTrackplus_Home();
 				String fileName = trackplusHome + File.separator + propFile;
 				fprops = new File(fileName);
 				LOGGER.debug("Read file " + fileName);
@@ -562,7 +532,7 @@ public class HandleHome {
 				}
 			}
 		} catch (Exception e) {
-			LOGGER.error("Could not read " + propFile+". Exiting. " + e.getMessage(), e);
+			LOGGER.error("Could not read " + propFile+". Exiting. " + e.getMessage());
 			System.err.println("Could not read " + propFile+". Exiting. " + e.getMessage());
 		}
 		return props;
@@ -592,7 +562,7 @@ public class HandleHome {
 				}
 			}
 		} catch (Exception e) {
-			LOGGER.error("Could not read " + propFile+" from TRACKPLUS_HOME " + trackplusHome +". Exiting. " + e.getMessage(), e);
+			LOGGER.error("Could not read " + propFile+" from TRACKPLUS_HOME " + trackplusHome +". Exiting. " + e.getMessage());
 		}
 		return pc;
 	}
@@ -617,7 +587,7 @@ public class HandleHome {
 				in.close();
 			}
 		} catch (Exception e) {
-			LOGGER.error("Could not read " + propFile + " from servlet context " + propFileURL==null?"":propFileURL.toExternalForm() + ". Exiting. " + e.getMessage(), e);
+			LOGGER.error("Could not read " + propFile + " from servlet context " + propFileURL==null?"":propFileURL.toExternalForm() + ". Exiting. " + e.getMessage());
 			throw new ServletException(e);
 		}
 		return pc;
@@ -637,7 +607,6 @@ public class HandleHome {
 			dbcfg = getMergedCrmConfiguration(dbcfg);
 		}
 		// Here we need to call plugins that need their own database configuration.
-		// dbcfg = Sync.getMergedCrmConfiguration(dbcfg);
 		return dbcfg;
 	}
 
@@ -671,7 +640,6 @@ public class HandleHome {
 			if (emsg == null) {
 				emsg = "";
 			}
-			// LOGGER.info("Could not read " + propFile+". No problem, just skipping." + e.getMessage(), e);
 		}
 		return dbcfg;
 	}
@@ -702,7 +670,7 @@ public class HandleHome {
 				in = fileURL.openStream();
 			}
 		} catch (Exception e) {
-			LOGGER.error("Could not read " + fileName + ". Exiting. " + e.getMessage(), e);
+			LOGGER.error("Could not read " + fileName + ". Exiting. " + e.getMessage());
 			System.err.println("Could not read " + fileName + ". Exiting. " + e.getMessage());
 			throw new ServletException(e);
 		}
@@ -780,7 +748,7 @@ public class HandleHome {
 			}
 		}
 		catch (Exception e) {
-			LOGGER.error("Could not read " + propFile +". Exiting." + e.getMessage(), e);
+			LOGGER.error("Could not read " + propFile +". Exiting." + e.getMessage());
 			throw new ServletException(e);
 		}
 	}
@@ -900,7 +868,7 @@ public class HandleHome {
 			}
 		}
 		catch (Exception e) {
-			LOGGER.error("Could not read " + templateZipFile +". Ignoring. " + e.getMessage(), e);
+			LOGGER.error("Could not read " + templateZipFile +". Ignoring. " + e.getMessage());
 		}
 	}
 
@@ -955,7 +923,6 @@ public class HandleHome {
 			writeHash(targetFile,hashSource);
 
 			if (copy) {
-				//					LOGGER.info("Adding or overwriting original file " + file);
 					LOGGER.info("Copying file " + sourcePath+"/"+file + " to " + targetFile.getAbsolutePath());
 					InputStream from = null;
 					FileOutputStream to = null; // Stream to write to destination
@@ -985,7 +952,7 @@ public class HandleHome {
 				}
 		}
 		catch (Exception e) {
-			LOGGER.error("Could not read " + file +". Exiting: " + e.getMessage(), e);
+			LOGGER.error("Could not read " + file +". Exiting: " + e.getMessage());
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 			throw new ServletException(e);
 		}
@@ -1023,7 +990,7 @@ public class HandleHome {
 				FileUtils.moveDirectory(sourceDir, targetDir);
 			}
 		} catch (IOException e) {
-			LOGGER.error(e.getMessage(),e);;
+			LOGGER.error(e.getMessage());;
 		}
 	}
 
@@ -1102,17 +1069,17 @@ public class HandleHome {
 					}
 
 				} catch (Exception e) {
-					LOGGER.error(e.getMessage(), e);
+					LOGGER.error(e.getMessage());
 				}
 			}
 
 		}
 		catch (Exception e) {
-			LOGGER.error("Could not read " + propFile +". Exiting." + e.getMessage(), e);
+			LOGGER.error("Could not read " + propFile +". Exiting." + e.getMessage());
 			throw new ServletException(e);
 		}
 	}
-	
+
 	/**
 	 * Copies log4j2.xml file from the WAR to TRACKPLUS_HOME if it does not exist there yet.
 	 * In this process it changes the location of the logger output.
@@ -1150,22 +1117,22 @@ public class HandleHome {
 					String fileData = FileUtils.readFileToString(new File(propFilePath), "UTF-8");
 					fileData = fileData.replace("${sys:java.io.tmpdir}", getTrackplus_Home());
 					FileUtils.write(new File(propFilePath), fileData, "UTF-8", false);
-
 				} catch (Exception e) {
-					LOGGER.error(e.getMessage(), e);
+					LOGGER.error(e.getMessage());
 				}
 
 			}
 		}
 		catch (Exception e) {
-			LOGGER.error("Could not read " + propFile +". Exiting." + e.getMessage(), e);
+			LOGGER.error("Could not read " + propFile +". Exiting." + e.getMessage());
 			throw new ServletException(e);
 		}
+
 	}
 
 	/*
 	 * Compute an  MD5 digest for a file.
-	 * 
+	 *
 	 */
 	public static String computeHash(File file) {
 		try {
@@ -1195,7 +1162,7 @@ public class HandleHome {
 
 	/*
 	 * Compute an  MD5 digest for a file.
-	 * 
+	 *
 	 */
 	public static String computeHash(URL url) {
 
@@ -1219,7 +1186,7 @@ public class HandleHome {
 			hash = DatatypeConverter.printHexBinary(digest);
 
 		} catch (Exception e) {
-			LOGGER.error(e.getMessage(),e);
+			LOGGER.error(e.getMessage());
 		}
 		// Always close the stream, even if exceptions were thrown
 		finally {
@@ -1261,7 +1228,7 @@ public class HandleHome {
 			br.close();
 			}
 		} catch (Exception e) {
-			LOGGER.warn(e.getMessage(),e);
+			LOGGER.warn(e.getMessage());
 		}
 		return false;
 	}
@@ -1293,10 +1260,10 @@ public class HandleHome {
 			}
 			output.close();
 		} catch (Exception e) {
-			LOGGER.warn(e.getMessage(),e);
-		}		
+			LOGGER.warn(e.getMessage());
+		}
 	}
-	
+
 	public static File getMissingLaTeXPdf() {
 		return new File(getTrackplus_Home()+File.separator+LATEX_TEMPLATES_DIR+File.separator+"missing.pdf");
 	}

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -107,7 +107,6 @@ public class TProjectAccountPeer
 				tProjectAccountBean.setProject(project);
 				tProjectAccountBean.setAccount(account);				
 				save(tProjectAccountBean);
-				//doInsert(crit);
 			}
 		}
 		catch (Exception e) {
@@ -119,6 +118,7 @@ public class TProjectAccountPeer
 	 * Loads the projectAccountBeans by project  
 	 * @param projectID 
 	 */
+	@Override
 	public List<TProjectAccountBean> loadByProject1(Integer projectID) {
 		Criteria crit = new Criteria();
 		crit.add(PROJECT, projectID);		
@@ -135,13 +135,14 @@ public class TProjectAccountPeer
 	 * @param projectAccountBean
 	 * @return
 	 */
+	@Override
 	public void save(TProjectAccountBean projectAccountBean) {
 		TProjectAccount tProjectAccount;		
 		try {
 			tProjectAccount = BaseTProjectAccount.createTProjectAccount(projectAccountBean);
 			tProjectAccount.save();			
 		} catch (Exception e) {
-			LOGGER.error("Saving of the projectAccountBean failed with " + e.getMessage(), e);			
+			LOGGER.error("Saving of the projectAccountBean failed with " + e.getMessage());			
 		}		
 	}
     
@@ -150,6 +151,7 @@ public class TProjectAccountPeer
 	 * @param projectID
 	 * @param accountID
 	 */
+    @Override
     public void deleteByProjectAndAccount(Integer projectID, Integer accountID) {		
 		Criteria crit = new Criteria();
 		crit.add(PROJECT, projectID);

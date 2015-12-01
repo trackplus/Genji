@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -70,6 +70,7 @@ public class FieldExpressionBL {
 	//in the filter actions which will be set as a result of a form submit
 	public static String MATCHER_RELATION_BASE_NAME = "MatcherRelationMap";
 	public static String VALUE_BASE_NAME = "DisplayValueMap";
+	public static String VALUE_BASE_ITEM_ID = "DisplayValue";
 	public static String SIMPLE = "simple";
 	public static String IN_TREE = "inTree";
 	public static String CASCADING_PART = "CascadingPart";
@@ -94,11 +95,11 @@ public class FieldExpressionBL {
 	 * @param locale
 	 * @return
 	 */
-	static String selectMatcher(Integer[] projectIDs, Integer[] itemTypeIDs, String baseName, Integer index, String stringValue,
+	static String selectMatcher(Integer[] projectIDs, Integer[] itemTypeIDs, String baseName, String baseItemId, Integer index, String stringValue,
 			Integer fieldID, Integer matcherID, boolean modifiable, TPersonBean personBean, Locale locale) {
 		FieldExpressionInTreeTO fieldExpressionInTreeTO =
-			configureValueDetails(projectIDs, itemTypeIDs, baseName, index, stringValue, fieldID, matcherID, modifiable, personBean, locale);
-		return FilterJSON.getFieldExpressionValueJSON(fieldExpressionInTreeTO.getValueName(), fieldExpressionInTreeTO.isNeedMatcherValue(),
+			configureValueDetails(projectIDs, itemTypeIDs, baseName, baseItemId, index, stringValue, fieldID, matcherID, modifiable, personBean, locale);
+		return FilterJSON.getFieldExpressionValueJSON(fieldExpressionInTreeTO.getValueItemId(), fieldExpressionInTreeTO.isNeedMatcherValue(),
 				fieldExpressionInTreeTO.getValueRenderer(), fieldExpressionInTreeTO.getJsonConfig());
 	}
 
@@ -114,7 +115,7 @@ public class FieldExpressionBL {
 	 * @param withParameter
 	 * @return
 	 */
-	static String selectField(Integer[] projectIDs, Integer[] itemTypeIDs, String baseName, Integer index, String stringValue, Integer fieldID, Integer matcherID,
+	static String selectField(Integer[] projectIDs, Integer[] itemTypeIDs, String baseName, String baseItemId, Integer index, String stringValue, Integer fieldID, Integer matcherID,
 			boolean modifiable, TPersonBean personBean, Locale locale, boolean withParameter) {
 		List<IntegerStringBean> matcherRelations = getMatchers(fieldID, withParameter, true, locale);
 		if (matcherID == null) {
@@ -137,8 +138,8 @@ public class FieldExpressionBL {
 			}
 		}
 		FieldExpressionInTreeTO fieldExpressionInTreeTO =
-			configureValueDetails(projectIDs, itemTypeIDs, baseName, index, stringValue, fieldID, matcherID, modifiable, personBean, locale);
-		String valueJSON = FilterJSON.getFieldExpressionValueBaseJSON(fieldExpressionInTreeTO.getValueName(), fieldExpressionInTreeTO.isNeedMatcherValue(),
+			configureValueDetails(projectIDs, itemTypeIDs, baseName, baseItemId, index, stringValue, fieldID, matcherID, modifiable, personBean, locale);
+		String valueJSON = FilterJSON.getFieldExpressionValueBaseJSON(fieldExpressionInTreeTO.getValueItemId(), fieldExpressionInTreeTO.isNeedMatcherValue(),
 				fieldExpressionInTreeTO.getValueRenderer(), fieldExpressionInTreeTO.getJsonConfig(), true);
 		return FilterJSON.getFieldExpressionMatcherAndValueValueJSON(matcherRelations, matcherID, valueJSON);
 	}	
@@ -154,7 +155,7 @@ public class FieldExpressionBL {
 	 * @param locale
 	 * @return
 	 */
-	private static FieldExpressionInTreeTO configureValueDetails(Integer[] projectIDs, Integer[] itemTypeIDs, String baseName, Integer index, String stringValue,
+	private static FieldExpressionInTreeTO configureValueDetails(Integer[] projectIDs, Integer[] itemTypeIDs, String baseName, String baseItemId, Integer index, String stringValue,
 			Integer fieldID, Integer matcherID, boolean modifiable, TPersonBean personBean, Locale locale) {
 		FieldExpressionInTreeTO fieldExpressionInTreeTO = new FieldExpressionInTreeTO();
 		fieldExpressionInTreeTO.setField(fieldID);
@@ -186,7 +187,7 @@ public class FieldExpressionBL {
 		} else {
 			ancestorProjectIDs = ProjectBL.getAncestorProjects(projectIDs);
 		}
-		setExpressionValue(fieldExpressionInTreeTO, projectIDs, ancestorProjectIDs, itemTypeIDs, baseName, index, modifiable, personBean, locale);
+		setExpressionValue(fieldExpressionInTreeTO, projectIDs, ancestorProjectIDs, itemTypeIDs, baseName, baseItemId, index, modifiable, personBean, locale);
 		return fieldExpressionInTreeTO;
 	}
 	
@@ -212,6 +213,7 @@ public class FieldExpressionBL {
 		fieldExpressionSimpleTO.setValue(value);
 		fieldExpressionSimpleTO.setFieldLabel(fieldLabelsMap.get(fieldID));
 		fieldExpressionSimpleTO.setMatcherName(getName(SIMPLE + MATCHER_RELATION_BASE_NAME, fieldID));
+		fieldExpressionSimpleTO.setMatcherItemId(getItemId(SIMPLE + MATCHER_RELATION_BASE_NAME, fieldID));
 		List<IntegerStringBean> matchers = getMatchers(fieldID,  withParameter, false, locale);
 		//add empty matcher for FieldExpressionSimpleTO to give the possibility to not filter by this field
 		matchers.add(0, new IntegerStringBean("-", MatchRelations.NO_MATCHER));
@@ -228,7 +230,7 @@ public class FieldExpressionBL {
 			ancestorProjectIDs = ProjectBL.getAncestorProjects(projectIDs);
 		}
 		setExpressionValue(fieldExpressionSimpleTO, projectIDs, ancestorProjectIDs, itemTypeIDs,
-				SIMPLE + VALUE_BASE_NAME, fieldID, modifiable, personBean, locale);
+				SIMPLE + VALUE_BASE_NAME, SIMPLE + VALUE_BASE_ITEM_ID, fieldID, modifiable, personBean, locale);
 		return fieldExpressionSimpleTO;
 	}
 	
@@ -250,6 +252,7 @@ public class FieldExpressionBL {
 		fieldExpressionSimpleTO.setFieldLabel(fieldLabelsMap.get(fieldID));
 		setMatchers(fieldExpressionSimpleTO, true, locale);
 		fieldExpressionSimpleTO.setMatcherName(getName(IN_TREE + MATCHER_RELATION_BASE_NAME, index));
+		fieldExpressionSimpleTO.setMatcherItemId(getItemId(IN_TREE + MATCHER_RELATION_BASE_NAME, index));
 		Integer[] ancestorProjectIDs = null;
 		if (projectIDs==null || projectIDs.length==0) {
 			//none of the projects is selected -> get the other lists datasource as all available projects would be selected
@@ -262,7 +265,7 @@ public class FieldExpressionBL {
 			ancestorProjectIDs = ProjectBL.getAncestorProjects(projectIDs);
 		}
 		setExpressionValue(fieldExpressionSimpleTO, projectIDs, ancestorProjectIDs, itemTypeIDs,
-				IN_TREE + VALUE_BASE_NAME, index, true, personBean, locale);
+				IN_TREE + VALUE_BASE_NAME, IN_TREE + VALUE_BASE_ITEM_ID, index, true, personBean, locale);
 		return fieldExpressionSimpleTO;
 	}
 	
@@ -469,6 +472,7 @@ public class FieldExpressionBL {
 		}
 		fieldExpressionInTreeTO.setFieldsList(fieldsWithMatcher);
 		fieldExpressionInTreeTO.setFieldName(getName(FIELD_NAME, index));
+		fieldExpressionInTreeTO.setFieldItemId(getItemId(FIELD_NAME, index));
 		//matcher
 		List<IntegerStringBean> matcherList = getMatchers(fieldID, withParameter, true, locale);
 		fieldExpressionInTreeTO.setMatchersList(matcherList);
@@ -482,9 +486,11 @@ public class FieldExpressionBL {
 			}
 		}
 		fieldExpressionInTreeTO.setMatcherName(getName(IN_TREE + MATCHER_RELATION_BASE_NAME, index));
+		fieldExpressionInTreeTO.setMatcherItemId(getItemId(IN_TREE + MATCHER_RELATION_BASE_NAME, index));
 		//value 		
-		setExpressionValue(fieldExpressionInTreeTO, projectIDs, ancestorProjectIDs, itemTypeIDs, IN_TREE + VALUE_BASE_NAME, index, modifiable, personBean, locale);						
+		setExpressionValue(fieldExpressionInTreeTO, projectIDs, ancestorProjectIDs, itemTypeIDs, IN_TREE + VALUE_BASE_NAME, IN_TREE + VALUE_BASE_ITEM_ID, index, modifiable, personBean, locale);						
 		fieldExpressionInTreeTO.setOperationName(getName(OPERATION_NAME, index));
+		fieldExpressionInTreeTO.setOperationItemId(getItemId(OPERATION_NAME, index));
 		fieldExpressionInTreeTO.setParenthesisOpenName(getName(PARENTHESIS_OPEN_NAME, index));
 		fieldExpressionInTreeTO.setParenthesisClosedName(getName(PARENTHESIS_CLOSED_NAME, index));
 	}
@@ -493,18 +499,22 @@ public class FieldExpressionBL {
 	 * Set expression value attributes:  needMatcherValue, matcherID, valueRenderer and JsonConfig string
 	 * The field, the matcher (if it is the case) and the value object should be already set for FieldExpressionSimpleTO
 	 * @param fieldExpressionSimpleTreeTO
+	 * @param projectIDs
+	 * @param ancestorProjectIDs
+	 * @param itemTypeIDs
 	 * @param baseName
+	 * @param baseItemId
 	 * @param index
 	 * @param modifiable
 	 * @param personID
 	 * @param locale
 	 */
 	private static void setExpressionValue(FieldExpressionSimpleTO fieldExpressionSimpleTreeTO,
-			Integer[] projectIDs, Integer[] ancestorProjectIDs, Integer[] itemTypeIDs,  String baseName, Integer index,
+			Integer[] projectIDs, Integer[] ancestorProjectIDs, Integer[] itemTypeIDs,  String baseName, String baseItemId, Integer index,
 			boolean modifiable, TPersonBean personBean, Locale locale) {
 		Integer personID = personBean.getObjectID();
 		Integer matcherID = fieldExpressionSimpleTreeTO.getSelectedMatcher();
-		fieldExpressionSimpleTreeTO.setValueName(getName(baseName, index));
+		fieldExpressionSimpleTreeTO.setValueItemId(getItemId(baseItemId, index));
 		if (matcherID!=null) {
 			//do not force the matcher to a value if not specified because no matcher means no filtering by that field
 			//even if the field is always present (it is set as upper filter field)
@@ -616,6 +626,17 @@ public class FieldExpressionBL {
 	private static String getName(String name, Integer suffix) {
 		StringBuilder stringBuilder = new StringBuilder();
 		return stringBuilder.append(name).append("[").append(suffix).append("]").toString();
+	}
+	
+	/**
+	 * Builds the name of the client side controls for submit
+	 * @param name
+	 * @param suffix
+	 * @return
+	 */
+	private static String getItemId(String name, Integer suffix) {
+		StringBuilder stringBuilder = new StringBuilder();
+		return stringBuilder.append(name).append(suffix).toString();
 	}
 	
 	/**

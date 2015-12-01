@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -271,6 +271,7 @@ public class TWorkItemBean
 	/**
 	 * Used for getting the label for parent workItem
 	 */
+	@Override
 	public String getLabel() {
 		return getSynopsis();
 	}
@@ -966,24 +967,16 @@ public class TWorkItemBean
 	 * @return
 	 */
 	public TWorkItemBean copyShallow() {
-		//return ItemBL.loadWorkItemWithCustomFields(this.getObjectID());
 		TWorkItemBean workItemBeanCopy = new TWorkItemBean();
 		int[] systemFields = SystemFields.getSystemFieldsArray();
 		for (int systemField : systemFields) {
-			//if (systemField!=SystemFields.ISSUENO) {
 				workItemBeanCopy.setAttribute(systemField, this.getAttribute(systemField));
-			//}
 		}
 		workItemBeanCopy.setComment(this.getComment());
 		workItemBeanCopy.setDeepCopy(this.isDeepCopy());
 		workItemBeanCopy.setCopyAttachments(this.isCopyAttachments());
 		workItemBeanCopy.setCopyWatchers(this.isCopyWatchers());
 		workItemBeanCopy.setCopyChildren(this.isCopyChildren());
-		/*try {
-			PropertyUtils.copyProperties(workItemBeanCopy, this);
-		} catch (Exception e) {
-			LOGGER.error("Making a shallow copy of a workItem failed with " + e.getMessage(), e);
-		}*/
 		Map<String, Object> customAttributeClone=new HashMap<String, Object>();
 		customAttributeClone.putAll(this.getCustomAttributeValues());
 		workItemBeanCopy.setCustomAttributeValues(customAttributeClone);
@@ -1031,14 +1024,8 @@ public class TWorkItemBean
 			workItemBeanDeepCopy.setTItemTransitionBeans(null);
 
 			//TODO uncomment to handle budget/costs by explicit business logic (with check box)
-			/*workItemBeanDeepCopy.setTComputedValuesBeans(null);
-			workItemBeanDeepCopy.setTCostBeans(null);
-			workItemBeanDeepCopy.setTBudgetBeans(null);
-			workItemBeanDeepCopy.setTActualEstimatedBudgetBeans(null);*/
 
 			//TODO uncomment to handle links by explicit business logic (with check box)
-			/*workItemBeanDeepCopy.setTWorkItemLinkBeansRelatedByLinkPred(null);
-			workItemBeanDeepCopy.setTWorkItemLinkBeansRelatedByLinkSucc(null);*/
 
 			return workItemBeanDeepCopy;
 		} else {
@@ -1137,16 +1124,13 @@ public class TWorkItemBean
 			if (Integer.valueOf(TStateBean.STATEFLAGS.CLOSED).equals(stateFlag)) {
 				//closed item
 				if (getLastEdit().before(exactEndDate)) {
-					//return true;
 					return DUE_FLAG.CLOSED_ON_PLAN;
 				} else {
-					//return false;
 					return DUE_FLAG.CLOSED_LATE;
 				}
 			} else {
 				Date currentDate = new Date();
 				if (currentDate.before(exactEndDate)) {
-					//return true;
 					if (daysBefore!=null) {
 						calendar.add(Calendar.DATE, -daysBefore.intValue()-1);
 						Date dueSoonDate = calendar.getTime();
@@ -1160,7 +1144,6 @@ public class TWorkItemBean
 						return DUE_FLAG.ON_PLAN;
 					}
 				} else {
-					//return false;
 					return DUE_FLAG.OVERDUE;
 				}
 			}
@@ -1224,6 +1207,7 @@ public class TWorkItemBean
 	 * Serialize a label bean to a dom element
 	 * @return
 	 */
+	@Override
 	public Map<String, String> serializeBean() {
 		Map<String, String> attributesMap = new HashMap<String, String>();
 		attributesMap.put("objectID", getObjectID().toString());
@@ -1236,6 +1220,7 @@ public class TWorkItemBean
 	 * @param attributes
 	 * @return
 	 */
+	@Override
 	public ISerializableLabelBean deserializeBean(Map<String, String> attributes) {
 		TWorkItemBean workItemBean = new TWorkItemBean();
 		String strObjectID = attributes.get("objectID");
@@ -1255,6 +1240,7 @@ public class TWorkItemBean
 	 * 						value: map of already mapped external vs. internal objectIDs
 	 * @return
 	 */
+	@Override
 	public boolean considerAsSame(ISerializableLabelBean serializableLabelBean,
 			Map<String, Map<Integer, Integer>> matchesMap) {
 		return false;
@@ -1266,6 +1252,7 @@ public class TWorkItemBean
 	 * @param matchesMap
 	 * @return
 	 */
+	@Override
 	public Integer saveBean(ISerializableLabelBean serializableLabelBean,
 			Map<String, Map<Integer, Integer>> matchesMap) {
 		return null;

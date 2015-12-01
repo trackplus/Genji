@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -37,6 +37,7 @@ Ext.define('com.trackplus.screen.Screen',{
 		var config = config || {};
 		me.initialConfig = config;
 		Ext.apply(me, config);
+		this.initConfig(config);
 	}
 });
 Ext.define('com.trackplus.screen.Tab',{
@@ -54,6 +55,7 @@ Ext.define('com.trackplus.screen.Tab',{
 		var config = config || {};
 		me.initialConfig = config;
 		Ext.apply(me, config);
+		this.initConfig(config);
 	}
 });
 Ext.define('com.trackplus.screen.Panel',{
@@ -71,7 +73,8 @@ Ext.define('com.trackplus.screen.Panel',{
 		var me = this;
 		var config = config || {};
 		me.initialConfig = config;
-		Ext.apply(me, config)
+		Ext.apply(me, config);
+		this.initConfig(config);
 	}
 });
 //FIXME extends fields
@@ -106,7 +109,8 @@ Ext.define('com.trackplus.screen.Field',{
 		var me = this;
 		var config = config || {};
 		me.initialConfig = config;
-		Ext.apply(me, config)
+		Ext.apply(me, config);
+		this.initConfig(config);
 	}
 });
 
@@ -119,7 +123,7 @@ com.trackplus.screen.createScreenModel=function(jsonData){
 		description:jsonData.description
 	});
 	var tabsJson=jsonData.tabs;
-	if(tabsJson!=null){
+	if(tabsJson){
 		var tabs=[];
 		for(var i=0;i<tabsJson.length;i++){
 			tabs.push(com.trackplus.screen.createTabModel(tabsJson[i]));
@@ -136,7 +140,7 @@ com.trackplus.screen.createTabModel=function(jsonData){
 		description:jsonData.description
 	});
 	var panelsJson=jsonData.panels;
-	if(panelsJson!=null){
+	if(panelsJson){
 		var panels=[];
 		for(var i=0;i<panelsJson.length;i++){
 			panels.push(com.trackplus.screen.createPanelModel(panelsJson[i]));
@@ -155,7 +159,7 @@ com.trackplus.screen.createPanelModel=function(jsonData){
 		rowsNo:jsonData.rowsNo
 	});
 	var fieldsJson=jsonData.fields;
-	if(fieldsJson!=null){
+	if(fieldsJson){
 		var fields=[];
 		for(var i=0;i<fieldsJson.length;i++){
 			fields.push(com.trackplus.screen.createFieldModel(fieldsJson[i]));
@@ -246,7 +250,7 @@ Ext.define('com.trackplus.screen.TabView',{
 	},
 	initComponent: function(){
 		var me=this;
-		if(me.oneTab==true){
+		if(me.oneTab===true){
 			me.margin= '0 0 0 0';
 			me.region='center';
 		}else{
@@ -300,11 +304,11 @@ Ext.define('com.trackplus.screen.PanelView',{
 		var me=this;
 		var cls="screenPanel";
 		var margin='0 0 5 0';
-		if(index==0){
+		if(index===0){
 			cls="screenPanel-first";
 			margin='0 0 5 0';
 		}
-		if(index%2==1){
+		if(index%2===1){
 			cls="screenPanel-odd";
 		}
 		me.myComponentCls=cls;
@@ -398,7 +402,7 @@ Ext.define('com.trackplus.screen.BaseScreenController',{
 		var tabsData=me.screenModel.getTabs();
 		me.screenView=Ext.create(me.screenViewCls,{
 			model:screenModel,
-			oneTab:me.showOneTab&&tabsData.length==1
+			oneTab:me.showOneTab&&tabsData.length===1
 		});
 		me.refreshScreenModel(me.screenView,screenModel,me.lastSelectedTab);
 		me.afterScreenCreated.call(me,me.screenView);
@@ -414,14 +418,13 @@ Ext.define('com.trackplus.screen.BaseScreenController',{
 		screenView.removeAll(true);
 		var tabsData=me.screenModel.getTabs();
 		var cmp;
-		if(me.showOneTab==true&&tabsData.length==1){
+		if(me.showOneTab===true&&tabsData.length===1){
 			cmp=me.createTab(screenView,tabsData[0],true);
-			cmp.region='center';
 		}else{
 			cmp=me.createTabPanel(screenView,tabsData);
 		}
 		screenView.add(cmp);
-		screenView.doLayout();
+		screenView.updateLayout();
 	},
 	createTabPanel:function(parentView,tabsData){
 		var me=this;
@@ -429,7 +432,7 @@ Ext.define('com.trackplus.screen.BaseScreenController',{
 		var activeTab=0;
 		for(var i=0;i<tabsData.length;i++){
 			tabsItems.push(me.createTab(parentView,tabsData[i]));
-			if(me.lastSelectedTab!=null&&tabsData[i].getId()==me.lastSelectedTab){
+			if(me.lastSelectedTab&&tabsData[i].getId()===me.lastSelectedTab){
 				activeTab=i;
 			}
 		}
@@ -451,14 +454,18 @@ Ext.define('com.trackplus.screen.BaseScreenController',{
 
 	createTab:function(parentView,tabModel,oneTab){
 		var me=this;
-	    var tabCmp= Ext.create(me.tabViewCls,{
+		var cfg={
 			parentView:parentView,
 			model:tabModel,
 			refreshTabUrl:me.refreshTabUrl,
 			storeTabUrl:me.storeTabUrl,
 			getPanelConfig:me.getPanelConfig,
 			oneTab:oneTab
-		});
+		};
+		if(oneTab){
+			cfg.region='center';
+		}
+		var tabCmp= Ext.create(me.tabViewCls,cfg);
 		me.refreshTabModel.call(me,tabCmp,tabModel);
 		tabCmp.addListener('activate',me.tabActivate,me);
 		me.afterTabCreated.call(me,tabCmp);
@@ -470,7 +477,7 @@ Ext.define('com.trackplus.screen.BaseScreenController',{
 		var me=this;
 		var tabModel=tab.model;
 
-		if(me.storeTabUrl!=null){
+		if(me.storeTabUrl){
 			Ext.Ajax.request({
 				url: me.storeTabUrl,
 				disableCaching :true,
@@ -478,23 +485,23 @@ Ext.define('com.trackplus.screen.BaseScreenController',{
 				params:{"tabID":tabModel.getId()}
 			})
 		}
-		if(me.refreshTabUrl!=null){
+		if(me.refreshTabUrl){
 			me.refreshTab.call(me,tab);
 		}
 	},
 	refreshTabModel:function(tabCmp,tabModel,idChild){
 		var me=this;
-		var panelsData=tabModel.panels;
+		var panelsData=tabModel.getPanels();
 		tabCmp.unregister();
 		tabCmp.removeAll(true);
 		tabCmp.tabModel=tabModel;
 		var panels=new Array(0);
 		var panelToSelect=null;
-		if(panelsData!=null&&panelsData.length>0){
+		if(panelsData&&panelsData.length>0){
 			for(var i=0;i<panelsData.length;i++){
 				var panCmp=me.createPanel(tabCmp,panelsData[i],i,panelsData.length);
 				panels.push(panCmp);
-				if(idChild!=null&&idChild==panelsData[i].id){
+				if(idChild&&idChild===panelsData[i].id){
 					panelToSelect=panCmp;
 				}
 			}
@@ -506,10 +513,10 @@ Ext.define('com.trackplus.screen.BaseScreenController',{
 		var me=this;
 		var tabModel=tabCmp.model;
 		var urlStr=me.refreshTabUrl;
-		if(url!=null&&url.length>0){
+		if(url&&url.length>0){
 			urlStr=url;
 		}
-		if(urlStr==null){
+		if(CWHF.isNull(urlStr)){
 			return -1;
 		}
 		tabCmp.setLoading(getText("common.lbl.loading"));
@@ -545,15 +552,17 @@ Ext.define('com.trackplus.screen.BaseScreenController',{
 	},
 	afterPanelCreated:function(panelCmp){
 	},
-	refreshPanelModel:function(panelCmp,panelModel){
+	refreshPanelModel:function(panelCmp,panelModel,b){
 		var me=this;
-		var fieldsData=panelModel.fields;
+		var fieldsData=panelModel.getFields();
 		var fields=new Array(0);
 		panelCmp.unregister.call(panelCmp);
-		panelCmp.removeAll.call(panelCmp,true);
-		var cfg=panelCmp.getPanelConfig.call(panelCmp,panelModel,panelCmp.myIndex,panelCmp.myLength);
-		Ext.apply(panelCmp,cfg);
-		if(fieldsData!=null){
+		panelCmp.removeAll(true);
+		if(!b) {
+			var cfg = panelCmp.getPanelConfig.call(panelCmp, panelModel, panelCmp.myIndex, panelCmp.myLength);
+			Ext.apply(panelCmp, cfg);
+		}
+		if(fieldsData){
 			for(var i=0;i<fieldsData.length;i++){
 				fields.push(me.createField(panelCmp, fieldsData[i]));
 			}
@@ -606,13 +615,14 @@ Ext.define('com.trackplus.screen.BaseScreenFacade',{
 	panelViewCls:'com.trackplus.screen.PanelView',
 	fieldErrorCls:'com.trackplus.screen.FieldErrorView',
 	controllerCls:'com.trackplus.screen.BaseScreenController',
-	controller:null,
+	screenController:null,
 	constructor : function(config) {
 		var me = this;
 		var config = config || {};
 		me.initialConfig = config;
    	    Ext.apply(me, config);
-		me.controller=Ext.create(me.controllerCls,{
+		this.initConfig(config);
+		me.screenController=Ext.create(me.controllerCls,{
 			screenModel:me.screenModel,
 			readOnlyMode:me.readOnlyMode,
 			showOneTab:me.showOneTab,
@@ -628,7 +638,7 @@ Ext.define('com.trackplus.screen.BaseScreenFacade',{
 	screenView:null,
 	createViewComponent:function(){
 		var me=this;
-		me.screenView=me.controller.createScreenView.call(me.controller,me.screenModel);
+		me.screenView=me.screenController.createScreenView.call(me.screenController,me.screenModel);
 		return me.screenView;
 	}
 });

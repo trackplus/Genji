@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -140,7 +140,6 @@ public class InitReportTemplateBL {
 			TExportTemplateBean templateBean = templatesList.get(i);
 			Integer templateID = templateBean.getObjectID();
 			File f=ReportBL.getDirTemplate(templateID);
-			//if(!f.exists()){
 			LOGGER.debug("Move template:"+templateBean.getName()+" to"+f.getAbsolutePath());
 			NumberFormat nf = new DecimalFormat("00000");
 			String dbId = nf.format(templateID);
@@ -167,7 +166,6 @@ public class InitReportTemplateBL {
 			} catch (IOException e) {
 				LOGGER.error("Can't move template:"+templateBean.getName()+"!",e);
 			}
-			//}
 		}
 		LOGGER.debug("Verifying report templates ready!");
 		LOGGER.info("There are " + noOfDbTemplates + " report templates in the database; " + noOfNewlyInstalled + " were newly installed.");
@@ -280,6 +278,7 @@ public class InitReportTemplateBL {
 
 	static class Filter implements FileFilter
 	{
+		@Override
 		public boolean accept(File file)
 		{
 			return file.getName().startsWith("export");

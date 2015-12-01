@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -59,6 +59,7 @@ public class TCardGroupingFieldPeer
     	BaseTCardGroupingFieldPeer.OBJECTID  	
     };
     
+	@Override
 	public List<TCardGroupingFieldBean> loadByNavigatorLayout(Integer navigatorLayoutID){
 		List<TCardGroupingField> torqueList = null;
 		Criteria crit = new Criteria();
@@ -66,10 +67,11 @@ public class TCardGroupingFieldPeer
 		try {
 			torqueList = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading Card group field for navigator layout key:"+navigatorLayoutID+" failed with " + e.getMessage(), e);
+			LOGGER.error("Loading Card group field for navigator layout key:"+navigatorLayoutID+" failed with " + e.getMessage());
 		}
 		return convertTorqueListToBeanList(torqueList);
 	}
+	@Override
 	public List<TCardGroupingFieldBean> loadActiveByNavigatorLayout(Integer navigatorLayoutID){
 		List<TCardGroupingField> torqueList = null;
 		Criteria crit = new Criteria();
@@ -78,10 +80,11 @@ public class TCardGroupingFieldPeer
 		try {
 			torqueList = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading Card group field for navigator layout key:"+navigatorLayoutID+" failed with " + e.getMessage(), e);
+			LOGGER.error("Loading Card group field for navigator layout key:"+navigatorLayoutID+" failed with " + e.getMessage());
 		}
 		return convertTorqueListToBeanList(torqueList);
 	}
+	@Override
 	public Integer save(TCardGroupingFieldBean cardGroupingFieldBean){
 		try {
 			TCardGroupingField cardGroupingField = BaseTCardGroupingField.createTCardGroupingField(cardGroupingFieldBean);
@@ -113,7 +116,7 @@ public class TCardGroupingFieldPeer
 		try {
 			list = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the list of TNotifyTriggers to be deleted failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the list of TNotifyTriggers to be deleted failed with " + e.getMessage());
 		}			
         if (list == null || list.size() < 1) {
             return;
@@ -125,6 +128,7 @@ public class TCardGroupingFieldPeer
 	
 	
 	
+	@Override
 	public TCardGroupingFieldBean loadByID(Integer cardGroupingFieldID){
 		TCardGroupingField tCardGroupingField = null;
 		try {
@@ -140,6 +144,7 @@ public class TCardGroupingFieldPeer
 		}
 		return null;
 	}
+	@Override
 	public TCardGroupingFieldBean loadByGroupField(Integer navigatorID,Integer fieldID){
 		List<TCardGroupingField> cardGroupingFields = null;
 		Criteria crit = new Criteria();
@@ -148,7 +153,7 @@ public class TCardGroupingFieldPeer
 		try {
 			cardGroupingFields = doSelect(crit);
 		} catch(Exception e) {
-			LOGGER.error("Loading by loadByGroupField navigatorID=" +navigatorID+" fieldID="+fieldID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading by loadByGroupField navigatorID=" +navigatorID+" fieldID="+fieldID + " failed with " + e.getMessage());
 		}
 		if (cardGroupingFields!=null && !cardGroupingFields.isEmpty()) {
 			return cardGroupingFields.get(0).getBean();
@@ -157,6 +162,7 @@ public class TCardGroupingFieldPeer
 		}
 	}
 
+	@Override
 	public void deleteByLayout(Integer navigatorLayoutID){
 		Criteria crit = new Criteria();
 		crit.add(NAVIGATORLAYOUT, navigatorLayoutID);

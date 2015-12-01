@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -78,6 +78,7 @@ public class TDepartmentPeer
 	 * Loads all DepartmentBeans
 	 * @return 
 	 */
+	@Override
 	public List<TDepartmentBean> loadAll() {
 		Criteria crit = new Criteria();
 		crit.add(PKEY, new Integer(0), Criteria.GREATER_THAN);
@@ -85,7 +86,7 @@ public class TDepartmentPeer
 		try{
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch(Exception e) {
-			LOGGER.error("Loading all departments failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all departments failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -95,6 +96,7 @@ public class TDepartmentPeer
 	 * @param departmentID
 	 * @return
 	 */
+	@Override
 	public TDepartmentBean loadByPrimaryKey(Integer departmentID) {
 		TDepartment tDepartment = null;
 		try {
@@ -114,6 +116,7 @@ public class TDepartmentPeer
 	 * @param departmentIDs
 	 * @return
 	 */
+	@Override
 	public List<TDepartmentBean> loadByKeys(List<Integer> departmentIDs) {
 		List<TDepartmentBean> departmentList = new LinkedList<TDepartmentBean>();
 		if (departmentIDs==null || departmentIDs.isEmpty()) {
@@ -142,6 +145,7 @@ public class TDepartmentPeer
 	 * @param parentDepartment
 	 * @return
 	 */
+	@Override
 	public List<TDepartmentBean> loadByName(String name, Integer parentDepartment) {
 		Criteria crit = new Criteria();
 		crit.add(LABEL, name);
@@ -153,7 +157,7 @@ public class TDepartmentPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch(Exception e) {
-			LOGGER.error("Loading all departments failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all departments failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -163,6 +167,7 @@ public class TDepartmentPeer
 	 * @param
 	 * @return
 	 */
+	@Override
 	public List<TDepartmentBean> loadMainDepartments() {
 		Criteria crit = new Criteria();		
 		crit.addAscendingOrderByColumn(LABEL);
@@ -172,7 +177,7 @@ public class TDepartmentPeer
 			return convertTorqueListToBeanList(doSelect(crit));
 		}
 		catch (Exception e) {
-			LOGGER.error("Loading of all main departments failed with " + e.getMessage(), e);
+			LOGGER.error("Loading of all main departments failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -182,6 +187,7 @@ public class TDepartmentPeer
 	 * @param parentDepartmentID
 	 * @return
 	 */
+	@Override
 	public List<TDepartmentBean> loadSubdepartments(Integer parentDepartmentID) {
 		Criteria crit = new Criteria();
 		crit.addAscendingOrderByColumn(LABEL);
@@ -189,7 +195,7 @@ public class TDepartmentPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (Exception e) {
-			LOGGER.error("Loading of all subdepartments of the department " + parentDepartmentID +  " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading of all subdepartments of the department " + parentDepartmentID +  " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -199,6 +205,7 @@ public class TDepartmentPeer
 	 * @param departmentIDs
 	 * @return
 	 */
+	@Override
 	public List<TDepartmentBean> loadSubdepartments(List<Integer> departmentIDs) {
 		List<TDepartmentBean> departmentList = new LinkedList<TDepartmentBean>();
 		if (departmentIDs==null || departmentIDs.isEmpty()) {
@@ -227,6 +234,7 @@ public class TDepartmentPeer
 	/**
 	 * Gets the default department
 	 */
+	@Override
 	public Integer getDefaultDepartment() {
 		List<TDepartment> departments = null;
 		Criteria crit = new Criteria();
@@ -237,7 +245,7 @@ public class TDepartmentPeer
 				return departments.get(0).getObjectID();
 			}
 		} catch(Exception e) {
-			LOGGER.error("Loading all departments failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all departments failed with " + e.getMessage());
 		}
 		crit = new Criteria();
 		crit.addDescendingOrderByColumn(PKEY);
@@ -247,7 +255,7 @@ public class TDepartmentPeer
 				return departments.get(0).getObjectID();
 			}
 		} catch(Exception e) {
-			LOGGER.error("Loading all departments failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all departments failed with " + e.getMessage());
 		}
 		return null;
 	}
@@ -257,6 +265,7 @@ public class TDepartmentPeer
 	 * @param departmentBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TDepartmentBean departmentBean) {
 		TDepartment tDepartment;
 		try {
@@ -264,7 +273,7 @@ public class TDepartmentPeer
 			tDepartment.save();
 			return tDepartment.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of department failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of department failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -274,6 +283,7 @@ public class TDepartmentPeer
 	 * @param departmentID
 	 * @return
 	 */
+	@Override
 	public boolean hasDependentData(Integer departmentID) {
 		return ReflectionHelper.hasDependentData(replacePeerClasses, replaceFields, departmentID);	  		
 	}
@@ -284,6 +294,7 @@ public class TDepartmentPeer
 	 * @param newDepartmentID
 	 * @return
 	 */
+	@Override
 	public void replace(Integer oldDepartmentID, Integer newDepartmentID) {
 		ReflectionHelper.replace(replacePeerClasses, replaceFields, oldDepartmentID, newDepartmentID); 
 	}
@@ -293,6 +304,7 @@ public class TDepartmentPeer
 	 * @param departmentID
 	 * @return
 	 */
+	@Override
 	public void delete(Integer departmentID) {
 		ReflectionHelper.delete(deletePeerClasses, deleteFields, departmentID);
 	}

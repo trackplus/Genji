@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -63,6 +63,7 @@ class ExtConnection extends AbstractConnection {
         this.userName = userName;
     }
 
+    @Override
     public void open() throws AuthenticationException, CommandAbortedException {
         if(port==0){
             connection = new Connection(host);
@@ -114,6 +115,7 @@ class ExtConnection extends AbstractConnection {
     }
     
     
+    @Override
     public void verify() {
         try {
             open();
@@ -126,22 +128,7 @@ class ExtConnection extends AbstractConnection {
 
     
     private void closeConnection() {
-      /* try {
-           if ( stderrReader != null ){
-               while ( true ){
-                   String line = stderrReader.readLine();
-                   if ( line == null ){
-                       break;
-                   }
-                   System.err.println( line );
-               }
-           }
-       }
-       catch ( IOException e ){
-    	   LOGGER.error(org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(e));
-       }*/
        if ( session != null ){
-           //System.out.println( "Exit code:"+session.getExitStatus().intValue() );
            session.close();
        }
        if ( connection != null ){
@@ -158,22 +145,27 @@ class ExtConnection extends AbstractConnection {
        setOutputStream(null);
    }
 
+   @Override
    public void close() {
        closeConnection();
    }
 
+    @Override
     public boolean isOpen() {
        return connection != null;
     }
 
+    @Override
     public int getPort() {
         return port;
     }
 
+    @Override
     public void modifyInputStream(ConnectionModifier modifier) throws IOException {
         modifier.modifyInputStream(getInputStream());
     }
 
+    @Override
     public void modifyOutputStream(ConnectionModifier modifier) throws IOException {
         modifier.modifyOutputStream(getOutputStream());
     }

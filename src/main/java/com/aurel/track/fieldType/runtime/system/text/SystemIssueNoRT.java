@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -25,6 +25,7 @@ package com.aurel.track.fieldType.runtime.system.text;
 
 import java.util.Locale;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -60,8 +61,8 @@ public class SystemIssueNoRT  extends SystemOutputBaseRT {
 	 * Here not really meaningful because this field will be never historized
 	 * @return
 	 */
+	@Override
 	public int getValueType() {
-		//return ValueType.INTEGER;
 		//should be the same as for SystemProjectSpecificIssueNoRT (to avoid Integer parse errors)
 		//not custom and no history for this field so "faking" the type to Text should not be a problem
 		return ValueType.TEXT;
@@ -82,6 +83,7 @@ public class SystemIssueNoRT  extends SystemOutputBaseRT {
 	 * Whether the value of this field can be changed
 	 * @return
 	 */
+	@Override
 	public boolean isReadOnly() {
 		return true;
 	}
@@ -120,12 +122,14 @@ public class SystemIssueNoRT  extends SystemOutputBaseRT {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public String getShowValue(Object value, Locale locale) {
 		Integer optionID = null;
 		try {
 			optionID = (Integer)value;
 		} catch (Exception e) {
-			LOGGER.error("Converting the value to integer failed with " + e.getMessage(), e);
+			LOGGER.error("Converting the value to integer failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		if (optionID!=null) {
 			if (ApplicationBean.getInstance().getSiteBean().getProjectSpecificIDsOn()) {
@@ -173,6 +177,7 @@ public class SystemIssueNoRT  extends SystemOutputBaseRT {
 	 * Whether the field should be stored
 	 * @return
 	 */
+	@Override
 	public int getLuceneStored() {
 		return LuceneUtil.STORE.YES;
 	}
@@ -181,10 +186,12 @@ public class SystemIssueNoRT  extends SystemOutputBaseRT {
 	 * Whether the field should be tokenized
 	 * @return
 	 */
+	@Override
 	public int getLuceneTokenized() {
 		return LuceneUtil.TOKENIZE.NO;
 	}
 	
+	@Override
 	public int getLookupEntityType() {
 		return LuceneUtil.LOOKUPENTITYTYPES.DIRECTINTEGER;
 	}

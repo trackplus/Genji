@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -61,12 +61,13 @@ public class TPseverityPeer
 	 * Loads all TPseverityBeans 
 	 * @return
 	 */
+	@Override
 	public List<TPseverityBean> loadAll() {
 		Criteria crit = new Criteria();
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all pseverities failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all pseverities failed with " + e.getMessage());
 			return new LinkedList<TPseverityBean>();
 		}
 	}
@@ -76,6 +77,7 @@ public class TPseverityPeer
 	 * @param projectTypeID
 	 * @return
 	 */
+	@Override
 	public Map<Integer, Integer> loadNumberOfSeveritiesForIssueTypesInProjectType(Integer projectTypeID) {
 		Map<Integer, Integer> numberOfSeveritiesForIssueTypes = new HashMap<Integer, Integer>();
 		Criteria crit = new Criteria();
@@ -88,7 +90,7 @@ public class TPseverityPeer
 		try {
 			records = doSelectVillageRecords(crit);
 		} catch(Exception e) {
-			LOGGER.error("Groupping the severities by issueTypes in projectType " + projectTypeID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Groupping the severities by issueTypes in projectType " + projectTypeID + " failed with " + e.getMessage());
 		}
 		try {
 			if (records!=null && !records.isEmpty()) {
@@ -99,7 +101,7 @@ public class TPseverityPeer
 				}
 			}
 		} catch (Exception e) {
-			LOGGER.error("Getting the number of severities by issueTypes in projectType " + projectTypeID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the number of severities by issueTypes in projectType " + projectTypeID + " failed with " + e.getMessage());
 		}
 		return numberOfSeveritiesForIssueTypes;
 	}
@@ -110,6 +112,7 @@ public class TPseverityPeer
 	 * @param issueTypeID
 	 * @return
 	 */
+	@Override
 	public Integer loadNumberOfSeveritiesForIssueTypeInProjectType(Integer projectTypeID, Integer issueTypeID) {
 		Criteria crit = new Criteria();
 		crit.add(PROJECTTYPE, projectTypeID);
@@ -133,6 +136,7 @@ public class TPseverityPeer
 	 * @param projectType
 	 * @return
 	 */
+	@Override
 	public List<TPseverityBean> loadByProjectType(Integer projectType) {
 		Criteria crit = new Criteria();
 		crit.add(PROJECTTYPE, projectType, Criteria.EQUAL); 
@@ -140,7 +144,7 @@ public class TPseverityPeer
 			return convertTorqueListToBeanList(doSelect(crit));
 		}
 		catch (Exception e) {
-			LOGGER.error("Loading by project type " +  projectType + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading by project type " +  projectType + " failed with " + e.getMessage());
 			return new ArrayList<TPseverityBean>();
 		}
 	}
@@ -151,6 +155,7 @@ public class TPseverityPeer
 	 * @param severities
 	 * @return
 	 */
+	@Override
 	public List<TPseverityBean> loadByProjectTypeAndSeverities(Integer projectType, List<Integer> severities) {
 		if (severities==null || severities.isEmpty() || projectType==null) {
 			return new ArrayList<TPseverityBean>();
@@ -162,7 +167,7 @@ public class TPseverityPeer
 			return convertTorqueListToBeanList(doSelect(crit));
 		}
 		catch (Exception e) {
-			LOGGER.error("Loading by project type " +  projectType + " and severities " + severities.size()+ " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading by project type " +  projectType + " and severities " + severities.size()+ " failed with " + e.getMessage());
 			return new ArrayList<TPseverityBean>();
 		}
 	}
@@ -173,6 +178,7 @@ public class TPseverityPeer
 	 * @param issueType
 	 * @return
 	 */
+	@Override
 	public List<TPseverityBean> loadByProjectTypeAndIssueType(Integer projectType, Integer issueType) {
 		Criteria crit = new Criteria();
 		crit.add(PROJECTTYPE, projectType);
@@ -193,6 +199,7 @@ public class TPseverityPeer
 	 * @param issueTypes
 	 * @return
 	 */
+	@Override
 	public List<TPseverityBean> loadByProjectTypeAndIssueTypes(Integer projectType, List<Integer> issueTypes) {
 		if (issueTypes==null || issueTypes.isEmpty() || projectType==null) {
 			return new ArrayList<TPseverityBean>();
@@ -215,6 +222,7 @@ public class TPseverityPeer
 	 * @param pseverityBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TPseverityBean pseverityBean) {
 		TPseverity tpPseverity;
 		try {
@@ -222,7 +230,7 @@ public class TPseverityPeer
 			tpPseverity.save();
 			return tpPseverity.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of an pseverityBean failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of an pseverityBean failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -232,6 +240,7 @@ public class TPseverityPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		Criteria crit = new Criteria();
 		crit.add(OBJECTID, objectID);
@@ -248,6 +257,7 @@ public class TPseverityPeer
 	 * @param itemTypeID
 	 * @param severityIDs
 	 */
+	@Override
 	public void delete(Integer projectTypeID, Integer itemTypeID, List<Integer> severityIDs) {
 		if (projectTypeID==null || itemTypeID==null || severityIDs==null || severityIDs.isEmpty()) {
 			return;

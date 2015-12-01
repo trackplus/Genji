@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -61,6 +61,7 @@ public class ProjectTypeItemTypePriorityAssignmentFacade extends ProjectTypeItem
 	 * @param projectTypeID
 	 * @return
 	 */
+	@Override
 	public Map<Integer, Integer> loadNumberOfAssignmentsForIssueTypesInProjectType(Integer projectTypeID) {
 		return pPriorityDAO.loadNumberOfPrioritiesForIssueTypesInProjectType(projectTypeID);
 	}
@@ -71,6 +72,7 @@ public class ProjectTypeItemTypePriorityAssignmentFacade extends ProjectTypeItem
 	 * @param issueTypeID
 	 * @return
 	 */
+	@Override
 	public Integer loadNumberOfAssignmentsForIssueTypeInProjectType(Integer projectTypeID, Integer issueTypeID) {
 		return pPriorityDAO.loadNumberOfPrioritiesForIssueTypeInProjectType(projectTypeID, issueTypeID);
 	}
@@ -80,6 +82,7 @@ public class ProjectTypeItemTypePriorityAssignmentFacade extends ProjectTypeItem
 	 * @param projectTypeID
 	 * @return
 	 */
+	@Override
 	public Set<Integer> getAssignedIDsByProjectTypeIDAndItemType(Integer projectTypeID, Integer itemTypeID) {
 		Set<Integer> assignedPriorities = new HashSet<Integer>();
 		List<TPpriorityBean> projectTypeToIssueTypeToPriority = pPriorityDAO.loadByProjectTypeAndIssueType(projectTypeID, itemTypeID);
@@ -95,6 +98,7 @@ public class ProjectTypeItemTypePriorityAssignmentFacade extends ProjectTypeItem
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public List<ILabelBean> getAllAssignables(Locale locale) {
 		return PriorityBL.loadAll(locale);
 	}
@@ -104,6 +108,7 @@ public class ProjectTypeItemTypePriorityAssignmentFacade extends ProjectTypeItem
 	 * Gets the key for the assignment info general
 	 * @return
 	 */
+	@Override
 	public String getAssignmentInfoGeneralKey() {
 		return "admin.customize.projectType.lbl.assignmentInfoPriorityGeneral";
 	}
@@ -112,6 +117,7 @@ public class ProjectTypeItemTypePriorityAssignmentFacade extends ProjectTypeItem
 	 * Gets the key for the assignment info 
 	 * @return
 	 */
+	@Override
 	public String getAssignmentInfoKey() {
 		return "admin.customize.projectType.lbl.assignmentInfoPriority";
 	}
@@ -123,6 +129,7 @@ public class ProjectTypeItemTypePriorityAssignmentFacade extends ProjectTypeItem
 	 * @param assignedID
 	 * @return
 	 */
+	@Override
 	public Object createAssignmentBean(Integer projectTypeID, Integer itemTypeID, Integer assignedID) {
 		TPpriorityBean ppriorityBean = new TPpriorityBean();
 		ppriorityBean.setProjectType(projectTypeID);
@@ -136,6 +143,7 @@ public class ProjectTypeItemTypePriorityAssignmentFacade extends ProjectTypeItem
 	 * @param assignmentBean
 	 * @return
 	 */
+	@Override
 	public Integer save(Object assignmentBean) {
 		return pPriorityDAO.save((TPpriorityBean)assignmentBean);
 	}
@@ -146,6 +154,7 @@ public class ProjectTypeItemTypePriorityAssignmentFacade extends ProjectTypeItem
 	 * @param itemTypeID
 	 * @param assignedIDs
 	 */
+	@Override
 	public void delete(Integer projectTypeID, Integer itemTypeID, List<Integer> assignedIDs) {
 		pPriorityDAO.delete(projectTypeID, itemTypeID, assignedIDs);
 	}

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -60,12 +60,13 @@ extends com.aurel.track.persist.BaseTClusterNodePeer implements ClusterNodeDAO
 	 * Load all cluster nodes
 	 * @return
 	 */
+	@Override
 	public List<TClusterNodeBean> loadAll() {
 		Criteria crit = new Criteria();
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch(Exception e) {
-			LOGGER.error("Loading all cluster nodes failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all cluster nodes failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -74,13 +75,14 @@ extends com.aurel.track.persist.BaseTClusterNodePeer implements ClusterNodeDAO
 	 * Loads all entity changes for a cluster node
 	 * @return 
 	 */
+	@Override
 	public List<TClusterNodeBean> loadByIP(String ip) {
 		Criteria crit = new Criteria();
 		crit.add(NODEADDRESS, ip);
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch(Exception e) {
-			LOGGER.error("Loading node by ip " + ip + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading node by ip " + ip + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -90,16 +92,17 @@ extends com.aurel.track.persist.BaseTClusterNodePeer implements ClusterNodeDAO
 	 * @param clusterNodeBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TClusterNodeBean clusterNodeBean) {
 		TClusterNode tClusterNode;
 		try {
 			tClusterNode = TClusterNode.createTClusterNode(clusterNodeBean);
 			tClusterNode.save();
 			Integer oid = tClusterNode.getObjectID();
-			ApplicationBean.getApplicationBean().setClusterNodeBean(clusterNodeBean);
+			ApplicationBean.getInstance().setClusterNodeBean(clusterNodeBean);
 			return oid;
 		} catch (Exception e) {
-			LOGGER.error("Saving of the cluster node failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of the cluster node failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -109,6 +112,7 @@ extends com.aurel.track.persist.BaseTClusterNodePeer implements ClusterNodeDAO
 	 * @param clusterNodeID
 	 * @return
 	 */
+	@Override
 	public void delete(Integer clusterNodeID) {
 		ReflectionHelper.delete(deletePeerClasses, deleteFields, clusterNodeID);
 	}
@@ -140,7 +144,6 @@ extends com.aurel.track.persist.BaseTClusterNodePeer implements ClusterNodeDAO
 	/**
 	 * Indicates if a clearAllMasters is in progress
 	 */
-	//private static boolean clearInProgress = false;
 	//private static Date clearInProgressDate = null;
 	
 	/**
@@ -176,7 +179,7 @@ extends com.aurel.track.persist.BaseTClusterNodePeer implements ClusterNodeDAO
 		try {
 			nodes = doSelect(crit);
 		} catch(Exception e) {
-			LOGGER.error("Loading node failed with " + e.getMessage(), e);
+			LOGGER.error("Loading node failed with " + e.getMessage());
 		}
 		if (nodes==null || nodes.isEmpty()) {
 			return null;
@@ -197,7 +200,7 @@ extends com.aurel.track.persist.BaseTClusterNodePeer implements ClusterNodeDAO
 		try {
 			nodes = doSelect(crit);
 		} catch(Exception e) {
-			LOGGER.error("Loading all nodes failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all nodes failed with " + e.getMessage());
 		}
 		return nodes;
 	}*/
@@ -206,7 +209,7 @@ extends com.aurel.track.persist.BaseTClusterNodePeer implements ClusterNodeDAO
 	 * This will update the time stamp, or create a new entry if it does not yet exist.
 	 */
 	/*public static void updateMe()  {
-		ApplicationBean appBean = ApplicationBean.getApplicationBean();
+		ApplicationBean appBean = ApplicationBean.getInstance();
 		InetAddress myIp= null;
 		if (appBean.getInetAddress() !=  null) {
 		    myIp = appBean.getInetAddress()[0];
@@ -241,7 +244,7 @@ extends com.aurel.track.persist.BaseTClusterNodePeer implements ClusterNodeDAO
 		try {
 			myNode.save();
 		} catch (Exception e) {
-			LOGGER.error("Could not update my node: " + e.getMessage(), e);
+			LOGGER.error("Could not update my node: " + e.getMessage());
 		}
 		TLoggedInUsersPeer.updateLoggedInUsers(appBean.getActiveSessions());
 		TLoggedInUsersPeer.cleanLoggedInUsersTable();
@@ -278,7 +281,7 @@ extends com.aurel.track.persist.BaseTClusterNodePeer implements ClusterNodeDAO
 		try {
 			list = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the list of THistoryTransaction to be deleted failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the list of THistoryTransaction to be deleted failed with " + e.getMessage());
 		}			
         if (list == null || list.isEmpty()) {
             return;
@@ -300,8 +303,8 @@ extends com.aurel.track.persist.BaseTClusterNodePeer implements ClusterNodeDAO
 	/*public static void setMeAsMasterIfPossible()  {
 		boolean meMassa = false;
 		InetAddress myIp = null;
-		if (ApplicationBean.getApplicationBean().getInetAddress() != null) {
-			myIp = ApplicationBean.getApplicationBean().getInetAddress()[0];
+		if (ApplicationBean.getInstance().getInetAddress() != null) {
+			myIp = ApplicationBean.getInstance().getInetAddress()[0];
 		} else {
 			return;
 		}
@@ -400,7 +403,7 @@ extends com.aurel.track.persist.BaseTClusterNodePeer implements ClusterNodeDAO
 				try {
 					currentNode.save();
 				} catch (Exception e) {
-					LOGGER.error("Can't clear master node: " + e.getMessage(), e);
+					LOGGER.error("Can't clear master node: " + e.getMessage());
 				}
 			}
 		}

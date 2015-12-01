@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -147,7 +147,7 @@ Ext.define('com.trackplus.admin.server.LoggingConfig',{
 			        	  {text: getText('admin.server.logging.level'), width: 100, dataIndex: 'value',
 			        		  sortable: true, hideable:false, editor:me.cmbValue,
 			        		  renderer : function(value){
-			        			  if(me.levelsMap!=null){
+			        			  if(me.levelsMap){
 			        				  return me.levelsMap[''+value];
 			        			  }
 			        			  return value;
@@ -172,7 +172,7 @@ Ext.define('com.trackplus.admin.server.LoggingConfig',{
 			var className=e.record.data['className'];
 			var value=e.value;
 			var oldValue=e.originalValue;
-			if(value!=oldValue){
+			if(value!==oldValue){
 				me.changeLevel.call(me,className,value);
 			}
 		});
@@ -205,7 +205,7 @@ Ext.define('com.trackplus.admin.server.LoggingConfig',{
 			success: function(response){
 				me.grid.setLoading(false);
 				var responseJson = Ext.decode(response.responseText);
-				if (responseJson.success == false) {
+				if (responseJson.success === false) {
 					Ext.MessageBox.alert(getText('common.err.failure'), response.responseText);
 				}
 			},
@@ -226,7 +226,7 @@ Ext.define('com.trackplus.admin.server.LoggingConfig',{
 			scope: me,
 			success: function(response){
 				var responseJson = Ext.decode(response.responseText);
-				if (responseJson.success == true) {
+				if (responseJson.success === true) {
 					me.jsonData=responseJson.data;
 					me.levelsMap=new Object();
 					var levels=responseJson.data.levels;
@@ -236,7 +236,7 @@ Ext.define('com.trackplus.admin.server.LoggingConfig',{
 					me.grid.store.loadData(responseJson.data.loggers);
 					me.storeLevel.loadData(responseJson.data.levels);
 				}else {
-					if (responseJson.errorMessage!=null) {
+					if (responseJson.errorMessage) {
 						var errorCode=responseJson.errorCode;
 						var errorMessage=responseJson.errorMessage;
 					}

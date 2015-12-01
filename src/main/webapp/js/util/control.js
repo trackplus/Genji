@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -39,10 +39,10 @@ Ext.define('com.trackplus.util.HelpWrapperComponent',{
 	btnHelp:null,helpArea:null,panWrapper:null,
 	initComponent: function(){
 		var me=this;
-		if(me.helpExpanded==null){
+		if(CWHF.isNull(me.helpExpanded)){
 			me.helpExpanded=false;
 		}
-		if(me.flexInputComp==null){
+		if(CWHF.isNull(me.flexInputComp)){
 			me.flexInputComp=false;
 		}
 		me.callParent();
@@ -63,7 +63,7 @@ Ext.define('com.trackplus.util.HelpWrapperComponent',{
 			scope:me
 		});
 		me.btnHelp.focusable =false;
-		if(me.flexInputComp==true){
+		if(me.flexInputComp===true){
 			me.inputComp.flex=1;
 		}
 		me.panWrapper=Ext.create('Ext.container.Container', {
@@ -91,7 +91,7 @@ Ext.define('com.trackplus.util.HelpWrapperComponent',{
 	setDisabled:function(disabled){
 		var me=this;
 		me.callParent(false);
-		if(me.inputComp.setDisabled!=null&&Ext.isFunction(me.inputComp.setDisabled)){
+		if(me.inputComp.setDisabled&&Ext.isFunction(me.inputComp.setDisabled)){
 			me.inputComp.setDisabled(disabled);
 		}
 		me.btnHelp.setDisabled(disabled);
@@ -122,15 +122,6 @@ Ext.define('com.trackplus.SpellCheckTextField',{
 	}
 });
 
-
-
-/*getWrappedControl: function(container) {
-	var control = this.getHelpWrapper.apply(this, container, arguments);
-	if (control!=null) {
-		return control.getInputComponent();
-	}
-	return null;
-},*/
 
 Ext.define('util.ControlWithHelpFactory',{
 	extend:'Ext.Base',
@@ -185,10 +176,10 @@ Ext.define('util.ControlWithHelpFactory',{
 		var me=this;
 		var idee = name;
 		var intId = Ext.id();
-		if (otherSettings!=null) {
+		if (otherSettings) {
 			for (propertyName in otherSettings) {
-				if (propertyName=='id') idee = otherSettings[propertyName];
-				if (propertyName=='itemId') idee = otherSettings[propertyName];
+				if (propertyName==='id') idee = otherSettings[propertyName];
+				if (propertyName==='itemId') idee = otherSettings[propertyName];
 			}
 		}
 		var helpComp=me.createHelpCmp(idee,helpStr,intId);
@@ -224,7 +215,7 @@ Ext.define('util.ControlWithHelpFactory',{
 		var container = this;
 		Ext.Array.each(arguments, function(argument, index, allArguments) {
 			container = container.getComponent(argument);
-			if (container==null) {
+			if (CWHF.isNull(container)) {
 				return false;
 			}
 		}, this);
@@ -238,12 +229,12 @@ Ext.define('util.ControlWithHelpFactory',{
 	getHelpWrapper: function() {
 		var container = this;
 		Ext.Array.each(arguments, function(argument, index, allArguments) {
-			if (index==allArguments.length-1) {
+			if (index===allArguments.length-1) {
 				container = container.getComponent(CWHF.getWrapperItemId(argument));
 			} else {
 				container = container.getComponent(argument);
 			}
-			if (container==null) {
+			if (CWHF.isNull(container)) {
 				return false;
 			}
 		}, this);
@@ -254,7 +245,7 @@ Ext.define('util.ControlWithHelpFactory',{
 	 * Gets the itemId of the help wrapper container based on the itemId of the included control
 	 */
 	getWrapperItemId: function(inputCompItemId) {
-		return inputCompItemId +'.wrp';
+		return inputCompItemId +'_wrp';
 	},
 
 	/**
@@ -264,16 +255,16 @@ Ext.define('util.ControlWithHelpFactory',{
 	getWrappedControl: function() {
 		var container = this;
 		Ext.Array.each(arguments, function(argument, index, allArguments ) {
-			if (index==allArguments.length-1) {
+			if (index===allArguments.length-1) {
 				container = container.getComponent(CWHF.getWrapperItemId(argument));
 			} else {
 				container = container.getComponent(argument);
 			}
-			if (container==null) {
+			if (CWHF.isNull(container)) {
 				return false;
 			}
 		}, this);
-		if (container!=null) {
+		if (container) {
 			return container.getInputComponent();
 		}
 		return null;
@@ -281,8 +272,8 @@ Ext.define('util.ControlWithHelpFactory',{
 
 	getLabel: function(labelKey, otherSettings) {
 		var label = '';
-		if (labelKey!=null && labelKey!='') {
-			if (otherSettings!=null && otherSettings.labelIsLocalized) {
+		if (labelKey && labelKey!=='') {
+			if (otherSettings && otherSettings.labelIsLocalized) {
 				label = labelKey;
 			} else {
 				label = getText(labelKey);
@@ -292,8 +283,8 @@ Ext.define('util.ControlWithHelpFactory',{
 	},
 
 	addOtherSettings: function(fieldConfig, otherSettings, label) {
-		if (otherSettings!=null) {
-			if (label!=null) {
+		if (otherSettings) {
+			if (label) {
 				this.addBlankText(fieldConfig, otherSettings, label);
 			}
 			for (propertyName in otherSettings) {
@@ -303,11 +294,36 @@ Ext.define('util.ControlWithHelpFactory',{
 	},
 
 	addBlankText: function(fieldConfig, otherSettings, label) {
-		if (otherSettings!=null && otherSettings.allowBlank!=null && otherSettings.allowBlank==false && otherSettings.blankText==null) {
+		if (otherSettings && /*otherSettings.allowBlank &&*/ otherSettings.allowBlank===false && CWHF.isNull(otherSettings.blankText)) {
 			fieldConfig.blankText = getText("common.err.required", label);
 		}
 	},
 
+	
+	/**
+	 * Create a new Ext.Action action with localized text and tooltip
+	 * label the localized label of the operation
+	 * iconCls the icon class for the action
+	 * handler the action handler
+	 * tooltip makes sense only for toolbar buttons (not for context menu items)
+	 * 		this is the localized tooltip not the tooltip key, because the tooltip for localized actions should not change
+	 * 		depending on the context
+	 * disabled whether by creation it should be disabled
+	 */
+	/*public*/createAction: function(labelKey, iconCls, handlerName, otherSettings) {
+		var me = this;
+		var label = this.getLabel(labelKey, otherSettings);
+		var actionConfig = {
+				text: label,
+				overflowText: label,
+				tooltip: label,
+				iconCls: iconCls,
+				handler: handlerName
+				//handlerScope: handlerScope
+		};
+		this.addOtherSettings(actionConfig, otherSettings, label);
+		return Ext.create("Ext.Action", actionConfig);
+	},
 
 	/**
 	 * Create a text field component with proper sizing. The label will be localized.
@@ -319,16 +335,15 @@ Ext.define('util.ControlWithHelpFactory',{
 	createHiddenField: function(name, otherSettings, listenerConfig) {
 		var hiddenFieldConfig = {
 				xtype: 'hiddenfield',
-				name: name,
-				itemId: name
+				name: name
 				};
 
-		if (otherSettings!=null) {
+		if (otherSettings) {
 			for (propertyName in otherSettings) {
 				hiddenFieldConfig[propertyName] = otherSettings[propertyName];
 			}
 		}
-		if (listenerConfig!=null) {
+		if (listenerConfig) {
 			hiddenFieldConfig.listeners = listenerConfig;
 		}
 		return Ext.create('Ext.form.field.Hidden', hiddenFieldConfig);
@@ -347,14 +362,13 @@ Ext.define('util.ControlWithHelpFactory',{
 				xtype: 'textfield',
 				fieldLabel: label,
 				name: name,
-				itemId: name,
 				msgTarget: 'under',
 				labelStyle:{overflow:'hidden'},
 				labelWidth:this.labelWidth,
 				labelAlign:this.alignR,
 				width:this.textFieldWidth
 				};
-		if (listenerConfig!=null) {
+		if (listenerConfig) {
 			textFieldConfig.listeners = listenerConfig;
 		}
 		this.addOtherSettings(textFieldConfig, otherSettings, label);
@@ -379,12 +393,12 @@ Ext.define('util.ControlWithHelpFactory',{
 	createTextFieldWithHelp: function(labelKey, name, otherSettings, listenerConfig, wrapperItemId) {
 		var inputComp=this.createTextField(labelKey, name, otherSettings, listenerConfig);
 		var helpStr = getText(labelKey+'.help');
-		if(helpStr==null){
+		if(CWHF.isNull(helpStr)){
 			return inputComp;
 		}
 
 		//return this.createWrapperHelp(inputComp,name,helpStr,otherSettings);
-		if (wrapperItemId==null) {
+		if (CWHF.isNull(wrapperItemId)) {
 			wrapperItemId = this.getWrapperItemId(inputComp.getItemId());
 		}
 		return Ext.create("com.trackplus.util.HelpWrapperComponent",
@@ -420,7 +434,7 @@ Ext.define('util.ControlWithHelpFactory',{
 			}
 		this.addOtherSettings(treeConfig, treeConfigOptions, null);
 		//extraProxyParameters for getting the tree nodes
-		if (extraProxyParameters==null) {
+		if (CWHF.isNull(extraProxyParameters)) {
 			extraProxyParameters = new Object();
 		}
 		//report tree is with check boxes (report picker isn't but they use the same struts action)
@@ -449,7 +463,7 @@ Ext.define('util.ControlWithHelpFactory',{
 			}
 		this.addOtherSettings(treeConfig, treeConfigOptions, null);
 		//extraProxyParameters for getting the tree nodes
-		if (extraProxyParameters==null) {
+		if (CWHF.isNull(extraProxyParameters)) {
 			extraProxyParameters = new Object();
 		}
 		//project tree is with check boxes (project picker isn't but they use the same struts action)
@@ -480,7 +494,7 @@ Ext.define('util.ControlWithHelpFactory',{
 			labelAlign:this.alignR,
 			width:this.textFieldWidth
 		};
-		if (listenerConfig!=null) {
+		if (listenerConfig) {
 			projectPickerConfig.listeners = listenerConfig;
 		}
 		this.addOtherSettings(projectPickerConfig, otherSettings, label);
@@ -490,7 +504,7 @@ Ext.define('util.ControlWithHelpFactory',{
 	/*createProjectPickerWithHelp: function(labelKey, name, otherSettings) {
 		var inputComp=this.createProjectPicker(labelKey, name, otherSettings)
 		var helpStr = getText(labelKey+'.help');
-		if(helpStr==null){
+		if(CWHF.isNull(helpStr)){
 			return inputComp;
 		}
 		wrapperItemId = this.getWrapperItemId(inputComp.getItemId());
@@ -511,7 +525,7 @@ Ext.define('util.ControlWithHelpFactory',{
 			}
 		this.addOtherSettings(treeConfig, treeConfigOptions, null);
 		//extraProxyParameters for getting the tree nodes
-		if (extraProxyParameters==null) {
+		if (CWHF.isNull(extraProxyParameters)) {
 			extraProxyParameters = new Object();
 		}
 		//project tree is with check boxes (project picker isn't but they use the same struts action)
@@ -537,7 +551,7 @@ Ext.define('util.ControlWithHelpFactory',{
 			labelAlign:this.alignR,
 			width:this.textFieldWidth
 		};
-		if (listenerConfig!=null) {
+		if (listenerConfig) {
 			releasePickerConfig.listeners = listenerConfig;
 		}
 		this.addOtherSettings(releasePickerConfig, otherSettings, label);
@@ -566,7 +580,7 @@ Ext.define('util.ControlWithHelpFactory',{
 	/*createDepartmentPickerWithHelp: function(labelKey, name, otherSettings) {
 		var inputComp=this.createDepartmentPicker(labelKey, name, otherSettings)
 		var helpStr = getText(labelKey+'.help');
-		if(helpStr==null){
+		if(CWHF.isNull(helpStr)){
 			return inputComp;
 		}
 		wrapperItemId = this.getWrapperItemId(inputComp.getItemId());
@@ -587,7 +601,7 @@ Ext.define('util.ControlWithHelpFactory',{
 			}
 		this.addOtherSettings(treeConfig, treeConfigOptions, null);
 		//extraProxyParameters for getting the tree nodes
-		if (extraProxyParameters==null) {
+		if (CWHF.isNull(extraProxyParameters)) {
 			extraProxyParameters = new Object();
 		}
 		//project tree is with check boxes (project picker isn't but they use the same struts action)
@@ -604,13 +618,13 @@ Ext.define('util.ControlWithHelpFactory',{
 	},*/
 
 	getTreeWithLabel: function(label, tree, treeWithLabelID, labelWidth, labelAlign) {
-		if (labelWidth==null) {
+		if (CWHF.isNull(labelWidth)) {
 			labelWidth=150;
 		}
-		if (labelAlign==null) {
+		if (CWHF.isNull(labelAlign)) {
 			labelAlign='right';
 		}
-		if (label==null){
+		if (CWHF.isNull(label)){
 			return tree;
 		}
 		tree.flex=1;
@@ -620,7 +634,7 @@ Ext.define('util.ControlWithHelpFactory',{
 
 	getLabelCmp: function(label, labelAlign, labelWidth) {
 		return Ext.create('Ext.Component',{
-			cls:labelAlign=='right'?'x-form-item-label-right x-form-item-label':'x-form-item-label',
+			cls:labelAlign==='right'?'x-form-item-label-right x-form-item-label':'x-form-item-label',
 			style:{
 				marginRight:'5px'
 			},
@@ -651,7 +665,6 @@ Ext.define('util.ControlWithHelpFactory',{
 			xtype: 'textfield',
 			fieldLabel : label,
 			name: name,
-			itemId: name,
 			labelStyle:{overflow:'hidden'},
 			labelWidth:this.labelWidth,
 			labelAlign:this.alignR,
@@ -676,23 +689,22 @@ Ext.define('util.ControlWithHelpFactory',{
 		var numberFieldConfig = {
 				xtype: 'numberfield',
 				fieldLabel : label,
-				hideLabel:(labelKey==null),
+				hideLabel:(CWHF.isNull(labelKey)),
 				msgTarget: 'under',
 				name: name,
-				itemId: name,
 				labelStyle:{overflow:'hidden'},
 				labelWidth:this.labelWidth,
 				labelAlign:this.alignR,
 				width:this.textFieldWidth,
 				decimalSeparator:com.trackplus.TrackplusConfig.DecimalSeparator
 		};
-		if (decimalPrecision!=null) {
+		if (decimalPrecision) {
 			numberFieldConfig.decimalPrecision = decimalPrecision;
 		}
-		if (minValue!=null) {
+		if (minValue) {
 			numberFieldConfig.minValue = minValue;
 		}
-		if (maxValue!=null) {
+		if (maxValue) {
 			numberFieldConfig.maxValue = maxValue;
 		}
 		this.addOtherSettings(numberFieldConfig, otherSettings, label);
@@ -718,10 +730,10 @@ Ext.define('util.ControlWithHelpFactory',{
 	createNumberFieldWithHelp: function(labelKey, name, decimalPrecision, minValue, maxValue, otherSettings, wrapperItemId) {
 		var inputComp=this.createNumberField(labelKey, name, decimalPrecision, minValue, maxValue, otherSettings)
 		var helpStr = getText(labelKey+'.help');
-		if(helpStr==null){
+		if(CWHF.isNull(helpStr)){
 			return inputComp;
 		}
-		if (wrapperItemId==null) {
+		if (CWHF.isNull(wrapperItemId)) {
 			wrapperItemId = this.getWrapperItemId(inputComp.getItemId());
 		}
 		return Ext.create("com.trackplus.util.HelpWrapperComponent",
@@ -743,7 +755,6 @@ Ext.define('util.ControlWithHelpFactory',{
 				xtype: 'datefield',
 				fieldLabel : label,
 				name: name,
-				itemId: name,
 				labelStyle:{overflow:'hidden'},
 				labelWidth:this.labelWidth,
 				labelAlign:this.alignR,
@@ -771,7 +782,6 @@ Ext.define('util.ControlWithHelpFactory',{
 				xtype: 'timefield',
 				fieldLabel : label,
 				name: name,
-				itemId: name,
 				labelStyle:{overflow:'hidden'},
 				labelWidth:this.labelWidth,
 				labelAlign:this.alignR,
@@ -786,10 +796,10 @@ Ext.define('util.ControlWithHelpFactory',{
 	createTimeFieldWithHelp: function(labelKey, name, otherSettings, wrapperItemId) {
 		var inputComp=this.createTimeField(labelKey, name, otherSettings)
 		var helpStr = getText(labelKey+'.help');
-		if(helpStr==null){
+		if(CWHF.isNull(helpStr)){
 			return inputComp;
 		}
-		if (wrapperItemId==null) {
+		if (CWHF.isNull(wrapperItemId)) {
 			wrapperItemId = this.getWrapperItemId(inputComp.getItemId());
 		}
 		return Ext.create("com.trackplus.util.HelpWrapperComponent",
@@ -829,7 +839,6 @@ Ext.define('util.ControlWithHelpFactory',{
 				xtype: 'textareafield',
 				fieldLabel : this.getLabel(labelKey, otherSettings),
 				name: name,
-				itemId: name,
 				labelStyle:{overflow:'hidden'},
 				labelWidth:this.labelWidth,
 				labelAlign:this.alignR,
@@ -858,11 +867,11 @@ Ext.define('util.ControlWithHelpFactory',{
 	createTextAreaFieldWithHelp: function(labelKey, name, otherSettings, wrapperItemId) {
 		var inputComp=this.createTextAreaField(labelKey, name, otherSettings)
 		var helpStr = getText(labelKey+'.help');
-		if(helpStr==null){
+		if(CWHF.isNull(helpStr)){
 			return inputComp;
 		}
 		//return this.createWrapperHelp(inputComp,name,helpStr,otherSettings);
-		if (wrapperItemId==null) {
+		if (CWHF.isNull(wrapperItemId)) {
 			wrapperItemId = this.getWrapperItemId(inputComp.getItemId());
 		}
 		return Ext.create("com.trackplus.util.HelpWrapperComponent",
@@ -881,7 +890,6 @@ Ext.define('util.ControlWithHelpFactory',{
 		var htmlEditorFieldConfig = {
 				fieldLabel: label,
 				name: name,
-				itemId: name,
 				labelStyle:{overflow:'hidden'},
 				labelWidth:this.labelWidth,
 				labelAlign:this.alignR,
@@ -914,9 +922,9 @@ Ext.define('util.ControlWithHelpFactory',{
 		var difH=height-oldHeight;
 		var idDescription=opts.id+'-inputEl';
 		var o=CKEDITOR.instances[idDescription];
-		var isReady=me.RTEInstanceReady[opts.id]==true;
+		var isReady=me.RTEInstanceReady[opts.id]===true;
 		var w=width;
-		if(cmp.fieldLabel!=null){
+		if(cmp.fieldLabel){
 			w=w-cmp.labelWidth;
 		}
 		if (o&&isReady){
@@ -931,7 +939,7 @@ Ext.define('util.ControlWithHelpFactory',{
 		//var toolbarFCKStartExpanded=true;
 		//var resize=opts.resize;
 		/*var sLang=null;
-		if ( sLang == null ){
+		if (CWHF.isNull(sLang)){
 			sLang="en";
 		}*/
 		me.RTEInstanceReady[opts.id]=false;
@@ -947,25 +955,40 @@ Ext.define('util.ControlWithHelpFactory',{
 		var toolbarFCKStartExpanded=true;
 		var resize=opts.resize;
 		var sLang=getLocale();
-		if ( sLang == null ){
+		if (CWHF.isNull(sLang)){
 			sLang="en";
 		}
 		var o=CKEDITOR.instances[idDescription];
-		if (o!=null){
+		if (o){
 			me.RTEInstanceReady[opts.id]=false;
 			CKEDITOR.remove(o);
 		}
-		if(comp!=null&&comp.isDisabled()){
+		if(comp&&comp.isDisabled()){
 			return false;
 		}
 		var filebrowserImageBrowseUrl='';
 		var filebrowserUploadUrl ='';// uploadUrl + '?Type=File';
 		var filebrowserImageUploadUrl ='';// uploadUrl + '?Type=Image';
 		var otherCkeditorCfg=opts.ckeditorCfg;
-		if(otherCkeditorCfg!=null&&otherCkeditorCfg.workItemID!=null) {
-			filebrowserImageBrowseUrl='browseFile.action?type=Images&workItemID='+otherCkeditorCfg.workItemID;
-			filebrowserUploadUrl='browseFile!uploadFile.action?Type=File&workItemID='+otherCkeditorCfg.workItemID;
-			filebrowserImageUploadUrl='browseFile!uploadFile.action?Type=Image&workItemID='+otherCkeditorCfg.workItemID;
+		var workItemID=null;
+		var useInlineTask=false;
+		var useBrowseImage=false;
+		if(otherCkeditorCfg){
+			useBrowseImage=otherCkeditorCfg.useBrowseImage;
+			if(otherCkeditorCfg.workItemID) {
+				workItemID = otherCkeditorCfg.workItemID;
+			}
+			if(useBrowseImage===true){
+				filebrowserImageBrowseUrl = 'browseFile.action?type=Images';
+				filebrowserUploadUrl = 'browseFile!uploadFile.action?Type=File';
+				filebrowserImageUploadUrl = 'browseFile!uploadFile.action?Type=Image';
+				if(workItemID!=null){
+					filebrowserImageBrowseUrl+= '&workItemID=' + workItemID;
+					filebrowserUploadUrl+= '&workItemID=' + workItemID;
+					filebrowserImageUploadUrl+= '&workItemID=' + workItemID;
+				}
+			}
+			useInlineTask=otherCkeditorCfg.useInlineTask;
 		}
 		var ckeditorCfg={
 			customConfig:sBasePath+'cktrackplusconfig.js',
@@ -978,27 +1001,38 @@ Ext.define('util.ControlWithHelpFactory',{
 			 toolbarStartupExpanded:toolbarFCKStartExpanded*/
 		};
 
-		if(otherCkeditorCfg!=null) {
+		if(otherCkeditorCfg) {
 			for (propertyName in otherCkeditorCfg) {
 				ckeditorCfg[propertyName] = otherCkeditorCfg[propertyName];
 			}
 		}
+
+		if(workItemID&&useInlineTask){
+			var extraPlugins=ckeditorCfg['extraPlugins'];
+			if(CWHF.isNull(extraPlugins)||extraPlugins===''){
+				extraPlugins='issue,code,simpleuploads,image2,task';
+			}else{
+				extraPlugins=extraPlugins+",task";
+			}
+			ckeditorCfg['extraPlugins']=extraPlugins;
+		}
+
 		var ckEditor=CKEDITOR.replace(idDescription,ckeditorCfg);
-        var focus=opts.focus;
-        if(focus==true){
-            ckEditor.on('instanceReady',function(evt) {
-                ckEditor.focus();
-            });
-        }
-        ckEditor.on('blur', function(e) {
+		var focus=opts.focus;
+		if(focus===true){
+			ckEditor.on('instanceReady',function(evt) {
+				ckEditor.focus();
+			});
+		}
+		ckEditor.on('blur', function(e) {
 			ckEditor.updateElement();
 		});
-		if(resize==true&&comp!=null){
+		if(resize===true&&comp){
 			comp.addListener('resize',me.resizeRTEditor,me,opts);
 			ckEditor.on('instanceReady',function(evt) {
 				me.RTEInstanceReady[opts.id]=true;
 				var w=comp.getWidth();
-				if(comp.fieldLabel!=null){
+				if(comp.fieldLabel){
 					w=w-comp.labelWidth;
 				}
 				var h=comp.getHeight();
@@ -1028,13 +1062,20 @@ Ext.define('util.ControlWithHelpFactory',{
 			// When the upload has finished (the plugin has finished and the element is ready on the page
 			editor.on( 'simpleuploads.finishedUpload' , function(ev) {
 				var element = ev.data.element;
+				var finishedUploadHandler=editor.config.finishedUploadHandler;
+				if(finishedUploadHandler){
+					finishedUploadHandler.call(editor,ev);
+				}
 				//element.addClass("picture");
+			});
+			editor.on('fileUploadResponse',function(ev){
+				var finishedUploadHandler=editor.config.finishedUploadHandler;
+				if(finishedUploadHandler){
+					finishedUploadHandler.call(editor,ev);
+				}
 			});
 
 		});
-
-
-
 	},
 	submitRTEditor:function(txtArea){
 		var idDescription=txtArea.id+'-inputEl';
@@ -1070,19 +1111,18 @@ Ext.define('util.ControlWithHelpFactory',{
 				fieldLabel : this.getLabel(labelKey, otherSettings),
 				//boxLabel : this.getLabel(labelKey, otherSettings),
 				name: name,
-				itemId: name,
 				labelStyle:{overflow:'hidden'},
 				labelWidth:this.labelWidth,
 				labelAlign:this.alignR,
 				width:this.textFieldWidth
 			};
 
-		if (otherSettings!=null && otherSettings.value!=null) {
+		if (otherSettings && otherSettings.value) {
 			checkBoxConfig.checked = otherSettings.value;
 			delete otherSettings.value;
 		}
 		this.addOtherSettings(checkBoxConfig, otherSettings);
-		if (listenerConfig!=null) {
+		if (listenerConfig) {
 			checkBoxConfig.listeners = listenerConfig;
 		}
 		return Ext.create('Ext.form.field.Checkbox', checkBoxConfig);
@@ -1104,11 +1144,11 @@ Ext.define('util.ControlWithHelpFactory',{
 	createCheckboxWithHelp: function(labelKey, name, otherSettings, listenerConfig, wrapperItemId) {
 		var inputComp=this.createCheckbox(labelKey, name, otherSettings, listenerConfig)
 		var helpStr = getText(labelKey+'.help');
-		if(helpStr==null){
+		if(CWHF.isNull(helpStr)){
 			return inputComp;
 		}
 		//return this.createWrapperHelp(inputComp,name,helpStr,otherSettings);
-		if (wrapperItemId==null) {
+		if (CWHF.isNull(wrapperItemId)) {
 			wrapperItemId = this.getWrapperItemId(inputComp.getItemId());
 		}
 		return Ext.create("com.trackplus.util.HelpWrapperComponent",
@@ -1124,24 +1164,24 @@ Ext.define('util.ControlWithHelpFactory',{
 	 * @param {String} itemId The itemId for the inner component.
 	 * @return {Ext.form.field.Checkbox} A combobox component.
 	*/
-	createCombo: function(labelKey, name, otherSettings, listenerConfig, itemId) {
+	createCombo: function(labelKey, name, otherSettings, listenerConfig/*, itemId*/) {
 		var data = [];
 		var includeEmpty=false;
-		if (otherSettings!=null && otherSettings.data!=null) {
+		if (otherSettings && otherSettings.data) {
 			data = otherSettings.data;
 			delete otherSettings.data;
 		}
-		if (otherSettings!=null && otherSettings.includeEmpty!=null) {
+		if (otherSettings && otherSettings.includeEmpty) {
 			includeEmpty = otherSettings.includeEmpty;
 			delete otherSettings.includeEmpty;
 		}
 		var idType = 'int';
-		if (otherSettings!=null && otherSettings.idType!=null) {
+		if (otherSettings && otherSettings.idType) {
 			idType = otherSettings.idType;
 			delete otherSettings.idType;
 		}
 		var displayField='label';
-		if (otherSettings!=null && otherSettings.displayField!=null) {
+		if (otherSettings && otherSettings.displayField) {
 			displayField = otherSettings.displayField;
 		}
 		var label = this.getLabel(labelKey, otherSettings);
@@ -1157,22 +1197,17 @@ Ext.define('util.ControlWithHelpFactory',{
 			queryMode	: 'local',
 			triggerAction: 'all',
 			name:	name,
-			itemId: name,
 			editable: false,
-			//forceSelection: true,
 			fieldLabel : label,
 			labelStyle:{overflow:'hidden'},
 			labelWidth:this.labelWidth,
 			labelAlign:this.alignR,
 			width:this.textFieldWidth
 		};
-		if(includeEmpty==true){
+		if(includeEmpty===true){
 			comboConfig.tpl= new Ext.XTemplate('<tpl for=".">' + '<li style="min-height:22px;" class="x-boundlist-item" role="option">' + '{'+displayField+'}' + '</li></tpl>');
 		}
-		if (itemId!=null) {
-			comboConfig.itemId=itemId;
-		}
-		if (listenerConfig!=null) {
+		if (listenerConfig) {
 			comboConfig.listeners = listenerConfig;
 		}
 		this.addOtherSettings(comboConfig, otherSettings, label);
@@ -1194,14 +1229,14 @@ Ext.define('util.ControlWithHelpFactory',{
 	 * @param {String} itemId The itemId for the inner component.
 	 * @return {Ext.panel.Panel} A panel enclosing a combobox, a help button, and a help area.
 	 */
-	createComboWithHelp: function(labelKey, name, otherSettings, listenerConfig, itemId, wrapperItemId) {
-		var inputComp=this.createCombo(labelKey, name, otherSettings, listenerConfig, itemId);
+	createComboWithHelp: function(labelKey, name, otherSettings, listenerConfig, wrapperItemId) {
+		var inputComp=this.createCombo(labelKey, name, otherSettings, listenerConfig);
 		var helpStr = getText(labelKey+'.help');
-		if(helpStr==null){
+		if(CWHF.isNull(helpStr)){
 			return inputComp;
 		}
 		//return this.createWrapperHelp(inputComp,itemId,helpStr,otherSettings);
-		if (wrapperItemId==null) {
+		if (CWHF.isNull(wrapperItemId)) {
 			wrapperItemId = this.getWrapperItemId(inputComp.getItemId());
 		}
 		return Ext.create("com.trackplus.util.HelpWrapperComponent",
@@ -1220,27 +1255,26 @@ Ext.define('util.ControlWithHelpFactory',{
 	 * @param {JSONString} listenerConfig The associated listeners for this component
 	 * @return {Ext.ux.form.MultiSelect} A multiselect component.
 	*/
-	createMultiSelect: function(labelKey, name, otherSettings, listenerConfig, itemId) {
+	createMultiSelect: function(labelKey, name, otherSettings, listenerConfig) {
 		var data = [];
-		if (otherSettings!=null) {
-			if (otherSettings.data!=null) {
+		if (otherSettings) {
+			if (otherSettings.data) {
 				data = otherSettings.data;
 				delete otherSettings.data;
 			}
 			var idType = 'int';
-			if (otherSettings.idType!=null) {
+			if (otherSettings.idType) {
 				idType = otherSettings.idType;
 				delete otherSettings.idType;
 			}
 			var fieldLabel = '';
-			if (otherSettings.fieldLabel!=null) {
+			if (otherSettings.fieldLabel) {
 				fieldLabel = this.getLabel(otherSettings.fieldLabel, otherSettings);
 				delete otherSettings.fieldLabel;
 			}
 		}
 		var multiSelectConfig = {
 				xtype: 'multiselect',
-				itemId: itemId,
 				listTitle: this.getLabel(labelKey, otherSettings),
 				fieldLabel: fieldLabel,
 				store: Ext.create('Ext.data.Store', {
@@ -1252,14 +1286,14 @@ Ext.define('util.ControlWithHelpFactory',{
 				valueField: 'id',
 				labelAlign:this.alignR,
 				name: name
-			}
-		if (listenerConfig!=null) {
+		};
+		if (listenerConfig) {
 			multiSelectConfig.listeners = listenerConfig;
 		}
-		if (itemId!=null) {
-			multiSelectConfig.itemId=itemId;
-		}
-		if (otherSettings!=null) {
+//		if (itemId) {
+//			multiSelectConfig.itemId=itemId;
+//		}
+		if (otherSettings) {
 			for (property in otherSettings) {
 				multiSelectConfig[property] = otherSettings[property];
 			}
@@ -1282,19 +1316,19 @@ Ext.define('util.ControlWithHelpFactory',{
 	 * @param {JSONString} listenerConfig The associated listeners for this component
 	 * @return {Ext.ux.form.MultiSelect} A multiselect component.
 	 */
-	createMultiSelectWithHelp: function(itemId, name, modifiable, data, value, width, height, listenerConfig, wrapperItemId) {
+	/*createMultiSelectWithHelp: function(itemId, name, modifiable, data, value, width, height, listenerConfig, wrapperItemId) {
 		var inputComp=this.createMultiSelect(itemId, name, modifiable, data, value, width, height, listenerConfig);
 		var helpStr = getText(itemId+'.help');
-		if(helpStr==null){
+		if(CWHF.isNull(helpStr)){
 			return inputComp;
 		}
 		//return this.createWrapperHelp(inputComp,name,helpStr,otherSettings);
-		if (wrapperItemId==null) {
+		if (CWHF.isNull(wrapperItemId)) {
 			wrapperItemId = this.getWrapperItemId(inputComp.getItemId());
 		}
 		return Ext.create("com.trackplus.util.HelpWrapperComponent",
 				{inputComp:inputComp, helpStr:helpStr, itemId: wrapperItemId});
-	},
+	},*/
 
 
 	/**
@@ -1308,10 +1342,9 @@ Ext.define('util.ControlWithHelpFactory',{
 	 * @param {String} itemId The itemId for the inner component.
 	 * @return {Ext.form.RadioGroup} A radio group component.
 	*/
-	getRadioGroup:function(itemId, labelKey, width, items, otherSettings, listenerConfig) {
+	getRadioGroup:function(labelKey, width, items, otherSettings, listenerConfig) {
 		var radioGroupConfig = {
 				xtype	: 'radiogroup',
-				itemId	: itemId,
 				layout: 'hbox',
 				defaults : {margin:"0 5 0 0"},
 				labelStyle:{overflow:'hidden'},
@@ -1320,14 +1353,14 @@ Ext.define('util.ControlWithHelpFactory',{
 				width: width
 				//disabled: !modifiable
 			}
-		if (items==null) {
+		if (CWHF.isNull(items)) {
 			items = [];
 		}
 		radioGroupConfig.items = items;
-		if (listenerConfig!=null) {
+		if (listenerConfig) {
 			radioGroupConfig.listeners = listenerConfig;
 		}
-		if (labelKey==null) {
+		if (CWHF.isNull(labelKey)) {
 			radioGroupConfig.fieldLabel = '';
 			radioGroupConfig.labelSeparator = '';
 			radioGroupConfig.labelWidth = 0;
@@ -1350,14 +1383,14 @@ Ext.define('util.ControlWithHelpFactory',{
 	 * @param {String} itemId The itemId for the inner component.
 	 * @return {Ext.form.RadioGroup} A radio group component.
 	*/
-	getRadioGroupWithHelp:function(itemId, labelKey, width, items, otherSettings, listenerConfig, wrapperItemId) {
-		var inputComp=this.getRadioGroup(itemId, labelKey, width, items, otherSettings, listenerConfig);
+	getRadioGroupWithHelp:function(labelKey, width, items, otherSettings, listenerConfig, wrapperItemId) {
+		var inputComp=this.getRadioGroup(labelKey, width, items, otherSettings, listenerConfig);
 		var helpStr = getText(labelKey+'.help');
-		if(helpStr==null){
+		if(CWHF.isNull(helpStr)){
 			return inputComp;
 		}
 		//return this.createWrapperHelp(inputComp,itemId,helpStr,otherSettings);
-		if (wrapperItemId==null) {
+		if (CWHF.isNull(wrapperItemId)) {
 			wrapperItemId = this.getWrapperItemId(inputComp.getItemId());
 		}
 		return Ext.create("com.trackplus.util.HelpWrapperComponent",
@@ -1375,7 +1408,7 @@ Ext.define('util.ControlWithHelpFactory',{
 				name:commonName,
 				inputValue: listEntry[id],
 				boxLabel: this.getLabel(listEntry[label], {labelIsLocalized:labelIsLocalized}),
-				checked: listEntry[id]==checkedValue,
+				checked: listEntry[id]===checkedValue,
 				disabled: disabled
 			});
 		}, this);
@@ -1390,7 +1423,7 @@ Ext.define('util.ControlWithHelpFactory',{
 		var checkedRadioValue = null;
 		if (checkedArr.length>0) {
 			checkedRadio = checkedArr[0];
-			if (checkedRadio!=null) {
+			if (checkedRadio) {
 				checkedRadioValue = checkedRadio.getSubmitValue();
 			}
 		}
@@ -1411,7 +1444,6 @@ Ext.define('util.ControlWithHelpFactory',{
 				xtype:'displayfield',
 				fieldLabel:label,
 				name: name,
-				itemId: name,
 				labelStyle:{overflow:'hidden'},
 				labelWidth:me.labelWidth,
 				labelAlign:me.alignR,
@@ -1436,12 +1468,11 @@ Ext.define('util.ControlWithHelpFactory',{
 		var fileFieldConfig = {
 				xtype: 'filefield',
 				fieldLabel : label,
-				itemId: name,
 				name: name,
 				buttonText: getText("common.btn.browse"),
 				labelWidth:this.labelWidth,
 				labelAlign:this.alignR};
-		if (listenerConfig!=null) {
+		if (listenerConfig) {
 			fileFieldConfig.listeners = listenerConfig;
 		}
 		this.addOtherSettings(fileFieldConfig, otherSettings, label);
@@ -1463,38 +1494,38 @@ Ext.define('util.ControlWithHelpFactory',{
 		var multipleSelectPickerConfig = {
 				localizedLabel:label,
 				name:name,
-				data:data,
+				options:data,
 				value: value,
 				width:200,
 				margin:'0 5 0 0',
 				useRemoveBtn:true
 				}
-		/*if (iconSettings!=null) {
+		/*if (iconSettings) {
 			var iconUrl = iconSettings.iconUrl;
-			if (iconUrl!=null) {
+			if (iconUrl) {
 				//exclude from properties
 				delete iconSettings.iconUrl;
 				var valueName = iconSettings.valueName;
-				if (valueName!=null) {
+				if (valueName) {
 					//exclude from for cycle
 					delete iconSettings.valueName;
 				}
 				var parameterSeparator = "?";
 				for (propertyName in iconSettings) {
 					var propertyValue = iconSettings[propertyName];
-					if (propertyValue!=null) {
+					if (propertyValue) {
 						iconUrl = iconUrl + parameterSeparator + propertyName + "=" + propertyValue;
 						parameterSeparator = "&";
 					}
 				}
-				if (valueName!=null) {
+				if (valueName) {
 					iconUrl = iconUrl + parameterSeparator + valueName + "="
 				}
 				multipleSelectPickerConfig.iconUrlPrefix = iconUrl;
 			}
 		}*/
 		this.addOtherSettings(multipleSelectPickerConfig, otherSettings, label);
-		/*if (listenerConfig!=null) {
+		/*if (listenerConfig) {
 			multipleSelectPickerConfig.listeners = listenerConfig;
 		}*/
 		return Ext.create('com.trackplus.util.MultipleSelectPicker', multipleSelectPickerConfig);
@@ -1514,8 +1545,7 @@ Ext.define('util.ControlWithHelpFactory',{
         var singleSelectPickerConfig = {
             fieldLabel:label,
             name:name,
-            itemId:name,
-            data:data,
+            options:data,
             value: value,
             width:200,
             margin:'0 5 0 0',
@@ -1523,7 +1553,7 @@ Ext.define('util.ControlWithHelpFactory',{
             useRemoveBtn:false
         }
         this.addOtherSettings(singleSelectPickerConfig, otherSettings, label);
-        if (listenerConfig!=null) {
+        if (listenerConfig) {
             singleSelectPickerConfig.listeners = listenerConfig;
         }
         return Ext.create('com.trackplus.util.SingleTreePicker', singleSelectPickerConfig);
@@ -1541,7 +1571,7 @@ Ext.define('util.ControlWithHelpFactory',{
     createSingleTreePickerWithHelp: function(labelKey, name, data, value, otherSettings, listenerConfig) {
         var inputComp=this.createSingleTreePicker(labelKey, name, data, value, otherSettings, listenerConfig)
         var helpStr = getText(labelKey+'.help');
-        if(helpStr==null){
+        if(CWHF.isNull(helpStr)){
             return inputComp;
         }
         wrapperItemId = this.getWrapperItemId(inputComp.getItemId());
@@ -1564,19 +1594,18 @@ Ext.define('util.ControlWithHelpFactory',{
 		var multipleSelectPickerConfig = {
                 localizedLabel:label,
 				name:name,
-                itemId:name,
-				data:data,
+				options:data,
 				value: value,
 				width:200,
 				margin:'0 5 0 0',
 				useRemoveBtn:true
-				}
+		};
 
-        if (otherSettings!=null && otherSettings.useNull) {
+        if (otherSettings && otherSettings.useNull) {
             multipleSelectPickerConfig.fieldLabel = label;
         }
 		this.addOtherSettings(multipleSelectPickerConfig, otherSettings, label);
-		if (listenerConfig!=null) {
+		if (listenerConfig) {
 			multipleSelectPickerConfig.listeners = listenerConfig;
 		}
 		return Ext.create('com.trackplus.util.MultipleTreePicker', multipleSelectPickerConfig);
@@ -1585,15 +1614,22 @@ Ext.define('util.ControlWithHelpFactory',{
 	createMultipleTreePickerWithHelp: function(labelKey, name, data, value, otherSettings, listenerConfig, wrapperItemId) {
 		var inputComp=this.createMultipleTreePicker(labelKey, name, data, value, otherSettings, listenerConfig);
 		var helpStr = getText(labelKey+'.help');
-		if(helpStr==null){
+		if(CWHF.isNull(helpStr)){
 			return inputComp;
 		}
 		//return this.createWrapperHelp(inputComp,itemId,helpStr,otherSettings);
-		if (wrapperItemId==null) {
+		if (CWHF.isNull(wrapperItemId)) {
 			wrapperItemId = this.getWrapperItemId(inputComp.getItemId());
 		}
 		return Ext.create("com.trackplus.util.HelpWrapperComponent",
 				{inputComp:inputComp, helpStr:helpStr, itemId: wrapperItemId});
+	},
+
+	isNull: function(variable) {
+		if( typeof variable === 'undefined' || variable === null ){
+			return true;
+		}
+		return false;
 	},
 
 	/**
@@ -1617,8 +1653,8 @@ Ext.define('util.ControlWithHelpFactory',{
 					scope: scope,
 					tooltip: getText('common.btn.all'),
 					handler: function(event, toolElement, owner, tool) {
-						if (selectControl!=null) {
-							if (controlIsTree==null || !controlIsTree) {
+						if (selectControl) {
+							if (CWHF.isNull(controlIsTree) || !controlIsTree) {
 								var store = selectControl.store;
 								var values = [];
 								store.each(function(record) {
@@ -1628,11 +1664,11 @@ Ext.define('util.ControlWithHelpFactory',{
 							} else {
 								var rootNode = selectControl.getRootNode();
 								rootNode.cascadeBy(function(currentNode) {
-									if (currentNode.get('checked')!=null) {
+									if (currentNode.get('checked')) {
 										currentNode.set('checked', true);
 									}
 								}, scope);
-								if (changeHandler!=null) {
+								if (changeHandler) {
 									changeHandler.call(changeHandlerScope);
 								}
 							}
@@ -1643,20 +1679,20 @@ Ext.define('util.ControlWithHelpFactory',{
 					scope: scope,
 					tooltip: getText('common.btn.reset'),
 					handler: function(event, toolElement, owner, tool) {
-						if (selectControl!=null) {
+						if (selectControl) {
 							//although clearing the value triggers the selectProject method it will not go to the server because newValue is empty...
-							if (controlIsTree==null || !controlIsTree) {
-								if (selectControl.getValue()!=null && selectControl.getValue().length!=0) {
+							if (CWHF.isNull(controlIsTree) || !controlIsTree) {
+								if (selectControl.getValue() && selectControl.getValue().length!==0) {
 									selectControl.clearValue();
 								}
 							} else {
 								var rootNode = selectControl.getRootNode();
 								rootNode.cascadeBy(function(currentNode) {
-									if (currentNode.get('checked')!=null) {
+									if (currentNode.get('checked')) {
 										currentNode.set('checked',  false);
 									}
 								}, scope);
-								if (changeHandler!=null) {
+								if (changeHandler) {
 									changeHandler.call(changeHandlerScope);
 								}
 							}
@@ -1675,7 +1711,7 @@ Ext.define('util.ControlWithHelpFactory',{
 	},
 	showMsg: function(msg,cls,isTopDownDirection){
 		var divID = "msg-div";
-		if(isTopDownDirection!=null && isTopDownDirection!=undefined) {
+		if(isTopDownDirection && isTopDownDirection!==undefined) {
 			if(isTopDownDirection) {
 				divID = "msg-div";
 			}else {
@@ -1688,7 +1724,7 @@ Ext.define('util.ControlWithHelpFactory',{
 			this.msgCt = Ext.DomHelper.insertFirst(document.body, {id: divID}, true);
 
 		}else{
-			if(this.msgCt.id != divID) {
+			if(this.msgCt.id !== divID) {
 				this.msgCt.remove();
 				this.msgCt = Ext.DomHelper.insertFirst(document.body, {id: divID}, true);
 			}
@@ -1696,17 +1732,17 @@ Ext.define('util.ControlWithHelpFactory',{
 
 		var zIndex=null;
 		var active=Ext.WindowManager.getActive();
-		if(active!=null){
+		if(active){
 			zIndex = parseInt(active.el.getStyle('zIndex'), 10);
 		}
-		if(zIndex!=null){
+		if(zIndex){
 			this.msgCt.setStyle('z-index',''+(zIndex+1));
 		}
 		var boxHtml='<div class="msg msg-'+cls+'"<p>' + msg + '</p></div>';
 		var m = Ext.DomHelper.append(this.msgCt,boxHtml, true);
 		m.hide();
 		var direction = "t";
-		if(isTopDownDirection!=null && isTopDownDirection!=undefined) {
+		if(isTopDownDirection && isTopDownDirection!==undefined) {
 			if(!isTopDownDirection) {
 				direction = "b";
 			}
@@ -1717,6 +1753,15 @@ Ext.define('util.ControlWithHelpFactory',{
 		if(com.trackplus.TrackplusConfig.isDebugEnabled) {
 			console.log(text);
 		}
+	},
+	showDialogMsgWarning:function(title, message){
+		Ext.Msg.show({
+			title: title,
+			message: message,
+			buttonText:{'cancel':getText('common.btn.close')},
+			buttons:Ext.Msg.CANCEL,
+			icon: Ext.Msg.WARNING
+		});
 	}
 },
 
@@ -1727,5 +1772,7 @@ function() {
 	CWHF = this;
 
 })
+
+
 
 

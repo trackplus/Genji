@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -96,12 +96,13 @@ import com.workingdogs.village.Record;
  * specific project. It creates a hash set containing entries where projectid
  * and list type id are concatenated strings.
  *
- * @author Joerg Friedrich <joerg.friedrich@computer.org>
- * @version $Revision: 1364 $ $Date: 2015-03-26 23:40:44 +0200 (Thu, 26 Mar 2015)
- *          $
  */
 public class AccessBeans implements Serializable {
 	private static final long serialVersionUID = 1L;
+	private static final String theProject = "The project ";
+	private static final String addItem = "Add item ";
+	private static final String noRole = "No role found for person ";
+	private static final String remaining = " remaining to verify";
 
 	public static final char ONVALUE = '1';
 	public static final char OFFVALUE = '0';
@@ -825,7 +826,7 @@ public class AccessBeans implements Serializable {
 			// right to read or modify plan
 			return true;
 		}
-		boolean budgetActive = ApplicationBean.getApplicationBean().getBudgetActive();
+		boolean budgetActive = ApplicationBean.getInstance().getBudgetActive();
 		Integer budgetRestrictions = fieldRestrictions.get(FieldsRestrictionsToRoleBL.PSEUDO_COLUMNS.BUDGET);
 		if (budgetActive
 				&& (budgetRestrictions == null || budgetRestrictions.intValue() != TRoleFieldBean.ACCESSFLAG.NOACCESS)) {
@@ -1114,7 +1115,7 @@ public class AccessBeans implements Serializable {
 			// all roles revoked from the project (only RACI role) -> no
 			// roleFlag restriction
 			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("No role found for person " + personID
+				LOGGER.debug(noRole + personID
 						+ " in project " + projectID + " issueType "
 						+ issueTypeID);
 			}
@@ -1222,14 +1223,7 @@ public class AccessBeans implements Serializable {
 			Map<Integer, Set<Integer>> restrictedFieldsMap,
 			List<Integer> fieldIDs) {
 		if (restrictedFieldsMap != null) {
-			/*
-			 * Collection<Set<Integer>> restrictedSets =
-			 * restrictedFieldsMap.values(); if (restrictedSets!=null) { for
-			 * (Set<Integer> restrintedFieldsSet : restrictedSets) { if
-			 * (restrintedFieldsSet!=null) { for (Integer fieldID : fieldIDs) {
-			 * if (restrintedFieldsSet.contains(fieldID)) { return true; } } } }
-			 * }
-			 */
+
 			for (Integer fieldID : fieldIDs) {
 				if (restrictedFieldsMap.containsKey(fieldID)) {
 					return true;
@@ -1501,13 +1495,13 @@ public class AccessBeans implements Serializable {
 							}
 						}
 					} else {
-						LOGGER.debug("No role found for person " + personID
+						LOGGER.debug(noRole + personID
 								+ " in project " + projectID + " and issueType"
 								+ issueTypeID);
 					}
 				}
 			} else {
-				LOGGER.debug("No role found for person " + personID
+				LOGGER.debug(noRole + personID
 						+ " in project " + projectID);
 			}
 		}
@@ -1887,8 +1881,7 @@ public class AccessBeans implements Serializable {
 	 */
 	public static Map<Integer, Set<Integer>> getProjectsToIssueTypesWithRoleForPerson(
 			List<Integer> personIDs, Integer[] projects, int[] arrRights) {
-		List<Record> assignedProjectAndIssueTypeRecords = AccessControlBL
-				.getProjectIssueTypeRecords(personIDs, projects, arrRights);
+		List<Record> assignedProjectAndIssueTypeRecords = AccessControlBL.getProjectIssueTypeRecords(personIDs, projects, arrRights);
 		Map<Integer, Set<Integer>> projectIssueTypeMap = new HashMap<Integer, Set<Integer>>();
 		for (Record record : assignedProjectAndIssueTypeRecords) {
 			try {
@@ -1908,8 +1901,8 @@ public class AccessBeans implements Serializable {
 				// means no issueType restrictions for that project
 				issueTypeSet.add(issueTypeID);
 			} catch (DataSetException e) {
-				LOGGER.error("Reading the result record failed with "
-						+ e.getMessage(), e);
+				LOGGER.error("Reading the result record failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		return projectIssueTypeMap;
@@ -1978,7 +1971,7 @@ public class AccessBeans implements Serializable {
 					|| meAndSubstitutedIDs.contains(managerID)
 					|| meAndSubstitutedIDs.contains(responsibleID)) {
 				if (LOGGER.isTraceEnabled()) {
-					LOGGER.trace("Add item " + workItemID + ": direct RACI");
+					LOGGER.trace(addItem + workItemID + ": direct RACI");
 				}
 				if (editFlagNeeded) {
 					workItemBean.setEditable(true);
@@ -1991,7 +1984,7 @@ public class AccessBeans implements Serializable {
 		int noOfDirectRACIItems = workItemBeansPassed.size();
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("Number of direct RACI items: " + noOfDirectRACIItems
-					+ ", remained " + workItemBeans.size() + " to verify");
+					+ ", " + workItemBeans.size() + remaining);
 		}
 		/**
 		 * Second loop: pass by project roles for person
@@ -2017,17 +2010,11 @@ public class AccessBeans implements Serializable {
 							.keySet());
 			// get the array with groupIDs the person is member of (the personID
 			// is also contained)
-			// groupsAndSelf = AccessBeans.getGroupsAndSelf(personID);
+
 			// projects-issueTypes with project admin right for person
-			// Map<Integer, Set<Integer>> adminProjectsIssueTypeMap = null;
+
 			// projects/issueTypes with projectAdmin roles
-			/*
-			 * if (!archivedExcludedAtDBLevel) { int[] projectAdminRights = new
-			 * int[] {AccessFlagIndexes.PROJECTADMIN}; adminProjectsIssueTypeMap
-			 * =
-			 * getProjectsToIssueTypesWithRoleForPerson(meAndSubstitutedAndGroups
-			 * , ancestorProjects, projectAdminRights); }
-			 */
+
 			// projects/issueTypes with read any roles
 
 			int[] readAnyRights = new int[] { AccessFlagIndexes.READANYTASK,
@@ -2053,17 +2040,6 @@ public class AccessBeans implements Serializable {
 				Integer issueType = workItemBean.getListTypeID();
 				// leave the archived/deleted workItems only if the person is
 				// project admin
-				/*
-				 * if (!archivedExcludedAtDBLevel &&
-				 * workItemBean.isArchivedOrDeleted() &&
-				 * !hasExplicitRight(personID, workItemID, projectID, issueType,
-				 * adminProjectsIssueTypeMap, childToParentProject,
-				 * "project admin")) { //do not pass: archived or deleted but
-				 * not project admin if (LOGGER.isDebugEnabled()) {
-				 * LOGGER.debug("Remove item " + workItemID +
-				 * ": archived/deleted and you are not project admin on issue's project"
-				 * ); } workItemBeansItr.remove(); }
-				 */
 				if (editFlagNeeded
 						&& hasExplicitRight(personID, workItemID, projectID,
 								issueType, projectToIssueTypesWithEditRight,
@@ -2076,7 +2052,7 @@ public class AccessBeans implements Serializable {
 						if (projectBean != null) {
 							projectName = projectBean.getLabel();
 						}
-						LOGGER.trace("Add item " + workItemID + " for user "
+						LOGGER.trace(addItem + workItemID + " for user "
 								+ personID
 								+ ": 'modify any' project right for project "
 								+ projectID + " (" + projectName + ")");
@@ -2103,7 +2079,7 @@ public class AccessBeans implements Serializable {
 								if (projectBean != null) {
 									projectName = projectBean.getLabel();
 								}
-								LOGGER.trace("Add item "
+								LOGGER.trace(addItem
 										+ workItemID
 										+ ": 'read any' project right for project "
 										+ projectID + " (" + projectName + ")");
@@ -2128,8 +2104,8 @@ public class AccessBeans implements Serializable {
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug("Number of items in projects with role for person: "
 						+ noOfProjectRightItems
-						+ ", remained "
-						+ workItemBeans.size() + " to verify");
+						+ ", "
+						+ workItemBeans.size() + remaining);
 			}
 		}
 		/**
@@ -2179,21 +2155,21 @@ public class AccessBeans implements Serializable {
 					if (LOGGER.isTraceEnabled()) {
 						if (allGroupsForPerson != null
 								&& allGroupsForPerson.contains(responsibleID)) {
-							LOGGER.trace("Add item " + workItemID
+							LOGGER.trace(addItem + workItemID
 									+ ": responsible through group");
 						} else {
 							if (reciprocOriginators.contains(originatorID)) {
-								LOGGER.trace("Add item " + workItemID
+								LOGGER.trace(addItem + workItemID
 										+ ": reciproc originator through group");
 							} else {
 								if (reciprocManagers.contains(managerID)) {
-									LOGGER.trace("Add item "
+									LOGGER.trace(addItem
 											+ workItemID
 											+ ": reciproc manager through group");
 								} else {
 									if (reciprocResponsibles
 											.contains(responsibleID)) {
-										LOGGER.trace("Add item "
+										LOGGER.trace(addItem
 												+ workItemID
 												+ ": reciproc responsible through group");
 									}
@@ -2221,8 +2197,8 @@ public class AccessBeans implements Serializable {
 					- noOfDirectRACIItems - noOfProjectRightItems;
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug("Number of indirect RACI items: "
-						+ noOfIndirectRACIItems + ", remained "
-						+ workItemBeans.size() + " to verify");
+						+ noOfIndirectRACIItems + ", "
+						+ workItemBeans.size() + remaining);
 			}
 		}
 		/**
@@ -2258,7 +2234,7 @@ public class AccessBeans implements Serializable {
 					if (consultedPersons.contains(workItemID)) {
 						// consulted: pass and set editable
 						if (LOGGER.isTraceEnabled()) {
-							LOGGER.trace("Add item " + workItemID
+							LOGGER.trace(addItem + workItemID
 									+ ": consulted");
 						}
 						// set it to editable anyway but add to the passed list
@@ -2277,7 +2253,6 @@ public class AccessBeans implements Serializable {
 							}
 						}
 					} else {
-						// if (!notEditableMap.containsKey(workItemID)) {
 						// not already "only" readable through project roles
 						if (informedPersons.contains(workItemID)) {
 							if (!workItemIDsPassed.contains(workItemBean
@@ -2292,10 +2267,10 @@ public class AccessBeans implements Serializable {
 							// to remain in set by searching for indirect RACI
 							// and possibly set it editable later
 							if (LOGGER.isTraceEnabled()) {
-								LOGGER.trace("Add item " + workItemID
+								LOGGER.trace(addItem + workItemID
 										+ ": informed");
 							}
-							// workItemBeansPassed.add(workItemBean);
+
 							if (editFlagNeeded) {
 								// although it is readable but not editable: if
 								// edit flag is needed do not remove
@@ -2308,7 +2283,7 @@ public class AccessBeans implements Serializable {
 								workItemBeansItr.remove();
 							}
 						}
-						// }
+
 					}
 				}
 			}
@@ -2316,7 +2291,7 @@ public class AccessBeans implements Serializable {
 					- noOfProjectRightItems - noOfIndirectRACIItems;
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug("Number of watcher items " + noOfWatcherItems
-						+ ", remained " + workItemBeans.size() + " to verify");
+						+ ", " + workItemBeans.size() + remaining);
 			}
 		}
 		/**
@@ -2373,7 +2348,7 @@ public class AccessBeans implements Serializable {
 									onBehalfPersonsDirect)) {
 						// indirect RACI: set as editable
 						if (LOGGER.isDebugEnabled()) {
-							LOGGER.debug("Add item " + workItemID
+							LOGGER.debug(addItem + workItemID
 									+ ": on behalf of");
 						}
 						// set it to editable anyway but add to the passed list
@@ -2399,8 +2374,8 @@ public class AccessBeans implements Serializable {
 					- noOfIndirectRACIItems - noOfWatcherItems;
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug("Number of in behalf of person items "
-						+ noOfOnBehalfItems + ", remained "
-						+ workItemBeans.size());
+						+ noOfOnBehalfItems + ", "
+						+ workItemBeans.size() +  remaining);
 			}
 		}
 		if (LOGGER.isDebugEnabled()) {
@@ -2414,7 +2389,7 @@ public class AccessBeans implements Serializable {
 			LOGGER.debug("Number of items passed " + workItemBeansPassed.size());
 			Date end = new Date();
 			LOGGER.debug("Removing not accessible items lasted "
-					+ new Long(end.getTime() - start.getTime()).toString()
+					+ Long.toString(end.getTime() - start.getTime())
 					+ " ms");
 		}
 		return workItemBeansPassed;
@@ -2525,7 +2500,7 @@ public class AccessBeans implements Serializable {
 		if (roleRestrictedItemTypeIDSet != null) {
 			if (roleRestrictedItemTypeIDSet.contains(null)) {
 				if (LOGGER.isDebugEnabled()) {
-					LOGGER.debug("The project " + projectLabel
+					LOGGER.debug(theProject + projectLabel
 							+ " has role without item type limitation");
 				}
 				// no limitation on item types not needed to look at the parent
@@ -2555,13 +2530,13 @@ public class AccessBeans implements Serializable {
 				}
 				if (selectedItemTypeIDsSet == null
 						|| selectedItemTypeIDsSet.isEmpty()) {
-					LOGGER.debug("The project "
+					LOGGER.debug(theProject
 							+ projectLabel
 							+ " has role with item type limitation (no selected item type in filter)");
 					if (parentItemTypeLimitations != null) {
 						roleRestrictedItemTypeIDSet
 								.addAll(parentItemTypeLimitations);
-						LOGGER.debug("The project "
+						LOGGER.debug(theProject
 								+ projectLabel
 								+ " inherits role with item type limitation (no selected item type in filter) from parent project "
 								+ parentProjectLabel);
@@ -2572,12 +2547,12 @@ public class AccessBeans implements Serializable {
 					// modifies the set
 					Set<Integer> intersection = new HashSet<Integer>(
 							roleRestrictedItemTypeIDSet);
-					LOGGER.debug("The project "
+					LOGGER.debug(theProject
 							+ projectLabel
 							+ " has role with item type limitation (with selected item type in filter)");
 					intersection.retainAll(selectedItemTypeIDsSet);
 					if (parentItemTypeLimitations != null) {
-						LOGGER.debug("The project "
+						LOGGER.debug(theProject
 								+ projectLabel
 								+ " inherits role with item type limitation (with selected item type in filter) from parent project "
 								+ parentProjectLabel);
@@ -2587,7 +2562,7 @@ public class AccessBeans implements Serializable {
 				}
 			}
 		} else {
-			LOGGER.debug("The project " + projectLabel + " has no direct role ");
+			LOGGER.debug(theProject + projectLabel + " has no direct role ");
 			Integer parentProjectID = childToParentProjectIDMap.get(projectID);
 			if (parentProjectID != null) {
 				Set<Integer> parentItemTypeLimitations = getItemTypeLimitations(
@@ -2606,7 +2581,7 @@ public class AccessBeans implements Serializable {
 								+ " has role without item type limitation");
 						return parentItemTypeLimitations;
 					} else {
-						LOGGER.debug("The project "
+						LOGGER.debug(theProject
 								+ projectLabel
 								+ " inherits role  with item type limitation from parent project "
 								+ parentProjectLabel);
@@ -2893,6 +2868,7 @@ public class AccessBeans implements Serializable {
 		 *
 		 * @deprecated
 		 */
+		@Deprecated
 		public static final int ADDMODIFYDELETEBUDGET = 12;
 
 		/**
@@ -2900,6 +2876,7 @@ public class AccessBeans implements Serializable {
 		 *
 		 * @deprecated
 		 */
+		@Deprecated
 		public static final int ADDMODIFYDELETEDUEDATES = 13;
 
 		/**
@@ -2907,6 +2884,7 @@ public class AccessBeans implements Serializable {
 		 *
 		 * @deprecated
 		 */
+		@Deprecated
 		public final static int ADDMODIFYDELETEOWNHOURSCOST = 14;
 
 		/**
@@ -2914,6 +2892,7 @@ public class AccessBeans implements Serializable {
 		 *
 		 * @deprecated
 		 */
+		@Deprecated
 		public static final int VIEWALLHOURSCOST = 15;
 
 		/**
@@ -2921,11 +2900,13 @@ public class AccessBeans implements Serializable {
 		 *
 		 * @deprecated
 		 */
+		@Deprecated
 		public static final int ASSIGNTASKTORESPONSIBLEORMANAGER = 16;
 
 		/**
 		 * @deprecated
 		 */
+		@Deprecated
 		public static final int MODIFYCONSULTANTSINFORMANTANDOTHERWATCHERS = 17;
 
 		/**
@@ -2935,18 +2916,12 @@ public class AccessBeans implements Serializable {
 		 */
 		public static final int VIEWCONSULTANTSINFORMANTANDOTHERWATCHERS = 18;
 
-		/**
-		 * Permission to view the planned value or budget.
-		 *
-		 * @deprecated
-		 */
-		public static final int VIEWBUDGET = 19;
 
 		/**
 		 * Permission to modify the issue title (synopsis) and description.
-		 *
 		 * @deprecated
 		 */
+		@Deprecated
 		public static final int MODIFYSYNOPSISORDESCRIPTION = 20;
 
 	}

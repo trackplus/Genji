@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -72,10 +72,12 @@ public class FaqAction extends ActionSupport implements Preparable, SessionAware
 	private List selectedIssueTypes;
 
 
+	@Override
 	public void setSession(Map<String, Object> session) {
 		this.session=session;
 	}
 
+	@Override
 	public void prepare() throws Exception {
 		personBean = (TPersonBean) session.get(Constants.USER_KEY);
 		locale=(Locale) session.get(Constants.LOCALE_KEY);
@@ -149,7 +151,6 @@ public class FaqAction extends ActionSupport implements Preparable, SessionAware
 					disposition+"; filename=\"" 
 							+ fileName + "\"");
 		}
-		// response.setHeader("Content-length", "100");
 		String contentType = "html";
 		response.setHeader("Content-Type", contentType);
 
@@ -205,7 +206,6 @@ public class FaqAction extends ActionSupport implements Preparable, SessionAware
 			bufh.append("<textarea rows='40' cols='120' id='relnoteText'>\n").append(buf.toString()).append("</textarea>");
 			bufh.append("</body></html>");
 			outstream.write(bufh.toString().getBytes("UTF-8"));
-			// AttachBL.download(attach,outstream);
 		} catch (Exception e) {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 			LOGGER.error("Error download release notes",e);

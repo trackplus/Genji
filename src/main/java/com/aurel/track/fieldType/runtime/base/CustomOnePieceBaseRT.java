@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -28,6 +28,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -75,7 +76,8 @@ public abstract class CustomOnePieceBaseRT extends InputFieldTypeRT
 				attributeValueList = (List<TAttributeValueBean>)attributeValueMap.get(MergeUtil.mergeKey(fieldID, parameterCode));
 			} catch (Exception e) {
 				LOGGER.error("Converting the attribute value for field " + fieldID + " and parameterCode " +
-						parameterCode + " for workItem " + workItemBean.getObjectID() + " to List failed with " + e.getMessage(), e); 
+						parameterCode + " for workItem " + workItemBean.getObjectID() + " to List failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 			//create an array with objects of specific type
 			Object[] arrAttributeValues = null;
@@ -105,7 +107,8 @@ public abstract class CustomOnePieceBaseRT extends InputFieldTypeRT
 				tAttributeValueBean = (TAttributeValueBean)attributeValueMap.get(MergeUtil.mergeKey(fieldID, parameterCode));
 			} catch (Exception e) {
 				LOGGER.error("Converting the attribute value for field " + fieldID + " and parameterCode " +
-						parameterCode + " for workItem " + workItemBean.getObjectID() + " to TAttributeValueBean failed with " + e.getMessage(), e); 
+						parameterCode + " for workItem " + workItemBean.getObjectID() + " to TAttributeValueBean failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 			//set the attribute on workItem
 			if (tAttributeValueBean!=null){
@@ -146,7 +149,8 @@ public abstract class CustomOnePieceBaseRT extends InputFieldTypeRT
 					newOptionsArr=(Object[])attributeNewObj;
 				} catch (Exception e) {
 					LOGGER.error("The type of the new attribute by saving is " + attributeNewObj.getClass().getName() + 
-							". Casting it to Object[] failed with " + e.getMessage(), e);
+							". Casting it to Object[] failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 					return;
 				}
 			}
@@ -155,7 +159,8 @@ public abstract class CustomOnePieceBaseRT extends InputFieldTypeRT
 					oldOptionsArr=(Object[])attributeOldObj;
 				} catch (Exception e) {
 					LOGGER.error("The type of the old attribute  by saving is " + attributeOldObj.getClass().getName() + 
-							". Casting it to Object[] failed with " + e.getMessage(), e);				
+							". Casting it to Object[] failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}	
 			}		
 			//no old value but new value: insert the new value

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -45,6 +45,7 @@ public class HistoryValues implements HistoryBean {
 	private String transactionComment;
 	private String transactionUuid;
 	
+	@Override
 	public Integer getObjectID() {
 		return objectID;
 	}
@@ -57,24 +58,29 @@ public class HistoryValues implements HistoryBean {
 	public void setFieldName(String fieldName) {
 		this.fieldName = fieldName;
 	}
+	@Override
 	public Date getLastEdit() {
 		return lastEdit;
 	}
 	public void setLastEdit(Date lastEdit) {
 		this.lastEdit = lastEdit;
 	}
+	@Override
 	public Integer getChangedByID() {
 		return changedByID;
 	}
 	public void setChangedByID(Integer changedByID) {
 		this.changedByID = changedByID;
 	}
+	@Override
 	public String getChangedByName() {
 		return changedByName;
 	}
+	@Override
 	public void setChangedByName(String changeByName) {
 		this.changedByName = changeByName;
 	}
+	@Override
 	public Integer getWorkItemID() {
 		return workItemID;
 	}
@@ -94,13 +100,16 @@ public class HistoryValues implements HistoryBean {
 		this.oldShowValue = oldShowValue;
 	}
 	
+	@Override
 	public int getType() {		
 		return HistoryBean.HISTORY_TYPE.COMMON_HISTORYVALUES;
 	}
 	
+	@Override
 	public String getDescription() {
 		return null;
 	}
+	@Override
 	public void setDescription(String description) {	
 	}
 	

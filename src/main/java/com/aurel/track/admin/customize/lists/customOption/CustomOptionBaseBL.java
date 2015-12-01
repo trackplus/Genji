@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -76,6 +76,7 @@ public abstract class CustomOptionBaseBL extends OptionBaseBL {
 	 * @param repository
 	 * @return
 	 */
+	@Override
 	public int getEntityType(Integer repository) {
 		return OptionBaseBL.ENTRY_TYPE.CUSTOM_OPTION;
 	}
@@ -308,6 +309,7 @@ public abstract class CustomOptionBaseBL extends OptionBaseBL {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public DetailBaseTO loadDetailTO(Integer optionID, Integer listID,
 			boolean add, boolean copy, TPersonBean personBean, Locale locale) {
 		TOptionBean optionBean=null;
@@ -336,6 +338,7 @@ public abstract class CustomOptionBaseBL extends OptionBaseBL {
 	 * @param listID
 	 * @return
 	 */
+	@Override
 	public ILabelBean getLabelBean(Integer optionID, Integer listID) {
 		ILabelBean labelBean = null;
 		if (optionID!=null) {
@@ -567,6 +570,7 @@ public abstract class CustomOptionBaseBL extends OptionBaseBL {
 	 * 			- false if delete is unsuccessful: workItem refers to this option or one of their suboption
 	 * 			In this case the deleted flag will be set
 	 */	
+	@Override
 	public void delete(Integer optionID) {
 		TOptionBean optionBean = OptionBL.loadByPrimaryKey(optionID);
 		if (hasDependentData(optionID)) {

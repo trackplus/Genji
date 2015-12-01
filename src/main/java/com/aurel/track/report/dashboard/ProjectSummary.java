@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -71,6 +71,7 @@ public class ProjectSummary extends BasePluginDashboardView{
 		static int DOCUMENT = 2;
 	}
 
+	@Override
 	protected boolean isUseConfig(){
 		return true;
 	}
@@ -156,7 +157,6 @@ public class ProjectSummary extends BasePluginDashboardView{
 		boolean fromProject = false;
 
 		if (entityFlag==null || SystemFields.INTEGER_PROJECT.equals(entityFlag)) {
-			//entityFlag = SystemFields.INTEGER_PROJECT;
 			fromProject = true;
 		}
 		boolean openOnly=BasePluginDashboardBL.parseBoolean(filterParams, LINK_PARAMETERS.OPEN_ONLY);

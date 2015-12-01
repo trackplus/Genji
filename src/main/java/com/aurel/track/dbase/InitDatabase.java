@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -40,7 +40,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-// import javax.persistence.EntityManager;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.xml.parsers.DocumentBuilder;
@@ -110,19 +109,21 @@ public class InitDatabase {
 	private static PropertiesConfiguration tcfg = null;
 	private static SiteDAO siteDAO = DAOFactory.getFactory().getSiteDAO();
 	private static Connection con = null;
-	// private static EntityManager entityManager = null;
 
-	private static String initDataDir = "/initData/full";
+
+	private static String initDataDirFull = "/initData/full";
+	private static String initDataDir = initDataDirFull;
 	private static String populateSql = initDataDir+"/populate.sql";
 	private static String postloadSql = initDataDir+"/postload.sql";
 	private static String workspaceSamplesSql = initDataDir+"/workspaceSamples.sql";
+	private static String propertiesStr = ".properties";
 
 
 	public static TSiteBean initDatabase(String theVersion, ServletContext servletContext) throws ServletException {
 		LoggingConfigBL.setLevel(LOGGER, Level.INFO);
 		switch (ApplicationBean.getInstance().getAppType()) {
 		case ApplicationBean.APPTYPE_FULL:
-			initDataDir = "/initData/full";
+			initDataDir = initDataDirFull;
 			break;
 		case ApplicationBean.APPTYPE_DESK:
 			initDataDir = "/initData/desk";
@@ -131,7 +132,7 @@ public class InitDatabase {
 			initDataDir = "/initData/bugs";
 			break;
 		default:
-			initDataDir = "/initData/full";
+			initDataDir = initDataDirFull;
 		}
 		populateSql = initDataDir+"/populate.sql";
 		postloadSql = initDataDir+"/postload.sql";
@@ -145,8 +146,6 @@ public class InitDatabase {
 		insertNullObjectsAndSampleData();
 
 		initTorque();
-
-		// TpEm.initEntityManagerFactory(tcfg, "com.trackplus.core");
 
 		if (isFirstStartEver) {
 			setFilterFields(false, false);
@@ -165,11 +164,10 @@ public class InitDatabase {
 			loadResourcesFromPropertiesFiles(false, servletContext);
 			loadMailTemplates();
 			//FIXME load form templates after modify the database to allow modified by user
-			//loadFormTemplates();
 			addIconsToDatabase();
 			if (isFirstStartEver) {
 				site.setSummaryItemsBehavior(true);
-				setMessageOfTheDay(site, theVersion);
+				setMessageOfTheDay();
 			}
 		}
 		if (isFirstStartEver) {
@@ -226,19 +224,18 @@ public class InitDatabase {
 			if (con != null)  {
 				try {
 					con.close();
-				} catch (Exception e) {
-					// Nothing to be done here
+				} catch (Exception ee) {
+					LOGGER.debug(ee);
 				}
 			}
 		}
 		List<Locale> locs = LocaleHandler.getPropertiesLocales();
 		int numberOfLocales = locs.size();
-		int step = Math.round(ApplicationStarter.getInstance().RESOURCE_UPGRADE[1]/numberOfLocales);
-		float delta = new Float(ApplicationStarter.getInstance().RESOURCE_UPGRADE[1]/new Float(numberOfLocales))-step;
+		int step = Math.round((float)ApplicationStarter.RESOURCE_UPGRADE[1]/numberOfLocales);
+		float delta = new Float(ApplicationStarter.RESOURCE_UPGRADE[1]/new Float(numberOfLocales))-step;
 		Iterator<Locale> it = locs.iterator();
-		//int i = 0;
+
 		while (it.hasNext()) {
-			//i++;
 			Locale loc = it.next();
 			String locCode = loc.getLanguage();
 			if (ApplicationBean.getInstance().isInTestMode()	&& locCode != "en") {
@@ -276,15 +273,16 @@ public class InitDatabase {
 		try {
 			LOGGER.info("Synchronizing resources for " + lang);
 			URL propURL = ApplicationBean.getInstance().getServletContext()
-					.getResource("/WEB-INF/classes/resources/UserInterface/ApplicationResources"+pfix+".properties");
+					.getResource("/WEB-INF/classes/resources/UserInterface/ApplicationResources"+pfix+propertiesStr);
 			InputStream in = propURL.openStream();
 			LocalizeBL.saveResources(in, locCode, false, LocalizeBL.RESOURCE_CATEGORIES.UI_TEXT, false);
 		}catch(Exception e) {
 			LOGGER.warn("Can't read ApplicationResources.properties from context for " + lang);
+			LOGGER.debug(e);
 			try {
 				LOGGER.info("Trying to use class loader to synchronize resources for " + lang);
 				ClassLoader cl = InitDatabase.class.getClassLoader();
-				URL propURL = cl.getResource("resources/UserInterface/ApplicationResources"+pfix+".properties");
+				URL propURL = cl.getResource("resources/UserInterface/ApplicationResources"+pfix+propertiesStr);
 				InputStream in = propURL.openStream();
 				LocalizeBL.saveResources(in, locCode, false, LocalizeBL.RESOURCE_CATEGORIES.UI_TEXT, false);
 			}catch(Exception ee) {
@@ -294,15 +292,15 @@ public class InitDatabase {
 		}
 		try {
 			URL propURL = ApplicationBean.getInstance().getServletContext()
-					.getResource("/WEB-INF/classes/resources/UserInterface/BoxResources"+pfix+".properties");
+					.getResource("/WEB-INF/classes/resources/UserInterface/BoxResources"+pfix+propertiesStr);
 			InputStream in = propURL.openStream();
 			LocalizeBL.saveResources(in, locCode, false, LocalizeBL.RESOURCE_CATEGORIES.DB_ENTITY, true);
 		}catch(Exception e) {
 			LOGGER.warn("Can't read BoxResources.properties from context for " + lang);
 			try {
-				LOGGER.info("Trying to use class loader to synchronize resources for " + lang);
+				LOGGER.info("Trying to use class loader to synchronize resources for " + lang,e);
 				ClassLoader cl = InitDatabase.class.getClassLoader();
-				URL propURL = cl.getResource("resources/UserInterface/BoxResources"+pfix+".properties");
+				URL propURL = cl.getResource("resources/UserInterface/BoxResources"+pfix+propertiesStr);
 				InputStream in = propURL.openStream();
 				LocalizeBL.saveResources(in, locCode, false, LocalizeBL.RESOURCE_CATEGORIES.DB_ENTITY, true);
 			}catch(Exception ee) {
@@ -314,19 +312,19 @@ public class InitDatabase {
 		if (useProjects) {
 			try {
 				URL propURL = ApplicationBean.getInstance().getServletContext()
-						.getResource("/WEB-INF/classes/resources/UserInterfaceProj/ApplicationResources"+pfix+".properties");
+						.getResource("/WEB-INF/classes/resources/UserInterfaceProj/ApplicationResources"+pfix+propertiesStr);
 				InputStream in = propURL.openStream();
 				LocalizeBL.saveResources(in, locCode, false, LocalizeBL.RESOURCE_CATEGORIES.UI_TEXT, false);
 			}catch(Exception e) {
 				LOGGER.warn("Can't read UserInterfaceProj/ApplicationResources.properties for " + lang);
 				try {
 					ClassLoader cl = InitDatabase.class.getClassLoader();
-					URL propURL = cl.getResource("/WEB-INF/classes/resources/UserInterfaceProj/ApplicationResources"+pfix+".properties");
+					URL propURL = cl.getResource("/WEB-INF/classes/resources/UserInterfaceProj/ApplicationResources"+pfix+propertiesStr);
 					InputStream in = propURL.openStream();
 					LocalizeBL.saveResources(in, locCode, false, LocalizeBL.RESOURCE_CATEGORIES.UI_TEXT, false);
 				}catch(Exception ee) {
 					LOGGER.error("Can't read UserInterfaceProj/ApplicationResources.properties for " + lang);
-					LOGGER.debug(STACKTRACE, e);
+					LOGGER.debug(STACKTRACE, ee);
 				}
 			}
 		}
@@ -346,16 +344,15 @@ public class InitDatabase {
 				lang = "Standard";
 			}
 			try {
-				URL propURL = cl.getResource("MyApplicationResources"+pfix+".properties");
+				URL propURL = cl.getResource("MyApplicationResources"+pfix+propertiesStr);
 				InputStream in = propURL.openStream();
 				LocalizeBL.saveResources(in, locCode, false, LocalizeBL.RESOURCE_CATEGORIES.UI_TEXT, false);
 				LOGGER.info("Synchronized custom user interface resources for " + lang);
 			}catch(Exception e) {
-				// LOGGER.info("Can't read custom MyApplicationResources.properties for " + lang);
 				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 			try {
-				URL propURL = cl.getResource("MyBoxResources"+pfix+".properties");
+				URL propURL = cl.getResource("MyBoxResources"+pfix+propertiesStr);
 				InputStream in = propURL.openStream();
 				LocalizeBL.saveResources(in, locCode, false, LocalizeBL.RESOURCE_CATEGORIES.DB_ENTITY, false);
 				LOGGER.info("Synchronized custom database entity resources for " + lang);
@@ -372,15 +369,15 @@ public class InitDatabase {
 	 */
 	private static void loadMailTemplates() {
 		List<LabelValueBean> templates = new ArrayList<LabelValueBean>(7);
-		templates.add(new LabelValueBean("ItemCreated.xml", new Integer(IEventSubscriber.EVENT_POST_ISSUE_CREATE).toString()));
-		templates.add(new LabelValueBean("ItemCreatedByEmail.xml", new Integer(IEventSubscriber.EVENT_POST_ISSUE_CREATE_BY_EMAIL).toString()));
-		templates.add(new LabelValueBean("ItemChanged.xml", new Integer(IEventSubscriber.EVENT_POST_ISSUE_UPDATE).toString()));
-		templates.add(new LabelValueBean("BudgetChanged.xml", new Integer(IEventSubscriber.EVENT_POST_ISSUE_UPDATEPLANNEDVALUE).toString()));
-		templates.add(new LabelValueBean("Welcome.xml", new Integer(IEventSubscriber.EVENT_POST_USER_REGISTERED).toString()));
-		templates.add(new LabelValueBean("WelcomeSelf.xml", new Integer(IEventSubscriber.EVENT_POST_USER_SELF_REGISTERED).toString()));
-		templates.add(new LabelValueBean("ForgotPassword.xml", new Integer(IEventSubscriber.EVENT_POST_USER_FORGOTPASSWORD).toString()));
-		templates.add(new LabelValueBean("Reminder.xml", new Integer(IEventSubscriber.EVENT_POST_USER_REMINDER).toString()));
-		templates.add(new LabelValueBean("ClientCreatedByEmail.xml", new Integer(IEventSubscriber.EVENT_POST_USER_CREATED_BY_EMAIL).toString()));
+		templates.add(new LabelValueBean("ItemCreated.xml", Integer.toString(IEventSubscriber.EVENT_POST_ISSUE_CREATE)));
+		templates.add(new LabelValueBean("ItemCreatedByEmail.xml", Integer.toString(IEventSubscriber.EVENT_POST_ISSUE_CREATE_BY_EMAIL)));
+		templates.add(new LabelValueBean("ItemChanged.xml", Integer.toString(IEventSubscriber.EVENT_POST_ISSUE_UPDATE)));
+		templates.add(new LabelValueBean("BudgetChanged.xml", Integer.toString(IEventSubscriber.EVENT_POST_ISSUE_UPDATEPLANNEDVALUE)));
+		templates.add(new LabelValueBean("Welcome.xml", Integer.toString(IEventSubscriber.EVENT_POST_USER_REGISTERED)));
+		templates.add(new LabelValueBean("WelcomeSelf.xml", Integer.toString(IEventSubscriber.EVENT_POST_USER_SELF_REGISTERED)));
+		templates.add(new LabelValueBean("ForgotPassword.xml", Integer.toString(IEventSubscriber.EVENT_POST_USER_FORGOTPASSWORD)));
+		templates.add(new LabelValueBean("Reminder.xml", Integer.toString(IEventSubscriber.EVENT_POST_USER_REMINDER)));
+		templates.add(new LabelValueBean("ClientCreatedByEmail.xml", Integer.toString(IEventSubscriber.EVENT_POST_USER_CREATED_BY_EMAIL)));
 
 		List<ImportResult> importResultList;
 		ImportResult importResult;
@@ -401,7 +398,7 @@ public class InitDatabase {
 				importContext.setClearChildren(false);
 				importResultList=MailTemplateBL.importFile(in,importContext);
 				in.close();
-				if (importResultList != null && importResultList.size() > 0) {
+				if (importResultList != null && !importResultList.isEmpty()) {
 					importResult=importResultList.get(0);
 					code=importResult.getCode();
 					if(importResult.isError()){
@@ -427,7 +424,7 @@ public class InitDatabase {
 					LOGGER.warn("No template found in file: "+template.getLabel());
 				}
 			} catch(Exception e) {
-				LOGGER.error("Can't read mail template " + template.getLabel() + ": " + e.getMessage(), e);
+				LOGGER.error("Can't read mail template " + template.getLabel() + ": " + e.getMessage());
 				LOGGER.debug(STACKTRACE, e);
 			}
 		}
@@ -459,53 +456,51 @@ public class InitDatabase {
 		List<ImportResult> importResultList;
 		ImportResult importResult;
 		int code;
-		for (String template: templates) {
+		for (String template : templates) {
 			try {
 				LOGGER.info("Synchronizing form template " + template);
-				URL propURL = ApplicationBean.getInstance().getServletContext()
-						.getResource(initDataDir+"/Forms/" +  template);
+				URL propURL = ApplicationBean.getInstance().getServletContext().getResource(initDataDir + "/Forms/" + template);
 				if (propURL == null) {
 					ClassLoader cl = InitDatabase.class.getClassLoader();
-					propURL = cl.getResource(initDataDir+"/Forms/" +  template);
+					propURL = cl.getResource(initDataDir + "/Forms/" + template);
 				}
 				InputStream in = propURL.openStream();
 				EntityImporter entityImporter = new EntityImporter();
-				ImportContext importContext=new ImportContext();
+				ImportContext importContext = new ImportContext();
 				importContext.setEntityType("TScreenBean");
 				importContext.setOverrideExisting(true);
 				importContext.setClearChildren(true);
 				importContext.setOverrideOnlyNotModifiedByUser(true);
 
-
 				importResultList = entityImporter.importFile(in, importContext);
 
 				in.close();
-				if (importResultList != null && importResultList.size() > 0) {
-					importResult=importResultList.get(0);
-					code=importResult.getCode();
-					if(importResult.isError()){
-						LOGGER.warn("Error importing template:"+template+":"+importResult.getErrorMessage()+". Error code="+importResult.getCode());
-					}else{
-						switch (code){
-						case ImportResult.SUCCESS_NEW_ENTITY:{
+				if (importResultList != null && !importResultList.isEmpty()) {
+					importResult = importResultList.get(0);
+					code = importResult.getCode();
+					if (importResult.isError()) {
+						LOGGER.warn("Error importing template:" + template + ":" + importResult.getErrorMessage() + ". Error code=" + importResult.getCode());
+					} else {
+						switch (code) {
+						case ImportResult.SUCCESS_NEW_ENTITY: {
 							LOGGER.info("Form template " + template + " added.");
 							break;
 						}
-						case ImportResult.SUCCESS_OVERRIDE:{
+						case ImportResult.SUCCESS_OVERRIDE: {
 							LOGGER.info("Form template " + template + " overridden.");
 							break;
 						}
-						case ImportResult.SUCCESS_TAKE_EXISTING:{
+						case ImportResult.SUCCESS_TAKE_EXISTING: {
 							LOGGER.info("Form template " + template + " not updated. Take existing version from DB");
 							break;
 						}
 						}
 					}
-				}else{
-					LOGGER.warn("No template found in file: "+template);
+				} else {
+					LOGGER.warn("No template found in file: " + template);
 				}
-			} catch(Exception e) {
-				LOGGER.error("Can't read form template " + template + ": " + e.getMessage(), e);
+			} catch (Exception e) {
+				LOGGER.error("Can't read form template " + template + ": " + e.getMessage());
 				LOGGER.debug(STACKTRACE, e);
 			}
 		}	// We have loaded the forms
@@ -529,7 +524,7 @@ public class InitDatabase {
 				if (stateBean.getSymbol() != null && !"".equals(stateBean.getSymbol() )) {
 					iconName = stateBean.getSymbol();
 					iconURL = ApplicationBean.getInstance().getServletContext()
-							.getResource("/design/silver/sysListIcons/" + iconName);
+							.getResource("/design/sysListIcons/" + iconName);
 					in = iconURL.openStream();
 
 					if (stateBean.getIconChanged() == null || "N".equals(stateBean.getIconChanged())) {
@@ -546,7 +541,9 @@ public class InitDatabase {
 					if (in != null) {
 						in.close();
 					}
-				} catch (Exception e) { /* nothing to be done here */	}
+				} catch (Exception e2) {
+					LOGGER.debug(e2);
+				}
 			}
 		}
 
@@ -557,7 +554,7 @@ public class InitDatabase {
 				if (ltBean.getSymbol() != null && !"".equals(ltBean.getSymbol() )) {
 					iconName = ltBean.getSymbol();
 					iconURL = ApplicationBean.getInstance().getServletContext()
-							.getResource("/design/silver/sysListIcons/" + iconName);
+							.getResource("/design/sysListIcons/" + iconName);
 					in = iconURL.openStream();
 
 					if (ltBean.getIconChanged() == null || "N".equals(ltBean.getIconChanged())) {
@@ -574,7 +571,9 @@ public class InitDatabase {
 					if (in != null) {
 						in.close();
 					}
-				} catch (Exception e) { /* nothing to be done here */	}
+				} catch (Exception e2) {
+					LOGGER.debug(e2);
+				}
 			}
 		}
 
@@ -585,7 +584,7 @@ public class InitDatabase {
 				if (ltBean.getSymbol() != null && !"".equals(ltBean.getSymbol() )) {
 					iconName = ltBean.getSymbol();
 					iconURL = ApplicationBean.getInstance().getServletContext()
-							.getResource("/design/silver/sysListIcons/" + iconName);
+							.getResource("/design/sysListIcons/" + iconName);
 					in = iconURL.openStream();
 
 					if (ltBean.getIconChanged() == null || "N".equals(ltBean.getIconChanged())) {
@@ -602,7 +601,9 @@ public class InitDatabase {
 					if (in != null) {
 						in.close();
 					}
-				} catch (Exception e) { /* nothing to be done here */	}
+				} catch (Exception e2) {
+					LOGGER.debug(e2);
+				}
 			}
 		}
 
@@ -613,7 +614,7 @@ public class InitDatabase {
 				if (ltBean.getSymbol() != null && !"".equals(ltBean.getSymbol() )) {
 					iconName = ltBean.getSymbol();
 					iconURL = ApplicationBean.getInstance().getServletContext()
-							.getResource("/design/silver/sysListIcons/" + iconName);
+							.getResource("/design/sysListIcons/" + iconName);
 					in = iconURL.openStream();
 
 					if (ltBean.getIconChanged() == null || "N".equals(ltBean.getIconChanged())) {
@@ -629,7 +630,9 @@ public class InitDatabase {
 					if (in != null) {
 						in.close();
 					}
-				} catch (Exception e) { /* nothing to be done here */	}
+				} catch (Exception e2) {
+					LOGGER.debug(e2);
+				}
 			}
 		}
 
@@ -644,12 +647,11 @@ public class InitDatabase {
 			tcfg = HandleHome.getTorqueProperties(ApplicationBean.getInstance().getServletContext(), true);
 			tcfg.setProperty("torque.applicationRoot",".");
 			tcfg.setProperty("torque.database.default","track");
-			tcfg.setProperty("torque.idbroker.clever.quantity",new Boolean(false));
-			tcfg.setProperty("torque.idbroker.prefetch",new Boolean(false));
-			tcfg.setProperty("torque.manager.useCache",new Boolean(true));
+			tcfg.setProperty("torque.idbroker.clever.quantity",Boolean.FALSE);
+			tcfg.setProperty("torque.idbroker.prefetch",Boolean.FALSE);
+			tcfg.setProperty("torque.manager.useCache",Boolean.TRUE);
 
 			// check if we should switch to the embedded derby-database
-			// String dbAdapter = tcfg.getProperty("torque.database.track.adapter").toString();
 
 			if (Torque.isInit()) {
 				LOGGER.info("Restarting database connection (Torque)...");
@@ -665,9 +667,8 @@ public class InitDatabase {
 				LOGGER.info("Database connection (Torque) is initialized.");
 				ApplicationBean.getInstance().getServletContext().setAttribute(
 						Constants.DATABASE_KEY, "X");
-				//ApplicationBean.getInstance().setApplicationContext();
 
-				Integer count = PersonBL.countFullActive(); //TPersonPeer.count();
+				Integer count = PersonBL.countFullActive();
 				if (count == null || count.intValue()==0) {
 					throw new ServletException("Can't access table TPERSON.");
 				}
@@ -682,7 +683,7 @@ public class InitDatabase {
 			}
 		}
 		catch (Exception e) {
-			LOGGER.error("Torque init failed with " + e.getMessage(), e);
+			LOGGER.error("Torque init failed with " + e.getMessage());
 			throw new ServletException(e);
 		}
 	}
@@ -733,28 +734,28 @@ public class InitDatabase {
 			if (site == null || site.getExpDate() == null) {
 				if (site == null) {
 					site = new TSiteBean();  // only for the very first time
-					
+
 				}
 				if(isFirstStartEver) {
-					site.setDbVersion(new Integer(ApplicationBean.getInstance().getDbVersion()).toString());
+					site.setDbVersion(Integer.toString(ApplicationBean.getInstance().getDbVersion()));
 				}
 				LOGGER.info(ApplicationBean.getInstance().getAppTypeString() + ": initializing site configuration first time ever.");
 				site.setIsDemoSite("N");
 				site.setExpDate(DateTimeUtils.getInstance().parseISODate("2099-12-31"));
 				site.setIsSelfRegisterAllowed("Y");
 				site.setTrackEmail("trackplus@yourdomain.com");
-				site.setInstDate(new Long(new Date().getTime()).toString());
+				site.setInstDate(Long.toString(new Date().getTime()));
 				siteDAO.save(site);
 			}
 			else {
 				LOGGER.info("Getting configuration from database");
 				if (site.getDbVersion() != null && !"".equals(site.getDbVersion()) &&
 						ApplicationBean.getInstance().getDbVersion() != new Integer(site.getDbVersion()).intValue()) {
-					site.setInstDate(new Long(new Date().getTime()).toString());
+					site.setInstDate(Long.toString(new Date().getTime()));
 					siteDAO.save(site);
 				}
 				if (site.getInstDate() == null) {
-					site.setInstDate(new Long(new Date().getTime()).toString());
+					site.setInstDate(Long.toString(new Date().getTime()));
 					siteDAO.save(site);
 				}
 				ApplicationBean.getInstance().setInstDate(new Long(site.getInstDate()).longValue());
@@ -838,15 +839,19 @@ public class InitDatabase {
 				// ID_TABLE_ID, TABLE_NAME, NEXT_ID, QUANTITY
 				String tname = rs.getString("TABLE_NAME");
 				Integer tid = rs.getInt("ID_TABLE_ID");
-				if (tid > maxId) maxId = tid;
+				if (tid > maxId)
+					maxId = tid;
 				tmap.put(tname, 0);
 			}
 		} catch (Exception e) {
 			LOGGER.error(ExceptionUtils.getStackTrace(e));
 			try {
-				if (rs != null) rs.close();
-				if (stmt!=null) stmt.close();
-				if (con != null) con.close();
+				if (rs != null)
+					rs.close();
+				if (stmt != null)
+					stmt.close();
+				if (con != null)
+					con.close();
 			} catch (Exception e2) {
 				LOGGER.error(STACKTRACE, e2);
 			}
@@ -909,7 +914,7 @@ public class InitDatabase {
 				// This is a rough check that the database structure conforms to track-schema.xml
 
 				try {
-					StringBuffer testStmt = new StringBuffer("SELECT ");
+					StringBuilder testStmt = new StringBuilder("SELECT ");
 					List<Column> columns = tables.get(i).getColumns();
 					Column col = null;
 
@@ -933,7 +938,7 @@ public class InitDatabase {
 					List<Column> columns = tables.get(i).getColumns();
 					for (int m=0; m < columns.size(); ++m) {
 						try {
-							StringBuffer testStmt = new StringBuffer("SELECT ");
+							StringBuilder testStmt = new StringBuilder("SELECT ");
 							Column col = columns.get(m);
 							testStmt.append(col.getName()).append(" FROM ").append(tables.get(i).getName());
 							rs = stmt.executeQuery(testStmt.toString());
@@ -988,10 +993,8 @@ public class InitDatabase {
 		// list types
 		List<String> listTypeStms = new ArrayList<String>();
 		if (ApplicationBean.getInstance().getAppType() == ApplicationBean.APPTYPE_DESK) {
-			// listTypeStms.add("INSERT INTO TCATEGORY (PKEY, LABEL, TYPEFLAG, SORTORDER, TPUUID) VALUES (0, 'any list',0, -1,'2001')");
 
 		} else if (ApplicationBean.getInstance().getAppType() == ApplicationBean.APPTYPE_BUGS) {
-			// listTypeStms.add("INSERT INTO TCATEGORY (PKEY, LABEL, TYPEFLAG, SORTORDER, TPUUID) VALUES (0, 'any list',0, -1,'2001')");
 			listTypeStms.add("INSERT INTO TCATEGORY (PKEY, LABEL, TYPEFLAG, SORTORDER, SYMBOL, TPUUID) VALUES (1,'ProblemReport',0,1,'problemReport.png','2002')");
 			listTypeStms.add("INSERT INTO TCATEGORY (PKEY, LABEL, TYPEFLAG, SORTORDER, SYMBOL, TPUUID) VALUES (8,'Requirement',0,8,'requirements.png','2004')");
 			listTypeStms.add("INSERT INTO TCATEGORY (PKEY, LABEL, TYPEFLAG, SORTORDER, SYMBOL, TPUUID) VALUES (-3,'Meeting',3,-1,'meeting.gif','2006')");
@@ -999,7 +1002,6 @@ public class InitDatabase {
 			listTypeStms.add("INSERT INTO TCATEGORY (PKEY, LABEL, TYPEFLAG, SORTORDER, SYMBOL, TPUUID) VALUES (-1,'Task',1,-3,'task.png','2005')");
 
 		} else if (ApplicationBean.getInstance().getAppType() == ApplicationBean.APPTYPE_FULL) {
-			// listTypeStms.add("INSERT INTO TCATEGORY (PKEY, LABEL, TYPEFLAG, SORTORDER, TPUUID) VALUES (0, 'any list',0, -1,'2001')");
 			listTypeStms.add("INSERT INTO TCATEGORY (PKEY, LABEL, TYPEFLAG, SORTORDER, SYMBOL, TPUUID) VALUES (1,'ProblemReport',0,1,'problemReport.png','2002')");
 			listTypeStms.add("INSERT INTO TCATEGORY (PKEY, LABEL, TYPEFLAG, SORTORDER, SYMBOL, TPUUID) VALUES (5,'ActionItem',0,5,'actionItem.png','2003')");
 			listTypeStms.add("INSERT INTO TCATEGORY (PKEY, LABEL, TYPEFLAG, SORTORDER, SYMBOL, TPUUID) VALUES (8,'Requirement',0,8,'requirements.png','2004')");
@@ -1009,27 +1011,20 @@ public class InitDatabase {
 
 
 		} else {
-			// listTypeStms.add("INSERT INTO TCATEGORY (PKEY, LABEL, TYPEFLAG, SORTORDER, TPUUID) VALUES (0, 'any list',0, -1,'2001')");
 			listTypeStms.add("INSERT INTO TCATEGORY (PKEY, LABEL, TYPEFLAG, SORTORDER, SYMBOL, TPUUID) VALUES (1,'ProblemReport',0,1,'problemReport.png','2002')");
 			listTypeStms.add("INSERT INTO TCATEGORY (PKEY, LABEL, TYPEFLAG, SORTORDER, SYMBOL, TPUUID) VALUES (5,'ActionItem',0,5,'actionItem.png','2003')");
 			listTypeStms.add("INSERT INTO TCATEGORY (PKEY, LABEL, TYPEFLAG, SORTORDER, SYMBOL, TPUUID) VALUES (8,'Requirement',0,8,'requirements.png','2004')");
 			listTypeStms.add("INSERT INTO TCATEGORY (PKEY, LABEL, TYPEFLAG, SORTORDER, SYMBOL, TPUUID) VALUES (-1,'Task',1,-3,'task.png','2005')");
 			listTypeStms.add("INSERT INTO TCATEGORY (PKEY, LABEL, TYPEFLAG, SORTORDER, SYMBOL, TPUUID) VALUES (-3,'Meeting',3,-1,'meeting.gif','2006')");
 		}
-		/*List<String> childItemTypesStmts = new ArrayList<String>();
-		childItemTypesStmts.add("INSERT INTO TCHILDISSUETYPE (OBJECTID, ISSUETYPEPARENT, ISSUETYPECHILD, TPUUID) VALUES (1, -4, -5, '2100')");
-		childItemTypesStmts.add("INSERT INTO TCHILDISSUETYPE (OBJECTID, ISSUETYPEPARENT, ISSUETYPECHILD, TPUUID) VALUES (2, -3, 5, '2200')");
-		childItemTypesStmts.add("INSERT INTO TCHILDISSUETYPE (OBJECTID, ISSUETYPEPARENT, ISSUETYPECHILD, TPUUID) VALUES (3, -6, -4, '2200')");*/
 
 		// issue states
 		List<String> issueStatesStms = new ArrayList<String>();
 		if (ApplicationBean.getInstance().getAppType() == ApplicationBean.APPTYPE_DESK) {
-			//issueStatesStms.add("INSERT INTO TSTATE (PKEY, LABEL, STATEFLAG, SORTORDER, TPUUID) VALUES (0, 'any status', 0, -1,'3001')");
 			issueStatesStms.add("INSERT INTO TSTATE (PKEY, LABEL, STATEFLAG, SORTORDER, SYMBOL, CSSSTYLE, TPUUID) VALUES (1, 'opened', 0, 1,'new.png','bgrColor__11CC33|color__FFFFFF', '3002')");
 			issueStatesStms.add("INSERT INTO TSTATE (PKEY, LABEL, STATEFLAG, SORTORDER, SYMBOL, CSSSTYLE, TPUUID) VALUES (3, 'assigned', 0, 3,'delegated.png','bgrColor__FFFF00','3004')");
 			issueStatesStms.add("INSERT INTO TSTATE (PKEY, LABEL, STATEFLAG, SORTORDER, SYMBOL, CSSSTYLE, TPUUID) VALUES (8, 'closed', 1, 8,'closed.png','bgrColor__FF0000|color__FFFFFF','3009')");
 		} else {
-			//issueStatesStms.add("INSERT INTO TSTATE (PKEY, LABEL, STATEFLAG, SORTORDER, TPUUID) VALUES (0, 'any status', 0, -1,'3001')");
 			issueStatesStms.add("INSERT INTO TSTATE (PKEY, LABEL, STATEFLAG, SORTORDER, SYMBOL, CSSSTYLE, TPUUID) VALUES (1, 'opened', 0, 1,'new.png','bgrColor__11CC33|color__FFFFFF','3002')");
 			issueStatesStms.add("INSERT INTO TSTATE (PKEY, LABEL, STATEFLAG, SORTORDER, SYMBOL,           TPUUID) VALUES (2, 'analyzed', 0, 2,'analyzed.gif','3003')");
 			issueStatesStms.add("INSERT INTO TSTATE (PKEY, LABEL, STATEFLAG, SORTORDER, SYMBOL, CSSSTYLE, TPUUID) VALUES (3, 'assigned', 0, 3,'delegated.png','bgrColor__FFFF00','3004')");
@@ -1176,7 +1171,7 @@ public class InitDatabase {
 				}
 			}
 
-			ApplicationStarter.getInstance().actualizePercentComplete(ApplicationStarter.getInstance().INIT_DB_DATA_STEP,
+			ApplicationStarter.getInstance().actualizePercentComplete(ApplicationStarter.INIT_DB_DATA_STEP,
 					ApplicationStarter.INIT_DB_DATA_TEXT);
 
 			if (rs != null) {
@@ -1196,7 +1191,7 @@ public class InitDatabase {
 				}
 			}
 
-			ApplicationStarter.getInstance().actualizePercentComplete(ApplicationStarter.getInstance().INIT_DB_DATA_STEP,
+			ApplicationStarter.getInstance().actualizePercentComplete(ApplicationStarter.INIT_DB_DATA_STEP,
 					ApplicationStarter.INIT_DB_DATA_TEXT);
 
 			if (rs != null) {
@@ -1232,7 +1227,7 @@ public class InitDatabase {
 			}
 
 
-			ApplicationStarter.getInstance().actualizePercentComplete(ApplicationStarter.getInstance().INIT_DB_DATA_STEP,
+			ApplicationStarter.getInstance().actualizePercentComplete(ApplicationStarter.INIT_DB_DATA_STEP,
 					ApplicationStarter.INIT_DB_DATA_TEXT);
 
 			if (rs != null) {
@@ -1326,14 +1321,20 @@ public class InitDatabase {
 			}
 
 		} catch (Exception e) {
-			System.err.println(ExceptionUtils.getStackTrace(e));
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
 		} finally {
 			try {
-				if (rs != null) rs.close();
-				if (coni != null) coni.close();
-				if (cono != null) cono.close();
+				if (rs != null) {
+					rs.close();
+				}
+				if (coni != null) {
+					coni.close();
+				}
+				if (cono != null) {
+					cono.close();
+				}
 			} catch (Exception e) {
-				System.err.println(ExceptionUtils.getStackTrace(e));
+				LOGGER.error(ExceptionUtils.getStackTrace(e));
 			}
 		}
 	}
@@ -1399,7 +1400,9 @@ public class InitDatabase {
 					ostmt.execute("INSERT INTO TPROJECT " + "(PKEY, LABEL, DEFOWNER, DEFMANAGER, PROJECTTYPE) " +
 							"VALUES (0, 'Generic Space', 1, 1, 0)");
 					LOGGER.info("Inserted NULL project (PKEY = 0) into TPROJECT");
-				} catch (Exception exc) {LOGGER.error("Problem inserting NULL object for TPROJECT: " + exc.getMessage());}
+				} catch (Exception exc) {
+					LOGGER.error("Problem inserting NULL object for TPROJECT: " + exc.getMessage());
+				}
 			}
 
 			// ----------------------- T R O L E ------------------------------
@@ -1464,7 +1467,7 @@ public class InitDatabase {
 					in.close();
 
 				}catch(Exception e) {
-					System.err.println(ExceptionUtils.getStackTrace(e));
+					LOGGER.error(ExceptionUtils.getStackTrace(e));
 				}
 				LOGGER.info("Sample data is okay.");
 
@@ -1512,7 +1515,7 @@ public class InitDatabase {
 					java.util.Scanner s = new java.util.Scanner(in, "UTF-8");
 					s.useDelimiter(";");
 					String st = null;
-					StringBuffer stb = new StringBuffer();
+					StringBuilder stb = new StringBuilder();
 					int line = 0;
 
 					while (s.hasNext()) {
@@ -1521,7 +1524,7 @@ public class InitDatabase {
 						++line;
 						if (!st.isEmpty() && !st.startsWith("--") && !st.startsWith("/*")) {
 							if (st.endsWith(";")) {
-								stb = new StringBuffer(); // clear buffer
+								stb = new StringBuilder(); // clear buffer
 								st = st.substring(0, st.length()-1); // remove the semicolon
 								try {
 									ostmt.executeUpdate(st);
@@ -1534,7 +1537,7 @@ public class InitDatabase {
 								stb.append(" ");
 							}
 						} else {
-							stb = new StringBuffer();
+							stb = new StringBuilder();
 						}
 					}
 					s.close();
@@ -1547,7 +1550,7 @@ public class InitDatabase {
 			}
 			ApplicationStarter.getInstance().actualizePercentComplete(ApplicationStarter.getInstance().INIT_DB_DATA_STEP, ApplicationStarter.INIT_DB_DATA_TEXT);
 		} catch (Exception e) {
-			LOGGER.error("Problem inserting post-load objects: " + e.getMessage(), e);
+			LOGGER.error("Problem inserting post-load objects: " + e.getMessage());
 			LOGGER.debug(STACKTRACE, e);
 		} finally {
 			if (coni!=null) {
@@ -1580,20 +1583,20 @@ public class InitDatabase {
 		private String name = "";
 		private List<Column> columns = null;
 
-		public Table(String _name) {
-			this.name = _name;
+		public Table(String pname) {
+			this.name = pname;
 		}
 
-		public void setName(String _name) {
-			this.name = _name;
+		public void setName(String pname) {
+			this.name = pname;
 		}
 
 		public String getName() {
 			return this.name;
 		}
 
-		public void setColumns(List<Column> _columns) {
-			this.columns = _columns;
+		public void setColumns(List<Column> pcolumns) {
+			this.columns = pcolumns;
 		}
 
 		public List<Column> getColumns() {
@@ -1610,8 +1613,8 @@ public class InitDatabase {
 		private Boolean requ = false;
 		private Boolean isPrimaryKey = false;
 
-		public Column(String _name) {
-			this.name=_name;
+		public Column(String pname) {
+			this.name=pname;
 		}
 		public String getName() {
 			return name;
@@ -1635,8 +1638,8 @@ public class InitDatabase {
 		public Boolean isPrimaryKey() {
 			return isPrimaryKey;
 		}
-		public void setIsPrimaryKey(Boolean _isPrimaryKey) {
-			this.isPrimaryKey = _isPrimaryKey;
+		public void setIsPrimaryKey(Boolean pisPrimaryKey) {
+			this.isPrimaryKey = pisPrimaryKey;
 		}
 	}
 
@@ -1660,7 +1663,7 @@ public class InitDatabase {
 							throws SAXException, IOException {
 						URL dtdURL = ApplicationBean.getInstance().getServletContext()
 								.getResource("/WEB-INF/schema/database.dtd");
-						InputStream isd = dtdURL.openStream();;
+						InputStream isd = dtdURL.openStream();
 						return new InputSource(isd);
 					}
 				});
@@ -1706,7 +1709,7 @@ public class InitDatabase {
 							Column column = new Column(elc.getAttribute("name"));
 							String spk = elc.getAttribute("primaryKey");
 							if (spk != null) {
-								column.setIsPrimaryKey(new Boolean(spk));
+								column.setIsPrimaryKey(Boolean.valueOf(spk));
 							}
 							columns.add(column);
 						}
@@ -1722,7 +1725,7 @@ public class InitDatabase {
 	 * Patch the IdTable and at the same time check if the database structure is
 	 * consistent. This is just a rough check if all required columns are present.
 	 */
-	public static Connection getConnection() throws Exception {
+	public static Connection getConnection()  throws Exception {
 		try {
 			if (con != null && ! con.isClosed()) {
 				return con;
@@ -1732,7 +1735,7 @@ public class InitDatabase {
 			con = DriverManager.getConnection(tcfg.getString("torque.dsfactory.track.connection.url"),
 					tcfg.getString("torque.dsfactory.track.connection.user"),
 					tcfg.getString("torque.dsfactory.track.connection.password"));
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			LOGGER.error("Could not establish a database connection to " + tcfg.getString("torque.dsfactory.track.connection.url")
 					+ " with user " + tcfg.getString("torque.dsfactory.track.connection.user") + ": " + e.getMessage(), e);
 			LOGGER.debug(STACKTRACE, e);
@@ -1773,11 +1776,11 @@ public class InitDatabase {
 	 * Update the message of the day shown on the front page
 	 * @param site
 	 */
-	private static void setMessageOfTheDay(TSiteBean site, String theVersion) {
+	private static void setMessageOfTheDay() {
 
 		Locale[] availableLocales = Locale.getAvailableLocales(); // all on this system
 		ResourceBundle messages = null;
-		HashMap<String,String> languages = new HashMap<String,String>();
+		Map<String,String> languages = new HashMap<String,String>();
 
 		for (int i=0; i < availableLocales.length; ++i) {
 			Locale locale = availableLocales[i];
@@ -1793,7 +1796,7 @@ public class InitDatabase {
 				String motdMessage = messages.getString("motd.message");
 				String motdTeaser = messages.getString("motd.teaser");
 
-				TMotdBean motd = MotdBL.loadMotd(theRealLoc.getLanguage()); //TMotdPeer.load(theRealLoc);
+				TMotdBean motd = MotdBL.loadMotd(theRealLoc.getLanguage());
 				try {
 					if (motd == null && motdMessage != null && motdMessage.trim().length() > 0) {
 						motd = new TMotdBean();

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -51,13 +51,14 @@ public class TWfActivityContextParamsPeer
 	 * @param workflowContext
 	 * @return
 	 */
+	@Override
 	public List<TWfActivityContextParamsBean> loadByContext(WorkflowContext workflowContext) {
 		Criteria criteria = new Criteria();
 		addWorkflowContextCriteria(criteria, workflowContext);
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch(Exception e) {
-			LOGGER.error("Loading the params by context " + workflowContext.toString() + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the params by context " + workflowContext.toString() + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -67,13 +68,14 @@ public class TWfActivityContextParamsPeer
 	 * @param wfActivityContextParamsBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TWfActivityContextParamsBean wfActivityContextParamsBean) {
 		try {
 			TWfActivityContextParams wfActivityContextParams = TWfActivityContextParams.createTWfActivityContextParams(wfActivityContextParamsBean);
 			wfActivityContextParams.save();
 			return wfActivityContextParams.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving wfActivityContextParamsBean failed with " + e.getMessage(), e);
+			LOGGER.error("Saving wfActivityContextParamsBean failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -82,6 +84,7 @@ public class TWfActivityContextParamsPeer
 	 * Delete the workflow parameter by primary key
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		try {
 			doDelete(SimpleKey.keyFor(objectID));
@@ -95,13 +98,14 @@ public class TWfActivityContextParamsPeer
 	 * Is deletable should return true before calling this method
 	 * @param workflowContext
 	 */
+	@Override
 	public void deleteByContext(WorkflowContext workflowContext) {
 		Criteria  criteria = new Criteria();
 		addWorkflowContextCriteria(criteria, workflowContext);
 		try {
 			doDelete(criteria);
 		} catch (TorqueException e) {
-			LOGGER.error("Deleting the wfActivityContextParamsBeans by context " + workflowContext.toString() + " failed with " + e.getMessage(), e);
+			LOGGER.error("Deleting the wfActivityContextParamsBeans by context " + workflowContext.toString() + " failed with " + e.getMessage());
 		}
 	}
 	
@@ -139,6 +143,7 @@ public class TWfActivityContextParamsPeer
 	 * @param projectTypeID
 	 * @param projectID
 	 */
+	@Override
 	public void deleteByIssueType(Integer issueTypeID) {
 		Criteria crit = new Criteria();
 		if(issueTypeID==null){
@@ -150,7 +155,7 @@ public class TWfActivityContextParamsPeer
 		try {
 			doDelete(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Delete workflowConfigs by issueType " + issueTypeID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Delete workflowConfigs by issueType " + issueTypeID + " failed with " + e.getMessage());
 		}
 	}
 	
@@ -159,6 +164,7 @@ public class TWfActivityContextParamsPeer
 	 * if the projects is null - delete all all configs which have project set
 	 * @param projectIDs
 	 */
+	@Override
 	public void deleteByProjects(List<Integer> projectIDs) {
 		Criteria crit = new Criteria();
 		if (projectIDs!=null && !projectIDs.isEmpty()) {
@@ -170,7 +176,7 @@ public class TWfActivityContextParamsPeer
 		try {
 			doDelete(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Delete workflowConfigs by projects " + projectIDs +  " failed with " + e.getMessage(), e);
+			LOGGER.error("Delete workflowConfigs by projects " + projectIDs +  " failed with " + e.getMessage());
 		}
 	}
 	
@@ -179,6 +185,7 @@ public class TWfActivityContextParamsPeer
 	 * if the project pk is null - delete all all configs which have projectType set
 	 * @param projectTypeID
 	 */
+	@Override
 	public void deleteByProjectType(Integer projectTypeID) {
 		Criteria crit = new Criteria();
 		if (projectTypeID!=null) {
@@ -190,7 +197,7 @@ public class TWfActivityContextParamsPeer
 		try {
 			doDelete(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Delete  workflowConfigs by projectType " + projectTypeID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Delete  workflowConfigs by projectType " + projectTypeID + " failed with " + e.getMessage());
 		}
 	}
 	

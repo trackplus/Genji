@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -53,10 +53,12 @@ public class TReleaseBean
 	}
 	
 	private static final long serialVersionUID = 1L;
+	@Override
 	public Comparable getSortOrderValue() {
 		return getSortorder();
 	}
 	
+	@Override
 	public void setMoreProps(String _moreProps) {
 		moreProperties = PropertiesHelper.getProperties(_moreProps);
 		super.setMoreProps(_moreProps);
@@ -69,6 +71,7 @@ public class TReleaseBean
 	}
 
 	
+	@Override
 	public Map<String, String> serializeBean() {
 		Map<String, String> attributesMap = new HashMap<String, String>();
 		attributesMap.put("objectID", getObjectID().toString());
@@ -110,6 +113,7 @@ public class TReleaseBean
 	 * @param attributes
 	 * @return
 	 */
+	@Override
 	public ISerializableLabelBean deserializeBean(Map<String, String> attributes) {
 		TReleaseBean releaseBean = new TReleaseBean();
 		String strObjectID = attributes.get("objectID");
@@ -150,6 +154,7 @@ public class TReleaseBean
 	 * 						value: map of already mapped external vs. internal objectIDs 
 	 * @return
 	 */
+	@Override
 	public boolean considerAsSame(ISerializableLabelBean serializableLabelBean,
 			Map<String, Map<Integer, Integer>> matchesMap) {
 		if (serializableLabelBean==null) {
@@ -176,6 +181,7 @@ public class TReleaseBean
 	 * @param matchesMap
 	 * @return
 	 */
+	@Override
 	public Integer saveBean(ISerializableLabelBean serializableLabelBean, 
 			Map<String, Map<Integer, Integer>> matchesMap) {
 		TReleaseBean releaseBean = (TReleaseBean)serializableLabelBean;

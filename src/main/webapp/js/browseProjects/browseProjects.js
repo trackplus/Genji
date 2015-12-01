@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -98,8 +98,8 @@ com.trackplus.browseProjects.createWestPanel=function(){
 		border:false,
 		disableSelection: true,
 		columns: [
-			{dataIndex: 'label',flex:0.5},
-			{dataIndex: 'value',flex:0.5,renderer : com.trackplus.browseProjects.gridDetailRenderer}
+			{dataIndex: 'label',flex:1},
+			{dataIndex: 'value',flex:1,renderer : com.trackplus.browseProjects.gridDetailRenderer}
 		],
 		hideHeaders:true,
 		columnLines :false,
@@ -109,39 +109,13 @@ com.trackplus.browseProjects.createWestPanel=function(){
 		},
 		autoHeight:true
 	});
-	var panelN=Ext.create('Ext.panel.Panel',{
-		//region:'north',
-		border:true,
-		autoScroll: false,
-		header:false,
-		/*layout: {
-			type: 'table',
-			columns: 2,
-			tableAttrs: {
-				style: {
-					width: '100%'
-				}
-			}
-		},*/
-		items: [
-			{xtype: 'image',id:'imageDetail',src:com.trackplus.TrackplusConfig.iconsPath+'project.png',tdAttrs:{width:30}},
-			{xtype: 'displayfield',id:'titleDetail',value:'<b>...</b>'},
-			{xtype: 'displayfield',id:'descriptionDetail',value:'...'/*,colspan:2,width:'100%'*/}
-		]/*,
-		height:75*/
-	});
-
 	var panelWest = Ext.create('Ext.panel.Panel',{
 		layout: 'border',
 		id: 'layout-browser',
 		region:'west',
 		border: false,
 		split:true,
-		margins:'0 -5 0 0',
 		width: 275,
-		minSize: 100,
-		maxSize: 500,
-	   // baseCls:'x-plain',
 		listeners:{
 			collapse:function(e){
 				com.trackplus.browseProjects.storeSplitCollapsed();
@@ -160,7 +134,6 @@ com.trackplus.browseProjects.createWestPanel=function(){
 				split:true,
 				margins:'0 0 0 0',
 				collapsible:true,
-				autoScroll: true,
 				/*layout: {
 					type: 'vbox',
 					align : 'stretch',
@@ -201,14 +174,14 @@ com.trackplus.browseProjects.replaceDetail=function(data){
 };
 com.trackplus.browseProjects.gridDetailRenderer=function(value,metaData,record,colIndex,store,view){
 	var result="";
-	if(record.data.img!=null&&record.data.img!=''){
+	if(record.data.img&&record.data.img!==''){
 		result+='<img src="'+com.trackplus.TrackplusConfig.iconsPath+record.data.img+'"\>';
 	}
-	if(record.data.optionID!=null&&record.data.optionID!=''){
+	if(record.data.optionID&&record.data.optionID!==''){
 		var srcImg="optionIconStream.action?fieldID="+record.data.entityID+"&optionID="+record.data.optionID;
 		result+='<img src="'+srcImg+'" style="margin-right:3px"\>';
 	}
-	if(record.data.cssClass!=null){
+	if(record.data.cssClass){
 		result+='<span class="'+record.data.cssClass+'">'+value+'</span>';
 	}else{
 		result+=value;
@@ -228,7 +201,7 @@ com.trackplus.browseProjects.showProject=function(projectID,entityType,releaseID
 			var screenModel=com.trackplus.screen.createScreenModel(data.screen);
 			var refreshTabUrl='dashboardTabRuntime!execute.action?projectID='+projectID;
 			var storeTabUrl='dashboard!storeLastSelectedTab.action?projectID='+projectID+"&entityType="+entityType;
-			if(releaseID!=null){
+			if(releaseID){
 				refreshTabUrl+="&releaseID="+releaseID;
 			}
 			var screenFacade= Ext.create('com.trackplus.screen.BaseScreenFacade',{
@@ -246,7 +219,7 @@ com.trackplus.browseProjects.showProject=function(projectID,entityType,releaseID
 			var tabPanel= screenFacade.createViewComponent();
 			com.trackplus.browseProjects.browseProjectCenterPanel.removeAll(true);
 			com.trackplus.browseProjects.browseProjectCenterPanel.add(tabPanel);
-			com.trackplus.browseProjects.browseProjectCenterPanel.doLayout();
+			com.trackplus.browseProjects.browseProjectCenterPanel.updateLayout();
 		}
 	});
 
@@ -301,7 +274,7 @@ com.trackplus.browseProjects.treeNodeClick=function(view,node){
 			var newPanel;
 			var data={};
 			var canEdit=jsonData.data.canEdit;
-			if(canEdit==true){
+			if(canEdit===true){
 				com.trackplus.browseProjects.btnProjectDashEdit.setDisabled(false);
 				com.trackplus.browseProjects.btnProjectDashReset.setDisabled(false);
 				com.trackplus.browseProjects.btnSaveAsTemplatetDash.setDisabled(false);
@@ -310,7 +283,7 @@ com.trackplus.browseProjects.treeNodeClick=function(view,node){
 				com.trackplus.browseProjects.btnProjectDashReset.setDisabled(true);
 				com.trackplus.browseProjects.btnSaveAsTemplatetDash.setDisabled(true);
 			}
-			if(entityType==1){//project
+			if(entityType===1){//project
 				data.title=jsonData.data.projectLabel;
 				data.description=jsonData.data.projectDescription;
 				data.image='project.png';
@@ -360,11 +333,11 @@ com.trackplus.browseProjects.treeNodeClick=function(view,node){
 				//newPanel=com.trackplus.browseProjects.createReleaseDetailPanel(jsonData.data);
 			}
 			com.trackplus.browseProjects.replaceDetail(data);
-			detailPanel.doLayout();
+			detailPanel.updateLayout();
 			detailPanel.setLoading(false);
 			/*detailPanel.removeAll();
 			detailPanel.add(newPanel);
-			detailPanel.doLayout();*/
+			detailPanel.updateLayout();*/
 			//var detailDiv = document.getElementById("detailDiv");
 			//detailDiv.innerHTML=result.responseText;
 		},
@@ -407,7 +380,7 @@ com.trackplus.browseProjects.createCustomCenterPanel=function(data){
 			text:"",
 			user:"",
 			status:"",
-			children:data.treeDataProjects==null?[]:data.treeDataProjects
+			children:CWHF.isNull(data.treeDataProjects)?[]:data.treeDataProjects
 		}
 
 	});
@@ -426,7 +399,7 @@ com.trackplus.browseProjects.createCustomCenterPanel=function(data){
 	//com.trackplus.browseProjects.treeProjects.store.on('beforeexpand', function(node) {
 	com.trackplus.browseProjects.treeProjects.store.on('beforeload', function(store, operation) {
 		var node=operation.node;
-		if(node!=null){
+		if(node){
 			var id=node.data.id;
 			id=id.substring(1,id.length);
 			var entityID=parseInt(id);
@@ -478,17 +451,17 @@ Ext.define('com.trackplus.layout.BrowseProjectsLayout',{
 		me.onReady(function(){
 			var data=me.initData;
 			var dashToolbar=[com.trackplus.browseProjects.btnProjectDashEdit];
-			if (com.trackplus.TrackplusConfig.appType != APPTYPE_BUGS) {
+			if (com.trackplus.TrackplusConfig.appType !== APPTYPE_BUGS) {
 				dashToolbar.push(com.trackplus.browseProjects.btnProjectDashReset);
 				dashToolbar.push(com.trackplus.browseProjects.btnSaveAsTemplatetDash);
 			}
 			me.borderLayoutController.setActiveToolbarList(dashToolbar);
-			if(data.treeDataProjects==null){
+			if(CWHF.isNull(data.treeDataProjects)){
 				CWHF.showMsgError(getText("browseProject.err.noProjectToBrowse"));
 				return;
 			}
 			var node=com.trackplus.browseProjects.treeProjects.getStore().getNodeById(data.selectedNode);
-			if(node!=null){
+			if(node){
 				com.trackplus.browseProjects.treeProjects.getSelectionModel().select(node);
 				com.trackplus.browseProjects.treeProjects.expandPath(node.getPath());
 				com.trackplus.browseProjects.treeNodeClick(null,node);

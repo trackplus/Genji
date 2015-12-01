@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -191,7 +191,6 @@ public interface ReleaseDAO {
 	 * 
 	 * @return
 	 */
-	// List loadNotClosed();
 
 	/**
 	 * Loads the not planned releaseBeans for a project
@@ -199,7 +198,6 @@ public interface ReleaseDAO {
 	 * @param projectID
 	 * @return
 	 */
-	// List<Trelease> loadNotPlannedByProject(Integer projectID);
 	/**
 	 * Loads the active or not planned releaseBeans for a project for scheduled
 	 * releases
@@ -218,7 +216,6 @@ public interface ReleaseDAO {
 	 * @return
 	 */
 	// List<Trelease> loadActiveInactiveByProject(Integer projectKey, Integer
-	// release);
 	/**
 	 * Loads the not closed releaseBeans for a project
 	 * 
@@ -293,7 +290,6 @@ public interface ReleaseDAO {
 	 * @param personID
 	 * @return
 	 */
-	// List<Trelease> loadManagerReleasesScheduled(Integer personID);
 	/**
 	 * Get the scheduled releaseBeans associated with workItems the person is
 	 * responsible for
@@ -301,7 +297,6 @@ public interface ReleaseDAO {
 	 * @param personID
 	 * @return
 	 */
-	// List<Trelease> loadResponsibleReleasesScheduled(Integer personID);
 	/**
 	 * Get the scheduled releaseBeans associated with workItems the person is
 	 * originator for
@@ -309,7 +304,6 @@ public interface ReleaseDAO {
 	 * @param personID
 	 * @return
 	 */
-	// List<Trelease> loadReporterReleasesScheduled(Integer personID);
 	/**
 	 * Get the scheduled releaseBeans associated with workItems the person is
 	 * manager or responsible or owner for
@@ -317,7 +311,6 @@ public interface ReleaseDAO {
 	 * @param personID
 	 * @return
 	 */
-	// List<Trelease> loadMyReleasesScheduled(Integer personID);
 	/**
 	 * Get the scheduled releaseBeans filtered by the FilterSelectsTO
 	 * 
@@ -325,7 +318,6 @@ public interface ReleaseDAO {
 	 * @return
 	 */
 	// List<Trelease> loadCustomReportReleasesScheduled(FilterUpperTO
-	// filterSelectsTO);
 	/**
 	 * Get the noticed releaseBeans associated with workItems the person is
 	 * manager for
@@ -333,7 +325,6 @@ public interface ReleaseDAO {
 	 * @param personID
 	 * @return
 	 */
-	// List<Trelease> loadManagerReleasesNoticed(Integer personID);
 	/**
 	 * Get the noticed releaseBeans associated with workItems the person is
 	 * responsible for
@@ -341,7 +332,6 @@ public interface ReleaseDAO {
 	 * @param personID
 	 * @return
 	 */
-	// List<Trelease> loadResponsibleReleasesNoticed(Integer personID);
 	/**
 	 * Get the noticed releaseBeans associated with workItems the person is
 	 * originator for
@@ -349,7 +339,6 @@ public interface ReleaseDAO {
 	 * @param personID
 	 * @return
 	 */
-	// List<Trelease> loadReporterReleasesNoticed(Integer personID);
 	/**
 	 * Get the noticed releaseBeans associated with workItems the person is
 	 * manager or responsible or owner for
@@ -357,7 +346,6 @@ public interface ReleaseDAO {
 	 * @param personID
 	 * @return
 	 */
-	// List<Trelease> loadMyReleasesNoticed(Integer personID);
 	/**
 	 * Get the noticed releaseBeans filtered by the FilterSelectsTO
 	 * 
@@ -365,7 +353,6 @@ public interface ReleaseDAO {
 	 * @return
 	 */
 	// List<Trelease> loadCustomReportReleasesNoticed(FilterUpperTO
-	// filterSelectsTO);
 	/**
 	 * Get the picker releaseBeans associated with workItems the person is
 	 * manager for
@@ -373,7 +360,6 @@ public interface ReleaseDAO {
 	 * @param personID
 	 * @return
 	 */
-	// List<Trelease> loadManagerPickerReleases(Integer personID);
 	/**
 	 * Get the releaseBeans associated with workItems the person is responsible
 	 * for
@@ -381,7 +367,6 @@ public interface ReleaseDAO {
 	 * @param personID
 	 * @return
 	 */
-	// List<Trelease> loadResponsiblePickerReleases(Integer personID);
 	/**
 	 * Get the picker releaseBeans associated with workItems the person is
 	 * manager or responsible or owner for
@@ -389,7 +374,6 @@ public interface ReleaseDAO {
 	 * @param personID
 	 * @return
 	 */
-	// List<Trelease> loadMyPickerReleases(Integer personID);
 	/**
 	 * Get the picker releaseBeans filtered by the FilterSelectsTO
 	 * 
@@ -397,7 +381,6 @@ public interface ReleaseDAO {
 	 * @return
 	 */
 	// List<Trelease> loadCustomReportPickerReleases(FilterUpperTO
-	// filterSelectsTO);
 	/**
 	 * Get the releaseBeans associated through a release picker for an array of
 	 * workItemIDs
@@ -405,7 +388,6 @@ public interface ReleaseDAO {
 	 * @param workItemIDs
 	 * @return
 	 */
-	// List<Trelease> loadLucenePickerReleases(int[] workItemIDs);
 	/**
 	 * Get the Map of releaseBeans from the history of the workItemIDs added by
 	 * personID

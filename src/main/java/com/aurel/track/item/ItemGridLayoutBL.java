@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -90,24 +90,31 @@ public class ItemGridLayoutBL {
 			this.type = type;
 			this.width = width;
 		}
+		@Override
 		public int getId() {
 			return id;
 		}
+		@Override
 		public String getHeaderKey() {
 			return headerKey;
 		}
+		@Override
 		public boolean isSortable() {
 			return sortable;
 		}
+		@Override
 		public String getDataIndex() {
 			return dataIndex;
 		}
+		@Override
 		public int getType() {
 			return type;
 		}
+		@Override
 		public int getWidth() {
 			return width;
 		}
+		@Override
 		public ILayout getLayoutFromID(int id){
 			for (HistoryLayout hl : HistoryLayout.values()) {
 				if (hl.getId() == id) {
@@ -150,24 +157,31 @@ public class ItemGridLayoutBL {
 			this.type = type;
 			this.width = width;
 		}
+		@Override
 		public int getId() {
 			return id;
 		}
+		@Override
 		public String getHeaderKey() {
 			return headerKey;
 		}
+		@Override
 		public boolean isSortable() {
 			return sortable;
 		}
+		@Override
 		public String getDataIndex() {
 			return dataIndex;
 		}
+		@Override
 		public int getType() {
 			return type;
 		}
+		@Override
 		public int getWidth() {
 			return width;
 		}
+		@Override
 		public ILayout getLayoutFromID(int id){
 			for (CommentsLayout hl : CommentsLayout.values()) {
 				if (hl.getId() == id) {
@@ -225,24 +239,31 @@ public class ItemGridLayoutBL {
 			this.type = type;
 			this.width = width;
 		}
+		@Override
 		public int getId() {
 			return id;
 		}
+		@Override
 		public String getHeaderKey() {
 			return headerKey;
 		}
+		@Override
 		public boolean isSortable() {
 			return sortable;
 		}
+		@Override
 		public String getDataIndex() {
 			return dataIndex;
 		}
+		@Override
 		public int getType() {
 			return type;
 		}
+		@Override
 		public int getWidth() {
 			return width;
 		}
+		@Override
 		public ILayout getLayoutFromID(int id){
 			for (WorklogLayout hl : WorklogLayout.values()) {
 				if (hl.getId() == id) {
@@ -294,24 +315,31 @@ public class ItemGridLayoutBL {
 			this.type = type;
 			this.width = width;
 		}
+		@Override
 		public int getId() {
 			return id;
 		}
+		@Override
 		public String getHeaderKey() {
 			return headerKey;
 		}
+		@Override
 		public boolean isSortable() {
 			return sortable;
 		}
+		@Override
 		public String getDataIndex() {
 			return dataIndex;
 		}
+		@Override
 		public int getType() {
 			return type;
 		}
+		@Override
 		public int getWidth() {
 			return width;
 		}
+		@Override
 		public ILayout getLayoutFromID(int id){
 			for (AttachmentLayout hl : AttachmentLayout.values()) {
 				if (hl.getId() == id) {
@@ -353,24 +381,31 @@ public class ItemGridLayoutBL {
 			this.type = type;
 			this.width = width;
 		}
+		@Override
 		public int getId() {
 			return id;
 		}
+		@Override
 		public String getHeaderKey() {
 			return headerKey;
 		}
+		@Override
 		public boolean isSortable() {
 			return sortable;
 		}
+		@Override
 		public String getDataIndex() {
 			return dataIndex;
 		}
+		@Override
 		public int getType() {
 			return type;
 		}
+		@Override
 		public int getWidth() {
 			return width;
 		}
+		@Override
 		public ILayout getLayoutFromID(int id){
 			for (WatcherLayout hl : WatcherLayout.values()) {
 				if (hl.getId() == id) {
@@ -419,24 +454,31 @@ public class ItemGridLayoutBL {
 			this.type = type;
 			this.width = width;
 		}
+		@Override
 		public int getId() {
 			return id;
 		}
+		@Override
 		public String getHeaderKey() {
 			return headerKey;
 		}
+		@Override
 		public boolean isSortable() {
 			return sortable;
 		}
+		@Override
 		public String getDataIndex() {
 			return dataIndex;
 		}
+		@Override
 		public int getType() {
 			return type;
 		}
+		@Override
 		public int getWidth() {
 			return width;
 		}
+		@Override
 		public ILayout getLayoutFromID(int id){
 			for (VersionControlLayout hl : VersionControlLayout.values()) {
 				if (hl.getId() == id) {
@@ -485,24 +527,31 @@ public class ItemGridLayoutBL {
 			this.type = type;
 			this.width = width;
 		}
+		@Override
 		public int getId() {
 			return id;
 		}
+		@Override
 		public String getHeaderKey() {
 			return headerKey;
 		}
+		@Override
 		public boolean isSortable() {
 			return sortable;
 		}
+		@Override
 		public String getDataIndex() {
 			return dataIndex;
 		}
+		@Override
 		public int getType() {
 			return type;
 		}
+		@Override
 		public int getWidth() {
 			return width;
 		}
+		@Override
 		public ILayout getLayoutFromID(int id){
 			for (LinkLayout hl : LinkLayout.values()) {
 				if (hl.getId() == id) {
@@ -948,7 +997,6 @@ public class ItemGridLayoutBL {
 		List<ItemGridLayout> layouts=new ArrayList<ItemGridLayout>();
 		layouts.add(createGridLayout(WatcherLayout.TYPE));
 		layouts.add(createGridLayout(WatcherLayout.PERSON));
-		//layouts.add(createGridLayout(WatcherLayout.IS_GROUP));
 		return layouts;
 	}
 	public static List<ItemGridLayout> loadDefaultAttachmentLayout() {

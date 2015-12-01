@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -52,6 +52,7 @@ public class TUserFeaturePeer
 	 * @param feature
 	 * @return
 	 */
+	@Override
 	public int countDisabledlWithFeature(List<Integer> personIDs, String feature) {
 		if (personIDs!=null && !personIDs.isEmpty()) {
 			String COUNT = "count(" + OBJECTID + ")";
@@ -65,7 +66,7 @@ public class TUserFeaturePeer
 			try {
 				return ((Record)doSelectVillageRecords(crit).get(0)).getValue(1).asInt();
 			} catch (Exception e) {
-				LOGGER.error("Count the selected but disabled users  " + personIDs.size() + " with feature " + feature + " failed with " + e.getMessage(), e);
+				LOGGER.error("Count the selected but disabled users  " + personIDs.size() + " with feature " + feature + " failed with " + e.getMessage());
 			}
 		}
 		return 0;
@@ -77,6 +78,7 @@ public class TUserFeaturePeer
 	 * @param active whether to count the active or inactive ones
 	 * @return
 	 */
+	@Override
 	public int countUsersWithFeature(String feature, boolean active) {
 		Criteria crit = new Criteria();
 		String count = "COUNT(" + OBJECTID + ")";
@@ -94,7 +96,7 @@ public class TUserFeaturePeer
 			return ((Record) doSelectVillageRecords(crit).get(0)).getValue(1).asInt();
 		}
 		catch (Exception e) {
-			LOGGER.error("Counting active " + active + " persons with feature " + feature + " failed with " + e.getMessage(), e);
+			LOGGER.error("Counting active " + active + " persons with feature " + feature + " failed with " + e.getMessage());
 		}
 		return 0;
 	}
@@ -105,6 +107,7 @@ public class TUserFeaturePeer
 	 * @param feature
 	 * @return
 	 */
+	@Override
 	public List<TUserFeatureBean> getByPersonAndFeature(Integer personID, String feature) {
 		Criteria crit = new Criteria();
 		crit.add(PERSON, personID);
@@ -121,6 +124,7 @@ public class TUserFeaturePeer
 	 * Gets the features for users
 	 * @return
 	 */
+	@Override
 	public List<TUserFeatureBean> loadAll() {
 		Criteria crit = new Criteria();
 		try {
@@ -136,6 +140,7 @@ public class TUserFeaturePeer
 	 * @param userFeatureBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TUserFeatureBean userFeatureBean) {
 		try {
 			TUserFeature tUserFeature = BaseTUserFeature.createTUserFeature(userFeatureBean);
@@ -156,6 +161,7 @@ public class TUserFeaturePeer
 	 * @param feature
 	 * @return
 	 */
+	@Override
 	public void delete(Integer personID, String feature) {
 		Criteria crit = new Criteria();
 		crit.add(PERSON, personID);
@@ -174,6 +180,7 @@ public class TUserFeaturePeer
 	 * @param feature
 	 * @return
 	 */
+	@Override
 	public void deleteFeaturesForPersons(List<Integer> personIDs) {
 		if (personIDs!=null && !personIDs.isEmpty()) {
 			Criteria crit = new Criteria();

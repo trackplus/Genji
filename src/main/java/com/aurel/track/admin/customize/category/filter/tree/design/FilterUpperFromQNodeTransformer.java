@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -31,6 +31,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -169,7 +170,8 @@ public class FilterUpperFromQNodeTransformer {
 			try {
 				releaseTypeSelector = (Integer)releaseTypeSelectorList.get(0);
 			} catch(Exception e) {
-				LOGGER.warn("Parsing the releaseSelector value failed with " + e.getMessage(), e);
+				LOGGER.warn("Parsing the releaseSelector value failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		filterUpperTO.setReleaseTypeSelector(releaseTypeSelector);
@@ -186,7 +188,8 @@ public class FilterUpperFromQNodeTransformer {
 					showClosedReleases = 
 							((Boolean)showClosedRelObj).booleanValue();
 				} catch(Exception e) {
-					LOGGER.warn("Parsing the showClosedReleases value failed with " + e.getMessage(), e);
+					LOGGER.warn("Parsing the showClosedReleases value failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 			}
 		}
@@ -199,7 +202,8 @@ public class FilterUpperFromQNodeTransformer {
 			try {
 				selector = (Integer)consultantInformantSelectorList.get(0);
 			} catch (Exception e) {
-				LOGGER.warn("Parsing the consultantInformantSelector value failed with " + e.getMessage(), e);
+				LOGGER.warn("Parsing the consultantInformantSelector value failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		filterUpperTO.setWatcherSelector(selector);
@@ -218,7 +222,8 @@ public class FilterUpperFromQNodeTransformer {
 				filterUpperTO.setArchived((Integer)archivedList.get(0));
 			}
 		} catch (Exception e) {
-			LOGGER.warn("Setting the archived flag failed with " + e.getMessage(), e);
+			LOGGER.warn("Setting the archived flag failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		//get the deleted if set
 		try {
@@ -228,7 +233,8 @@ public class FilterUpperFromQNodeTransformer {
 				filterUpperTO.setDeleted((Integer)deletedList.get(0));
 			}
 		} catch (Exception e) {
-			LOGGER.warn("Setting the deleted flag failed with " + e.getMessage(), e);
+			LOGGER.warn("Setting the deleted flag failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		//get the linkTypeFilterSuperset if set
 		try {
@@ -238,7 +244,8 @@ public class FilterUpperFromQNodeTransformer {
 				filterUpperTO.setLinkTypeFilterSuperset((String)linkTypeFilterSuperset.get(0));
 			}
 		} catch (Exception e) {
-			LOGGER.warn("Setting the link type flag failed with " + e.getMessage(), e);
+			LOGGER.warn("Setting the link type flag failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		
 		//present (not null valued) upper custom selects
@@ -343,7 +350,8 @@ public class FilterUpperFromQNodeTransformer {
 					entityID = iterator.next();
 					entities[i++]=Integer.valueOf(entityID);
 				} catch (Exception e) {
-					LOGGER.warn("Converting the " + entityID + " to Integer failed with" + e.getMessage(), e);
+					LOGGER.warn("Converting the " + entityID + " to Integer failed with" + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 			}
 			return entities;

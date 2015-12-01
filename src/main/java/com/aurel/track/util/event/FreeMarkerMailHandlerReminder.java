@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -96,6 +96,7 @@ public class FreeMarkerMailHandlerReminder implements IEventSubscriber {
 	 * Always one event is present at the same time 
 	 * (IEventSubscriber.getInterestedEvents())
 	 */
+	@Override
 	public List<Integer> getInterestedEvents() {
 		List<Integer> events = new ArrayList<Integer>();
 		events.add(Integer.valueOf(IEventSubscriber.EVENT_POST_USER_REMINDER));
@@ -106,6 +107,7 @@ public class FreeMarkerMailHandlerReminder implements IEventSubscriber {
 	 * The operations to be executed on event
 	 * IEventSubscriber.update()
 	 */
+	@Override
 	public boolean update(List<Integer> events, Object eventContextObject) {
 		ReminderEventParam reminderEventParam = (ReminderEventParam)eventContextObject;
 		personBean = reminderEventParam.getReceiver();
@@ -128,8 +130,8 @@ public class FreeMarkerMailHandlerReminder implements IEventSubscriber {
 		List<TPersonBasketBean> reminderTimeBasketItems = personTimeBasketItemsMap.get(TBasketBean.BASKET_TYPES.CALENDAR);
 		List<TPersonBasketBean> delegatedDateBasketItems = personDateBasketItemsMap.get(TBasketBean.BASKET_TYPES.DELEGATED);
 		List<TPersonBasketBean> delegatedTimeBasketItems = personTimeBasketItemsMap.get(TBasketBean.BASKET_TYPES.DELEGATED);
-		String serverurl = ApplicationBean.getApplicationBean().getSiteBean().getServerURL();
-		String contextName = ApplicationBean.getApplicationBean().getServletContext().getContextPath();
+		String serverurl = ApplicationBean.getInstance().getSiteBean().getServerURL();
+		String contextName = ApplicationBean.getInstance().getServletContext().getContextPath();
 		serverurl = serverurl + contextName + "/";
 		List<ReminderRow> reminderDateBasketRows = getBasketReminderRows(reminderDateBasketItems, false, serverurl);
 		List<ReminderRow> reminderTimeBasketRows = getBasketReminderRows(reminderTimeBasketItems, true, serverurl);
@@ -165,14 +167,14 @@ public class FreeMarkerMailHandlerReminder implements IEventSubscriber {
 		String messageSubject = prepareSubject(root, mailTemplateDefBean, personBean);
 		String messageBody = prepareMessage(root, mailTemplateDefBean, personBean);
 		try {
-			InternetAddress from = new InternetAddress(ApplicationBean.getApplicationBean().getSiteBean().getTrackEmail(),
-					ApplicationBean.getApplicationBean().getSiteBean().getEmailPersonalName());
+			InternetAddress from = new InternetAddress(ApplicationBean.getInstance().getSiteBean().getTrackEmail(),
+					ApplicationBean.getInstance().getSiteBean().getEmailPersonalName());
 			InternetAddress to = new InternetAddress(personBean.getEmail(), personBean.getFullName());
 			MailSender mailSender = new MailSender(from, to, messageSubject, messageBody, isPlain);
 			mailSender.start();
 
 		} catch (Exception e) {
-			LOGGER.error("Can't create from/to addresses " + e.getMessage(), e);
+			LOGGER.error("Can't create from/to addresses " + e.getMessage());
 		}
 		return true;
 	}
@@ -183,7 +185,7 @@ public class FreeMarkerMailHandlerReminder implements IEventSubscriber {
 		try {
 			fmtemplate.process(root, w);
 		} catch (Exception e) {
-			LOGGER.error("Processing reminder template " + fmtemplate.getName() + " failed with " + e.getMessage(), e);
+			LOGGER.error("Processing reminder template " + fmtemplate.getName() + " failed with " + e.getMessage());
 		}
 		w.flush();
 		return w.toString();
@@ -195,7 +197,7 @@ public class FreeMarkerMailHandlerReminder implements IEventSubscriber {
 		try {
 			fmtemplate.process(root, w);
 		} catch (Exception e) {
-			LOGGER.error("Processing reminder template " + fmtemplate.getName() + " failed with " + e.getMessage(), e);
+			LOGGER.error("Processing reminder template " + fmtemplate.getName() + " failed with " + e.getMessage());
 		}
 		w.flush();
 		return w.toString();

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -25,6 +25,7 @@ package com.aurel.track.fieldType.runtime.matchers.converter;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -50,6 +51,7 @@ public class DoubleMatcherConverter implements MatcherConverter{
 	 * @param matcherRelation
 	 * @return
 	 */
+	@Override
 	public String toXMLString(Object value, Integer matcherRelation) {
 		if (value==null || matcherRelation==null) {
 			return null;
@@ -72,6 +74,7 @@ public class DoubleMatcherConverter implements MatcherConverter{
 	 * @param matcherRelation
 	 * @return
 	 */
+	@Override
 	public Object fromXMLString(String value, Integer matcherRelation) {
 		if (value==null || "".equals(value) || matcherRelation==null) {
 			return null;
@@ -86,7 +89,8 @@ public class DoubleMatcherConverter implements MatcherConverter{
 				try {	
 					return new Double(value);
 				} catch (Exception e) {
-					LOGGER.warn("Converting the " + value +  " to Double from xml string failed with " + e.getMessage(), e);
+					LOGGER.warn("Converting the " + value +  " to Double from xml string failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 			}
 		return null;
@@ -102,6 +106,7 @@ public class DoubleMatcherConverter implements MatcherConverter{
 	 * @param matcherRelation
 	 * @return
 	 */
+	@Override
 	public Object fromDisplayString(Map<String, String> displayStringMap,
 			Integer fieldID, Locale locale, Integer matcherRelation) {
 		if (displayStringMap == null) {
@@ -120,6 +125,7 @@ public class DoubleMatcherConverter implements MatcherConverter{
 	 * @param matcherRelation
 	 * @return
 	 */
+	@Override
 	public Object fromValueString(String valueString, Locale locale, Integer matcherRelation) {
 		if (matcherRelation!=null) {
 			switch (matcherRelation.intValue()) {

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -30,6 +30,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.lucene.document.Document;
@@ -78,6 +79,7 @@ public class LocalizedListIndexer extends InternalListIndexer {
 	 * Gets the index writer ID
 	 * @return
 	 */
+	@Override
 	protected int getIndexWriterID() {
 		return LuceneUtil.INDEXES.LOCALIZED_LIST_INDEX;
 	}
@@ -85,6 +87,7 @@ public class LocalizedListIndexer extends InternalListIndexer {
 	 * Gets the field name of the combined key which is the unique identifier
 	 * @return
 	 */
+	@Override
 	protected String getCombinedKeyFieldName() {
 		return LuceneUtil.LIST_INDEX_FIELDS_LOCALIZED.COMBINEDKEY;
 	}
@@ -92,6 +95,7 @@ public class LocalizedListIndexer extends InternalListIndexer {
 	 * Gets the list field type for logging purposes  
 	 * @return
 	 */
+	@Override
 	protected String getListFieldType() {
 		return "localized";
 	}
@@ -99,6 +103,7 @@ public class LocalizedListIndexer extends InternalListIndexer {
 	 * Gets the fieldIDs stored in this index 
 	 * @return
 	 */
+	@Override
 	protected List<Integer> getFieldIDs() {
 		List<Integer> fieldIDs = new LinkedList<Integer>();
 		fieldIDs.add(SystemFields.INTEGER_ISSUETYPE);
@@ -112,6 +117,7 @@ public class LocalizedListIndexer extends InternalListIndexer {
 	 * Gets the custom listIDs stored in this index 
 	 * @return
 	 */
+	@Override
 	protected List<TListBean> getCustomListBeans() {
 		return ListBL.loadAll();
 	}
@@ -122,6 +128,7 @@ public class LocalizedListIndexer extends InternalListIndexer {
 	 * @param type
 	 * @return
 	 */
+	@Override
 	protected Document createDocument(ILabelBean labelBean, int type) {
 		ILocalizedLabelBean localizedLabelBean = (ILocalizedLabelBean)labelBean;
 		String id = localizedLabelBean.getObjectID().toString();
@@ -195,7 +202,8 @@ public class LocalizedListIndexer extends InternalListIndexer {
 		} catch (Exception e) {
 			LOGGER.error("Creating the document for localized list entry with keyPrefix " +
 					keyPrefix + " label " + notLocalizedName + " id " + id +
-					" Type " + type + " failed with " + e.getMessage(), e);
+					" Type " + type + " failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			return null;
 		}
 	}

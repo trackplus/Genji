@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -56,6 +56,7 @@ public class LocalizedListCompositePartSearcher extends LocalizedListSearcher {
 	 * gather the composite fields
 	 * @return
 	 */
+	@Override
 	protected List<Integer> getFieldIDs() {
 		List<Integer> fieldIDs = new LinkedList<Integer>();
 		Map<Integer, FieldType> fieldTypeCache = FieldTypeManager.getInstance().getTypeCache();
@@ -81,6 +82,7 @@ public class LocalizedListCompositePartSearcher extends LocalizedListSearcher {
 	 * @param indexStart the index to start looking for fieldName 
 	 * @return
 	 */
+	@Override
 	public String preprocessExplicitField(Analyzer analyzer,
 			String toBeProcessedString, Locale locale, int indexStart) {
 		List<Integer> fieldIDs = getFieldIDs();
@@ -104,6 +106,7 @@ public class LocalizedListCompositePartSearcher extends LocalizedListSearcher {
 	/**
 	 * A custom composite lookup part is always stored as custom option
 	 */
+	@Override
 	protected int getEntityType(Integer fieldID) {
 		return LuceneUtil.LOOKUPENTITYTYPES.CUSTOMOPTION;
 	}
@@ -113,6 +116,7 @@ public class LocalizedListCompositePartSearcher extends LocalizedListSearcher {
 	 * The type stored in list index is LuceneUtil.LOOKUPENTITYTYPES.CUSTOMOPTION for all custom lists
 	 * (simple and composite). For composite part searcher it will be forced to get the composite parts 
 	 */
+	@Override
 	protected String[] getWorkItemFieldNames(Integer type) {
 		return getWorkItemFieldNamesForLookupType(LuceneUtil.LOOKUPENTITYTYPES.COMPOSITE);
 	}

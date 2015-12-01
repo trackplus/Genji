@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -72,7 +72,7 @@ function queryTreeInt(){
     dojo.event.connect("after",treeSelector, "select", onQueryTreeSelect);
     dojo.event.connect("after",treeDndController, "onMoveTo", onMoveTo);
 
-    if(treeWidget.children!=null&&treeWidget.children.length>0){
+    if(treeWidget.children&&treeWidget.children.length>0){
         //expand first child
         treeController.expand(treeWidget.children[0]);
         //select first node
@@ -89,7 +89,7 @@ function queryTreeInt(){
 	     } else {
 	       this.collapse(node);
 	     }
-	     if(treeSelector.selectedNode==null){
+	     if(CWHF.isNull(treeSelector.selectedNode)){
 			treeSelector.doSelect(node);
 			onQueryTreeSelect();
 		}
@@ -99,7 +99,7 @@ dojo.addOnLoad(queryTreeInt);
 
 function getContextPath(){
     var y=dojo.hostenv.getBaseScriptUri();
-    if(y.search("/")==0){
+    if(y.search("/")===0){
         y=y.substring(1);
     }
     var ctxPath=y.substring(0,y.search("/"));
@@ -118,13 +118,13 @@ function move(direction) {
     if (!selectedNode) {
        return false;
     }
-    if(selectedNode==treeWidget.children[0]){
+    if(selectedNode===treeWidget.children[0]){
         //root node;
         return;
     }
     var nodeId=selectedNode.widgetId;
     var urlStr="queryTreeAction!moveUp.action?nodeID="+nodeId;
-    if(direction=="down"){
+    if(direction==="down"){
         urlStr="queryTreeAction!moveDown.action?nodeID="+nodeId;
     }
     dojo.io.bind({
@@ -146,11 +146,11 @@ function create(type) {
     if (!selectedNode) {
         return false;
     }
-    if(selectedNode.objectId==2){//expression
+    if(selectedNode.objectId===2){//expression
         //alert("Can't add node to an expression node!")
         return false
     }
-    if(selectedNode.isFolder==false){
+    if(selectedNode.isFolder===false){
         selectedNode.isFolder=true;
         nodeToRefresh=selectedNode.parent;
         selectedNode.isExpanded=true;
@@ -177,7 +177,7 @@ function create(type) {
 function remove() {
     var selectedNode=treeSelector.selectedNode;
     var parent=selectedNode.parent;
-    if(parent==treeWidget){
+    if(parent===treeWidget){
         //alert("Can't remove root!");
         return;
     }
@@ -190,9 +190,9 @@ function remove() {
     var nodes=parent.children;
     var nodeToSelect;
     for(i=0;i<nodes.length;i++){
-       if(nodes[i].widgetId==nodeId){
-           if(i==nodes.length-1){
-               if(i==0){
+       if(nodes[i].widgetId===nodeId){
+           if(i===nodes.length-1){
+               if(i===0){
                    nodeToSelect=parent.widgetId;
                }else{
                    nodeToSelect=nodes[i-1].widgetId;
@@ -224,7 +224,7 @@ function negate() {
         return false;
     }
     var nodeId=selectedNode.widgetId;
-    if(nodeId==treeWidget.children[0].widgetId){
+    if(nodeId===treeWidget.children[0].widgetId){
         updateRootNode("queryTreeAction!updateRootNode.action?negateRootNode=true");
         return;
     }
@@ -233,7 +233,7 @@ function negate() {
         url: addTimeToAjaxUrl(urlStr),
 		encoding: "utf-8",
         load: function(type, data, evt){
-            if(selectedNode.parent==treeWidget){
+            if(selectedNode.parent===treeWidget){
                 refreshNode(selectedNode);
             }else{
                 refreshNode(selectedNode.parent);
@@ -262,10 +262,10 @@ function updateRootNode(urlStr){
 }
 function menuAboutToShow(){
     var source = menu.getTopOpenEvent().target;
-    while (!source.getAttribute('treeNode') && source.tagName != 'body') {
+    while (!source.getAttribute('treeNode') && source.tagName !== 'body') {
         source = source.parentNode;
     }
-    if (source.tagName == 'body') {
+    if (source.tagName === 'body') {
         dojo.raise("treeNode not detected");
     }
     var treeNode = dojo.widget.manager.getWidgetById(source.getAttribute('treeNode'));
@@ -278,7 +278,7 @@ function menuAboutToShow(){
     removeMenuItem("treeContextMenuChangeToADD");
     removeMenuItem("treeContextMenuChangeToOR");
     removeMenuItem("treeContextMenuAddEXP");
-    if(nodeType==0){//OR
+    if(nodeType===0){//OR
        mnitAND = dojo.widget.createWidget("TreeMenuItem",
        {	caption:menuItemChangeToAND,
             widgetId:"treeContextMenuChangeToADD"
@@ -286,7 +286,7 @@ function menuAboutToShow(){
        mnitAND.onClick=mitAndClick;
        menu.addChild(mnitAND);
     }
-    if(nodeType==1){//AND
+    if(nodeType===1){//AND
        mnitOR = dojo.widget.createWidget("TreeMenuItem",
        {	caption:menuItemChangeToOR,
             widgetId:"treeContextMenuChangeToOR"
@@ -294,7 +294,7 @@ function menuAboutToShow(){
        mnitOR.onClick=mitOrClick;
        menu.addChild(mnitOR);
     }
-    if(nodeType!=2){
+    if(nodeType!==2){
        mnitAddEXP = dojo.widget.createWidget("TreeMenuItem",
        {	caption:menuItemAddExp,
             widgetId:"treeContextMenuAddEXP"
@@ -302,21 +302,21 @@ function menuAboutToShow(){
        mnitAddEXP.onClick=mitAddEXPClick;
        menu.addChild(mnitAddEXP);
     }
-    if(treeNode==treeWidget.children[0]){
+    if(treeNode===treeWidget.children[0]){
         mitUp.setDisabled.call(mitUp,true);
         mitDown.setDisabled.call(mitDown,true);
         mitRemove.setDisabled.call(mitRemove,true);
     }else{
         mitRemove.setDisabled.call(mitRemove,false);
-        mitUp.setDisabled.call(mitUp,treeNode.parent.children[0]==treeNode);
-        mitDown.setDisabled.call(mitDown,treeNode.parent.children[treeNode.parent.children.length]==treeNode);
+        mitUp.setDisabled.call(mitUp,treeNode.parent.children[0]===treeNode);
+        mitDown.setDisabled.call(mitDown,treeNode.parent.children[treeNode.parent.children.length]===treeNode);
     }
 }
 function removeMenuItem(id){
     var menuChildren=menu.children;
     var i=0;
     for(i=0;i<menuChildren.length;i++){
-        if(menuChildren[i].widgetId==id){
+        if(menuChildren[i].widgetId===id){
             menu.removeChild(menuChildren[i]);
             break;
         }
@@ -324,7 +324,7 @@ function removeMenuItem(id){
 }
 function mitOrClick(){
     var nodeId=treeSelector.selectedNode.widgetId;
-    if(nodeId==treeWidget.children[0].widgetId){
+    if(nodeId===treeWidget.children[0].widgetId){
         updateRootNode("queryTreeAction!updateRootNode.action");
         return;
     }
@@ -334,7 +334,7 @@ function mitOrClick(){
 }
 function mitAndClick(){
     var nodeId=treeSelector.selectedNode.widgetId;
-    if(nodeId==treeWidget.children[0].widgetId){
+    if(nodeId===treeWidget.children[0].widgetId){
         updateRootNode("queryTreeAction!updateRootNode.action");
         return;
     }
@@ -354,7 +354,7 @@ function onMoveTo(evt){
     var i=0;
     var index=0;
     for(i=0;i<newParent.children.length;i++){
-        if(newParent.children[i].widgetId==nodeChildId){
+        if(newParent.children[i].widgetId===nodeChildId){
            index=i;
            break;
         }
@@ -374,10 +374,10 @@ function onMoveTo(evt){
     });
 }
 function changeNodeType(nodeId){
-    if(nodeId==null){
+    if(CWHF.isNull(nodeId)){
         nodeId=document.getElementById("nodeID").value;
     }
-    if(nodeId==treeWidget.children[0].widgetId){
+    if(nodeId===treeWidget.children[0].widgetId){
         updateRootNode("queryTreeAction!updateRootNode.action");
         return;
     }
@@ -391,7 +391,7 @@ function changeNode(urlStr){
         url: addTimeToAjaxUrl(urlStr),
 		encoding: "utf-8",
         load: function(type, data, evt){
-            if(treeSelector.selectedNode.parent==treeWidget){
+            if(treeSelector.selectedNode.parent===treeWidget){
                 refreshNode(treeSelector.selectedNode);
             }else{
                 refreshNode(treeSelector.selectedNode.parent);
@@ -458,10 +458,10 @@ function refreshNode(node,nodeToSelect){
     var nodeId=node.widgetId;
     var	selectedNodeId = "";
     var wasExpanded = false;
-    if (selectedNode!=null){
+    if (selectedNode){
         selectedNodeId=selectedNode.widgetId;
     }
-    if(nodeToSelect!=null){
+    if(nodeToSelect){
         selectedNodeId=nodeToSelect;
     }
     wasExpanded=node.isExpanded;
@@ -477,7 +477,7 @@ function refreshNode(node,nodeToSelect){
     node.isExpanded = false;
 	node.updateExpandIcon();
     node.state= node.loadStates.UNCHECKED;
-    if(wasExpanded==true){
+    if(wasExpanded===true){
        expandRecursive(node,tns,selectedNodeId);
     }
 }
@@ -493,16 +493,16 @@ function expandRecursive(node,tns,selectedNodeId){
 	for(var i=0; i<node.children.length; i++) {
 		var child = node.children[i];
 		var childId = node.children[i].widgetId;
-		if(childId==selectedNodeId){
+		if(childId===selectedNodeId){
 			treeSelector.doSelect(child);
 			onQueryTreeSelect();
 		}
-        if(tns==null||tns.children==null||tns.children.length==0){
+        if(CWHF.isNull(tns)||CWHF.isNull(tns.children)||tns.children.length===0){
             continue;
         }
         for(var j=0; j<tns.children.length; j++) {
 			var tnsChild=tns.children[j];
-			if(childId==tnsChild.id){
+			if(childId===tnsChild.id){
                 expandRecursive(child,tnsChild,selectedNodeId);
 				break;
 			}
@@ -525,7 +525,7 @@ function createTreeSchema(node){
 	for(var i=0; i<node.children.length; i++) {
 		var child = node.children[i];
 		var childTns=createTreeNodeSchema(child);
-        if(childTns!=null){
+        if(childTns){
             tns.add(childTns);
         }
     }
@@ -536,10 +536,10 @@ function createTreeSchema(node){
 Create a snap-shot of a treeNode expanded child recursive
 */
 function createTreeNodeSchema(node){
-	if(node.isFolder==false){
+	if(node.isFolder===false){
 		return null;
 	}
-	if(node.isExpanded==false){
+	if(node.isExpanded===false){
 		return null;
 	}
 	var tns;
@@ -547,7 +547,7 @@ function createTreeNodeSchema(node){
 	for(var i=0; i<node.children.length; i++) {
 		var child = node.children[i];
 		var childTns=createTreeNodeSchema(child);
-		if(childTns!=null){
+		if(childTns){
 			tns.add(childTns);
 		}
 	}
@@ -558,7 +558,7 @@ function createTreeNodeSchema(node){
 //------------
 
 function onQueryTreeSelect(){
-    if(oldPicker!=null){
+    if(oldPicker){
         this["wasinit"+oldPicker]=null;
     }
     var widgetId=treeSelector.selectedNode.widgetId;
@@ -567,7 +567,7 @@ function onQueryTreeSelect(){
     var btnAND=document.getElementById("btnAND");
     var btnOR=document.getElementById("btnOR");
     var btnEXP=document.getElementById("btnEXP");
-    if(nodeType==2){//expresion
+    if(nodeType===2){//expresion
         btnAND.disabled=true;
         btnOR.disabled=true;
         btnEXP.disabled=true;
@@ -602,7 +602,7 @@ function onQueryTreeSelect1(){
     var btnAND=document.getElementById("btnAND");
     var btnOR=document.getElementById("btnOR");
     var btnEXP=document.getElementById("btnEXP");
-    if(nodeType==2){//expresion
+    if(nodeType===2){//expresion
         btnAND.disabled=true;
         btnOR.disabled=true;
         btnEXP.disabled=true;
@@ -640,7 +640,7 @@ function blockDetail(){
 
 function mouseOverTrigBtn(textField, picker,jsCalDateFormat){
 		document.getElementById(picker).style.background='#1d5090';
-		if(this["wasinit"+picker]==null){
+		if(CWHF.isNull(this["wasinit"+picker])){
 			Calendar.setup({
 				inputField : textField, // ID of the input field
 				ifFormat : jsCalDateFormat, // the date format
@@ -655,7 +655,7 @@ function mouseOverTrigBtn(textField, picker,jsCalDateFormat){
 function showHideProject(selectedIndex) {
 	var repositoryType=document.getElementById("repositoryType");
 	var repositoryTypeValue = repositoryType.options[selectedIndex].value;
-	var show = (repositoryTypeValue==3);
+	var show = (repositoryTypeValue===3);
 	var project = document.getElementById("project");
 	//var projectLabel = document.getElementById("projectLabel");
 	if (show) {

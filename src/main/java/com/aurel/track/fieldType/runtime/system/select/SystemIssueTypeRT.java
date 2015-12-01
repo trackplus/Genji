@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -43,6 +43,7 @@ import com.aurel.track.fieldType.constants.SystemFields;
 import com.aurel.track.fieldType.fieldChange.FieldChangeValue;
 import com.aurel.track.fieldType.runtime.base.LookupContainer;
 import com.aurel.track.fieldType.runtime.base.SelectContext;
+import com.aurel.track.fieldType.runtime.base.WorkItemContext;
 import com.aurel.track.fieldType.runtime.matchers.design.IMatcherValue;
 import com.aurel.track.fieldType.runtime.matchers.design.MatcherDatasourceContext;
 import com.aurel.track.fieldType.runtime.matchers.run.MatcherContext;
@@ -71,6 +72,7 @@ public class SystemIssueTypeRT extends SystemSelectBaseLocalizedRT{
 	 * @param selectContext
 	 * @return
 	 */
+	@Override
 	public List loadEditDataSource(SelectContext selectContext) {
 		TWorkItemBean workItemBean = selectContext.getWorkItemBean();
 		Integer person = selectContext.getPersonID();
@@ -83,11 +85,25 @@ public class SystemIssueTypeRT extends SystemSelectBaseLocalizedRT{
 	 * @param selectContext
 	 * @return
 	 */
+	@Override
 	public List loadCreateDataSource(SelectContext selectContext) {
 		TWorkItemBean workItemBean = selectContext.getWorkItemBean();
 		Integer person = selectContext.getPersonID();
 		return IssueTypeBL.loadByPersonAndProjectAndCreateRight(person, workItemBean.getProjectID(),
 							workItemBean.getListTypeID(), workItemBean.getSuperiorworkitem(), selectContext.getLocale());
+	}
+	
+	/**
+	 * Gets the show value for a select
+	 */
+	public String getShowValue(Object value, WorkItemContext workItemContext,Integer fieldID){
+		if (value!=null) {
+			TListTypeBean itemTypeBean = LookupContainer.getItemTypeBean((Integer)value, workItemContext.getLocale());
+			if (itemTypeBean!=null) {
+				return itemTypeBean.getLabel();
+			}
+		}
+		return "";
 	}
 	
 	/**
@@ -100,6 +116,7 @@ public class SystemIssueTypeRT extends SystemSelectBaseLocalizedRT{
 	 * @param parameterCode for composite selects
 	 * @return the datasource (list or tree)
 	 */	
+	@Override
 	public Object getMatcherDataSource(IMatcherValue matcherValue, MatcherDatasourceContext matcherDatasourceContext, Integer parameterCode) {
 		List<ILabelBean> datasource;
 		Integer[] projectTypeIDs = ProjectTypesBL.getProjectTypeIDsForProjectIDs(matcherDatasourceContext.getProjectIDs());
@@ -151,39 +168,6 @@ public class SystemIssueTypeRT extends SystemSelectBaseLocalizedRT{
 		
 		Integer[] involvedProjects = massOperationContext.getInvolvedProjectsIDs();
 		List datasource = IssueTypeBL.getByProjectsAndPerson(involvedProjects, massOperationContext.getPersonID(), locale, true);
-		/*if (involvedProjects!=null) {
-			if (involvedProjects.length==1) {
-				//an explicit project is selected for bulk operation or 
-				//all selected issues are from the same project
-				datasource = IssueTypeBL.loadByPersonAndProjectAndRight(
-						massOperationContext.getPersonID(), involvedProjects[0], 
-						new int[]{AccessBeans.AccessFlagIndexes.CREATETASK,
-						AccessBeans.AccessFlagIndexes.PROJECTADMIN});
-			} else {
-				if (involvedProjects!=null && involvedProjects.length>0) {
-					//the project field is not selected and the selected issues are from more projects:
-					//get the intersection of the issueTypes allowed in all involved projects
-					Set<Integer> intersection = null;
-					for (int i = 0; i < involvedProjects.length; i++) {
-						List<TListTypeBean> issueTypeBeans = IssueTypeBL.loadByPersonAndProjectAndRight(
-								massOperationContext.getPersonID(), involvedProjects[i], 
-								new int[]{AccessBeans.AccessFlagIndexes.CREATETASK,
-								AccessBeans.AccessFlagIndexes.PROJECTADMIN});
-						Set<Integer> issueTypesIDsForProject = GeneralUtils.createIntegerSetFromBeanList(issueTypeBeans);
-						if (intersection==null) {
-							intersection = issueTypesIDsForProject;
-						} else {
-							intersection.retainAll(issueTypesIDsForProject);
-						}
-					}
-					datasource = IssueTypeBL.loadByIssueTypeIDs(GeneralUtils.createListFromCollection(intersection));
-				} else {
-					//no project selected for bulk operation: we  should work with 
-					//the intersection of the issueTypes allowed in all involved projects
-					datasource = IssueTypeBL.loadAllSelectable();
-				}
-			}
-		}*/
 		massOperationValue.setPossibleValues(datasource);
 		massOperationValue.setValue(getBulkSelectValue(massOperationContext,
 				massOperationValue.getFieldID(), null, 
@@ -199,6 +183,7 @@ public class SystemIssueTypeRT extends SystemSelectBaseLocalizedRT{
 	 * @param personBean
 	 * @param locale
 	 */
+	@Override
 	public void loadFieldChangeDatasourceAndValue(WorkflowContext workflowContext,
 			FieldChangeValue fieldChangeValue, 
 			Integer parameterCode, TPersonBean personBean, Locale locale) {
@@ -243,6 +228,7 @@ public class SystemIssueTypeRT extends SystemSelectBaseLocalizedRT{
 	 * Returns the lookup entity type related to the fieldType
 	 * @return
 	 */
+	@Override
 	public int getLookupEntityType() {
 		return LuceneUtil.LOOKUPENTITYTYPES.LISTTYPE;
 	}
@@ -252,6 +238,7 @@ public class SystemIssueTypeRT extends SystemSelectBaseLocalizedRT{
 	 * Creates a new empty serializableLabelBean
 	 * @return
 	 */
+	@Override
 	public ISerializableLabelBean getNewSerializableLabelBean() {
 		return new TListTypeBean();
 	}
@@ -267,6 +254,7 @@ public class SystemIssueTypeRT extends SystemSelectBaseLocalizedRT{
 	 * @param componentPartsMap
 	 * @return
 	 */
+	@Override
 	public Integer getLookupIDByLabel(Integer fieldID,
 			Integer projectID, Integer issueTypeID, 
 			Locale locale, String label, 
@@ -299,6 +287,7 @@ public class SystemIssueTypeRT extends SystemSelectBaseLocalizedRT{
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public List<ILabelBean> getDataSource(Integer fieldID) {
 		return (List)IssueTypeBL.loadAll();
 	}

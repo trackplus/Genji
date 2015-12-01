@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -31,6 +31,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.struts2.ServletActionContext;
@@ -58,6 +59,7 @@ public class TrackExportAction extends ActionSupport implements Preparable, Sess
 	private TPersonBean personBean;
 	private Locale locale;
 	private String workItemIDs;
+	@Override
 	public void prepare() throws Exception {
 		response = ServletActionContext.getResponse();
 		personID = ((TPersonBean) session.get(Constants.USER_KEY)).getObjectID();
@@ -92,7 +94,8 @@ public class TrackExportAction extends ActionSupport implements Preparable, Sess
 		try {
 			outputStream = response.getOutputStream();
 		} catch (IOException e) {
-			LOGGER.warn("Getting the output stream failed with " + e.getMessage(), e);
+			LOGGER.warn("Getting the output stream failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		if (outputStream!=null) {
 			TrackExportBL.exportWorkItemsWithAttachments(reportBeanList, personID, outputStream);
@@ -100,6 +103,7 @@ public class TrackExportAction extends ActionSupport implements Preparable, Sess
 		return null;
 	}
 
+	@Override
 	public void setSession(Map<String, Object> session) {
 		this.session = session;
 	}

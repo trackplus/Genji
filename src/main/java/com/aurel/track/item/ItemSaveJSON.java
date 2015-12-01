@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -43,10 +43,8 @@ public class ItemSaveJSON {
 	public static String encodeErrorOutOfDate(WorkItemContext workItemContext,Locale locale,boolean  useProjectSpecificID,TPersonBean personBean, boolean isMobileApplication){
 		StringBuilder sb=new StringBuilder();
 		Date originalLastModifiedDate=workItemContext.getWorkItemBean().getLastEdit();
-		//List<LabelValueBean> errors=new ArrayList<LabelValueBean>();
 		//DateTimeUtils dtu=DateTimeUtils.getInstance();
 		//errors.add(new LabelValueBean("Item already saved on "+dtu.formatGUIDateTime(originalLastModifiedDate,locale)+"!",
-		//		SystemFields.LASTMODIFIEDDATE+""));
 		sb.append("{");
 		JSONUtility.appendBooleanValue(sb, JSONUtility.JSON_FIELDS.SUCCESS, false);
 		sb.append("\"data\":{");

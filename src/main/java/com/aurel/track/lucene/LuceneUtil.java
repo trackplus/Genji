@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -42,6 +42,7 @@ import java.util.TreeSet;
 
 import javax.servlet.ServletContext;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
@@ -63,7 +64,7 @@ import com.aurel.track.util.PluginUtils;
 /**
  *
  * @author  Tamas Ruff
- * @version $Revision: 1491 $
+ * @version $Revision: 1799 $
  *
  */
 public class LuceneUtil {
@@ -87,7 +88,6 @@ public class LuceneUtil {
 	public static String BOOLEAN_NO = "nonotfilteredoutbyanalyzer";
 	
 	public static String HIGHLIGHTER_FIELD = "Highlighter";
-	//public static Version VERSION = Version.LUCENE_36;
 	
 	/**
 	 * Lucene index identifier constants
@@ -157,16 +157,6 @@ public class LuceneUtil {
 	 * @param tokenized
 	 * @return
 	 */
-	/*public static Field.Index getLuceneTokenized(int tokenized) {
-		switch (tokenized) {
-		case TOKENIZE.YES:
-			return Field.Index.ANALYZED;
-		case TOKENIZE.NO:
-			return Field.Index.NOT_ANALYZED;
-		default:
-			return Field.Index.NOT_ANALYZED;
-		}
-	}*/
 	
 	/**
 	 * Lookup entity types defined
@@ -288,51 +278,6 @@ public class LuceneUtil {
 	}
 	
 	/**
-	 * Get the runtime type of a field by the field name
-	 * @param fieldName field name can be a rela field name or a synthetized 
-	 * one from real field name and the parameterocde  
-	 * @return
-	 */
-	/*public static IFieldTypeRT getFieldTypeRTByFieldName(String fieldName) {
-		if (fieldName==null || "".equals(fieldName)) {
-			return null;
-		}
-		Map<Integer, TFieldBean> fieldBeanCache = FieldTypeManager.getInstance().getFieldBeanCache();
-		Map<Integer, FieldType> typeCache = FieldTypeManager.getInstance().getTypeCache();
-		Collection<TFieldBean> fieldBeans = fieldBeanCache.values();
-		String[] fieldParts = null; 
-		String realFieldName;
-		String parameterPart = null;
-		int partSeparator = fieldName.indexOf(LuceneUtil.COMPOSITE_FIELDNAME_SEPARATOR);
-		if (partSeparator!=-1) {
-			//is the fieldName a composite part?
-			fieldParts = fieldName.split(LuceneUtil.COMPOSITE_FIELDNAME_SEPARATOR);
-			realFieldName = fieldParts[0];
-			parameterPart = fieldParts[1];
-		} else {
-			//simple field
-			realFieldName = fieldName;
-		}
-		for (TFieldBean fieldBean : fieldBeans) {
-			if (realFieldName.equals(fieldBean.getName())) {
-				FieldType fieldType = (FieldType)typeCache.get(fieldBean.getObjectID());
-				if (fieldType!=null) {
-					if (partSeparator==-1) {
-						//simple field
-						return fieldType.getFieldTypeRT();
-					} else {
-						//part of cascading select 
-						IFieldTypeRT fieldTypeRT = fieldType.getFieldTypeRT();
-						CustomCompositeBaseRT customCompositeFieldTypeRT = (CustomCompositeBaseRT)fieldTypeRT;
-						return customCompositeFieldTypeRT.getCustomFieldType(new Integer(parameterPart).intValue());
-					}
-				}
-			}
-		}
-		return null;
-	}*/
-	
-	/**
 	 * the java Properties file accepts no spaces in the key
 	 * we replace all spaces with underscore  
 	 * @param fieldName
@@ -355,10 +300,6 @@ public class LuceneUtil {
 	public static String synthetizeCompositePartFieldName(String fieldName, Integer parameterCode) {
 		return fieldName + COMPOSITE_FIELDNAME_SEPARATOR + parameterCode;
 	}
-	
-	
-	
-	
 	
 	/**
 	 * lucene field names for external lookup types
@@ -600,7 +541,8 @@ public class LuceneUtil {
 		try {
 			uri = new URI(url.toString());
 		} catch (URISyntaxException e) {
-			LOGGER.error("Getting the lucene index root URI from URL failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the lucene index root URI from URL failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}	  	
 		if (uri == null) {
 			return null;
@@ -733,87 +675,11 @@ public class LuceneUtil {
 	public static List<LabelValueBean> getAnalyzersList(ServletContext servletContext) {
 		Set<String> foundAnalyzersSet = new TreeSet<String>();
 		List<LabelValueBean> analyzersBeans = new ArrayList<LabelValueBean>();
-		
 		//we specify it explicitly because in the worst case we should have at least this analyzer
 		//but may be we should not specify it, because nobody guarantees that this will be included 
 		//in the future lucene implementations also, and then the lucene.jar could not be changed 
 		foundAnalyzersSet.add(StandardAnalyzer.class.getName());
-		//commented out because this three analyzers should be found in the lucene jars anyway, 
-		//and is not sure that in the future lucene implementations this classes will remain
-		//in the same package and with the same name
-		/*foundAnalyzersSet.add(KeywordAnalyzer.class.getName());
-		foundAnalyzersSet.add(SimpleAnalyzer.class.getName());
-		foundAnalyzersSet.add(StopAnalyzer.class.getName());*/
-
-		//try to find the ones either in classes or in a single jar!
-		//if the analyzers are scattered over more jars wich contain the same package (even if empty package in some jars),
-		//then the findSubclassInPackage() will not find them correctly because of the overlapping of packages over more jars	 					
-		
-		//supposing that the analyzers are present in only one package (in classes or in one jar) try to get the core analyzers 
-		//foundAnalyzersSet.addAll(PluginUtils.findSubclassInPackage(StandardAnalyzer.class.getPackage(), Analyzer.class));
-		
-		//Get the other analyzers from the package of the Analyzer.class
-		//foundAnalyzersSet.addAll(PluginUtils.findSubclassInPackage(Analyzer.class.getPackage(), Analyzer.class));								
-
-		//the above two searches should be enough for the standard configuration  
-		//but if new analyzers will be add through an extension jar 
-		//(like lucene-analyzers-2.0.0.jar) it will be searched in all jars beginning with lucene (lucene*.jar)
-					  
-		//get the lucene*.jars		
-		
-		//first try with class.getResource() which returns a path relativ to WEB-INF/classes for most of the application servers
-		//(this is not the case by weblogic, because it returns a path relativ to the bin directory)
-		/*File lib = PluginUtils.getFileFromURL(LuceneUtil.class.getResource("/../lib/"));		
-		FileFilter filter = new FileFilter()
-		{		
-			public
-			boolean accept(File file)
-			{
-				
-				String absolutPath = file.getAbsolutePath();
-				int index = absolutPath.lastIndexOf(File.separator);
-				if (index!=-1 && index<absolutPath.length())
-				{
-					String fileName = file.getAbsolutePath().substring(index+1).toLowerCase();				
-					return fileName.startsWith("lucene") && fileName.endsWith(".jar");		
-				}
-				return false;
-			}
-
-		};
-
-		//get the analyzers from the jars
-		File[] analyzerJars = PluginUtils.getFilesFromDir(lib, filter);
-		if (analyzerJars!=null)
-		{
-			for (int i=0;i<analyzerJars.length;i++)
-			{
-				foundAnalyzersSet.addAll(PluginUtils.getSubclassesFromJarInLib(analyzerJars[i], Analyzer.class));
-			}
-		}
-		
-		//if lucene*.jars not yet found (probably because we use weblogic) try to get the resources through the servlet context 
-		if (analyzerJars == null || analyzerJars.length==0)
-		{
-			URL urlLib = null;
-			try {
-				urlLib = servletContext.getResource("/WEB-INF/lib");
-			} catch (MalformedURLException e) {
-				LOGGER.error("Getting the URL through getServletContext().getResource(path) failed with " + e.getMessage(), e);
-			}
-			lib = PluginUtils.getFileFromURL(urlLib);
-			analyzerJars = PluginUtils.getFilesFromDir(lib, filter);
-			if (analyzerJars!=null)
-			{
-				for (int i=0;i<analyzerJars.length;i++)
-				{
-					foundAnalyzersSet.addAll(PluginUtils.getSubclassesFromJarInLib(analyzerJars[i], Analyzer.class));
-				}
-			}
-		}
-		*/
-
-		//we search just in jars
+				//we search just in jars
 		//(in the classes folder not, because it is not probable that a new analyzer will be written inside the Genji)
 		foundAnalyzersSet.addAll(PluginUtils.getAnalyzersFromJars(servletContext));
 		
@@ -872,49 +738,42 @@ public class LuceneUtil {
 	 * @param site
 	 */
 	public static void configLuceneParameters(TSiteBean site) {
-		//String sitePreferences = site.getPreferences();
 		//get useLucene 
-		String useLuceneStr = site.getUseLucene(); //PropertiesHelper.getProperty(sitePreferences, LuceneUtil.LUCENESETTINGS.USELUCENE);
+		String useLuceneStr = site.getUseLucene();
 		if (useLuceneStr == null || "".equals(useLuceneStr.trim())) {
 			useLuceneStr = "false";
 		}
 		boolean useLucene = Boolean.valueOf(useLuceneStr).booleanValue();
 		LuceneUtil.setUseLucene(useLucene);
-		
 		//get indexAttachments
-		String indexAttachmentsStr = site.getIndexAttachments(); //PropertiesHelper.getProperty(sitePreferences, LuceneUtil.LUCENESETTINGS.INDEXATTACHMENTS);
+		String indexAttachmentsStr = site.getIndexAttachments();
 		if (indexAttachmentsStr == null || "".equals(indexAttachmentsStr.trim())) {
 			indexAttachmentsStr = "false";
 		}
 		boolean indexAttachments = Boolean.valueOf(indexAttachmentsStr).booleanValue();
 		LuceneUtil.setIndexAttachments(indexAttachments);
-		
 		//get reindexOnStartup
-		String reindexOnStartupStr = site.getReindexOnStartup();// PropertiesHelper.getProperty(sitePreferences, LuceneUtil.LUCENESETTINGS.REINDEXONSTARTUP);
+		String reindexOnStartupStr = site.getReindexOnStartup();
 		if (reindexOnStartupStr == null || "".equals(reindexOnStartupStr.trim())) {
 			reindexOnStartupStr = "false";
 		}
 		boolean reindexOnStartup = Boolean.valueOf(reindexOnStartupStr).booleanValue();
 		LuceneUtil.setReindexOnStartup(reindexOnStartup);
 		//get analyzerStr
-		String analyzerStr = site.getAnalyzer(); //PropertiesHelper.getProperty(sitePreferences, LuceneUtil.LUCENESETTINGS.ANALYZER);
+		String analyzerStr = site.getAnalyzer();
 		if (analyzerStr == null || "".equals(analyzerStr.trim())) {
 			analyzerStr = StandardAnalyzer.class.getName();
 		}
-		
 		//get the analyzer class
 		Class analyzerClass = null;
 		try {
 			analyzerClass = Class.forName(analyzerStr.trim());
 		} catch (ClassNotFoundException e) {
-			LOGGER.error("Analyzer class not found. Fall back to StandardAnalyzer." + e.getMessage(), e);
-			//analyzerStr = StandardAnalyzer.class.getName();
+			LOGGER.error("Analyzer class not found. Fall back to StandardAnalyzer." + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
-		
 		if (analyzerClass!=null) {
-			//try to instantiate an analyzer with the Version parameter (since Lucene 3.0)	
 			Class partypes[] = new Class[0];
-			//partypes[0] = Version.class;
 			Constructor ct = null;
 			try {
 				ct = analyzerClass.getConstructor(partypes);
@@ -936,17 +795,16 @@ public class LuceneUtil {
 					analyzer = (Analyzer)analyzerClass.newInstance();
 					LOGGER.info("Instantiating the Analyzer through default constructor");
 				} catch (Exception e) {
-					LOGGER.error("Instantiating the Analyzer through default constructor failed with " + e.getMessage(), e);
+					LOGGER.error("Instantiating the Analyzer through default constructor failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 			}
 		}
-		
 		if (analyzer==null) {
 			LOGGER.warn("Fall back on creating a StandardAnalyzer instance");
 			analyzer = new StandardAnalyzer();
 		}		
 		LuceneUtil.setAnalyzer(analyzer);
-		
 		//get indexPath
 		String indexPath = site.getIndexPath();
 		if (indexPath == null) {
@@ -975,7 +833,8 @@ public class LuceneUtil {
 				dateValue = (Date)value;
 			} catch (Exception e) {
 				LOGGER.error("The type of the lucene value is " + value.getClass().getName() + 
-						". Casting it to Date failed with " + e.getMessage(), e);
+						". Casting it to Date failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 			if (dateValue!=null) {
 				cal.setTime(dateValue);
@@ -997,7 +856,7 @@ public class LuceneUtil {
 			TListTypeBean itemTypeBean = LookupContainer.getItemTypeBean(itemTypeID);
 			if (itemTypeBean!=null) {
 				Integer typeFlag = itemTypeBean.getTypeflag();
-				if (typeFlag!=null && typeFlag.equals(TListTypeBean.TYPEFLAGS.DOCUMENT) || typeFlag.equals(TListTypeBean.TYPEFLAGS.DOCUMENT_SECTION)) {
+				if (typeFlag!=null && (typeFlag.equals(TListTypeBean.TYPEFLAGS.DOCUMENT) || typeFlag.equals(TListTypeBean.TYPEFLAGS.DOCUMENT_SECTION))) {
 					withHighlighter = true;
 				}
 			}

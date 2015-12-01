@@ -1,0 +1,1111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/main/groovy"/>
+	<classpathentry kind="src" path="src/main/resources"/>
+	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry kind="src" path="src/test/resources"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER" exported="true"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container" exported="true"/>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.struts/struts2-core/2.3.20/40e5eee04410c1b3a1b8d7755c2d9ee623401879/struts2-core-2.3.20-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.struts/struts2-core/2.3.20/91173d906a1587a1e24acc9d94f009c10d6cd9ea/struts2-core-2.3.20.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/ognl/ognl/3.0.8/1b6bace3760cdf6dfb2c0fea0b266fa9d802c403/ognl-3.0.8-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/ognl/ognl/3.0.8/37e1aebfde7eb7baebc9ad4f85116ef9009c5fc5/ognl-3.0.8.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.velocity/velocity/1.7/eb11eb70171ed64842b2e5216d5904e21ed162ac/velocity-1.7-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.velocity/velocity/1.7/2ceb567b8f3f21118ecdec129fe1271dbc09aa7a/velocity-1.7.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.logging.log4j/log4j-api/2.3/2083f2f885111e2d672a28b5657c465360559663/log4j-api-2.3-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.logging.log4j/log4j-api/2.3/8d85ef2675d1b45fe78adad021f809bdf12f2eeb/log4j-api-2.3.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.logging.log4j/log4j-core/2.3/25185a3609b7a37dcb152daab7d9855cb4e915b6/log4j-core-2.3-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.logging.log4j/log4j-core/2.3/58a3e964db5307e30650817c5daac1e8c8ede648/log4j-core-2.3.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-log4j12/1.7.9/3fc5d2c49a1d149b05b9318f83c33b59cf70e311/slf4j-log4j12-1.7.9-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-log4j12/1.7.9/5586044ba34544a9318bd7508f738dc967cd5e99/slf4j-log4j12-1.7.9.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/xerces/xercesImpl/2.10.0/3776e74cb2ceb96394a53138e9947a45d744ab35/xercesImpl-2.10.0-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/xerces/xercesImpl/2.10.0/9161654d2afe7f9063455f02ccca8e4ec2787222/xercesImpl-2.10.0.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/xalan/xalan/2.7.1/b1f9b407f3593c99ae2b137bb0733761fcee6595/xalan-2.7.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/xalan/xalan/2.7.1/75f1d83ce27bab5f29fff034fc74aa9f7266f22a/xalan-2.7.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.quartz-scheduler/quartz/2.2.1/4e9e3085eb99c52dc368d144bd3bc61e7aab87ad/quartz-2.2.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.quartz-scheduler/quartz/2.2.1/2bd17ec0c66d0370a932e225f52c23f3dc7cc4ce/quartz-2.2.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.quartz-scheduler/quartz-jobs/2.2.1/1eea115fce1c9c235208556dbc381d8c86ffa328/quartz-jobs-2.2.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.quartz-scheduler/quartz-jobs/2.2.1/b86d51a88bc8ea66b130a93d877a2ae9c6e47c1b/quartz-jobs-2.2.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.mnode.ical4j/ical4j/1.0.6/8e25acbeae848438c8984f6aa390331646aa9748/ical4j-1.0.6-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.mnode.ical4j/ical4j/1.0.6/deb6f8b19e76bf5bed76681fd7cc1cb450e4896c/ical4j-1.0.6.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.eclipse.persistence/eclipselink/2.5.2/877675d1c00f3deedd8b9d6593a4c36dfb708d36/eclipselink-2.5.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.eclipse.persistence/eclipselink/2.5.2/cd2211635f3011e300ca8fedc1ce0e1cf61c175b/eclipselink-2.5.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.netbeans.lib/cvsclient/20060125/cc80bd0085c79be7ed332cbdc1db77498bff1fda/cvsclient-20060125.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.docx4j/docx4j/3.2.1/49702b88080bc22f6cfa58aadbf5422bcd904094/docx4j-3.2.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.docx4j/docx4j/3.2.1/35b2ef9f7eb12efe9708b986ecf6e86cfd77a162/docx4j-3.2.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.docx4j/docx4j-ImportXHTML/3.2.2/754147a52691b665695f0a4e02f8e1445086cf8d/docx4j-ImportXHTML-3.2.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.docx4j/docx4j-ImportXHTML/3.2.2/b57fa30ed77bf16341e3a6b49887193dfd1437eb/docx4j-ImportXHTML-3.2.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/joda-time/joda-time/2.6/828b58d9c5a47da48bc1bcc2515e0ffd3b2dbb07/joda-time-2.6-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/joda-time/joda-time/2.6/5015880733b0bc0ce813a3ed5601064c1d413671/joda-time-2.6.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/net.htmlparser.jericho/jericho-html/3.3/18cedc08965187c24ebc614cb782e0842c49502c/jericho-html-3.3-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/net.htmlparser.jericho/jericho-html/3.3/bf3aa8c67df4683da93d49e98d56cd0bc48f7c62/jericho-html-3.3.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/net.sf.jtidy/jtidy/r938/9860fbae188ae07a1160468af2793000176e85d3/jtidy-r938-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/net.sf.jtidy/jtidy/r938/ab08d87a225a715a69107732b67f21e1da930349/jtidy-r938.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.lucene/lucene-core/5.2.1/d25d67d6dde0268b97e853ff5a33932eec3f800c/lucene-core-5.2.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.lucene/lucene-core/5.2.1/a175590aa8b04e079eb1a136fd159f9163482ba4/lucene-core-5.2.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.lucene/lucene-analyzers-common/5.2.1/8ada2c42651a3121710a7d77a4197a594c62a8dd/lucene-analyzers-common-5.2.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.lucene/lucene-analyzers-common/5.2.1/33b7cc17d5a7c939af6fe3f67563f4709926d7f5/lucene-analyzers-common-5.2.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.lucene/lucene-queryparser/5.2.1/d0611c923b3de8766018021bc20d11f3759dbce0/lucene-queryparser-5.2.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.lucene/lucene-queryparser/5.2.1/73be0a2d4ab3e6b574be1938bfb27f7f730f0ad9/lucene-queryparser-5.2.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.lucene/lucene-highlighter/5.2.1/e8cfc90d555a230c5739632adf15fa94e8545e5c/lucene-highlighter-5.2.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.lucene/lucene-highlighter/5.2.1/dd9bba952e362970a1084201fe4858e08f1ceb1f/lucene-highlighter-5.2.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.pdfbox/pdfbox/1.8.8/b33ef1a2ba89bde7022fe382ec232b15df5e1d7c/pdfbox-1.8.8-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.pdfbox/pdfbox/1.8.8/520d4255b392f56124d693d72f2df61ba1172061/pdfbox-1.8.8.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/friedj/Workspaces/Genji/src/main/webapp/WEB-INF/lib/tm-extractors-1.0.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-kernel/1.6.2/3d3d6df7e00315d535739655ae723e0b2ba26ad4/axis2-kernel-1.6.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-kernel/1.6.2/70d3449eea59cab2df7490d74aeef5d398863913/axis2-kernel-1.6.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-adb/1.6.2/c265266f02d040dfa963e5346521c5c96310265b/axis2-adb-1.6.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-adb/1.6.2/2723f058580c828a1db8517ea73536b52cba5034/axis2-adb-1.6.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-adb-codegen/1.6.2/ccc099c3c5594db6ff5abe2ebebc612f7afcccdb/axis2-adb-codegen-1.6.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-adb-codegen/1.6.2/e35560a5705987694ad872076422bc2519b1baed/axis2-adb-codegen-1.6.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-clustering/1.6.2/d50e1e7c91e62f7edbac112af7982482c2043204/axis2-clustering-1.6.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-clustering/1.6.2/72d56d89ad7d14a1161615cc65b00a8ca60d2ad1/axis2-clustering-1.6.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-fastinfoset/1.6.2/946a56f20f52c2f46b2f1ad11dd00f97281ab723/axis2-fastinfoset-1.6.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-fastinfoset/1.6.2/501f518f9fca2c3178ea8b8c5a98478dbd121474/axis2-fastinfoset-1.6.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-jaxbri/1.6.2/7ae20b7bbfe44630e7b6096687659a93760b91b8/axis2-jaxbri-1.6.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-jaxbri/1.6.2/2dd93ed012dff60c0f377021095b3277bdcbdd4c/axis2-jaxbri-1.6.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-jaxws/1.6.2/bd55b894952cdd0388252d3a3f3ee0b8a70d63cc/axis2-jaxws-1.6.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-jaxws/1.6.2/f3d267134efd82c3693cd1e43373354f794202e9/axis2-jaxws-1.6.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-jibx/1.6.2/71b2d98ffb4f0abc71c82f7d4ad872101926bd07/axis2-jibx-1.6.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-jibx/1.6.2/6151c05666304a1778e9c84dbeae16e69bac26fe/axis2-jibx-1.6.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-json/1.6.2/dbd20be9e559b378f9e37ffefdd108f5d0ca45e2/axis2-json-1.6.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-json/1.6.2/bc703f02c1bb05c659b28e22ab6ff83ffccd00fd/axis2-json-1.6.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-saaj/1.6.2/8cc9c9d7a13e67d047d1168cf6165cb114b848ea/axis2-saaj-1.6.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-saaj/1.6.2/f6c4c57a2ad31a63eee239df9bfeb3f76f4ed7be/axis2-saaj-1.6.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-xmlbeans/1.6.2/137c94ec1e831c2fd76d6a297923aef94ab2a915/axis2-xmlbeans-1.6.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-xmlbeans/1.6.2/f8674c409b6ad7e48ae049f5a620c3be221ab55d/axis2-xmlbeans-1.6.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-mtompolicy/1.6.2/1c4f299b4f31f4c118af7982f8bbfd67887b6d51/axis2-mtompolicy-1.6.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-mtompolicy/1.6.2/adbb6322b5137192207f2f421d7a6eb0d6003b6/axis2-mtompolicy-1.6.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-transport-http/1.6.2/8f92b63d92afd2f3e70a07b72df8e546c8d02db7/axis2-transport-http-1.6.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-transport-http/1.6.2/c8394328e8850a2bd9a21618a3acdd703dc92bd/axis2-transport-http-1.6.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-transport-tcp/1.0.0/34acd71c8382c58115b2fc96177fa501ec285e22/axis2-transport-tcp-1.0.0-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-transport-tcp/1.0.0/622dcc8528fdf9aa3ba7cc290243e213c3bbfb3f/axis2-transport-tcp-1.0.0.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/wsdl4j/wsdl4j/1.6.3/cd1f9241025a8456a07bcf6df4a3c1826d59555c/wsdl4j-1.6.3-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/wsdl4j/wsdl4j/1.6.3/6d106a6845a3d3477a1560008479312888e94f2f/wsdl4j-1.6.3.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/com.ibm.icu/icu4j/3.4.4/2bc219f3f3aed4aa01c3108a78704ddb67953eec/icu4j-3.4.4-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/com.ibm.icu/icu4j/3.4.4/21cf76ccd5eccf7145eeb1d4f398fc6dba3fcede/icu4j-3.4.4.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpcore-nio/4.1.3/eaa2d68feb050d65152845164a8ef9c1e7440212/httpcore-nio-4.1.3-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpcore-nio/4.1.3/e8a6cae8cef01c624e9682c0c9930893bec37aed/httpcore-nio-4.1.3.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpclient/4.1.3/85582464fbed30800bd6587da0c69ff0d88629d4/httpclient-4.1.3-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpclient/4.1.3/16cf5a6b78951f50713d29bfae3230a611dc01f0/httpclient-4.1.3.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/net.sf.jasperreports/jasperreports/6.0.3/b9997a4c59c20cc9d48dfd783ac67057c24cac71/jasperreports-6.0.3-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/net.sf.jasperreports/jasperreports/6.0.3/11b02444fc8e334b24b3368cf72fa690fb517681/jasperreports-6.0.3.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/net.sf.jasperreports/jasperreports-fonts/6.0.0/9f58a664e2a54ff80727fa9784aaac7140318c35/jasperreports-fonts-6.0.0.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.springframework/spring-core/4.1.5.RELEASE/8dc34b838a8bed284f8b0990cfa0d193bc9f75b5/spring-core-4.1.5.RELEASE-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.springframework/spring-core/4.1.5.RELEASE/4f9af02bca3066ea0d5ac450332ca210c5de1957/spring-core-4.1.5.RELEASE.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.springframework/spring-beans/4.1.5.RELEASE/b86af53a9e63e230c32accc70e7d04c9f1e59dd4/spring-beans-4.1.5.RELEASE-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.springframework/spring-beans/4.1.5.RELEASE/5f82fae5c6359ff883e5e06c2c56169286b7e137/spring-beans-4.1.5.RELEASE.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/friedj/Workspaces/Genji/src/main/webapp/WEB-INF/lib/jasperreport-gyreheros-fonts-5.0.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/friedj/Workspaces/Genji/src/main/webapp/WEB-INF/lib/jasperreports-chart-themes-5.0.0.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-email/1.3.3/42785214d80fb6aefcafdc2f8c0e7f542edaf7f4/commons-email-1.3.3-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-email/1.3.3/c1a7133db9008fa1eae082e6158c3f4c128ec27e/commons-email-1.3.3.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/commons-cli/commons-cli/1.2/6c5459816530a1962ac18cd315cc775b1b384329/commons-cli-1.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/commons-cli/commons-cli/1.2/2bf96b7aa8b611c177d329452af1dc933e14501c/commons-cli-1.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.imgscalr/imgscalr-lib/4.2/6f26f63bff5909d200dec424d2e7460190e4ae09/imgscalr-lib-4.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.imgscalr/imgscalr-lib/4.2/e2838f7119361511ef7d54fe0d502bf07f3325eb/imgscalr-lib-4.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/oro/oro/2.0.8/3598e790ecd76ff7eb249853d4d00822ae1a5e71/oro-2.0.8-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/oro/oro/2.0.8/5592374f834645c4ae250f4c9fbb314c9369d698/oro-2.0.8.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi-ooxml/3.9/cdfa57f0caebf0ad20039c4d1df2c20864958aa5/poi-ooxml-3.9-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi-ooxml/3.9/bbe83c739d22eecfacd06d7e0b99ba13277040ed/poi-ooxml-3.9.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/net.sf.mpxj/mpxj/4.7.2/4bc3954a20b34b506598740a162e056cf593e44e/mpxj-4.7.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/net.sf.mpxj/mpxj/4.7.2/d041d9569a81ef0cc279965c8bd73902da901123/mpxj-4.7.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/friedj/Workspaces/Genji/src/main/webapp/WEB-INF/lib/whc-5.0.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/friedj/.m2/repository/json-lib/json-lib/2.5/json-lib-2.5.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/net.sf.ezmorph/ezmorph/1.0.6/298992280d62b944afd0ae9bfe3329f5487dd434/ezmorph-1.0.6-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/net.sf.ezmorph/ezmorph/1.0.6/1e55d2a0253ea37745d33062852fd2c90027432/ezmorph-1.0.6.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy/2.4.3/734d76ea3f49c696e887a1a8da2d39cb84d51fd1/groovy-2.4.3-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy/2.4.3/9c8664435dd00c5316a344eea4b86dc46601d416/groovy-2.4.3.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/friedj/Workspaces/Genji/src/main/webapp/WEB-INF/lib/ganymed-ssh2-build209.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/friedj/Workspaces/Genji/src/main/webapp/WEB-INF/lib/daisydiff-5.0.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/friedj/Workspaces/Genji/src/main/webapp/WEB-INF/lib/dashboard_default-5.0.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/friedj/Workspaces/Genji/src/main/webapp/WEB-INF/lib/langdetect-5.0.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/friedj/Workspaces/Genji/src/main/webapp/WEB-INF/lib/jsonic-1.2.0.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/net.sourceforge.nekohtml/nekohtml/1.9.20/bbcce7c33f92c4febeba14ead515ce1d08399669/nekohtml-1.9.20-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/net.sourceforge.nekohtml/nekohtml/1.9.20/f7c918a3548dd81a15aab0619809b59f9bf4e931/nekohtml-1.9.20.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/friedj/Workspaces/Genji/src/main/webapp/WEB-INF/lib/jnotify-0.94.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/friedj/Workspaces/Genji/src/main/webapp/WEB-INF/lib/track-binding-5.0.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/friedj/Workspaces/Genji/src/main/webapp/WEB-INF/lib/torque-3.3.1-SNAPSHOT.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.jsoup/jsoup/1.8.2/61d6e6947b8309b66abae3f6ea9027b32eb1bc19/jsoup-1.8.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.jsoup/jsoup/1.8.2/64238922c4006c3d0a9951c4c03983ecc6a1e1a0/jsoup-1.8.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/commons-collections/commons-collections/3.2.1/fa095ef874374e5b2a11f8b06c26a5d68c7cb3a4/commons-collections-3.2.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/commons-collections/commons-collections/3.2.1/761ea405b9b37ced573d2df0d1e3a4e0f9edc668/commons-collections-3.2.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/commons-configuration/commons-configuration/1.9/a633263fc047413acf762374a9b44bc891d0c57c/commons-configuration-1.9-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/commons-configuration/commons-configuration/1.9/5e8a4890284cf7eaa9241ace2cc07518d9519d22/commons-configuration-1.9.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/commons-dbcp/commons-dbcp/1.4/9b076ff231434d5403be6599a1347019b12c0def/commons-dbcp-1.4-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/commons-dbcp/commons-dbcp/1.4/30be73c965cc990b153a100aaaaafcf239f82d39/commons-dbcp-1.4.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.torque/village/3.3/b385a0e0e53bacdfb5291a4fcd2f086c6b38c017/village-3.3-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.torque/village/3.3/caceea0167569037eae17aeabe53ddd5f0919145/village-3.3.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/net.sourceforge.jexcelapi/jxl/2.6.12/7e5ce7fe751bac58c5fe9eaf4600fd7f2d1bb112/jxl-2.6.12-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/net.sourceforge.jexcelapi/jxl/2.6.12/7faf62e0697f7a88954622dfe8c8de33ed142ac7/jxl-2.6.12.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/javax.servlet/servlet-api/2.5/21599814ad9a605b86f3e6381571beccd861a32/servlet-api-2.5-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/javax.servlet/servlet-api/2.5/5959582d97d8b61f4d154ca9e495aafd16726e34/servlet-api-2.5.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/javax.servlet/jsp-api/2.0/e6def06602b51b1d9be51f6c3fcdf163ecd01644/jsp-api-2.0.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.firebirdsql.jdbc/jaybird-jdk16/2.2.5/4ecb85b48f78cf0b47a5edbf596bb20e54f84156/jaybird-jdk16-2.2.5-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.firebirdsql.jdbc/jaybird-jdk16/2.2.5/194e07ca6727556f30b4aba0e16f4bac02d0e48d/jaybird-jdk16-2.2.5.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/mysql/mysql-connector-java/5.1.34/46deba4adbdb4967367b013cbc67b7f7373da60a/mysql-connector-java-5.1.34.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/junit/junit/4.12/a6c32b40bf3d76eca54e3c601e5d1470c86fcdfa/junit-4.12-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/junit/junit/4.12/2973d150c0dc1fefe998f834810d68f278ea58ec/junit-4.12.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.powermock/powermock-module-junit4/1.6.2/7c8ba5e647cc71f6d6c0970ef93f237f72d2d8f3/powermock-module-junit4-1.6.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.powermock/powermock-module-junit4/1.6.2/dff58978da716e000463bc1b08013d6a7cf3d696/powermock-module-junit4-1.6.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.powermock/powermock-api-mockito/1.6.2/7d6c1178768bf46d178ae78afae6e30170f44639/powermock-api-mockito-1.6.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.powermock/powermock-api-mockito/1.6.2/c213230ae20a7b422f3d622a261d0e3427d2464c/powermock-api-mockito-1.6.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-server/9.2.6.v20141205/5b159486e68b903f214a2f84dd78e127ecaefed1/jetty-server-9.2.6.v20141205-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-server/9.2.6.v20141205/5960eb385ded42360045447185a0510365f811dc/jetty-server-9.2.6.v20141205.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-webapp/9.2.6.v20141205/ba582a7825f68cd4d57a38efe3f5824c7407b858/jetty-webapp-9.2.6.v20141205-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-webapp/9.2.6.v20141205/68da2c29c6bedac8d502839fea66b91e05077a68/jetty-webapp-9.2.6.v20141205.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-jsp/9.2.6.v20141205/cb50aed8f93c48a291f96e631e709cc6b7f1423b/jetty-jsp-9.2.6.v20141205-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-jsp/9.2.6.v20141205/52b95a36ae853a44874e452689a8b96f11eaffbd/jetty-jsp-9.2.6.v20141205.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.11.1.1/df4b50061e8e4c348ce243b921f53ee63ba9bbe1/derby-10.11.1.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.derby/derbynet/10.11.1.1/9bcb0219c40a3153952d591986f3b136268fa810/derbynet-10.11.1.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.struts/struts2-junit-plugin/2.3.20/cb3bcd707ee0b46b595ef3c8b241bc074c31e26/struts2-junit-plugin-2.3.20-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.struts/struts2-junit-plugin/2.3.20/768c3b9cd26af5156ed2ebc4c3831d5d9197333/struts2-junit-plugin-2.3.20.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.struts.xwork/xwork-core/2.3.20/4f232edd0d9f24286ca3b113b2c47ce0178f7adb/xwork-core-2.3.20-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.struts.xwork/xwork-core/2.3.20/ab93f711f36ee76dae6a1894e5333b64c24fcc9a/xwork-core-2.3.20.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.freemarker/freemarker/2.3.19/ab4cb735b398b842a67e0010ab4d99856bae20bb/freemarker-2.3.19-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.freemarker/freemarker/2.3.19/a251045e5fadd02824d17f1aa8c412accf1aa1c9/freemarker-2.3.19.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/commons-fileupload/commons-fileupload/1.3.1/a1fa20f7f3ad210f4b2eb51b63be3f0273be263a/commons-fileupload-1.3.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/commons-fileupload/commons-fileupload/1.3.1/c621b54583719ac0310404463d6d99db27e1052c/commons-fileupload-1.3.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/commons-io/commons-io/2.2/8d6b98f21262995489a8418fff8da992d7e25c1e/commons-io-2.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/commons-io/commons-io/2.2/83b5b8a7ba1c08f9e8c8ff2373724e33d3c1e22a/commons-io-2.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.9/c2b49a585e2f433c95cec359a75e0ee4366a1e35/slf4j-api-1.7.9-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.9/872ec63b41181e29ad5a3723f1417356e2d2c0f2/slf4j-api-1.7.9.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/xml-apis/xml-apis/1.4.01/5502da0c4c0a7916a604356ef19394ccfa30cd4b/xml-apis-1.4.01-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/xml-apis/xml-apis/1.4.01/3789d9fada2d3d458c4ba2de349d48780f381ee3/xml-apis-1.4.01.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/xalan/serializer/2.7.1/4b4b18df434451249bb65a63f2fb69e215a6a020/serializer-2.7.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/c3p0/c3p0/0.9.1.1/5a069468419fe3910c80d13a8971fd50ff2c77a6/c3p0-0.9.1.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/c3p0/c3p0/0.9.1.1/302704f30c6e7abb7a0457f7771739e03c973e80/c3p0-0.9.1.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/commons-codec/commons-codec/1.8/ea7b97bfc46dc4b28bc53af3e530199a657933bf/commons-codec-1.8-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/commons-codec/commons-codec/1.8/af3be3f74d25fc5163b54f56a0d394b462dafafd/commons-codec-1.8.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/backport-util-concurrent/backport-util-concurrent/3.1/eff8366924cf1a666dd20aa632febf1c2c05b8cb/backport-util-concurrent-3.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/backport-util-concurrent/backport-util-concurrent/3.1/682f7ac17fed79e92f8e87d8455192b63376347b/backport-util-concurrent-3.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.eclipse.persistence/javax.persistence/2.1.0/da95a959929234c57b988644696c065d79774fc4/javax.persistence-2.1.0-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.eclipse.persistence/javax.persistence/2.1.0/5bab675816dbe0f64bb86004b108bf2a00292358/javax.persistence-2.1.0.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.eclipse.persistence/commonj.sdo/2.1.1/6de70daec63068c07df2a87507cafb2cc34ef2b1/commonj.sdo-2.1.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.eclipse.persistence/commonj.sdo/2.1.1/90d4c89ce0a69f58619f1a247bbf420122139ff5/commonj.sdo-2.1.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.plutext/jaxb-svg11/1.0.2/d2ecea2f14168d693bf68326ebea2ebfc6144114/jaxb-svg11-1.0.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.plutext/jaxb-svg11/1.0.2/3c0cd54d5691f5b5f8c60ed0c06353ff1db424e1/jaxb-svg11-1.0.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.plutext/jaxb-xslfo/1.0.1/b81e98b51687771f8a0b12406ea142a6e5dc6539/jaxb-xslfo-1.0.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.plutext/jaxb-xslfo/1.0.1/85441209652b216f61160445b399f5bc97e370c6/jaxb-xslfo-1.0.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.plutext/jaxb-xmldsig-core/1.0.0/a41559be6a94177daf0813f63d6ec81b11b3c0d3/jaxb-xmldsig-core-1.0.0-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.plutext/jaxb-xmldsig-core/1.0.0/57514aa2f72111cfbc0a532ce88782735370e1e5/jaxb-xmldsig-core-1.0.0.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/net.engio/mbassador/1.1.10/8db6ab7025bba56190d9308852c626eda9ca412b/mbassador-1.1.10-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/net.engio/mbassador/1.1.10/ca527ef1806b999b1efdc54ad62ec4984c59fefe/mbassador-1.1.10.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.slf4j/jcl-over-slf4j/1.7.5/92082dc61252ea28d770c32c969ce809949526fc/jcl-over-slf4j-1.7.5-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.slf4j/jcl-over-slf4j/1.7.5/cd5970bd13fa85f7bed41ca606d6daf7cbf1365/jcl-over-slf4j-1.7.5.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.avalon.framework/avalon-framework-api/4.3.1/5c04230666be057c5a3ad1558575fc9a886fc1b6/avalon-framework-api-4.3.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.avalon.framework/avalon-framework-api/4.3.1/2dacadeb49bc14420990b1f28897d46f96e2181d/avalon-framework-api-4.3.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.avalon.framework/avalon-framework-impl/4.3.1/9f779f9b35461a7767a54bc835d21bd2a97ad6e/avalon-framework-impl-4.3.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.avalon.framework/avalon-framework-impl/4.3.1/2d5f5a07fd14513ce6d7a7bfaff69419c26dbd0b/avalon-framework-impl-4.3.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/net.arnx/wmf2svg/0.9.0/81463960aaccb28779684e9faddb059dcb51f232/wmf2svg-0.9.0-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/net.arnx/wmf2svg/0.9.0/7b27809b43acb48c1ca65d68219256192a5a887b/wmf2svg-0.9.0.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi-scratchpad/3.8/735366c3d3584af5c93259d25026c9a98c34b979/poi-scratchpad-3.8-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi-scratchpad/3.8/33ef3eb7bd97c0dcdf2873b0e0a0938f013d410c/poi-scratchpad-3.8.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.antlr/stringtemplate/3.2.1/105785687b0c85a7f70cddfdc3a391bcab121872/stringtemplate-3.2.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.antlr/stringtemplate/3.2.1/59ec8083721eae215c6f3caee944c410d2be34de/stringtemplate-3.2.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/17.0/7ca0efbeb87ca845b5d7a0ac9c21a4b7b95f7b28/guava-17.0-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/17.0/9c6ef172e8de35fd8d4d8783e4821e57cdef7445/guava-17.0.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.docx4j/xhtmlrenderer/3.0.0/d83d8b2e0616c3d056a8626f39e2977154fb8711/xhtmlrenderer-3.0.0-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.docx4j/xhtmlrenderer/3.0.0/14c766017bd26c1b1f96f170833845bc1bab6aeb/xhtmlrenderer-3.0.0.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.lucene/lucene-queries/5.2.1/8feb8bf6695b154de56f0dd5c29617383217f69e/lucene-queries-5.2.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.lucene/lucene-queries/5.2.1/5bada7fe2251e097413a23eefc8c87d009dac24f/lucene-queries-5.2.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.lucene/lucene-sandbox/5.2.1/f361988e5a94ab7ed36cc1e7caea056210c18362/lucene-sandbox-5.2.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.lucene/lucene-sandbox/5.2.1/8d2355e5d8c95a4c3188ee2734a9f98829b2b10b/lucene-sandbox-5.2.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.lucene/lucene-join/5.2.1/299e6c87a91b43ce3508d4a65c4f22a1e4cd730f/lucene-join-5.2.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.lucene/lucene-join/5.2.1/168e9c9b826faf60489a25645e4322fb8d130574/lucene-join-5.2.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.lucene/lucene-memory/5.2.1/797e458eb20f8e9debdbac4b81c18c51b283f168/lucene-memory-5.2.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.lucene/lucene-memory/5.2.1/601f5404c137600488f5b2f2ca635db4ac9fd0cb/lucene-memory-5.2.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.pdfbox/fontbox/1.8.8/5cffa16f414227ffe24160b462cc3535347f7cd/fontbox-1.8.8-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.pdfbox/fontbox/1.8.8/d65d291533631de29b0ee61a9527d08e24ca579a/fontbox-1.8.8.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.pdfbox/jempbox/1.8.8/62988939597a9fa8599a65da126108ae4d38f9ac/jempbox-1.8.8-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.pdfbox/jempbox/1.8.8/5a6cd3d3bf9464a8d7f06127a4847d6b0e840fe6/jempbox-1.8.8.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.ws.commons.axiom/axiom-api/1.2.13/4b4df7c99430acbf2af9c5cb533034c7b5b09d1b/axiom-api-1.2.13-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.ws.commons.axiom/axiom-api/1.2.13/5a7a834dddbb1870cc167208b72cc0203af44c21/axiom-api-1.2.13.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.ws.commons.axiom/axiom-impl/1.2.13/8a28566a439e7b9b508c8e6efff7b0ce0b5409d7/axiom-impl-1.2.13-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.ws.commons.axiom/axiom-impl/1.2.13/2f3ea3918bee1cadf73c33e2af306d1e1793b7db/axiom-impl-1.2.13.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.geronimo.specs/geronimo-ws-metadata_2.0_spec/1.1.2/fe75d087f7bd9627b855b37de6a9fddb982d109d/geronimo-ws-metadata_2.0_spec-1.1.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.geronimo.specs/geronimo-ws-metadata_2.0_spec/1.1.2/7be9f049b4f0f0cf045675be5a0ff709d57cbc6a/geronimo-ws-metadata_2.0_spec-1.1.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1/1068f7bb97afc27b92be277a8c1a2c25e9a1196d/geronimo-jta_1.1_spec-1.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1/fe8d9046737540d728e4b82cf26dcdd8bf4b0eb1/geronimo-jta_1.1_spec-1.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/commons-httpclient/commons-httpclient/3.1/c6d6ea83d0cf16d3ed9c1b7e600fa0f60b9d3159/commons-httpclient-3.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/commons-httpclient/commons-httpclient/3.1/964cd74171f427720480efdec40a7c7f6e58426a/commons-httpclient-3.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.ws.commons.schema/XmlSchema/1.4.7/48c75b575fedcb06f9170deb08954f4f526af8a5/XmlSchema-1.4.7-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.ws.commons.schema/XmlSchema/1.4.7/a667ab231d6333105db86efe4a96724f50913e1f/XmlSchema-1.4.7.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/javax.ws.rs/jsr311-api/1.0/f6445f7a5a49b1f95e479b95ff53daa0bc0bdfa0/jsr311-api-1.0-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/javax.ws.rs/jsr311-api/1.0/26338fba74f5934a785b02666b3c16d2b020f843/jsr311-api-1.0.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-codegen/1.6.2/947a2478b6cb8ca947bc814dbe6b1f36955d85b2/axis2-codegen-1.6.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-codegen/1.6.2/ec83db0fe828538e699318776829eff25754d053/axis2-codegen-1.6.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.tomcat/tribes/6.0.16/50b300ff415ef0cf3af4f14ec03131cdcb019efa/tribes-6.0.16.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.tomcat/juli/6.0.16/14069297f6bc3b64e25fe123655c5bb42c44adef/juli-6.0.16.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/com.sun.xml.fastinfoset/FastInfoset/1.2.7/b4239a4c568fa7cfa935026edf0980899e9e582e/FastInfoset-1.2.7-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/com.sun.xml.fastinfoset/FastInfoset/1.2.7/ad5d03a88f48c00f9c50ad46874847cd833e223e/FastInfoset-1.2.7.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-java2wsdl/1.6.2/4aff39f85beed365f7b3f3f74550d04c270321de/axis2-java2wsdl-1.6.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-java2wsdl/1.6.2/919a59f686e013572f32817a1e85d666594c035c/axis2-java2wsdl-1.6.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/com.sun.xml.bind/jaxb-impl/2.1.7/1d5cda116ca239a32029bdd1866dfaf98cd0d4fb/jaxb-impl-2.1.7-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/com.sun.xml.bind/jaxb-impl/2.1.7/923680ab18e09563a3d733f314b4d446541b2aba/jaxb-impl-2.1.7.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/com.sun.xml.bind/jaxb-xjc/2.1.7/666cf1fd38220a845f32ff188f1fb2dd6d8965b/jaxb-xjc-2.1.7-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/com.sun.xml.bind/jaxb-xjc/2.1.7/11158463551315974014d1956fe431b7c0591d80/jaxb-xjc-2.1.7.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/javax.xml.bind/jaxb-api/2.1/6ce58f6598e763a7f3180ef3a747332695cdd86f/jaxb-api-2.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/javax.xml.bind/jaxb-api/2.1/d68570e722cffe2000358ce9c661a0b0bf1ebe11/jaxb-api-2.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.geronimo.specs/geronimo-annotation_1.0_spec/1.1/1f9632f935c11e144dfbe220ed84e0e614ca9414/geronimo-annotation_1.0_spec-1.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.geronimo.specs/geronimo-annotation_1.0_spec/1.1/376152978a2947bcb42ce799696316b2303e6745/geronimo-annotation_1.0_spec-1.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.geronimo.specs/geronimo-jaxws_2.2_spec/1.0/63b0e0d599088cbb1192889cdcea2f441c2b76d9/geronimo-jaxws_2.2_spec-1.0-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.geronimo.specs/geronimo-jaxws_2.2_spec/1.0/767918cc18994873c05f1109356c2178d03c8cc9/geronimo-jaxws_2.2_spec-1.0.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-metadata/1.6.2/e3497165f3a6e30630442eb1df107e9e2f1de4e9/axis2-metadata-1.6.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-metadata/1.6.2/63430ffcc0f7a0a9f2b6780055af12e2c1ebf736/axis2-metadata-1.6.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/xml-resolver/xml-resolver/1.2/6b72432ea1c5296783007365bb7c9a6b39dfb730/xml-resolver-1.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/xml-resolver/xml-resolver/1.2/3d0f97750b3a03e0971831566067754ba4bfd68c/xml-resolver-1.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.jibx/jibx-bind/1.2/58f6610159a2bfc6c1a97afaa1381347175a8d3b/jibx-bind-1.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.jibx/jibx-run/1.2/d47999b02fe7c5ebd6149e4c85bfcf2a63dab38a/jibx-run-1.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.codehaus.jettison/jettison/1.0-RC2/ac3656096d04956dc2decab25d34f55f0dfbb141/jettison-1.0-RC2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.codehaus.jettison/jettison/1.0-RC2/ed8b88087fc3fdce7f7c6262c9609ebdc9276fa1/jettison-1.0-RC2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-transport-local/1.6.2/311763cd329e6a75b7ac3e4f472d8485b21b0264/axis2-transport-local-1.6.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-transport-local/1.6.2/bababc6dca7f60596522a9c70a634de9ed71fdfa/axis2-transport-local-1.6.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.geronimo.specs/geronimo-saaj_1.3_spec/1.0.1/358dc9c7c3c7a727e61bcfd804d30bbb9faba11d/geronimo-saaj_1.3_spec-1.0.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.geronimo.specs/geronimo-saaj_1.3_spec/1.0.1/dbcfd905e90ac3fc292d890c5c31e8073091938e/geronimo-saaj_1.3_spec-1.0.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.ws.commons.axiom/axiom-dom/1.2.13/edb54c343472f32bcfbe6521c371a209a321589f/axiom-dom-1.2.13-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.ws.commons.axiom/axiom-dom/1.2.13/a6ff6f70773ab9ecb303a5b0e44cea0558490fcc/axiom-dom-1.2.13.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.xmlbeans/xmlbeans/2.3.0/8704dcf5c9f10265a08f5020b0fab70eb64ac3c4/xmlbeans-2.3.0.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.ant/ant/1.7.0/58ec0e378f1d33cb72a92ee3a9442909789090db/ant-1.7.0-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.ant/ant/1.7.0/9746af1a485e50cf18dcb232489032a847067066/ant-1.7.0.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.ant/ant-launcher/1.7.0/e7e30789211e074aa70ef3eaea59bd5b22a7fa7a/ant-launcher-1.7.0.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-transport-base/1.0.0/82e5a9b6491327f6aa1b5b95cefdbb8652919cd8/axis2-transport-base-1.0.0-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.axis2/axis2-transport-base/1.0.0/53f066cb345ab67ff80778b1d7ec61337c5098f/axis2-transport-base-1.0.0.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/commons-beanutils/commons-beanutils/1.9.0/e86c2e6737d44c2d5060759d091dcd2ef7f37f21/commons-beanutils-1.9.0-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/commons-beanutils/commons-beanutils/1.9.0/427662b038bd8f52097f783f6ea163e45851b2a1/commons-beanutils-1.9.0.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/commons-digester/commons-digester/2.1/32d198e5ebef012249b225118c7cb9caae56c4d8/commons-digester-2.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/commons-digester/commons-digester/2.1/73a8001e7a54a255eef0f03521ec1805dc738ca0/commons-digester-2.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/com.itextpdf/itextpdf/5.5.0/160f4e50572d806ab6b3e26bdbddefe4cf79e10e/itextpdf-5.5.0-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/com.itextpdf/itextpdf/5.5.0/340373a1bc1dec8ed7cb9109b797581aea0a92a1/itextpdf-5.5.0.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/com.itextpdf/itext-pdfa/5.5.0/21edf7633f4c6c7f183a0918aa3d39822c2e7449/itext-pdfa-5.5.0-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/com.itextpdf/itext-pdfa/5.5.0/383f684d97a059af7a1ea9edde332cbc6df0d3ed/itext-pdfa-5.5.0.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/jfree/jcommon/1.0.15/6495e4f3777a24fd34c1544a8606243a600365c3/jcommon-1.0.15.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/jfree/jfreechart/1.0.12/47e8a2e9e052d292e416a6fd5292a77b54c48fac/jfreechart-1.0.12.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.eclipse.jdt.core.compiler/ecj/4.3.1/916fccb96a601b4dc42f4525ea9fa26ff8219f33/ecj-4.3.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.eclipse.jdt.core.compiler/ecj/4.3.1/21582b0e662b9e54fc6f0f2721d36f753ce7c58c/ecj-4.3.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.1.4/d92641aa83a12beedc7b3aa3a4823474c8853a86/jackson-core-2.1.4-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.1.4/8896e10f8b07918b60c835b45a05507fa213e84/jackson-core-2.1.4.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.1.4/6f02b51e0b3ae4d4ef66b159a0801da6d94d8c67/jackson-databind-2.1.4-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.1.4/61d1e5aaf474462b0c9bfef8aeb6a7205bd56a90/jackson-databind-2.1.4.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.1.4/9b01109622284882d8e3ced8914d2fbe25b79c1a/jackson-annotations-2.1.4-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.1.4/76b956e45e19e4e081a9c52a68a3c078e3b2cf17/jackson-annotations-2.1.4.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/javax.mail/mail/1.4.5/98d67d8444a044109dcbb4ae4690022b5be1de44/mail-1.4.5-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/javax.mail/mail/1.4.5/85319c87280f30e1afc54c355f91f44741beac49/mail-1.4.5.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/javax.activation/activation/1.1.1/159e45688875fdabff19c9ceb7335aefe4df8339/activation-1.1.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/javax.activation/activation/1.1.1/485de3a253e23f645037828c07f1d7f1af40763a/activation-1.1.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi-ooxml-schemas/3.9/4c514498f0e82cccfdd3208b9caff2f45158db4a/poi-ooxml-schemas-3.9.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/dom4j/dom4j/1.6.1/a8e7149359255f43e0e5e3b1837948f9ed5861fb/dom4j-1.6.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/dom4j/dom4j/1.6.1/5d3ccc056b6f056dbf0dddfdf43894b9065a8f94/dom4j-1.6.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/com.jgoodies/jgoodies-binding/2.10.0/ac78d65283bed2cc0958168423807420f7488831/jgoodies-binding-2.10.0-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/com.jgoodies/jgoodies-binding/2.10.0/63fd60f7e0a5fc712032915e988b8b36a290fe97/jgoodies-binding-2.10.0.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/xom/xom/1.2.5/89b7d070b6725921605a900b070bd9034ede720d/xom-1.2.5-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/xom/xom/1.2.5/4166493b9f04e91b858ba4150b28b4d197f8f8ea/xom-1.2.5.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/commons-pool/commons-pool/1.5.4/3e226507788e09f02eef641e868624fb823af6e6/commons-pool-1.5.4-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/commons-pool/commons-pool/1.5.4/75b6e20c596ed2945a259cea26d7fadd298398e6/commons-pool-1.5.4.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/javax.resource/connector-api/1.5/a8f177930b0abd2422c6b9601c756d8c48278add/connector-api-1.5-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/javax.resource/connector-api/1.5/a5cee35dc703a9d9ea305cc3f4a2baa7c4919145/connector-api-1.5.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.hamcrest/hamcrest-core/1.3/1dc37250fbc78e23a65a67fbbaf71d2e9cbc3c0b/hamcrest-core-1.3-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.hamcrest/hamcrest-core/1.3/42a25dc3219429f0e5d060061f71acb49bf010a0/hamcrest-core-1.3.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.powermock/powermock-module-junit4-common/1.6.2/dcdb3e2dc21583010784d757bb0cb1881cf436b2/powermock-module-junit4-common-1.6.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.powermock/powermock-module-junit4-common/1.6.2/48dd7406e11a14fe2ae4ab641e1f27510e896640/powermock-module-junit4-common-1.6.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.powermock/powermock-api-support/1.6.2/4a6d9807817a304f74fe1887619b7b1f173ecbd1/powermock-api-support-1.6.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.powermock/powermock-api-support/1.6.2/93b21413b4ee99b7bc0dd34e1416fdca96866aaf/powermock-api-support-1.6.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/javax.servlet/javax.servlet-api/3.1.0/ab3976d4574c48d22dc1abf6a9e8bd0fdf928223/javax.servlet-api-3.1.0-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/javax.servlet/javax.servlet-api/3.1.0/3cd63d075497751784b2fa84be59432f4905bf7c/javax.servlet-api-3.1.0.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-http/9.2.6.v20141205/93c61cf1367cb58cc940dd521de43790211c7fa7/jetty-http-9.2.6.v20141205-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-http/9.2.6.v20141205/5484771191612c1f5a57466865b7014ff56886ce/jetty-http-9.2.6.v20141205.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-io/9.2.6.v20141205/82e5af35739c55554e7add2604e215d2684b8f20/jetty-io-9.2.6.v20141205-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-io/9.2.6.v20141205/11b84cc7078745fca844bd2fb95c2b4f818eafc2/jetty-io-9.2.6.v20141205.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-xml/9.2.6.v20141205/163bb69e2944d48c0407e2ef84038c7b7f48d114/jetty-xml-9.2.6.v20141205-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-xml/9.2.6.v20141205/2f51a87d2c962257304391aa29e1c0030774c4ac/jetty-xml-9.2.6.v20141205.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-servlet/9.2.6.v20141205/9ee5b878c234eb67dbe16dcf44934a0a4dbc29a6/jetty-servlet-9.2.6.v20141205-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-servlet/9.2.6.v20141205/26aa018ef20780e8a900ae7fc95f59884d3095b/jetty-servlet-9.2.6.v20141205.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty.toolchain/jetty-schemas/3.1.M0/e15af2e59c6415e2d722f174aa579fc02c653252/jetty-schemas-3.1.M0-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty.toolchain/jetty-schemas/3.1.M0/6179bafb6ed2eb029862356df6713078c7874f85/jetty-schemas-3.1.M0.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/javax.servlet.jsp/javax.servlet.jsp-api/2.3.1/5aa9e2bf86d7a7d56cc24690b87ff29c1a1d2245/javax.servlet.jsp-api-2.3.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/javax.servlet.jsp/javax.servlet.jsp-api/2.3.1/95c630902565feda8155eb32d46064ef348435fc/javax.servlet.jsp-api-2.3.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.glassfish.web/javax.servlet.jsp/2.3.2/d2ff0f10493f5538e8123cbfa723a1c9311fd6aa/javax.servlet.jsp-2.3.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.glassfish.web/javax.servlet.jsp/2.3.2/613f624102267b1397e845b3181a72273bd6f399/javax.servlet.jsp-2.3.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty.orbit/javax.servlet.jsp.jstl/1.2.0.v201105211821/3b9bbbf21e72c1e1feede7d74c4b9f619309713d/javax.servlet.jsp.jstl-1.2.0.v201105211821-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty.orbit/javax.servlet.jsp.jstl/1.2.0.v201105211821/db594f1c8fc00d536f6d135bd7f8a9a99a6b8eea/javax.servlet.jsp.jstl-1.2.0.v201105211821.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.glassfish.web/javax.servlet.jsp.jstl/1.2.2/88f20e2e00fb058ae6dba12e7e59e348ef19115c/javax.servlet.jsp.jstl-1.2.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.glassfish.web/javax.servlet.jsp.jstl/1.2.2/5b2e83ef42b4eef0a7e41d43bb1d4b835f59ac7a/javax.servlet.jsp.jstl-1.2.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty.orbit/org.eclipse.jdt.core/3.8.2.v20130121/add6b2dc7e55094f98db1c8b0decd91e2cbbd337/org.eclipse.jdt.core-3.8.2.v20130121-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty.orbit/org.eclipse.jdt.core/3.8.2.v20130121/ebb04771ae21dec8682e4153e97404d9933a9c13/org.eclipse.jdt.core-3.8.2.v20130121.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.springframework/spring-test/3.0.5.RELEASE/1d4bea4059bc8711933bc322b09875dc3cd3c1c3/spring-test-3.0.5.RELEASE-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.springframework/spring-test/3.0.5.RELEASE/4540fba71d41869a6ed5fb504317f2e702761690/spring-test-3.0.5.RELEASE.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.springframework/spring-context/3.0.5.RELEASE/b1f911a36626dc3e134a63fba5f724d5b29c9589/spring-context-3.0.5.RELEASE-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.springframework/spring-context/3.0.5.RELEASE/6b05e397566cc7750d2d25f81a7441fe1aeecb75/spring-context-3.0.5.RELEASE.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-lang3/3.2/f9fb5b47b7153ead5e41805351cb422edd934d11/commons-lang3-3.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-lang3/3.2/4ff27bd725ae39f616e4ecdd08c27978cef749ec/commons-lang3-3.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm/5.0.2/90dc6bd89bd1989906d56bdf0268128a13d94e82/asm-5.0.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm/5.0.2/baa28ca0269720d94c9f0cafef35a9ac63991de7/asm-5.0.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-commons/5.0.2/90dc6bd89bd1989906d56bdf0268128a13d94e82/asm-commons-5.0.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-commons/5.0.2/33fd77f7d9f985e4b9bee5e4c3a4e480c491c404/asm-commons-5.0.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/antlr/antlr/2.7.7/83cd2cd674a217ade95a4bb83a8a14f351f48bd0/antlr-2.7.7.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/com.lowagie/itext/2.1.7/c4a56ee84b87e8737e6b7769fcfeb97019003a14/itext-2.1.7-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/com.lowagie/itext/2.1.7/892bfb3e97074a61123b3b2d7caa2db112750864/itext-2.1.7.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.xmlgraphics/xmlgraphics-commons/1.5/15160c7e836fbb2f4191c2b722768bbe8e7ffa47/xmlgraphics-commons-1.5-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.xmlgraphics/xmlgraphics-commons/1.5/7fb5c2b2c18f0e87fbe9bded16429a5d7cc2dc2b/xmlgraphics-commons-1.5.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/com.sun.xml.ws/jaxws-tools/2.1.3/43b585f6bc99db0d093f1d550d0bd9f38499e4ec/jaxws-tools-2.1.3-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/com.sun.xml.ws/jaxws-tools/2.1.3/186bcb83b3134f1c9a55ea1368734acb426d4676/jaxws-tools-2.1.3.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/bcel/bcel/5.1/bc7aaa08aa063e0eb08c4395c83ad15214a85090/bcel-5.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/bcel/bcel/5.1/a3288784cacd97a429c0cf177c84225523790f87/bcel-5.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/com.jgoodies/jgoodies-common/1.7.0/fd1743058a89b4d43ee6ec2b0ee02c49608e8fa4/jgoodies-common-1.7.0-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/com.jgoodies/jgoodies-common/1.7.0/d620fae11a79a9f630771d348f412bfdbc39a370/jgoodies-common-1.7.0.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.powermock/powermock-core/1.6.2/506db3db0d4e0697842a5b13908c7938ea6fd44/powermock-core-1.6.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.powermock/powermock-core/1.6.2/ea04e79244e19dcf0c3ccf6863c5b028b4b58c9c/powermock-core-1.6.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.powermock/powermock-reflect/1.6.2/1a83873d66953755345bedcfe7d7676bd919380/powermock-reflect-1.6.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.powermock/powermock-reflect/1.6.2/1af1bbd1207c3ecdcf64973e6f9d57dcd17cc145/powermock-reflect-1.6.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-util/9.2.6.v20141205/770633689f0caad37efe0ec2181ec0a08dd3e498/jetty-util-9.2.6.v20141205-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-util/9.2.6.v20141205/fdfa0b969d99a2dfb2a46c0ff00251d7e6c7b2bb/jetty-util-9.2.6.v20141205.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-security/9.2.6.v20141205/3d2a0d1a04916605f9f82a66f90beccaa257f32c/jetty-security-9.2.6.v20141205-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-security/9.2.6.v20141205/513537c2a4f7d2a44120f4ff5fdc7fc2c8bc9357/jetty-security-9.2.6.v20141205.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.springframework/spring-aop/3.0.5.RELEASE/b3cb2378715a780add6fecf9d316fb899c153adb/spring-aop-3.0.5.RELEASE-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.springframework/spring-aop/3.0.5.RELEASE/c7a17803cc10512e26e285073639543f0c7c764/spring-aop-3.0.5.RELEASE.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.springframework/spring-expression/3.0.5.RELEASE/48ed82e050e351f5272c67a0c397c4e06f8a6a6d/spring-expression-3.0.5.RELEASE-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.springframework/spring-expression/3.0.5.RELEASE/5b8e53877cb58c94f15a0d8172da3569f4b4f3fb/spring-expression-3.0.5.RELEASE.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.springframework/spring-asm/3.0.5.RELEASE/a7af48d717c27d3e24c3b91f2ee7db071580bc5c/spring-asm-3.0.5.RELEASE-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.springframework/spring-asm/3.0.5.RELEASE/7f22a0e9f325e6565b4ea56b479ad76311d146b/spring-asm-3.0.5.RELEASE.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-tree/5.0.2/90dc6bd89bd1989906d56bdf0268128a13d94e82/asm-tree-5.0.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-tree/5.0.2/407b3da4cdb780701be40ccf6e8ef540f3d5a249/asm-tree-5.0.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/regexp/regexp/1.2/1ef2d52fc0c52ab09a213d1c61f9c4072597ba1a/regexp-1.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.javassist/javassist/3.19.0-GA/37e6508aeea3eef21df5b7ee3ea3c708618c1b7b/javassist-3.19.0-GA-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.javassist/javassist/3.19.0-GA/50120f69224dd8684b445a6f3a5b08fe9b5c60f6/javassist-3.19.0-GA.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.objenesis/objenesis/2.1/611a57d836e2c320d59f9851d4ad587f3c8472e/objenesis-2.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.objenesis/objenesis/2.1/87c0ea803b69252868d09308b4618f766f135a96/objenesis-2.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/aopalliance/aopalliance/1.0/4a4b6d692e17846a9f3da036438a7ac491d3c814/aopalliance-1.0-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/aopalliance/aopalliance/1.0/235ba8b489512805ac13a8f9ea77a1ca5ebe3e8/aopalliance-1.0.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/javassist/javassist/3.11.0.GA/8a603d8877c8d9cc032de295f719d10e3b90dc3d/javassist-3.11.0.GA-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/javassist/javassist/3.11.0.GA/2c00105734a57e9ee4f27e4b17cd43200e5f0ff8/javassist-3.11.0.GA.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/log4j/log4j/1.2.17/677abe279b68c5e7490d6d50c6951376238d7d3e/log4j-1.2.17-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/log4j/log4j/1.2.17/5af35056b4d257e4b64b9e8069c0746e8b08629f/log4j-1.2.17.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/commons-lang/commons-lang/2.6/67313d715fbf0ea4fd0bdb69217fb77f807a8ce5/commons-lang-2.6-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/commons-lang/commons-lang/2.6/ce1edb914c94ebc388f086c6827e8bdeec71ac2/commons-lang-2.6.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/commons-logging/commons-logging/1.2/ecf26c7507d67782a3bbd148d170b31dfad001aa/commons-logging-1.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/commons-logging/commons-logging/1.2/4bfc12adfe4842bf07b657f0369c4cb522955686/commons-logging-1.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.neethi/neethi/3.0.2/5a42b7ebc7342aac6e259bb9ab066a1072ecd1cf/neethi-3.0.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.neethi/neethi/3.0.2/129d23d29de183eafe787b9566c2d0bbb8eab47a/neethi-3.0.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.codehaus.woodstox/woodstox-core-asl/4.0.8/143c6f9ce3a6cbbe5f86185dd97b611de9a8c477/woodstox-core-asl-4.0.8-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.codehaus.woodstox/woodstox-core-asl/4.0.8/ab79a15a356a6f30bc1c7b2ca2b5b067a7826f01/woodstox-core-asl-4.0.8.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.codehaus.woodstox/stax2-api/3.0.2/d369368c0009aa70796929fbcdbae6914f38b1ca/stax2-api-3.0.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.codehaus.woodstox/stax2-api/3.0.2/f50791c1c163c9c9410f9dc78fe03397959d08c1/stax2-api-3.0.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.woden/woden-api/1.0M9/a245790937e261f58869fcae38eb3c78132af249/woden-api-1.0M9-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.woden/woden-api/1.0M9/bd81f156f5ff87bc9f398d88932d7cd6f2989312/woden-api-1.0M9.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.woden/woden-impl-dom/1.0M9/25b06c31aabe27788b0c2d8265bb185932a7220b/woden-impl-dom-1.0M9-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.woden/woden-impl-dom/1.0M9/ac649d2a2c4fdd49149aefc27164e90f8312bde1/woden-impl-dom-1.0M9.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.woden/woden-impl-commons/1.0M9/5916133a2a9d28677b2728a7482209616170b8c9/woden-impl-commons-1.0M9-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.woden/woden-impl-commons/1.0M9/fb97f4ef2a042aa0ce6393d1792ea21a88149c56/woden-impl-commons-1.0M9.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpcore/4.1.4/2c53880ed0bc962e1fbd64723b35d7d802b74796/httpcore-4.1.4-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpcore/4.1.4/31cc0a151d458c4b99476805ede9c8accafb734c/httpcore-4.1.4.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi/3.10-FINAL/64a185e11bfaabe5944d88cd6db2a51a87497017/poi-3.10-FINAL-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi/3.10-FINAL/e22fd3bb6a7152bd7d07c7e8901c2451b601725f/poi-3.10-FINAL.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.antlr/antlr-runtime/3.4/57a73190ad97f56c0cb83a6a5b6c08d5d428319b/antlr-runtime-3.4-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.antlr/antlr-runtime/3.4/8f011408269a8e42b8548687e137d8eeb56df4b4/antlr-runtime-3.4.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.mockito/mockito-all/1.10.19/8269667b73d9616600359a9b0ba1b1c7d0cf7a97/mockito-all-1.10.19-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.mockito/mockito-all/1.10.19/539df70269cc254a58cccc5d8e43286b4a73bf30/mockito-all-1.10.19.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.geronimo.specs/geronimo-activation_1.1_spec/1.1/64ab5ccd9d6b0efffafe3bea6134edfdb062b842/geronimo-activation_1.1_spec-1.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.geronimo.specs/geronimo-activation_1.1_spec/1.1/f15af1b53fba7f23ce5e9de4fb57a88585aa9eee/geronimo-activation_1.1_spec-1.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.codehaus.woodstox/wstx-asl/3.2.9/709d8744c14fd9c59190a33b3dce2a81015de981/wstx-asl-3.2.9-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.codehaus.woodstox/wstx-asl/3.2.9/c82b6e8f225bb799540e558b10ee24d268035597/wstx-asl-3.2.9.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/jaxen/jaxen/1.1.3/d0ae5ba85862490aa33f97a35b0f92d53f7b0506/jaxen-1.1.3-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/jaxen/jaxen/1.1.3/eebcb4a8d7579c85494737e10d1a87495210a5a3/jaxen-1.1.3.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.geronimo.specs/geronimo-stax-api_1.0_spec/1.0.1/a4e4ef57ac140ab12a570e5c5b91571ddaaf9dcd/geronimo-stax-api_1.0_spec-1.0.1-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.geronimo.specs/geronimo-stax-api_1.0_spec/1.0.1/1c171093a8b43aa550c6050ac441abe713ebb4f2/geronimo-stax-api_1.0_spec-1.0.1.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.james/apache-mime4j-core/0.7.2/df2e64024dbe47fa357cbf4f0e15daa28dd7c14b/apache-mime4j-core-0.7.2-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.apache.james/apache-mime4j-core/0.7.2/a81264fe0265ebe8fd1d8128aad06dc320de6eef/apache-mime4j-core-0.7.2.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.glassfish/javax.el/3.0.1-b08/303fcd8c9ce98ccb708a20aaafb2ea1e8ef0b254/javax.el-3.0.1-b08-sources.jar" kind="lib" path="/Users/friedj/.gradle/caches/modules-2/files-2.1/org.glassfish/javax.el/3.0.1-b08/8fa39d3901fc6ec8c0fff4ad4e48c26c4911c422/javax.el-3.0.1-b08.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+</classpath>

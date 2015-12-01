@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -29,7 +29,7 @@
 Ext.define('com.trackplus.admin.customize.treeConfig.MailTemplateConfig',{
 	extend:'com.trackplus.admin.customize.treeConfig.AssignmentConfig',
 	config: {
-		rootID:''
+		rootID:'_'
 	},
 	baseAction: "mailTemplateConfigItemDetail",
 	/**
@@ -43,9 +43,8 @@ Ext.define('com.trackplus.admin.customize.treeConfig.MailTemplateConfig',{
 
 	constructor: function(config) {
 		var config = config || {};
-		this.initialConfig = config;
-		Ext.apply(this, config);
-		this.init();
+		this.initConfig(config);
+		this.initBase();
 	},
 
 	getGridFields: function() {
@@ -56,16 +55,23 @@ Ext.define('com.trackplus.admin.customize.treeConfig.MailTemplateConfig',{
 			{name: 'description', type: 'string'}
 		];
 	},
+
 	getGridColumns: function() {
-		return [{header: getText('common.lbl.name'), flex:1,
+		return [{text: getText('common.lbl.name'), flex:1,
 			dataIndex: 'name',id:'name',sortable:true,
-			filterable: true},
-			{header: getText('common.lbl.tagLabel'), flex:1,
+			filter: {
+	            type: "string"
+	        }},
+			{text: getText('common.lbl.tagLabel'), flex:1,
 				dataIndex: 'tagLabel',id:'tagLabel',sortable:true,
-				filter: {}},
-			{header: getText('common.lbl.description'),flex:1,
+				filter: {
+		            type: "string"
+		        }},
+			{text: getText('common.lbl.description'),flex:1,
 				dataIndex: 'description',id:'description',sortable:true,
-				filterable: false}
+				filter: {
+		            type: "string"
+		        }}
 		];
 	},
 
@@ -103,7 +109,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.MailTemplateConfig',{
 	 * Which actions to enable/disable depending on tree selection
 	 */
 	getToolbarActionChangesForTreeNodeSelect: function(node) {
-		if (node!=null ) {
+		if (node ) {
 			var inheritedConfig=node.data['inheritedConfig'];
 			var defaultConfig=node.data['defaultConfig'];
 			this.actionReset.setDisabled(inheritedConfig || defaultConfig);
@@ -182,7 +188,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.MailTemplateConfig',{
 		return  [CWHF.createTextField('common.lbl.name','name',
 			{anchor:'100%', allowBlank:false, labelWidth:this.labelWidth, width:this.textFieldWidth}),
 			CWHF.createTextField('common.lbl.tagLabel','tagLabel',
-				{anchor:'100%', labelWidth:this.labelWidth, width:this.textFieldWidth}),
+				{anchor:'100%', labelWidth:this.labelWidth, width:this.textFieldWidth,itemId:'tagLabel'}),
 			CWHF.createTextAreaField('common.lbl.description','description',
 				{anchor:'100%', labelWidth:this.labelWidth, width:this.textFieldWidth})];
 	},
@@ -229,11 +235,11 @@ Ext.define('com.trackplus.admin.customize.treeConfig.MailTemplateConfig',{
 			method: 'POST',
 			fileUpload: true,
 			items: [
-				CWHF.createCheckboxWithHelp('admin.customize.mailTemplate.lbl.overwriteExisting', 'overwriteExisting', {labelWidth:250,labelStyle:{overflow:'hidden'},width:300},
+				CWHF.createCheckboxWithHelp('admin.customize.mailTemplate.lbl.overwriteExisting', 'overwriteExisting', {itemId:'overwriteExisting', labelWidth:250,labelStyle:{overflow:'hidden'},width:300},
 					{change: {fn: this.onOverwriteExistingChange, scope:this}}),
-				CWHF.createCheckboxWithHelp('admin.customize.mailTemplate.lbl.clearTemplateDefs', 'clearChildren', {labelWidth:250,labelStyle:{overflow:'hidden'},width:300,disabled:true}),
+				CWHF.createCheckboxWithHelp('admin.customize.mailTemplate.lbl.clearTemplateDefs', 'clearChildren', {itemId:'clearChildren', labelWidth:250,labelStyle:{overflow:'hidden'},width:300,disabled:true}),
 				CWHF.createFileField(this.getUploadFileLabel(), 'uploadFile',
-					{allowBlank:false, labelWidth:250})]
+					{itemId:"uploadFile",allowBlank:false, labelWidth:250})]
 		});
 		return this.formPanel;
 	},
@@ -252,7 +258,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.MailTemplateConfig',{
 	getSelectedTemplateIDs: function() {
 		var selectedTemplateIDs = new Array();
 		var selectedRecordsArr = this.getSelection();
-		if (selectedRecordsArr!=null) {
+		if (selectedRecordsArr) {
 			Ext.Array.forEach(selectedRecordsArr, function(record, index, allItems)
 			{selectedTemplateIDs.push(record.data['id']);}, this);
 		}

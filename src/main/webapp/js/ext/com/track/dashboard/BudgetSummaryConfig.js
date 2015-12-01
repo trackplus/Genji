@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -32,16 +32,16 @@ Ext.define('js.ext.com.track.dashboard.BudgetSummaryConfig',{
 		var me=this;
 		var items=me.callParent();
 		var projectID=null;
-		if(typeof(me.projectID) !== 'undefined' && me.projectID != null) {
+		if(typeof(me.projectID) !== 'undefined' && me.projectID ) {
 			projectID=me.projectID;
 		}
 		var entityType=null;
-		if(typeof(me.entityType) !== 'undefined' && me.entityType != null) {
+		if(typeof(me.entityType) !== 'undefined' && me.entityType ) {
 			entityType=me.entityType;
 		}
-		if(projectID===null){
+		if(CWHF.isNull(projectID)){
 			var selectedProjectReleases=null;
-			if(me.jsonData.selectedProjects!=null&&me.jsonData.selectedProjects.length>0){
+			if(me.jsonData.selectedProjects&&me.jsonData.selectedProjects.length>0){
 				selectedProjectReleases=me.jsonData.selectedProjects.join();
 			}
 			var releaseTreeObject=com.trackplus.dashboard.createReleaseTreeCfg("budgetSummary.prompt.projectsAndReleases","params.selectedProjects",me.jsonData.selectedProjects,
@@ -78,16 +78,16 @@ Ext.define('js.ext.com.track.dashboard.BudgetSummaryConfig',{
 		});
 		var htmlStr="";
 		htmlStr+='<div class="motd">';
-		if(projectID==null){
+		if(CWHF.isNull(projectID)){
 			htmlStr+='<b>'+getText('budgetSummary.prompt.projectsAndReleases')+'</b>';
 			htmlStr+='<ul><li>'+getText('budgetSummary.description.projectsAndReleases')+'</li></ul>';
 		}
 
 		htmlStr+='<b>'+getText('budgetSummary.prompt.groupBy')+'</b><ul>';
-		if(projectID==null){
+		if(CWHF.isNull(projectID)){
 			htmlStr+='<li>'+getText('budgetSummary.description.projectAndRelease')+'</li>';
 		}else{
-			if(entityType==null||entityType==1){
+			if(CWHF.isNull(entityType)||entityType===1){
 				//project config
 				htmlStr+='<li>'+getText('budgetSummary.description.release')+'</li>';
 			}

@@ -1,0 +1,107 @@
+test {
+	ignoreFailures = true
+	scanForTestClasses false
+	include "com/aurel/track/TestSuiteTrack.class"
+	scanForTestClasses false
+
+	//	testLogging.showStandardStreams = true
+
+	// set heap size for the test JVM(s)
+	minHeapSize = "128m"
+	maxHeapSize = "512m"
+
+	// set JVM arguments for the test JVM(s).
+	// The -noverify we need because of a PowerMock JDk 1.7 issue
+	jvmArgs = [
+		'-XX:MaxPermSize=256m',
+		'-noverify'
+	]
+
+	// listen to events in the test execution lifecycle
+	beforeTest { descriptor ->
+		logger.lifecycle("Running test: " + descriptor)
+	}
+
+	// listen to standard out and standard error of the test JVM(s)
+	onOutput { descriptor, event ->
+		logger.lifecycle(event.message )
+	}
+
+	jacoco {
+		append = true
+		destinationFile = file("$buildDir/jacoco/jacocoTest.exec")
+		classDumpFile = file("$buildDir/jacoco/classpathdumps")
+		excludes=["*BaseT*"]
+	}
+}
+
+
+
+jacoco {
+	toolVersion = "0.7.1.201405082137"
+	applyTo run
+}
+
+def coverageSourceDirs = [
+	'src/main/java' //,
+//	'src/main/java/com/aurel/track/admin',
+//	'src/main/java/com/aurel/track/dbase',
+//	'src/main/java/com/aurel/track/exchange',
+//	'src/main/java/com/aurel/track/persist',
+//	'src/main/java/com/aurel/track/util'
+]
+
+jacocoTestReport {
+	dependsOn "test"
+	group = "Reporting"
+	description = "Generates Jacoco coverage reports"
+	reports {
+		xml.enabled = true
+		html.enabled = true
+		// html.destination  project.buildDir.toString()+'/reports/jacocoHtml'
+	}
+	doFirst{
+		classDirectories = fileTree(
+				dir: 'build/classes/main/com',
+				excludes: [
+					'**/R.class',
+					'**/org/**/*.class',
+					'**/*Test*.class',
+					'**/R$*.class',
+					'**/BuildConfig.*',
+					'**/Manifest*.*',
+					'**/*Activity*.*',
+					'**/*Fragment*.*',
+					'com/aurel/track/beans/base/**',
+					'com/aurel/track/persist/map'
+				]
+				)
+	}
+	sourceDirectories = files(coverageSourceDirs)
+	additionalSourceDirs = files(coverageSourceDirs)
+	executionData = files('build/jacoco/jacocoTest.exec')
+}
+
+jettyRun {
+	dependsOn 'startDerby'
+	contextPath 'track-test'
+	httpPort 	10888
+	stopPort 	10889
+	stopKey 	'secret'
+}
+
+jettyStop {
+	dependsOn 'stopDerby'
+	stopPort 	10889
+	stopKey 	'secret'
+}
+
+task startDerby(type:JavaExec) {
+	main = 'com.aurel.track.StartServerTest'
+	classpath = sourceSets.test.runtimeClasspath+sourceSets.main.runtimeClasspath
+}
+
+task stopDerby(type:JavaExec) {
+	main = 'com.aurel.track.StopServerTest'
+	classpath = sourceSets.test.runtimeClasspath+sourceSets.main.runtimeClasspath
+}

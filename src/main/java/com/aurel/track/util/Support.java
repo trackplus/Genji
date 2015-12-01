@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -23,7 +23,6 @@
 
 package com.aurel.track.util;
 
-import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
@@ -35,9 +34,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.aurel.track.Constants;
 import com.aurel.track.admin.server.siteConfig.SiteConfigBL;
@@ -49,7 +47,7 @@ import com.aurel.track.prop.ApplicationBean;
 /**
  * This class contains various support methods.
  * @author Joerg Friedrich <joerg.friedrich@computer.org>
- * @version $Revision: 1229 $ $Date: 2015-08-15 12:23:23 +0200 (Sat, 15 Aug 2015) $
+ * @version $Revision: 1663 $ $Date: 2015-10-26 00:49:08 +0100 (Mon, 26 Oct 2015) $
  */
 public class Support {
 
@@ -58,7 +56,6 @@ public class Support {
 	private final static int RADIX = 16;
 
 	/**
-     * ! TODO need to be addapted for Java 1.4 split() !
      *
 	 * Retrieves a string array of words from a string. The words are
 	 * are separated by delimiters. This does not make use of the
@@ -71,7 +68,7 @@ public class Support {
 		if (parseString == null || parseString.length() < 1) {
 			return null;
 		}
-		ArrayList wordList = new ArrayList(8);
+		ArrayList<String> wordList = new ArrayList<String>(8);
 		String ds = parseString;
 		String word = null;
 		int st = 0;
@@ -90,7 +87,6 @@ public class Support {
 			}
 			if (end > st) {
 				word = ds.substring(st,end);
-				// System.out.println("WORD IS >" + word + "<");
 				wordList.add(word);
 			}
 
@@ -100,12 +96,10 @@ public class Support {
 			else {
 				break;
 			}
-			// System.out.println("===>" + ds + "<");
 		}
 		String[] wordArray = new String[wordList.size()];
 		for (int i = 0; i < wordList.size(); ++i) {
 			wordArray[i] = (String) wordList.get(i);
-			// System.out.println("---> " + wordArray[i]);
 		}
 		return wordArray;
 	}
@@ -145,26 +139,26 @@ public class Support {
 			return "null";
 		}
 		if (value.length() == 0) {
-			return ("''");
+			return "''";
 		}
-		if (value.equals("null") || value.equals("NULL")) {
+		if ("null".equals(value.toLowerCase())) {
 			return "null";
 		}
-        StringBuffer work = new StringBuffer();
+        StringBuilder work = new StringBuilder();
 		work.append(value);
         for (int i = value.length()-1; i >=0; i--) {
             if (value.charAt(i) == "'".charAt(0)){
             work.insert(i,"'".charAt(0));
             }
         }
-        return ("'" + work + "'");
+        return "'" + work + "'";
     }
 
     /**
      * Print the string as the next value on the line.	The value
      * will be quoted if needed.  If value is null, an empty value is printed.
      *
-     * @param matcherValue value to be outputted.
+     * @param matcherValue value to be output.
      *
      */
     private boolean alwaysQuote = true;
@@ -175,7 +169,7 @@ public class Support {
     public String csvWrite(String value) {
 
 
-        StringBuffer csvString = new StringBuffer();
+        StringBuilder csvString = new StringBuilder();
         if (value == null) value = "";
         boolean quote = false;
         if (alwaysQuote){
@@ -223,7 +217,7 @@ public class Support {
         String s = this.replace(value, String.valueOf(quoteChar),
                                        String.valueOf(quoteChar)
                                        + String.valueOf(quoteChar));
-        return (new StringBuffer(2 + s.length())).append(quoteChar).append(s).append(quoteChar).toString();
+        return (new StringBuilder(2 + s.length())).append(quoteChar).append(s).append(quoteChar).toString();
     }
 
     /**
@@ -289,7 +283,7 @@ public class Support {
             return s;
         }
 
-        StringBuffer sb = new StringBuffer(length);
+        StringBuilder sb = new StringBuilder(length);
 
         // Scan s and do the replacements
         while (end != -1) {
@@ -301,7 +295,7 @@ public class Support {
         end = stringLength;
         sb.append(s.substring(start, end));
 
-        return (sb.toString());
+        return sb.toString();
     }
 
 
@@ -319,7 +313,7 @@ public class Support {
             MessageDigest sha = MessageDigest.getInstance("SHA");
             sha.update(password.getBytes("ISO-8859-1"));
             byte[] hash = sha.digest();
-            StringBuffer newPassword = new StringBuffer();
+            StringBuilder newPassword = new StringBuilder();
             int hex = 0;
             Byte hexbyte = null;
             for (int i = 0; i < hash.length; i++) {
@@ -351,14 +345,14 @@ public class Support {
     }
 
     public void setURIs(HttpServletRequest request) {
-    	String serverURL = ApplicationBean.getApplicationBean().getSiteBean().getServerURL();
+    	String serverURL = ApplicationBean.getInstance().getSiteBean().getServerURL();
 
 		String baseURI = request.getRequestURI();
 		int extension = baseURI.lastIndexOf("/");
 		// This is automatically overwritten by StartServlet
 		// if there is an entry "serverURL" in web.xml
 		if (serverURL == null || serverURL.length() < 1) {
-			ApplicationBean.getApplicationBean().getSiteBean().setServerURL(
+			ApplicationBean.getInstance().getSiteBean().setServerURL(
 									request.getScheme() + "://"
 								   + request.getServerName() + ":"
 								   + request.getServerPort());
@@ -382,7 +376,7 @@ public class Support {
     	if(site!=null){
     		String serverURL=site.getPreferenceProperty("lastServerURL");
     		String baseURL=site.getPreferenceProperty("lastBaseURL");
-    		ApplicationBean.getApplicationBean().getSiteBean().setServerURL(serverURL);
+    		ApplicationBean.getInstance().getSiteBean().setServerURL(serverURL);
     		Constants.BaseURL=baseURL;
     		Constants.setHyperlink(baseURL);
     		return baseURL;
@@ -395,21 +389,12 @@ public class Support {
     	getLastBaseURL();
     }
 
-    public static String readStackTrace(Exception e) {
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        return sw.toString();
-    }
 
     private void persistLastServerURL(String serverURL,String baseURL){
     	Map<Integer, Object> siteBeanValues = new HashMap<Integer, Object>();
 	    siteBeanValues.put(TSiteBean.COLUMNIDENTIFIERS.LASTSERVERURL, serverURL);
 	    siteBeanValues.put(TSiteBean.COLUMNIDENTIFIERS.LASTBASEURL, baseURL);
 	    DAOFactory.getFactory().getSiteDAO().loadAndSaveSynchronized(siteBeanValues);
-   		/*TSiteBean site = SiteConfigBL.loadTSite();
-   		site.setPreferenceProperty("lastServerURL", serverURL);
-   		site.setPreferenceProperty("lastBaseURL", baseURL);
-   		DAOFactory.getFactory().getSiteDAO().save(site);*/
     }
 
 }

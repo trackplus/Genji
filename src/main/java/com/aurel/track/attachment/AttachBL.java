@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -125,7 +125,6 @@ public class AttachBL {
 	public static final String tmpAttachments ="tmpAttachments";
 	public static final String excelImportDir ="excelImport";
 	public static final String docxImportDir ="docxImport";
-	//public static final String docxExportDir ="docxExport";
 	public static final String msProjectImportDir="msProjectImport";
 
 	private static final Set<String> imgExt=new TreeSet<String>();
@@ -226,7 +225,6 @@ public class AttachBL {
 	public static int countByWorkItemID(Integer workItemID){
 		List<TAttachmentBean> attachList=AttachBL.getAttachments(workItemID);
 		return attachList.size();
-		//return  attachmentDAO.countByWorkItemID(workItemID);
 	}
 
 	private static List<TAttachmentBean> filterNotOnDisk(List<TAttachmentBean> attachmentBeanList) {
@@ -234,7 +232,6 @@ public class AttachBL {
 			return new ArrayList<TAttachmentBean>();
 		}
 		//the attachment must have a file on disk
-		//List<TAttachmentBean> existingAttachments=new ArrayList<TAttachmentBean>();
 		for (Iterator<TAttachmentBean> iterator = attachmentBeanList.iterator(); iterator.hasNext();) {
 			TAttachmentBean attachmentBean = iterator.next();
 			if(!BooleanFields.fromStringToBoolean(attachmentBean.getIsUrl())) {
@@ -294,18 +291,24 @@ public class AttachBL {
 	public static List<TAttachmentBean> getAttachmentsImage(Integer itemID) {
 		List<TAttachmentBean> allAttachments= getAttachments(itemID);
 		//the attachment must have a file on disk
-		List<TAttachmentBean> realAttachments=new ArrayList<TAttachmentBean>();
+		List<TAttachmentBean> realAttachments = gettAttachmentImages(allAttachments);
+		return realAttachments;
 
-		for (int i = 0; i < allAttachments.size(); i++) {
-			//verify every attachment if exist file on disk system
-			TAttachmentBean attach=allAttachments.get(i);
-			boolean image = AttachBL.isImage(attach);
-			if(image){
-				realAttachments.add(attach);
+	}
+
+	public static List<TAttachmentBean> gettAttachmentImages(List<TAttachmentBean> allAttachments) {
+		List<TAttachmentBean> realAttachments=new ArrayList<TAttachmentBean>();
+		if(allAttachments!=null) {
+			for (int i = 0; i < allAttachments.size(); i++) {
+				//verify every attachment if exist file on disk system
+				TAttachmentBean attach = allAttachments.get(i);
+				boolean image = AttachBL.isImage(attach);
+				if (image) {
+					realAttachments.add(attach);
+				}
 			}
 		}
 		return realAttachments;
-
 	}
 
 	public static Map<Integer, List<TAttachmentBean>> getGroupedAttachemnts(List<TAttachmentBean> attachList){
@@ -334,26 +337,6 @@ public class AttachBL {
 		} else {
 			return attachmentBeansDB;
 		}
-		/*if(attachmentBeansDB==null||attachmentBeansDB.isEmpty()){
-			return new ArrayList();
-		}
-		if(verifyFileOnDisk){
-			//the attachment must have a file on disk
-			List<TAttachmentBean> realAttachments=new ArrayList();
-
-			for (int i = 0; i < attachmentBeansDB.size(); i++) {
-				//verify every attachment if exist file on disk system
-				TAttachmentBean attach=(TAttachmentBean) attachmentBeansDB.get(i);
-				boolean fileOnDisk=ensureFileOnDisk(attach, attach.getWorkItem());
-				if(fileOnDisk){
-					ensureMimeType(attach);
-					realAttachments.add(attach);
-				}
-			}
-			return realAttachments;
-		}else{
-			return attachmentBeansDB;
-		}*/
 	}
 
 	/**
@@ -451,7 +434,7 @@ public class AttachBL {
 			}
 		}
 	}
-	public static List<TAttachmentBean> saveLocal(Integer itemID,String description, String fileName, InputStream is,List<TAttachmentBean> attachments,String sessionID,Integer userId) throws AttachBLException{
+	public static Integer saveLocal(Integer itemID,String description, String fileName, InputStream is,List<TAttachmentBean> attachments,String sessionID,Integer userId) throws AttachBLException{
 		if(fileName==null||fileName.length()==0){
 			throw new IllegalArgumentException("The file name must be not null!");
 		}
@@ -459,7 +442,7 @@ public class AttachBL {
 		if(oldAttach!=null){
 			//delete the existing attachment
 			LOGGER.debug("Found attach with the same name.Delete attachment " + oldAttach.getFileName()+ " for item " + itemID);
-			attachments=deleteLocalAttachment(attachments,oldAttach.getObjectID(),sessionID);
+			deleteLocalAttachment(attachments,oldAttach.getObjectID(),sessionID);
 		}
 		//store the new attachment
 		LOGGER.debug("Save attachment " + fileName + " for item "+ itemID);
@@ -476,7 +459,7 @@ public class AttachBL {
 		boolean parentDirOk=ensureDir(getFullDirName(sessionID,itemID));
 		if(!parentDirOk){
 			LOGGER.error("Error accessing/create directory for attachments");
-			return attachments;
+			return null;
 		}
 		//set the fileNameOnDisk
 		attach.setFullFileNameOnDisk(getFullFileName(sessionID,attachID, itemID));
@@ -488,7 +471,7 @@ public class AttachBL {
 		//add attach
 		attachments.add(attach);
 		//no add to lucene the local attachments
-		return attachments;
+		return attachID;
 	}
 	private static TAttachmentBean findLocalAttachment(List<TAttachmentBean> attachments,String fileName){
 		if(attachments==null||attachments.isEmpty()){
@@ -608,7 +591,6 @@ public class AttachBL {
 	 */
 	public static void deleteAttachment(Integer attachID,Integer itemID) {
 		delete(attachID);
-		//String fileName=getFileNameAttachment(attachID, itemID);
 		String fullFileName = getFullFileName(null,attachID,itemID);
 		File file = null;
 		try {
@@ -643,18 +625,18 @@ public class AttachBL {
 		ClusterMarkChangesBL.markDirtyAttachmentInCluster(attachID, CHANGE_TYPE.DELETE_FROM_INDEX);
 	}
 
-	public static List<TAttachmentBean> deleteLocalAttachment(List<TAttachmentBean> attachments,Integer attachID,String sessionID) {
+	public static void deleteLocalAttachment(List<TAttachmentBean> attachments,Integer attachID,String sessionID) {
 		TAttachmentBean attach=findLocalAttachment(attachments,attachID);
 		if(attach==null){
 			LOGGER.error("Attachment not found locally:"+attachID);
-			return attachments;
+			return;
 		}
 		String fileName=attach.getFullFileNameOnDisk();
 		File file = null;
 		try {
 			file = new File(fileName);
 		} catch (NullPointerException e) {
-			return attachments;
+			return;
 		}
 		LOGGER.debug("Trying to delete " + fileName);
 		try {
@@ -666,7 +648,6 @@ public class AttachBL {
 					+ "file "+ fileName);
 		}
 		attachments.remove(attach);
-		return attachments;
 	}
 
 	private static boolean ensureFileOnDisk(TAttachmentBean attach, Integer itemID){
@@ -785,7 +766,6 @@ public class AttachBL {
 		}
 		attach.setFileSize(Long.toString(new File(fullFileName).length()));
 		//TODO save mimeType in DB after change the DB to allow storing mimeType with more characters
-		//ensureMimeType(attach);
 	}
 	private static synchronized int getAttachTempIndex() {
 		int index = attachTempIndex;
@@ -825,17 +805,26 @@ public class AttachBL {
 	 * @param sessionID
 	 * @param itemID
 	 */
-	public static void approve(List<TAttachmentBean> attachList,String sessionID,Integer itemID){
-		if (attachList.isEmpty()) {
+	public static List<Integer> approve(List<TAttachmentBean> attachList,String sessionID,Integer itemID){
+
+		if(attachList==null||attachList.isEmpty()){
 			LOGGER.debug("No attachments were stored for the new item");
-			return;
+			return null;
 		}
+		List<Integer> result=new ArrayList<Integer>(attachList.size());
 		LOGGER.debug("Approve " + attachList.size() + " attachments for item#" + itemID);
 		// create the directory where the attachments will be copied(renamed) to
 		File newDir =new File(getFullDirName(null, itemID));
 		boolean ok = newDir.mkdir();
 		if(!ok) {
 			LOGGER.error("Creating new attachment dir " + newDir.getAbsolutePath() + " failed!");
+		}
+
+		//ensure the disk file
+		boolean parentDirOk=ensureDir(getFullDirName(null,itemID));
+		if(!parentDirOk){
+			LOGGER.error("Error accessing or creating directory for attachments");
+			return null;
 		}
 
 		// work through all the attachments
@@ -845,16 +834,11 @@ public class AttachBL {
 			// get the old filename on disk
 			String fileNameOnDiskOld = attach.getFullFileNameOnDisk();
 			attach.setWorkItem(itemID);
+
 			//save the attach in DB
 			Integer attachID=save(attach);
+			result.add(attachID);
 
-			attach.setObjectID(attachID);
-			//ensure the disk file
-			boolean parentDirOk=ensureDir(getFullDirName(null,itemID));
-			if(!parentDirOk){
-				LOGGER.error("Error accessing or creating directory for attachments");
-				return;
-			}
 			//set the fileNameOnDisk
 			attach.setFullFileNameOnDisk(getFullFileName(null,attachID, itemID));
 			attach.setFileNameOnDisk(getFileNameAttachment(attachID, itemID));
@@ -872,6 +856,7 @@ public class AttachBL {
 		}
 		// remove the old temp-directory
 		deleteTempFiles(sessionID);
+		return result;
 	}
 
 	/**
@@ -882,12 +867,6 @@ public class AttachBL {
 		// will set path to save from the runtime env.
 		StringBuffer sb=new StringBuffer();
 		sb.append(trackDataDirBase());
-		/*sb.append(Constants.RealPathAttachment);
-		if(Constants.RealPathAttachment!=null&&Constants.RealPathAttachment.charAt(Constants.RealPathAttachment.length()-1)!=File.separatorChar){
-			sb.append(File.separator);
-		}
-		sb.append(DataName);
-		sb.append(File.separator);*/
 		sb.append(AttachmentsName);
 		return sb.toString();
 	}
@@ -922,14 +901,6 @@ public class AttachBL {
 	 * Gets the basename of the excel imports directory
 	 * @return
 	 */
-	/*public static String getDocxExportDirBase() {
-		// will set path to save from the runtime env.
-		StringBuffer sb=new StringBuffer();
-		sb.append(trackDataDirBase());
-		sb.append(docxExportDir);
-		sb.append(File.separator);
-		return sb.toString();
-	}*/
 
 	/**
 	 * Gets the basename of the msProject imports directory
@@ -978,7 +949,6 @@ public class AttachBL {
 			// set the properties
 			attachBean.setFileName(fileName);
 			attachBean.setWorkItem(itemID);
-			//attachDbItem.setDescription(description);
 			attachBean.setLastEdit(new Date());
 			Integer attachID=save(attachBean);
 			attachBean.setObjectID(attachID);
@@ -1004,7 +974,7 @@ public class AttachBL {
 		return result;
 	}
 
-	public static void replaceInlineImagesDescription(Integer workItemID,List<EmailAttachment> attachList, List<Integer> emailAttachmentIDList){
+	public static void replaceInlineImagesDescription(Integer workItemID,List<TAttachmentBean> attachList, List<Integer> attachIDList){
 		TWorkItemBean workItemBean=null;
 		try{
 			workItemBean= ItemBL.loadWorkItem(workItemID);
@@ -1019,7 +989,32 @@ public class AttachBL {
 			return;
 		}
 		String description=originalDescription;
-		description = replaceInlineImagesText(attachList, emailAttachmentIDList, workItemID, description);
+		description = replaceInlineImagesText(attachList, attachIDList, workItemID, description);
+		if(!originalDescription.equals(description)){
+			workItemBean.setDescription(description);
+			try {
+				DAOFactory.getFactory().getWorkItemDAO().saveSimple(workItemBean);
+			} catch (ItemPersisterException e) {
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
+			}
+		}
+	}
+	public static void replaceEmailInlineImagesDescription(Integer workItemID,List<EmailAttachment> attachList, List<Integer> emailAttachmentIDList){
+		TWorkItemBean workItemBean=null;
+		try{
+			workItemBean= ItemBL.loadWorkItem(workItemID);
+		}catch (Exception ex){
+			return;
+		}
+		if(workItemBean==null){
+			return;
+		}
+		String originalDescription=workItemBean.getDescription();
+		if(originalDescription==null||originalDescription.length()==0){
+			return;
+		}
+		String description=originalDescription;
+		description = replaceInlineImagesTextMail(attachList, emailAttachmentIDList, workItemID, description);
 		if(!originalDescription.equals(description)){
 			workItemBean.setDescription(description);
 			try {
@@ -1030,11 +1025,23 @@ public class AttachBL {
 		}
 	}
 
-	public static String replaceInlineImagesText(List<EmailAttachment> attachList, List<Integer> emailAttachmentIDList, Integer workItemID, String description) {
+	public static String replaceInlineImagesText(List<TAttachmentBean> attachList, List<Integer> attachIDList, Integer workItemID, String description) {
+		for(int i=0;i<attachList.size();i++){
+			TAttachmentBean attachment=attachList.get(i);
+			Integer attachKey=attachIDList.get(i);
+			Integer tmpID=attachment.getObjectID();
+			String srcTxt="src=\"downloadAttachment.action?attachKey="+tmpID+"\"" ;//"src=\"downloadAttachment.action?attachKey="+tmpID+"\"";
+			String srcReplace="src=\"downloadAttachment.action?workItemID="+workItemID+"&attachKey="+ attachKey+"\"";
+			if(description.indexOf(srcTxt)!=-1){
+				description=description.replaceAll(srcTxt,srcReplace);
+			}
+		}
+		return description;
+	}
+	public static String replaceInlineImagesTextMail(List<EmailAttachment> attachList, List<Integer> emailAttachmentIDList, Integer workItemID, String description) {
 		for(int i=0;i<attachList.size();i++){
 			EmailAttachment attachment=attachList.get(i);
 			String cid=attachment.getCid();
-			//
 			String srcTxt="src=\"cid:"+cid+"\"";
 			Integer attachKey=emailAttachmentIDList.get(i);
 			String srcReplace="src=\"downloadAttachment.action?workItemID="+workItemID+"&attachKey="+ attachKey+"\"";
@@ -1098,7 +1105,6 @@ public class AttachBL {
 		BufferedImage image = null;
 		try {
 			image = ImageIO.read(new File(fileName));
-			// Toolkit.getDefaultToolkit().getImage(fileName);
 	    } catch (Exception e) {
 	    	// too bad...
 	    	return false;
@@ -1125,7 +1131,6 @@ public class AttachBL {
 			return bimage.getColorModel().hasAlpha();
 		}
 
-		// Use a pixel grabber to retrieve the image's color model;
 		// grabbing a single pixel is usually sufficient
 		PixelGrabber pg = new PixelGrabber(image, 0, 0, 1, 1, false);
 		try {
@@ -1205,7 +1210,7 @@ public class AttachBL {
 		String mimeType = null;
 		if(mimeTypeMap==null){
 			createMimeTypeMap(
-					ApplicationBean.getApplicationBean().getServletContext()
+					ApplicationBean.getInstance().getServletContext()
 					.getResourceAsStream("/WEB-INF/mime.types"));
 		}
 		if(mimeTypeMap != null) {
@@ -1255,7 +1260,6 @@ public class AttachBL {
 
 			//verify the file on disk
 			if(ensureFileOnDisk(attachOriginal, workItemBeanOriginalId)){
-				//ensureMimeType(attachOriginal);
 			}else{
 				//The file not exist on the disk. Somebody delete it!
 				continue;
@@ -1263,11 +1267,12 @@ public class AttachBL {
 			try {
 				if(workItemBeanCopyId == null || workItemBeanCopyId.intValue()==-1){
 					//If it is editCopy, we do not know the copied workItem id, so the attachments must be save in local
-					List<TAttachmentBean> attachment = saveLocal(workItemBeanCopyId, attachOriginal.getDescription(), attachOriginal.getFileName(),
+					List<TAttachmentBean> attachments=new ArrayList<TAttachmentBean>();
+					saveLocal(workItemBeanCopyId, attachOriginal.getDescription(), attachOriginal.getFileName(),
 								new FileInputStream(new File(attachOriginal.getFullFileNameOnDisk())),
-								new ArrayList<TAttachmentBean>(), userOrSessionId.toString(),userID);
+								attachments, userOrSessionId.toString(),userID);
 					//and the return is prepared because it will be needed by the context
-					attachmentsReturn.addAll(attachment);
+					attachmentsReturn.addAll(attachments);
 
 				} else {
 					//else, we know the copied workItem id, so we save it correctly
@@ -1326,7 +1331,7 @@ public class AttachBL {
 			errors.add(new LabelValueBean(err,"theFile"));
 			return null;
 		}
-		ApplicationBean appBean = ApplicationBean.getApplicationBean();
+		ApplicationBean appBean = ApplicationBean.getInstance();
 		if(appBean.isBackupInProgress()){
 			String err=getText("item.tabs.attachment.err.backupInProgress",locale);
 			try {
@@ -1357,8 +1362,9 @@ public class AttachBL {
 				attachments=new ArrayList<TAttachmentBean>();
 			}
 			String sessionID=httpSession.getId();
+			Integer attachKey=null;
 			try {
-				attachments= AttachBL.saveLocal(workItemID, description, fileName, is, attachments, sessionID, personID);
+				attachKey= AttachBL.saveLocal(workItemID, description, fileName, is, attachments, sessionID, personID);
 			} catch (AttachBLException e) {
 				String err="";
 				if(e.getLocalizedKey()!=null){
@@ -1371,9 +1377,8 @@ public class AttachBL {
 			}
 			ctx.setAttachmentsList(attachments);
 			f.delete();
-			return -1;
+			return attachKey;
 		}else{
-			//Integer userID=((TPerson) session.get(Constants.USER_KEY)).getObjectID();
 			try {
 				TAttachmentBean attachmentBean=AttachBL.save(workItemID, description, fileName,is,personID);
 				TPersonBean person = LookupContainer.getPersonBean(personID);
@@ -1381,7 +1386,6 @@ public class AttachBL {
 				//add to history
 				if(addToHistory){
 					HistorySaverBL.addAttachment(workItemID, personID, locale, fileName, description, Long.valueOf(f.length()), false);
-							/*HistorySaverBL.getAttachmentHistoryText(fileName, description, Long.valueOf(f.length()), locale);*/
 				}
 				f.delete();
 				return  attachmentBean.getObjectID();

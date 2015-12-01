@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -34,6 +34,7 @@ Ext.define('com.trackplus.item.action.StepRenderer',{
 		var config = config || {};
 		me.initialConfig = config;
 		Ext.apply(me, config);
+		this.initConfig(config);
 	},
 	createFormPanel:function(data){
 		return Ext.create('Ext.form.Panel',{
@@ -110,13 +111,13 @@ Ext.define('com.trackplus.item.action.ItemLocationStepRenderer',{
 			store:dsIssueType,
 			displayField : 'label',
 			valueField: 'id',
-			typeAhead:true,
+			typeAhead:false,
 			queryMode: 'local',
 			triggerAction: 'all',
 			name: 'params.issueTypeID',
 			allowBlank :false,
 			editable: false,
-			disabled :(jsonData.fixedIssueType==true),
+			disabled :(jsonData.fixedIssueType===true),
 			//anchor:'100%',//anchor width by percentage
 			hiddenId:'issueTypeID',
 			labelWidth:me.labelWidth,
@@ -144,39 +145,40 @@ Ext.define('com.trackplus.item.action.ItemLocationStepRenderer',{
 	},
 	createFormItems:function(jsonData){
 		var me=this;
-		if(jsonData==null){
+		if(CWHF.isNull(jsonData)){
 			return[{
 				xtype:'component',
 				html:'no right to create items'
 			}];
 		}
 		var listenerConfig=null;
-		if(jsonData.fixedIssueType==true){
+		if(jsonData.fixedIssueType===true){
 			listenerConfig=null;
 		}else{
 			listenerConfig=	{select:{fn: this.projectChange, scope:this}};
 		}
 		me.cmbProject = CWHF.createSingleTreePicker(jsonData.projectLabel,
-            "params.projectID", jsonData["projectTree"], jsonData["projectID"],
-            {
-	            allowBlank:false,
-	            labelIsLocalized:true,
-                labelWidth: this.labelWidth,
-                width:400,
-                margin:'0 0 5 0'
-            },listenerConfig );
+			"params.projectID", jsonData["projectTree"], jsonData["projectID"],
+			{
+				allowBlank:true,
+				labelIsLocalized:true,
+				labelWidth: this.labelWidth,
+				width:400,
+				margin:'0 0 5 0'
+			},listenerConfig );
 		var items=new Array();
 		me.cmbIssueType=me.createCmbIssueType(jsonData);
 		var items=new Array();
 		items.push(me.cmbProject);
 		items.push(me.cmbIssueType);
-		if(jsonData.fixedIssueType==true){
+		if(jsonData.fixedIssueType===true){
 			items.push({
 				xtype: 'hiddenfield',
 				name: 'params.issueTypeID',
 				value:jsonData.issueTypeID
 			})
 		}
+
 		return items;
 	},
 	projectChange:function(){
@@ -225,12 +227,9 @@ Ext.define('com.trackplus.item.action.MoveItemStepRenderer',{
 		};
 	},
 	createCmbStatus:function(jsonData){
-		Ext.define("Status", {
-			extend: 'Ext.data.Model',
-			fields : [{name:'id', type:'int'}, {name:'label', type:'string'}]
-		});
 		var dsStatus = Ext.create('Ext.data.Store', {
 			model: 'Status',
+			fields : [{name:'id', type:'int'}, {name:'label', type:'string'}],
 			data:jsonData.statusList
 		});
 		var cmbStatus=Ext.create('Ext.form.ComboBox',{
@@ -239,7 +238,7 @@ Ext.define('com.trackplus.item.action.MoveItemStepRenderer',{
 			store:dsStatus,
 			displayField : 'label',
 			valueField: 'id',
-			typeAhead:true,
+			typeAhead:false,
 			queryMode: 'local',
 			triggerAction: 'all',
 			name: 'params.statusID',
@@ -261,7 +260,7 @@ Ext.define('com.trackplus.item.action.MoveItemStepRenderer',{
 			items.push(me.createCmbStatus(jsonData));
 		}
 		me.moveChildren = CWHF.createCheckbox("item.action.move.moveChildren", "params.moveChildren", {value:jsonData.moveChildren, labelWidth:150, disabled:!jsonData.hasChildren});
-		items.push(me.moveChildren);	
+		items.push(me.moveChildren);
 		return items;
 	}
 });

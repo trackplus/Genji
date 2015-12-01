@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -25,6 +25,7 @@ package com.aurel.track.lucene.index.associatedFields;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.lucene.document.Document;
@@ -63,6 +64,7 @@ public class ExpenseIndexer extends AbstractAssociatedFieldIndexer {
 	 * Gets the index writer ID
 	 * @return
 	 */
+	@Override
 	protected int getIndexWriterID() {
 		return LuceneUtil.INDEXES.EXPENSE_INDEX;
 	}
@@ -70,6 +72,7 @@ public class ExpenseIndexer extends AbstractAssociatedFieldIndexer {
 	 * Loads all indexable entitities for reindex
 	 * @return
 	 */
+	@Override
 	protected List loadAllIndexable() {
 		return ExpenseBL.loadAllIndexable();
 	}
@@ -77,6 +80,7 @@ public class ExpenseIndexer extends AbstractAssociatedFieldIndexer {
 	 * Gets the the unique identifier fieldName
 	 * @return
 	 */
+	@Override
 	protected String getObjectIDFieldName() {
 		return LuceneUtil.EXPENSE_INDEX_FIELDS.EXPENSEID;
 	}
@@ -84,6 +88,7 @@ public class ExpenseIndexer extends AbstractAssociatedFieldIndexer {
 	 * Gets the fieldName containing the workItemID field
 	 * @return
 	 */
+	@Override
 	protected String getWorkItemFieldName() {
 		return LuceneUtil.EXPENSE_INDEX_FIELDS.WORKITEMID;
 	}
@@ -91,6 +96,7 @@ public class ExpenseIndexer extends AbstractAssociatedFieldIndexer {
 	 * Gets the associated field name for logging purposes  
 	 * @return
 	 */
+	@Override
 	protected String getLuceneFieldName() {
 		return LuceneUtil.EXPENSE;
 	}
@@ -99,6 +105,7 @@ public class ExpenseIndexer extends AbstractAssociatedFieldIndexer {
 	 * Used by attaching a new file to the workItem 
 	 * @param attachFile
 	 */
+	@Override
 	public void addToIndex(Object object, boolean add) {
 		if (!LuceneUtil.isUseLucene()) {
 			return;
@@ -124,7 +131,8 @@ public class ExpenseIndexer extends AbstractAssociatedFieldIndexer {
 					indexWriter.deleteDocuments(keyTerm);
 					indexWriter.commit();
 				} catch (IOException e) {
-					LOGGER.error("Removing the entity " + objectID + " failed with " + e.getMessage(), e);
+					LOGGER.error("Removing the entity " + objectID + " failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 			}
 		}
@@ -134,12 +142,14 @@ public class ExpenseIndexer extends AbstractAssociatedFieldIndexer {
 				indexWriter.addDocument(doc);
 			}
 		} catch (IOException e) {
-			LOGGER.error("Adding an expense to the index failed with " + e.getMessage(), e);
+			LOGGER.error("Adding an expense to the index failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		try {
 			indexWriter.commit();
 		} catch (IOException e) {
-			LOGGER.error("Flushing the expense failed with " + e.getMessage(), e);
+			LOGGER.error("Flushing the expense failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 	}
 	/**
@@ -150,6 +160,7 @@ public class ExpenseIndexer extends AbstractAssociatedFieldIndexer {
 	 * @param reader
 	 * @return
 	 */
+	@Override
 	protected Document createDocument(Object entry) {
 		TCostBean costBean = (TCostBean)entry;
 		Integer expenseID = costBean.getObjectID();
@@ -185,7 +196,8 @@ public class ExpenseIndexer extends AbstractAssociatedFieldIndexer {
 						" and workItemID " + workItemID +
 						" and subject " + subject +
 						" and description " + description +
-						" failed with " + e.getMessage(), e);
+						" failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		return null;

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -30,31 +30,31 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	    /**
 		 * The ID of the root node
 		 */
-	    rootID : '',
-	    /**
-		 * Whether more tree nodes can be selected on the same time
-		 */
-	    allowMultipleNodeSelections : false,
-	    /**
-		 * The base struts action name (without method name) in struts.xml for
-		 * the set this if it differs from base action (folder and leaf
-		 * operations are in different struts actions)
-		 */
-	    folderAction : '',
-	    /**
-		 * the url for folder detail if showGridForFolder is false
-		 */
-	    folderDetailUrl : null,
+	    rootID : '_',
+	   
+	    
 	    /**
 		 * the url for leaf detail if showGridForLeaf is false
 		 */
-	    leafDetailUrl : null,
 	    // the width of the tree panel
-	    treeWidth : 200,
-	    replaceCenterPanel : null
+	    treeWidth : 200
+	    
 	},
-	treeWidth : 200,
-	rootID : '',
+	
+	replaceCenterPanel : null,
+	
+	 /**
+	 * Whether more tree nodes can be selected on the same time
+	 */
+    allowMultipleNodeSelections : false,
+    
+	/**
+	 * The base struts action name (without method name) in struts.xml for
+	 * the set this if it differs from base action (folder and leaf
+	 * operations are in different struts actions)
+	 */
+    folderAction : null,
+
 	/**
 	 * Whether selecting a folder node in the tree results in a grid in the
 	 * detail part or other detail info
@@ -134,15 +134,18 @@ Ext.define('com.trackplus.admin.TreeBase', {
 
 	constructor : function(config) {
 	    var config = config || {};
-	    this.initialConfig = config;
-	    Ext.apply(this, config);
-	    this.init();
+	    this.initConfig(config);
+	    this.initBase();
+	},
+
+	getFolderAction: function() {
+		return this.folderAction;
 	},
 
 	/**
 	 * Initialization method
 	 */
-	/* protected */init : function() {
+	/* protected */initBase : function() {
 	    this.initActions();
 	},
 
@@ -151,20 +154,20 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	 * or the folderAction if folderAction is null the base action is taken for
 	 * both leafs and folders
 	 */
-	getStrutsBaseAction : function(extraConfig) {
-	    if (this.folderAction == null || "" == this.folderAction) {
+	getNodeBaseAction : function(extraConfig) {
+	    if (CWHF.isNull(this.getFolderAction()) || "" === this.getFolderAction()) {
 		    // in this case we suppose there is no different struts action for
 			// folder and leaf
-		    return this.baseAction;
+		    return this.getBaseAction();
 	    }
 	    var isLeaf = true;
-	    if (extraConfig != null) {
+	    if (extraConfig ) {
 		    isLeaf = extraConfig.isLeaf;
 	    }
 	    if (isLeaf) {
-		    return this.baseAction;
+		    return this.getBaseAction();
 	    } else {
-		    return this.folderAction;
+		    return this.getFolderAction();
 	    }
 	},
 
@@ -291,7 +294,7 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	    var selectedRecords = this.getSelectedRecords(fromTree);
 	    var selectionIsSimple = this.selectionIsSimple(fromTree);
 	    var actions = this.getContextMenuActions(selectedRecords, selectionIsSimple, fromTree);
-	    if (actions != null && actions.length > 0) {
+	    if (actions  && actions.length > 0) {
 		    var treeNodeCtxMenu = this.createContextMenu(record, actions);
 		    this.adjustContextMenuText(treeNodeCtxMenu, selectedRecords, fromTree);
 		    treeNodeCtxMenu.showAt(evtObj.getXY());
@@ -308,7 +311,7 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	    for (var i = 0; i < actionIds.length; i++) {
 		    var actionId = actionIds[i];
 		    var action = ctxMenu.getComponent(actionId);
-		    if (action != null) {
+		    if (action ) {
 			    var isLeaf = this.selectedIsLeaf(fromTree);
 			    action.text = this.getTitle(action.tooltipKey, {
 			        isLeaf : isLeaf,
@@ -334,7 +337,7 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	    for (var i = 0; i < actionIds.length; i++) {
 		    var actionId = actionIds[i];
 		    var toolbarButton = toolbar.getComponent(actionId);
-		    if (toolbarButton != null) {
+		    if (toolbarButton ) {
 			    var isLeaf = this.selectedIsLeaf(fromTree);
 			    toolbarButton.setTooltip(this.getTitle(toolbarButton.tooltipKey, {
 			        isLeaf : isLeaf,
@@ -363,8 +366,8 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	/* protected */getDragAndDropOnTreeConfig : function() {
 	    return {
 	        ptype : 'treeviewdragdrop',
-	        dragGroup : this.baseAction + 'DDGroup',
-	        dropGroup : this.baseAction + 'DDGroup',
+	        dragGroup : this.getBaseAction() + 'DDGroup',
+	        dropGroup : this.getBaseAction() + 'DDGroup',
 	        appendOnly : true,
 	        enableDrag : true,
 	        enableDrop : true
@@ -375,33 +378,28 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	 * Initialize the tree
 	 */
 	/* private */initTree : function() {
-	    var modelName = this.baseAction + "TreeModel";
-	    Ext.define(modelName, {
-	        extend : 'Ext.data.Model',
-	        proxy : {
-	            fromCenterPanel : true,
-	            type : 'ajax',
-	            url : this.getStrutsBaseAction({
-		            isLeaf : false
-	            }) + '!expand.action',
-	            // for expanding the root
-	            extraParams : this.getTreeExpandExtraParams(),
-	            listeners : {
-		            exception : function(proxy, response, operation, opts) {
-			            var responseJson = Ext.decode(response.responseText);
-			            com.trackplus.util.showError(responseJson);
-		            }
-	            }
-	        },
-	        fields : this.getTreeFields()
-	    });
-
+		var me=this;
 	    var treeStore = Ext.create('Ext.data.TreeStore', {
-	        model : modelName,
 	        root : {
 	            expanded : true,
-	            id : this.rootID
-	        }
+	            id : me.getRootID()
+	        },
+		    proxy : {
+			    fromCenterPanel : true,
+			    type : 'ajax',
+			    url : this.getNodeBaseAction({
+				    isLeaf : false
+			    }) + '!expand.action',
+			    // for expanding the root
+			    extraParams : this.getTreeExpandExtraParams(),
+			    listeners : {
+				    exception : function(proxy, response, operation, opts) {
+					    var responseJson = Ext.decode(response.responseText);
+					    com.trackplus.util.showError(responseJson);
+				    }
+			    }
+		    },
+		    fields : this.getTreeFields()
 	    });
 	    var treeConfig = {
 	        xtype : 'treepanel',
@@ -409,9 +407,9 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	        selModel : this.getTreeSelectionModel(),
 	        region : 'west',
 	        autoScroll : true,
-	        width : this.treeWidth,
-	        margin : '0 -5 0 0',
-	        split : true,
+	        width : this.getTreeWidth(),
+		    margin : '0 -5 0 0',
+	        split: me.isTreeSplitOn(),
 	        // collapsible: true,
 	        header : false,
 	        border : false,
@@ -463,19 +461,7 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	    if (this.hasDragAndDropOnTree()) {
 		    // add drag and drop
 		    treeConfig.viewConfig = {
-		        plugins : this.getDragAndDropOnTreeConfig(),/*
-															 * { ptype:
-															 * 'treeviewdragdrop',
-															 * dragGroup:
-															 * this.baseAction
-															 * +'DDGroup',
-															 * dropGroup:
-															 * this.baseAction
-															 * +'DDGroup',
-															 * appendOnly: true,
-															 * enableDrag: true,
-															 * enableDrop: true },
-															 */
+		        plugins : this.getDragAndDropOnTreeConfig(),
 		        // allowCopy: true,
 		        listeners : {
 		            beforedrop : {
@@ -483,7 +469,7 @@ Ext.define('com.trackplus.admin.TreeBase', {
 		                fn : function(node, data, overModel, dropPosition) {
 			                var nodeToDrag = data.records[0];
 			                var copy = data.copy;
-			                if (copy == null) {
+			                if (CWHF.isNull(copy)) {
 				                // move by default
 				                copy = false;
 			                }
@@ -494,7 +480,7 @@ Ext.define('com.trackplus.admin.TreeBase', {
 		                scope : this,
 		                fn : function(node, data, overModel, dropPosition) {
 			                var copy = data.copy;
-			                if (copy == null) {
+			                if (CWHF.isNull(copy)) {
 				                // move by default
 				                copy = false;
 			                }
@@ -516,14 +502,14 @@ Ext.define('com.trackplus.admin.TreeBase', {
 			 * wins, so by reloading a tree node for refreshing the content the
 			 * extraParams should also be actualized
 			 */
-		    if (operation.node != null) {
+		    if (operation.node ) {
 			    var extraParams = this.getTreeExpandExtraParams(operation.node);
-			    if (extraParams != null) {
+			    if (extraParams ) {
 				    treeStore.proxy.extraParams = extraParams;
 			    }
 		    }
 	    }, this);
-	    treeStore.on('load', function(treeStore, node) {
+	    treeStore.on('load', function(treeStore,  records, successful, operation, node, eOpts) {
 		    this.onTreeNodeLoad(treeStore, node);
 	    }, this);
 	},
@@ -541,7 +527,7 @@ Ext.define('com.trackplus.admin.TreeBase', {
 			    selectionModelConfig.allowDeselect = this.allowDeselect;
 		    }
 	    }
-	    if (this.treeSelectionModel == null) {
+	    if (CWHF.isNull(this.treeSelectionModel)) {
 		    return Ext.create("Ext.selection.TreeModel", selectionModelConfig);
 	    } else {
 		    return this.treeSelectionModel;
@@ -577,7 +563,7 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	 * should be used)
 	 */
 	/* protected */getDragDropBaseAction : function(draggedNodeIsLeaf) {
-	    return this.getStrutsBaseAction({
+	    return this.getNodeBaseAction({
 		    isLeaf : draggedNodeIsLeaf
 	    });
 	},
@@ -604,7 +590,7 @@ Ext.define('com.trackplus.admin.TreeBase', {
 		// using this array
 	    /*
 		 * var parentHierarchy = [nodeTo.raw["id"]]; var parentNode =
-		 * nodeTo.parentNode; while (parentNode!=null && parentNode.raw!=null)
+		 * nodeTo.parentNode; while (parentNode && parentNode.raw)
 		 * {//parentNode.raw is null for root node
 		 * parentHierarchy.push(parentNode.raw["id"]); parentNode =
 		 * parentNode.parentNode; }
@@ -622,7 +608,7 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	        disableCaching : true,
 	        success : function(response) {
 		        var responseJson = Ext.decode(response.responseText);
-		        if (responseJson.success == true) {
+		        if (responseJson.success === true) {
 			        // reload the nodeFrom but only if cut
 			        if (!copy) {
 				        // after a cut the nodeFrom's parent should be also
@@ -639,11 +625,11 @@ Ext.define('com.trackplus.admin.TreeBase', {
 						 * this.refreshGridAndTreeAfterSubmit({nodeIDToReload:fromParentID});
 						 * //if nodeFrom reload "hides" the nodeTo then expand
 						 * the path till nodeTo again if
-						 * (parentHierarchy.indexOf(fromParentID)!=-1) { var
+						 * (parentHierarchy.indexOf(fromParentID)!==-1) { var
 						 * parentNode =
 						 * this.tree.getStore().getNodeById(parentHierarchy.pop());
-						 * while (parentNode!=null) { parentNode.expand(); var
-						 * nextId = parentHierarchy.pop(); if (nextId!=null) {
+						 * while (parentNode) { parentNode.expand(); var
+						 * nextId = parentHierarchy.pop(); if (nextId) {
 						 * parentNode =
 						 * this.tree.getStore().getNodeById(nextId); } else {
 						 * parentNode = null; } } }
@@ -655,7 +641,7 @@ Ext.define('com.trackplus.admin.TreeBase', {
 			            nodeIDToSelect : responseJson.node
 			        });
 		        } else {
-			        if (responseJson.errorMessage != null) {
+			        if (responseJson.errorMessage ) {
 				        // no right to delete
 				        Ext.MessageBox.alert(this.failureTitle, responseJson.errorMessage);
 			        }
@@ -696,7 +682,7 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	createCenterPanel : function() {
 	    var items = [];
 	    var rootMessage = this.getRootMessage();
-	    if (rootMessage != null || rootMessage != "") {
+	    if (rootMessage && rootMessage !== "") {
 		    items = this.getInfoBoxItems(rootMessage);
 	    }
 	    this.centerPanel = Ext.create('Ext.form.Panel', {
@@ -710,14 +696,25 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	        items : items
 	    });
 	    this.initCenterPanel();
-	    this.mainPanel = Ext.create('Ext.panel.Panel', {
-	        layout : 'border',
-	        region : 'center',
-	        border : false,
-	        items : [ this.tree, this.centerPanel ]
-	    });
+
+		this.mainPanel = Ext.create('Ext.panel.Panel',{
+			region:'center',
+			layout:'fit',
+			border:false,
+			bodyBorder:false,
+			items:[this.centerPanel]
+		});
+
 	    this.postInitCenterPanel(this.tree.getRootNode());
-	    return this.mainPanel;
+
+		var panelCenterWrapper=Ext.create('Ext.panel.Panel',{
+			layout:'border',
+			region:'center',
+			border:false,
+			bodyBorder:false,
+			items:[this.tree,this.mainPanel]
+		});
+		return panelCenterWrapper;
 	},
 
 	/**
@@ -728,7 +725,7 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	},
 
 	getInfoBoxItems : function(content) {
-	    if (content != null && content != "") {
+	    if (content  && content !== "") {
 		    return [ {
 		        xtype : 'component',
 		        cls : 'infoBox_bottomBorder',
@@ -745,7 +742,7 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	 */
 	/* private */treeNodeSelect : function(rowModel, node, index, opts) {
 	    var leaf = false;
-	    if (node != null) {
+	    if (node ) {
 		    // typical: called for the select event from the tree
 		    leaf = node.data['leaf'];
 		    this.selectedNodeID = node.data['id'];
@@ -771,7 +768,7 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	    if (selectionIsSimple) {
 		    node = selections[0];
 	    }
-	    if (node != null) {
+	    if (node ) {
 		    // typical: called for the select event from the tree
 		    this.selectedNodeID = node.data['id'];
 		    this.selectedNode = node;
@@ -782,7 +779,7 @@ Ext.define('com.trackplus.admin.TreeBase', {
 		    // in this case the tree last selected node from tree is taken
 		    node = this.selectedNode;
 	    }
-	    if (node != null) {
+	    if (node ) {
 		    this.loadDetailPanel(node, false);
 	    } else {
 		    this.resetDetailPanel();
@@ -841,7 +838,7 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	 * Gets the URL for loading the node detail
 	 */
 	/* private */getDetailUrl : function(node, add) {
-	    var leaf = node != null && node.isLeaf();
+	    var leaf = node  && node.isLeaf();
 	    if (leaf || add) {
 		    return this.getLeafDetailUrl(node, add);
 	    } else {
@@ -854,11 +851,11 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	 * or the folderDetailUrl should be specified in the config
 	 */
 	/* protected */getFolderDetailUrl : function(node, add) {
-	    if (this.folderDetailUrl == null) {
-		    return this.folderAction + '!load.action';
-	    } else {
+	    //if (CWHF.isNull(this.folderDetailUrl)) {
+		    return this.getFolderAction() + '!load.action';
+	    /*} else {
 		    return folderDetailUrl;
-	    }
+	    }*/
 	},
 
 	/**
@@ -866,11 +863,11 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	 * the leafDetailUrl should be specified in the config
 	 */
 	/* protected */getLeafDetailUrl : function(node, add) {
-	    if (this.leafDetailUrl == null) {
-		    return this.baseAction + '!load.action';
-	    } else {
-		    return leafDetailUrl;
-	    }
+	    //if (CWHF.isNull(this.leafDetailUrl)) {
+		    return this.getBaseAction() + '!load.action';
+		/*} else {
+		    return this.getLeafDetailUrl();
+	    }*/
 	},
 
 	/**
@@ -878,7 +875,7 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	 */
 	/* private */getDetailParams : function(node, add, extraDetailParameters) {
 	    if (add) {
-		    var leaf = node != null && node.isLeaf();
+		    var leaf = node  && node.isLeaf();
 		    if (leaf) {
 			    return this.getAddLeafParams(extraDetailParameters);
 		    } else {
@@ -896,7 +893,7 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	 * not specified)
 	 */
 	/* private */getDetailItems : function(node, add, responseJson) {
-	    var leaf = node != null && node.isLeaf();
+	    var leaf = node  && node.isLeaf();
 	    if (leaf || add) {
 		    return this.getLeafDetailItems(node, add, responseJson);
 	    } else {
@@ -950,7 +947,7 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	 * Show the node detail using a form.load() method
 	 */
 	/*private*/loadDetailPanelWithFormLoad : function(node, add, extraDetailParameters) {
-	    if (this.centerPanel != null) {
+	    if (this.centerPanel ) {
 		    this.mainPanel.remove(this.centerPanel, true);
 	    }
 	    var panelConfig = {
@@ -961,13 +958,13 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	        items : this.getDetailItems(node, add)
 	    };
 	    var panelConfigOptions = this.getDetailPanelConfigOptions();
-	    if (panelConfigOptions != null) {
+	    if (panelConfigOptions ) {
 		    for (propertyName in panelConfigOptions) {
 			    panelConfig[propertyName] = panelConfigOptions[propertyName];
 		    }
 	    }
-	    this.centerPanel = Ext.create('Ext.form.Panel', panelConfig);
-	    if (this.replaceCenterPanel != null) {
+		this.centerPanel = Ext.create('Ext.form.Panel', panelConfig);
+		if (this.replaceCenterPanel) {
 		    this.replaceCenterPanel.call(this, this.centerPanel);
 	    } else {
 		    this.mainPanel.add(this.centerPanel);
@@ -979,11 +976,11 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	        params : this.getDetailParams(node, add, extraDetailParameters),
 	        success : function(form, action) {
 		        var isLeaf = add;
-		        if (node != null) {
+		        if (node ) {
 			        isLeaf = node.isLeaf();
 		        }
 		        var postDataProcess = this.getEditPostDataProcess(node, isLeaf, add);
-		        if (postDataProcess != null) {
+		        if (postDataProcess ) {
 			        try {
 				        postDataProcess.call(this, action.result.data, this.centerPanel);
 			        } catch (ex) {
@@ -1008,7 +1005,7 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	        disableCaching : true,
 	        success : function(response) {
 		        var responseJson = Ext.decode(response.responseText);
-		        if (this.centerPanel != null) {
+		        if (this.centerPanel ) {
 			        this.mainPanel.remove(this.centerPanel, true);
 		        }
 		        this.centerPanel = Ext.create('Ext.panel.Panel', {
@@ -1018,7 +1015,7 @@ Ext.define('com.trackplus.admin.TreeBase', {
 		            header : false,
 		            items : this.getDetailItems(node, add, responseJson)
 		        });
-		        if (this.replaceCenterPanel != null) {
+		        if (this.replaceCenterPanel ) {
 			        this.replaceCenterPanel.call(this, this.centerPanel);
 		        } else {
 			        this.mainPanel.add(this.centerPanel);
@@ -1036,10 +1033,10 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	 */
 	/* private */resetDetailPanel : function() {
 	    var rootMessage = this.getRootMessage();
-	    if (rootMessage != null || rootMessage != "") {
+	    if (rootMessage  || rootMessage !== "") {
 		    items = this.getInfoBoxItems(rootMessage);
 	    }
-	    if (this.centerPanel != null) {
+	    if (this.centerPanel ) {
 		    this.mainPanel.remove(this.centerPanel, true);
 	    }
 	    this.centerPanel = Ext.create('Ext.form.Panel', {
@@ -1049,7 +1046,7 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	        header : false,
 	        items : items
 	    });
-	    if (this.replaceCenterPanel != null) {
+	    if (this.replaceCenterPanel ) {
 		    this.replaceCenterPanel.call(this, this.centerPanel);
 	    } else {
 		    this.mainPanel.add(this.centerPanel);
@@ -1082,7 +1079,7 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	 */
 	/* private */getAddParams : function(leaf, extraDetailParameters) {
 	    var addParams = null;
-	    if (extraDetailParameters != null) {
+	    if (extraDetailParameters ) {
 		    addParams = extraDetailParameters;
 	    } else {
 		    addParams = new Object;
@@ -1091,7 +1088,7 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	    addParams['leaf'] = leaf;
 	    // var addParams = {add:true, leaf:leaf};
 	    var addToNode = null;
-	    if (this.selectedNode != null) {
+	    if (this.selectedNode ) {
 		    if (leaf && this.selectedNode.isLeaf()) {
 			    // add leaf to a leaf node -> means add sibling (add node to the
 				// parent of the leaf node)
@@ -1100,13 +1097,13 @@ Ext.define('com.trackplus.admin.TreeBase', {
 			    // add child to a folder node
 			    addToNode = this.selectedNode;
 		    }
-		    if (addToNode != null) {
+		    if (addToNode ) {
 			    addParams['node'] = addToNode.data['id'];
 		    }
 	    } else {
 		    // adding when no node is selected: for ex. project specific
 			// queries: add means adding to the (project specific branch) root
-		    addParams['node'] = this.rootID;
+		    addParams['node'] = this.getRootID();
 	    }
 	    return addParams;
 	},
@@ -1117,20 +1114,20 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	 */
 	/* protected */getEditParams : function(fromTree, extraDetailParameters) {
 	    var editParams = null;
-	    if (extraDetailParameters != null) {
+	    if (extraDetailParameters ) {
 		    editParams = extraDetailParameters;
 	    } else {
 		    editParams = new Object();
 	    }
 	    var recordData = this.getSingleSelectedRecordData(fromTree);
-	    if (recordData != null) {
+	    if (recordData ) {
 		    var nodeID = null;
 		    if (fromTree) {
 			    nodeID = recordData['id'];
 		    } else {
 			    nodeID = recordData['node'];
 		    }
-		    if (nodeID != null) {
+		    if (nodeID ) {
 			    // return {node:nodeID};
 			    editParams.node = nodeID;
 		    }
@@ -1146,15 +1143,15 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	 */
 	/* protected */getEditPostDataProcess : function(record, isLeaf, add) {
 	    var recordData = null;
-	    if (record != null) {
+	    if (record ) {
 		    recordData = record.data;
 	    }
 	    if (isLeaf) {
-		    if (this.getEditLeafPostDataProcess != null) {
+		    if (this.getEditLeafPostDataProcess ) {
 			    return this.getEditLeafPostDataProcess(recordData, add);
 		    }
 	    } else {
-		    if (this.getEditFolderPostDataProcess != null) {
+		    if (this.getEditFolderPostDataProcess ) {
 			    return this.getEditFolderPostDataProcess(recordData, add);
 		    }
 	    }
@@ -1175,8 +1172,8 @@ Ext.define('com.trackplus.admin.TreeBase', {
 
 	/**
 	 * Parameter name for the submitted entityID(s) by delete If
-	 * allowMultipleSelections==false then the same entityID can be used for
-	 * delete and edit submits If allowMultipleSelections==true this should
+	 * allowMultipleSelections===false then the same entityID can be used for
+	 * delete and edit submits If allowMultipleSelections===true this should
 	 * return another name (the submitted value will be stored on the server
 	 * typically in an Integer[])
 	 */
@@ -1190,7 +1187,7 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	 */
 	/* protected */getRecordID : function(recordData, extraConfig) {
 	    var fromTree = null;
-	    if (extraConfig != null) {
+	    if (extraConfig ) {
 		    fromTree = extraConfig.fromTree;
 	    }
 	    if (fromTree) {
@@ -1212,10 +1209,10 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	 */
 	selectNode: function() {
 		var selectionModel = this.tree.getSelectionModel();
-		if (this.nodeIdToSelect!=null) {
+		if (this.nodeIdToSelect) {
 			//get the node by id
 			var nodeToSelect = this.tree.getStore().getNodeById(this.nodeIdToSelect);
-			if (nodeToSelect!=null) {
+			if (nodeToSelect) {
 				selectionModel.select(nodeToSelect);
 			}
 		}
@@ -1225,7 +1222,7 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	 * Get the (last) selected tree node
 	 */
 	/* public */getLastSelectedTreeNode : function() {
-	    if (this.tree != null) {
+	    if (this.tree ) {
 		    return this.tree.getSelectionModel().getLastSelected();
 	    }
 	    return null;
@@ -1234,7 +1231,7 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	 * The the selected tree nodes
 	 */
 	/* public */getTreeSelection : function() {
-	    if (this.tree != null) {
+	    if (this.tree ) {
 		    return this.tree.getSelectionModel().getSelection();
 	    }
 	    return null;
@@ -1245,7 +1242,7 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	 */
 	/* public */selectTreeNode : function(record) {
 	    // false to not retain existing selections
-	    if (this.tree != null) {
+	    if (this.tree ) {
 		    this.tree.getSelectionModel().select(record, true);
 	    }
 	    return record;
@@ -1261,6 +1258,13 @@ Ext.define('com.trackplus.admin.TreeBase', {
 		    return this.getLastSelectedGridRow();
 	    }
 	},
+	
+	/*public*/getLastSelectedGridRow: function() {
+		if (this.grid) {
+			return this.grid.getSelectionModel().getLastSelected();
+		}
+		return null;
+	},
 
 	getSelection : function(fromTree) {
 	    if (fromTree) {
@@ -1270,6 +1274,13 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	    }
 	},
 
+	/*public*/getGridSelection: function() {
+		if (this.grid) {
+			return this.grid.getSelectionModel().getSelection();
+		}
+		return null;
+	},
+	
 	/**
 	 * Gets the selected data (either in tree or in grid )
 	 */
@@ -1295,7 +1306,7 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	 */
 	/*private*/getSingleSelectedRecord : function(fromTree) {
 	    var selectedRecords = this.getSelectedRecords(fromTree);
-	    if (selectedRecords != null) {
+	    if (selectedRecords ) {
 		    var allowMultiple = false;
 		    if (fromTree) {
 			    //multiple tree nodes
@@ -1305,7 +1316,7 @@ Ext.define('com.trackplus.admin.TreeBase', {
 			    allowMultiple = this.allowMultipleSelections;
 		    }
 		    if (allowMultiple) {
-			    if (selectedRecords != null && selectedRecords.length == 1) {
+			    if (selectedRecords  && selectedRecords.length === 1) {
 				    return selectedRecords[0];
 			    } else {
 				    return null;
@@ -1325,7 +1336,7 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	 */
 	/*private*/selectedIsLeaf : function(fromTree) {
 	    var lastSelectedRecord = this.getLastSelected(fromTree);
-	    if (lastSelectedRecord != null) {
+	    if (lastSelectedRecord ) {
 		    if (fromTree) {
 			    return lastSelectedRecord.isLeaf();
 		    } else {
@@ -1349,10 +1360,10 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	    }
 	    if (allowMultiple) {
 		    var selectedRecords = this.getSelection(fromTree);
-		    return selectedRecords != null && selectedRecords.length == 1;
+		    return selectedRecords  && selectedRecords.length === 1;
 	    } else {
 		    var selectedRecord = this.getLastSelected(fromTree);
-		    return selectedRecord != null;
+		    return selectedRecord !== null;
 	    }
 	},
 
@@ -1367,6 +1378,14 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	    }
 	},
 
+	/*public*/selectGridRow: function(record) {
+		//false to not retain existing selections
+		if (this.grid) {
+			this.grid.getSelectionModel().select(record, false);
+		}
+		return record;
+	},
+	
 	/**
 	 * Gather selected ID as a comma separated string
 	 * selectedRecords - the selected record(s): simple or multiple selection:
@@ -1374,9 +1393,9 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	 * getIDFormEntityFunction - function for getting the ID from an entity JSON
 	 * extraConfig
 	 */
-	/*private*/getSelectionParam : function(selectedRecords, extraConfig) {
+	/*private*/getSelectedIDs : function(selectedRecords, extraConfig) {
 	    var fromTree = null;
-	    if (extraConfig != null) {
+	    if (extraConfig ) {
 		    fromTree = extraConfig.fromTree;
 	    }
 	    if (fromTree) {
@@ -1398,13 +1417,47 @@ Ext.define('com.trackplus.admin.TreeBase', {
 	},
 
 	/**
+	 * Get the data of the single selected record
+	 * For no selection or multiple selection return null
+	 * param: typically fromTree
+	 */
+	/*private*/getSingleSelectedRecordData: function(param) {
+		var selectedRecord = this.getSingleSelectedRecord(param);
+		if (selectedRecord) {
+			return selectedRecord.data;
+		}
+		return null;
+	},
+
+	/**
+	 * Get the data of the single selected record
+	 * For no selection or multiple selection return null
+	 */
+	/*private*/getSingleSelectedRecord: function(param) {
+		var selectedRecords = this.getSelectedRecords(param);
+		if (selectedRecords) {
+			if (this.allowMultipleSelections) {
+				if (selectedRecords && selectedRecords.length===1) {
+					return selectedRecords[0];
+				} else {
+					return null;
+				}
+			} else {
+				return selectedRecords;
+			}
+		} else {
+			return null;
+		}
+	},
+	
+	/**
 	 * Select a record by activating the context menu
 	 */
 	/*public*/changeAndRefreshNode : function(tree, nodeId, data, reloadIfExpanded) {
 	    var treeStore = tree.getStore();
 	    var node = treeStore.getNodeById(nodeId);
-	    if (node != null) {
-		    if (data != null) {
+	    if (node ) {
+		    if (data ) {
 			    for (propertyName in data) {
 				    node.data[propertyName] = data[propertyName];
 			    }
@@ -1419,5 +1472,9 @@ Ext.define('com.trackplus.admin.TreeBase', {
 			    });
 		    }
 	    }
+	},
+
+	isTreeSplitOn: function() {
+		return true;
 	}
 });

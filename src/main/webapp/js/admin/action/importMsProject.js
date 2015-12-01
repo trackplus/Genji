@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -47,7 +47,7 @@ Ext.define('com.trackplus.admin.action.ImportMsProject',{
 			titleKey = "admin.actions.importMSProject.title.importResult";
 			break;
 		}
-		if (titleKey!=null) {
+		if (titleKey) {
 			return getText(titleKey);
 		} else {
 			return '';
@@ -64,16 +64,16 @@ Ext.define('com.trackplus.admin.action.ImportMsProject',{
 	},
 
 	getImportWizardUrl: function(card, reload) {
-		if (card==1) {
+		if (card===1) {
 			return 'msProjectUploadRender.action';
 		} else {
-			if (card==2) {
+			if (card===2) {
 				return 'msProjectUpload.action';
 			} else {
-				if (card==3) {
+				if (card===3) {
 					return "msProjectImport!submitResourceMapping.action";
 				} /*else {
-	                if (card==4) {
+	                if (card===4) {
 	                    return "msProjectImport!doImport.action";
 	                }
 	            } */
@@ -88,14 +88,16 @@ Ext.define('com.trackplus.admin.action.ImportMsProject',{
 	 * return false and optionally show an alert box if there is a validation problem which prevents navigating to the next card
 	 */
 	loadDataForCard: function(cardNo, reload, parameters) {
-		if (cardNo==1) {
+		var me = this;
+		if (cardNo===1) {
 			//for the very first card nothing to submit only render (load)
 			var panel1 = this.wizardPanel.getComponent('card1');
 			panel1.add(this.getImportWizardItemsForCard(cardNo));
 			var params = null;
-			if (this.projectID!=null) {
+			if (this.projectID) {
 				params = {projectOrReleaseID:-this.projectID};
 			}
+
 			panel1.getForm().load({
 				url: this.getImportWizardUrl(cardNo, reload),
 				scope: this,
@@ -107,13 +109,13 @@ Ext.define('com.trackplus.admin.action.ImportMsProject',{
 					}catch(ex){}
 				},
 				failure: function(form, action) {
-					Ext.MessageBox.alert(this.failureTitle, action.response.responseText)
+					Ext.MessageBox.alert(this.failureTitle, action.response.responseText);
 				}
 			});
 			return true;
 		} else {
 			//from card to each card starts with a submit
-			if (cardNo==2) {
+			if (cardNo===2) {
 				var panel1 = this.wizardPanel.getComponent('card1');
 				if (!panel1.getForm().isValid()) {
 					Ext.MessageBox.alert(getText('admin.actions.importTp.lbl.uploadFileNotSpecified'),
@@ -136,9 +138,9 @@ Ext.define('com.trackplus.admin.action.ImportMsProject',{
 				//this.submitFromCardToCardMessageOnFailure(1, 2, params, reload, true);
 	            this.submitFromCardToCard(1, 2, params, reload, true);
 			} else {
-				if (cardNo==3) {
+				if (cardNo===3) {
 					//var params = {fileName:this.fileName};
-	                if (parameters==null) {
+	                if (CWHF.isNull(parameters)) {
 	                    parameters = new Object();
 	                }
 	                parameters["fileName"] = this.fileName;
@@ -153,13 +155,13 @@ Ext.define('com.trackplus.admin.action.ImportMsProject',{
 	 * Additional items can be added once the data is back from the server
 	 */
 	getImportWizardItemsForCard: function(card) {
-		if (card==1) {
+		if (card===1) {
 			return this.getImportWizardCard1Items();
 		} else {
-			if (card==2) {
+			if (card===2) {
 				return this.getMsProjectResourceMappingItems();
 			} else {
-				if (card==3) {
+				if (card===3) {
 					return this.getMsProjectConflictHandlingItems();
 				}
 			}
@@ -167,11 +169,11 @@ Ext.define('com.trackplus.admin.action.ImportMsProject',{
 	},
 
 	postDataProcess: function(panel, data, card) {
-		if (card==1) {
+		if (card===1) {
 			this.postProcessCard1(panel, data);
 		} else {
-			if (card==2) {
-				if (data.data!=null) {
+			if (card===2) {
+				if (data.data) {
 					this.postProcessMsProjectResourceMapping(panel, data);
 					this.actualizeToolbar(this.wizardPanel);
 				} else {
@@ -185,7 +187,7 @@ Ext.define('com.trackplus.admin.action.ImportMsProject',{
 					//this.removeCard(2);
 				}
 			} else {
-				if (card==3) {
+				if (card===3) {
 					this.postProcessMsProjectConflictHandling(panel, data);
 				}
 			}
@@ -200,7 +202,7 @@ Ext.define('com.trackplus.admin.action.ImportMsProject',{
 		if(!me.isFromDragAndDrop) {
 			var card1Items = [CWHF.createFileField(
 					getText("common.lbl.file", this.getFileTypeLabel()), "uploadFile",
-					{allowBlank:false, labelWidth:250, width:700, labelIsLocalized: true},
+					{margin: '5 0 0 0', allowBlank:false, labelWidth:250, width:700, labelIsLocalized: true, itemId:"uploadFile"},
 					{change:{fn:function(){
 						this.uploadDone=false;},
 						scope:this}})];
@@ -212,8 +214,8 @@ Ext.define('com.trackplus.admin.action.ImportMsProject',{
 	        {allowBlank:false,
 	            labelWidth:250,
 	            width:500,
-	            margin: '10 0 10 0'
-	            //padding: '10 0 0 0'
+	            margin: '10 0 10 0',
+	            itemId: 'projectOrReleaseID'
 	        }));
 		return card1Items;
 	},
@@ -224,7 +226,7 @@ Ext.define('com.trackplus.admin.action.ImportMsProject',{
 	 */
 	postProcessCard1: function(formPanel, data) {
 	    var projectReleasesPicker = formPanel.getComponent("projectOrReleaseID");
-	    projectReleasesPicker.updateData(data["projectReleaseTree"]);
+	    projectReleasesPicker.updateMyOptions(data["projectReleaseTree"]);
 	    projectReleasesPicker.setValue(data["selectedProjectReleaseID"]);
 
 		var uploadFile = formPanel.getComponent("uploadFile");
@@ -288,8 +290,8 @@ Ext.define('com.trackplus.admin.action.ImportMsProject',{
 			html: getText('admin.actions.importMSProject.lbl.personName'),
 			colspan: 3
 			});
-		if (panel!=null) {
-			if (resourceMappings!=null) {
+		if (panel) {
+			if (resourceMappings) {
 				Ext.Array.forEach(resourceMappings, function(resourceMapping) {
 					var resourceName = resourceMapping['resourceName'];
 					var resourceUID = resourceMapping['resourceUID'];
@@ -302,7 +304,8 @@ Ext.define('com.trackplus.admin.action.ImportMsProject',{
 							'resourceUIDToPersonIDMap[' + resourceUID + ']',
 							{width:150,
 							data:trackplusPersons,
-							value:personID},
+							value:personID,
+							itemId: 'resourceUIDToPersonID' + resourceUID},
 							{select: {fn: this.showHide, scope:this,
 								panel: panel,
 								resourceUID: resourceUID}},
@@ -313,7 +316,7 @@ Ext.define('com.trackplus.admin.action.ImportMsProject',{
 							allowBlank:false,
 							width:250,
 							labelWidth: 100});
-					textFieldUsername.setDisabled(personID!=0);
+					textFieldUsername.setDisabled(personID!==0);
 					items.push(textFieldUsername);
 					var textFieldEmail = CWHF.createTextField('admin.actions.importMSProject.lbl.email',
 							'resourceUIDToEmailMap['+resourceUID +']',
@@ -321,7 +324,7 @@ Ext.define('com.trackplus.admin.action.ImportMsProject',{
 							allowBlank:false,
 							width: 250,
 							labelWidth: 75});
-					textFieldEmail.setDisabled(personID!=0);
+					textFieldEmail.setDisabled(personID!==0);
 					items.push(textFieldEmail);
 				}, this);
 			}
@@ -334,7 +337,7 @@ Ext.define('com.trackplus.admin.action.ImportMsProject',{
 		newUserErrorsPanel.removeAll(true);
 		//add all panels at once
 		var errors = data['errorMessage'];
-		if (errors!=null) {
+		if (errors) {
 			newUserErrorsPanel.add(errors);
 		}
 	},
@@ -346,12 +349,12 @@ Ext.define('com.trackplus.admin.action.ImportMsProject',{
 		var panel = options.panel;
 		var resourceUID = options.resourceUID;
 		var mappingPanel = panel.getComponent('resourceMappings');
-		if (mappingPanel!=null) {
+		if (mappingPanel) {
 			var resourceUIDToPersonID = mappingPanel.getComponent("resourceUIDToPersonID" + resourceUID);
 			var resourceUIDToUsername = mappingPanel.getComponent("resourceUIDToUsername" + resourceUID);
 			var resourceUIDToEmail = mappingPanel.getComponent("resourceUIDToEmail" + resourceUID);
 			var selectedValue = resourceUIDToPersonID.getValue();
-			var showUsernameAndEmail = selectedValue!=0;
+			var showUsernameAndEmail = selectedValue!==0;
 			resourceUIDToUsername.setDisabled(showUsernameAndEmail);
 			resourceUIDToEmail.setDisabled(showUsernameAndEmail);
 		}
@@ -409,9 +412,9 @@ Ext.define('com.trackplus.admin.action.ImportMsProject',{
 		finish.setDisabled(disableFinal);
 		var errorAndConflictPanel = panel.getComponent('errorAndConflict');
 		var errorCode = data['errorCode'];
-		if (errorCode==null) {
+		if (CWHF.isNull(errorCode)) {
 			var message = data['message'];
-			if (message!=null) {
+			if (message) {
 				var errorPanel = errorAndConflictPanel.getComponent('errorPanel');
 				errorPanel.add({xtype: 'label',
 					 html: message
@@ -422,12 +425,12 @@ Ext.define('com.trackplus.admin.action.ImportMsProject',{
 				finish.handler = function() {me.win.close();};
 				var toolbar = me.win.getDockedItems('toolbar[dock="bottom"]');
 				var previous = toolbar[0].getComponent('previous');
-				if (previous!=null) {
+				if (previous) {
 					previous.setDisabled(true);
 				}
 			} else {
 	            var statusText = data["statusText"];
-	            if (statusText!=null) {
+	            if (statusText) {
 	                //from submitFromCardToCard -> failure branch: for ex. connection timeout: import took too long
 	                var errorPanel = errorAndConflictPanel.getComponent('errorPanel');
 	                errorPanel.add({xtype: 'label',
@@ -462,7 +465,7 @@ Ext.define('com.trackplus.admin.action.ImportMsProject',{
 	            colspan: 6
 	        });
 			var conflicts = data['conflicts'];
-			if (conflicts!=null) {
+			if (conflicts) {
 				Ext.Array.forEach(conflicts, function(conflict) {
 					var conflictMessage =  conflict['conflictMessage'];
 	                var conflictType =  conflict['conflictType'];
@@ -513,8 +516,7 @@ Ext.define('com.trackplus.admin.action.ImportMsProject',{
 	                }
 	                var conflictResolutionRadioButtons = CWHF.getRadioButtonItems(conflictHandlingList,
 	                    conflictMapName, 'id', 'label', false, false, true);
-	                var conflictResolutionRadioGroup = CWHF.getRadioGroup(
-	                    conflictMapName+'RadioGroup', '', 300, conflictResolutionRadioButtons,  null,
+	                var conflictResolutionRadioGroup = CWHF.getRadioGroup('', 300, conflictResolutionRadioButtons,  {itemId:conflictMapName+'RadioGroup'},
 	                    {change: {fn: this.onMsProjectConflictHandlingForAll, scope:this,
 	                        panel: conflictPanel, conflictValues: conflict['conflictValues'], conflictMapName:conflictMapName}});
 	                items.push(conflictResolutionRadioGroup);
@@ -544,10 +546,10 @@ Ext.define('com.trackplus.admin.action.ImportMsProject',{
 	                    //the name of the conflict parameter to be submitted
 	                    //the radio group will have the same itemId, to store only one array (this.conflictParameterNames) for submitting the conflict paramaters. See getDataBeforeCardDelete()
 	                    var conflictParamName =  conflictMapName + "[" + workItemID + "]";
+	                    var conflictParamItemId =  conflictMapName + workItemID;
 						var conflictResolutionRadioButtons = CWHF.getRadioButtonItems(conflictHandlingList,
 	                        conflictParamName, 'id', 'label', false, false, true);
-						var conflictResolutionRadioGroup = CWHF.getRadioGroup(
-	                        conflictParamName, '', 300, conflictResolutionRadioButtons);
+						var conflictResolutionRadioGroup = CWHF.getRadioGroup('', 300, conflictResolutionRadioButtons,{itemId:conflictParamItemId});
 	                    this.conflictParameterNames.push(conflictParamName);
 						items.push(conflictResolutionRadioGroup);
 	                    conflictPanel.add(items);
@@ -563,29 +565,33 @@ Ext.define('com.trackplus.admin.action.ImportMsProject',{
 	    var conflictMapName =  options["conflictMapName"];
 	    var conflictValues = options["conflictValues"];
 	    var conflictResolutionValue = newValue[conflictMapName];
+	    var conflictParameterItemId =  conflictMapName.split('[').join('');
+	    conflictParameterItemId =  conflictParameterItemId.split(']').join('');
 	    Ext.Array.forEach(conflictValues, function(conflictValue) {
 	        var workItemID = conflictValue['workItemID'];
-	        var radioGroup = panel.getComponent(conflictMapName+"["+workItemID+ "]");
+	        var radioGroup = panel.getComponent(conflictParameterItemId + workItemID);
 	        //TODO setValue() does not work (ext js bug?).
 	        //radioGroup.setValue(conflictResolutionValue);
 	        //Once setValue fixed remove this cycle
 	        radioGroup.items.each(function(item){
-	            item.setValue(item.inputValue == conflictResolutionValue);
+	            item.setValue(item.inputValue === conflictResolutionValue);
 	        });
 	    }, this)
 	},
 
 	getDataBeforeCardDelete: function(cardNo, reload) {
 	    var params = null;
-	    if (cardNo==3) {
+	    if (cardNo===3) {
 	        params = new Object();
-	        if (reload && this.conflictParameterNames!=null) {
+	        if (reload && this.conflictParameterNames) {
 	            var overwriteMap = new Object();
 	            var card3 = this.wizardPanel.getComponent("card3");
 	            var errorAndConflictPanel = card3.getComponent('errorAndConflict');
 	            var conflictPanel = errorAndConflictPanel.getComponent('conflictPanel');
 	            Ext.Array.forEach(this.conflictParameterNames, function(conflictParameterName) {
-	                var radioButtons = conflictPanel.getComponent(conflictParameterName);
+	            	var conflictParameterItemId =  conflictParameterName.split('[').join('');
+	            	conflictParameterItemId =  conflictParameterItemId.split(']').join('');
+	                var radioButtons = conflictPanel.getComponent(conflictParameterItemId);
 	                var paramValue = CWHF.getSelectedRadioButtonValue(radioButtons);
 	                params[conflictParameterName]= paramValue;
 	            }, this);
@@ -600,7 +606,7 @@ Ext.define('com.trackplus.admin.action.ImportMsProject',{
 	 */
 	createPopUpDialog: function(files) {
 		var me = this;
-		if(files == null) {
+		if(CWHF.isNull(files)) {
 			me.isFromDragAndDrop = false;
 			var windowParameters = {
 				title: "",
@@ -609,13 +615,13 @@ Ext.define('com.trackplus.admin.action.ImportMsProject',{
 				overrideButtons: me.getDialogButtons(),
 				items: me.getWizardPanel()
 			};
-			var window = Ext.create('com.trackplus.util.WindowConfig', windowParameters);
-			window.showWindowByConfig(me);
+			me.window = Ext.create('com.trackplus.util.WindowConfig', windowParameters);
+			me.window.showWindowByConfig(me);
 			me.actualizeToolbar(me.wizardPanel);
 		}else {
 			me.file = null;
 			me.isFromDragAndDrop = true;
-			if(files != null && files.length > 0){
+			if(files  && files.length > 0){
 				me.file = files[0];
 			}
 
@@ -645,10 +651,10 @@ Ext.define('com.trackplus.admin.action.ImportMsProject',{
 					items: me.getWizardPanel()
 				};
 
-				var window = Ext.create('com.trackplus.util.WindowConfig', windowParameters);
+				me.window = Ext.create('com.trackplus.util.WindowConfig', windowParameters);
 			    var card1 = me.wizardPanel.getComponent("card1");
 			    var fileUploader = card1.getComponent("uploadFile");
-				window.showWindowByConfig(me);
+			    me.window.showWindowByConfig(me);
 				me.actualizeToolbar(me.wizardPanel);
 			}
 		}
@@ -708,15 +714,15 @@ Ext.define('com.trackplus.admin.action.ImportMsProject',{
 		var activeItem = layout.getActiveItem();
 		var index = panel.items.indexOf(activeItem);
 		var numItems = panel.items.getCount() - 1;
-		if (btn!=null) {
+		if (btn) {
 	        var params = null;
-			if (btn.itemId == 'next' || btn.itemId == 'finish' && index <= numItems) {
-				if(index == 0 && me.isFromDragAndDrop) {
+			if (btn.itemId === 'next' || btn.itemId === 'finish' && index <= numItems) {
+				if(index === 0 && me.isFromDragAndDrop) {
 						me.uploadMsProjFile();
 				}else {
 					//+ 2 because index is 0 based and the data for the next card is loaded
 					var reload = false;
-					if (index==numItems) {
+					if (index===numItems) {
 						//reload the error handling card
 						index = index-1;
 						reload = true;
@@ -731,13 +737,13 @@ Ext.define('com.trackplus.admin.action.ImportMsProject',{
 					//To avoid this initialize all next cards after each next.
 					this.initCards(index+2);
 					var dataIsValid = this.loadDataForCard(index+2, reload, params);
-					if (dataIsValid!=false) {
+					if (dataIsValid!==false) {
 						//if data is valid then change to the next card
 						panel.layout.setActiveItem(index + 1);
 					}
 				}
 			} else {
-				if (btn.itemId == 'previous' && index > 0) {
+				if (btn.itemId === 'previous' && index > 0) {
 					var activeItem = layout.getActiveItem();
 					//remove all data from the current card before moving back to the previous card: next always starts from an empty card
 					activeItem.removeAll();
@@ -830,7 +836,7 @@ Ext.define('com.trackplus.admin.action.ImportMsProject',{
 	 */
 	actualizeToolbar: function(panel) {
 		var me = this;
-		if(me.win!=null) {
+		if(me.win) {
 			var layout = panel.getLayout();
 			var activeItem = layout.getActiveItem();
 			var index = panel.items.indexOf(activeItem);
@@ -838,27 +844,31 @@ Ext.define('com.trackplus.admin.action.ImportMsProject',{
 
 			var toolbar = me.win.getDockedItems('toolbar[dock="bottom"]');
 			var previous = toolbar[0].getComponent('previous');
-			if (previous!=null) {
+			if (previous) {
 				previous.setDisabled(!layout.getPrev());
 			}
 			var next = toolbar[0].getComponent('next');
-			if (next!=null) {
+			if (next) {
 				next.setDisabled((index+1)>=(numItems-1));
 			}
 
 			var finish = toolbar[0].getComponent('finish');
-			if (finish!=null) {
-				finish.setDisabled((index+1)!=(numItems-1));
+			if (finish) {
+				finish.setDisabled((index+1)!==(numItems-1));
 			}
 		}
 
-		if(me.win!=null) {
+		if(me.win) {
 			me.win.setTitle(this.getTitle(index + 1));
 		}
 	},
 
 	closeWindow: function() {
-		alert("CLOSE!");
+	},
+
+	getWindowComponent: function() {
+		var me = this;
+		return me.window;
 	}
 
 });

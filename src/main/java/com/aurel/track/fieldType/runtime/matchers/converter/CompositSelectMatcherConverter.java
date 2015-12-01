@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -55,6 +55,7 @@ public class CompositSelectMatcherConverter implements MatcherConverter{
 	 * @param matcherRelation
 	 * @return
 	 */
+	@Override
 	public String toXMLString(Object value, Integer matcherRelation) {
 		if (value==null || matcherRelation==null) {
 			return null;
@@ -69,7 +70,8 @@ public class CompositSelectMatcherConverter implements MatcherConverter{
 				actualValuesMap = (SortedMap<Integer, Integer[]>)value;
 			} catch (Exception e) {
 				LOGGER.warn("Converting the " + value +
-						" to SortedMap<Integer, Integer[]> for display string failed with " + e.getMessage(), e);
+						" to SortedMap<Integer, Integer[]> for display string failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 			if (actualValuesMap!=null) {
 				StringBuffer stringBuffer = new StringBuffer();
@@ -80,7 +82,8 @@ public class CompositSelectMatcherConverter implements MatcherConverter{
 					try {
 						partValueArr = actualValuesMap.get(partNo);
 					} catch (Exception e) {
-						LOGGER.warn("Converting the part " + partNo +  " to Integer[] for XML string string failed with " + e.getMessage(), e);
+						LOGGER.warn("Converting the part " + partNo +  " to Integer[] for XML string string failed with " + e.getMessage());
+						LOGGER.debug(ExceptionUtils.getStackTrace(e));
 					}
 					String partValue = "";
 					if (partValueArr!=null && partValueArr.length>0) {
@@ -107,6 +110,7 @@ public class CompositSelectMatcherConverter implements MatcherConverter{
 	 * @param matcherRelation
 	 * @return
 	 */
+	@Override
 	public Object fromXMLString(String value, Integer matcherRelation) {
 		if (value==null || matcherRelation==null) {
 			return null;
@@ -146,6 +150,7 @@ public class CompositSelectMatcherConverter implements MatcherConverter{
 	 * @param matcherRelation
 	 * @return
 	 */
+	@Override
 	public Object fromDisplayString(Map<String, String> displayStringMap,
 			Integer fieldID, Locale locale, Integer matcherRelation) {
 		if (displayStringMap == null) {
@@ -173,7 +178,8 @@ public class CompositSelectMatcherConverter implements MatcherConverter{
 								try {
 									actualValuesMap.put(parametertCode, new Integer[] {Integer.valueOf(partStringValue)});
 								} catch (Exception e) {
-									LOGGER.warn("Converting the " + partStringValue +  " to Integer from display string failed with " + e.getMessage(), e);
+									LOGGER.warn("Converting the " + partStringValue +  " to Integer from display string failed with " + e.getMessage());
+									LOGGER.debug(ExceptionUtils.getStackTrace(e));
 								}
 							}
 						}
@@ -195,6 +201,7 @@ public class CompositSelectMatcherConverter implements MatcherConverter{
 	 * @param matcherRelation
 	 * @return
 	 */
+	@Override
 	public Object fromValueString(String valueString, Locale locale, Integer matcherRelation) {
 		SortedMap<Integer, Object> actualValuesMap = null;
 		if (matcherRelation!=null) {
@@ -210,7 +217,8 @@ public class CompositSelectMatcherConverter implements MatcherConverter{
 						try {
 							actualValuesMap.put(Integer.valueOf(i+1), new Integer[] { Integer.valueOf(parts[i])});
 						} catch (Exception e) {
-							LOGGER.warn("Converting the " + i+1 +  "th part to Integer from value string failed with " + e.getMessage(), e);
+							LOGGER.warn("Converting the " + i+1 +  "th part to Integer from value string failed with " + e.getMessage());
+							LOGGER.debug(ExceptionUtils.getStackTrace(e));
 						}
 					}
 				}

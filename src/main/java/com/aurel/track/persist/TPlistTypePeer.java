@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -161,12 +161,13 @@ public class TPlistTypePeer
 	 * Loads all TPlistTypeBean 
 	 * @return
 	 */
+	@Override
 	public List<TPlistTypeBean> loadAll() {		
         Criteria crit = new Criteria();            		
         try {
         	return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all pissuetypes failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all pissuetypes failed with " + e.getMessage());
 			  return new LinkedList<TPlistTypeBean>();
 		}		
 	}
@@ -176,13 +177,14 @@ public class TPlistTypePeer
 	 * @param projectTypeID
 	 * @return
 	 */
+	@Override
 	public List<TPlistTypeBean> loadByProjectType(Integer projectTypeID) {				
         Criteria crit = new Criteria();
         crit.add(PROJECTTYPE, projectTypeID);                
     	try {
     		return convertTorqueListToBeanList(doSelect(crit));
         } catch (Exception e) {
-            LOGGER.error("Loading issueTypes associated with projectType " + projectTypeID + " failed with " + e.getMessage(), e);
+            LOGGER.error("Loading issueTypes associated with projectType " + projectTypeID + " failed with " + e.getMessage());
             return new LinkedList<TPlistTypeBean>();
         }
 	}
@@ -192,13 +194,14 @@ public class TPlistTypePeer
 	 * @param itemTypeID
 	 * @return
 	 */
+	@Override
 	public List<TPlistTypeBean> loadByItemType(Integer itemTypeID) {
 		Criteria crit = new Criteria();
         crit.add(CATEGORY, itemTypeID);                
     	try {
     		return convertTorqueListToBeanList(doSelect(crit));
         } catch (Exception e) {
-            LOGGER.error("Loading issueTypes associated with itemType " + itemTypeID + " failed with " + e.getMessage(), e);
+            LOGGER.error("Loading issueTypes associated with itemType " + itemTypeID + " failed with " + e.getMessage());
             return new LinkedList<TPlistTypeBean>();
         }
 	}
@@ -208,6 +211,7 @@ public class TPlistTypePeer
 	 * @param itemTypeFlags
 	 * @return
 	 */
+	@Override
 	public List<TPlistTypeBean> loadByItemTypeFlags(int[] itemTypeFlags) {
 		if (itemTypeFlags!=null && itemTypeFlags.length>0) {
 			Criteria crit = new Criteria();
@@ -216,7 +220,7 @@ public class TPlistTypePeer
 	    	try {
 	    		return convertTorqueListToBeanList(doSelect(crit));
 	        } catch (Exception e) {
-	            LOGGER.error("Loading issueTypes associated with itemTypeFlags " + itemTypeFlags + " failed with " + e.getMessage(), e);
+	            LOGGER.error("Loading issueTypes associated with itemTypeFlags " + itemTypeFlags + " failed with " + e.getMessage());
 	        }
 		}
     	return new LinkedList<TPlistTypeBean>();
@@ -227,6 +231,7 @@ public class TPlistTypePeer
 	 * @param projectTypeIDs
 	 * @return
 	 */
+	@Override
 	public List<TPlistTypeBean> loadByProjectTypes(Object[] projectTypeIDs) {		
 		if (projectTypeIDs!=null && projectTypeIDs.length>0) {
 	        Criteria crit = new Criteria();
@@ -234,7 +239,7 @@ public class TPlistTypePeer
 	    	try {
 	    		return convertTorqueListToBeanList(doSelect(crit));
 	        } catch (Exception e) {
-	            LOGGER.error("Loading issueTypes associated with projectTypes failed with " + e.getMessage(), e);	            
+	            LOGGER.error("Loading issueTypes associated with projectTypes failed with " + e.getMessage());	            
 	        }
 		}
 		return new LinkedList<TPlistTypeBean>();
@@ -245,6 +250,7 @@ public class TPlistTypePeer
 	 * @param pissueTypeBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TPlistTypeBean plistTypeBean) {
 		TPlistType tPlistType;		
 		try {						
@@ -252,7 +258,7 @@ public class TPlistTypePeer
 			tPlistType.save();
 			return tPlistType.getObjectID();			
 		} catch (Exception e) {
-			LOGGER.error("Saving of an plistTypeBean failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of an plistTypeBean failed with " + e.getMessage());
 			return null;
 		}	
 	}
@@ -262,6 +268,7 @@ public class TPlistTypePeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		Criteria crit = new Criteria();
         crit.add(OBJECTID, objectID);
@@ -277,6 +284,7 @@ public class TPlistTypePeer
 	 * @param projectTypeID
 	 * @param issueTypeIDs
 	 */
+	@Override
 	public void delete(Integer projectTypeID, List<Integer> issueTypeIDs) {
 		if (projectTypeID==null || issueTypeIDs==null || issueTypeIDs.isEmpty()) {
 			return;

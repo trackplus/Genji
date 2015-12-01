@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -71,6 +71,7 @@ public class SystemManagerRT extends SystemPersonBaseRT{
 	 * @param selectContext
 	 * @return
 	 */
+	@Override
 	public List loadEditDataSource(SelectContext selectContext){
 		TWorkItemBean workItemBean = selectContext.getWorkItemBean();
 		boolean accessLevelFlag = workItemBean.isAccessLevelFlag();
@@ -110,6 +111,7 @@ public class SystemManagerRT extends SystemPersonBaseRT{
 	 * @param selectContext
 	 * @return
 	 */
+	@Override
 	public List loadCreateDataSource(SelectContext selectContext) {
 		List dataSource = null;
 		TWorkItemBean workItemBean = selectContext.getWorkItemBean();
@@ -142,7 +144,6 @@ public class SystemManagerRT extends SystemPersonBaseRT{
 				if (workItemBean.getOwnerID()!=null) {
 					//the manager was set in setDefaultValues():
 					//either by setDefaultAttribute or by inheriting from the last workItemBean 
-					//TProjectBean projectBean = LookupContainer.getProjectBean(workItemBean.getProjectID());
 					if (projectBean!=null) {
 						projectDefaultManager = projectBean.getDefaultManagerID();
 					}
@@ -231,6 +232,7 @@ public class SystemManagerRT extends SystemPersonBaseRT{
 	 * @param parameterCode for composite selects
 	 * @return the datasource (list or tree)
 	 */	
+	@Override
 	public Object getMatcherDataSource(IMatcherValue matcherValue, MatcherDatasourceContext matcherDatasourceContext, Integer parameterCode) {
 		List<ILabelBean> managersList = new LinkedList<ILabelBean>();
 		Integer[] projects = matcherDatasourceContext.getProjectIDs();
@@ -313,6 +315,7 @@ public class SystemManagerRT extends SystemPersonBaseRT{
 	 * @param personBean
 	 * @param locale
 	 */
+	@Override
 	public void loadFieldChangeDatasourceAndValue(WorkflowContext workflowContext,
 			FieldChangeValue fieldChangeValue, 
 			Integer parameterCode, TPersonBean personBean, Locale locale) {

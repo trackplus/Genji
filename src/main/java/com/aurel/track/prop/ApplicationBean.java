@@ -3,23 +3,22 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /* $Id:$ */
-
 
 
 package com.aurel.track.prop;
@@ -56,14 +55,12 @@ import com.aurel.track.util.DateTimeUtils;
 import com.aurel.track.util.LabelValueBean;
 import com.aurel.track.util.SimpleEncryption;
 import com.trackplus.license.LicenseManager;
+
 /*
  * This class keeps track on the number of users connected to the database.
- * @version $Revision: 1439 $ $Date: 2015-09-28 13:37:25 +0200 (Mon, 28 Sep 2015) $
- * @author Joerg Friedrich
  */
 public final class ApplicationBean implements Serializable {
 
-	private String licenseVersion = "5.0";
 	private int dbVersion = 503;
 
 	public static String OPSTATE_RUNNING = "Running";
@@ -74,19 +71,20 @@ public final class ApplicationBean implements Serializable {
 	public static final int APPTYPE_DESK = 2;
 	public static final int APPTYPE_BUGS = 3;
 
-
 	// ----------------------------------------------------- Instance Variables
 	private static final Logger LOGGER = LogManager.getLogger(ApplicationBean.class);
 	private int maxNumberOfFullUsers = 100000;
 	private int maxNumberOfLimitedUsers = 100000;
-	private String licenseHolder = "Trial License";
+	private String licenseHolder = "GPL";
 	private Date expDate = DateTimeUtils.getInstance().parseISODate("2099-12-31");
 	private long instDate = 0;
 
-	private int edition = 3; // 3 = "ent", 2 = "prof", 1 = "std";
+	private int edition = 3; // 3 = "ent", 2 = "prof", 1 = "std"
 	private String editionString = "Enterprise";
-	private int appType = APPTYPE_BUGS;  // this and the following will be overwritten by values in Version.properties
-	private String appTypeString = "";  // during startup
+	private int appType = APPTYPE_BUGS; // this and the following will be
+										// overwritten by values in
+										// Version.properties
+	private String appTypeString = ""; // during startup
 
 	private String extendedKey = null;
 
@@ -101,12 +99,12 @@ public final class ApplicationBean implements Serializable {
 
 	private String phantomJSCommand = null;
 
-	private String imageMagicCommand = null;
+	private String imageMagickCommand = null;
 
-	private LicenseManager licenseManager = null;
+	private transient LicenseManager licenseManager = null;
 
-	private boolean backupInProgress=false;
-	private boolean restoreInProgress=false;
+	private boolean backupInProgress = false;
+	private boolean restoreInProgress = false;
 
 	private transient ServletContext servletContext = null;
 
@@ -120,6 +118,7 @@ public final class ApplicationBean implements Serializable {
 	 * Reuse the lucene indexer instance by reindexing (finished should be true)
 	 */
 	private transient LuceneIndexer luceneIndexer;
+
 	/*
 	 * Make the constructor private, this is a singleton
 	 */
@@ -128,29 +127,18 @@ public final class ApplicationBean implements Serializable {
 	}
 
 	/**
-	 * Singleton <code>ApplicationBean</code> instance. Create one if
-	 * it does not yet exist. Has been deprecated, use <code>getInstance()</code> instead.
+	 * Singleton <code>ApplicationBean</code> instance. Create one if it does
+	 * not yet exist.
+	 *
 	 * @return the one and only <code>ApplicationBean</code> instance
 	 */
-	@Deprecated
-	public static synchronized ApplicationBean getApplicationBean()
-	{
+	public static ApplicationBean getInstance() {
 		if (ref == null)
-			// it's ok, we can call this constructor
-			ref = new ApplicationBean();
-		return ref;
-	}
-
-	/**
-	 * Singleton <code>ApplicationBean</code> instance. Create one if
-	 * it does not yet exist.
-	 * @return the one and only <code>ApplicationBean</code> instance
-	 */
-	public static synchronized ApplicationBean getInstance()
-	{
-		if (ref == null)
-			// it's ok, we can call this constructor
-			ref = new ApplicationBean();
+			synchronized (ApplicationBean.class) {// While we were waiting for the lock, another thread may have instantiated the object.
+	            if (ref == null) {
+	                ref = new ApplicationBean();
+	            }
+	        }
 		return ref;
 	}
 
@@ -158,9 +146,7 @@ public final class ApplicationBean implements Serializable {
 	 * Make sure we can't create a second instance by cloning.
 	 */
 	@Override
-	public Object clone()
-	throws CloneNotSupportedException
-	{
+	public Object clone() throws CloneNotSupportedException {
 		throw new CloneNotSupportedException();
 		// that'll teach 'em
 	}
@@ -168,6 +154,7 @@ public final class ApplicationBean implements Serializable {
 	/**
 	 * This <code>ApplicationBean belongs to a single <code>TClusterNode</code>.
 	 * If there is no cluster, this is the single running server instance.
+	 *
 	 * @return this server node
 	 */
 	public TClusterNodeBean getClusterNodeBean() {
@@ -176,6 +163,7 @@ public final class ApplicationBean implements Serializable {
 
 	/**
 	 * Sets the <code>TClusterNode</code> to this node
+	 *
 	 * @param clusterNode
 	 */
 	public void setClusterNodeBean(TClusterNodeBean clusterNodeBean) {
@@ -184,6 +172,7 @@ public final class ApplicationBean implements Serializable {
 
 	/**
 	 * Whether we are in a cluster or not
+	 *
 	 * @return
 	 */
 	public boolean isCluster() {
@@ -192,6 +181,7 @@ public final class ApplicationBean implements Serializable {
 
 	/**
 	 * Whether we are in a cluster or not
+	 *
 	 * @return
 	 */
 	public void setCluster(Boolean _isCluster) {
@@ -200,6 +190,7 @@ public final class ApplicationBean implements Serializable {
 
 	/**
 	 * Get the Torque configuration
+	 *
 	 * @return
 	 * @throws ServletException
 	 */
@@ -208,25 +199,26 @@ public final class ApplicationBean implements Serializable {
 		try {
 			tcfg = HandleHome.getTorqueProperties(servletContext, false);
 		} catch (Exception e) {
-			LOGGER.error(e.getMessage(),e);
+			LOGGER.error(e.getMessage());
 		}
 		return tcfg;
 	}
 
-
 	/**
 	 * Set the servlet context
+	 *
 	 * @param _servletContext
 	 */
-	public void setServletContext(ServletContext _servletContext){
-		this.servletContext = _servletContext;
+	public void setServletContext(ServletContext pservletContext) {
+		this.servletContext = pservletContext;
 	}
 
 	/**
 	 * Returns the servlet context
+	 *
 	 * @return
 	 */
-	public ServletContext getServletContext(){
+	public ServletContext getServletContext() {
 		return this.servletContext;
 	}
 
@@ -238,9 +230,10 @@ public final class ApplicationBean implements Serializable {
 		return licenseManager;
 	}
 
-	//----------------------- User section ----------------------------
+	// ----------------------- User section ----------------------------
 	/**
 	 * Get fully licensed users that are inactive
+	 *
 	 * @return
 	 */
 	public Integer getFullInactive() {
@@ -276,9 +269,9 @@ public final class ApplicationBean implements Serializable {
 	}
 
 	/**
-	 * Sets the user counts for the actual users. Considers
-	 * fully licensed, active and inactive users as well as easy
-	 * licensed active and inactive users.
+	 * Sets the user counts for the actual users. Considers fully licensed,
+	 * active and inactive users as well as easy licensed active and inactive
+	 * users.
 	 */
 	public void setActualUsers() {
 		setFullActive(PersonBL.countFullActive());
@@ -287,11 +280,9 @@ public final class ApplicationBean implements Serializable {
 		setLimitedInactive(PersonBL.countLimitedInactive());
 	}
 
-
 	// ------
 	public int getMaxNumberOfFullUsers() {
-		if (licenseManager != null &&
-		   licenseManager.getLicensedFeature("users") != null) {
+		if (licenseManager != null && licenseManager.getLicensedFeature("users") != null) {
 			maxNumberOfFullUsers = licenseManager.getLicensedFeature("users").getNumberOfUsers();
 		} else {
 			return 2;
@@ -307,8 +298,7 @@ public final class ApplicationBean implements Serializable {
 	}
 
 	public int getMaxNumberOfLimitedUsers() {
-		if (licenseManager != null &&
-			licenseManager.getLicensedFeature("ext") != null	) {
+		if (licenseManager != null && licenseManager.getLicensedFeature("ext") != null) {
 			maxNumberOfLimitedUsers = licenseManager.getLicensedFeature("ext").getNumberOfUsers();
 		} else {
 			return 0;
@@ -316,7 +306,7 @@ public final class ApplicationBean implements Serializable {
 		return maxNumberOfLimitedUsers;
 	}
 
-	//------------------ End of user section -------------------------
+	// ------------------ End of user section -------------------------
 
 	public int getDbVersion() {
 		return dbVersion;
@@ -330,12 +320,11 @@ public final class ApplicationBean implements Serializable {
 		return instDate;
 	}
 
-
 	public synchronized void addUser(TPersonBean user, String sessionId) {
 		TLoggedInUsersBean loggedInUsersBean = new TLoggedInUsersBean();
-		TClusterNodeBean clusterNodeBean = getClusterNodeBean();
-		if (clusterNodeBean!=null) {
-			loggedInUsersBean.setNodeAddress(clusterNodeBean.getObjectID());
+		TClusterNodeBean lclusterNodeBean = getClusterNodeBean();
+		if (lclusterNodeBean != null) {
+			loggedInUsersBean.setNodeAddress(lclusterNodeBean.getObjectID());
 		} else {
 			LOGGER.error("clusterNodeBean is null, this should never happen.");
 		}
@@ -344,10 +333,8 @@ public final class ApplicationBean implements Serializable {
 		loggedInUsersBean.setUserLevel(user.getUserLevel());
 		loggedInUsersBean.setLastUpdate(new Date());
 		ClusterBL.saveLoggedInUser(loggedInUsersBean);
-		LOGGER.debug("Added user >"
-				+ user.getFullName()+ "< to loggedIn list");
+		LOGGER.debug("Added user >" + user.getFullName() + "< to loggedIn list");
 	}
-
 
 	/**
 	 * session gets invalid
@@ -357,21 +344,20 @@ public final class ApplicationBean implements Serializable {
 	}
 
 	public void removeClusterNode() {
-		TClusterNodeBean clusterNodeBean = getClusterNodeBean();
-		if (clusterNodeBean!=null) {
-			//remove the cluster node
+		TClusterNodeBean lclusterNodeBean = getClusterNodeBean();
+		if (lclusterNodeBean != null) {
+			// remove the cluster node
 			ClusterBL.delete(clusterNodeBean.getObjectID());
 		}
 	}
 
-	public int getSignature() {
-		return 503311;
-	}
 
 	/**
 	 * Initialize the license and check if it is valid. In case it is valid
 	 * update all the user counts and limits.
-	 * @param key - the license key
+	 *
+	 * @param key
+	 *            - the license key
 	 */
 	public void initLic(String key) {
 
@@ -384,15 +370,15 @@ public final class ApplicationBean implements Serializable {
 
 	/**
 	 * Check if this license is still valid, in case it is a temporary license.
+	 *
 	 * @return the number of days this license is still valid
 	 */
 	public int getDaysLicenseValid() {
 		if (licenseManager != null) {
 			return licenseManager.getDaysValid();
 		}
-		return 7300;  // 20 years
+		return 7300; // 20 years
 	}
-
 
 	public Date getExpDate() {
 		if (licenseManager != null) {
@@ -407,49 +393,29 @@ public final class ApplicationBean implements Serializable {
 	public String getExtendedKey() {
 		return this.extendedKey;
 	}
+
 	/*
 	 * @param extendedKey The extendedKey to set.
 	 */
 	private void setExtendedKey(String pExtendedKey) {
 		this.extendedKey = pExtendedKey;
 	}
-	/**
-	 * @return Returns the licenseVersion.
-	 */
-	public String getLicenseVersion() {
-		return licenseVersion;
-	}
-	/**
-	 * @param licenseVersion The licenseVersion to set.
-	 */
-	public void setLicenseVersion(String licenseVersion) {
-		this.licenseVersion = licenseVersion;
-	}
+
 
 	/**
 	 * @return Returns the edition.
 	 */
 	public int getEdition() {
-		return edition;
+		return this.edition;
 	}
+
 	/**
-	 * @param _edition The program edition (Enterprise, Professional, Standard)
+	 * @param _edition
+	 *            The program edition (Enterprise, Professional, Standard)
 	 */
-	public void setEdition(String _edition) {
-		if (_edition != null) {
-			if (_edition.equals("ent")) {
-				this.edition = 3;
-				this.editionString = "Enterprise";
-			}
-			else if (_edition.equals("prof")) {
-				this.edition = 2;
-				this.editionString = "Professional";
-			}
-			else if (_edition.equals("std")) {
-				this.edition = 1;
-				this.editionString = "Standard";
-			}
-		}
+	public void setEdition(String pedition) {
+		this.edition = 3;
+		this.editionString = "Enterprise";
 	}
 
 	public String getEditionString() {
@@ -460,7 +426,7 @@ public final class ApplicationBean implements Serializable {
 		if (licenseManager != null) {
 			return licenseManager.getLicenseErrorText();
 		}
-	   return null;
+		return null;
 	}
 
 	public int getErrorCode(HttpSession session) {
@@ -471,8 +437,7 @@ public final class ApplicationBean implements Serializable {
 	}
 
 	public TSiteBean setSiteParams(TSiteBean siteBean) {
-		siteBean.setNumberOfUsers(new Integer(getMaxNumberOfFullUsers()
-				+ getMaxNumberOfLimitedUsers()));
+		siteBean.setNumberOfUsers(new Integer(getMaxNumberOfFullUsers() + getMaxNumberOfLimitedUsers()));
 		siteBean.setNumberOfFullUsers(getMaxNumberOfFullUsers());
 		siteBean.setNumberOfLimitedUsers(getMaxNumberOfLimitedUsers());
 		siteBean.setExpDate(getExpDate());
@@ -480,8 +445,8 @@ public final class ApplicationBean implements Serializable {
 		return siteBean;
 	}
 
-	public void setSiteBean(TSiteBean _siteBean) {
-		this.siteBean = _siteBean;
+	public void setSiteBean(TSiteBean psiteBean) {
+		this.siteBean = psiteBean;
 
 	}
 
@@ -510,8 +475,7 @@ public final class ApplicationBean implements Serializable {
 	public boolean getNewerVersion() {
 		if (siteBean != null && siteBean.getIsVersionReminderOn()) {
 			return newerVersion;
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
@@ -523,11 +487,11 @@ public final class ApplicationBean implements Serializable {
 	private Integer mostActualVersion = new Integer(0);
 
 	public Integer getMostActualVersion() {
-	  return mostActualVersion;
+		return mostActualVersion;
 	}
 
 	public void setMostActualVersion(Integer mav) {
-		if (mav.intValue() > getVersionNo().intValue()){
+		if (mav.intValue() > getVersionNo().intValue()) {
 			setNewerVersion(true);
 		} else {
 			setNewerVersion(false);
@@ -546,49 +510,33 @@ public final class ApplicationBean implements Serializable {
 	}
 
 	// Salt
-	protected byte[] salt = {
-				(byte)0xc2, (byte)0x71, (byte)0x21, (byte)0x8b,
-				(byte)0x7e, (byte)0xc7, (byte)0xef, (byte)0x9a
-	};
 
 	protected int count = 15;
-	private   String CRLF = "\r\n";
+	private String CRLF = "\r\n";
 
 	/**
 	 * Get license properties for this server.
+	 *
 	 * @return
 	 */
 	public String getProperties() {
-		StringBuffer props = new StringBuffer();
-		for (int i=0; i < getInetAddress().length; ++i) {
-			props.append("ip"+i+"=" + getInetAddress()[i].getHostAddress() + CRLF);
-		}
-		props.append("fa=" + getFullActive().toString() + CRLF);
-		props.append("la=" + getLimitedActive().toString() + CRLF);
-		props.append("ve=" + getVersion() + CRLF);
-		props.append("bu=" + ApplicationBean.getApplicationBean().getBuild() + CRLF);
-		if (getSiteBean().getServerURL() != null) {
-			props.append("ur=" + getSiteBean().getServerURL() + CRLF);
-		}
-		props.append("em=" + getSiteBean().getTrackEmail() + CRLF);
-		return encryptUpdateInfo(props.toString(), "311");
+		String result = "";
+		return result;
 	}
 
-	private String encryptUpdateInfo(String clearText, String password) {
-		SimpleEncryption se = new SimpleEncryption();
-		String encText = se.encrypt(password, clearText);
-		return Base64.encodeBase64String(encText.getBytes());
-	}
 
 	/**
-	 * Get a comma separated <code>String</code> with IP numbers for this server.
-	 * @return a comma separated <code>String</code> with IP numbers for this server.
+	 * Get a comma separated <code>String</code> with IP numbers for this
+	 * server.
+	 *
+	 * @return a comma separated <code>String</code> with IP numbers for this
+	 *         server.
 	 */
 	public static String getIpNumbersString() {
 		String ipNumbers = "";
-		for (int i=0; i < ApplicationBean.getInetAddress().length; ++i) {
-			if (i!=0) {
-				ipNumbers = ipNumbers +(", ");
+		for (int i = 0; i < ApplicationBean.getInetAddress().length; ++i) {
+			if (i != 0) {
+				ipNumbers = ipNumbers + (", ");
 			}
 			ipNumbers = ipNumbers + ApplicationBean.getInetAddress()[i].getHostAddress();
 		}
@@ -598,28 +546,28 @@ public final class ApplicationBean implements Serializable {
 
 	private Integer theVersionNo;
 
-	public void setVersionNo(Integer _versionNo) {
-		theVersionNo = _versionNo;
+	public void setVersionNo(Integer pversionNo) {
+		theVersionNo = pversionNo;
 	}
 
 	private String theVersionDate;
 
-	public String getVersionDate(){
+	public String getVersionDate() {
 		return theVersionDate;
 	}
 
-	public void setVersionDate(String _versionDate) {
-		theVersionDate = _versionDate;
+	public void setVersionDate(String pversionDate) {
+		theVersionDate = pversionDate;
 	}
 
-	public Integer getVersionNo(){
+	public Integer getVersionNo() {
 		return theVersionNo;
 	}
 
 	private String theBuild = null;
 
-	public void setBuild(String _build) {
-		theBuild = _build;
+	public void setBuild(String pbuild) {
+		theBuild = pbuild;
 	}
 
 	public String getBuild() {
@@ -628,11 +576,11 @@ public final class ApplicationBean implements Serializable {
 
 	private String theVersion = null;
 
-	public void setVersion(String _version) {
-		theVersion = _version;
+	public void setVersion(String pversion) {
+		theVersion = pversion;
 	}
 
-	public String getVersion(){
+	public String getVersion() {
 		return theVersion;
 	}
 
@@ -644,22 +592,11 @@ public final class ApplicationBean implements Serializable {
 	}
 
 	public String getAppTypeString() {
-		if (appTypeString.equals("{TYPE}")) {
-			switch (appType) {
-			case APPTYPE_FULL:
-				return "Genji";
-			case APPTYPE_DESK:
-				return "Teamdesk";
-			case APPTYPE_BUGS:
-				return "Genji";
-			default: return appTypeString;
-			}
-		}
-		return appTypeString;
+					return "Genji";
 	}
 
 	public boolean isGenji() {
-		return ApplicationBean.getApplicationBean().getAppType()==ApplicationBean.APPTYPE_BUGS;
+		return ApplicationBean.getInstance().getAppType() == ApplicationBean.APPTYPE_BUGS;
 	}
 
 	public void setAppTypeString(String appTypeString) {
@@ -682,6 +619,7 @@ public final class ApplicationBean implements Serializable {
 
 	/**
 	 * Get a list with errors that occurred during backup.
+	 *
 	 * @return a list of <code>LabelValueBean</code>s with backup errors
 	 */
 	public List<LabelValueBean> getBackupErrors() {
@@ -698,16 +636,17 @@ public final class ApplicationBean implements Serializable {
 		return designs;
 	}
 
-	public void setDesigns(List<LabelValueBean> _designs) {
-		designs = _designs;
+	public void setDesigns(List<LabelValueBean> pdesigns) {
+		designs = pdesigns;
 	}
 
 	/**
 	 * Retrieve all non-loopback IP addresses from all network interfaces
-	 * @return
+	 *
+	 * @return the array of assigned IP numbers
 	 */
 	public static InetAddress[] getInetAddress() {
-		ArrayList<InetAddress> allIPs = new ArrayList<InetAddress>();
+		List<InetAddress> allIPs = new ArrayList<InetAddress>();
 		InetAddress[] allAds = null;
 
 		try {
@@ -721,34 +660,37 @@ public final class ApplicationBean implements Serializable {
 					if (!inetAddr.isLoopbackAddress()) {
 
 						if (inetAddr.isSiteLocalAddress()) {
-							// Found non-loopback site-local address. Return it immediately...
+							// Found non-loopback site-local address. Return it
+							// immediately...
 							allIPs.add(inetAddr);
 							continue;
-						}
-						else if (candidateAddress == null) {
-							// Found non-loopback address, but not necessarily site-local.
-							// Store it as a candidate to be returned if site-local address is not subsequently found...
+						} else if (candidateAddress == null) {
+							// Found non-loopback address, but not necessarily
+							// site-local.
+							// Store it as a candidate to be returned if
+							// site-local address is not subsequently found...
 							candidateAddress = inetAddr;
-							// Note that we don't repeatedly assign non-loopback non-site-local addresses as candidates,
-							// only the first. For subsequent iterations, candidate will be non-null.
+							// Note that we don't repeatedly assign non-loopback
+							// non-site-local addresses as candidates,
+							// only the first. For subsequent iterations,
+							// candidate will be non-null.
 						}
 					}
 				}
 			}
 
 			// At this point, we did not find a non-loopback address.
-			// Fall back to returning whatever InetAddress.getLocalHost() returns...
-			if (allIPs.size() < 1) {
+			// Fall back to returning whatever InetAddress.getLocalHost()
+			// returns...
+			if (allIPs.isEmpty()) {
 				allIPs.add(InetAddress.getLocalHost());
 			}
 
 			allAds = new InetAddress[allIPs.size()];
 			allAds = allIPs.toArray(allAds);
 
-		}
-		catch (Exception uhn) {
-			LOGGER.error("An exception occurred trying to get "
-					+ "all IP addresses for this host: " + uhn.getMessage());
+		} catch (Exception uhn) {
+			LOGGER.error("An exception occurred trying to get " + "all IP addresses for this host: " + uhn.getMessage());
 		}
 		return allAds;
 	}
@@ -769,31 +711,34 @@ public final class ApplicationBean implements Serializable {
 		this.luceneIndexer = luceneIndexer;
 	}
 
+	/**
+	 * Get the complete path to the xelatex command on WWindows, OS/X, and Linux
+	 * operating systems.
+	 * @return  something like "/usr/texbin/xelatex"
+	 */
 	public String getLatexCommand() {
 
 		if (this.latexCommand == null || "".equals(this.latexCommand)) {
 
-			String OS = System.getProperty("os.name").toLowerCase();
+			String os = System.getProperty("os.name").toLowerCase();
 
-			String cmdPath = HandleHome.getTrackplus_Home()+"/ExportTemplates/latexTemplates/latex.sh";
+			String cmdPath = HandleHome.getTrackplus_Home() + "/ExportTemplates/latexTemplates/latex.sh";
 
-			if (OS.indexOf("mac") >= 0) {
-				this.latexCommand = "/usr/texbin/xelatex"; //cmdPath;
+			if (os.indexOf("mac") >= 0) {
+				this.latexCommand = "/usr/texbin/xelatex"; // cmdPath
 			}
 
-			if (OS.indexOf("win") >= 0) {
+			if (os.indexOf("win") >= 0) {
 				this.latexCommand = getLatexCommandPathWin();
 			}
 
-			if (OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0) {
+			if (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0) {
 				this.latexCommand = cmdPath;
 			}
 		}
 
-		if(this.latexCommand == null) {
-			if (System.getProperty(HandleHome.LATEX_HOME) != null) {
-				this.latexCommand = System.getProperty(HandleHome.LATEX_HOME) + File.separator + "xelatex";
-			}
+		if (this.latexCommand == null && System.getProperty(HandleHome.LATEX_HOME) != null) {
+			this.latexCommand = System.getProperty(HandleHome.LATEX_HOME) + File.separator + "xelatex";
 		}
 
 		File test = null;
@@ -809,7 +754,7 @@ public final class ApplicationBean implements Serializable {
 	}
 
 	public void setLatexCommand(String cmd) {
-		this.latexCommand  = cmd;
+		this.latexCommand = cmd;
 	}
 
 	private String getLatexCommandPathWin() {
@@ -836,102 +781,116 @@ public final class ApplicationBean implements Serializable {
 			}
 			path += "xelatex.exe";
 		}
-		if(path == null) {
-			if (System.getProperty(HandleHome.LATEX_HOME) != null) {
-				path = System.getProperty(HandleHome.LATEX_HOME);
-			}
+		if (path == null && System.getProperty(HandleHome.LATEX_HOME) != null) {
+			path = System.getProperty(HandleHome.LATEX_HOME);
 		}
 		return path;
 	}
 
-	public String getImageMagicCommand() {
-		if (this.imageMagicCommand == null || "".equals(this.imageMagicCommand)) {
+	/**
+	 * Get the complete path to the ImageMagick "convert" command for Windows,
+	 * OS/X, and Linux operating systems.
+	 *
+	 * @return something like "/usr/local/bin/convert"
+	 */
+	public String getImageMagickCommand() {
+		if (this.imageMagickCommand == null || "".equals(this.imageMagickCommand)) {
 
-			String OS = System.getProperty("os.name").toLowerCase();
+			String os = System.getProperty("os.name").toLowerCase();
 
-			if (OS.indexOf("mac") >= 0) {
-				this.imageMagicCommand = "/usr/local/bin/convert";
+			if (os.indexOf("mac") >= 0) {
+				this.imageMagickCommand = "/usr/local/bin/convert";
 			}
 
-			if (OS.indexOf("win") >= 0) {
-				this.imageMagicCommand = getImageMagicCommandPathWin();
+			if (os.indexOf("win") >= 0) {
+				this.imageMagickCommand = getImageMagicCommandPathWin();
 			}
 
-			if (OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0) {
-				this.imageMagicCommand = "/usr/bin/convert";
+			if (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0) {
+				this.imageMagickCommand = "/usr/bin/convert";
 			}
 		}
-		if(this.imageMagicCommand != null) {
-			this.imageMagicCommand = this.imageMagicCommand.replace("\\", "/");
+
+		if (this.imageMagickCommand != null) {
+			this.imageMagickCommand = this.imageMagickCommand.replace("\\", "/");
 		}
-		File test = new File(this.imageMagicCommand);
+
+		File test = new File(this.imageMagickCommand);
+
 		if (!test.exists()) {
-			this.imageMagicCommand = null;
+			this.imageMagickCommand = null;
 		}
-		if(this.imageMagicCommand == null) {
-			if (System.getProperty(HandleHome.IMAGEMAGICK_HOME) != null) {
-				this.imageMagicCommand= System.getProperty(HandleHome.IMAGEMAGICK_HOME);
-			}
+		if (this.imageMagickCommand == null && System.getProperty(HandleHome.IMAGEMAGICK_HOME) != null) {
+			this.imageMagickCommand = System.getProperty(HandleHome.IMAGEMAGICK_HOME);
+		}
 
-		}
-		return this.imageMagicCommand;
+		return this.imageMagickCommand;
 	}
 
-
-
-	public void setImageMagicCommaned(String imageMagicCommaned) {
-		this.imageMagicCommand = imageMagicCommaned;
+	/**
+	 * Set the complete path to the ImageMagick command "convert"
+	 *
+	 * @param _imageMagickCommand
+	 */
+	public void setImageMagickCommand(String pimageMagickCommand) {
+		this.imageMagickCommand = pimageMagickCommand;
 	}
 
 	private String getImageMagicCommandPathWin() {
 		String path = null;
-		for (String ix: System.getenv().keySet()) {
-			String value =  System.getenv().get(ix);
-			if(ix.toUpperCase().contains("IMAGEMAGICK")) {
+		for (String ix : System.getenv().keySet()) {
+			String value = System.getenv().get(ix);
+			if (ix.toUpperCase().contains("IMAGEMAGICK")) {
 				path = value;
 				break;
 			}
-			if(ix.equals("Path")) {
+			if ("Path".equals(ix)) {
 				String[] parts = value.split(";");
 				for (String aPart : parts) {
-					if(aPart.toUpperCase().contains("IMAGEMAGICK")) {
+					if (aPart.toUpperCase().contains("IMAGEMAGICK")) {
 						path = aPart;
 						break;
 					}
 				}
 			}
 		}
-		if(path != null && path.length() > 1) {
-			if(!path.endsWith("\\")) {
+		if (path != null && path.length() > 1) {
+			if (!path.endsWith("\\")) {
 				path += File.separator;
 			}
 			path += "convert.exe";
 		}
-		if(path == null) {
-			if (System.getProperty(HandleHome.IMAGEMAGICK_HOME) != null) {
-				path = System.getProperty(HandleHome.IMAGEMAGICK_HOME);
-			}
+
+		if ((path == null) && System.getProperty(HandleHome.IMAGEMAGICK_HOME) != null) {
+			path = System.getProperty(HandleHome.IMAGEMAGICK_HOME);
 		}
-		if(path != null) {
+
+		if (path != null) {
 			path = path.replace("\\", "/");
 		}
 		return path;
 	}
 
+	/**
+	 * Attempts to obtain the complete path to the phantomJS command on various
+	 * operating systems (Windows, OS/X, Linux)
+	 *
+	 * @return something like "/usr/local/bin/phantomjs"
+	 */
 	public String getPhantomJSCommand() {
 		if (this.phantomJSCommand == null || "".equals(this.phantomJSCommand)) {
 
-			String OS = System.getProperty("os.name").toLowerCase();
+			String os = System.getProperty("os.name").toLowerCase();
 
-			if (OS.indexOf("mac") >= 0) {
+			if (os.indexOf("mac") >= 0) {
 				this.phantomJSCommand = "/usr/local/bin/phantomjs";
 			}
 
-			if (OS.indexOf("win") >= 0) {
+			if (os.indexOf("win") >= 0) {
 				this.phantomJSCommand = getPhantomJSCommandPathWin();
 			}
 
-			if (OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0) {
+			if (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0) {
 				this.phantomJSCommand = "/usr/bin/phantomjs";
 			}
 		}
@@ -939,11 +898,8 @@ public final class ApplicationBean implements Serializable {
 		if (!test.exists()) {
 			this.phantomJSCommand = null;
 		}
-		if(this.phantomJSCommand == null) {
-			if (System.getProperty(HandleHome.PHANTOMJS_HOME) != null) {
-				this.phantomJSCommand= System.getProperty(HandleHome.PHANTOMJS_HOME);
-			}
-
+		if (this.phantomJSCommand == null && System.getProperty(HandleHome.PHANTOMJS_HOME) != null) {
+			this.phantomJSCommand = System.getProperty(HandleHome.PHANTOMJS_HOME);
 		}
 		return this.phantomJSCommand;
 	}
@@ -954,39 +910,38 @@ public final class ApplicationBean implements Serializable {
 
 	private String getPhantomJSCommandPathWin() {
 		String path = null;
-		for (String ix: System.getenv().keySet()) {
-			String value =  System.getenv().get(ix);
-			if(ix.toUpperCase().contains("PHANTOMJS")) {
+		for (String ix : System.getenv().keySet()) {
+			String value = System.getenv().get(ix);
+			if (ix.toUpperCase().contains("PHANTOMJS")) {
 				path = value;
 				break;
 			}
-			if(ix.equals("Path")) {
+			if ("Path".equals(ix)) {
 				String[] parts = value.split(";");
 				for (String aPart : parts) {
-					if(aPart.toUpperCase().contains("PHANTOMJS")) {
+					if (aPart.toUpperCase().contains("PHANTOMJS")) {
 						path = aPart;
 						break;
 					}
 				}
 			}
 		}
-		if(path != null && path.length() > 1) {
-			if(!path.endsWith("\\")) {
+		if (path != null && path.length() > 1) {
+			if (!path.endsWith("\\")) {
 				path += File.separator;
 			}
 			path += "phantomjs.exe";
 		}
-		if(path == null) {
+		if (path == null) {
 			if (System.getProperty(HandleHome.PHANTOMJS_HOME) != null) {
 				path = System.getProperty(HandleHome.PHANTOMJS_HOME);
 			}
 		}
-		if(path != null) {
+		if (path != null) {
 			path = path.replace("\\", "/");
 		}
 		return path;
 	}
-
 
 	private boolean inTestMode = false;
 
@@ -1000,49 +955,49 @@ public final class ApplicationBean implements Serializable {
 
 	/**
 	 * Whether budget (top down plan) is available
+	 *
 	 * @return
 	 */
 	public boolean getBudgetActive() {
 		return !getInstance().isGenji() && getInstance().getSiteBean().getBudgetActive();
 	}
 
-	private ArrayList<String> installProblem;
+	private List<String> installProblem;
 
-	public void setInstallProblem(ArrayList<String> p) {
-       installProblem = p;
+	public void setInstallProblem(List<String> list) {
+		installProblem = list;
 	}
 
-	public ArrayList<String> getInstallProblem() {
-	   return installProblem;
+	public List<String> getInstallProblem() {
+		return installProblem;
 	}
 
-    /*
-     * The maximum length of the description field in an issue.
-     * This is database dependent.
-     */
-    private int descriptionMaxLength = 4000;
+	/*
+	 * The maximum length of the description field in an issue. This is database
+	 * dependent.
+	 */
+	private int descriptionMaxLength = 4000;
 
-    public int getDescriptionMaxLength() {
-        return descriptionMaxLength;
-    }
+	public int getDescriptionMaxLength() {
+		return descriptionMaxLength;
+	}
 
-    public void setDescriptionMaxLength(int length) {
-        descriptionMaxLength = length;
-    }
+	public void setDescriptionMaxLength(int length) {
+		descriptionMaxLength = length;
+	}
 
-    /*
-     * The maximum length of a comment in the trail of an issue.
-     * This is database dependent.
-     */
-    private int commentMaxLength = 4000;
+	/*
+	 * The maximum length of a comment in the trail of an issue. This is
+	 * database dependent.
+	 */
+	private int commentMaxLength = 4000;
 
-    public int getCommentMaxLength() {
-        return commentMaxLength;
-    }
+	public int getCommentMaxLength() {
+		return commentMaxLength;
+	}
 
-    public void setCommentMaxLength(int length) {
-        commentMaxLength = length;
-    }
-
+	public void setCommentMaxLength(int length) {
+		commentMaxLength = length;
+	}
 
 }

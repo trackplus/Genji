@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -40,6 +40,7 @@ import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -426,7 +427,7 @@ public class PersonBL {
 	 * @param personBean
 	 */
 	public static void setLicensedFeatures(TPersonBean personBean) {
-		LicenseManager licenseManager = ApplicationBean.getApplicationBean().getLicenseManager();
+		LicenseManager licenseManager = ApplicationBean.getInstance().getLicenseManager();
 		if (licenseManager!=null) {
 			List<LicensedFeature> licensedFeatures = licenseManager.getLicensedFeatures(true);
 			if (licensedFeatures!=null) {
@@ -591,7 +592,7 @@ public class PersonBL {
 	}
 
 	public static TPersonBean getAnonymousIfActive() {
-		if (!ApplicationBean.getApplicationBean().getSiteBean().getAutomaticGuestLogin()) {
+		if (!ApplicationBean.getInstance().getSiteBean().getAutomaticGuestLogin()) {
 			return null;
 		}
 		TPersonBean personBean = loadByLoginNameWithRights(TPersonBean.GUEST_USER);
@@ -1403,7 +1404,6 @@ public class PersonBL {
 			person.setPrefEmailType("HTML");
 			person.setHomePage("cockpit");
 			if (locale!=null) {
-				//person.setLocale(locale);
 				person.setPrefLocale(locale.toString());
 			}
 			Integer id = save(person);
@@ -1438,7 +1438,8 @@ public class PersonBL {
 			try {
 				template = new Template("name", new StringReader(templateStr), new Configuration());
 			} catch (IOException e) {
-				LOGGER.debug("Loading the template ClientCreatedByEmail.xml failed with " + e.getMessage(), e);
+				LOGGER.debug("Loading the template ClientCreatedByEmail.xml failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		} else {
 			LOGGER.error("Can't get mail template ClientCreatedByEmail.xml!");
@@ -1449,9 +1450,9 @@ public class PersonBL {
 			LOGGER.error("No valid template found for client user created after sent mail. The dafault: ClientCreatedByEmail.xml");
 			return false;
 		}
-		TSiteBean siteBean = ApplicationBean.getApplicationBean().getSiteBean();
+		TSiteBean siteBean = ApplicationBean.getInstance().getSiteBean();
 		//The path starts with a "/" character but does not end with a "/"
-		String contextPath=ApplicationBean.getApplicationBean().getServletContext().getContextPath();
+		String contextPath=ApplicationBean.getInstance().getServletContext().getContextPath();
 		String siteURL=siteBean.getServerURL();
 		if(siteURL==null){
 			siteURL="";
@@ -1462,7 +1463,7 @@ public class PersonBL {
 		personBean.setTokenExpDate(texpDate);
 		String tokenPasswd = DigestUtils.md5Hex(Long.toString(texpDate.getTime()));
 		personBean.setForgotPasswordKey(tokenPasswd);
-		ApplicationBean appBean = ApplicationBean.getApplicationBean();
+		ApplicationBean appBean = ApplicationBean.getInstance();
 		if (!appBean.getSiteBean().getIsDemoSiteBool() || personBean.getIsSysAdmin()) {
 			PersonBL.saveSimple(personBean);
 		}
@@ -1475,7 +1476,8 @@ public class PersonBL {
 		try {
 			template.process(root, w);
 		} catch (Exception e) {
-			LOGGER.error("Processing create client user from sent mail  " + template.getName() + " failed with " + e.getMessage(), e);
+			LOGGER.error("Processing create client user from sent mail  " + template.getName() + " failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		w.flush();
 		String messageBody = w.toString();

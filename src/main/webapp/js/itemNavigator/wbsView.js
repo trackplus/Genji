@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -50,7 +50,7 @@ Ext.define('com.trackplus.itemNavigator.WBSViewPlugin',{
 		var sortField="wbs";
 		//var sortField = "f_so27";
 		var sortDirection;
-		if(me.WBS_SORT_ASCENDING==true){
+		if(me.WBS_SORT_ASCENDING===true){
 			sortDirection='ASC'
 		}else{
 			sortDirection='DESC'
@@ -83,17 +83,17 @@ Ext.define('com.trackplus.itemNavigator.WBSViewPlugin',{
 		var otherProjectItems=[];
 		for(var i=0;i<data.records.length;i++){
 			var record=data.records[i];
-			if(record.data['group']==true){
+			if(record.data['group']===true){
 				continue;
 			}
 			var sourceProjectID=record.data['projectID'];
-			if(sourceProjectID!=targetProjectID){
+			if(sourceProjectID!==targetProjectID){
 				otherProjectItems.push(record);
 			}else{
 				validWorkItems.push(record);
 			}
 		}
-		if(validWorkItems.length==0){
+		if(validWorkItems.length===0){
 			var msg=getText('itemov.wbsView.err.notTheSameProject');
 			Ext.MessageBox.show({
 				title: '',
@@ -117,8 +117,8 @@ Ext.define('com.trackplus.itemNavigator.WBSViewPlugin',{
 				workItems+=",";
 			}
 		}
-		var before=(dropPosition=="before");
-		if(me.WBS_SORT_ASCENDING==false){
+		var before=(dropPosition==="before");
+		if(me.WBS_SORT_ASCENDING===false){
 			before=!before;
 		}
 		var params={
@@ -168,7 +168,7 @@ Ext.define('com.trackplus.itemNavigator.WBSViewPlugin',{
 		var me=this;
 		var parentNode=record.parentNode;
 		var recordIndex=parentNode.indexOf(record);
-		if(recordIndex==0){
+		if(recordIndex===0){
 			alert(getText('itemov.wbsView.err.noIndentPossible'));
 			return false;
 		}
@@ -186,17 +186,22 @@ Ext.define('com.trackplus.itemNavigator.WBSViewPlugin',{
 		Ext.Ajax.request({
 			url: "itemNavigator!indent.action",
 			disableCaching:true,
-			success: function(){
-				parentNode.removeChild(record);
-				supNode.data['leaf']=false;
-				supNode.appendChild(record);
-				supNode.expand();
+			success: function(response){
 				grid.setLoading(false);
-				me.fireEvent.call(me,'datachange');
+				var resp = Ext.decode(response.responseText);
+	        	if (resp.success==false) {
+	        		com.trackplus.util.showError(resp);
+	        	} else {
+					parentNode.removeChild(record);
+					supNode.data['leaf']=false;
+					supNode.appendChild(record);
+					supNode.expand();
+					me.fireEvent.call(me,'datachange');
+	        	}
 			},
-			failure: function(){
+			failure: function(response){
 				grid.setLoading(false);
-				alert("failure");
+				com.trackplus.util.showError(response);
 			},
 			method:'POST',
 			params:params
@@ -206,12 +211,12 @@ Ext.define('com.trackplus.itemNavigator.WBSViewPlugin',{
 		var me=this;
 		var parentNode=record.parentNode;
 		var rootNode=grid.store.getRootNode();
-		if(parentNode==rootNode){
+		if(parentNode===rootNode){
 			CWHF.showMsgError(getText("itemov.wbsView.err.noOutdentPossible"));
 			return false;
 		}
 		var parentIsGroup=parentNode.data['group'];
-		if(parentIsGroup==true){
+		if(parentIsGroup===true){
 			CWHF.showMsgError(getText("itemov.wbsView.err.noOutdentPossible"));
 			return false;
 		}

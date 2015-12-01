@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -63,6 +63,7 @@ extends com.aurel.track.persist.BaseTActionPeer implements ActionDAO{
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TActionBean loadByPrimaryKey(Integer objectID)  {
 		TAction tobject = null;
 		try{
@@ -81,12 +82,13 @@ extends com.aurel.track.persist.BaseTActionPeer implements ActionDAO{
 	 * Loads all actions from TAction table 
 	 * @return
 	 */
+	@Override
 	public List<TActionBean> loadAll() {
 		Criteria crit = new Criteria();
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all actions failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all actions failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -96,6 +98,7 @@ extends com.aurel.track.persist.BaseTActionPeer implements ActionDAO{
 	 * @param actionIDs
 	 * @return
 	 */
+	@Override
 	public List<TActionBean> loadByActionIDs(List<Integer> actionIDs) {
 		if (actionIDs==null || actionIDs.isEmpty()) {
 			return new LinkedList<TActionBean>();
@@ -106,7 +109,7 @@ extends com.aurel.track.persist.BaseTActionPeer implements ActionDAO{
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the actions by keys " + actionIDs + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the actions by keys " + actionIDs + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -116,13 +119,14 @@ extends com.aurel.track.persist.BaseTActionPeer implements ActionDAO{
 	 * @param bean
 	 * @return
 	 */
+	@Override
 	public Integer save(TActionBean bean){
 		try {
 			TAction tobject = BaseTAction.createTAction(bean);
 			tobject.save();
 			return tobject.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a action failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a action failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -132,6 +136,7 @@ extends com.aurel.track.persist.BaseTActionPeer implements ActionDAO{
 	 * isDeletable should return true before calling this method
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		ReflectionHelper.delete(deletePeerClasses, deleteFields, objectID);
 	}
@@ -140,6 +145,7 @@ extends com.aurel.track.persist.BaseTActionPeer implements ActionDAO{
 	 * Verify is a action can be delete 
 	 * @param objectID
 	 */
+	@Override
 	public boolean isDeletable(Integer objectID){
 		return false;
 	}

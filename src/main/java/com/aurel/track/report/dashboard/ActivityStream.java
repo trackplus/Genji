@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -35,8 +35,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.aurel.track.Constants;
 import com.aurel.track.admin.customize.category.filter.execute.loadItems.LoadTreeFilterItems;
@@ -84,6 +84,9 @@ import com.aurel.track.vc.VersionControlMap;
 public class ActivityStream extends TimePeriodDashboardView {
 	private static final Logger LOGGER = LogManager.getLogger(ActivityStream.class);
 
+	private static final int PREF_WIDTH = 600;
+	private static final int PREF_HEIGHT = 510;
+
 	public static interface CONFIGURATION_PARAMETERS {
 		static String PERSONS = "changedByPersons";
 		static String SELECTED_PERSON = "selectedChangedByPerson";
@@ -92,6 +95,7 @@ public class ActivityStream extends TimePeriodDashboardView {
 		static String GRID_VIEW = "gridView";
 	}
 
+	protected static final String maxIssuesToShow = "maxIssuesToShow";
 	protected static final int MAX_LIMIT = 1000;
 	protected static final int DEFAULT_MAX_NUMBER_OF_ISSUES_TO_SHOW = 100;
 
@@ -110,21 +114,27 @@ public class ActivityStream extends TimePeriodDashboardView {
 		JSONUtility.appendIntegerListAsArray(sb,CONFIGURATION_PARAMETERS.SELECTED_PERSON,
 				StringArrayParameterUtils.splitSelectionAsInteger(parameters.get(CONFIGURATION_PARAMETERS.SELECTED_PERSON)));
 		JSONUtility.appendBooleanValue(sb, CONFIGURATION_PARAMETERS.GRID_VIEW, parseBoolean(parameters, CONFIGURATION_PARAMETERS.GRID_VIEW));
-		String maxIssuesToShowStr= parameters.get("maxIssuesToShow");
-		Integer maxIssuesToShow=null;
+		String maxIssuesToShowStr= parameters.get(maxIssuesToShow);
+		Integer maxIssuesToShowInt=null;
 		if(maxIssuesToShowStr!=null){
 			try{
-				maxIssuesToShow=Integer.parseInt(maxIssuesToShowStr);
-			}catch (Exception e){}
+				maxIssuesToShowInt=Integer.parseInt(maxIssuesToShowStr);
+			}catch (Exception e){
+				LOGGER.debug(e);
+			}
 		}
-		if(maxIssuesToShow==null){
-			maxIssuesToShow=DEFAULT_MAX_NUMBER_OF_ISSUES_TO_SHOW;
+		if(maxIssuesToShowInt==null){
+			maxIssuesToShowInt=DEFAULT_MAX_NUMBER_OF_ISSUES_TO_SHOW;
 		}
-		JSONUtility.appendIntegerValue(sb,"maxIssuesToShow", maxIssuesToShow);
+		JSONUtility.appendIntegerValue(sb,maxIssuesToShow, maxIssuesToShowInt);
+
+		JSONUtility.appendIntegerValue(sb,"prefWidth",PREF_WIDTH);
+		JSONUtility.appendIntegerValue(sb,"prefHeight",PREF_HEIGHT);
 
 		return sb.toString();
 	}
 
+	@Override
 	protected boolean isUseConfig(){
 		return true;
 	}
@@ -147,7 +157,7 @@ public class ActivityStream extends TimePeriodDashboardView {
 						if(aBean != null && aBean.getPersonID() != null) {
 							personIDsSet.add(aBean.getPersonID());
 						}else {
-							//beans withoout personID needs to be removed otherwise Teamgeist fails.
+							//beans without personID needs to be removed otherwise Teamgeist fails.
 							iterator.remove();
 						}
 					}
@@ -176,10 +186,8 @@ public class ActivityStream extends TimePeriodDashboardView {
 	 */
 	private List<ActivityStreamItem> getActivityItemStreamsForGrid(Map<String, String> parameters,
 			 Integer projectID, Integer releaseID, TPersonBean personBean, Locale locale) throws TooManyItemsToLoadException {
-		//List<TWorkItemBean> workItemBeans = getWorkItemBeans(parameters, projectID, releaseID, personBean, locale);
-		//Map<Integer, TWorkItemBean> workItemBeansMap = GeneralUtils.createMapFromList(workItemBeans);
 		int limit=DEFAULT_MAX_NUMBER_OF_ISSUES_TO_SHOW;
-		String maxIssuesToShowStr=parameters.get("maxIssuesToShow");
+		String maxIssuesToShowStr=parameters.get(maxIssuesToShow);
 		if(maxIssuesToShowStr!=null&&maxIssuesToShowStr.length()>0){
 			try{
 				limit=Integer.parseInt(maxIssuesToShowStr);
@@ -191,6 +199,7 @@ public class ActivityStream extends TimePeriodDashboardView {
 				}
 			}catch (Exception e) {
 				limit=DEFAULT_MAX_NUMBER_OF_ISSUES_TO_SHOW;
+				LOGGER.debug(e);
 			}
 		}
 		FilterUpperTO filterUpperTO = getFilterUpperTO(parameters, projectID, releaseID, personBean, locale, true, true);
@@ -270,8 +279,6 @@ public class ActivityStream extends TimePeriodDashboardView {
 			}
 		}
 		return createActivityItems(historyTransactions, costBeans, budgetOrPlanBeans, vcActivityItems, limit, locale, fieldsConfigLabelsMap, changeTypes);
-		//}
-		//return null;
 	}
 
 	/**
@@ -287,7 +294,7 @@ public class ActivityStream extends TimePeriodDashboardView {
 	public List<FlatHistoryBean> getActivityItemStreamsHTML( Map<String, String> parameters,
 			 Integer projectID, Integer releaseID, TPersonBean personBean, Locale locale) throws TooManyItemsToLoadException {
 		int limit=DEFAULT_MAX_NUMBER_OF_ISSUES_TO_SHOW;
-		String maxIssuesToShowStr=parameters.get("maxIssuesToShow");
+		String maxIssuesToShowStr=parameters.get(maxIssuesToShow);
 		if(maxIssuesToShowStr!=null&&maxIssuesToShowStr.length()>0){
 			try{
 				limit=Integer.parseInt(maxIssuesToShowStr);
@@ -297,7 +304,8 @@ public class ActivityStream extends TimePeriodDashboardView {
 				if(limit>MAX_LIMIT){
 					limit=MAX_LIMIT;
 				}
-			}catch (Exception e) {
+			} catch (Exception e) {
+				LOGGER.debug(e);
 				limit=DEFAULT_MAX_NUMBER_OF_ISSUES_TO_SHOW;
 			}
 		}
@@ -320,8 +328,6 @@ public class ActivityStream extends TimePeriodDashboardView {
 			List<TCostBean> costBeans = null;
 			if (noExplicitChangeTypes || changeTypes.contains(SystemFields.INTEGER_COST_HISTORY)) {
 				costBeans = ExpenseBL.loadActivityStreamCosts(filterUpperTO, raciBean, personBean.getObjectID(), limit, dateFrom, dateTo, changedByPersons);
-				/*costBeans = ExpenseBL.loadCostsForWorkItems(workItemIDArr,
-						workItemBeansMap, dateFrom, dateTo, personBean.getObjectID(), GeneralUtils.createIntegerArrFromCollection(changedByPersons), null);*/
 				if (changeTypes.contains(SystemFields.INTEGER_COST_HISTORY)) {
 					changeTypes.remove(SystemFields.INTEGER_COST_HISTORY);
 				}
@@ -556,7 +562,7 @@ public class ActivityStream extends TimePeriodDashboardView {
 			}
 			for (ActivityStreamItem activityStreamItem : historyActivityStreams) {
 				List<TFieldChangeBean> fieldChangeBeanList=mapFieldChanges.get(activityStreamItem.getTransactionID());
-				StringBuffer sb=new StringBuffer();
+				StringBuilder sb=new StringBuilder();
 				TFieldChangeBean fcb;
 				//FIXME fix me!
 				if(fieldChangeBeanList!=null) {
@@ -564,30 +570,29 @@ public class ActivityStream extends TimePeriodDashboardView {
 					for (int j = 0; j < fieldChangeBeanList.size(); j++) {
 						fcb=fieldChangeBeanList.get(j);
 						Integer fieldID=fcb.getFieldKey();
-						if (changeTypes==null || changeTypes.isEmpty() || changeTypes.contains(fieldID)) {
-							//if any change type
-							if (!fieldSet.contains(fieldID)) {
-								//avoid adding cascading field changes more than one times (once for each parameterValue)
-								fieldSet.add(fieldID);
-								String fieldLabel = fieldsConfigMap.get(fieldID);
-								if(j>0){
-									sb.append("; ");
-								}
-								if(fieldLabel!=null){
-									sb.append(fieldLabel);
-								}
-								else{
-									if (pseudoHistoryFields.contains(fieldID)) {
-										sb.append(LocalizeUtil.getLocalizedTextFromApplicationResources(HistoryLoaderBL.getHistoryFieldKey(fieldID), locale));
-									}
+						if ((changeTypes == null || changeTypes.isEmpty() || changeTypes.contains(fieldID)) && !fieldSet.contains(fieldID)) {
+							// if any change type
+							// avoid adding cascading field changes more than
+							// one times (once for each parameterValue)
+							fieldSet.add(fieldID);
+							String fieldLabel = fieldsConfigMap.get(fieldID);
+							if (j > 0) {
+								sb.append("; ");
+							}
+							if (fieldLabel != null) {
+								sb.append(fieldLabel);
+							} else {
+								if (pseudoHistoryFields.contains(fieldID)) {
+									sb.append(LocalizeUtil.getLocalizedTextFromApplicationResources(HistoryLoaderBL.getHistoryFieldKey(fieldID), locale));
 								}
 							}
+
 						}
 					}
 					int type = HistoryLoaderBL.getType(fieldSet);
 					activityStreamItem.setIconName(HistoryLoaderBL.getIconByType(type));
-				}else{
-					LOGGER.info("No history found for transaction : "+activityStreamItem.getTransactionID());
+				} else {
+					LOGGER.info("No history found for transaction : " + activityStreamItem.getTransactionID());
 				}
 				activityStreamItem.setChanges(sb.toString());
 			}
@@ -639,7 +644,7 @@ public class ActivityStream extends TimePeriodDashboardView {
 		}
 		Map<Integer, String> projectSpecificItemIDsMap = null;
 		boolean useProjectSpecificID = false;
-		if (ApplicationBean.getApplicationBean().getSiteBean().getProjectSpecificIDsOn()) {
+		if (ApplicationBean.getInstance().getSiteBean().getProjectSpecificIDsOn()) {
 			useProjectSpecificID = true;
 			projectSpecificItemIDsMap = ItemBL.getProjectSpecificIssueIDsMap(workItemBeans);
 		}
@@ -661,9 +666,6 @@ public class ActivityStream extends TimePeriodDashboardView {
 				}
 				activityStreamItem.setItemPrefixID(itemID);
 				validActivityItems.add(activityStreamItem);
-				/*if(validActivityItems.size()==limit){
-					break;
-				}*/
 			}
 		}
 		return validActivityItems;
@@ -702,7 +704,7 @@ public class ActivityStream extends TimePeriodDashboardView {
 		}
 		Map<Integer, String> projectSpecificItemIDsMap = null;
 		boolean useProjectSpecificID = false;
-		if(ApplicationBean.getApplicationBean().getSiteBean().getProjectSpecificIDsOn()) {
+		if(ApplicationBean.getInstance().getSiteBean().getProjectSpecificIDsOn()) {
 			useProjectSpecificID = true;
 			projectSpecificItemIDsMap = ItemBL.getProjectSpecificIssueIDsMap(workItemBeans);
 		}
@@ -724,7 +726,7 @@ public class ActivityStream extends TimePeriodDashboardView {
 		for (FlatHistoryBean flatHistoryBean:allActivityItems) {
 			TWorkItemBean workItemBean=itemsMap.get(flatHistoryBean.getWorkItemID());
 			if(workItemBean!=null){
-				TProjectBean projectBean = LookupContainer.getProjectBean(workItemBean.getProjectID());//projectsMap.get(workItemBean.getProjectID());
+				TProjectBean projectBean = LookupContainer.getProjectBean(workItemBean.getProjectID());
 				if (projectBean!=null) {
 					flatHistoryBean.setProject(projectBean.getLabel());
 				}
@@ -738,9 +740,6 @@ public class ActivityStream extends TimePeriodDashboardView {
 				flatHistoryBean.setItemID(itemID);
 				flatHistoryBean.setDateFormatted(formatDateAgo(flatHistoryBean.getLastEdit(), locale));
 				validActivityItems.add(flatHistoryBean);
-				/*if(validActivityItems.size()==limit){
-					break;
-				}*/
 			}
 		}
 		return validActivityItems;

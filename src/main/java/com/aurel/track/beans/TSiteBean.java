@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -116,7 +116,6 @@ public class TSiteBean
 		private static final double DEFAULT_MAX_ATTACHMENT_SIZE = 10.0;
 
 		public static final String AUTOMATIC_GUEST_LOGIN = "automaticGuestLogin";
-		//private static final String NUMBER_OF_FULL_USERS = "numfull";
 		//private static final String NUMBER_OF_LIMITED_USERS = "numlim";
 		
 		public static final String EMAIL_PERSONAL_NAME = "emailPersonalName";
@@ -540,7 +539,7 @@ public class TSiteBean
 					maxAttachSize = new Double(strMaxAttachSize);
 				}
 				catch (Exception e) {
-					LOGGER.error("Getting the maximal attachment size failed with " + e.getMessage(), e);				
+					LOGGER.error("Getting the maximal attachment size failed with " + e.getMessage());				
 				}
 			}
 			return maxAttachSize;
@@ -707,7 +706,7 @@ public class TSiteBean
 				try {
 					smtpReqAuth = new Boolean(strSmtpReqAuth).booleanValue();
 				} catch (Exception e) {
-					LOGGER.warn("Getting the boolean value for smtpReqAuth " + strSmtpReqAuth + " failed with " + e.getMessage(), e);
+					LOGGER.warn("Getting the boolean value for smtpReqAuth " + strSmtpReqAuth + " failed with " + e.getMessage());
 					smtpReqAuth = true;
 				}
 			}
@@ -795,7 +794,7 @@ public class TSiteBean
 				try {
 					smtpAuthMode = Integer.parseInt(strSmtpAuthMode);
 				} catch (Exception e) {
-					LOGGER.warn("Getting the int value for strSmtpAuthMode " + strSmtpAuthMode + " failed with " + e.getMessage(), e);
+					LOGGER.warn("Getting the int value for strSmtpAuthMode " + strSmtpAuthMode + " failed with " + e.getMessage());
 					smtpAuthMode = TSiteBean.SMTP_AUTHENTICATION_MODES.CONNECT_USING_SMTP_SETTINGS;
 				}			
 			}

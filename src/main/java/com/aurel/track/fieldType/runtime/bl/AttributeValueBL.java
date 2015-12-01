@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -33,6 +33,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -202,7 +203,8 @@ public class AttributeValueBL {
 			try {
 				booleanAttribute = (Boolean)attribute;
 			} catch (Exception e) {
-				LOGGER.error("Wrong attribute type for boolean " + e.getMessage(), e);
+				LOGGER.error("Wrong attribute type for boolean " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 			if (booleanAttribute!=null && booleanAttribute.booleanValue()==true) {
 				tAttributeValueBean.setCharacterValue(BooleanFields.TRUE_VALUE);
@@ -215,7 +217,8 @@ public class AttributeValueBL {
 			try {
 				customOptionAttribute = (Integer)attribute;
 			} catch (Exception e) {
-				LOGGER.error("Wrong attribute type for custom option " + e.getMessage(), e);
+				LOGGER.error("Wrong attribute type for custom option " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 			tAttributeValueBean.setCustomOptionID(customOptionAttribute);
 			break;
@@ -225,7 +228,8 @@ public class AttributeValueBL {
 			try {
 				dateAttribute = (Date)attribute;
 			} catch (Exception e) {
-				LOGGER.error("Wrong attribute type for date option " + e.getMessage(), e);
+				LOGGER.error("Wrong attribute type for date option " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}		
 			tAttributeValueBean.setDateValue(dateAttribute);
 			break;
@@ -234,7 +238,8 @@ public class AttributeValueBL {
 			try {
 				doubleAttribute = (Double)attribute;
 			} catch (Exception e) {
-				LOGGER.error("Wrong attribute type for double option " + e.getMessage(), e);
+				LOGGER.error("Wrong attribute type for double option " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 			tAttributeValueBean.setDoubleValue(doubleAttribute);
 			break;
@@ -244,7 +249,8 @@ public class AttributeValueBL {
 			try {
 				integerAttribute = (Integer)attribute;
 			} catch (Exception e) {
-				LOGGER.error("Wrong attribute type for value type " + valueType + " and integer option " + e.getMessage(), e);
+				LOGGER.error("Wrong attribute type for value type " + valueType + " and integer option " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 			tAttributeValueBean.setIntegerValue(integerAttribute);
 			break;
@@ -253,7 +259,8 @@ public class AttributeValueBL {
 			try {
 				longTextAttribute = (String)attribute;
 			} catch (Exception e) {
-				LOGGER.error("Wrong attribute type longTextAttribute " + e.getMessage(), e);
+				LOGGER.error("Wrong attribute type longTextAttribute " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 			tAttributeValueBean.setLongTextValue(longTextAttribute);
 			break;
@@ -262,7 +269,8 @@ public class AttributeValueBL {
 			try {
 				systemOptionAttribute = (Integer)attribute;
 			} catch (Exception e) {
-				LOGGER.error("Wrong attribute type for system option " + e.getMessage(), e);
+				LOGGER.error("Wrong attribute type for system option " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}		
 			tAttributeValueBean.setSystemOptionID(systemOptionAttribute);
 			break;
@@ -271,7 +279,8 @@ public class AttributeValueBL {
 			try {
 				shortTextAttribute = (String)attribute;
 			} catch (Exception e) {
-				LOGGER.error("Wrong attribute type shortTextAttribute " + e.getMessage(), e);
+				LOGGER.error("Wrong attribute type shortTextAttribute " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 			tAttributeValueBean.setTextValue(shortTextAttribute);
 			break;
@@ -360,7 +369,6 @@ public class AttributeValueBL {
 		//load the custom attributes to workItemBeans
 		for (TAttributeValueBean attributeValueBean : attributeValueBeanList) {
 			String mergeKey = MergeUtil.mergeKey(attributeValueBean.getField(), attributeValueBean.getParameterCode());
-			//if (attributeValueBean.getCustomOptionID()==null && attributeValueBean.getSystemOptionID()==null) {
 			Integer valueType = attributeValueBean.getValidValue();
 			if (valueType==null || (valueType.intValue()!=ValueType.CUSTOMOPTION && valueType.intValue()!=ValueType.SYSTEMOPTION)) {
 				//direct value (not a select)

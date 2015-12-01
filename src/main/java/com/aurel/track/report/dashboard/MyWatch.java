@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -81,7 +81,6 @@ public class MyWatch extends BasePluginDashboardView{
 		return sb.toString();
 	}
 	private static List<ReportBean> calculateProjectItems(TPersonBean user, Locale locale,Integer projectID,Integer releaseID) throws TooManyItemsToLoadException {
-		//TProjectBean prjBean = ProjectBL.loadByPrimaryKey(projectID);
 		Integer objectID=null;
 		Integer entityFlag=null;
 		if(projectID!=null){
@@ -98,7 +97,6 @@ public class MyWatch extends BasePluginDashboardView{
 		List<ReportBean> reportList4Project=new ArrayList<ReportBean>();
 		while (itemIter.hasNext()) {
 			ReportBean rb = (ReportBean) itemIter.next();
-			//TWorkItemBean item =rb.getWorkItemBean();
 			Integer currenProjectID=rb.getWorkItemBean().getProjectID();
 			if(currenProjectID.intValue()==projectID.intValue()){
 				if(releaseID==null||

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -31,6 +31,7 @@ Ext.define("com.trackplus.itemNavigator.Grouping",{
 		var config = cfg || {};
 		this.initialConfig = config;
 		Ext.apply(this, config);
+		this.initConfig(config);
 	},
 	showDialog: function() {
 		var width = 350;
@@ -76,7 +77,7 @@ Ext.define("com.trackplus.itemNavigator.Grouping",{
 		var activeSet = false;
 		var previousActiveSet = true;
 		for(var i=0;i<groupFields.length;i++) {
-			activeSet = groupFields[i].fieldID!=null;
+			activeSet = !CWHF.isNull(groupFields[i].fieldID);
 			items.push(me.createGroupingItem(i, maxGroupingLevels, panel, groupFields[i], groupFieldList, ascendingDescendingList, expandCollapseList, activeSet, previousActiveSet));
 			previousActiveSet = activeSet;
 		}
@@ -85,18 +86,20 @@ Ext.define("com.trackplus.itemNavigator.Grouping",{
 
 	createGroupingItem: function(i, count, mainPanel, groupField, groupFieldList, ascendingDescendingList, expandCollapseList, activeSet, previousActiveSet){
 		var me=this;
-		var itemIDPrefix =  "groupFields["+i+"].";
+		var itemIDPrefix =  "groupFields"+i;
+		var namePrefix="groupFields["+i+"].";
 		var checkBox = CWHF.createCheckbox(null, "activated"+i,
-				{value:activeSet, disabled:!previousActiveSet, boxLabel:getText("itemov.lbl.groupBy.active")},
+				{itemId:"activated"+i,value:activeSet, disabled:!previousActiveSet, boxLabel:getText("itemov.lbl.groupBy.active")},
 				{change: {fn: me.activate,
 					scope:me, index:i, count:count, mainPanel: mainPanel}});
-		var fieldCombo = CWHF.createCombo(null, itemIDPrefix + "fieldID", {value: groupField.fieldID, data:groupFieldList, disabled:!activeSet, anchor:'100%'});
+		var fieldCombo = CWHF.createCombo(null, namePrefix + "fieldID",
+			{itemId:itemIDPrefix + "fieldID",value: groupField.fieldID, data:groupFieldList, disabled:!activeSet, anchor:'100%'});
 		var orderRadioButtonItems = CWHF.getRadioButtonItems(ascendingDescendingList,
-				itemIDPrefix + "descending", "id", "label", groupField.descending, false, true);
-		var orderRadioGroup = CWHF.getRadioGroup(itemIDPrefix + "descending", null, null, orderRadioButtonItems, {anchor:'100%', disabled:!activeSet});
+			namePrefix + "descending", "id", "label", groupField.descending, false, true);
+		var orderRadioGroup = CWHF.getRadioGroup(null, null, orderRadioButtonItems, {itemId:itemIDPrefix + "descending",anchor:'100%', disabled:!activeSet});
 		var expandingRadioButtonItems = CWHF.getRadioButtonItems(expandCollapseList,
-				itemIDPrefix + "collapsed", "id", "label", groupField.collapsed, false, true);
-		var expandingRadioGroup = CWHF.getRadioGroup(itemIDPrefix + "collapsed", null, null, expandingRadioButtonItems, {anchor:'100%', disabled:!activeSet});
+			namePrefix + "collapsed", "id", "label", groupField.collapsed, false, true);
+		var expandingRadioGroup = CWHF.getRadioGroup(null, null, expandingRadioButtonItems, {itemId:itemIDPrefix + "collapsed",anchor:'100%', disabled:!activeSet});
 		return Ext.create("Ext.panel.Panel",{
 			margin:'5 0 5 0',
 			border:true,
@@ -134,7 +137,7 @@ Ext.define("com.trackplus.itemNavigator.Grouping",{
 		var count = options.count;
 		var mainPanel = options.mainPanel;
 		var indexPanel = mainPanel.getComponent("panel" + index);
-		var itemIDPrefix =  "groupFields["+index+"].";
+		var itemIDPrefix =  "groupFields"+index;
 		var checkBoxActivated = indexPanel.getComponent(0).getComponent("activated"+index);
 		var activated = checkBoxActivated.getRawValue();
 		var selectField = indexPanel.getComponent(1).getComponent(itemIDPrefix+"fieldID");
@@ -153,7 +156,7 @@ Ext.define("com.trackplus.itemNavigator.Grouping",{
 			} else {
 				for (var i=index+1;i<count;i++) {
 					var nextPanel = mainPanel.getComponent("panel" + i);
-					var nextIndexPrefix =  "groupFields["+i+"].";
+					var nextIndexPrefix =  "groupFields"+i;
 					var selectField = nextPanel.getComponent(1).getComponent(nextIndexPrefix+"fieldID");
 					selectField.setDisabled(true);
 					var descending = nextPanel.getComponent(1).getComponent(nextIndexPrefix+"descending");

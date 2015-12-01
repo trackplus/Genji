@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -60,6 +60,7 @@ public class TDashboardFieldPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TDashboardFieldBean loadByPrimaryKey(Integer objectID)  {
 		Connection con = null;
 		TDashboardFieldBean field = null;
@@ -96,6 +97,7 @@ public class TDashboardFieldPeer
 	 * Loads all DashboardFields from TDashboardField table
 	 * @return
 	 */
+	@Override
 	public List loadAll() {
         Connection con = null;
         List beanList=null;
@@ -111,7 +113,7 @@ public class TDashboardFieldPeer
             Transaction.commit(con);
         } catch (TorqueException e) {
 			Transaction.safeRollback(con);
-            LOGGER.error("Loading all DashboardFields failed with " + e.getMessage(), e);
+            LOGGER.error("Loading all DashboardFields failed with " + e.getMessage());
 		}
         return beanList;
     }
@@ -120,6 +122,7 @@ public class TDashboardFieldPeer
 	 * Loads TDashboardFields by IDs
 	 * @return
 	 */
+	@Override
 	public List<TDashboardFieldBean> loadByKeys(Set<Integer> objectIDs) {
 		Connection con = null;
         List beanList=null;
@@ -135,7 +138,7 @@ public class TDashboardFieldPeer
             Transaction.commit(con);
         } catch (TorqueException e) {
 			Transaction.safeRollback(con);
-            LOGGER.error("Loading all DashboardFields failed with " + e.getMessage(), e);
+            LOGGER.error("Loading all DashboardFields failed with " + e.getMessage());
 		}
         return beanList;
     }
@@ -145,6 +148,7 @@ public class TDashboardFieldPeer
 	 * @param bean
 	 * @return
 	 */
+	@Override
 	public Integer save(TDashboardFieldBean bean){
 		Connection con = null;
         try {
@@ -157,7 +161,7 @@ public class TDashboardFieldPeer
             return tobject.getObjectID();
 		} catch (Exception e) {
             Transaction.safeRollback(con);
-            LOGGER.error("Saving of a DashboardField failed with " + e.getMessage(), e);
+            LOGGER.error("Saving of a DashboardField failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -167,11 +171,11 @@ public class TDashboardFieldPeer
 	 * Is deletable should return true before calling this method
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
         Connection con = null;
         try {
 			con = Transaction.begin(DATABASE_NAME);
-            //TLastExecutedQueryPeer.deleteByDashboard(objectID,con);
 			LastExecutedBL.deleteByFilterIDAndFilterType(objectID, QUERY_TYPE.DASHBOARD, con);
             TDashboardParameterPeer.deleteByDashboardField(objectID,con);
             doDelete(SimpleKey.keyFor(objectID),con);
@@ -186,6 +190,7 @@ public class TDashboardFieldPeer
 	 * Verify is a DashboardField can be delete
 	 * @param objectID
 	 */
+	@Override
 	public boolean isDeletable(Integer objectID){
 		return true;
 	}
@@ -195,6 +200,7 @@ public class TDashboardFieldPeer
 	 * @param parentID
 	 * @return
 	 */
+	@Override
 	public List loadByParent(Integer parentID){
 		Connection con = null;
         List beanList=null;
@@ -212,12 +218,13 @@ public class TDashboardFieldPeer
             Transaction.commit(con);
         } catch (TorqueException e) {
 			Transaction.safeRollback(con);
-			LOGGER.error("Loading fiels by Parent failed with " + e.getMessage(), e);
+			LOGGER.error("Loading fiels by Parent failed with " + e.getMessage());
 		}
 
         return beanList;
     }
 
+	@Override
 	public HashMap<Integer, ArrayList<String>> loadTabsContentTypes(List<Integer> tabID) {
 		HashMap<Integer, ArrayList<String>>dummy = new HashMap<Integer, ArrayList<String>>();
 		for(int i = 0; i < tabID.size(); i++) {
@@ -234,14 +241,11 @@ public class TDashboardFieldPeer
 	 */
 	public static Integer getNextSortOrder(Integer objectID){
 		Integer sortOrder = null;
-		//String max = "max(" + SORTORDER + ")";
 		Criteria crit = new Criteria();
 		crit.add(PARENT, objectID);
-		//crit.addSelectColumn(max);
 		try {
 			sortOrder = ((Record) doSelectVillageRecords(crit).get(0)).getValue(1).asIntegerObj();
 		} catch (Exception e) {
-			//LOGGER.error("Getting the next sortorder for the list " + listID + " failed with: " + e);
 		}
 		if (sortOrder!=null){
 			sortOrder = new Integer(sortOrder.intValue()+1);
@@ -258,6 +262,7 @@ public class TDashboardFieldPeer
      * @param  col
 	 * @return
 	 */
+	@Override
 	public TDashboardFieldBean loadByParentAndIndex(Integer parentID,Integer row,Integer col){
 		List result = new ArrayList();
 	    Criteria crit = new Criteria();
@@ -276,7 +281,7 @@ public class TDashboardFieldPeer
             Transaction.commit(con);
         } catch (TorqueException e) {
 			 Transaction.safeRollback(con);
-             LOGGER.error("Loading field by Parent and index failed with " + e.getMessage(), e);
+             LOGGER.error("Loading field by Parent and index failed with " + e.getMessage());
          }
         return  fieldBean;
     }

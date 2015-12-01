@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -67,6 +67,7 @@ public class TCostPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TCostBean loadByPrimaryKey(Integer objectID) {
 		TCost tCost = null;
 		try {
@@ -85,6 +86,7 @@ public class TCostPeer
 	 * Gets all costs/efforts  
 	 * @return
 	 */
+	@Override
 	public List<TCostBean> loadAll() {
 		Criteria crit = new Criteria();
 		try {
@@ -99,6 +101,7 @@ public class TCostPeer
 	 * Gets all costs/efforts  
 	 * @return
 	 */
+	@Override
 	public List<TCostBean> loadAllIndexable() {
 		Criteria crit = new Criteria();
 		Criterion emptyDescriptionCriterion = crit.getNewCriterion(DESCRIPTION, "", Criteria.NOT_EQUAL);
@@ -122,6 +125,7 @@ public class TCostPeer
 	 * @param costBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TCostBean costBean) {
 		try {
 			TCost tCost = BaseTCost.createTCost(costBean);
@@ -130,7 +134,7 @@ public class TCostPeer
 			costBean.setObjectID(objectID);
 			return objectID;
 		} catch (Exception e) {
-			LOGGER.error("Saving of a cost failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a cost failed with " + e.getMessage());
 			return null;
 		}	
 	}
@@ -139,6 +143,7 @@ public class TCostPeer
 	 * Deletes a cost by primary key
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		Criteria crit = new Criteria();
 		crit.add(OBJECTID, objectID);
@@ -155,6 +160,7 @@ public class TCostPeer
 	 * @param work work or cost
 	 * @return
 	 */
+	@Override
 	public double getSumExpenseByWorkItem(Integer workItemKey, boolean work) {
 		double effort = 0.0;
 		String fieldName = null;
@@ -187,6 +193,7 @@ public class TCostPeer
 	 * @param work work or cost
 	 * @return
 	 */
+	@Override
 	public double getSumExpenseByWorkItemAndPersons(Integer workItemKey, Integer[] persons, boolean work) {
 		double effort = 0.0;
 		if (persons!=null && persons.length>0) {
@@ -219,6 +226,7 @@ public class TCostPeer
 	 * @param objectIDs
 	 * @return
 	 */
+	@Override
 	public List<TCostBean> loadByKeys(List<Integer> objectIDs) {
 		List<TCostBean> costList = new LinkedList<TCostBean>();
 		if (objectIDs==null || objectIDs.isEmpty()) {
@@ -236,7 +244,7 @@ public class TCostPeer
 			try {
 				costList.addAll(convertTorqueListToBeanList(doSelect(crit)));
 			} catch (TorqueException e) {
-				LOGGER.error("Getting the costs for objectIDs failed with " + e.getMessage(), e);
+				LOGGER.error("Getting the costs for objectIDs failed with " + e.getMessage());
 			}
 		}		
 		return costList;
@@ -254,6 +262,7 @@ public class TCostPeer
 	 * @param ascendingDate
 	 * @return
 	 */
+	@Override
 	public List<TCostBean> loadByWorkItemKeys(int[] workItemKeys, Integer[] personIDsArr, 
 			Date fromDate, Date toDate, List<Integer> accounts,  boolean ascendingDate) {
 		List<TCostBean> costList = new LinkedList<TCostBean>();
@@ -284,7 +293,7 @@ public class TCostPeer
 			try {
 				costList.addAll(convertTorqueListToBeanList(doSelect(crit)));
 			} catch (TorqueException e) {
-				LOGGER.error("Getting the costs for workItems failed with " + e.getMessage(), e);
+				LOGGER.error("Getting the costs for workItems failed with " + e.getMessage());
 			}
 		}		
 		return costList;
@@ -302,6 +311,7 @@ public class TCostPeer
 	 * @param changedByPersons
 	 * @return
 	 */
+	@Override
 	public List<TCostBean> loadActivityStreamCosts(FilterUpperTO filterUpperTO, RACIBean raciBean, Integer personID,
 			Integer limit, Date fromDate, Date toDate, List<Integer> changedByPersons) {
 		Integer[] selectedProjects = filterUpperTO.getSelectedProjects();
@@ -361,6 +371,7 @@ public class TCostPeer
 	 * @param personID if specified filter by person
 	 * @return
 	 */
+	@Override
 	public List<TCostBean> getByWorkItemAndPerson(Integer workItemID, Integer personID) {
 		List<TCost> torqueList = new ArrayList<TCost>();
 		Criteria crit = new Criteria();
@@ -375,7 +386,7 @@ public class TCostPeer
 		try {
 			torqueList = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the costs for workItem " + workItemID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the costs for workItem " + workItemID + " failed with " + e.getMessage());
 		}
 		return convertTorqueListToBeanList(torqueList);
 	}
@@ -384,6 +395,7 @@ public class TCostPeer
 	 * Gets a list of TComputedValuesBean with the sum of cost/time values grouped by workItems 
 	 * @return
 	 */
+	@Override
 	public List<TComputedValuesBean> loadExpenseGroupedByWorkItem() {
 		List<TComputedValuesBean> computedValuesBeanList = new LinkedList<TComputedValuesBean>();
 		String sumHours = "SUM(" + HOURS + ")";
@@ -397,7 +409,7 @@ public class TCostPeer
 		try {
 			records = doSelectVillageRecords(crit);
 		} catch(Exception e) {
-			LOGGER.error("Groupping the expenses by workItems failed with " + e.getMessage(), e);
+			LOGGER.error("Groupping the expenses by workItems failed with " + e.getMessage());
 		}
 		try {
 			if (records!=null && !records.isEmpty()) {
@@ -416,7 +428,7 @@ public class TCostPeer
 				}
 			}
 		} catch (Exception e) {
-			LOGGER.error("Getting the groupped expenses by workItems failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the groupped expenses by workItems failed with " + e.getMessage());
 		}
 		return computedValuesBeanList;
 	}
@@ -427,6 +439,7 @@ public class TCostPeer
 	 * Gets a list of TComputedValuesBean with the sum of cost/time values grouped by workItems and persons
 	 * @return
 	 */
+	@Override
 	public List<TComputedValuesBean> loadExpenseGroupedByWorkItemAndPerson() {
 		List<TComputedValuesBean> computedValuesBeanList = new LinkedList<TComputedValuesBean>();
 		String sumHours = "SUM(" + HOURS + ")";
@@ -442,7 +455,7 @@ public class TCostPeer
 		try {
 			records = doSelectVillageRecords(crit);
 		} catch(Exception e) {
-			LOGGER.error("Groupping the expenses by workItems failed with " + e.getMessage(), e);
+			LOGGER.error("Groupping the expenses by workItems failed with " + e.getMessage());
 		}	
 		try {
 			if (records!=null && !records.isEmpty()) {
@@ -462,7 +475,7 @@ public class TCostPeer
 				}
 			}
 		} catch (Exception e) {
-			LOGGER.error("Getting the groupped expenses by workItems failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the groupped expenses by workItems failed with " + e.getMessage());
 		}
 		return computedValuesBeanList;
 	}
@@ -483,6 +496,7 @@ public class TCostPeer
 	 * @param workItemIDs
 	 * @return
 	 */
+	@Override
 	public List<TCostBean> loadSumExpensesForWorkItems(List<Integer> workItemIDs) {
 		List<TCostBean> costBeanList = new LinkedList<TCostBean>();
 		if (workItemIDs==null || workItemIDs.isEmpty()) {
@@ -507,7 +521,7 @@ public class TCostPeer
 			try {
 				records.addAll(doSelectVillageRecords(crit));
 			} catch(Exception e) {
-				LOGGER.error("Groupping the expenses by parent workItems failed with " + e.getMessage(), e);
+				LOGGER.error("Groupping the expenses by parent workItems failed with " + e.getMessage());
 			}
 		}
 		try {
@@ -528,7 +542,7 @@ public class TCostPeer
 				}
 			}
 		} catch (Exception e) {
-			LOGGER.error("Getting the groupped expenses by workItems failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the groupped expenses by workItems failed with " + e.getMessage());
 		}
 		return costBeanList;
 	}
@@ -539,6 +553,7 @@ public class TCostPeer
 	 * @param workItemIDs
 	 * @return
 	 */
+	@Override
 	public List<TCostBean> loadSumExpensesForWorkItemsAndPersons(List<Integer> workItemIDs) {
 		List<TCostBean> costBeanList = new LinkedList<TCostBean>();
 		if (workItemIDs==null || workItemIDs.isEmpty()) {
@@ -565,7 +580,7 @@ public class TCostPeer
 			try {
 				records.addAll(doSelectVillageRecords(crit));
 			} catch(Exception e) {
-				LOGGER.error("Groupping the expenses by parent workItems failed with " + e.getMessage(), e);
+				LOGGER.error("Groupping the expenses by parent workItems failed with " + e.getMessage());
 			}
 		}
 		try {
@@ -588,7 +603,7 @@ public class TCostPeer
 				}
 			}
 		} catch (Exception e) {
-			LOGGER.error("Getting the groupped expenses by workItems failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the groupped expenses by workItems failed with " + e.getMessage());
 		}
 		return costBeanList;
 	}

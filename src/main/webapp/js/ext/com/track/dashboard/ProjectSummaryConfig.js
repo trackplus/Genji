@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -28,7 +28,7 @@ Ext.define('js.ext.com.track.dashboard.ProjectSummaryConfig',{
 		var me=this;
 		var items=me.callParent();
 		var projectID=null;
-		if(typeof(me.projectID) !== 'undefined' && me.projectID != null) {
+		if(typeof(me.projectID) !== 'undefined' && me.projectID ) {
 			projectID=me.projectID;
 		}
 
@@ -37,7 +37,7 @@ Ext.define('js.ext.com.track.dashboard.ProjectSummaryConfig',{
 			items.push(issueTypeSelector);
 		}
 
-		if(projectID==null){
+		if(CWHF.isNull(projectID)){
 			me.cmbProjects=com.trackplus.dashboard.createReleaseTreeCfg("releaseNotes.projects",
 				"params.SelectedProjects",me.jsonData.SelectedProjects, {width:400, margin:'0 0 5 0'});
 			items.push(me.cmbProjects);
@@ -68,14 +68,14 @@ Ext.define('js.ext.com.track.dashboard.ProjectSummaryConfig',{
 	        	  name: 'params.issueType',
 	        	  inputValue: 1,
 	        	  id: 'radio2',
-	        	  checked: me.jsonData.selectedIssueType == 1
+	        	  checked: me.jsonData.selectedIssueType === 1
 
 	          },{
 	        	boxLabel: getText('projectSummary.prompt.issuType.document'),
 	        	name: 'params.issueType',
 	        	inputValue: 2,
 	            id: 'radio1',
-	            checked: me.jsonData.selectedIssueType == 2
+	            checked: me.jsonData.selectedIssueType === 2
 	          }]
 		};
 		return timeUnitSelector;

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -45,7 +45,7 @@ import com.workingdogs.village.Record;
 * methods for operations on this table.
 *
 * @author Joerg Friedrich
-* @version $Revision: 1229 $
+* @version $Revision: 1795 $
 */
 
 public class TListTypePeer
@@ -102,6 +102,7 @@ extends com.aurel.track.persist.BaseTListTypePeer implements IssueTypeDAO
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TListTypeBean loadByPrimaryKey(Integer objectID) {
 		TListType tListType = null;
 		try {
@@ -121,13 +122,14 @@ extends com.aurel.track.persist.BaseTListTypePeer implements IssueTypeDAO
 	 * @param label
 	 * @return
 	 */
+	@Override
 	public List<TListTypeBean> loadByLabel(String label) {
 		Criteria crit = new Criteria();
 		crit.add(LABEL, label);
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (Exception e) {
-			LOGGER.error("Loading the issueType by label " + label +  " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the issueType by label " + label +  " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -136,6 +138,7 @@ extends com.aurel.track.persist.BaseTListTypePeer implements IssueTypeDAO
 	 * Loads all issueTypes
 	 * @return
 	 */
+	@Override
 	public List<TListTypeBean> loadAll() {
 		Criteria crit = new Criteria();
 		crit.add(PKEY, 0, Criteria.NOT_EQUAL);
@@ -144,7 +147,7 @@ extends com.aurel.track.persist.BaseTListTypePeer implements IssueTypeDAO
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (Exception e) {
-			LOGGER.error("Loading of all issueTypes failed with " + e.getMessage(), e);
+			LOGGER.error("Loading of all issueTypes failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -154,6 +157,7 @@ extends com.aurel.track.persist.BaseTListTypePeer implements IssueTypeDAO
 	 * Load all selectable item types
 	 * @return
 	 */
+	@Override
 	public List<TListTypeBean> loadAllSelectable() {
 		Criteria crit = new Criteria();
 		crit.add(PKEY, 0, Criteria.NOT_EQUAL);
@@ -162,7 +166,7 @@ extends com.aurel.track.persist.BaseTListTypePeer implements IssueTypeDAO
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading issue types by typeFlag failed with " + e.getMessage(), e);
+			LOGGER.error("Loading issue types by typeFlag failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -170,6 +174,7 @@ extends com.aurel.track.persist.BaseTListTypePeer implements IssueTypeDAO
 	/**
 	 * Loads all document type item types
 	 */
+	@Override
 	public List<TListTypeBean> loadAllDocumentTypes(){
 		Criteria crit = new Criteria();
 		addDocumentTypeFlags(crit);
@@ -177,7 +182,7 @@ extends com.aurel.track.persist.BaseTListTypePeer implements IssueTypeDAO
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all documents failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all documents failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -187,6 +192,7 @@ extends com.aurel.track.persist.BaseTListTypePeer implements IssueTypeDAO
 	 * Loads strict document type item types
 	 * @return
 	 */
+	@Override
 	public List<TListTypeBean> loadStrictDocumentTypes() {
 		Criteria crit = new Criteria();
 		addDocumentTypeFlag(crit);
@@ -194,7 +200,7 @@ extends com.aurel.track.persist.BaseTListTypePeer implements IssueTypeDAO
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all documents failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all documents failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -228,6 +234,7 @@ extends com.aurel.track.persist.BaseTListTypePeer implements IssueTypeDAO
 	 * Loads the issue types by IDs
 	 * @param issueTypeIDs
 	 */
+	@Override
 	public List<TListTypeBean> loadByIssueTypeIDs(List<Integer> issueTypeIDs) {
 		List<TListType> torqueList = new ArrayList<TListType>();
 		if (issueTypeIDs==null || issueTypeIDs.isEmpty()) {
@@ -241,7 +248,7 @@ extends com.aurel.track.persist.BaseTListTypePeer implements IssueTypeDAO
 			torqueList = doSelect(crit);
 		}
 		catch (Exception e) {
-			LOGGER.error("Loading of issueTypes by IDs failed with " + e.getMessage(), e);
+			LOGGER.error("Loading of issueTypes by IDs failed with " + e.getMessage());
 			return convertTorqueListToBeanList(torqueList);
 		}
 		return convertTorqueListToBeanList(torqueList);
@@ -252,6 +259,7 @@ extends com.aurel.track.persist.BaseTListTypePeer implements IssueTypeDAO
 	 * @param typeFlag
 	 * @return
 	 */
+	@Override
 	public List<TListTypeBean> loadByTypeFlag(int typeFlag) {
 		Criteria crit = new Criteria();
 		crit.add(TYPEFLAG, typeFlag);
@@ -259,7 +267,7 @@ extends com.aurel.track.persist.BaseTListTypePeer implements IssueTypeDAO
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading issue types by typeFlag failed with " + e.getMessage(), e);
+			LOGGER.error("Loading issue types by typeFlag failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -269,6 +277,7 @@ extends com.aurel.track.persist.BaseTListTypePeer implements IssueTypeDAO
 	 * @param projectType
 	 * @return
 	 */
+	@Override
 	public List<TListTypeBean> loadAllowedByProjectType(Integer projectType) {
 		return loadAllowedByProjectType(projectType, null);
 	}
@@ -278,6 +287,7 @@ extends com.aurel.track.persist.BaseTListTypePeer implements IssueTypeDAO
 	 * @param projectType
 	 * @return
 	 */
+	@Override
 	public List<TListTypeBean> loadAllowedNonDocumentTypesByProjectType(Integer projectType) {
 		return loadAllowedByProjectType(projectType, Boolean.FALSE);
 	}
@@ -287,6 +297,7 @@ extends com.aurel.track.persist.BaseTListTypePeer implements IssueTypeDAO
 	 * @param projectType
 	 * @return
 	 */
+	@Override
 	public List<TListTypeBean> loadAllowedDocumentTypesByProjectType(Integer projectType){
 		return loadAllowedByProjectType(projectType, Boolean.TRUE);
 	}
@@ -317,7 +328,7 @@ extends com.aurel.track.persist.BaseTListTypePeer implements IssueTypeDAO
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the issueTypes allowed by projectType " + projectType + " failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the issueTypes allowed by projectType " + projectType + " failed with " + e.getMessage());
 			return new ArrayList<TListTypeBean>();
 		}
 	}
@@ -327,9 +338,11 @@ extends com.aurel.track.persist.BaseTListTypePeer implements IssueTypeDAO
 	 * @param projectTypeIDs
 	 * @return
 	 */
+	@Override
 	public List<TListTypeBean> loadAllowedByProjectTypes(Object[] projectTypeIDs) {
 		return loadAllowedByProjectTypes(projectTypeIDs,false);
 	}
+	@Override
 	public List<TListTypeBean> loadAllowedDocumentsByProjectTypes(Object[] projectTypeIDs){
 		return loadAllowedByProjectTypes(projectTypeIDs,true);
 	}
@@ -359,7 +372,7 @@ extends com.aurel.track.persist.BaseTListTypePeer implements IssueTypeDAO
 			return convertTorqueListToBeanList(doSelect(crit));
 		}
 		catch (Exception e) {
-			LOGGER.error("Loading issueTypes which have project type restrictions failed with " + e.getMessage(), e);
+			LOGGER.error("Loading issueTypes which have project type restrictions failed with " + e.getMessage());
 			return new ArrayList<TListTypeBean>();
 		}
 	}
@@ -368,6 +381,7 @@ extends com.aurel.track.persist.BaseTListTypePeer implements IssueTypeDAO
 	 * Gets the next available sortorder
 	 * @return
 	 */
+	@Override
 	public Integer getNextSortOrder() {
 		Integer sortOrder = null;
 		String max = "max(" + SORTORDER + ")";
@@ -390,6 +404,7 @@ extends com.aurel.track.persist.BaseTListTypePeer implements IssueTypeDAO
 	 * @param fieldBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TListTypeBean listTypeBean) {
 		TListType tListType;
 		try {
@@ -397,11 +412,12 @@ extends com.aurel.track.persist.BaseTListTypePeer implements IssueTypeDAO
 			tListType.save();
 			return tListType.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of an issue type bean failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of an issue type bean failed with " + e.getMessage());
 			return null;
 		}
 	}
 	
+	@Override
 	public boolean hasDependentData(Integer pkey) {
 		return ReflectionHelper.hasDependentData(replacePeerClasses, replaceFields, pkey);
 	}
@@ -413,6 +429,7 @@ extends com.aurel.track.persist.BaseTListTypePeer implements IssueTypeDAO
 	 * @param oldOID
 	 * @param newOID
 	 */
+	@Override
 	public void replace(Integer oldOID, Integer newOID) {
 		ReflectionHelper.replace(replacePeerClasses, replaceFields, oldOID, newOID);
 	}
@@ -421,6 +438,7 @@ extends com.aurel.track.persist.BaseTListTypePeer implements IssueTypeDAO
 	 * Deletes a state from the TState table 
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		new TCardFieldOptionPeer().deleteOptionForField(SystemFields.INTEGER_ISSUETYPE, objectID);
 		ReflectionHelper.delete(deletePeerClasses, deleteFields, objectID);
@@ -433,6 +451,7 @@ extends com.aurel.track.persist.BaseTListTypePeer implements IssueTypeDAO
 	 * @param roleIDs
 	 * @return
 	 */
+	@Override
 	public List<TListTypeBean> loadForRoles(Object[] roleIDs) {
 		if (roleIDs==null || roleIDs.length==0) {
 			return new ArrayList<TListTypeBean>();
@@ -445,7 +464,7 @@ extends com.aurel.track.persist.BaseTListTypePeer implements IssueTypeDAO
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (Exception e) {
-			LOGGER.error("Loading the explicit list types failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the explicit list types failed with " + e.getMessage());
 			return new ArrayList<TListTypeBean>();
 		}	
 	}
@@ -454,6 +473,7 @@ extends com.aurel.track.persist.BaseTListTypePeer implements IssueTypeDAO
 	 * Returns the sort order column name
 	 * @return
 	 */
+	@Override
 	public String getSortOrderColumn() {
 		return "SORTORDER";
 	}
@@ -462,6 +482,7 @@ extends com.aurel.track.persist.BaseTListTypePeer implements IssueTypeDAO
 	 * Returns the table name
 	 * @return
 	 */
+	@Override
 	public String getTableName() {
 		return TABLE_NAME;
 	}

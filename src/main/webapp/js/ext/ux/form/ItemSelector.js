@@ -46,11 +46,16 @@ Ext.define('Ext.ux.form.ItemSelector', {
         type: 'hbox',
         align: 'stretch'
     },
+    
+    ariaRole: 'group',
 
     initComponent: function() {
         var me = this;
 
         me.ddGroup = me.id + '-dd';
+        me.ariaRenderAttributes = me.ariaRenderAttributes || {};
+        me.ariaRenderAttributes['aria-labelledby'] = me.id + '-labelEl';
+        
         me.callParent();
 
         // bindStore must be called after the fromField has been created because
@@ -102,8 +107,9 @@ Ext.define('Ext.ux.form.ItemSelector', {
         return [
             me.fromField,
             {
-                xtype: 'container',
-                margins: '0 4',
+                xtype: 'toolbar',
+                margin: '0 4',
+                padding: 0,
                 layout: {
                     type: 'vbox',
                     pack: 'center'
@@ -122,7 +128,9 @@ Ext.define('Ext.ux.form.ItemSelector', {
             Ext.Array.forEach(me.buttons, function(name) {
                 buttons.push({
                     xtype: 'button',
+                    ui: 'default',
                     tooltip: me.buttonsText[name],
+                    ariaLabel: me.buttonsText[name],
                     handler: me['on' + Ext.String.capitalize(name) + 'BtnClick'],
                     cls: Ext.baseCSSPrefix + 'form-itemselector-btn',
                     iconCls: Ext.baseCSSPrefix + 'form-itemselector-' + name,
@@ -334,7 +342,7 @@ Ext.define('Ext.ux.form.ItemSelector', {
         var me = this;
 
         if (me.fromField) {
-            me.fromField.store.removeAll()
+            me.fromField.store.removeAll();
             me.toField.store.removeAll();
 
             // Add everything to the from field as soon as the Store is loaded

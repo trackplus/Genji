@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -84,6 +84,14 @@ public class ItemLinkConfigBL {
 		}
 		return ItemLinkBL.getLinks(successorsForMeAsPredecessorMap, predecessorsForMeAsSuccessorMap, editable, locale, workItemID==null);
 	}
+	public static List<ItemLinkListEntry> getItemLinksInTab(Integer workItemID, Integer personID, Locale locale) {
+		return getItemLinksInTab(workItemID,null,personID,locale);
+	}
+	public static ItemLinkTO  getEditItemLink(Integer workItemID, Integer linkID){
+		TWorkItemLinkBean workItemLinkBean = ItemLinkBL.loadByPrimaryKey(linkID);
+		ItemLinkTO itemLinkTO = ItemLinkBL.getLinkData(workItemID, workItemLinkBean);
+		return itemLinkTO;
+	}
 	
 	/**
 	 * Render the add/edit link dialog
@@ -91,11 +99,12 @@ public class ItemLinkConfigBL {
 	 * @param workItemContext
 	 * @param linkID
 	 * @param fromGantt
+	 * @param addMeAsLinkToNewItem
 	 * @param personBean
 	 * @param locale
 	 * @return
 	 */
-	static String editItemLink(Integer workItemID, WorkItemContext workItemContext, Integer linkID, boolean fromGantt, TPersonBean personBean, Locale locale) {
+	static String editItemLink(Integer workItemID, WorkItemContext workItemContext, Integer linkID, boolean fromGantt, boolean addMeAsLinkToNewItem, TPersonBean personBean, Locale locale) {
 		TWorkItemLinkBean workItemLinkBean = ItemLinkConfigBL.getItemLinkBean(linkID, workItemID, workItemContext);
 		ItemLinkTO itemLinkTO = ItemLinkBL.getLinkData(workItemID, workItemLinkBean);
 		List<LabelValueBean> linkTypes = LinkTypeBL.getLinkTypeNamesList(locale, fromGantt, true);	
@@ -123,10 +132,28 @@ public class ItemLinkConfigBL {
 				specificData = linkType.getSpecificJSON(workItemLinkBean, personBean, locale);
 			}
 		}
-        Integer linkedWorkItemObjectID = itemLinkTO.getLinkedWorkItemID();
-        String linkTypeWithDirection = MergeUtil.mergeKey(itemLinkTO.getLinkType(), itemLinkTO.getLinkDirection());
-        return ItemLinkJSON.encodeLink(linkTypeWithDirection, linkTypes, ItemBL.getItemNo(linkedWorkItemObjectID),
-                    linkedWorkItemObjectID, itemLinkTO.getLinkedWorkItemTitle(), itemLinkTO.getDescription(), linkTypeJSClass, specificData);
+		Integer linkedWorkItemObjectID = null;
+		if (addMeAsLinkToNewItem) {
+			linkedWorkItemObjectID = workItemID;
+		} else {
+			linkedWorkItemObjectID = itemLinkTO.getLinkedWorkItemID();
+		}
+		TWorkItemBean linkedItemBean = null; 
+		if (linkedWorkItemObjectID!=null) {
+			try {
+				linkedItemBean = ItemBL.loadWorkItem(linkedWorkItemObjectID);
+			} catch (ItemLoaderException e) {
+			}
+		}
+		String linkedItemNo = null;
+		String linkedWorkItemTitle = null;
+		if (linkedItemBean!=null) {
+			linkedWorkItemTitle = linkedItemBean.getSynopsis();
+			linkedItemNo = ItemBL.getItemNo(linkedItemBean);
+		}
+		String linkTypeWithDirection = MergeUtil.mergeKey(itemLinkTO.getLinkType(), itemLinkTO.getLinkDirection());
+        return ItemLinkJSON.encodeLink(linkTypeWithDirection, linkTypes, linkedItemNo,
+                    linkedWorkItemObjectID, linkedWorkItemTitle, itemLinkTO.getDescription(), linkTypeJSClass, specificData);
 	}
 	
 	/**
@@ -173,10 +200,24 @@ public class ItemLinkConfigBL {
 	public static List<ErrorData> saveItemLink(Integer workItemID, Integer linkedWorkItemID,
 			Integer linkTypeID, Integer linkDirection,
 			Integer linkID, String description, TPersonBean personBean, Locale locale,
-			Map<Integer, String> parametersMap, WorkItemContext workItemContext) {
+			Map<String, String> parametersMap, WorkItemContext workItemContext) {
+
+		List<ErrorData> errorDataList=new ArrayList<ErrorData>();
+		saveItemLink(errorDataList,workItemID, linkedWorkItemID, linkTypeID, linkDirection, linkID,
+				description, personBean,
+				locale, parametersMap, workItemContext,null);
+		return errorDataList;
+	}
+	public static Integer saveItemLink(List<ErrorData> errorDataList, Integer workItemID, Integer linkedWorkItemID,
+	                                           Integer linkTypeID, Integer linkDirection,
+	                                           Integer linkID, String description, TPersonBean personBean, Locale locale,
+	                                           Map<String, String> parametersMap, WorkItemContext workItemContext,
+	                                           Integer sortOrder) {
+		Integer newLinkID=linkID;
 		List<ErrorData> errors = validate(linkTypeID, linkedWorkItemID, locale);
 		if (errors!=null && !errors.isEmpty()) {
-			return errors;
+			errorDataList.addAll(errors);
+			return null;
 		}
 		//Integer linkType = MergeUtil.getFieldID(linkTypeWithDirection);
 		String linkTypePluginString = LinkTypeBL.getLinkTypePluginString(linkTypeID);
@@ -253,17 +294,21 @@ public class ItemLinkConfigBL {
 					errorDataTitle.setFieldName("linkedWorkItemTitle");
 					doubleValidationList.add(errorDataTitle);
 				}
-				return doubleValidationList;
+				errorDataList.addAll(doubleValidationList);
+				return null;
+			}
+			if(sortOrder!=null){
+				workItemLinkBean.setSortorder(sortOrder);
 			}
 			if (workItemID==null) {
 				//save new item's link in workItemContext 
 				ItemLinkBL.saveLinkInContext(workItemContext, workItemLinkBean, linkID);
 			} else {
 				//save existing item's link in db
-				ItemLinkBL.saveLink(workItemLinkBean);
+				newLinkID=ItemLinkBL.saveLink(workItemLinkBean);
 			}
 		}
-		return null;
+		return newLinkID;
 	}
 	
 	/**
@@ -336,5 +381,11 @@ public class ItemLinkConfigBL {
 				ItemLinkSortOrderBL.normalizeSortOrder(workItemID);
 			}
 		}
+	}
+	public static void deleteLinks(Integer workItemID, Integer[] itemLinksIDs) {
+		for (Integer linkID : itemLinksIDs) {
+			ItemLinkBL.deleteLink(linkID);
+		}
+		ItemLinkSortOrderBL.normalizeSortOrder(workItemID);
 	}
 }

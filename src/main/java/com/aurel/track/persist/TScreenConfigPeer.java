@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -52,6 +52,7 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TScreenConfigBean loadByPrimaryKey(Integer objectID) {
 		TScreenConfig tobject = null;
 		try {
@@ -71,13 +72,14 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 	 * @param actionID
 	 * @return
 	 */
+	@Override
 	public List<TScreenConfigBean> loadByActionKey(Integer actionID) {		
 		Criteria crit = new Criteria();
 		crit.add(ACTIONKEY, actionID);
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all screenConfigs failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all screenConfigs failed with " + e.getMessage());
 			return null;
 		}		
 	}
@@ -87,6 +89,7 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 	 * @param projectIDs
 	 * @return
 	 */
+	@Override
 	public List<TScreenConfigBean> loadByProjects(Object[] projectIDs) {
 		if (projectIDs!=null && projectIDs.length!=0) {					
 			Criteria crit = new Criteria();
@@ -95,7 +98,7 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 			try {
 				return convertTorqueListToBeanList(doSelect(crit));
 			} catch (TorqueException e) {
-				LOGGER.error("Loading screenConfigs by projects failed with " + e.getMessage(), e);
+				LOGGER.error("Loading screenConfigs by projects failed with " + e.getMessage());
 			}
 		}
 		return null;
@@ -106,6 +109,7 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 	 * @param projectTypeIDs
 	 * @return
 	 */
+	@Override
 	public List<TScreenConfigBean> loadByProjectTypes(Object[] projectTypeIDs) {
 		if (projectTypeIDs!=null && projectTypeIDs.length!=0) {					
 			Criteria crit = new Criteria();
@@ -114,7 +118,7 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 			try {
 				return convertTorqueListToBeanList(doSelect(crit));
 			} catch (TorqueException e) {
-				LOGGER.error("Loading screenConfigs by project types failed with " + e.getMessage(), e);
+				LOGGER.error("Loading screenConfigs by project types failed with " + e.getMessage());
 			}
 		}
 		return null;
@@ -125,6 +129,7 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 	 * @param issueTypeIDs
 	 * @return
 	 */
+	@Override
 	public List<TScreenConfigBean> loadByIssueTypes(Object[] issueTypeIDs) {
 		if (issueTypeIDs!=null && issueTypeIDs.length!=0) {					
 			Criteria crit = new Criteria();
@@ -134,7 +139,7 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 			try {
 				return convertTorqueListToBeanList(doSelect(crit));
 			} catch (TorqueException e) {
-				LOGGER.error("Loading screenConfigs by issue types failed with " + e.getMessage(), e);
+				LOGGER.error("Loading screenConfigs by issue types failed with " + e.getMessage());
 			}
 		}
 		return null;
@@ -144,6 +149,7 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 	 * Load the global screens
 	 * @return
 	 */
+	@Override
 	public List<TScreenConfigBean> loadDefaults() {				
 		Criteria crit = new Criteria();
 		crit.add(ISSUETYPE, (Object)null, Criteria.ISNULL);
@@ -152,7 +158,7 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading screenConfigs by issue types failed with " + e.getMessage(), e);
+			LOGGER.error("Loading screenConfigs by issue types failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -164,6 +170,7 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 	 * @param project include into filtering even if null
 	 * @return
 	 */
+	@Override
 	public List<TScreenConfigBean> loadAllByIssueType(Integer issueType, Integer projectType, Integer project) {
 		Criteria criteria = new Criteria();
 		//add issueType filter only if issueType is specified
@@ -199,6 +206,7 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 	 * @param projectType if specified filter by projectType otherwise only be sure to not to be null (all projectType specific configurations)
 	 * @return
 	 */
+	@Override
 	public List<TScreenConfigBean> loadAllByProjectType(Integer projectType) {
 		Criteria criteria = new Criteria();
 		if (projectType==null) {
@@ -209,7 +217,7 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the screen assignments by projectType " + projectType + "  failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the screen assignments by projectType " + projectType + "  failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -219,6 +227,7 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 	 * @param project
 	 * @return
 	 */
+	@Override
 	public List<TScreenConfigBean> loadAllByProject(Integer project) {
 		Criteria criteria = new Criteria();
 		if (project==null) {
@@ -229,7 +238,7 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the screen configs by project " + project + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the screen configs by project " + project + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -239,6 +248,7 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 	 * @param projects
 	 * @return
 	 */
+	@Override
 	public List<TScreenConfigBean> loadAllByProjects(List<Integer> projects) {
 		Criteria criteria = new Criteria();
 		if (projects==null || projects.isEmpty()) {
@@ -249,7 +259,7 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the screen configs by project " + projects + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the screen configs by project " + projects + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -259,13 +269,14 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 	 * @param bean
 	 * @return
 	 */
+	@Override
 	public Integer save(TScreenConfigBean bean){
 		try {
 			TScreenConfig tobject = BaseTScreenConfig.createTScreenConfig(bean);
 			tobject.save();
 			return tobject.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a screenConfig failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a screenConfig failed with " + e.getMessage());
 			return null;
 		}		
 	}
@@ -275,11 +286,12 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 	 * @param screenConfigBean
 	 * @param deep
 	 */
+	@Override
 	public TScreenConfigBean copy(TScreenConfigBean screenConfigBean, boolean deep) {
 		try {
 			return (BaseTScreenConfig.createTScreenConfig(screenConfigBean).copy(deep)).getBean();
 		} catch (TorqueException e) {
-			LOGGER.error("Deep " + deep + " copying a screen config failed with " + e.getMessage(), e);
+			LOGGER.error("Deep " + deep + " copying a screen config failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -289,6 +301,7 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 	 * Is deletable should return true before calling this method
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		try {
 			doDelete(SimpleKey.keyFor(objectID));
@@ -301,6 +314,7 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 	 * Verify is a screenConfig can be delete 
 	 * @param objectID
 	 */
+	@Override
 	public boolean isDeletable(Integer objectID){
 		return true;
 	}
@@ -315,6 +329,7 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 	 * @param cfg
 	 * @return
 	 */
+	@Override
 	public List<TScreenConfigBean> load(TScreenConfigBean cfg){
 		Integer projectTypeID=null;
 		Integer projectID=null;
@@ -331,7 +346,7 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading  screenConfigs failed with " + e.getMessage(), e);
+			LOGGER.error("Loading  screenConfigs failed with " + e.getMessage());
 			return null;
 		}		
 	}
@@ -341,6 +356,7 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 	 * @param action
 	 * @return
 	 */
+	@Override
 	public TScreenConfigBean loadDefault(Integer action) {
 		List screenConfigList = null;
 		Criteria criteria = new Criteria();
@@ -371,6 +387,7 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 	 * @param issueType
 	 * @return
 	 */
+	@Override
 	public TScreenConfigBean loadByIssueType(Integer action, Integer issueType) {
 		List screenConfigList = null;
 		Criteria criteria = new Criteria();
@@ -403,6 +420,7 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 	 * @param projectType
 	 * @return
 	 */
+	@Override
 	public TScreenConfigBean loadByProjectType(Integer action, Integer projectType) {
 		List screenConfigList = null;
 		Criteria criteria = new Criteria();
@@ -435,6 +453,7 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 	 * @param project
 	 * @return
 	 */
+	@Override
 	public TScreenConfigBean loadByProject(Integer action, Integer project) {
 		List screenConfigList = null;
 		Criteria criteria = new Criteria();
@@ -468,6 +487,7 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 	 * @param projectType
 	 * @return
 	 */
+	@Override
 	public TScreenConfigBean loadByIssueTypeAndProjectType(Integer action, Integer issueType, Integer projectType) {
 		List screenConfigList =  null;
 		Criteria criteria = new Criteria();
@@ -500,6 +520,7 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 	 * @param project
 	 * @return
 	 */
+	@Override
 	public TScreenConfigBean loadByIssueTypeAndProject(Integer action, Integer issueType, Integer project) {
 		List screenConfigList =  null;
 		Criteria criteria = new Criteria();
@@ -531,6 +552,7 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 	 * @param projectTypeID
 	 * @param projectID
 	 */
+	@Override
 	public void deleteByIssueType(Integer issueTypeID, Integer projectTypeID, Integer projectID) {
 		Criteria crit = new Criteria();
 		if(issueTypeID==null){
@@ -554,7 +576,7 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 		try {
 			doDelete(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Delete  screenConfigs failed with " + e.getMessage(), e);
+			LOGGER.error("Delete  screenConfigs failed with " + e.getMessage());
 		}
 	}
 	private List<TScreenConfigBean> convertTorqueListToBeanList(List<TScreenConfig> torqueList) {
@@ -572,6 +594,7 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 	 * if the projects is null - delete all all configs which have project set
 	 * @param projectIDs
 	 */
+	@Override
 	public void deleteByProjects(List<Integer> projectIDs) {
 		Criteria crit = new Criteria();
 		if (projectIDs!=null && !projectIDs.isEmpty()) {
@@ -583,7 +606,7 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 		try {
 			doDelete(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Delete  screenConfigs for " + projectIDs + " failed with " + e.getMessage(), e);
+			LOGGER.error("Delete  screenConfigs for " + projectIDs + " failed with " + e.getMessage());
 		}
 	}
 	/**
@@ -591,6 +614,7 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 	 * if pk is null delete all configs for all projectTypes
 	 * @param projectTypeID
 	 */
+	@Override
 	public void deleteByProjectType(Integer projectTypeID) {
 		Criteria crit = new Criteria();
 		if (projectTypeID!=null) {
@@ -602,7 +626,7 @@ extends com.aurel.track.persist.BaseTScreenConfigPeer implements ScreenConfigDAO
 		try {
 			doDelete(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Delete  screenConfigs failed with " + e.getMessage(), e);
+			LOGGER.error("Delete  screenConfigs failed with " + e.getMessage());
 		}
 	}
 	

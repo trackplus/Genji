@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -35,12 +35,15 @@ import com.aurel.track.util.IntegerStringBean;
 public class FieldExpressionSimpleTO extends MatcherExpressionBase {
 	//the name for the matchers combo on the client side (used by submit)
 	protected String matcherName;
+	//the itemId in the ext js client side to find by getComponent() 
+	protected String matcherItemId;
 	protected Integer selectedMatcher;
 	protected List<IntegerStringBean> matchersList = new ArrayList<IntegerStringBean>();
-	//the valueName is contained also in the jsonConfig but when the new jsonConfig is null 
-	//(according to the new matcher no value control is needed) the valueName is still needed
-	//to remove the old value control by itemId which is the same as valueName
-	protected String valueName;
+	//valueName is serialized in the jsonConfig (not here)
+	//when the new jsonConfig is null 
+	//(according to the new matcher no value control is needed) the valueItemId is needed
+	//to remove the old value control by itemId
+	protected String valueItemId;
 	protected boolean needMatcherValue;
 	//the json object for configuring the value renderer control 
 	protected String jsonConfig;
@@ -101,12 +104,20 @@ public class FieldExpressionSimpleTO extends MatcherExpressionBase {
 		this.matcherName = matcherName;
 	}
 
-	public String getValueName() {
-		return valueName;
+	public String getMatcherItemId() {
+		return matcherItemId;
 	}
 
-	public void setValueName(String valueName) {
-		this.valueName = valueName;
+	public void setMatcherItemId(String matcherItemId) {
+		this.matcherItemId = matcherItemId;
+	}
+
+	public String getValueItemId() {
+		return valueItemId;
+	}
+
+	public void setValueItemId(String valueItemId) {
+		this.valueItemId = valueItemId;
 	}
 
 	public Integer getIndex() {

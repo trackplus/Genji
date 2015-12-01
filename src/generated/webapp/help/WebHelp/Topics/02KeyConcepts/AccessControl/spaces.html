@@ -1,0 +1,92 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="Via spaces you structure groups of items and control access to items. You can use one space per project or product, and you can organize spaces hierarchically. Spaces can furthermore be structured on ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="concept"/><meta name="DC.Title" content="Spaces"/><meta name="abstract" content="Via spaces you structure groups of items and control access to items. You can use one space per project or product, and you can organize spaces hierarchically. Spaces can furthermore be structured on the time axis via phases."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="Via spaces you structure groups of items and control access to items. You can use one space per project or product, and you can organize spaces hierarchically. Spaces can furthermore be structured on the time axis via phases."/><meta name="DC.Relation" scheme="URI" content="../../../Topics/02KeyConcepts/AccessControl/accessControl.html"/><meta name="DC.Creator" content="Steinbeis Technical Documentation"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="id12BOL7020G2"/><link rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Spaces</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()" id="id12BOL7020G2">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../../Topics/02KeyConcepts/AccessControl/accessControl.html" title="In Track+ you can control who can access which items and even what information within an item. The access control system in Track+ organizes items in spaces. Permissions are tied to roles and define what a user in this role may do with items within a space. Beyond these space-specific roles there are item-specific roles structured according to the RACI method. User groups make it easy to manage large numbers of spaces and roles."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Access control</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../../Topics/02KeyConcepts/AccessControl/../../../Topics/02KeyConcepts/Chapter2Wrapper.html" title="Key concepts">Key concepts</a> / <a class="navheader_parent_path" href="../../../Topics/02KeyConcepts/AccessControl/accessControl.html" title="In Track+ you can control who can access which items and even what information within an item. The access control system in Track+ organizes items in spaces. Permissions are tied to roles and define what a user in this role may do with items within a space. Beyond these space-specific roles there are item-specific roles structured according to the RACI method. User groups make it easy to manage large numbers of spaces and roles.">Access control</a></td></tr></tbody></table>
+
+    <h1 class="title topictitle1">Spaces</h1>
+
+    
+    
+    <div class="body conbody"><p class="shortdesc">Via spaces you structure groups of items and control access to items. You can use one
+        space per project or product, and you can organize spaces hierarchically. Spaces can
+        furthermore be structured on the time axis via phases.</p>
+
+        <p class="p">To support teamwork, you need to control access to items. Using access control
+                has two advantages:</p>
+
+        <ul class="ul">
+            <li class="li">You can only access items you have permission for. </li>
+
+            <li class="li">You aren‘t bothered by information that doesn‘t concern you. 
+                
+            </li>
+
+        </ul>
+
+        <p class="p">In <span class="ph"><span class="ph">Track+</span></span>, you use „<strong class="ph b">spaces</strong>“
+                to control access to items (<a class="xref" href="#id12BOL7020G2__figspaces100">Figure 1</a>). Spaces themselves can contain spaces, you can organize them hierarchically.</p>
+
+        <p class="p">An item always belongs to exactly one space.</p>
+
+        <p class="p">What you can do with items in a space and its subspaces is defined by the „<strong class="ph b">roles</strong>“
+                you have in a space. Roles in a subspace do not imply any
+            roles in a superior space. Roles in a superior space are handed down to subordinated
+            spaces unless there is a specific role assignment for the subordinated space. In this
+            case the role inheritance mechanism is canceled and the new role applies to the
+            subordinated space and all spaces below.</p>
+
+        <p class="p">You can assume more than one role in the same space, and you can assume different roles
+            in different spaces.</p>
+
+        <div class="fig figborder" id="id12BOL7020G2__figspaces100"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/spaces1.png" height="274" width="334"/></div><br/><p class="figcapcenter">Spaces</p>
+            
+            
+        </div>
+
+        <p class="p">You can have your own private space that cannot be shared with others. All items in the
+            private space are invisible to anybody else, regardless of their roles. Private spaces
+            do not have subspaces. </p>
+
+        <p class="p">Spaces where you do not have any access permissions for are invisible to you. Via access
+            control permissions you define if you can create an item in a space, if you can be
+            assigned an item, or whether you can see all items in a space or only your own.</p>
+
+        <p class="p">If you manage projects, you can directly associate a project with a space. If you manage
+            products, it is useful to relate a product or product family with a space, and product
+            components with subspaces. Defining subspaces only makes sense if you have large teams
+            and if you need to control access to different parts of your project or product.</p>
+
+        <p class="p">For example, if you are developing technical products comprised of hardware components,
+            software, and mechanical parts, you could create a top level project space for the
+            system, and below separate spaces for hardware, software, and mechanics. In very large
+            projects you could create more subspaces for components, or you could create spaces for
+            components at the second level and beneath that split into hardware, software, and
+            mechanics.</p>
+
+        <div class="fig figborder" id="id12BOL7020G2__figspaces1200"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/projectshierarchy.png" height="157" width="402"/></div><br/><p class="figcapcenter">Spaces and sub-spaces</p>
+            
+            
+        </div>
+
+        <p class="p">In some environments it is required that members of a group inherit permissions of other
+            members in the same group. For example, if you have a multi-company project, members of
+            one company should be able to see items of other members of the same company, but not
+            items of other companies. In that case access rights need to not just depend on a role
+            but also on membership in a specific group. In <span class="ph"><span class="ph">Track+</span></span>, you can control whether a group enforces access right propagation or
+                not.</p>
+
+    </div>
+
+<div class="related-links"/>
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../../Topics/02KeyConcepts/AccessControl/accessControl.html" title="In Track+ you can control who can access which items and even what information within an item. The access control system in Track+ organizes items in spaces. Permissions are tied to roles and define what a user in this role may do with items within a space. Beyond these space-specific roles there are item-specific roles structured according to the RACI method. User groups make it easy to manage large numbers of spaces and roles."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Access control</span></a></span>  </div>
+</body>
+</html>

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -255,7 +255,7 @@ public class MsProjectImporterBL {
 	 */
 	static Map<Integer, String> getProjectSpecificItemIDs(int[] workItemIDs, Integer entityID, Integer entityType) {
 		Map<Integer, String> projectSpecificItemIDsMap = null;
-		if (ApplicationBean.getApplicationBean().getSiteBean().getProjectSpecificIDsOn()) {
+		if (ApplicationBean.getInstance().getSiteBean().getProjectSpecificIDsOn()) {
 			projectSpecificItemIDsMap = ItemBL.getProjectSpecificIssueIDsMap(
 					ItemBL.loadByWorkItemKeys(workItemIDs));
 		}
@@ -400,8 +400,6 @@ public class MsProjectImporterBL {
 		HashSet<Integer> taskUIDSet = new HashSet<Integer>(taskUIDToWorkItemIDMap.values());
 		while (itrTaskElement.hasNext()) {
 			Task taskElement = itrTaskElement.next();
-//			Integer UID = MsProjectExchangeDOMHelper.getSubelementInteger(taskElement, COMMON_ELEMENTS.UID);
-//			Integer UID = taskElement.getUniqueID();
 			Double UIDTmp = (Double) taskElement.getFieldByAlias("trackPlusId");
 			Integer UID;
 			if(UIDTmp != null) {
@@ -409,7 +407,6 @@ public class MsProjectImporterBL {
 			}else {
 				UID = taskElement.getUniqueID();
 			}
-//			Integer workItemID = taskUIDToWorkItemIDMap.values();
 			Integer workItemID = null;
 			if(taskUIDSet.contains(UID)) {
 				workItemID = UID;
@@ -501,8 +498,6 @@ public class MsProjectImporterBL {
 		Iterator<Task> itrTaskElement = tasks.iterator();
 		while (itrTaskElement.hasNext()) {
 			Task task = itrTaskElement.next();
-//			Integer UID = MsProjectExchangeDOMHelper.getSubelementInteger(task, COMMON_ELEMENTS.UID);
-//			Integer UID = task.getUniqueID();
 			Double UIDTmp = (Double) task.getFieldByAlias("trackPlusId");
 			Integer UID;
 			if(UIDTmp != null) {
@@ -513,12 +508,10 @@ public class MsProjectImporterBL {
 			msProjectSideUIDs.add(UID);
 		}
 		//set the workItems deleted from the msProject import file to deleted
-//		Set<Integer> trackplusSideUIDs = taskUIDToWorkItemIDMap.keySet();
 		Set<Integer> trackplusSideUIDs = new HashSet<Integer>(taskUIDToWorkItemIDMap.values());
 		Iterator<Integer> itrTrackPlusUIDs = trackplusSideUIDs.iterator();
 		while (itrTrackPlusUIDs.hasNext()) {
 			Integer UID = itrTrackPlusUIDs.next();
-//			Integer workItemID = taskUIDToWorkItemIDMap.get(UID);
 			Integer workItemID = UID;
 			TWorkItemBean workItemBean = existingTrackPlusTaskWorkItems.get(workItemID);
 			if (workItemBean!=null) {
@@ -624,8 +617,6 @@ public class MsProjectImporterBL {
 		Matcher matcher = null;	 
 		for(Iterator<Task> iterator = msProjectTasks.iterator(); iterator.hasNext();){
 			Task taskElement = iterator.next();
-//			Integer UID = MsProjectExchangeDOMHelper.getSubelementInteger(taskElement, COMMON_ELEMENTS.UID);
-//			Integer UID = taskElement.getUniqueID();
 			Double UIDTmp = (Double) taskElement.getFieldByAlias("trackPlusId");
 			Integer UID;
 			if(UIDTmp != null) {
@@ -634,7 +625,6 @@ public class MsProjectImporterBL {
 				UID = taskElement.getUniqueID();
 			}
 			if (MsProjectExchangeDOMHelper.UIDIsValidMpxjApiTemp(taskElement)) {
-//				String outlineNumber = MsProjectExchangeDOMHelper.getSubelementText(taskElement, TASK_ELEMENTS.OutlineNumber);
 				String outlineNumber = taskElement.getOutlineNumber();
 				if (outlineNumber!=null) {
 					matcher = pattern.matcher(outlineNumber);
@@ -1071,7 +1061,7 @@ public class MsProjectImporterBL {
 				try {
 					TWorkItemBean workItemBean = ItemBL.loadWorkItem(workItemID);
 					Integer UIDParent = workItemBean.getSuperiorworkitem();
-					if (UIDParent!=null && ApplicationBean.getApplicationBean().getSiteBean().getSummaryItemsBehavior()) {
+					if (UIDParent!=null && ApplicationBean.getInstance().getSiteBean().getSummaryItemsBehavior()) {
 						AccountingBL.actualizeAncestorValues(workItemBean, UIDParent, UIDParent, personBean.getObjectID());
 					}
 				}catch(Exception ex) {
@@ -1283,7 +1273,6 @@ public class MsProjectImporterBL {
 					while (itrSuccLinks.hasNext()) {
 						TWorkItemLinkBean workItemLinkBean = itrSuccLinks.next();
 						Date lastEdit = workItemLinkBean.getLastEdit();
-//						if (lastSavedDate!=null && lastEdit!=null && lastSavedDate.after(lastEdit)) {
 						if (lastSavedDate!=null && lastEdit!=null && lastSavedDate.compareTo(lastEdit) >= 0) {
 							//delete if it was added/modified before the last modification of the MsPproject 
 							ItemLinkBL.deleteLink(workItemLinkBean.getObjectID());
@@ -1430,7 +1419,6 @@ public class MsProjectImporterBL {
 		Matcher childMatcher = null;
 		for(Iterator<Task> iterator = msProjectTasks.iterator(); iterator.hasNext();){
 			Task taskElement = iterator.next();
-//			String outlineNumber = MsProjectExchangeDOMHelper.getSubelementText(taskElement, TASK_ELEMENTS.OutlineNumber);
 			String outlineNumber = taskElement.getOutlineNumber();
 			
 			if (outlineNumber!=null) {
@@ -1477,7 +1465,6 @@ public class MsProjectImporterBL {
 		Map<Integer, Resource> workResourcesMap = MsProjectExchangeDOMHelper.createIntegerElementMapFromList(workResourcesList, COMMON_ELEMENTS.UID);
 		Map<Integer, TWorkItemBean> workItemBeanMap = new HashMap<Integer, TWorkItemBean>();
 		
-//		Integer subprojectID = ProjectConfigBL.getDefaultFieldValueForProject(SystemFields.INTEGER_SUBPROJECT, projectBean, personID, issueTypeID, null);
 		Integer statusID = projectBean.getDefaultInitStateID();
 		//TODO Contact as manager pro workItem?
 		Integer managerID = projectBean.getDefaultManagerID();
@@ -1511,8 +1498,6 @@ public class MsProjectImporterBL {
 		for(Iterator<Task> iterator = msProjectTasks.iterator(); iterator.hasNext();){
 			Task taskElement = iterator.next();
 			if (MsProjectExchangeDOMHelper.UIDIsValidMpxjApiTemp(taskElement)) {
-//				Integer UID = MsProjectExchangeDOMHelper.getSubelementInteger(taskElement, COMMON_ELEMENTS.UID);
-//				Integer UID = taskElement.getUniqueID();
 				Double UIDTmp = (Double) taskElement.getFieldByAlias("trackPlusId");
 				Integer UID;
 				if(UIDTmp != null) {
@@ -1529,9 +1514,6 @@ public class MsProjectImporterBL {
 					//is null when in trackPlus not yet exists
 					workItemBean = existingWorkItemsMap.get(workItemID);
 				}
-//				if(existingWorkItemsMap.containsKey(UID)) {
-//					workItemBean = existingWorkItemsMap.get(UID);
-//				}
 				
 				boolean isNew = false;
 				if (workItemBean==null) {
@@ -1562,7 +1544,6 @@ public class MsProjectImporterBL {
 					workItemBean.setResponsibleID(workItemSpecificResponsibleID);
 				}
 				if (isNew) {
-					//workItemBean.setClassID(theClass);
 					workItemBean.setReleaseNoticedID(releaseNoticed);
 					workItemBean.setReleaseScheduledID(releaseScheduledID);
 					workItemBean.setPriorityID(priorityID);
@@ -1570,14 +1551,11 @@ public class MsProjectImporterBL {
 					workItemBean.setOriginatorID(personID);
 				}
 				workItemBean.setChangedByID(personID);
-//				workItemBean.setSynopsis(MsProjectExchangeDOMHelper.getSubelementText(taskElement, COMMON_ELEMENTS.Name));
 				workItemBean.setSynopsis(taskElement.getName());
 				if (isNew) {
 					//if null in FieldManagerRT it will be set anyway
-//					workItemBean.setCreated(MsProjectExchangeDOMHelper.getSubelementDate(taskElement, TASK_ELEMENTS.CreateDate));
 					workItemBean.setCreated(workItemBean.getCreated());
 				}
-//				String notes = MsProjectExchangeDOMHelper.getSubelementText(taskElement, TASK_ELEMENTS.Notes);
 				String notes = taskElement.getNotes();
 				if (notes!=null && notes.length()>0) {
 					workItemBean.setDescription(notes);
@@ -1595,8 +1573,6 @@ public class MsProjectImporterBL {
 				if(taskElement.getFinish() == null && taskElement.getActualFinish() != null) {
 					workItemBean.setEndDate(taskElement.getActualFinish());
 				}
-//				workItemBean.setActualStartDate(taskElement.getActualStart());
-//				workItemBean.setActualEndDate(taskElement.getActualFinish());
 				if(taskElement.getMilestone()) {
 					workItemBean.setMilestone(true);
 					workItemBean.setEndDate(null);
@@ -1619,13 +1595,11 @@ public class MsProjectImporterBL {
 			Map<Integer, Resource> workResourcesMap, Map<Integer, Integer> resourceUIDsToPersonIDs) {
 		if (taskBasedAssignmentList!=null && 
 				workResourcesMap!=null && resourceUIDsToPersonIDs!=null) {
-//			Iterator<ResourceAssignment> iterator = taskBasedAssignmentList.iterator();
 			Integer resouceID = null;
 			Integer resourceIDWithMaximalWork = null;
 			Double maximalWork = null;
 			for(int i = 0; i < taskBasedAssignmentList.size(); i++) {
 				ResourceAssignment assignmentElement = taskBasedAssignmentList.get(i);
-//				resouceID = MsProjectExchangeDOMHelper.getSubelementInteger(assignmentElement, ASSIGNMENT_ELEMENTS.ResourceUID);
 				resouceID = assignmentElement.getResourceUniqueID();
 				if (resourceIDWithMaximalWork==null) {
 					resourceIDWithMaximalWork = resouceID;
@@ -1633,7 +1607,6 @@ public class MsProjectImporterBL {
 				Resource resourceElement = workResourcesMap.get(resouceID);
 				//resource is work resource (not material) 
 				if (assignmentElement!=null ) {
-//					Double work = MsProjectExchangeDOMHelper.getSubelementDurationInHours(assignmentElement, COMMON_ELEMENTS.Work);
 					if(assignmentElement.getWork() != null) {
 						Double work = assignmentElement.getWork().getDuration();
 						if (work!=null) {
@@ -1668,8 +1641,6 @@ public class MsProjectImporterBL {
 	private static TMSProjectTaskBean saveMSProjectTask(Task msProjectTaskElement, 
 			Integer workItemID, Integer entityID, int entityType, TMSProjectTaskBean msProjectTaskBean,
 			ProjectFile project) {
-//		Integer UID = Integer.valueOf(MsProjectExchangeDOMHelper.getSubelementText(msProjectTaskElement, COMMON_ELEMENTS.UID));
-//		Integer UID = msProjectTaskElement.getUniqueID();
 		Double UIDTmp = (Double)msProjectTaskElement.getFieldByAlias("trackPlusId");
 		Integer UID;
 		if(UIDTmp != null) {

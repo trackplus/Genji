@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -29,9 +29,9 @@ import java.io.Writer;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -40,8 +40,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.SessionAware;
 
@@ -62,8 +62,7 @@ import com.opensymphony.xwork2.Preparable;
  * Implementation of <strong>Action</strong> that processes a user logoff.
  *
  * @author Joerg Friedrich <joerg.friedrich@computer.org>
- * @version $Revision: 1418 $ $Date: 2014-12-05 15:20:50 +0100 (Fr, 05 Dez 2014)
- *          $
+ *
  */
 public final class LogoffAction extends ActionSupport implements Preparable, SessionAware {
 
@@ -97,6 +96,7 @@ public final class LogoffAction extends ActionSupport implements Preparable, Ses
 	 * This method is automatically called by the framework before any other
 	 * method
 	 */
+	@Override
 	public void prepare() throws Exception {
 		HttpServletRequest request = ServletActionContext.getRequest();
 		httpSession = request.getSession();
@@ -112,7 +112,6 @@ public final class LogoffAction extends ActionSupport implements Preparable, Ses
 				 String decodedString = null;
 				 value = value.replaceAll("Basic ", "");
 				 decodedString = new String(Base64.decodeBase64(value), StandardCharsets.UTF_8);
-//				 String userAndPass = new String(bytesEncoded);
 				if(decodedString != null && decodedString.split(":").length > 0) {
 					 String[] userPassArr = decodedString.split(":");
 					 userName = userPassArr[0];
@@ -128,7 +127,7 @@ public final class LogoffAction extends ActionSupport implements Preparable, Ses
 		// and the user clicked to log off then
 		// a log off procedure will be executed
 		if (httpSession.getAttribute("containerBasedAuthentication") != null && logOff && !isMobileApplication) {
-			if ((boolean) httpSession.getAttribute("containerBasedAuthentication")) {
+			if ((Boolean) httpSession.getAttribute("containerBasedAuthentication")) {
 				return execute2(true);
 			}
 		}
@@ -147,7 +146,6 @@ public final class LogoffAction extends ActionSupport implements Preparable, Ses
 			try {
 				LoginBL.login(null, isMobileApplication, username, usingContainerBasedAuthentication, null, "forwardToLogin", false, 220, locale);
 				httpSession.setAttribute("containerBasedAuthentication", true);
-//				TPersonBean personBean = (TPersonBean) httpSession.getAttribute(Constants.USER_KEY);
 				TPersonBean personBean = PersonBL.loadByLoginName(cbaUserName);
 				String homePage = null;
 				if (personBean != null) {
@@ -221,7 +219,7 @@ public final class LogoffAction extends ActionSupport implements Preparable, Ses
 		if (ApplicationBean.getInstance().getInstallProblem() != null) {
 			String extJSLocale = LocaleHandler.getExistingExtJSLocale(locale);
 			httpSession.setAttribute("EXTJSLOCALE", extJSLocale);
-			ArrayList<String> errors = ApplicationBean.getInstance().getInstallProblem();
+			List<String> errors = ApplicationBean.getInstance().getInstallProblem();
 			setActionErrors(errors);
 			return ERROR;
 		}
@@ -259,6 +257,7 @@ public final class LogoffAction extends ActionSupport implements Preparable, Ses
 		return session;
 	}
 
+	@Override
 	public void setSession(Map<String, Object> session) {
 		this.session = session;
 	}

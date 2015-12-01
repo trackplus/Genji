@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -29,6 +29,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -57,13 +58,6 @@ public class ProjectPickerBulkSetter extends CustomMultipleSelectBulkSetter {
 	 * the control for rendering the bulk value
 	 * @return
 	 */
-	/*public String getSetterValueControlClass() {
-		switch (relation) {
-		case BulkRelations.SET_TO:
-			return BulkValueTemplates.PROJECT_PICKER_BULK_VALUE_TEMPLATE;
-		}
-		return BulkValueTemplates.NONE_BULK_VALUE_TEMPLATE;		
-	}*/
 	
 	/**
 	 * Gets the name of the jsp fragment which contains 
@@ -168,7 +162,8 @@ public class ProjectPickerBulkSetter extends CustomMultipleSelectBulkSetter {
 				//multiple values are loaded in the workItem as Object[], not as Integer[] !!! 
 				originalSelections = (Object[])originalValue;
 			} catch (Exception e) {
-				LOGGER.debug("Getting the original object array value for " + value +  " failed with " + e.getMessage(), e);
+				LOGGER.info("Getting the original object array value for " + value +  " failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		Set<Integer> originalSet = new HashSet<Integer>();
@@ -177,7 +172,8 @@ public class ProjectPickerBulkSetter extends CustomMultipleSelectBulkSetter {
 				try {
 					originalSet.add((Integer)originalSelections[i]);
 				} catch (Exception e) {
-					LOGGER.debug("Transforming the original object value " + originalSelections[i] +  " to Integer failed with " + e.getMessage(), e);
+					LOGGER.info("Transforming the original object value " + originalSelections[i] +  " to Integer failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 			}
 		}

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -50,21 +50,8 @@ import com.aurel.track.resources.LocalizeUtil;
 
 public class TableWithBorders {
 	
-	//private static WordprocessingMLPackage  wordMLPackage;
 	//private static ObjectFactory factory;
 
-	/*public static void main (String[] args) throws Docx4JException {
-		wordMLPackage = WordprocessingMLPackage.createPackage();
-		//factory = Context.getWmlObjectFactory();
-
-		Tbl table = createTableWithContent();
-
-		addBorders(table);
-
-		wordMLPackage.getMainDocumentPart().addObject(table);
-		wordMLPackage.save(new java.io.File(
-			"src/main/files/HelloWord5.docx") );
-	}*/
 	
 	static void addLinkedItemsTable(List<ReportBean> reportBeansWithLinks, Locale locale, MainDocumentPart mainDocumentPart) {
 		P linkedItemsP = mainDocumentPart.createParagraphOfText(LocalizeUtil.getLocalizedTextFromApplicationResources("itemov.export.docx.linkedItems", locale));
@@ -110,7 +97,6 @@ public class TableWithBorders {
 			for (ReportBeanLink reportBeanLink : reportBeanLinks) {
 				Tr tableRow = factory.createTr();
 				P itemTitle = mainDocumentPart.createParagraphOfText(AssembleWordprocessingMLPackage.getItemNo(workItemBean) + workItemBean.getSynopsis());
-				//addTableCell(tableRow, itemTitle, factory);
 				if (start) {
 					addTableCellWithMergeStart(tableRow, itemTitle, factory);
 				} else {

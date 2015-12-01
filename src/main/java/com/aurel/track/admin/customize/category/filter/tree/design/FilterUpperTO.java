@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -153,7 +153,6 @@ public final class FilterUpperTO implements Serializable {
 	private String keyword;
 
 	//the watchers selection is available only for persons with viewWatchers right
-	//private boolean viewWatchers;
 
 	//archived and deleted selections are available only for project or system admins
 	private boolean admin;
@@ -1089,31 +1088,6 @@ public final class FilterUpperTO implements Serializable {
 	 * Copies the content of the current object to a new object
 	 * @return
 	 */
-	/*public FilterUpperTO copy() {
-		FilterUpperTO filterUpperTOCopy = new FilterUpperTO();
-		try {
-			PropertyUtils.copyProperties(filterUpperTOCopy, this);
-		} catch (Exception e) {
-			LOGGER.error("Making a shallow copy of a FilterUpperTO failed with " + e.getMessage(), e);
-		}
-		//PropertyUtils.copyProperties copies only the array objects but should copy the array content
-		//to not overwrite the original arrays by setting the matcher context
-		List<Integer> listFieldIDs = getListFieldsWithSelection();
-		for (Integer fieldID : listFieldIDs) {
-			Integer[] selectedValues = getSelectedValuesForField(fieldID);
-			filterUpperTOCopy.setSelectedValuesForField(fieldID, copyContent(selectedValues));
-		}
-		Integer[] selectedConsultantsInformants = getSelectedConsultantsInformants();
-		filterUpperTOCopy.setSelectedConsultantsInformants(copyContent(selectedConsultantsInformants));
-		if (selectedCustomSelects!=null) {
-			Map<Integer, Integer[]> copiedSelectedCustomSelects = new HashMap<Integer, Integer[]>();
-			for (Integer fieldID : selectedCustomSelects.keySet()) {
-				copiedSelectedCustomSelects.put(fieldID, copyContent(selectedCustomSelects.get(fieldID)));
-			}
-			filterUpperTOCopy.setSelectedCustomSelects(copiedSelectedCustomSelects);
-		}
-		return filterUpperTOCopy;
-	}*/
 
 	/**
 	 * Explicitly copies the selected values array because if only the references are copied
@@ -1121,18 +1095,5 @@ public final class FilterUpperTO implements Serializable {
 	 * @param selectedValues
 	 * @return
 	 */
-	/*private Integer[] copyContent(Integer[] selectedValues) {
-		Integer[] selectedValuesCopy = null;
-		if (selectedValues!=null && selectedValues.length>0) {
-			selectedValuesCopy = new Integer[selectedValues.length];
-			for (int i = 0; i < selectedValues.length; i++) {
-				try {
-					selectedValuesCopy[i] = selectedValues[i];
-				} catch(Exception e) {
-				}
-			}
-		}
-		return selectedValuesCopy;
-	}*/
 
 }

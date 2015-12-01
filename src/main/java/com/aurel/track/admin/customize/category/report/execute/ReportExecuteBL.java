@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -80,22 +80,21 @@ public class ReportExecuteBL {
 			return null;
 		}
 		try {
-			pluggableDatasouceClass = Class
-					.forName(pluggableDatasouceClassName);
+			pluggableDatasouceClass = Class.forName(pluggableDatasouceClassName);
 		} catch (final ClassNotFoundException e) {
 			LOGGER.error("The PluggableDatasouce class "
 					+ pluggableDatasouceClassName
-					+ "  not found found in the classpath " + e.getMessage(), e);
+					+ "  not found found in the classpath " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		if (pluggableDatasouceClass != null) {
 			try {
-				return (IPluggableDatasource) pluggableDatasouceClass
-						.newInstance();
+				return (IPluggableDatasource) pluggableDatasouceClass.newInstance();
 			} catch (final Exception e) {
-				LOGGER
-						.error("Instantiating the PluggableDatasouce class "
+				LOGGER.error("Instantiating the PluggableDatasouce class "
 								+ pluggableDatasouceClassName
-								+ "  failed with " + e.getMessage(), e);
+								+ "  failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		return null;
@@ -252,7 +251,8 @@ public class ReportExecuteBL {
 					baseURL = template.toURL();
 				} catch (final MalformedURLException e) {
 					LOGGER.error("Wrong template URL for "
-							+ template.getName() + e.getMessage(), e);
+							+ template.getName() + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 				if (baseURL != null) {
 					final String absolutePathXslt = baseURL.getFile() + xslt;
@@ -260,10 +260,10 @@ public class ReportExecuteBL {
 						datasource = XsltTransformer.getInstance().transform(
 								(Document) datasource, absolutePathXslt);
 					} catch (final Exception e) {
-						LOGGER
-								.warn("Tranforming the datasource with "
+						LOGGER.warn("Tranforming the datasource with "
 										+ absolutePathXslt + " failed with "
-										+ e.getMessage(), e);
+										+ e.getMessage());
+						LOGGER.debug(ExceptionUtils.getStackTrace(e));
 					}
 				}
 			}
@@ -278,9 +278,9 @@ public class ReportExecuteBL {
 						.serializeDatasource(outputStream, datasource);
 			}
 		} catch (final Exception e) {
-			LOGGER
-					.error("Serializing the datasource to output stream failed with "
-							+ e.getMessage(), e);
+			LOGGER.error("Serializing the datasource to output stream failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
+			
 		}
 		return null;
 	}
@@ -299,7 +299,6 @@ public class ReportExecuteBL {
 			Map<String, Object> parameters, ServletContext servletContext,
 			TPersonBean personBean, Locale locale) {
 		URL baseURL = null;
-		//URL logoFolderURL = null;
 		String logoFolder = null;
 		URL completeURL = null;
 		String baseFileName = null;
@@ -314,18 +313,13 @@ public class ReportExecuteBL {
 				LOGGER.debug("baseURL: " + baseURL.toString());
 			} catch (final MalformedURLException e) {
 				LOGGER.error("Getting the baseURL for "
-						+ baseFolder + "16x16 failed with " + e.getMessage(), e);
+						+ baseFolder + "16x16 failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
-			//try {
 				// set the baseURL to take some standard icons from
 				// "/design/silver/icons"
 				// which ale already used by the report overview anyway
 				logoFolder = HandleHome.getTrackplus_Home()+File.separator + HandleHome.LOGOS_DIR + File.separator;
-				//logoFolderURL = servletContext.getResource(baseFolder + "img/");
-			/*} catch (final MalformedURLException e) {
-				LOGGER.error("Getting the baseURL for "
-						+ baseFolder + "img failed with " + e.getMessage(), e);
-			}*/
 		} else {
 			// template exists
 			final File template = ReportBL.getDirTemplate(templateID);
@@ -339,7 +333,8 @@ public class ReportExecuteBL {
 				LOGGER.debug("baseURL: " + baseURL.toString());
 			} catch (final MalformedURLException e) {
 				LOGGER.error("Wrong template URL for "
-						+ template.getName() + e.getMessage(), e);
+						+ template.getName() + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				return null;
 			}
 			try {
@@ -366,11 +361,6 @@ public class ReportExecuteBL {
 			parameters = new HashMap<String, Object>();
 		}
 		parameters.put(JasperReportExporter.REPORT_PARAMETERS.BASE_URL, baseURL);
-		/*if (logoFolderURL != null) {
-			parameters.put(
-					JasperReportExporter.REPORT_PARAMETERS.LOGO_FOLDER_URL,
-					logoFolderURL.toExternalForm());
-		}*/
 		if (logoFolder != null) {
 			parameters.put(
 					JasperReportExporter.REPORT_PARAMETERS.LOGO_FOLDER_URL,
@@ -432,9 +422,8 @@ public class ReportExecuteBL {
 		try {
 			outputStream = response.getOutputStream();
 		} catch (final IOException e) {
-			LOGGER
-					.error("Getting the output stream failed with "
-							+ e.getMessage(), e);
+			LOGGER.error("Getting the output stream failed with "
+							+ e.getMessage());
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
@@ -452,15 +441,13 @@ public class ReportExecuteBL {
 			LOGGER.debug("Export done...");
 		} catch (final ReportExportException e) {
 			LOGGER.error("Exporting the report failed with "
-					+ e.getMessage(), e);
+					+ e.getMessage());
 			String actionMessage = "";
 			if (e.getCause() != null) {
-				actionMessage = LocalizeUtil.getParametrizedString(e
-						.getMessage(),
+				actionMessage = LocalizeUtil.getParametrizedString(e.getMessage(),
 						new String[] { e.getCause().getMessage() }, locale);
 			} else {
-				actionMessage = LocalizeUtil
-						.getLocalizedTextFromApplicationResources(
+				actionMessage = LocalizeUtil.getLocalizedTextFromApplicationResources(
 								e.getMessage(), locale);
 			}
 			LOGGER.error(actionMessage);
@@ -468,9 +455,7 @@ public class ReportExecuteBL {
 				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		} catch (final Exception e) {
-			LOGGER
-					.error("Exporting the report failed with throwable "
-							+ e.getMessage(), e);
+			LOGGER.error("Exporting the report failed with throwable " + e.getMessage());
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}

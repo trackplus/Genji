@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -41,7 +41,6 @@ public interface StateChangeDAO {
 	 * @param objectID
 	 * @return
 	 */
-	// Tstatechange loadByPrimaryKey(Integer objectID);
 
 	/**
 	 * Gets the maximal objectID
@@ -71,7 +70,6 @@ public interface StateChangeDAO {
 	 *            if null or empty return empty list
 	 * @return
 	 */
-	// List loadByWorkItemKeys(int[] workItemKeys);
 
 	/**
 	 * Saves a StateChangeBean in the TStateChange table
@@ -89,7 +87,6 @@ public interface StateChangeDAO {
 	 *            if not null filter also by personID
 	 * @return
 	 */
-	// List getByWorkItemAndPerson(Integer workItemKey, Integer personID);
 
 	/**
 	 * Load stateChanges to statuses occurred in a time interval for issues in
@@ -102,7 +99,6 @@ public interface StateChangeDAO {
 	 * @return
 	 */
 	// List loadForProjectsInTimeInterval(Date dateFrom, Date dateTo, List
-	// projectIDs, List statusIDs);
 
 	/**
 	 * Load stateChanges to statuses occurred in a time interval for issues in
@@ -115,7 +111,6 @@ public interface StateChangeDAO {
 	 * @return
 	 */
 	// List loadForReleasesInTimeInterval(Date dateFrom, Date dateTo, List
-	// releaseIDs, List statusIDs);
 
 	/**
 	 * Load stateChanges to statuses occurred in a time interval for workItemIDs
@@ -127,5 +122,4 @@ public interface StateChangeDAO {
 	 * @return
 	 */
 	// List loadForWorkItemsInTimeInterval(Date dateFrom, Date dateTo, List
-	// workItemIDs, List statusIDs);
 }

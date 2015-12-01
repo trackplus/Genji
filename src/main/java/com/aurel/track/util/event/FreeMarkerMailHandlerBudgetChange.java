@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -101,6 +101,7 @@ public class FreeMarkerMailHandlerBudgetChange implements IEventSubscriber {
 	 * Always one event is present at the same time
 	 * (IEventSubscriber.getInterestedEvents())
 	 */
+	@Override
 	public List<Integer> getInterestedEvents() {
 		List<Integer> events = new ArrayList<Integer>();
 		events.add(Integer.valueOf(IEventSubscriber.EVENT_POST_ISSUE_UPDATEBUDGET));
@@ -116,6 +117,7 @@ public class FreeMarkerMailHandlerBudgetChange implements IEventSubscriber {
 	 * The operations to be executed on event
 	 * IEventSubscriber.update()
 	 */
+	@Override
 	public boolean update(List<Integer> events, Object eventContextObject) {
 		AfterBudgetExpenseChangeEventParam afterBudgetExpenseChangeEventParam =
 				(AfterBudgetExpenseChangeEventParam)eventContextObject;
@@ -211,6 +213,7 @@ public class FreeMarkerMailHandlerBudgetChange implements IEventSubscriber {
 		 * Get the resource key of the detailed explanation
 		 * @return
 		 */
+		@Override
 		protected String getChangeDetailKey() {
 			String changeDetailKey="";
 			switch (event) {
@@ -245,6 +248,7 @@ public class FreeMarkerMailHandlerBudgetChange implements IEventSubscriber {
 		 * @param locale
 		 * @return
 		 */
+		@Override
 		protected Object[] getChangeDetailParameters(String itemID, TWorkItemBean workItemBean, SortedMap<Integer, FieldChange> fieldChangesMap,  Locale locale) {
 			return new Object[] {
 					workItemBean.getSynopsis()};
@@ -389,7 +393,6 @@ public class FreeMarkerMailHandlerBudgetChange implements IEventSubscriber {
 		@Override
 		protected TMailTemplateBean getTemplate() {
 			Integer eventID=IEventSubscriber.EVENT_POST_ISSUE_UPDATEPLANNEDVALUE;
-			//TProjectBean project=getProjectBean();
 			Integer projectID = workItemBean.getProjectID();
 			Integer issuTypeID=workItemBean.getListTypeID();
 			Integer templateID= MailTemplateBL.findMailTemplateID(eventID, projectID, issuTypeID);
@@ -435,6 +438,7 @@ public class FreeMarkerMailHandlerBudgetChange implements IEventSubscriber {
 		 * @param remainedFields
 		 * @return
 		 */
+		@Override
 		protected SortedMap<Integer, FieldChange> getLocalizedFieldChangesMap(AfterItemSaveEventParam afterItemSaveEventParam, Locale actualLocale) {
 			AfterBudgetExpenseChangeEventParam afterBudgetExpenseChangeEventParam = (AfterBudgetExpenseChangeEventParam)afterItemSaveEventParam;
 			Integer projectID = afterBudgetExpenseChangeEventParam.getWorkItemBean().getProjectID();
@@ -666,7 +670,6 @@ public class FreeMarkerMailHandlerBudgetChange implements IEventSubscriber {
 					oldEffortDate = oldExpense.getEffortdate();
 				}
 				isChanged = EqualUtils.notEqual(newEffortDate, oldEffortDate);
-				//DateTimeUtils dateTimeUtils = new DateTimeUtils(actualLocale);
 				fieldChange = new FieldChange();
 				fieldChange.setFieldID(ADDITIONAL_MAIL_FIELDS.EFFORTDATE);
 				//get the localized label

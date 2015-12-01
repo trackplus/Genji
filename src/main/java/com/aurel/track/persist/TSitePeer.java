@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -49,16 +49,16 @@ extends com.aurel.track.persist.BaseTSitePeer implements SiteDAO{
 
     private static final long serialVersionUID = -130849904047755361L;
     private static final Logger LOGGER = LogManager.getLogger(TSitePeer.class);
-        
-    
-    public static TSite load() {        
-        Criteria crit = new Criteria();    
+
+
+    public static TSite load() {
+        Criteria crit = new Criteria();
         List siteList = null;
 		try {
 			siteList = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the site bean failed with " + e.getMessage(), e);
-		}  
+			LOGGER.error("Getting the site bean failed with " + e.getMessage());
+		}
 		if (siteList==null) {
 			LOGGER.warn("No site object found");
 			return null;
@@ -72,6 +72,7 @@ extends com.aurel.track.persist.BaseTSitePeer implements SiteDAO{
         return site;
     }
 
+	@Override
 	public TSiteBean load1() {
 		try {
 			TSiteBean site=load().getBean();
@@ -85,11 +86,12 @@ extends com.aurel.track.persist.BaseTSitePeer implements SiteDAO{
 			return null;
 		}
 	}
-	
+
 	/**
 	 * loads, updates and saves the TSiteBean in a synchronized method
 	 * @param fieldValues
 	 */
+	@Override
 	synchronized public void loadAndSaveSynchronized(Map<Integer, Object> fieldValues) {
 		TSiteBean siteBean = load1();
 		if (siteBean==null || fieldValues==null || fieldValues.isEmpty()) {
@@ -135,7 +137,7 @@ extends com.aurel.track.persist.BaseTSitePeer implements SiteDAO{
 				break;
 			case TSiteBean.COLUMNIDENTIFIERS.POPSERVERNAME:
 				siteBean.setMailReceivingServerName((String)value);
-				break;				
+				break;
 			case TSiteBean.COLUMNIDENTIFIERS.POPPORT:
 				siteBean.setMailReceivingPort((Integer)value);
 				break;
@@ -151,7 +153,7 @@ extends com.aurel.track.persist.BaseTSitePeer implements SiteDAO{
 			case TSiteBean.COLUMNIDENTIFIERS.ISLDAPON:
 					siteBean.setIsLDAPOn((String)value);
 				break;
-				
+
 			case TSiteBean.COLUMNIDENTIFIERS.LDAPSERVERURL:
 				siteBean.setLdapServerURL((String)value);
 				break;
@@ -162,7 +164,7 @@ extends com.aurel.track.persist.BaseTSitePeer implements SiteDAO{
 			case TSiteBean.COLUMNIDENTIFIERS.DESCRIPTIONLENGTH:
 				siteBean.setDescriptionLength((Integer)value);
 				break;
-				
+
 			case TSiteBean.COLUMNIDENTIFIERS.HISTORYENTITY:
 				siteBean.setHistoryEntity((String)value);
 				break;
@@ -180,10 +182,10 @@ extends com.aurel.track.persist.BaseTSitePeer implements SiteDAO{
 				break;
 			case TSiteBean.COLUMNIDENTIFIERS.ANALYZER:
 				siteBean.setAnalyzer((String)value);
-				break;			
+				break;
 			case TSiteBean.COLUMNIDENTIFIERS.LASTSERVERURL:
 				siteBean.setLastServerURL((String)value);
-				break;	
+				break;
 			case TSiteBean.COLUMNIDENTIFIERS.LASTBASEURL:
 				siteBean.setLastBaseURL((String)value);
 				break;
@@ -196,18 +198,20 @@ extends com.aurel.track.persist.BaseTSitePeer implements SiteDAO{
 			}
 		}
 		save(siteBean);
-	}	
-	
+	}
+
 	/**
 	 * Sets the SMTPUser and SMTPPassword fields to null
 	 *
 	 */
+	@Override
 	public void clearSMTPPassword() {
 		TSite site = load();
 		site.setSmtpPassWord(null);
 		site.save();
 	}
-	
+
+	@Override
 	public void save(TSiteBean siteBean) {
 		try {
 			if (siteBean.getExpDate() != null) {
@@ -216,17 +220,17 @@ extends com.aurel.track.persist.BaseTSitePeer implements SiteDAO{
 			TSite siteTorque=BaseTSite.createTSite(siteBean);
 			siteTorque.save();
 		} catch (TorqueException e) {
-			LOGGER.error("Saving the site bean failed with " + e.getMessage(), e);
+			LOGGER.error("Saving the site bean failed with " + e.getMessage());
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public Double loadPing() {
 		try {
 			String COUNT = "count(" + BaseTSitePeer.OBJECTID + ")";
-			Criteria crit = new Criteria(); // use empty Criteria to get all entries		
+			Criteria crit = new Criteria(); // use empty Criteria to get all entries
 			crit.addSelectColumn(COUNT);    // SELECT count(OBJECTID);
 			Date start = new Date();
 			(doSelectVillageRecords(crit).get(0)).getValue(1).asInt();
@@ -242,7 +246,7 @@ extends com.aurel.track.persist.BaseTSitePeer implements SiteDAO{
 			Date stop = new Date();
 			return  new Double((stop.getTime() - start.getTime()))/10.0;
 			// get the one and only returned record. Get the first value in this record.
-			// Record values index always starts at 1.		
+			// Record values index always starts at 1.
 		} catch (Exception e) {
 
 		}

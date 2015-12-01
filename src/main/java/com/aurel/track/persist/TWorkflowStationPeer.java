@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -79,7 +79,7 @@ public class TWorkflowStationPeer
 				ReflectionHelper.delete(deletePeerClasses, deleteFields, tWorkflowStation.getObjectID());
 			}
 		} catch (TorqueException e) {
-			LOGGER.error("Deleting the workflow stations by criteria " + crit.toString() + " failed with " + e.getMessage(), e);
+			LOGGER.error("Deleting the workflow stations by criteria " + crit.toString() + " failed with " + e.getMessage());
 		}
 		
 	}
@@ -89,6 +89,7 @@ public class TWorkflowStationPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TWorkflowStationBean loadByPrimaryKey(Integer objectID) {
 		TWorkflowStation tobject = null;
 		try{
@@ -108,12 +109,13 @@ public class TWorkflowStationPeer
 	 * Gets all workflowStationBeans
 	 * @return
 	 */
+	@Override
 	public List<TWorkflowStationBean> loadAll() {
 		Criteria crit = new Criteria();
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all workflow stations failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all workflow stations failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -123,41 +125,20 @@ public class TWorkflowStationPeer
 	 * @param keys
 	 * @return
 	 */
-	/*public List<TWorkflowStationBean> loadByKeys(Object[] stationIDs) {
-		if (stationIDs==null || stationIDs.length==0) {
-			return new LinkedList<TWorkflowStationBean>();
-		}
-		Criteria crit = new Criteria();
-		crit.addIn(OBJECTID, stationIDs);
-		try {
-			return convertTorqueListToBeanList(doSelect(crit));
-		} catch (TorqueException e) {
-			LOGGER.error("Loading the stations by keys " + stationIDs + " failed with " + e.getMessage(), e);
-			return null;
-		}
-	}*/
 	
 	/**
 	 * Loads all workflow stations
 	 * @return
 	 */
-	/*public List<TWorkflowStationBean> loadAll() {
-		Criteria crit = new Criteria();
-		try {
-			return convertTorqueListToBeanList(doSelect(crit));
-		} catch (TorqueException e) {
-			LOGGER.error("Loading all workflow stations failed with " + e.getMessage(), e);
-			return null;
-		}
-	}*/
 	
+	@Override
 	public List<TWorkflowStationBean> loadByWorkflow(Integer workflowID){
 		Criteria crit = new Criteria();
 		crit.add(WORKFLOW,workflowID);
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading workflow stations by workflow:"+workflowID+" failed with " + e.getMessage(), e);
+			LOGGER.error("Loading workflow stations by workflow:"+workflowID+" failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -168,12 +149,12 @@ public class TWorkflowStationPeer
 	 * @param fromStatus
 	 * @return
 	 */
+	@Override
 	public TWorkflowStationBean loadFromStatusStation(Integer workflowID, Integer fromStatus) {
 		Criteria crit = new Criteria();
 		crit.add(WORKFLOW, workflowID);
 		crit.add(STATUS, fromStatus);
 		//possibly more transitions (more toState-s or even more actions for the same toStates) 
-		//crit.setDistinct();
 		try {
 			List<TWorkflowStation> workflowStationList = doSelect(crit);
 			if (workflowStationList!=null && !workflowStationList.isEmpty()) {
@@ -192,6 +173,7 @@ public class TWorkflowStationPeer
 	 * @param fromStationType
 	 * @return
 	 */
+	@Override
 	public TWorkflowStationBean loadFromStationTypeStation(Integer workflowID, Integer fromStationType) {
 		Criteria crit = new Criteria();
 		crit.add(WORKFLOW, workflowID);
@@ -219,6 +201,7 @@ public class TWorkflowStationPeer
 	 * @param includeHooks whether to include the transitions to the same station
 	 * @return
 	 */
+	@Override
 	public List<TWorkflowStationBean> loadToStationsFromStation(Integer fromStation, Integer triggerEvent, boolean includeHooks) {
 		Criteria crit = new Criteria();
 		crit.addJoin(TWorkflowTransitionPeer.STATIONTO, OBJECTID);
@@ -235,7 +218,7 @@ public class TWorkflowStationPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading workflow stations from station " + fromStation + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading workflow stations from station " + fromStation + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -245,13 +228,14 @@ public class TWorkflowStationPeer
 	 * @param workflowStationBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TWorkflowStationBean workflowStationBean) {
 		try {
 			TWorkflowStation tobject = TWorkflowStation.createTWorkflowStation(workflowStationBean);
 			tobject.save();
 			return tobject.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a workflow station failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a workflow station failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -261,6 +245,7 @@ public class TWorkflowStationPeer
 	 * Is deletable should return true before calling this method
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		ReflectionHelper.delete(deletePeerClasses, deleteFields, objectID);
 	}

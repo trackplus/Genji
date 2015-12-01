@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -53,6 +53,7 @@ public class TMSProjectExchangePeer
 	 * @param objectID
 	 * @return 
 	 */
+	@Override
 	public TMSProjectExchangeBean loadByPrimaryKey(Integer objectID) {
 		TMSProjectExchange msProjectExchange = null;
     	try {
@@ -74,6 +75,7 @@ public class TMSProjectExchangePeer
 	 * @param exchangeDirection
 	 * @return
 	 */
+	@Override
 	public List<TMSProjectExchangeBean> loadByProjectOrRelease(Integer entityID, int entityType, int exchangeDirection) {
 		List msProjectExchangeBeans = new ArrayList();
         Criteria crit = new Criteria();
@@ -84,7 +86,7 @@ public class TMSProjectExchangePeer
         try {
         	msProjectExchangeBeans = doSelect(crit);
     	} catch(Exception e) {
-    		LOGGER.error("Loading MsProjectTaskBean by entityID " + entityID + " entityType " + entityType + " failed with " + e.getMessage(), e);
+    		LOGGER.error("Loading MsProjectTaskBean by entityID " + entityID + " entityType " + entityType + " failed with " + e.getMessage());
     	}    	
     	return convertTorqueListToBeanList(msProjectExchangeBeans);
 	}			
@@ -94,13 +96,14 @@ public class TMSProjectExchangePeer
 	 * @param mSProjectTaskBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TMSProjectExchangeBean mSProjectExchangeBean) {
 		try {			
 			TMSProjectExchange msProjectExchange = BaseTMSProjectExchange.createTMSProjectExchange(mSProjectExchangeBean);
 			msProjectExchange.save();
 			return msProjectExchange.getObjectID();						
 		} catch (Exception e) {
-			LOGGER.error("Saving of a msProjectExchange failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a msProjectExchange failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -109,6 +112,7 @@ public class TMSProjectExchangePeer
 	 * Deletes an TMSProjectExchangeBean
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		Criteria crit = new Criteria();
         crit.add(OBJECTID, objectID);

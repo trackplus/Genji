@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -27,13 +27,12 @@ Ext.define('com.trackplus.admin.customize.treeConfig.TreeConfig',{
 	//fieldConfig (TreeDetail) and screenConfig (a kind if TreeWithGrid)
 	extend:'com.trackplus.admin.TreeBase',
 	config: {
-		rootID:'',
+		rootID:'_',
 		fromProjectConfig: false,
 		projectOrProjectTypeID: null
 	},
 	folderAction: "treeConfig",
 	leafDetailByFormLoad: true,
-	leafDetailUrl: null,
 	entityID:'node',
 	//common actions for fieldConfig and screenConfig
 	actionOverwrite: null,
@@ -41,9 +40,8 @@ Ext.define('com.trackplus.admin.customize.treeConfig.TreeConfig',{
 	actionReload: null,
 	constructor: function(config) {
 		var config = config || {};
-		this.initialConfig = config;
-		Ext.apply(this, config);
-		this.init();
+		this.initConfig(config);
+		this.initBase();
 	},
 
 	/**
@@ -63,7 +61,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.TreeConfig',{
 	 * The url for getting the leaf detail: either this should be overridden or the leafDetailUrl should be specified in the config
 	 */
 	/*protected*/getLeafDetailUrl: function() {
-		return this.baseAction + '!load.action';
+		return this.getBaseAction() + '!load.action';
 	},
 
 	initActions: function() {
@@ -91,8 +89,8 @@ Ext.define('com.trackplus.admin.customize.treeConfig.TreeConfig',{
 	},
 
 	getTreeExpandExtraParams: function() {
-		return {fromProjectConfig: this.fromProjectConfig,
-			projectOrProjectTypeID: this.projectOrProjectTypeID};
+		return {fromProjectConfig: this.getFromProjectConfig(),
+			projectOrProjectTypeID: this.getProjectOrProjectTypeID()};
 	},
 
 	/**
@@ -124,9 +122,9 @@ Ext.define('com.trackplus.admin.customize.treeConfig.TreeConfig',{
 	/*protected*/getNodeParam: function(extraConfig) {
 		var saveParams = new Object();
 		var recordData = this.getSingleSelectedRecordData(true);
-		if (recordData!=null) {
+		if (recordData) {
 			var nodeId = this.getRecordID(recordData, {fromTree:true});
-			if (nodeId!=null) {
+			if (nodeId) {
 				saveParams['node'] = nodeId;
 			}
 		}
@@ -139,7 +137,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.TreeConfig',{
 	 */
 	onOverwrite: function() {
 		Ext.Ajax.request({
-			url: this.folderAction + '!overwrite.action',
+			url: this.getFolderAction() + '!overwrite.action',
 			params: this.getNodeParam(),
 			scope: this,
 			success : function(response) {
@@ -147,7 +145,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.TreeConfig',{
 				var treeStore = this.tree.getStore();
 				var treeView = this.tree.getView();
 				var nodeToReload=treeStore.getNodeById(result.node);
-				if (nodeToReload!=null) {
+				if (nodeToReload) {
 					//for actualizing toolbar buttons in
 					//treeNodeSelect according to  inheritedConfig
 					nodeToReload.data['inheritedConfig'] = result.inheritedConfig;
@@ -171,14 +169,14 @@ Ext.define('com.trackplus.admin.customize.treeConfig.TreeConfig',{
 	 */
 	onReset: function() {
 		Ext.Ajax.request({
-			url: this.folderAction + '!reset.action',
+			url: this.getFolderAction() + '!reset.action',
 			params: this.getNodeParam(),
 			scope: this,
 			success : function(response) {
 				var result = Ext.decode(response.responseText);
 				var treeView = this.tree.getView();
 				var nodeToReload=this.tree.getStore().getNodeById(result.node);
-				if (nodeToReload!=null) {
+				if (nodeToReload) {
 					var refreshTree = result.refreshTree;
 					var branchReset = result.branchReset;
 					if (refreshTree || branchReset) {
@@ -201,7 +199,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.TreeConfig',{
 							selectStartFromNode = true;
 							//}
 						}
-						refreshStartFromNode=refreshStartFromNode||(result.node=='workflow_workflow');
+						refreshStartFromNode=refreshStartFromNode||(result.node==='workflow_workflow');
 						this.refreshTreeOpenBranches(startFromNode, refreshStartFromNode, selectStartFromNode, null, result.node,
 								result.issueType, result.projectType, result.project);
 						//this.treeNodeSelect(this.tree, [startFromNode]);
@@ -233,7 +231,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.TreeConfig',{
 		treeStore.load({node:node});
 		/*var selectionModel = this.tree.getSelectionModel();
 		var selectedArr = 	selectionModel.getSelection();
-		if (selectedArr!=null && selectedArr.length>0) {
+		if (selectedArr && selectedArr.length>0) {
 			treeStore.load({node:selectedArr[0]});
 		}*/
 	},
@@ -263,12 +261,12 @@ Ext.define('com.trackplus.admin.customize.treeConfig.TreeConfig',{
 			var nodeID=branchNode.data['id'];
 			if (branchNode.hasChildNodes()) {
 				var childrenAreLeaf=branchNode.data['childrenAreLeaf'];
-				if(branchNode==treeStore.getRootNode()){
+				if(branchNode===treeStore.getRootNode()){
 					childrenAreLeaf=true;
 				}
 				//TODO  fix childrenAreLeaf into tree node model. There seems to be a problem with extJS,
-				if(nodeID.indexOf('workflow_projectType_')==0||
-					nodeID.indexOf('workflow_project_')==0){
+				if(nodeID.indexOf('workflow_projectType_')===0||
+					nodeID.indexOf('workflow_project_')===0){
 					childrenAreLeaf=true;
 				}
 				if (childrenAreLeaf && branchNode.isLoaded() &&
@@ -276,8 +274,8 @@ Ext.define('com.trackplus.admin.customize.treeConfig.TreeConfig',{
 					//real reload is made only at the last branch level (higher level branches are not reloaded)
 					var options = {node:branchNode};
 					//call the selection callback only if the actual branchNode is the parentNode of the node to be selected
-					if (selectStartFromNode || (parentNode!=null && branchNode.data['id']==parentNode.data['id'])) {
-						if (selectStartFromNode && nodeIdToSelect==null) {
+					if (selectStartFromNode || (parentNode && branchNode.data['id']===parentNode.data['id'])) {
+						if (selectStartFromNode && CWHF.isNull(nodeIdToSelect)) {
 							//if selectStartFromNode the nodeIdToSelect parameter
 							//is not required because it should be same as startFromNode
 							nodeIdToSelect = startFromNode;
@@ -304,13 +302,13 @@ Ext.define('com.trackplus.admin.customize.treeConfig.TreeConfig',{
 		var branchIssueType = branchNode.raw['issueType'];
 		var branchProjectType = branchNode.raw['projectType'];
 		var branchProject = branchNode.raw['project'];
-		if (issueType!=null && branchIssueType!=null && issueType!=branchIssueType) {
+		if (issueType && branchIssueType && issueType!==branchIssueType) {
 			return false;
 		} else {
-			if (projectType!=null && branchProjectType!=null && projectType!=branchProjectType) {
+			if (projectType && branchProjectType && projectType!==branchProjectType) {
 				return false;
 			} else {
-				if (project!=null && branchProject!=null && project!=branchProject) {
+				if (project && branchProject && project!==branchProject) {
 					return false;
 				}
 			}
@@ -323,10 +321,10 @@ Ext.define('com.trackplus.admin.customize.treeConfig.TreeConfig',{
 	 * Scope is contains tree and nodeId
 	 */
 	/*selectNode: function() {
-		if (this.nodeId!=null && this.tree!=null) {
+		if (this.nodeId && this.tree) {
 			var selectionModel = this.tree.getSelectionModel();
 			var nodeToSelect = this.tree.getStore().getNodeById(this.nodeId);
-			if (nodeToSelect!=null) {
+			if (nodeToSelect) {
 				selectionModel.select(nodeToSelect);
 			}
 		}

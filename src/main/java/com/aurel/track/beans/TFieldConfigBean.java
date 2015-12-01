@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -61,14 +61,17 @@ public class TFieldConfigBean extends com.aurel.track.beans.base.BaseTFieldConfi
 	 * 
 	 * @see com.aurel.track.beans.ConfigItem#getConfigRel()
 	 */
+	@Override
 	public Integer getConfigRel() {
 		return getField();
 	}
 
+	@Override
 	public void setConfigRel(Integer configRel) {
 		setField(configRel);
 	}
 
+	@Override
 	public String getKeyPrefix() {
 		return LocalizationKeyPrefixes.FIELD_LABEL_KEY_PREFIX;
 	}
@@ -78,6 +81,7 @@ public class TFieldConfigBean extends com.aurel.track.beans.base.BaseTFieldConfi
 	 * 
 	 * @return
 	 */
+	@Override
 	public boolean isDefault() {
 		return getProjectType() == null && getProject() == null && getIssueType() == null;
 	}
@@ -117,6 +121,7 @@ public class TFieldConfigBean extends com.aurel.track.beans.base.BaseTFieldConfi
 	 * 
 	 * @return
 	 */
+	@Override
 	public Map<String, String> serializeBean() {
 		Map<String, String> attributesMap = new HashMap<String, String>();
 		attributesMap.put("objectID", getObjectID().toString());
@@ -151,6 +156,7 @@ public class TFieldConfigBean extends com.aurel.track.beans.base.BaseTFieldConfi
 	 * @param attributes
 	 * @return
 	 */
+	@Override
 	public ISerializableLabelBean deserializeBean(Map<String, String> attributes) {
 		TFieldConfigBean fieldConfigBean = new TFieldConfigBean();
 		String strObjectID = attributes.get("objectID");
@@ -191,6 +197,7 @@ public class TFieldConfigBean extends com.aurel.track.beans.base.BaseTFieldConfi
 	 *            external vs. internal objectIDs
 	 * @return
 	 */
+	@Override
 	public boolean considerAsSame(ISerializableLabelBean serializableLabelBean, Map<String, Map<Integer, Integer>> matchesMap) {
 		if (serializableLabelBean == null) {
 			return false;
@@ -262,6 +269,7 @@ public class TFieldConfigBean extends com.aurel.track.beans.base.BaseTFieldConfi
 	 * @param matchesMap
 	 * @return
 	 */
+	@Override
 	public Integer saveBean(ISerializableLabelBean serializableLabelBean, Map<String, Map<Integer, Integer>> matchesMap) {
 		TFieldConfigBean fieldConfigBean = (TFieldConfigBean) serializableLabelBean;
 		Integer field = fieldConfigBean.getField();

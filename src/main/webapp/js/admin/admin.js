@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -29,7 +29,6 @@ com.trackplus.admin.createAdminWestPanel=function(initData){
 	var admin_westPanel= new Ext.create('Ext.panel.Panel', {
 		region:'west',
 		layout: 'accordion',
-		id: 'AdminWestPanel',
 		width:200,
 		border: false,
 		split:true,
@@ -37,7 +36,7 @@ com.trackplus.admin.createAdminWestPanel=function(initData){
 		collapseMode : 'mini',
 		//baseCls:'x-plain',
 		//margins: '0 0 0 0',
-		margins:'0 -5 0 0',
+		//margins:'0 -5 0 0',
 		defaults:{
 			border:false
 		},
@@ -59,7 +58,7 @@ com.trackplus.admin.createAdminWestPanel=function(initData){
 	}
 	//
 	var customizationSection = com.trackplus.admin.getCustomizationSection();
-	if (customizationSection!=null) {
+	if (customizationSection) {
 		//customization section is available for each non-external user
 		//but not all customization items are available to all users
 		items.push(customizationSection);
@@ -82,7 +81,7 @@ com.trackplus.admin.sectionSelectHandler=function(p,treeComponent){
 	var lastSelectedSection=com.trackplus.admin.lastSelectedSection;
 	var lastSelectedNode=com.trackplus.admin.lastSelectedNode;
 	var treeCmp=null;
-	if(treeComponent!=null){
+	if(treeComponent){
 		treeCmp=treeComponent;
 	}else{
 		treeCmp=Ext.getCmp('tree-'+sectionSelected);
@@ -91,24 +90,24 @@ com.trackplus.admin.sectionSelectHandler=function(p,treeComponent){
 	var selectedNodeID=null;
 	var selectedNodeID=null;
 	var selections = treeCmp.getSelectionModel().getSelection();
-	if(selections!=null&&selections.length>0){
+	if(selections&&selections.length>0){
 		selectedNodeID=selections[0].data.id;
 		jsonData=selections[0].data;
 	}
-	if(selectedNodeID==null){
+	if(CWHF.isNull(selectedNodeID)){
 		var rootNode=treeCmp.getStore().getRootNode();
-		if(rootNode!=null&&rootNode.hasChildNodes()){
+		if(rootNode&&rootNode.hasChildNodes()){
 			var node=rootNode.getChildAt(0);
 			treeCmp.getSelectionModel().select(node);
 			jsonData=node.data;
 			selectedNodeID=jsonData.id;
 		}
 	}
-	if(lastSelectedSection==sectionSelected&&lastSelectedNode==selectedNodeID){
+	if(lastSelectedSection===sectionSelected&&lastSelectedNode===selectedNodeID){
 		//same node
 		return;
 	}
-	//borderLayout.controller.abortOldRequests.call(borderLayout.controller);
+	//borderLayout.borderLayoutController.abortOldRequests.call(borderLayout.borderLayoutController);
 	com.trackplus.admin.replaceCenterContent(sectionSelected,selectedNodeID,jsonData);
 };
 
@@ -121,10 +120,10 @@ com.trackplus.admin.myClick=function(view,record,item,index,e){
 };
 com.trackplus.admin.replaceCenterContent=function(sectionSelected,selectedNodeID,jsonData){
 	com.trackplus.admin.storeLastSelectedNode(sectionSelected,selectedNodeID);
-	borderLayout.controller.replaceCenterContent.call(borderLayout.controller,jsonData);
+	borderLayout.borderLayoutController.replaceCenterContent.call(borderLayout.borderLayoutController,jsonData);
 	var helpCtx="admin."+sectionSelected;
-	if(sectionSelected!='projectTreePanel' &&
-			sectionSelected!='projectTemplateTreePanel'&&selectedNodeID!=null){
+	if(sectionSelected!=='projectTreePanel' &&
+			sectionSelected!=='projectTemplateTreePanel'&&selectedNodeID){
 		helpCtx+="."+selectedNodeID;
 	}
 	var historyToken=sectionSelected+":"+selectedNodeID;
@@ -224,18 +223,18 @@ com.trackplus.admin.createProjectTree=function(initData, isTemplate) {
 			}
 		}
 	});
-	if(initData.sectionSelected=='projectTreePanel' ||
-		initData.sectionSelected=='projectTemplateTreePanel'){
-		treeStore.on('load', function(treeStore, node) {
+	if(initData.sectionSelected==='projectTreePanel' ||
+		initData.sectionSelected==='projectTemplateTreePanel'){
+		treeStore.on('load', function(treeStore, records, successful, operation, node, eOpts) {
 			if (node.isRoot()) {
 				var selectedNode=null;
-				if(initData.selectedNodeID!=null){
+				if(initData.selectedNodeID){
 					selectedNode=treeStore.getNodeById(initData.selectedNodeID);
 				}
-				if(selectedNode==null){
+				if(CWHF.isNull(selectedNode)){
 					selectedNode = node.firstChild;
 				}
-				if (selectedNode==null) {
+				if (CWHF.isNull(selectedNode)) {
 					//no project exists at all
 					/*borderLayout.setCenterContent(null);
 					var treeWithGridConfig=Ext.create('com.trackplus.admin.project.ProjectConfig',{});
@@ -290,10 +289,10 @@ com.trackplus.admin.createProjectTree=function(initData, isTemplate) {
 				beforedrop: {
 					fn: function(node, data, overModel, dropPosition) {
 						var nodeToDrag = data.records[0];
-						if (nodeToDrag.data.leaf==true) {
+						if (nodeToDrag.data.leaf===true) {
 							return false;
 						}
-						if(overModel.data.leaf==true) {
+						if(overModel.data.leaf===true) {
 							return false;
 						}
 						return true;
@@ -302,7 +301,7 @@ com.trackplus.admin.createProjectTree=function(initData, isTemplate) {
 				drop: {
 					fn: function(node, data, overModel, dropPosition) {
 						var copy = data.copy;
-						if (copy==null) {
+						if (CWHF.isNull(copy)) {
 							//move by default
 							copy=false;
 						}
@@ -339,11 +338,11 @@ com.trackplus.admin.createProjectTree=function(initData, isTemplate) {
 					p.addCls('accordionSection-active');
 					var tmpTreeID = "projectTree";
 					var projectTree = p.getComponent(tmpTreeID);
-					if (projectTree!=null) {
+					if (projectTree) {
 						rootNode = projectTree.getRootNode();
-						if (rootNode!=null && !rootNode.hasChildNodes()) {
+						if (rootNode && !rootNode.hasChildNodes()) {
 							//if there is no project at all for this user: set the center content to null and the toolbar with addProject (if system admin)
-							borderLayout.controller.setCenterContent(null);
+							borderLayout.borderLayoutController.setCenterContent(null);
 							borderLayout.setActiveToolbarActionList(
 								this.getToolbarActions.call(this, false));
 						}
@@ -407,7 +406,7 @@ com.trackplus.admin.deleteProject=function(projectID,projectName,deleteConfirmed
 	var msg=getText('common.lbl.removeWarning',getText('admin.project.lbl.projectForOp'));
 	Ext.MessageBox.confirm(title,msg,
 		function(btn){
-			if (btn=="no") {
+			if (btn==="no") {
 				return false;
 			} else {
 				Ext.Ajax.request({
@@ -419,14 +418,14 @@ com.trackplus.admin.deleteProject=function(projectID,projectName,deleteConfirmed
 					disableCaching:true,
 					success: function(response){
 						var responseJson = Ext.decode(response.responseText);
-						if (responseJson.success==true) {
+						if (responseJson.success===true) {
 							window.location.href='admin.action';
 						}else{
 							var errorMessage = responseJson.errorMessage;
 							Ext.MessageBox.confirm(title,
 								errorMessage,
 								function(btn){
-									if (btn=="no") {
+									if (btn==="no") {
 										return false;
 									} else {
 										com.trackplus.admin.deleteProject(projectID, projectName, true);
@@ -450,7 +449,7 @@ com.trackplus.admin.createCtxMenuProject=function(record,treeStore){
 			com.trackplus.admin.deleteProject(projectID, projectName, false);
 		}
 	}];
-	if (record!=null && record.parentNode!=null && !record.parentNode.isRoot()) {
+	if (record && record.parentNode && !record.parentNode.isRoot()) {
 		items.push({
 			text:getText('menu.admin.project.removeFromParent'),
 			iconCls:'clear16',
@@ -513,7 +512,7 @@ com.trackplus.admin.getUsersSection=function(){
 			url:'com.trackplus.admin.user.person(true)',
 			useAJAX:true,leaf:true,iconCls:'user-ticon'
 		}];
-	if (com.trackplus.TrackplusConfig.appType != APPTYPE_BUGS) {
+	if (com.trackplus.TrackplusConfig.appType !== APPTYPE_BUGS) {
 		userNavigator.push({
 			id:'clients',
 			script:true,
@@ -619,7 +618,7 @@ com.trackplus.admin.getCustomizationSection=function(){
 		});
 	}
 	if (com.trackplus.TrackplusConfig.user.sys) {
-		if (com.trackplus.TrackplusConfig.appType != APPTYPE_BUGS) {
+		if (com.trackplus.TrackplusConfig.appType !== APPTYPE_BUGS) {
 			customizationData.push({
 				id:'accounts',script:true,
 				cls:'treeItem-level-1',
@@ -641,7 +640,7 @@ com.trackplus.admin.getCustomizationSection=function(){
 		});
 	}
 	if (com.trackplus.TrackplusConfig.user.sys) {
-		if (com.trackplus.TrackplusConfig.appType != APPTYPE_BUGS) {
+		if (com.trackplus.TrackplusConfig.appType !== APPTYPE_BUGS) {
 			customizationData.push({
 				id:'linkTypes',script:true,
 				cls:'treeItem-level-1',
@@ -712,7 +711,7 @@ com.trackplus.admin.getCustomizationSection=function(){
 			useAJAX:true,leaf:true,iconCls:'projecttypes-ticon'
 		});
 	}
-	if (com.trackplus.TrackplusConfig.appType != APPTYPE_BUGS) {
+	if (com.trackplus.TrackplusConfig.appType !== APPTYPE_BUGS) {
 		if (com.trackplus.TrackplusConfig.user.sys ||
 				(com.trackplus.TrackplusConfig.user.projectAdmin &&
 				com.trackplus.TrackplusConfig.user.workflows)) {
@@ -727,7 +726,7 @@ com.trackplus.admin.getCustomizationSection=function(){
 		}
 	}
 	if (com.trackplus.TrackplusConfig.user.sys) {
-		if (com.trackplus.TrackplusConfig.appType != APPTYPE_BUGS) {
+		if (com.trackplus.TrackplusConfig.appType !== APPTYPE_BUGS) {
 			customizationData.push({
 				id:'scripts',script:true,
 				cls:'treeItem-level-1',
@@ -748,7 +747,7 @@ com.trackplus.admin.getCustomizationSection=function(){
 			});
 		}
 
-		if (com.trackplus.TrackplusConfig.appType != APPTYPE_BUGS) {
+		if (com.trackplus.TrackplusConfig.appType !== APPTYPE_BUGS) {
 			customizationData.push({
 				id:'mailTemplates',script:true,
 				cls:'treeItem-level-1',
@@ -834,9 +833,9 @@ com.trackplus.admin.getServerSection=function(){
 
 com.trackplus.admin.getNodeJsonData=function(sectionID,nodeID){
 	var sectionNodes=this.sections[sectionID];
-	if(sectionNodes!=null){
+	if(sectionNodes){
 		for(var i=0;i<sectionNodes.length;i++){
-			if(sectionNodes[i].id==nodeID){
+			if(sectionNodes[i].id===nodeID){
 				return sectionNodes[i];
 			}
 		}
@@ -872,7 +871,7 @@ com.trackplus.admin.projectConfig=function(projectID, isTemplate) {
 				lastSelections:responseJson,
 				isTemplate:isTemplate
 			});
-			borderLayout.controller.setCenterContent(treeWithGridConfig.createCenterPanel());
+			borderLayout.borderLayoutController.setCenterContent(treeWithGridConfig.createCenterPanel());
 			borderLayout.setLoading(false);
 		},
 		failure: function(response){
@@ -882,15 +881,15 @@ com.trackplus.admin.projectConfig=function(projectID, isTemplate) {
 				treeWidth:200,
 				lastSelections:{}
 			});
-			borderLayout.controller.setCenterContent(treeWithGridConfig.createCenterPanel());
+			borderLayout.borderLayoutController.setCenterContent(treeWithGridConfig.createCenterPanel());
 			borderLayout.setLoading(false);
 		}
 	});
 };
 
 com.trackplus.admin.user.person=function(isUser){
-	var gridConfig=Ext.create("com.trackplus.admin.user.Person",{isUser: isUser});
-	com.trackplus.admin.replaceGridConfig(gridConfig);
+	//var gridConfig=Ext.create("com.trackplus.admin.user.Person",{isUser: isUser});
+	//com.trackplus.admin.replaceGridConfig(gridConfig);
 	Ext.Ajax.request({
 		url: "person!getUserConfigs.action",
 		scope: this,
@@ -914,19 +913,19 @@ com.trackplus.admin.user.group=function(){
 };
 
 com.trackplus.admin.user.department=function(){
-	var treeWithGridConfig=Ext.create('com.trackplus.admin.user.Department', {rootID:'', reloadGrids:true});
+	var treeWithGridConfig=Ext.create('com.trackplus.admin.user.Department', {rootID:'_', reloadGrids:true});
 	com.trackplus.admin.replaceTreeWithGridConfig(treeWithGridConfig);
 };
 com.trackplus.admin.user.dashboardAssign=function(){
-	var treeWithGridConfig=Ext.create('com.trackplus.admin.user.DashboardAssignment', {rootID:''});
+	var treeWithGridConfig=Ext.create('com.trackplus.admin.user.DashboardAssignment', {rootID:'_'});
 	com.trackplus.admin.replaceTreeWithGridConfig(treeWithGridConfig);
 };
 
 /*com.trackplus.admin.action.exportForm=function() {
 	var exportForms=Ext.create('com.trackplus.admin.action.ExportForm',{});
-	borderLayout.controller.setActiveToolbarList([exportForms.createExportButton()]);
+	borderLayout.borderLayoutController.setActiveToolbarList([exportForms.createExportButton()]);
 	//var component=exportForms.createMainComponent();
-	borderLayout.controller.setCenterContent(null);
+	borderLayout.borderLayoutController.setCenterContent(null);
 };*/
 
 com.trackplus.admin.action.importExcel=function() {
@@ -948,72 +947,72 @@ com.trackplus.admin.action.importMsProject=function() {
 com.trackplus.admin.action.importTrackplus=function() {
 	var importTrackplus=Ext.create('com.trackplus.admin.action.ImportTrackplus');
 	//com.trackplus.admin.replaceWizardConfig(importTrackplus);
-	borderLayout.controller.setActiveToolbarList(importTrackplus.createToolbar());
+	borderLayout.borderLayoutController.setActiveToolbarList(importTrackplus.createToolbar());
 	var component=importTrackplus.createMainComponent();
-	borderLayout.controller.setCenterContent(component);
+	borderLayout.borderLayoutController.setCenterContent(component);
 	//importTrackplus.renderImport();
 
 };
 
 /*com.trackplus.admin.action.importForm=function() {
 	var importForms=Ext.create('com.trackplus.admin.action.ImportForm',{});
-	borderLayout.controller.setActiveToolbarList([importForms.createImportButton()]);
+	borderLayout.borderLayoutController.setActiveToolbarList([importForms.createImportButton()]);
 	var component=importForms.createMainComponent();
-	borderLayout.controller.setCenterContent(component);
+	borderLayout.borderLayoutController.setCenterContent(component);
 };*/
 
 com.trackplus.admin.serverConfiguration=function(){
 	var siteConfig=Ext.create('com.trackplus.admin.server.SiteConfig',{});
-	borderLayout.controller.setActiveToolbarList([siteConfig.createSaveButton()]);
+	borderLayout.borderLayoutController.setActiveToolbarList([siteConfig.createSaveButton()]);
 	var component=siteConfig.createMainComponent();
-	borderLayout.controller.setCenterContent(component);
+	borderLayout.borderLayoutController.setCenterContent(component);
 	siteConfig.loadMyForm.call(siteConfig);
 };
 
 com.trackplus.admin.logonPageText=function(){
 	var logonPage=Ext.create('com.trackplus.admin.server.LogonPageText',{});
-	borderLayout.controller.setActiveToolbarList([logonPage.createSaveButton()]);
+	borderLayout.borderLayoutController.setActiveToolbarList([logonPage.createSaveButton()]);
 	var component=logonPage.createMainComponent();
 	logonPage.reload();
-	borderLayout.controller.setCenterContent(component);
+	borderLayout.borderLayoutController.setCenterContent(component);
 };
 com.trackplus.admin.sendEmail=function(){
 	var sendEmail=Ext.create('com.trackplus.admin.server.SendEmail',{});
-	borderLayout.controller.setActiveToolbarList(sendEmail.getToolbar());
+	borderLayout.borderLayoutController.setActiveToolbarList(sendEmail.getToolbar());
 	var component=sendEmail.createMainComponent();
-	borderLayout.controller.setCenterContent(component);
+	borderLayout.borderLayoutController.setCenterContent(component);
 };
 
 com.trackplus.admin.serverStatus=function(){
 	var serverStatus=Ext.create('com.trackplus.admin.server.ServerStatus',{});
-	borderLayout.controller.setActiveToolbarList(serverStatus.createToolbar());
+	borderLayout.borderLayoutController.setActiveToolbarList(serverStatus.createToolbar());
 	serverStatus.reloadAndReplaceComp();
 };
 
 com.trackplus.admin.loggingConfiguration=function(){
 	var loggingConfig=Ext.create('com.trackplus.admin.server.LoggingConfig',{});
-	borderLayout.controller.setActiveToolbarList([]);
+	borderLayout.borderLayoutController.setActiveToolbarList([]);
 	var component=loggingConfig.createMainComponent();
 	loggingConfig.reload();
-	borderLayout.controller.setCenterContent(component);
+	borderLayout.borderLayoutController.setCenterContent(component);
 };
 com.trackplus.admin.databaseBackup=function(){
 	var databaseBackup=Ext.create('com.trackplus.admin.server.DatabaseBackup',{});
-	borderLayout.controller.setActiveToolbarList(databaseBackup.createToolbar());
+	borderLayout.borderLayoutController.setActiveToolbarList(databaseBackup.createToolbar());
 	var component=databaseBackup.createMainComponent();
-	borderLayout.controller.setCenterContent(component);
+	borderLayout.borderLayoutController.setCenterContent(component);
 };
 
 com.trackplus.admin.databaseRestore=function(){
 	var databaseRestore=Ext.create('com.trackplus.admin.server.DatabaseRestore',{});
-	borderLayout.controller.setActiveToolbarList(databaseRestore.createToolbar());
+	borderLayout.borderLayoutController.setActiveToolbarList(databaseRestore.createToolbar());
 	var component=databaseRestore.createMainComponent();
 	databaseRestore.reload();
-	borderLayout.controller.setCenterContent(component);
+	borderLayout.borderLayoutController.setCenterContent(component);
 };
 
 com.trackplus.admin.refreshLinkTypes=function(){
-	var gridConfig=Ext.create('com.trackplus.admin.customize.linkType.LinkTypeGridConfig',{});
+	var gridConfig=Ext.create('com.trackplus.admin.customize.linkType.LinkType',{});
 	com.trackplus.admin.replaceGridConfig(gridConfig);
 };
 
@@ -1023,14 +1022,9 @@ com.trackplus.admin.projectTypes=function(){
 };
 
 com.trackplus.admin.refreshScript=function(){
-	var gridConfig=Ext.create('com.trackplus.admin.customize.script.ScriptGridConfig',{});
+	var gridConfig=Ext.create('com.trackplus.admin.customize.script.Script',{});
 	com.trackplus.admin.replaceGridConfig(gridConfig);
 };
-
-/*com.trackplus.admin.mailTemplate=function(){
-	var gridConfig=Ext.create('com.trackplus.admin.customize.mailTemplate.MailTemplate',{});
-	com.trackplus.admin.replaceGridConfig(gridConfig);
-};*/
 
 com.trackplus.admin.workflowConfig=function(){
 	var workflowConfig=Ext.create('com.trackplus.admin.customize.treeConfig.WorkflowConfig', {rootID:'workflow', treeWidth:300});
@@ -1038,7 +1032,7 @@ com.trackplus.admin.workflowConfig=function(){
 };
 
 com.trackplus.admin.refreshRoles=function(){
-	var gridConfig=Ext.create('com.trackplus.admin.customize.role.RolesGridConfig',{});
+	var gridConfig=Ext.create('com.trackplus.admin.customize.role.Role',{});
 	com.trackplus.admin.replaceGridConfig(gridConfig);
 };
 com.trackplus.admin.accountConfig=function() {
@@ -1047,8 +1041,8 @@ com.trackplus.admin.accountConfig=function() {
 };
 
 com.trackplus.admin.replaceTreeWithGridConfig=function(treeWithGridConfig){
-	borderLayout.controller.setCenterContent(treeWithGridConfig.createCenterPanel());
-	borderLayout.controller.setActiveToolbarActionList(treeWithGridConfig.getToolbarActions());
+	borderLayout.borderLayoutController.setCenterContent(treeWithGridConfig.createCenterPanel());
+	borderLayout.borderLayoutController.setActiveToolbarActionList(treeWithGridConfig.getToolbarActions());
 };
 
 com.trackplus.admin.notify=function(defaultSettings){
@@ -1079,11 +1073,12 @@ com.trackplus.admin.mailTemplateConfig=function(){
 
 com.trackplus.admin.localeEditor=function(){
 	var treeWithGridConfig=Ext.create('com.trackplus.admin.customize.locale.LocaleEditor');
+//	treeWithGridConfig.initLocaleEditor();
 	com.trackplus.admin.replaceTreeWithGridConfig(treeWithGridConfig);
 };
 
 com.trackplus.admin.userLevelConfig=function() {
-	var treeWithGridConfig=Ext.create('com.trackplus.admin.customize.userLevel.userLevelConfig',{rootID:""});
+	var treeWithGridConfig=Ext.create('com.trackplus.admin.customize.userLevel.UserLevel',{rootID:""});
 	com.trackplus.admin.replaceTreeWithGridConfig(treeWithGridConfig);
 };
 
@@ -1093,7 +1088,7 @@ com.trackplus.admin.listConfig= function() {
 };
 
 com.trackplus.admin.objectStatusConfig= function() {
-	var treeWithGridConfig=Ext.create('com.trackplus.admin.customize.objectStatus.ObjectStatusConfig');
+	var treeWithGridConfig=Ext.create('com.trackplus.admin.customize.objectStatus.ObjectStatus');
 	com.trackplus.admin.replaceTreeWithGridConfig(treeWithGridConfig);
 };
 
@@ -1104,16 +1099,16 @@ com.trackplus.admin.categoryConfig=function(rootNode) {
 };
 
 com.trackplus.admin.replaceGridConfig=function(gridConfig){
-	var grid=gridConfig.getGrid();
-	borderLayout.controller.setCenterContent(grid);
-	gridConfig.reload();
-	borderLayout.controller.setActiveToolbarActionList(gridConfig.getToolbarActions());
+	var grid=gridConfig;//.getGrid();
+	borderLayout.borderLayoutController.setCenterContent(grid);
+	//gridConfig.reload();
+	//borderLayout.borderLayoutController.setActiveToolbarActionList(gridConfig.getToolbarActions());
 };
 
 com.trackplus.admin.replaceWizardConfig= function(wizardConfig){
 	var wizardPanel=wizardConfig.getWizardPanel();
-	borderLayout.controller.setCenterContent(wizardPanel);
-	borderLayout.controller.setActiveToolbarActionList(wizardConfig.getToolbarActions());
+	borderLayout.borderLayoutController.setCenterContent(wizardPanel);
+	borderLayout.borderLayoutController.setActiveToolbarActionList(wizardConfig.getToolbarActions());
 };
 
 Ext.define('com.trackplus.layout.AdminLayout',{
@@ -1125,7 +1120,7 @@ Ext.define('com.trackplus.layout.AdminLayout',{
 	constructor : function(config) {
 		var me = this;
 		me.callParent(arguments);
-//		me.reportsConfig==Ext.create('com.trackplus.admin.customize.category.CategoryConfig',{
+//		me.reportsConfig===Ext.create('com.trackplus.admin.customize.category.CategoryConfig',{
 //			rootID:'report'
 //		});
 		me.reportsConfig=Ext.create('com.trackplus.admin.customize.ReportConfig',{
@@ -1141,22 +1136,22 @@ Ext.define('com.trackplus.layout.AdminLayout',{
 			me.sectionSelected='myPreferenceSection';
 			me.selectedNodeID='myProfile';
 		}
-		if(data.sectionSelected!=null){
+		if(data.sectionSelected){
 			me.sectionSelected=data.sectionSelected;
 		}
 
-		if(data.selectedNodeID!=null){
+		if(data.selectedNodeID){
 			me.selectedNodeID=data.selectedNodeID;
 		}
 		me.onReady(function(){
 
-			if(me.sectionSelected!=null){
+			if(me.sectionSelected){
 				me.setSelectedContext(me.sectionSelected,me.selectedNodeID);
 				/*Ext.getCmp(me.sectionSelected).expand();
 				var treeCmp=Ext.getCmp('tree-'+me.sectionSelected);
-				if(treeCmp!=null){
+				if(treeCmp){
 					var node=treeCmp.getStore().getNodeById(me.selectedNodeID);
-					if(node!=null){
+					if(node){
 						treeCmp.getSelectionModel().select(node);
 						treeCmp.expandPath(node.getPath());
 						var jsonData=node.data;
@@ -1178,17 +1173,17 @@ Ext.define('com.trackplus.layout.AdminLayout',{
 	},
 	setSelectedContext:function(sectionSelected,selectedNodeID){
 		var me=this;
-		if(com.trackplus.admin.lastSelectedSection==sectionSelected&&com.trackplus.admin.lastSelectedNode==selectedNodeID){
+		if(com.trackplus.admin.lastSelectedSection===sectionSelected&&com.trackplus.admin.lastSelectedNode===selectedNodeID){
 			return true;
 		}
 		me.sectionSelected=sectionSelected;
 		me.selectedNodeID=selectedNodeID;
-		if(me.sectionSelected!=null){
+		if(me.sectionSelected){
 			Ext.getCmp(me.sectionSelected).expand();
 			var treeCmp=Ext.getCmp('tree-'+me.sectionSelected);
-			if(treeCmp!=null){
+			if(treeCmp){
 				var node=treeCmp.getStore().getNodeById(me.selectedNodeID);
-				if(node!=null){
+				if(node){
 					treeCmp.getSelectionModel().select(node);
 					treeCmp.expandPath(node.getPath());
 					var jsonData=node.data;

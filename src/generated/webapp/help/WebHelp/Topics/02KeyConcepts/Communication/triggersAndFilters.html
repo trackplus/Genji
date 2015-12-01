@@ -1,0 +1,78 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="You can receive e-mail notifications from the Track+ system when items you have an interest in are created, changed, or due. You can control under what circumstances you receive such information by ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="concept"/><meta name="DC.Title" content="Triggers and conditions"/><meta name="abstract" content="You can receive e-mail notifications from the Track+ system when items you have an interest in are created, changed, or due. You can control under what circumstances you receive such information by means of automail triggers and automail conditions."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="You can receive e-mail notifications from the Track+ system when items you have an interest in are created, changed, or due. You can control under what circumstances you receive such information by means of automail triggers and automail conditions."/><meta name="DC.Relation" scheme="URI" content="../../../Topics/02KeyConcepts/Communication/communication.html"/><meta name="DC.Creator" content="Steinbeis Technical Documentation"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="id12BQFE00TV5"/><link rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Triggers and conditions</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()" id="id12BQFE00TV5">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../../Topics/02KeyConcepts/Communication/communication.html" title="Track+ can inform you about any events within the system as you like. You can tune the notification system such that you get exactly the right amount of information. For example, when an item has been changed that you are interested in, you can get an e-mail notifying you of the change. The notification system is structured into automail triggers, automail conditions, and automail assignments."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Communication</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../../Topics/02KeyConcepts/Communication/../../../Topics/02KeyConcepts/Chapter2Wrapper.html" title="Key concepts">Key concepts</a> / <a class="navheader_parent_path" href="../../../Topics/02KeyConcepts/Communication/communication.html" title="Track+ can inform you about any events within the system as you like. You can tune the notification system such that you get exactly the right amount of information. For example, when an item has been changed that you are interested in, you can get an e-mail notifying you of the change. The notification system is structured into automail triggers, automail conditions, and automail assignments.">Communication</a></td></tr></tbody></table>
+
+  <h1 class="title topictitle1">Triggers and conditions</h1>
+
+  
+  
+  <div class="body conbody"><p class="shortdesc">You can receive e-mail notifications from the <span class="ph"><span class="ph">Track+</span></span>
+    system when items you have an interest in are created, changed, or due. You can control under
+    what circumstances you receive such information by means of automail triggers and automail
+    conditions.</p>
+
+    <p class="p">Sending an e-mail upon creation or modification of an item is a two stage process, as shown
+      in the figure below.</p>
+
+    <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/notification.png" height="203" width="463" alt="automail triggers and conditions"/></div><br/><p class="figcapcenter">Automail triggers and automail conditions</p>
+      
+      
+    </div>
+
+    <p class="p">First, based on a configurable trigger an e-mail notification is triggered. Next, the item
+      causing the trigger event is examined by the automail condition. Only if the item meets the
+      condition, an e-mail is actually sent.</p>
+
+    <p class="p">In the example above, only when the state or the responsible person or the end date changes,
+      an e-mail is triggered. But only if the new <span class="ph">priority</span> of the item, that is the <span class="ph">priority</span> after
+      the item has been changed, is "high" and "Susan Doe" is either the new or
+      the old responsible, an e-mail is actually being sent.</p>
+
+    <p class="p">With automail triggers, you can define for each action type (create, edit, change cost and
+      budget related information), for each RACI and item role (manager, responsible, author,
+      consulted, informed, watchers), and for each item property whether a message is triggered or
+      not.</p>
+
+    <div class="p">
+      <div class="note important"><span class="importanttitle">Important:</span> Automail triggers cannot be used to exclude others from notification
+        e-mails. Any user can overwrite for himself the space or system wide settings. Automail
+        triggers define how YOU will be informed, or others that also use the same trigger.</div>
+
+    </div>
+
+    <p class="p">As a standard user you don’t have to define your own trigger settings. In this case the space
+      or system defaults will pertain to you. If you want to define your own trigger, start with
+      copying an existing one.</p>
+
+    <p class="p">With automail conditions you can define complex filter criteria based on new and previous
+      item property values. For example, you only want to be notified if an item was reopened or
+      when it was closed. </p>
+
+    <p class="p">You can define your own conditions, or use existing conditions, and you can assign your
+      personal condition specifically for each space. If you do not do this, the settings provided
+      by the space or system administrator prevail.</p>
+
+    <p class="p">All properties can be selected with either their „new“ or their „old“ value. „New“ means the
+      property value that was the result of the action causing the automail trigger, and old means
+      the value the property carried before the action.</p>
+
+    <p class="p">This makes it possible to define conditions that check for transitions, for example state
+      transitions from anywhere to closed, or responsible transitions from yourself to anybody
+      else.</p>
+
+  </div>
+
+<div class="related-links"/>
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../../Topics/02KeyConcepts/Communication/communication.html" title="Track+ can inform you about any events within the system as you like. You can tune the notification system such that you get exactly the right amount of information. For example, when an item has been changed that you are interested in, you can get an e-mail notifying you of the change. The notification system is structured into automail triggers, automail conditions, and automail assignments."><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Communication</span></a></span>  </div>
+</body>
+</html>

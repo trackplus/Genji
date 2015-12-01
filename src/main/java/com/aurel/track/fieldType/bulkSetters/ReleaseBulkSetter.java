@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -77,7 +77,6 @@ public class ReleaseBulkSetter extends ProjectDependentSystemSelectBulkSetter {
 		Map<Integer, Integer> projectSpecificValueMap = (Map<Integer, Integer>)value;
 		boolean allIssuesFromTheSameProject = dataSourceMap.keySet().size()==1;
 		JSONUtility.appendFieldName(stringBuilder, "projectJson").append(":[");
-		//stringBuilder.append("projectJson:[");
 		for (Iterator<Integer> iterator = dataSourceMap.keySet().iterator(); iterator.hasNext();) {
 			Integer projectID = iterator.next();
 			List<TreeNode> datasourceForProject = (List<TreeNode>)dataSourceMap.get(projectID);
@@ -91,8 +90,9 @@ public class ReleaseBulkSetter extends ProjectDependentSystemSelectBulkSetter {
 			if (labelMap!=null && !allIssuesFromTheSameProject) {
 				JSONUtility.appendStringValue(stringBuilder, JSONUtility.JSON_FIELDS.LABEL, labelMap.get(projectID));
 			}
-			JSONUtility.appendStringValue(stringBuilder, JSONUtility.JSON_FIELDS.NAME, getProjectSpecificName(baseName, fieldID, projectID));
-            JSONUtility.appendJSONValue(stringBuilder, "releaseTree", JSONUtility.getTreeHierarchyJSON(datasourceForProject), true);
+            JSONUtility.appendJSONValue(stringBuilder, "releaseTree", JSONUtility.getTreeHierarchyJSON(datasourceForProject));
+            JSONUtility.appendStringValue(stringBuilder, JSONUtility.JSON_FIELDS.ITEMID, getProjectSpecificItemId(baseName, fieldID, projectID));
+            JSONUtility.appendStringValue(stringBuilder, JSONUtility.JSON_FIELDS.NAME, getProjectSpecificName(baseName, fieldID, projectID), true);
 			stringBuilder.append("}");
 			if (iterator.hasNext()) {
 				stringBuilder.append(",");

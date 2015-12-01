@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -123,7 +123,7 @@ public class MSProjectResourceMappingBL {
 				errorData.add(new ErrorData("registration.error.emailAddress.format"));
 			}
 			Perl5Matcher pm = new Perl5Matcher();
-			TSiteBean siteBean= ApplicationBean.getApplicationBean().getSiteBean();
+			TSiteBean siteBean= ApplicationBean.getInstance().getSiteBean();
 			Perl5Pattern allowedEmailPattern = SiteConfigBL.getSiteAllowedEmailPattern(siteBean);
 			if (!pm.contains(email.trim(),allowedEmailPattern)) {
 				errorData.add(new ErrorData("registration.error.emailAddress.domain"));
@@ -194,15 +194,4 @@ public class MSProjectResourceMappingBL {
 	 * @param email
 	 * @return
 	 */
-	/*private static Integer createNewUser(String username, String firstName, String lastName, String email) {		
-		TPersonBean personBean = new TPersonBean();
-		personBean.setFirstName(firstName);
-		personBean.setLastName(lastName);
-		personBean.setEmail(email);
-		personBean.setLoginName(username);
-		String pass = RandomStringUtils.randomAlphanumeric(8);
-		personBean.setPasswd(pass);
-		personBean.setDepartmentID(DepartmentBL.getDefaultDepartment());
-		return PersonBL.save(personBean);
-	}*/
 }

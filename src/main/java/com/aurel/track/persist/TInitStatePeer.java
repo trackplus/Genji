@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -51,6 +51,7 @@ public class TInitStatePeer
 	 * @param projectID
 	 * @return
 	 */
+	@Override
 	public List<TInitStateBean> loadByProject(Integer projectID) {
 		Criteria crit = new Criteria();
 		crit.add(PROJECT, projectID);
@@ -69,6 +70,7 @@ public class TInitStatePeer
 	 * @param issueTypeID
 	 * @return
 	 */
+	@Override
 	public List<TInitStateBean> loadByProjectAndIssueType(Integer projectID, Integer issueTypeID) {
 		Criteria crit = new Criteria();
 		crit.add(PROJECT, projectID);
@@ -88,6 +90,7 @@ public class TInitStatePeer
 	 * @param issueTypeIDs
 	 * @return
 	 */
+	@Override
 	public  List<TInitStateBean> loadByProjectAndIssueTypes(Integer projectID, List<Integer> issueTypeIDs) {
 		if (issueTypeIDs==null || issueTypeIDs.isEmpty() || projectID==null) {
 			return new LinkedList<TInitStateBean>();
@@ -110,6 +113,7 @@ public class TInitStatePeer
 	 * @param initStateBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TInitStateBean initStateBean) {
 		TInitState tInitState;
 		try {
@@ -117,7 +121,7 @@ public class TInitStatePeer
 			tInitState.save();
 			return tInitState.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of an initStateBean failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of an initStateBean failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -127,6 +131,7 @@ public class TInitStatePeer
 	 * Deletes a initial state by objectID
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		Criteria crit = new Criteria();
 		crit.add(OBJECTID, objectID);

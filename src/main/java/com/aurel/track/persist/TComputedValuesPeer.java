@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -62,6 +62,7 @@ public class TComputedValuesPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TComputedValuesBean loadByPrimaryKey(Integer objectID) {
 		TComputedValues tComputedValues = null;
 		try {
@@ -84,6 +85,7 @@ public class TComputedValuesPeer
 	 * @param person
 	 * @return
 	 */
+	@Override
 	public TComputedValuesBean loadByWorkItemAndTypesAndPerson(Integer workItemID, int effortType, int computedValueType, Integer person) {
 		List<TComputedValues> computedValuesList = null;
 		Criteria criteria = new Criteria();
@@ -120,6 +122,7 @@ public class TComputedValuesPeer
 	 * @param person
 	 * @return
 	 */
+	@Override
 	public List<TComputedValuesBean> loadByWorkItemsAndTypesAndPerson(int[] workItemIDs, int effortType, int computedValueType, Integer person) {
 		List<TComputedValuesBean> computedValueList = new LinkedList<TComputedValuesBean>();
 		if (workItemIDs==null || workItemIDs.length==0) {
@@ -162,6 +165,7 @@ public class TComputedValuesPeer
 	 * @param person
 	 * @return
 	 */
+	@Override
 	public List<TComputedValuesBean> loadByWorkItemsAndTypes(int[] workItemIDs, int effortType, int computedValueType) {
 		List<TComputedValuesBean> computedValueList = new LinkedList<TComputedValuesBean>();
 		if (workItemIDs==null || workItemIDs.length==0) {
@@ -196,6 +200,7 @@ public class TComputedValuesPeer
 	 * @param person
 	 * @return
 	 */
+	@Override
 	public List<TComputedValuesBean> loadByWorkItemsAndTypesAndPerson(int[] workItemIDs, int computedValueType, Integer person) {
 		List<TComputedValuesBean> computedValueList = new LinkedList<TComputedValuesBean>();
 		if (workItemIDs==null || workItemIDs.length==0) {
@@ -214,7 +219,7 @@ public class TComputedValuesPeer
 			try {
 				computedValueList.addAll(getFilterComputedValuesForPerson(criteria, person, computedValueType));
 			} catch(Exception e) {
-				LOGGER.error("Loading the computedValues list by workItemIDs " + workItemIDChunk.length +  " computedValue " + computedValueType + " and person " + person + " failed with " + e.getMessage(), e);
+				LOGGER.error("Loading the computedValues list by workItemIDs " + workItemIDChunk.length +  " computedValue " + computedValueType + " and person " + person + " failed with " + e.getMessage());
 			}
 		}
 		return computedValueList;
@@ -228,6 +233,7 @@ public class TComputedValuesPeer
 	 * @param person
 	 * @return
 	 */
+	@Override
 	public List<TComputedValuesBean> loadByWorkItemsAndTypes(int[] workItemIDs, int[] computedValueTypes) {
 		List<TComputedValuesBean> computedValueList = new LinkedList<TComputedValuesBean>();
 		if (workItemIDs==null || workItemIDs.length==0) {
@@ -262,6 +268,7 @@ public class TComputedValuesPeer
 	 * @param myExpenses
 	 * @return
 	 */
+	@Override
 	public List<TComputedValuesBean> loadByTreeFilterForPerson(FilterUpperTO filterUpperTO, RACIBean raciBean, Integer personID, int computedValueType, boolean myExpenses) {
 		Integer[] selectedProjects = filterUpperTO.getSelectedProjects();
 		if (selectedProjects==null  || selectedProjects.length==0) {
@@ -276,7 +283,7 @@ public class TComputedValuesPeer
 		try {
 			return getFilterComputedValuesForPerson(criteria, personIDToFilter, computedValueType);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the computed values for tree filter with computedValueType " + computedValueType + " and personID " + personIDToFilter + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the computed values for tree filter with computedValueType " + computedValueType + " and personID " + personIDToFilter + " failed with " + e.getMessage());
 			return new ArrayList<TComputedValuesBean>();
 		}
 	}
@@ -289,6 +296,7 @@ public class TComputedValuesPeer
 	 * @param computedValueTypes
 	 * @return
 	 */
+	@Override
 	public List<TComputedValuesBean> loadByTreeFilter(FilterUpperTO filterUpperTO, RACIBean raciBean, Integer personID, int[] computedValueTypes) {
 		Integer[] selectedProjects = filterUpperTO.getSelectedProjects();
 		if (selectedProjects==null  || selectedProjects.length==0) {
@@ -299,7 +307,7 @@ public class TComputedValuesPeer
 		try {
 			return getFilterComputedValues(criteria, computedValueTypes);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the computed values for tree filter with computedValueTypes " + computedValueTypes.length + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the computed values for tree filter with computedValueTypes " + computedValueTypes.length + " failed with " + e.getMessage());
 			return new ArrayList<TComputedValuesBean>();
 		}
 	}
@@ -314,6 +322,7 @@ public class TComputedValuesPeer
 	 * @param myExpenses
 	 * @return
 	 */
+	@Override
 	public List<TComputedValuesBean> loadByTQLFilterForPerson(String tqlExpression, TPersonBean personBean, Locale locale, List<ErrorData> errors, int computedValueType, boolean myExpenses) {
 		Criteria criteria = TqlBL.createCriteria(tqlExpression, personBean, locale, errors);
 		Integer personID = null;
@@ -323,7 +332,7 @@ public class TComputedValuesPeer
 		try {
 			return getFilterComputedValuesForPerson(criteria, personID, computedValueType);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the computed values for TQL filter " + tqlExpression + " and person "  + personID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the computed values for TQL filter " + tqlExpression + " and person "  + personID + " failed with " + e.getMessage());
 			return new ArrayList<TComputedValuesBean>();
 		}
 	}
@@ -337,12 +346,13 @@ public class TComputedValuesPeer
 	 * @param computedValueTypes
 	 * @return
 	 */
+	@Override
 	public List<TComputedValuesBean> loadByTQLFilter(String tqlExpression, TPersonBean personBean, Locale locale, List<ErrorData> errors, int[] computedValueTypes) {
 		Criteria criteria = TqlBL.createCriteria(tqlExpression, personBean, locale, errors);
 		try {
 			return getFilterComputedValues(criteria, computedValueTypes);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the computed values for TQL filter " + tqlExpression + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the computed values for TQL filter " + tqlExpression + " failed with " + e.getMessage());
 			return new ArrayList<TComputedValuesBean>();
 		}
 	}
@@ -385,6 +395,7 @@ public class TComputedValuesPeer
 	 * @param listBean
 	 * @return the created optionID
 	 */
+	@Override
 	public Integer save(TComputedValuesBean tComputedValuesBean) {
 		TComputedValues tComputedValues;
 		try {
@@ -392,7 +403,7 @@ public class TComputedValuesPeer
 			tComputedValues.save();
 			return tComputedValues.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a computed value failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a computed value failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -401,6 +412,7 @@ public class TComputedValuesPeer
 	 * Deletes a record from the TComputedValues table
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		Criteria crit = new Criteria();
 		crit.add(PKEY, objectID);
@@ -415,6 +427,7 @@ public class TComputedValuesPeer
 	 * Deletes all records from the TComputedValues table
 	 * @param objectID
 	 */
+	@Override
 	public void deleteAll() {
 		Criteria crit = new Criteria();
 		try {

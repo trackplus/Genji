@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -242,21 +242,21 @@ public class ProjectTypesBL {
 		ProjectTypeTreeNodeTO roleAssignment = new ProjectTypeTreeNodeTO(roleNodeID, roleAssignmentLabel, IconClass.ROLE,
 				Integer.valueOf(PROJECT_TYPE_ASSIGNMENTS.ROLE_ASSIGNMENT));
 		stringBuilder.append(ProjectTypeJSON.getChildJSON(roleAssignment));
-		// field config
-		String fieldLabel = LocalizeUtil.getLocalizedTextFromApplicationResources("menu.admin.custom.customField", locale);
-		String fieldConfigBranchNodeID = TreeConfigBL.getProjectTypeBranchNodeID(projectTypeID, TreeConfigBL.FIELD_CONFIG);
-		ProjectTypeTreeNodeTO fieldConfigNode = new ProjectTypeTreeNodeTO(encodeNode(new ProjectTypeIDTokens(projectTypeID,
-				Integer.valueOf(PROJECT_TYPE_ASSIGNMENTS.FIELD_CONFIGURATION))), fieldLabel, FIELD_CONFIG_ICON_CLASS,
-				Integer.valueOf(PROJECT_TYPE_ASSIGNMENTS.FIELD_CONFIGURATION), fieldConfigBranchNodeID);
-		stringBuilder.append(ProjectTypeJSON.getChildJSON(fieldConfigNode));
 		// screen assignment
 		String formLabel = LocalizeUtil.getLocalizedTextFromApplicationResources("menu.admin.custom.customForms", locale);
 		String screenConfigBranchNodeID = TreeConfigBL.getProjectTypeBranchNodeID(projectTypeID, TreeConfigBL.SCREEN_CONFIG);
 		ProjectTypeTreeNodeTO screenConfigNode = new ProjectTypeTreeNodeTO(encodeNode(new ProjectTypeIDTokens(projectTypeID,
 				Integer.valueOf(PROJECT_TYPE_ASSIGNMENTS.SCREEN_ASSIGNMENT))), formLabel, SCREEN_ASSIGN_ICON_CLASS,
 				Integer.valueOf(PROJECT_TYPE_ASSIGNMENTS.SCREEN_ASSIGNMENT), screenConfigBranchNodeID);
-		boolean isBugs = ApplicationBean.getApplicationBean().isGenji();
+		boolean isBugs = ApplicationBean.getInstance().isGenji();
 		stringBuilder.append(ProjectTypeJSON.getChildJSON(screenConfigNode, isBugs));
+		// field config
+		String fieldLabel = LocalizeUtil.getLocalizedTextFromApplicationResources("menu.admin.custom.customField", locale);
+		String fieldConfigBranchNodeID = TreeConfigBL.getProjectTypeBranchNodeID(projectTypeID, TreeConfigBL.FIELD_CONFIG);
+		ProjectTypeTreeNodeTO fieldConfigNode = new ProjectTypeTreeNodeTO(encodeNode(new ProjectTypeIDTokens(projectTypeID,
+				Integer.valueOf(PROJECT_TYPE_ASSIGNMENTS.FIELD_CONFIGURATION))), fieldLabel, FIELD_CONFIG_ICON_CLASS,
+				Integer.valueOf(PROJECT_TYPE_ASSIGNMENTS.FIELD_CONFIGURATION), fieldConfigBranchNodeID);
+		stringBuilder.append(ProjectTypeJSON.getChildJSON(fieldConfigNode));		
 		// workflow: the projectType node should be also visible (not only the
 		// projectType children): so the projectType part of the nodeID is null
 		// (that means all project types) but the projectTypeID will be sent as

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -64,7 +64,7 @@ Ext.define('com.trackplus.screen.ItemView',{
 	},
 	setFocusComponent:function(){
 		var me=this;
-		if(me.txtTitleHeader!=null&&!me.txtTitleHeader.isHidden()){
+		if(me.txtTitleHeader&&!me.txtTitleHeader.isHidden()){
 			me.txtTitleHeader.focus(false);
 		}
 	},
@@ -109,16 +109,16 @@ Ext.define('com.trackplus.screen.ItemView',{
 		var itemLockedMessage=me.model.itemLockedMessage;
 		var htmlProjectHeader='<img style="margin-bottom: -2px;" src="optionIconStream.action?fieldID=-2&optionID='+me.model.issueTypeID+'" title="'+me.model.issueTypeLabel+'">' +
 			' <strong>'+project+'</strong>';
-		if(issueNumber!=null){
+		if(issueNumber){
 			htmlProjectHeader+='&nbsp;/&nbsp;<span class="emphasize"><strong>'+ issueNumber + '</strong></span>';
 		}
-		if(statusDisplay!=null){
+		if(statusDisplay){
 			htmlProjectHeader+="&nbsp;:&nbsp;"+ '<span class="dataEmphasize">'+ statusDisplay + '</span>';
 		}
 		if (!me.model.readOnlyMode) {
 			htmlProjectHeader+='<span class=requiredHint><span class="requiredHintBar">&nbsp;</span> = ' + getText("common.lbl.requiredInfo") +'</span>';
 		}
-		if (itemLockedMessage!=null) {
+		if (itemLockedMessage) {
 			htmlProjectHeader+='<span class="itemLock">' + itemLockedMessage +'</span>';
 		}
 		me.projectHeader=Ext.create('Ext.form.Label',{
@@ -132,7 +132,7 @@ Ext.define('com.trackplus.screen.ItemView',{
 			margin:'0 0 5 0',
 			hidden:!me.model.readOnlyMode
 		});
-		var editable=(me.model.readOnlyMode==true&&me.model.inlineEdit==true&&me.model.synopsisReadonly==false);
+		var editable=(me.model.readOnlyMode===true&&me.model.inlineEdit===true&&me.model.synopsisReadonly===false);
 		if(editable){
 			me.lblWrapper=Ext.create('Ext.container.Container',{
 				border:false,
@@ -169,7 +169,7 @@ Ext.define('com.trackplus.screen.ItemView',{
 			name:'fieldValues.f17',
 			hideLabel:true,
 			style:{
-				opacity:me.model.readOnlyMode==true?0:1
+				opacity:me.model.readOnlyMode===true?0:1
 			},
 			hidden:me.model.readOnlyMode
 		});
@@ -261,11 +261,11 @@ Ext.define('com.trackplus.item.ItemComponent',{
 		me.initialConfig = config;
 		Ext.apply(me, config);
 		this.mixins.observable.constructor.call(this, config);
-		this.addEvents('editMode','lastModified','itemChange','clickOnParent');
+		this.initConfig(config);
 	},
 	createItemPanel:function() {
 		var me = this;
-		if(me.itemDetailData!=null){
+		if(me.itemDetailData){
 			var tabs = me.itemDetailData.tabs;
 			var activeTab = me.itemDetailData.activeTab;
 			me.itemDetailComponent = new com.trackplus.itemDetail.ItemDetailComponent(
@@ -299,7 +299,7 @@ Ext.define('com.trackplus.item.ItemComponent',{
 		me.txtTitleHeader=itemView.txtTitleHeader;
 		me.lblWrapper=itemView.lblWrapper;
 		me.lblTitleHeader=itemView.lblTitleHeader;
-		var editable=(me.readOnlyMode==true&&me.inlineEdit==true&&me.synopsisReadonly==false);
+		var editable=(me.readOnlyMode===true&&me.inlineEdit===true&&me.synopsisReadonly===false);
 		if(editable){
 			me.lblTitleHeader.addListener('afterrender',function(){
 				me.lblTitleHeader.getEl().addListener('dblclick',me.lblTitleHeaderDblClick,me);
@@ -309,8 +309,8 @@ Ext.define('com.trackplus.item.ItemComponent',{
 	},
 	eventHandlerTabDetail:function(eventName,args){
 		var me=this;
-		if(eventName=='itemChange'){
-			me.screenFacade.controller.refreshByFields.apply(me.screenFacade.controller,args);
+		if(eventName==='itemChange'){
+			me.screenFacade.screenController.refreshByFields.apply(me.screenFacade.screenController,args);
 		}
 		me.fireEventArgs(eventName,args);
 	},
@@ -345,7 +345,7 @@ Ext.define('com.trackplus.item.ItemComponent',{
 	},
 	refreshChildren:function(){
 		var me=this;
-		if(me.gridChildren!=null){
+		if(me.gridChildren){
 			me.gridChildren.setLoading(true);
 			var urlStr='item!loadChildren.action';
 			Ext.Ajax.request({
@@ -370,7 +370,7 @@ Ext.define('com.trackplus.item.ItemComponent',{
 		var me=this;
 		var margin = '5 0 5 0';
 		var cls = "screenPanel";
-		//if(panelsLength%2==0){
+		//if(panelsLength%2===0){
 			cls="screenPanel-odd";
 		//}
 		var panel = Ext.create('Ext.panel.Panel', {
@@ -516,7 +516,7 @@ Ext.define('com.trackplus.item.ItemComponent',{
 			dataModel : workItemContext
 		});
 		var screenView = me.screenFacade.createViewComponent();
-		if (children == null || children.length == 0) {
+		if (CWHF.isNull(children)|| children.length === 0) {
 			me.itemScreenPanel = screenView;
 		} else {
 			me.itemScreenPanel = Ext.create('Ext.container.Container', {
@@ -529,27 +529,32 @@ Ext.define('com.trackplus.item.ItemComponent',{
 				items : [ screenView, me.createChildrenPanel(0, children) ]
 			});
 		}
-		me.screenFacade.controller.addListener('editMode',function(){
+		me.screenFacade.screenController.addListener('editMode',function(){
 			me.fireEvent('editMode');
 		});
-		me.screenFacade.controller.addListener('clickOnParent',function(parentID){
+		me.screenFacade.screenController.addListener('clickOnParent',function(parentID){
 			me.fireEvent('clickOnParent',parentID);
 		});
-		me.screenFacade.controller.addListener('lastModified',function(lastModified){
-			if(me.itemDetailComponent!=null){
+		me.screenFacade.screenController.addListener('lastModified',function(lastModified){
+			if(me.itemDetailComponent){
 				me.itemDetailComponent.lastModified=lastModified;
 			}
 			me.lastModified=lastModified;
 			me.fireEvent('lastModified',lastModified);
+		});
+		me.screenFacade.screenController.addListener('finishedUpload',function(){
+			if(me.itemDetailComponent){
+				me.itemDetailComponent.refreshAttachments();
+			}
 		});
 		me.itemPanel.removeAll(true);
 		me.itemPanel.add(me.itemScreenPanel);
 	},
 	setParent:function(objectID, label,id){
 		var me=this;
-		var fieldTypeRenderersMap=me.screenFacade.controller.fieldTypeRenderersMap;
+		var fieldTypeRenderersMap=me.screenFacade.screenController.fieldTypeRenderersMap;
 		var fieldTypeRenderer=fieldTypeRenderersMap['f16'];
-		if(fieldTypeRenderer!=null){
+		if(fieldTypeRenderer){
 			var fieldConfig=fieldTypeRenderer.fieldConfig;
 			fieldConfig.jsonData={
 				projectSpecificID:id,

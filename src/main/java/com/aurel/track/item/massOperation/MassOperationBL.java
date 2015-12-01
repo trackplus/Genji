@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -75,9 +75,12 @@ public class MassOperationBL {
 	static public Integer CONSULTANT_FIELDID = Integer.valueOf(-1);
 	static public Integer INFORMANT_FIELDID = Integer.valueOf(-2);
 	
-	public static String SELECTED_FIELD_BASE_NAME = "selectedFieldMap";
-	public static String SETTER_RELATION_MAP_NAME = "setterRelationMap";
+	private static String SELECTED_FIELD_BASE_NAME = "selectedFieldMap";
+	private static String SELECTED_FIELD_BASE_ITEM_ID = "selectedFieldItemId";
+	private static String SETTER_RELATION_MAP_NAME = "setterRelationMap";
+	private static String SETTER_RELATION_BASE_ITEM_ID = "setterRelationItemId";
 	public static String VALUE_BASE_NAME = "displayValueMap";
+	public static String VALUE_BASE_ITEMID = "valueItemID";
 	
 	public static String BULK_OPERATION_RELATION_PREFIX = "itemov.massOperation.relation.";
 
@@ -346,14 +349,26 @@ public class MassOperationBL {
 	
 	
 	/**
-	 * Get the name of the control (used by submit) which will be used also as itemId
+	 * Get the name of the control (used by submit)
 	 * @param mapBaseName
 	 * @param fieldID
 	 * @return
 	 */
-	public static String getControlName(String mapBaseName, Integer fieldID) {
+	static String getControlName(String mapBaseName, Integer fieldID) {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append(mapBaseName).append(".").append(getKeyPrefix(fieldID));
+		return stringBuilder.toString();
+	}
+	
+	/**
+	 * Get the ext js itemnId of the control (. not allowed)
+	 * @param mapBaseName
+	 * @param fieldID
+	 * @return
+	 */
+	public static String getControlItemId(String mapBaseName, Integer fieldID) {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append(mapBaseName).append(getKeyPrefix(fieldID));
 		return stringBuilder.toString();
 	}
 	
@@ -410,6 +425,10 @@ public class MassOperationBL {
 	 * selected issues or even after a project refresh 
 	 * @param massOperationContext
 	 * @param fieldID
+	 * @param fieldLabel
+	 * @param fieldSelected
+	 * @param setterRelation
+	 * @param displayValueMap
 	 * @param personBean
 	 * @param locale
 	 * @return
@@ -417,20 +436,21 @@ public class MassOperationBL {
 	private static MassOperationExpressionTO createOrRefreshMassOperationExpression(
 			MassOperationContext massOperationContext, Integer fieldID, String fieldLabel, 
 			Boolean fieldSelected, Integer setterRelation, Map<String, String> displayValueMap,
-			//boolean visible,
 			TPersonBean personBean, Locale locale) {
 		MassOperationExpressionTO massOperationExpression = new MassOperationExpressionTO(fieldID);
 		boolean fieldIsRequired = massOperationContext.getRequiredFields().contains(fieldID);
 		massOperationExpression.setFieldName(getControlName(SELECTED_FIELD_BASE_NAME, fieldID));
+		massOperationExpression.setFieldItemId(getControlItemId(SELECTED_FIELD_BASE_ITEM_ID, fieldID));
 		massOperationExpression.setRelationName(getControlName(SETTER_RELATION_MAP_NAME, fieldID));
+		massOperationExpression.setRelationItemId(getControlItemId(SETTER_RELATION_BASE_ITEM_ID, fieldID));
 		massOperationExpression.setValueName(getControlName(VALUE_BASE_NAME, fieldID));
+		massOperationExpression.setValueItemId(getControlItemId(VALUE_BASE_ITEMID, fieldID));
 		IFieldTypeRT fieldTypeRT = FieldTypeManager.getFieldTypeRT(fieldID);
 		if (fieldTypeRT!=null) {
 			IBulkSetter bulkSetterDT = fieldTypeRT.getBulkSetterDT(fieldID);
 			if (bulkSetterDT!=null) {
 				//initialize a new one: first time in the session or after a new selection of workItems 
 				//when the field appears as new on the context specific screens
-				//massOperationExpression = new MassOperationExpressionTO();
 				//massOperationExpression.setFieldID(fieldID);			
 				massOperationExpression.setFieldDisabled(fieldSelected==null || !fieldSelected.booleanValue());
 				//independently whether is new or existing the possible options and consequently bulk value 
@@ -439,7 +459,6 @@ public class MassOperationBL {
 				//fieldIsRequired and consequently also the possibleRelations. So this field should be also actualized
 				massOperationExpression.setFieldLabel(fieldLabel);
 				massOperationExpression.setValueRequired(fieldIsRequired);
-				//massOperationExpression.setVisible(visible);				
 				List<Integer> possibleRelations = bulkSetterDT.getPossibleRelations(fieldIsRequired);
 				if (possibleRelations!=null) {
 					List<IntegerStringBean> setterRelations = LocalizeUtil.getLocalizedList(
@@ -489,8 +508,11 @@ public class MassOperationBL {
 		MassOperationExpressionTO massOperationExpression = new MassOperationExpressionTO(fieldID);
 		String fieldLabel = "";
 		massOperationExpression.setFieldName(getControlName(SELECTED_FIELD_BASE_NAME, fieldID));
+		massOperationExpression.setFieldItemId(getControlItemId(SELECTED_FIELD_BASE_ITEM_ID, fieldID));
 		massOperationExpression.setRelationName(getControlName(SETTER_RELATION_MAP_NAME, fieldID));
+		massOperationExpression.setRelationItemId(getControlItemId(SETTER_RELATION_BASE_ITEM_ID, fieldID));
 		massOperationExpression.setValueName(getControlName(VALUE_BASE_NAME, fieldID));
+		massOperationExpression.setValueItemId(getControlItemId(VALUE_BASE_ITEMID, fieldID));
 		if (CONSULTANT_FIELDID.equals(fieldID)) {
 			fieldLabel = LocalizeUtil.getLocalizedTextFromApplicationResources(
 					"item.tabs.watchers.lbl.header.consultants", locale);
@@ -522,15 +544,23 @@ public class MassOperationBL {
 	/**
 	 * Get the selected fields cleaned up from struts2 needed keyPrefixes
 	 * @param selectedFieldMap
+	 * @param setterRelationMap
 	 * @return
 	 */
-	private static SortedSet<Integer> getSelectedFieldsCleaned(Map<String, Boolean> selectedFieldMap) {
+	private static SortedSet<Integer> getSelectedFieldsCleaned(Map<String, Boolean> selectedFieldMap, Map<Integer, Integer> setterRelationMap) {
 		SortedSet<Integer> selectedFieldsSet = new TreeSet<Integer>();
 		if (selectedFieldMap!=null) {
 			for (String key : selectedFieldMap.keySet()) {
 				Boolean selected = selectedFieldMap.get(key);
 				if (selected!=null && selected.booleanValue()) {
 					selectedFieldsSet.add(getKeyInteger(key));
+				}
+			}
+		}
+		if (setterRelationMap!=null) {
+			for (Integer fieldID : setterRelationMap.keySet()) {
+				if (!selectedFieldsSet.contains(fieldID)) {
+					selectedFieldsSet.add(fieldID);
 				}
 			}
 		}
@@ -606,8 +636,8 @@ public class MassOperationBL {
 			Map<String, Integer> setterRelationMap, Map<String, String> displayValueMap, boolean bulkCopy, boolean confirmSave,
 			boolean deepCopy, boolean copyAttachments, boolean copyChildren, boolean copyWatchers,
 			Integer personID, Locale locale, boolean useProjectSpecificID) throws MassOperationException {
-		SortedSet<Integer> selectedFieldsSet = getSelectedFieldsCleaned(selectedFieldMap);
 		Map<Integer, Integer> setterRelationMapCleaned = getSetterRelationMapCleaned(setterRelationMap);
+		SortedSet<Integer> selectedFieldsSet = getSelectedFieldsCleaned(selectedFieldMap, setterRelationMapCleaned);
 		Map<Integer, Object> fieldValueMap = getFieldValues(displayValueMap, setterRelationMapCleaned, selectedFieldsSet, locale);
 		save(issueIDsArr, selectedFieldsSet, setterRelationMapCleaned, fieldValueMap,
 				bulkCopy, confirmSave, deepCopy, copyAttachments, copyChildren, copyWatchers, personID, locale, useProjectSpecificID);
@@ -724,7 +754,6 @@ public class MassOperationBL {
 					}
 				}
 			}
-			//boolean showConfirm = false;
 			if (selectedWorkItemBeans.size()>prohibitedChangesMap.size()) {
 				int numberOfIssuesAllowed = selectedWorkItemBeans.size()-prohibitedChangesMap.size();
 				StringBuilder stringBuilder = new StringBuilder();

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -1644,27 +1644,27 @@ public class ProjectBL {
 		List<TreeNodeBaseTO> children = new LinkedList<TreeNodeBaseTO>();
 		List<TProjectBean> projectBeans=getAdminProjectsLazy(personBean, projectID, true);
 		Map<Integer, TSystemStateBean> projectStatusMap = GeneralUtils.createMapFromList(
-				LookupContainer.getSystemStateList(TSystemStateBean.ENTITYFLAGS.PROJECTSTATE)/*SystemStatusBL.getStatusOptions(TSystemStateBean.ENTITYFLAGS.PROJECTSTATE)*/);		
-		for (TProjectBean projectBean : projectBeans) {			
-			boolean leaf = false; 
-			Integer projectType = projectBean.getProjectType();
-			if (projectType!=null && projectType.intValue()<0) {
-				//make the private projects leaf
-				leaf = true;
-			}
-			
-			if(isTemplate) {
-				if(BooleanFields.fromStringToBoolean(projectBean.getIsTemplate())) {
-					children.add(new TreeNodeBaseTO(String.valueOf(projectBean.getObjectID()),
-							projectBean.getLabel(), getProjectIcon(getProjectStateFlag(projectStatusMap, projectBean.getStatus())), leaf));
+		LookupContainer.getSystemStateList(TSystemStateBean.ENTITYFLAGS.PROJECTSTATE));
+		if (projectBeans!=null) {
+			for (TProjectBean projectBean : projectBeans) {			
+				boolean leaf = false; 
+				Integer projectType = projectBean.getProjectType();
+				if (projectType!=null && projectType.intValue()<0) {
+					//make the private projects leaf
+					leaf = true;
 				}
-			}else {
-				if(!BooleanFields.fromStringToBoolean(projectBean.getIsTemplate())) {
-					children.add(new TreeNodeBaseTO(String.valueOf(projectBean.getObjectID()),
-							projectBean.getLabel(), getProjectIcon(getProjectStateFlag(projectStatusMap, projectBean.getStatus())), leaf));
+				if(isTemplate) {
+					if(BooleanFields.fromStringToBoolean(projectBean.getIsTemplate())) {
+						children.add(new TreeNodeBaseTO(String.valueOf(projectBean.getObjectID()),
+								projectBean.getLabel(), getProjectIcon(getProjectStateFlag(projectStatusMap, projectBean.getStatus())), leaf));
+					}
+				}else {
+					if(!BooleanFields.fromStringToBoolean(projectBean.getIsTemplate())) {
+						children.add(new TreeNodeBaseTO(String.valueOf(projectBean.getObjectID()),
+								projectBean.getLabel(), getProjectIcon(getProjectStateFlag(projectStatusMap, projectBean.getStatus())), leaf));
+					}
 				}
 			}
-	
 		}
 		return children;
 	}
@@ -1929,7 +1929,6 @@ public class ProjectBL {
 			}
 		} else {
 			while (projectID!=null) {
-				//projectBean = loadByPrimaryKey(projectID);
 				projectBean = LookupContainer.getProjectBean(projectID);
 				if (projectBean!=null) {
 					Properties properties = projectBean.getMoreProperties();
@@ -1937,11 +1936,6 @@ public class ProjectBL {
 					boolean accountingInheritedFromParent = projectBean.getParent()!=null &&
 							PropertiesHelper.getBooleanProperty(properties, TProjectBean.MOREPPROPS.ACCOUNTING_INHERITED, true);
 					projectID = projectBean.getParent();
-					/*if (projectID!=null) {
-						projectAccountingTO.setAncestorProjectID(projectID);
-					} else {
-						projectAccountingTO.setAncestorProjectID(projectBean.getObjectID());
-					}*/
 					if (projectID==null || !accountingInheritedFromParent) {
 						//main project or not inherited
 						boolean workTracking = false;
@@ -2018,7 +2012,6 @@ public class ProjectBL {
 			assignedAccountBeans = AccountBL.loadActiveByProject(projectID);
 			if (assignedAccountBeans==null || assignedAccountBeans.isEmpty()) {
 				//get from project or from the nearest ancestor project
-				//assignedAccountBeans = AccountBL.loadActiveByProject(projectAccountingTO.getAncestorProjectID());
 				assignedAccountBeans = AccountBL.loadAllActive();
 			}	
 		}

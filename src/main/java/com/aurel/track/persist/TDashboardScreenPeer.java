@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -50,6 +50,7 @@ public class TDashboardScreenPeer
 	public static final long serialVersionUID = 400L;
 
 	
+    @Override
     public TDashboardScreenBean tryToLoadByPrimaryKey(Integer objectID) {
         TDashboardScreen tobject = null;
  		try{
@@ -64,6 +65,7 @@ public class TDashboardScreenPeer
  		return null;
     }
     
+    @Override
     public TDashboardScreenBean loadByPrimaryKey(Integer objectID) {
        TDashboardScreen tobject = null;
 		try{
@@ -79,6 +81,7 @@ public class TDashboardScreenPeer
 		return null;
     }
 
+    @Override
     public TDashboardScreenBean loadByPersonKey(Integer objectID) {
         List torqueList = null;
 		Criteria crit = new Criteria();
@@ -88,19 +91,16 @@ public class TDashboardScreenPeer
         try {
 			torqueList = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading of a dashboard screen by person key " + objectID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading of a dashboard screen by person key " + objectID + " failed with " + e.getMessage());
 		}
         if(torqueList==null || torqueList.isEmpty()){
         	return null;
         } else {
         	TDashboardScreenBean dashboardScreenBean = ((TDashboardScreen)torqueList.get(0)).getBean();
-        	/*if (dashboardScreenBean.getSystemScreenRef()!=null) {
-        		return loadByPrimaryKey(dashboardScreenBean.getSystemScreenRef());
-        	} else {*/
         		return dashboardScreenBean;
-        	//}
         }
     }
+    @Override
     public TDashboardScreenBean loadByProject(Integer projectID,Integer entityType){
     	List torqueList = null;
 		Criteria crit = new Criteria();
@@ -109,17 +109,13 @@ public class TDashboardScreenPeer
         try {
 			torqueList = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading of a dashboard screen by project  " + projectID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading of a dashboard screen by project  " + projectID + " failed with " + e.getMessage());
 		}
         if(torqueList==null || torqueList.isEmpty()){
         	return null;
         } else {
         	TDashboardScreenBean dashboardScreenBean = ((TDashboardScreen)torqueList.get(0)).getBean();
-        	/*if (dashboardScreenBean.getSystemScreenRef()!=null) {
-        		return loadByPrimaryKey(dashboardScreenBean.getSystemScreenRef());
-        	} else {*/
         		return dashboardScreenBean;
-        	//}
         }
     }
     
@@ -128,6 +124,7 @@ public class TDashboardScreenPeer
 	 * (that with personID null) 
 	 * @return
 	 */
+	@Override
 	public TDashboardScreenBean loadDefault() {
 		List torqueList = null;
 		Criteria crit = new Criteria();
@@ -137,7 +134,7 @@ public class TDashboardScreenPeer
         try {
 			torqueList = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the default dashboard screen failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the default dashboard screen failed with " + e.getMessage());
 		}
         if(torqueList==null || torqueList.isEmpty()){
             return  null;
@@ -149,6 +146,7 @@ public class TDashboardScreenPeer
 		return ((TDashboardScreen)torqueList.get(0)).getBean();
 	}
 	
+    @Override
     public Integer save(TDashboardScreenBean bean) {
         try {
 			TDashboardScreen tobject = BaseTDashboardScreen.createTDashboardScreen(bean);
@@ -158,7 +156,7 @@ public class TDashboardScreenPeer
 			tobject.save();
 			return tobject.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a dashboard screen failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a dashboard screen failed with " + e.getMessage());
 			return null;
 		}		
     }
@@ -173,7 +171,7 @@ public class TDashboardScreenPeer
 		try {
 			list = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the list of TNotifyTriggers to be deleted failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the list of TNotifyTriggers to be deleted failed with " + e.getMessage());
 		}			
         if (list == null || list.size() < 1) {
             return;
@@ -198,6 +196,7 @@ public class TDashboardScreenPeer
 	 * Is deletable should return true before calling this method
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		Connection con = null;
 		try{
@@ -233,6 +232,7 @@ public class TDashboardScreenPeer
 	
    
 
+    @Override
     public List<TDashboardScreenBean> loadByProjects(int[] projects) {
     	List result = new ArrayList();
     	if (projects==null || projects.length==0) {
@@ -249,6 +249,7 @@ public class TDashboardScreenPeer
     	return convertTorqueListToBeanList(result);
     }
     
+    @Override
     public List<TDashboardScreenBean> loadMyAndPublicTemplates(List<Integer> personIDs) {
 		Criteria criteria=new Criteria();
 		criteria.add(PERSONPKEY, (Object)null, Criteria.ISNULL);
@@ -268,6 +269,7 @@ public class TDashboardScreenPeer
 		}
 	}
     
+	@Override
 	public List<TDashboardScreenBean> loadAllTemplates() {
 		Criteria criteria=new Criteria();
 		criteria.add(PERSONPKEY,(Object)null,Criteria.ISNULL);

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -49,10 +49,10 @@ Ext.define('com.trackplus.item.ItemAction',{
 		var me = this;
 		var config = config || {};
 		me.initialConfig = config;
-		me.events=[];
-		this.addEvents('activate','deactivate','close','itemChange','navigateToItem','clickOnChild','clickOnLink','clickOnParent');
 		this.listeners = config.listeners;
 		this.callParent(arguments);
+		Ext.apply(me, config);
+		this.initConfig(config);
 	},
 	execute:function(){
 		var me=this;
@@ -75,7 +75,7 @@ Ext.define('com.trackplus.item.ItemAction',{
 			success: function(response){
 				var dataAJAX=Ext.decode(response.responseText);
 				me.setLoading(false);
-				if(dataAJAX.success==true){
+				if(dataAJAX.success===true){
 					me.loadSuccess.call(me,dataAJAX.data);
 				}else{
 					me.loadFailure.call(me,dataAJAX);
@@ -124,7 +124,6 @@ Ext.define('com.trackplus.item.ItemAction',{
 		return [northPanel,me.parentPanel];
 	},
 
-
 	initToolbar:function(){
 		this.toolbar= Ext.create('Ext.toolbar.Toolbar', {
 			layout: {
@@ -136,7 +135,6 @@ Ext.define('com.trackplus.item.ItemAction',{
 			border: '1 0 1 0',
 			defaults: {
 				cls:'toolbarItemAction',
-				overCls:'toolbarItemAction-over',
 				scale:'small',
 				iconAlign: 'left',
 				enableToggle:false
@@ -149,7 +147,6 @@ Ext.define('com.trackplus.item.ItemAction',{
 			border: '1 0 1 0',
 			defaults: {
 				cls:'toolbarItemAction',
-				overCls:'toolbarItemAction-over',
 				scale:'small',
 				iconAlign: 'left',
 				enableToggle:false
@@ -161,9 +158,9 @@ Ext.define('com.trackplus.item.ItemAction',{
 		Ext.suspendLayouts();
 		me.lastModified=data.lastModified;
 		var useWizard=data.useWizard;
-		if(me.toolbar!=null){
+		if(me.toolbar){
 			me.toolbar.removeAll();
-			me.toolbar.doLayout();
+			me.toolbar.updateLayout();
 		}
 		if(useWizard){
 			me.title1=data.title1;
@@ -179,13 +176,13 @@ Ext.define('com.trackplus.item.ItemAction',{
 		Ext.resumeLayouts(true);
 	},
 	loadFailure:function(response){
-		if(response.localizedErrorKey!=null){
+		if(response.localizedErrorKey){
 			CWHF.showMsgError(getText(response.localizedErrorKey));
 		}
-		if(response.message!=null){
+		if(response.message){
 			CWHF.showMsgError(response.message);
 		}
-		if(response.errorMessage!=null){
+		if(response.errorMessage){
 			CWHF.showMsgError(response.errorMessage);
 		}
 	},
@@ -199,7 +196,7 @@ Ext.define('com.trackplus.item.ItemAction',{
 		 });
 		 me.parentPanel.removeAll(true);
 		 me.parentPanel.add(panelItem);
-		 me.parentPanel.doLayout();*/
+		 me.parentPanel.updateLayout();*/
 		me.editItemScreen.call(me,data,me.parentPanel,true);
 	},
 	createParentContainer:function(){
@@ -217,8 +214,8 @@ Ext.define('com.trackplus.item.ItemAction',{
 
 	addToolbarButtons:function(toolbarData, disableConfig){
 		var me=this;
-		if(me.toolbar!=null){
-			if(toolbarData!=null){
+		if(me.toolbar){
+			if(toolbarData){
 				var items=[];
                 var moreItems = [];
 				for(var i=0;i<toolbarData.length;i++){
@@ -247,10 +244,10 @@ Ext.define('com.trackplus.item.ItemAction',{
                 }
 			}
 		}
-		if(me.extraToolbar!=null){
+		if(me.extraToolbar){
 			me.extraToolbar.removeAll();
 			var items=[];
-			if(me.actionID==-2){//printItem
+			if(me.actionID===-2){//printItem
 				items.push("-");
 				items.push(Ext.create('Ext.button.Button',{
 					itemId:'prevItem',
@@ -279,9 +276,9 @@ Ext.define('com.trackplus.item.ItemAction',{
 				}));
 			}
 
-			if(com.trackplus.TrackplusConfig.user.sys==true){
+			if(com.trackplus.TrackplusConfig.user.sys===true){
 				//or projectAdmin ?
-				if(disableConfig==null||disableConfig==false){
+				if(CWHF.isNull(disableConfig)||disableConfig===false){
 					items.push("-");
 					items.push(Ext.create('Ext.button.Button',{
 						overflowText:getText('common.btn.config'),
@@ -299,9 +296,9 @@ Ext.define('com.trackplus.item.ItemAction',{
 	setDisabledNextButton:function(disabledNext){
 		var me=this;
 		me.disabledNext=disabledNext;
-		if(me.extraToolbar!=null){
+		if(me.extraToolbar){
 			var btnNext=me.extraToolbar.getComponent('nextItem');
-			if(btnNext!=null){
+			if(btnNext){
 				btnNext.setDisabled(disabledNext);
 			}
 		}
@@ -309,9 +306,9 @@ Ext.define('com.trackplus.item.ItemAction',{
 	setDisabledPrevButton:function(disabledPrev){
 		var me=this;
 		me.disabledPrev=disabledPrev;
-		if(me.extraToolbar!=null){
+		if(me.extraToolbar){
 			var btnPrev=me.extraToolbar.getComponent('prevItem');
-			if(btnPrev!=null){
+			if(btnPrev){
 				btnPrev.setDisabled(disabledPrev);
 			}
 		}
@@ -320,38 +317,30 @@ Ext.define('com.trackplus.item.ItemAction',{
 		var me=this;
 		var id=me.screenID;
 		var urlStr='screenEdit.action?componentID='+id+'&backAction=itemNavigator.action%3FactionID%3D'+me.actionID;
-		if(me.workItemID!=null){
+		if(me.workItemID){
 			urlStr=urlStr+'%26workItemID%3D'+me.workItemID;
 		}
 		window.location.href=urlStr;
 	},
 	isVisibleAction:function(toolbarItem){
 		var id=toolbarItem.id;
-		if(id==com.trackplus.item.ToolbarItem.BACK){
+		if(id===com.trackplus.item.ToolbarItem.BACK){
 			return false;
 		}
 		return true;
 	},
 	createToolbarAction:function(toolbarItem){
 		var me=this;
-		/*return Ext.create('Ext.button.Button',{
-			xtype:'button',
-			overflowText:getText(toolbarItem.labelKey),
-			tooltip:getText(toolbarItem.tooltipKey),
-			iconCls: toolbarItem.cssClass+'20',
-			cls:'toolbarItemAction-noText',
-			disabled:toolbarItem.condition==false,
-			text:getText(toolbarItem.labelKey),
-			handler:function(btn){
-				me.executeToolbarAction.call(me,toolbarItem);
-			}
-		}); */
-        return  {
+		if (toolbarItem && toolbarItem.jsonData && toolbarItem.jsonData.actionID==6) {
+			//add linked item from More actions 
+			this.addLinkFromContextMenu = true;
+		}
+		return  {
             overflowText:getText(toolbarItem.labelKey),
             tooltip:getText(toolbarItem.tooltipKey),
-            iconCls: toolbarItem.cssClass+'20',
+            iconCls: toolbarItem.cssClass+'16',
             cls:'toolbarItemAction-noText',
-            disabled:toolbarItem.condition==false,
+            disabled:toolbarItem.condition===false,
             text:getText(toolbarItem.labelKey),
             handler:function(btn){
                 me.executeToolbarAction.call(me,toolbarItem);
@@ -399,7 +388,7 @@ Ext.define('com.trackplus.item.ItemAction',{
 		});
 		me.btnFinish=Ext.create('Ext.Button',{
 			text: data.finishLabel,
-			iconCls:data.cssClass==null?'save':data.cssClass+'20',
+			iconCls:CWHF.isNull(data.cssClass)?'save':data.cssClass+'16',
 			hidden :!data.canFinish,
 			scope:me,
 			handler:function(btn){
@@ -417,7 +406,7 @@ Ext.define('com.trackplus.item.ItemAction',{
 			text: 'Cancel',
 			scope:me,
 			handler:function(btn){
-				if(me.dialogItemAction!=null){
+				if(me.dialogItemAction){
 					me.dialogItemAction.close();
 					me.dialogItemAction.destroy();
 				}
@@ -443,13 +432,13 @@ Ext.define('com.trackplus.item.ItemAction',{
 		me.toolbar.add(me.btnNext);
 		me.toolbar.add(borderLayout.createItemToolbarSeparator());
 		me.toolbar.add(me.btnFinish);
-		me.toolbar.doLayout();
+		me.toolbar.updateLayout();
 		me.parentPanel.removeAll();
 		me.parentPanel.add(me.centerPanelWizard);
-		me.parentPanel.doLayout();
+		me.parentPanel.updateLayout();
 		//In case of Add linked item(from item navigator context menu), the form must contain link initialization part
 		//otherwise normal new item create form
-		if(me.addLinkFromContextMenu!=null) {
+		if(me.addLinkFromContextMenu) {
 			me.addLinkDetailsToForm();
 		}
 	},
@@ -460,22 +449,23 @@ Ext.define('com.trackplus.item.ItemAction',{
 	addLinkDetailsToForm: function() {
 		var me = this;
 		var link=Ext.create('com.aurel.trackplus.itemDetail.LinksTab',{
-			workItemID:me.workItemID,
+			workItemID:me.workItemID/*,
 			projectID:me.addLinkFromContextMenu.projectID,
-			issueTypeID:me.addLinkFromContextMenu.issueTypeID
+			issueTypeID:me.addLinkFromContextMenu.issueTypeID*/
 		});
 		me.linkFormPanel = link.createFormPanel();
 		me.linkFormPanel.getForm().load({
 			url : 'itemLink!editItemLink.action',
-			params:{workItemID:me.workItemID},
+			params:{workItemID:me.workItemID,
+				addMeAsLinkToNewItem: true},
 			scope: me,
 			success : function(form, action) {
 				var data=action.result.data;
 				link.cmbLinkType.store.loadData(data["linkTypesList"],false);
 				link.cmbLinkType.setValue(data["linkTypeWithDirection"]);
-				link.txtIssueNo.setValue(me.workItemID);
-				link.hiddenIssueNo.setValue(me.workItemID);
-				link.txtSynopsis.setValue(me.addLinkFromContextMenu.workItemName);
+				link.txtIssueNo.setValue(data["linkedWorkItemID"]);
+				link.hiddenIssueNo.setValue(data["linkedWorkItemObjectID"]);
+				link.txtSynopsis.setValue(data["linkedWorkItemTitle"]);
 				link.txtDescription.setValue("");
 				link.replaceSpecificPart(me.linkFormPanel, data["linkTypeJSClass"], data["specificData"]);
 			},
@@ -495,11 +485,11 @@ Ext.define('com.trackplus.item.ItemAction',{
 		while(items.getCount()>5){
 			me.toolbar.remove(items.getAt(5));
 		}
-		if(me.extraToolbar!=null){
+		if(me.extraToolbar){
 			me.extraToolbar.removeAll();
 		}
 		me.btnFinish.setVisible(me.canFinish);
-		me.toolbar.doLayout();
+		me.toolbar.updateLayout();
 	},
 
 	next:function(data){
@@ -509,7 +499,7 @@ Ext.define('com.trackplus.item.ItemAction',{
 		}
 		var params = {};
 		//In case of Add linked item  we need to append link config into submit parameters
-		if(me.addLinkFromContextMenu!=null) {
+		if(me.addLinkFromContextMenu) {
 			params = me.linkFormPanel.getForm().getValues();
 		}
 		params.workItemID=me.workItemID;
@@ -547,7 +537,7 @@ Ext.define('com.trackplus.item.ItemAction',{
 	finish:function(){
 		var me=this;
 		var firstStep=me.centerPanelWizard.getLayout().getNext();
-		if(firstStep==false){
+		if(firstStep===false){
 			me.save.call(me);
 		}else{
 			me.saveInFirstStep.call(me);
@@ -556,7 +546,7 @@ Ext.define('com.trackplus.item.ItemAction',{
 	saveInFirstStep:function(){
 		var me=this;
 		var successExtra={};
-		if(me.successExtra!=null){
+		if(me.successExtra){
 			for(var x in me.successExtra){
 				successExtra[x]=me.successExtra[x];
 			}
@@ -581,11 +571,11 @@ Ext.define('com.trackplus.item.ItemAction',{
 	saveSuccess:function(form, action){
 		var me=this;
 		var data=null;
-		if(action!=null){
+		if(action){
 			data=action.result.data;
 		}
-		if(me.successHandler!=null){
-			me.successHandler.call(me.scope!=null?me.scope:me,data,me.successExtra);
+		if(me.successHandler){
+			me.successHandler.call(me.scope?me.scope:me,data,me.successExtra);
 		}
 	},
 	saveFailure:function(form, action){
@@ -607,11 +597,15 @@ Ext.define('com.trackplus.item.ItemAction',{
 		var me=this;
 		me.fireEvent('clickOnParent',parentID);
 	},
+	finishedUploadHandler:function(parentID){
+		var me=this;
+		me.fireEvent('finishedUpload',parentID);
+	},
 
 	changeToEditMode:function(){
 		var me=this;
 		var successExtra={};
-		if(me.successExtra==null){
+		if(CWHF.isNull(me.successExtra)){
 			me.successExtra={};
 		}
 		me.successExtra['actionID']=me.actionID;
@@ -687,6 +681,7 @@ Ext.define('com.trackplus.item.ItemAction',{
 		me.itemComponent.addListener("clickOnChild",me.clickOnChild,me);
 		me.itemComponent.addListener("clickOnLink",me.clickOnLink,me);
 		me.itemComponent.addListener("clickOnParent",me.clickOnParent,me);
+		me.itemComponent.addListener("finishedUpload",me.finishedUploadHandler,me);
 
 		me.readOnlyMode=data.readOnlyMode;
 		var container=me.itemComponent.createItemPanel();
@@ -700,7 +695,7 @@ Ext.define('com.trackplus.item.ItemAction',{
 	},
 	refreshChildren:function(){
 		var me=this;
-		if(me.itemComponent!=null){
+		if(me.itemComponent){
 			me.itemComponent.refreshChildren.call(me.itemComponent);
 		}
 	},
@@ -754,8 +749,8 @@ Ext.define('com.trackplus.item.ItemAction',{
 				me.reset();
 				break;
 			case com.trackplus.item.ToolbarItem.CANCEL:
-				/*if(me.successHandler!=null){
-					me.successHandler.call(me.scope!=null?me.scope:me,null,me.successExtra);
+				/*if(me.successHandler){
+					me.successHandler.call(me.scope?me.scope:me,null,me.successExtra);
 				}*/
 				break;
 			case com.trackplus.item.ToolbarItem.PRINT_ITEM:
@@ -769,7 +764,7 @@ Ext.define('com.trackplus.item.ItemAction',{
 		var me=this;
 		var actionID=jsonData.actionID;
 		var parentID=jsonData.parentID;
-		if(me.successExtra==null){
+		if(CWHF.isNull(me.successExtra)){
 			me.successExtra={};
 		}
 		me.successExtra['actionID']=me.actionID;
@@ -777,6 +772,7 @@ Ext.define('com.trackplus.item.ItemAction',{
 
 		me.actionID=actionID;
 		me.parentID=parentID;
+
 		me.reExecute();
 		me.fireEvent.call(me,'activate',me);
 
@@ -809,8 +805,8 @@ Ext.define('com.trackplus.item.ItemAction',{
 		var ajaxContext=null;
 		var handler=null;
 		var scope=null;
-		if(me.readOnlyMode==true){
-			if(me.successExtra==null){
+		if(me.readOnlyMode===true){
+			if(CWHF.isNull(me.successExtra)){
 				me.successExtra={};
 			}
 			me.successExtra['actionID']=me.actionID;
@@ -856,10 +852,10 @@ Ext.define('com.trackplus.item.ItemAction',{
 			url: urlStr,
 			success: function(response){
 				var responseJson = Ext.decode(response.responseText);
-				if (responseJson.success==true) {
+				if (responseJson.success===true) {
 					me.reExecute();
 				}else{
-					if (responseJson.errorMessage!=null) {
+					if (responseJson.errorMessage) {
 						//parent change for an issue
 						Ext.MessageBox.show({
 							title: getText('common.warning'),
@@ -879,7 +875,8 @@ Ext.define('com.trackplus.item.ItemAction',{
 	sendEmail:function(){
 		var me=this;
 		var sendItemEmail=Ext.create('com.trackplus.item.SendEmail',{
-			workItemID:me.workItemID
+			workItemID:me.workItemID,
+			projectID:me.projectID
 		});
 		sendItemEmail.show();
 	},
@@ -907,12 +904,12 @@ Ext.define('com.trackplus.item.ItemAction',{
 		var me=this;
 		var synopsis=me.itemComponent.txtTitleHeader.getValue();
 		var itemFormPanel=me.itemComponent.itemPanel;
-		var fieldTypeRenderersMap=me.itemComponent.screenFacade.controller.fieldTypeRenderersMap;
-		var parentID=me.itemComponent.screenFacade.controller.dataModel.fieldValues['f16'];
+		var fieldTypeRenderersMap=me.itemComponent.screenFacade.screenController.fieldTypeRenderersMap;
+		var parentID=me.itemComponent.screenFacade.screenController.dataModel.fieldValues['f16'];
 		var parentOnscreen=false;
 		var fieldTypeRenderer;
 		for(var x in fieldTypeRenderersMap){
-			if(x=='f16'){
+			if(x==='f16'){
 				parentOnscreen=true;
 			}
 			fieldTypeRenderer=fieldTypeRenderersMap[x];
@@ -927,7 +924,7 @@ Ext.define('com.trackplus.item.ItemAction',{
 			return false;
 		}
 		var lastModified=me.lastModified;
-		var parentID=me.itemComponent.screenFacade.controller.dataModel.fieldValues['f16'];
+		var parentID=me.itemComponent.screenFacade.screenController.dataModel.fieldValues['f16'];
 		var params={
 			confirm: confirm,
 			'workItemID':me.workItemID,
@@ -938,7 +935,7 @@ Ext.define('com.trackplus.item.ItemAction',{
 			'actionID':me.actionID//+'&forwardAction='+forwardAction,
 		};
 		//include parent to submit
-		if(parentID!=null&&parentOnscreen==false){
+		if(parentID&&parentOnscreen===false){
 			params['fieldValues.f16']=parentID;
 		}
 		me.setLoading(true);
@@ -954,17 +951,17 @@ Ext.define('com.trackplus.item.ItemAction',{
                 var jsonData = null;
                 var errorCode = null;
                 var errors = null;
-                if (action.response!=null) {
+                if (action.response) {
                    var responseText = action.response.responseText;
-                   if (responseText!=null) {
+                   if (responseText) {
                        jsonData = Ext.decode(responseText);
-                       if (jsonData!=null && jsonData.data!=null) {
+                       if (jsonData && jsonData.data) {
                            errorCode = jsonData.data.errorCode;
                            errors = jsonData.data.errors;
                        }
                    }
                 }
-                if (errorCode==3 && errors!=null) {
+                if (errorCode===3 && errors) {
                     //conformation needed
                     var errorMessage = "";
                     Ext.Array.forEach(errors, function (error) {
@@ -973,7 +970,7 @@ Ext.define('com.trackplus.item.ItemAction',{
                     Ext.MessageBox.confirm(getText("common.confirm"),
                         errorMessage,
                         function(btn){
-                            if (btn=="no") {
+                            if (btn==="no") {
                                 var jsonData=Ext.decode(action.response.responseText);
                                 me.handleErrors.call(me,jsonData.data);
                             } else {
@@ -995,8 +992,8 @@ Ext.define('com.trackplus.item.ItemAction',{
 	reload:function(item){
 		var me=this;
 		me.itemComponent.refreshItemPanel.call(me.itemComponent);
-		if(me.successHandler!=null){
-			me.successHandler.call(me.scope!=null?me.scope:me);
+		if(me.successHandler){
+			me.successHandler.call(me.scope?me.scope:me);
 		}
 	},
 	handleErrors:function(data){

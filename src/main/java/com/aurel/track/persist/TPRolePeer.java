@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -50,13 +50,14 @@ public class TPRolePeer
 	 * @param projectTypeID
 	 * @return
 	 */
+	@Override
 	public List<TPRoleBean> loadByProjectType(Integer projectTypeID) {
 		Criteria crit = new Criteria();
         crit.add(PROJECTTYPE, projectTypeID);                
     	try {
     		return convertTorqueListToBeanList(doSelect(crit));
         } catch (Exception e) {
-            LOGGER.error("Loading roles associated with projectType " + projectTypeID + " failed with " + e.getMessage(), e);
+            LOGGER.error("Loading roles associated with projectType " + projectTypeID + " failed with " + e.getMessage());
             return new LinkedList<TPRoleBean>();
         }
 	}
@@ -66,6 +67,7 @@ public class TPRolePeer
 	 * @param pRoleBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TPRoleBean pRoleBean) {
 		TPRole tpRole;		
 		try {						
@@ -73,7 +75,7 @@ public class TPRolePeer
 			tpRole.save();
 			return tpRole.getObjectID();			
 		} catch (Exception e) {
-			LOGGER.error("Saving of an tpRoleBean failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of an tpRoleBean failed with " + e.getMessage());
 			return null;
 		}	
 	}
@@ -83,6 +85,7 @@ public class TPRolePeer
 	 * @param projectTypeID
 	 * @param roleIDs
 	 */
+	@Override
 	public void delete(Integer projectTypeID, List<Integer> roleIDs) {
 		if (projectTypeID==null || roleIDs==null || roleIDs.isEmpty()) {
 			return;

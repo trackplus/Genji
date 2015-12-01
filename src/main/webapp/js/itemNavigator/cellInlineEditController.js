@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -35,7 +35,6 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 	},
 	isNew: false,
 	editOrCreateInProgress: false,
-	selectedIdOrValue: null,
 	row: null, //edited row or in case of creating new item the above row
 	actualEditedOrCreatedRow: null,
 	actualEditedOrCreatedRecord: null,
@@ -66,32 +65,65 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 	constructor : function(cfg) {
 		var me = this;
 		var config = cfg || {};
-		Ext.apply(me, config);
+		me.initConfig(config);
 	},
 
 	initListeners: function() {
 		var me = this;
-		if(me.isPrintItemEditable) {
-			me.grid.addListener('edit', me.onGridEdit, me);
-			me.grid.addListener('beforeedit', me.onGridBeforeEdit, me);
-			me.grid.addListener('render', me.onReadyHandler, me);
+		if(me.getIsPrintItemEditable()) {
+			me.getGrid().addListener('edit', me.onGridEdit, me);
+			me.getGrid().addListener('beforeedit', me.onGridBeforeEdit, me);
+			me.getGrid().addListener('render', me.onReadyHandler, me);
+			me.getGrid().addListener('validateedit', me.validateedit, me);
 		}
+	},
+	validateedit: function(editor, e) {
+		var me = this;
+		if(CWHF.isNull(e.value)) {
+			e.cancel = true;
+		}
+		if(me.getUniformizedFieldType(e.column.extJsRendererClass) === me.UNIFORMIZED_FIELD_TYPES.checkBox) {
+			var convertedOriginalValue = me.convertCheckboxValueToBoolean(e.originalValue);
+			var convertedValue = me.convertCheckboxValueToBoolean(e.value);
+			if(convertedOriginalValue === convertedValue) {
+				e.cancel = true;
+			}
+		}
+	},
+
+	convertCheckboxValueToBoolean: function(val) {
+		if(typeof(val) === "boolean"){
+			return val;
+		}
+		if(val === "true") {
+			return true;
+		}
+		if(val === "false") {
+			return false;
+		}
+		if(val === getText('common.boolean.N')) {
+			return false;
+		}
+		if(val === getText('common.boolean.Y')) {
+			return true;
+		}
+		return null;
 	},
 
 	initGanttSpecificListener: function() {
 		var me = this;
-		if(me.isPrintItemEditable) {
-			me.gantt.addListener('selectionchange', me.onGridSelectionChnage, me);
+		if(me.getIsPrintItemEditable()) {
+			me.getGantt().addListener('selectionchange', me.onGridSelectionChnage, me);
 		}
 	},
 
 	onReadyHandler: function() {
 		var me = this;
-		if(me.isPrintItemEditable) {
+		if(me.getIsPrintItemEditable()) {
 			Ext.getBody().addKeyMap({
 			    eventName: "keydown",
 			    binding: [{
-			    	key: [Ext.EventObject.NUM_PLUS, 171, 61],
+			    	key: [Ext.event.Event.NUM_PLUS, 171, 61],
 			        ctrl: true,
 			        fn:  me.addNewRow,
 			        scope: me
@@ -106,7 +138,7 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 			        fn:  me.undoEditOrCreate,
 			        scope: me
 			    },{
-			    	key: [Ext.EventObject.NUM_MINUS],
+			    	key: [Ext.event.Event.NUM_MINUS],
 			        ctrl: true,
 			        fn:  me.removeRowFromGrid,
 			        scope: me
@@ -117,7 +149,7 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 				if(!me.clickIsOutOfGrid(event)) {
 					return true;
 				}
-				var modifiedRecords = me.grid.store.getModifiedRecords();
+				var modifiedRecords = me.getGrid().store.getModifiedRecords();
 				if(!me.warningDisplayed && me.editOrCreateInProgress && modifiedRecords.length > 0) {//me.isRowEditedt()) {
 					event.stopEvent();
 					Ext.MessageBox.show({
@@ -125,11 +157,11 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 						msg: getText('item.action.leavingInlineEdit'),
 						buttons: Ext.MessageBox.YESNO,
 						fn: function(btn){
-							if(btn=="yes"){
+							if(btn==="yes"){
 								me.prepareDataAdnSave();
 							}
-							if(btn=="no"){
-								me.navigator.fireEvent.call(me.navigator,'datachange');
+							if(btn==="no"){
+								me.getNavigator().fireEvent.call(me.getNavigator(),'datachange');
 								me.reInitializeDataAfterEditOrCreate();
 
 							}
@@ -139,7 +171,7 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 						icon: Ext.MessageBox.QUESTION
 					});
 					me.warningDisplayed = false;
-					me.grid.getSelectionModel().select(me.actualEditedOrCreatedRecord);
+					me.getGrid().getSelectionModel().select(me.actualEditedOrCreatedRecord);
 				}else {
 					return true;
 				}
@@ -152,8 +184,8 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 		var isOut = true;
 		clickX = event.getX();
 		clickY = event.getY();
-		var gridX = me.grid.getX();
-//		var gridY = me.grid.getY();
+		var gridX = me.getGrid().getX();
+//		var gridY = me.getGrid().getY();
 		var toolbarY = borderLayout.getActiveToolbarList().getY();
 		if(clickX > gridX && clickY > toolbarY) {
 			isOut = false;
@@ -175,9 +207,9 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 	prepareDataAdnSave: function() {
 		var me = this;
 		//if not from Gantt we save the changes otherwise the Gantt will handle saving.
-		if(me.gantt == null) {
+		if(CWHF.isNull(me.getGantt())) {
 			var params = new Object();
-			if(me.row != null && me.isRowEditedt()) {
+			if(me.row  && me.isRowEditedt()) {
 				var workItemIDAbove = null;
 				if(me.isNew) {
 					workItemIDAbove = me.workItemIDAbove;
@@ -189,25 +221,17 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 
 	onGridEdit: function(editor, ctx, e) {
 		var me = this;
-		if(me.selectedIdOrValue != null) {
-			if(me.row == null) {
-				me.row = me.getGridSelectedRow();
-			}
-			if(me.actualEditedOrCreatedRow == null) {
-				me.actualEditedOrCreatedRow = me.getGridSelectedRow();
-			}
-			/*if(me.gantt != null && !me.isNew) {
-				if(ctx.field == 'f19' || ctx.field == 'f20' ||
-						ctx.field == 'f29' || ctx.field == 'f30') {
-//					me.navigator.normalizeTask(ctx.field, me.selectedIdOrValue, me.row.workItemID);
-				}
-			}*/
+		if(CWHF.isNull(me.row)) {
+			me.row = me.getGridSelectedRow();
+		}
+		if(CWHF.isNull(me.actualEditedOrCreatedRow)) {
+			me.actualEditedOrCreatedRow = me.getGridSelectedRow();
 		}
 	},
 
 	getGridSelectedRow: function() {
 		var me = this;
-		var selectedData = me.grid.getSelectionModel().getSelection();
+		var selectedData = me.getGrid().getSelectionModel().getSelection();
 		var row = selectedData[0].getData();
 		return row;
 	},
@@ -217,7 +241,6 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 		if(!me.isEditable(ctx)) {
 			return false;
 		}
-		me.selectedIdOrValue = null;
 		me.actualEditedOrCreatedRecord = ctx.record;
 		me.editOrCreateInProgress = true;
 		if(!me.isNew){
@@ -226,14 +249,14 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 				return false;
 			}
 		}
-		var editorComponent = ctx.column.getEditor();
+		var editorComponent = ctx.column.field;
 		var uniformizedFieldType = me.getUniformizedFieldType(ctx.column.extJsRendererClass);
 		switch(uniformizedFieldType) {
 		    case me.UNIFORMIZED_FIELD_TYPES.singleSelect:
 		    	me.loadFieldValue(editorComponent, ctx.record.data.workItemID, ctx.record.data.projectID, ctx.record.data.issueTypeID, ctx.column.fieldID, me.UNIFORMIZED_FIELD_TYPES.singleSelect, 'itemNavigator!loadComboDataByFieldID.action');
 		    	break;
 		    case me.UNIFORMIZED_FIELD_TYPES.checkBox:
-		    	me.loadFieldValue(editorComponent, ctx.record.data.workItemID, ctx.record.data.projectID, ctx.record.data.issueTypeID, ctx.column.fieldID, me.UNIFORMIZED_FIELD_TYPES.checkBox, 'itemNavigator!loadFieldValue.action');
+//		    	me.loadFieldValue(editorComponent, ctx.record.data.workItemID, ctx.record.data.projectID, ctx.record.data.issueTypeID, ctx.column.fieldID, me.UNIFORMIZED_FIELD_TYPES.checkBox, 'itemNavigator!loadFieldValue.action');
 		    	break;
 		    case me.UNIFORMIZED_FIELD_TYPES.simpleTextField:
 		    	if(me.isNew) {
@@ -249,14 +272,14 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 
 	isEditable: function(ctx) {
 		var me = this;
-		Ext.defer(me.doInitAfterEverythingLoadedAndRendered, 150, me);
+//		Ext.defer(me.doInitAfterEverythingLoadedAndRendered, 150, me);
 		if(ctx.record.data.leaf) {
 			return true;
 		}else {
-			if(ctx.field == 'f' + me.SYSTEM_FIELDS.STARTDATE || ctx.field == 'f' + me.SYSTEM_FIELDS.ENDDATE ||
-					ctx.field == 'f' + me.SYSTEM_FIELDS.DURATION ||
-				ctx.field == 'f' + me.SYSTEM_FIELDS.TOP_DOWN_STARTDATE || ctx.field == 'f' + me.SYSTEM_FIELDS.TOP_DOWN_ENDDATE ||
-					ctx.field == 'f' + me.SYSTEM_FIELDS.TOP_DOWN_DURATION) {
+			if(ctx.field === 'f' + me.SYSTEM_FIELDS.STARTDATE || ctx.field === 'f' + me.SYSTEM_FIELDS.ENDDATE ||
+					ctx.field === 'f' + me.SYSTEM_FIELDS.DURATION ||
+				ctx.field === 'f' + me.SYSTEM_FIELDS.TOP_DOWN_STARTDATE || ctx.field === 'f' + me.SYSTEM_FIELDS.TOP_DOWN_ENDDATE ||
+					ctx.field === 'f' + me.SYSTEM_FIELDS.TOP_DOWN_DURATION) {
 				return false;
 			}else {
 				return true;
@@ -270,10 +293,10 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 
 	setColumnEditor: function(shortField, column) {
 		var me = this;
-		if(me.isPrintItemEditable) {
-			var editor = new Object();
-			editor.allowBlank = false;
-			editor.selectOnFocus = true;
+		if(me.getIsPrintItemEditable()) {
+//			var editor = new Object();
+//			editor.allowBlank = false;
+//			editor.selectOnFocus = true;
 			column.extJsRendererClass = shortField.extJsRendererClass;
 			me.setCellRenderer(shortField. extJsRendererClass, column, shortField);
 		}
@@ -304,19 +327,19 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 	saveData: function(params, workItemIDAbove) {
 		var me = this;
 
-		var modifiedRecords = me.grid.store.getModifiedRecords();
+		var modifiedRecords = me.getGrid().store.getModifiedRecords();
 		if(modifiedRecords.length > 0) {
 			var firstRecord = modifiedRecords[0];
 			var changedFields = firstRecord.getChanges();
 			for(var ind in changedFields) {
 				var fieldValue = changedFields[ind];
-				if (ind && ind.charAt(0) == 'f') {
+				if (ind && ind.charAt(0) === 'f') {
 					params['fieldValues.' + ind] = fieldValue;
 				}
 			}
 			params.projectID = me.row.projectID;
 			params.issueTypeID = me.row.issueTypeID;
-			if(workItemIDAbove != null) {
+			if(workItemIDAbove ) {
 				params.workItemIDAbove = workItemIDAbove;
 			}
 			if(me.isNew) {
@@ -337,11 +360,11 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 					if(responseJSON.success) {
 						borderLayout.workItemIDToSelectAfterReload = responseJSON.data.workItemID;
 						me.reInitializeDataAfterEditOrCreate();
-						if(me.gantt != null) {
-							var changedRow = me.grid.store.getById(responseJSON.data.workItemID);
+						if(me.getGantt() ) {
+							var changedRow = me.getGrid().store.getById(responseJSON.data.workItemID);
 							changedRow.commit();
 						}else {
-							me.navigator.fireEvent.call(me.navigator,'datachange');
+							me.getNavigator().fireEvent.call(me.getNavigator(),'datachange');
 						}
 					}else {
 						var data = responseJSON.data;
@@ -364,18 +387,8 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 
 	isRowEditedt: function() {
 		var me = this;
-		/*var modified = false;
-
-		var rowItem = me.grid.getSelectionModel().getSelection()[0];
-		console.log(rowItem)
-		var modifiedRecords = me.grid.store.getUpdatedRecords();
-		console.log(modifiedRecords);
-		if(modifiedRecords.length > 0) {
-			modified = true;
-		}*/
 		return me.editOrCreateInProgress;
 	},
-
 
 	dateColumnRenderer: function(value) {
 		if(value.length > 0) {
@@ -447,7 +460,6 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 		var editor = Ext.create('Ext.form.field.Text', {
 		    listeners: {
 		    	change: function(component, newValue, oldValue, eOpts) {
-		    		me.selectedIdOrValue = newValue;
 		    	}
 		    }
 		});
@@ -465,7 +477,6 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 		    valueField: 'id',
 		    listeners: {
 		    	select: function(combo, records) {
-		    		me.selectedIdOrValue = records[0].data.id;
 		    	}
 		    }
 	    });
@@ -478,42 +489,42 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 			format: com.trackplus.TrackplusConfig.DateFormat,
 			listeners: {
 				change: function(component, newValue, oldValue, eOpts) {
-					me.selectedIdOrValue = Ext.Date.format(newValue, com.trackplus.TrackplusConfig.DateFormat);
-					var rowItem = me.grid.getSelectionModel().getSelection()[0];
+					var rowItem = me.getGrid().getSelectionModel().getSelection()[0];
 					rowItem.set('f' + component.column.fieldID, newValue);
-		    		if(me.gantt == null) {
+		    		if(CWHF.isNull(me.getGantt())) {
 		    			me.refreshDependentFields(component, rowItem.data, oldValue, newValue);
 		    		}else {
-    					var task = me.grid.store.getById(rowItem.data.Id);
-    					if(!me.navigator.isShowBaseline()) {
-			    			if(this.originalFieldType == 'com.aurel.trackplus.field.StartDateRenderer') {
+    					var task = me.getGrid().store.getById(rowItem.data.Id);
+    					if(!me.getNavigator().isShowBaseline()) {
+			    			if(this.originalFieldType === 'com.aurel.trackplus.field.StartDateRenderer') {
 			    				task.setStartDate(newValue);
 			    			}
-			    			if(this.originalFieldType == 'com.aurel.trackplus.field.EndDateRenderer') {
+			    			if(this.originalFieldType === 'com.aurel.trackplus.field.EndDateRenderer') {
 			    				task.setEndDate(newValue);
 
 			    			}
-			    			if(this.originalFieldType == 'com.aurel.trackplus.field.StartDateTargetRenderer' ||
-			    					this.originalFieldType == 'com.aurel.trackplus.field.EndDateTargetRenderer') {
+			    			if(this.originalFieldType === 'com.aurel.trackplus.field.StartDateTargetRenderer' ||
+			    					this.originalFieldType === 'com.aurel.trackplus.field.EndDateTargetRenderer') {
 			    				me.refreshDependentFields(component, rowItem.data, oldValue, newValue);
 			    			}
     					}else {
-    						if(this.originalFieldType == 'com.aurel.trackplus.field.StartDateTargetRenderer') {
+    						if(this.originalFieldType === 'com.aurel.trackplus.field.StartDateTargetRenderer') {
     							task.setStartDate(newValue);
     						}
-    						if(this.originalFieldType == 'com.aurel.trackplus.field.EndDateTargetRenderer') {
+    						if(this.originalFieldType === 'com.aurel.trackplus.field.EndDateTargetRenderer') {
     							task.setEndDate(newValue);
     						}
-    						if(this.originalFieldType == 'com.aurel.trackplus.field.StartDateRenderer' ||
-    								this.originalFieldType == 'com.aurel.trackplus.field.EndDateRenderer') {
+    						if(this.originalFieldType === 'com.aurel.trackplus.field.StartDateRenderer' ||
+    								this.originalFieldType === 'com.aurel.trackplus.field.EndDateRenderer') {
 			    				me.refreshDependentFields(component, rowItem.data, oldValue, newValue);
 			    			}
     					}
 		    		}
+		    		me.clearDirtyMarkerFromGroupValues();
 				}
 			},
-			 getValue : function(){
-				 if(me.gantt != null) {
+			 getValue: function(){
+				 if(me.getGantt() ) {
 					 if(me.fieldIsTargetOrNormalStartEnd(this.originalFieldType)) {
 						 return this.value;
 					 }else {
@@ -522,7 +533,7 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 
 				 }else {
 					 var date = this.value;
-					 if(date != null && date != "") {
+					 if(date  && date !== "") {
 						return Ext.util.Format.date(date, com.trackplus.TrackplusConfig.DateFormat);
 					 }else {
 						 return this.value;
@@ -536,10 +547,40 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 		column.editor = editor;
 	},
 
+	/*
+	 * This method removes all red markers from group items
+	 */
+	clearDirtyMarkerFromGroupValues: function() {
+		var me = this;
+		if(me.getGantt()) {
+			var store = me.getGantt().getTaskStore();
+			var rootNode = store.getRootNode();
+			me.parseGridItemsAndClearDirtyMarkerFromGroupItems(rootNode);
+		}
+	},
+
+	/*
+	 * This method parses tasks if a group item is dirty then removes red marker.
+	 */
+	parseGridItemsAndClearDirtyMarkerFromGroupItems: function(rootItem) {
+		var me = this;
+		if(rootItem.data.group ) {
+			rootItem.commit();
+		}
+		if(rootItem.childNodes.length !== 0) {
+			for(var ind in rootItem.childNodes) {
+				var child = rootItem.childNodes[ind];
+				if(child.length !== 0) {
+					me.parseGridItemsAndClearDirtyMarkerFromGroupItems(child);
+				}
+			}
+		}
+	},
+
 	fieldIsTargetOrNormalStartEnd: function(originalFieldType) {
 		var me = this;
-		if(originalFieldType == 'com.aurel.trackplus.field.StartDateRenderer' || originalFieldType == 'com.aurel.trackplus.field.EndDateRenderer' ||
-				originalFieldType == 'com.aurel.trackplus.field.StartDateTargetRenderer' || originalFieldType == 'com.aurel.trackplus.field.EndDateTargetRenderer') {
+		if(originalFieldType === 'com.aurel.trackplus.field.StartDateRenderer' || originalFieldType === 'com.aurel.trackplus.field.EndDateRenderer' ||
+				originalFieldType === 'com.aurel.trackplus.field.StartDateTargetRenderer' || originalFieldType === 'com.aurel.trackplus.field.EndDateTargetRenderer') {
 			return true;
 		}else {
 			return false;
@@ -550,25 +591,26 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 		var me = this;
 		var editor = Ext.create('Ext.form.field.Checkbox', {
 			boxLabel: shortField.label,
-			/*getValue: function() {
-				if(this.checked) {
-					return true;
-//		    		me.selectedIdOrValue = true;
-//		    		return getText('common.boolean.Y');
-		    	}else {
-		    		return false;
-//		    		me.selectedIdOrValue = false;
-//		    		return getText('common.boolean.N');
-		    	}
-		    },*/
 		    listeners: {
 		    	change: function(component, newValue, oldValue, eOpts) {
-		    		if(component.column != null) {
-			    		me.selectedIdOrValue = Ext.Date.format(newValue, com.trackplus.TrackplusConfig.DateFormat);
+		    		if(component.column ) {
 		    		}
 		    	}
+			},
+			setValue: function(val) {
+				if(typeof(val) === "boolean"){
+					this.setRawValue(val);
+				}else {
+					if(val === getText('common.boolean.Y')) {
+						this.setRawValue(true);
+					}else {
+						this.setRawValue(false);
+					}
+				}
+			},
+			getValue: function() {
+				return this.getRawValue();
 			}
-
 		});
 		column.editor = editor;
 	},
@@ -580,30 +622,29 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 			value: 0,
 		    listeners: {
 		    	change: function(component, newValue, oldValue, eOpts) {
-		    		if(component.column != null) {
-			    		me.selectedIdOrValue = newValue;
-    					var rowItem = me.grid.getSelectionModel().getSelection()[0];
-		    			if(me.gantt != null ) {
-		    				if(!me.navigator.isShowBaseline()) {
-		    					if(component.originalFieldType == 'com.aurel.trackplus.field.DurationRenderer') {
-		    						var task = me.grid.store.getById(rowItem.data.Id);
+		    		if(component.column ) {
+    					var rowItem = me.getGrid().getSelectionModel().getSelection()[0];
+		    			if(me.getGantt()  ) {
+		    				if(!me.getNavigator().isShowBaseline()) {
+		    					if(component.originalFieldType === 'com.aurel.trackplus.field.DurationRenderer') {
+		    						var task = me.getGrid().store.getById(rowItem.data.Id);
 		    						task.setDuration(newValue);
 		    					}
-		    					if(component.originalFieldType == 'com.aurel.trackplus.field.TargetDurationRenderer') {
+		    					if(component.originalFieldType === 'com.aurel.trackplus.field.TargetDurationRenderer') {
 			    					me.refreshDependentFields(component, rowItem.data, oldValue, newValue);
 		    					}
 		    				}else {
-		    					if(component.originalFieldType == 'com.aurel.trackplus.field.TargetDurationRenderer') {
-		    						var task = me.grid.store.getById(rowItem.data.Id);
+		    					if(component.originalFieldType === 'com.aurel.trackplus.field.TargetDurationRenderer') {
+		    						var task = me.getGrid().store.getById(rowItem.data.Id);
 		    						task.setDuration(newValue);
 		    					}
-		    					if(component.originalFieldType == 'com.aurel.trackplus.field.DurationRenderer') {
+		    					if(component.originalFieldType === 'com.aurel.trackplus.field.DurationRenderer') {
 		    						me.refreshDependentFields(component, rowItem.data, oldValue, newValue);
 		    					}
 		    				}
 		    			}else {
-		    				if(component.originalFieldType == 'com.aurel.trackplus.field.DurationRenderer' ||
-		    						component.originalFieldType == 'com.aurel.trackplus.field.TargetDurationRenderer') {
+		    				if(component.originalFieldType === 'com.aurel.trackplus.field.DurationRenderer' ||
+		    						component.originalFieldType === 'com.aurel.trackplus.field.TargetDurationRenderer') {
 		    					me.refreshDependentFields(component, rowItem.data, oldValue, newValue);
 		    				}
 		    			}
@@ -632,7 +673,7 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 			disableCaching:true,
 			success: function(response){
 				responseJSON = Ext.decode(response.responseText);
-				if(me.UNIFORMIZED_FIELD_TYPES.singleSelect == fieldType) {
+				if(me.UNIFORMIZED_FIELD_TYPES.singleSelect === fieldType) {
 					var storeData = responseJSON.storeData;
 					var myStore = Ext.create('Ext.data.Store', {
 						fields: ['id', 'label'],
@@ -640,11 +681,6 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 					});
 					component.bindStore(myStore);
 				}
-				if(me.UNIFORMIZED_FIELD_TYPES.checkBox == fieldType) {
-					var value = responseJSON.value;
-					component.setValue(value);
-				}
-
 			},
 			failure: function(){
 			},
@@ -655,7 +691,7 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 
 	checkUserCreateRight: function() {
 		var me = this;
-		var selectedData = me.grid.getSelectionModel().getSelection();
+		var selectedData = me.getGrid().getSelectionModel().getSelection();
 		if(selectedData.length > 0) {
 			var selection = selectedData[0];
 			me.row = selection.getData();
@@ -694,7 +730,7 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 
 	handleCreatingNewItem: function() {
 		var me = this;
-		var selectedData = me.grid.getSelectionModel().getSelection();
+		var selectedData = me.getGrid().getSelectionModel().getSelection();
 		if(selectedData.length > 0) {
 			var selection = selectedData[0];
 			me.row = selection.getData();
@@ -716,7 +752,7 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 			newTask.editable = me.row.editable;
 			newTask.workItemIDAbove = me.row.workItemID;
 			me.workItemIDAbove =  me.row.workItemID;
-			switch(me.navigator.$className) {
+			switch(me.getNavigator().$className) {
 			    case 'com.trackplus.itemNavigator.SimpleTreeGridViewPlugin':
 			    case 'com.trackplus.itemNavigator.WBSViewPlugin':
 			    case 'com.trackplus.itemNavigator.GanttViewPlugin':
@@ -728,13 +764,13 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 			    default:
 			    	break;
 			}
-			if(me.gantt == null) {
+			if(CWHF.isNull(me.getGantt())) {
 				me.createContext();
 			}
 			me.editOrCreateInProgress = true;
 			me.recalculateGridItemIndex();
 
-			selectedData = me.grid.getSelectionModel().getSelection();
+			selectedData = me.getGrid().getSelectionModel().getSelection();
 			if(selectedData.length > 0) {
 				var selection = selectedData[0];
 				selection.set('f17', getText('itemov.ganttView.newlyCreatedItemDummyTitle'));
@@ -757,35 +793,35 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 		var rowIndex = parentNode.indexOf(selection);
 		rowIndex++;
 		me.actualEditedOrCreatedRecord = parentNode.insertChild(rowIndex, newTask);
-		me.grid.getSelectionModel().select(me.actualEditedOrCreatedRecord);
+		me.getGrid().getSelectionModel().select(me.actualEditedOrCreatedRecord);
 	},
 
 	selectNewlyAddedRowFlat: function(selection, newTask) {
 		var me = this;
-		var rowIndex = me.grid.store.indexOf(selection);
+		var rowIndex = me.getGrid().store.indexOf(selection);
 		rowIndex++;
-		me.actualEditedOrCreatedRecord = me.grid.store.insert(rowIndex, newTask);
-		me.grid.getSelectionModel().select(me.actualEditedOrCreatedRecord);
+		me.actualEditedOrCreatedRecord = me.getGrid().store.insert(rowIndex, newTask);
+		me.getGrid().getSelectionModel().select(me.actualEditedOrCreatedRecord);
 	},
 
 	dataChangeSuccess: function() {
 		var me = this;
 		var id = borderLayout.workItemIDToSelectAfterReload;
-		var recordToSelect = me.grid.store.getById(id);
-		me.grid.getSelectionModel().select(recordToSelect);
+		var recordToSelect = me.getGrid().store.getById(id);
+		me.getGrid().getSelectionModel().select(recordToSelect);
 	},
 
 	undoEditOrCreate: function() {
 		var me = this;
-		me.navigator.fireEvent.call(me.navigator,'datachange');
+		me.getNavigator().fireEvent.call(me.getNavigator(),'datachange');
 	},
 
 	removeRowFromGrid: function(keyCode, event) {
 		var me = this;
 		event.stopEvent();
-		if(me.gantt == null) {
+		if(CWHF.isNull(me.getGantt())) {
 			if(!me.isNew) {
-				var selectedData = me.grid.getSelectionModel().getSelection();
+				var selectedData = me.getGrid().getSelectionModel().getSelection();
 				if(selectedData.length > 0) {
 					var selection = selectedData[0];
 					var workItemID = selection.getData().workItemID;
@@ -793,16 +829,15 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 				}
 			}
 		}else {
-			var selectedData = me.grid.getSelectionModel().getSelection();
+			var selectedData = me.getGrid().getSelectionModel().getSelection();
 			if(selectedData.length > 0) {
 				var selection = selectedData[0];
 				var isNew = false;
-//				if(selection.data.Id.indexOf("newTaskID") > -1) {
 				if(selection.data.Id < 0) {
 					isNew = true;
 				}
 				if(isNew) {
-					me.gantt.getTaskStore().remove(selection);
+					me.getGantt().getTaskStore().remove(selection);
 					me.recalculateGridItemIndex();
 				}else {
 					var workItemID = selection.getData().workItemID;
@@ -814,16 +849,15 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 
 	handleRemoveFromGantt: function() {
 		var me = this;
-		var selectedData = me.grid.getSelectionModel().getSelection();
+		var selectedData = me.getGrid().getSelectionModel().getSelection();
 		if(selectedData.length > 0) {
 			var selection = selectedData[0];
 			var isNew = false;
-//			if(selection.data.Id.indexOf("newTaskID") > -1) {
 			if(selection.data.Id < 0) {
 				isNew = true;
 			}
 			if(isNew) {
-				me.gantt.getTaskStore().remove(selection);
+				me.getGantt().getTaskStore().remove(selection);
 				me.recalculateGridItemIndex();
 			}else {
 				var workItemID = selection.getData().workItemID;
@@ -843,12 +877,12 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 				var responseJSON = Ext.decode(response.responseText);
 				if(responseJSON.success) {
 					CWHF.showMsgInfo(getText('item.action.stateChangeToClosed', workItemID));
-					if(me.gantt == null) {
-						me.navigator.fireEvent.call(me.navigator,'datachange');
+					if(CWHF.isNull(me.getGantt())) {
+						me.getNavigator().fireEvent.call(me.getNavigator(),'datachange');
 					}else {
-						var task = me.grid.store.getById(workItemID);
+						var task = me.getGrid().store.getById(workItemID);
 						task.data['f' + me.SYSTEM_FIELDS.STATE_FIELD_ID] = responseJSON.closedStateName;
-						me.grid.getView().refresh();
+						me.getGrid().getView().refresh();
 					}
 				}else {
 					var data = responseJSON.data;
@@ -870,34 +904,122 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 
 	recalculateGridItemIndex: function() {
 		var me = this;
-		if(me.gantt != null) {
-			var store = me.gantt.getTaskStore();
-//			var store = me.view.getTaskStore();
-			var rootNode = store.treeStore.getRootNode();
+		if(me.getGantt() ) {
+			var store = me.getGantt().getTaskStore();
+			var rootNode = store.getRootNode();
 			me.workItemIndex = 0;
 			me.parseGridItemsAndResetIndex(rootNode);
-			me.grid.getView().refresh();
+			me.getGrid().getView().refresh();
 		}
 	},
 
 	parseGridItemsAndResetIndex: function(rootItem) {
 		var me = this;
 		var isProject = false;
-		if(rootItem.data.group != null) {
+		if(rootItem.data.group ) {
 			isProject = rootItem.data.group;
 		}
-		if(!isProject && rootItem.data.Id != 'root') {
+		if(!isProject && rootItem.data.Id !== 'root') {
 			rootItem.data.workItemIndex = me.workItemIndex;
 			me.workItemIndex++;
 		}
-		if(rootItem.childNodes.length != 0) {
+		if(rootItem.childNodes.length !== 0) {
 			for(var ind in rootItem.childNodes) {
 				var child = rootItem.childNodes[ind];
-				if(child.length != 0) {
+				if(child.length !== 0) {
 					me.parseGridItemsAndResetIndex(child);
 				}
 			}
 		}
+	},
+
+    getRendererForSpecificColumns: function(uniformizedFieldType, columnNr) {
+		var me = this;
+		var renderer = null;
+	    if(uniformizedFieldType === me.UNIFORMIZED_FIELD_TYPES.datePicker) {
+	    	renderer = function (value, metaData, record, row, col, store, gridView) {
+	    		var isProject = false;
+    			if(record.data.group ) {
+    				isProject = record.data.group;
+    			}
+    			if(!isProject) {
+		    		var dateObj = null;
+		    		if(value instanceof Date) {
+		    			dateObj = new Date(value.getTime());
+		    		}else {
+		    			dateObj = Ext.Date.parse(value, com.trackplus.TrackplusConfig.DateFormat);
+		    		}
+		    		if(dateObj ) {
+		    			if(!isProject) {
+		    				return Ext.util.Format.date(dateObj, com.trackplus.TrackplusConfig.DateFormat);
+		    			}
+		    		}
+    			}else {
+	    			if(columnNr === 0 ) {
+	    				return record.data['Name'];
+	    			}else {
+	    				return "";
+	    			}
+	    		}
+	    	};
+	    }
+	    if(uniformizedFieldType === me.UNIFORMIZED_FIELD_TYPES.singleSelect) {
+	    	renderer = function (val, metaData, record, row, col, store, gridView) {
+    			var combo = metaData.column.getEditor();
+    			if(val && combo && combo.store && combo.displayField){
+    				var valueFieldInt = parseInt(val);
+    				var index = combo.store.findExact(combo.valueField, valueFieldInt);
+    				if(index >= 0){
+    					return combo.store.getAt(index).get(combo.displayField);
+    				}
+    			}
+    			return val;
+	    	};
+	    }
+	    if(uniformizedFieldType === me.UNIFORMIZED_FIELD_TYPES.checkBox) {
+	    	renderer= function (val, metaData, record, row, col, store, gridView) {
+	    		var isProject = false;
+    			if(record.data.group ) {
+    				isProject = record.data.group;
+    			}
+    			if(!isProject) {
+    				if(typeof(val) === "boolean"){
+    					if(val) {
+    						return getText('common.boolean.Y');
+    					}else {
+    						return getText('common.boolean.N');
+    					}
+    				}else {
+    					if(val === "true") {
+    						return getText('common.boolean.Y');
+    					}
+    					if(val === "false") {
+    						return getText('common.boolean.N');
+    					}
+    					if(val === "") {
+    						return getText('common.boolean.N');
+    					}
+    					return val;
+    				}
+    			}else {
+    				return '';
+    			}
+	    	};
+	    }
+
+	    if(uniformizedFieldType === me.UNIFORMIZED_FIELD_TYPES.numberEditor) {
+	    	renderer = function (value, metaData, record, row, col, store, gridView) {
+	    		var isProject = false;
+	    		if(record.data.group ) {
+	    			isProject = record.data.group;
+	    		}
+	    		if(!isProject) {
+	    			return value;
+	    		}
+	    		return '';
+	    	};
+	    }
+	    return renderer;
 	},
 
 	/************** HELPRE methods for updating dependents fields **************/
@@ -917,7 +1039,7 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 		    	renderer.durationFieldID = me.SYSTEM_FIELDS.DURATION;
 		    	renderer.startDateFieldID = me.SYSTEM_FIELDS.STARTDATE;
 		    	renderer.endDateFieldID = me.SYSTEM_FIELDS.ENDDATE;
-		    	if(me.gantt == null) {
+		    	if(CWHF.isNull(me.getGantt())) {
 		    		convertedOldValue = Ext.Date.parse(oldValue, com.trackplus.TrackplusConfig.DateFormat);
 		    		convertedNewValue = Ext.Date.parse(newValue, com.trackplus.TrackplusConfig.DateFormat);
 		    	}
@@ -927,7 +1049,7 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 		    	renderer.durationFieldID = me.SYSTEM_FIELDS.DURATION;
 		    	renderer.startDateFieldID = me.SYSTEM_FIELDS.STARTDATE;
 		    	renderer.endDateFieldID = me.SYSTEM_FIELDS.ENDDATE;
-		    	if(me.gantt == null) {
+		    	if(CWHF.isNull(me.getGantt())) {
 		    		convertedOldValue = Ext.Date.parse(oldValue, com.trackplus.TrackplusConfig.DateFormat);
 		    		convertedNewValue = Ext.Date.parse(newValue, com.trackplus.TrackplusConfig.DateFormat);
 		    	}
@@ -937,7 +1059,7 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 		    	renderer.startDateFieldID = me.SYSTEM_FIELDS.TOP_DOWN_STARTDATE;
 		    	renderer.endDateFieldID = me.SYSTEM_FIELDS.TOP_DOWN_ENDDATE;
 		    	renderer.durationFieldID = me.SYSTEM_FIELDS.TOP_DOWN_DURATION;
-		    	if(me.gantt == null) {
+		    	if(CWHF.isNull(me.getGantt())) {
 		    		convertedOldValue = Ext.Date.parse(oldValue, com.trackplus.TrackplusConfig.DateFormat);
 		    		convertedNewValue = Ext.Date.parse(newValue, com.trackplus.TrackplusConfig.DateFormat);
 		    	}
@@ -947,7 +1069,7 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 		    	renderer.startDateFieldID = me.SYSTEM_FIELDS.TOP_DOWN_STARTDATE;
 		    	renderer.endDateFieldID = me.SYSTEM_FIELDS.TOP_DOWN_ENDDATE;
 		    	renderer.durationFieldID = me.SYSTEM_FIELDS.TOP_DOWN_DURATION;
-		    	if(me.gantt == null) {
+		    	if(CWHF.isNull(me.getGantt())) {
 		    		convertedOldValue = Ext.Date.parse(oldValue, com.trackplus.TrackplusConfig.DateFormat);
 		    		convertedNewValue = Ext.Date.parse(newValue, com.trackplus.TrackplusConfig.DateFormat);
 		    	}
@@ -974,7 +1096,7 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 		var oldFieldValues = {};
 		oldFieldValues[fieldFullID] = convertedOldValue;
 		var isFromGantt = false;
-		if(me.gantt != null) {
+		if(me.getGantt() ) {
 			isFromGantt = true;
 		}
 		rendererClassInstance.refreshDependentFields.call(me, fieldID, fieldValues, oldFieldValues, renderer, model, isFromGantt);
@@ -982,18 +1104,18 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 
 	updateField: function(fieldID, fieldValue, fieldDisplayValue, fieldValues) {
 		var me=this;
-		if(fieldValue != null) {
+		if(fieldValue ) {
 			var fieldName = "f" + fieldID;
-			var rowItem = me.grid.getSelectionModel().getSelection()[0];
+			var rowItem = me.getGrid().getSelectionModel().getSelection()[0];
 			var convertedFieldValue = fieldValue;
-			if(me.gantt != null) {
-				if(fieldID == me.SYSTEM_FIELDS.STARTDATE || fieldID == me.SYSTEM_FIELDS.ENDDATE ||
-						fieldID == me.SYSTEM_FIELDS.TOP_DOWN_STARTDATE || fieldID == me.SYSTEM_FIELDS.TOP_DOWN_ENDDATE) {
+			if(me.getGantt() ) {
+				if(fieldID === me.SYSTEM_FIELDS.STARTDATE || fieldID === me.SYSTEM_FIELDS.ENDDATE ||
+						fieldID === me.SYSTEM_FIELDS.TOP_DOWN_STARTDATE || fieldID === me.SYSTEM_FIELDS.TOP_DOWN_ENDDATE) {
 					convertedFieldValue = Ext.Date.parse(fieldValue, com.trackplus.TrackplusConfig.DateFormat);
 				}
 			}
 			rowItem.set(fieldName, convertedFieldValue);
-			me.grid.getView().refresh();
+			me.getGrid().getView().refresh();
 		}
 	},
 
@@ -1015,7 +1137,7 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 	},
 
 	parseDate: function(dateStr, nowIfNull) {
-		if (dateStr==null || dateStr.length==0) {
+		if (CWHF.isNull(dateStr) || dateStr.length===0) {
 			if (nowIfNull) {
 				return new Date();
 			} else {
@@ -1023,9 +1145,6 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 			}
 		} else {
 			var retValue = Ext.Date.parse(dateStr, com.trackplus.TrackplusConfig.DateFormat);
-//			if(retValue == null) {
-//				retValue = new Date(dateStr);
-//			}
 			return retValue;
 		}
 	},
@@ -1033,8 +1152,7 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 	getDurationBetweenDates: function(startDateStr, endDate) {
 		var me=this;
 		var startDate = me.parseDate(startDateStr, false);
-		//var endDate = me.parseDate(endDateStr, false);
-		if (startDate==null || endDate==null) {
+		if (CWHF.isNull(startDate) || CWHF.isNull(endDate)) {
 			return null;
 		}
 		var i=0;
@@ -1046,7 +1164,7 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 	        } else {
 	        	//end date explicitly set on Saturday or Sunday: take this week end day(s) as working day
 	        	if (startDate>=endDate) {
-	        		if (day==6) {
+	        		if (day===6) {
 	        			//add one day for task ending on Saturday
 	        			i++;
 	        		} else {

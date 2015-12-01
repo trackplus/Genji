@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -142,6 +142,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TPersonBean loadByPrimaryKey(Integer objectID) {
 		TPerson tPerson = null;
 		try {
@@ -162,6 +163,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param substituteID
 	 * @return
 	 */
+	@Override
 	public List<Integer> loadSubstitutedPersons(Integer substituteID) {
 		List<Integer> substitutedPersons = new LinkedList<Integer>();
 		Criteria crit = new Criteria();
@@ -171,7 +173,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 		try {
 			records = doSelectVillageRecords(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the persons substituted by " + substituteID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the persons substituted by " + substituteID + " failed with " + e.getMessage());
 			return Collections.emptyList();
 		}
 		if (records != null && !records.isEmpty()) {
@@ -187,7 +189,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 						}
 					}
 				} catch (DataSetException e) {
-					LOGGER.error("Getting the persons substituted by " + substituteID + " failed with " + e.getMessage(), e);
+					LOGGER.error("Getting the persons substituted by " + substituteID + " failed with " + e.getMessage());
 					LOGGER.debug(ExceptionUtils.getStackTrace(e), e);
 				}
 			}
@@ -200,6 +202,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * 
 	 * @return
 	 */
+	@Override
 	public Map<Integer, Integer> loadNumberOfPersonsInDepartments(List<Integer> departmentIDs) {
 		Map<Integer, Integer> numberOfPersonsInGroups = new HashMap<Integer, Integer>();
 		if (departmentIDs != null && !departmentIDs.isEmpty()) {
@@ -214,7 +217,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 			try {
 				records = doSelectVillageRecords(crit);
 			} catch (Exception e) {
-				LOGGER.error("Groupping the persons by departments " + departmentIDs + " failed with " + e.getMessage(), e);
+				LOGGER.error("Groupping the persons by departments " + departmentIDs + " failed with " + e.getMessage());
 				LOGGER.debug(ExceptionUtils.getStackTrace(e), e);
 			}
 			try {
@@ -226,7 +229,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 					}
 				}
 			} catch (Exception e) {
-				LOGGER.error("Getting the number of persons by departments " + departmentIDs + " failed with " + e.getMessage(), e);
+				LOGGER.error("Getting the number of persons by departments " + departmentIDs + " failed with " + e.getMessage());
 				LOGGER.debug(ExceptionUtils.getStackTrace(e), e);
 			}
 		}
@@ -238,6 +241,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * 
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> loadDailyReminderPersons(Date date) {
 		Criteria crit = new Criteria();
 		crit.add(DELETED, (Object) BooleanFields.TRUE_VALUE, Criteria.NOT_EQUAL);
@@ -254,7 +258,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the reminder persons failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the reminder persons failed with " + e.getMessage());
 			LOGGER.debug(ExceptionUtils.getStackTrace(e), e);
 			return null;
 		}
@@ -265,6 +269,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * 
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> loadBasketReminderPersons(Date fromDate, Date toDate) {
 		Criteria crit = new Criteria();
 		crit.add(DELETED, (Object) BooleanFields.TRUE_VALUE, Criteria.NOT_EQUAL);
@@ -279,7 +284,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the reminder basket persons failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the reminder basket persons failed with " + e.getMessage());
 			LOGGER.debug(ExceptionUtils.getStackTrace(e), e);
 			return null;
 		}
@@ -289,6 +294,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @return List of Persons with the specific keys
 	 * @throws Exception
 	 */
+	@Override
 	public List<TPersonBean> loadByKeys(List<Integer> personIDs) {
 		List<TPersonBean> personList = new LinkedList<TPersonBean>();
 		if (personIDs == null || personIDs.isEmpty()) {
@@ -321,6 +327,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param uuids
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> loadByUUIDs(List<String> uuids) {
 		return loadByFieldValues(uuids, TPUUID);
 	}
@@ -331,6 +338,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param email
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> loadByEmail(String email) {
 		if (email == null || email.length() < 1) {
 			LOGGER.error("Faulty parameter email in loadByEmail");
@@ -342,7 +350,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (Exception e) {
-			LOGGER.error("Loading by email " + email + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading by email " + email + " failed with " + e.getMessage());
 			LOGGER.debug(ExceptionUtils.getStackTrace(e), e);
 			return null;
 		}
@@ -390,6 +398,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param userName
 	 * @return
 	 */
+	@Override
 	public TPersonBean loadByLoginName(String loginName) {
 		List<TPerson> persons = null;
 		if (loginName == null || loginName.length() == 0) {
@@ -403,7 +412,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 		try {
 			persons = doSelect(crit);
 		} catch (Exception e) {
-			LOGGER.error("Loading by loginname " + loginName + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading by loginname " + loginName + " failed with " + e.getMessage());
 			LOGGER.debug(ExceptionUtils.getStackTrace(e), e);
 		}
 		if (persons != null && !persons.isEmpty()) {
@@ -419,6 +428,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param groupName
 	 * @return
 	 */
+	@Override
 	public TPersonBean loadGroupByName(String groupName) {
 		List<TPerson> persons = new LinkedList<TPerson>();
 		if (groupName == null || groupName.length() == 0) {
@@ -432,7 +442,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 		try {
 			persons = doSelect(crit);
 		} catch (Exception e) {
-			LOGGER.error("Loading by groupName " + groupName + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading by groupName " + groupName + " failed with " + e.getMessage());
 			LOGGER.debug(ExceptionUtils.getStackTrace(e), e);
 		}
 		if (persons != null && !persons.isEmpty()) {
@@ -450,6 +460,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param personKey
 	 * @return
 	 */
+	@Override
 	public boolean nameAndEmailExist(String lastname, String firstname, String email, Integer personKey) {
 		Criteria crit = new Criteria();
 		if (lastname != null) {
@@ -487,6 +498,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param lastName
 	 * @return
 	 */
+	@Override
 	public TPersonBean loadByFirstNameLastName(String firstName, String lastName) {
 		List<TPerson> torqueList = new ArrayList<TPerson>();
 		Criteria crit = new Criteria();
@@ -503,7 +515,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 		try {
 			torqueList = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the person with firstName " + firstName + " and lastName " + lastName + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the person with firstName " + firstName + " and lastName " + lastName + " failed with " + e.getMessage());
 			LOGGER.debug(ExceptionUtils.getStackTrace(e), e);
 		}
 		if (torqueList == null || torqueList.isEmpty()) {
@@ -519,6 +531,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	/**
 	 * Load all system administrators
 	 */
+	@Override
 	public List<TPersonBean> loadSystemAdmins() {
 		Criteria crit = new Criteria();
 
@@ -543,6 +556,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param persons
 	 * @param deactivate
 	 */
+	@Override
 	public void activateDeactivatePersons(List<Integer> persons, boolean deactivate) {
 		try {
 			if (persons != null && !persons.isEmpty()) {
@@ -579,6 +593,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param persons
 	 * @param deactivate
 	 */
+	@Override
 	public void setUserLevelPersons(List<Integer> persons, Integer userLevel) {
 		try {
 			if (persons != null && !persons.isEmpty()) {
@@ -606,6 +621,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * 
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> loadPersons() {
 		Criteria crit = new Criteria();
 		crit.add(PKEY, 0, Criteria.GREATER_THAN);// exclude workflow user
@@ -625,6 +641,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * 
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> loadAllClients() {
 		Criteria crit = new Criteria();
 		crit.add(PKEY, 0, Criteria.GREATER_THAN);// exclude workflow user
@@ -646,11 +663,11 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * 
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> loadAllUsers() {
 		Criteria crit = new Criteria();
 		crit.add(PKEY, 0, Criteria.GREATER_THAN);// exclude workflow user
 		crit.add(ISGROUP, (Object) BooleanFields.TRUE_VALUE, Criteria.NOT_EQUAL);
-		//crit.add(USERLEVEL, TPersonBean.USERLEVEL.CLIENT, Criteria.NOT_EQUAL);
 		Criterion criterionNoUserLevel = crit.getNewCriterion(USERLEVEL, (Object)null, Criteria.ISNULL);
 		Criterion criterionNoClient = crit.getNewCriterion(USERLEVEL, TPersonBean.USERLEVEL.CLIENT, Criteria.NOT_EQUAL);
 		crit.add(criterionNoUserLevel.or(criterionNoClient));
@@ -671,6 +688,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param actualValue
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> loadActivePersons() {
 		Criteria crit = new Criteria();
 		crit.add(DELETED, (Object) BooleanFields.TRUE_VALUE, Criteria.NOT_EQUAL);
@@ -692,6 +710,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * 
 	 * @return List of active persons and groups
 	 */
+	@Override
 	public List<TPersonBean> loadActivePersonsAndGroups() {
 		Criteria crit = new Criteria();
 
@@ -715,6 +734,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * 
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> loadGroups() {
 		Criteria crit = new Criteria();
 		crit.add(ISGROUP, "Y");
@@ -733,6 +753,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * 
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> loadPersonsAndGroups() {
 		Criteria crit = new Criteria();
 
@@ -757,6 +778,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param roleIDs
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> loadByProjectAndRoles(List<Integer> projectIDs, List<Integer> roleIDs) {
 		if (roleIDs == null || roleIDs.isEmpty()) {
 			return new ArrayList<TPersonBean>();
@@ -773,7 +795,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (Exception e) {
-			LOGGER.error("Getting the persons by project " + projectIDs + " and role + " + roleIDs.size() + " failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the persons by project " + projectIDs + " and role + " + roleIDs.size() + " failed with " + e.getMessage());
 			LOGGER.debug(ExceptionUtils.getStackTrace(e), e);
 			return new ArrayList<TPersonBean>();
 		}
@@ -788,6 +810,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param currentOption
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> getDirectPersons(List<Integer> personIDs, boolean excludeInactive, Integer currentOption) {
 		List<TPersonBean> personBeans = new LinkedList<TPersonBean>();
 		if (personIDs == null || personIDs.isEmpty()) {
@@ -824,6 +847,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param currentOption
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> getIndirectPersons(List<Integer> personIDs, boolean excludeInactive, Integer currentOption) {
 		List<TPersonBean> personBeans = new LinkedList<TPersonBean>();
 		if (personIDs == null || personIDs.isEmpty()) {
@@ -870,6 +894,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param excludeInactive
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> getDirectGroups(List<Integer> personIDs, boolean excludeInactive) {
 		List<TPersonBean> personBeans = new LinkedList<TPersonBean>();
 		if (personIDs == null || personIDs.isEmpty()) {
@@ -899,6 +924,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 		return personBeans;
 	}
 
+	@Override
 	public Integer countUsers(boolean disabled, boolean limited) {
 		List<TPerson> persons = null;
 		Integer count = new Integer(0);
@@ -938,6 +964,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param disabled
 	 * @return
 	 */
+	@Override
 	public int countByUserLevels(List<Integer> userLevels, boolean disabled) {
 		if (userLevels == null || userLevels.isEmpty()) {
 			return 0;
@@ -957,7 +984,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 		try {
 			return ((Record) doSelectVillageRecords(crit).get(0)).getValue(1).asInt();
 		} catch (Exception e) {
-			LOGGER.error("Count the number of users by user level field with " + e.getMessage(), e);
+			LOGGER.error("Count the number of users by user level field with " + e.getMessage());
 			LOGGER.debug(ExceptionUtils.getStackTrace(e), e);
 		}
 		return 0;
@@ -968,6 +995,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * 
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> getLoggedInUsers() {
 		Criteria crit = new Criteria();
 		crit.addJoin(PKEY, TLoggedInUsersPeer.LOGGEDUSER);
@@ -976,7 +1004,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (Exception e) {
-			LOGGER.error("Getting the logged in persons failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the logged in persons failed with " + e.getMessage());
 			LOGGER.debug(ExceptionUtils.getStackTrace(e), e);
 			return null;
 		}
@@ -988,18 +1016,20 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param personBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TPersonBean personBean) {
 		try {
 			TPerson tPerson = BaseTPerson.createTPerson(personBean);
 			tPerson.save();
 			return tPerson.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a person failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a person failed with " + e.getMessage());
 			LOGGER.debug(ExceptionUtils.getStackTrace(e), e);
 			return null;
 		}
 	}
 
+	@Override
 	public boolean hasDependentPersonData(List<Integer> personIDs) {
 		return ReflectionHelper.hasDependentData(replacePersonPeerClasses, replacePersonFields, personIDs);
 	}
@@ -1011,31 +1041,6 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param oldPersonID
 	 * @param newPersonID
 	 */
-	/*public boolean hasDependencyInUserPicker(List<Integer> personIDs) {
-		if (personIDs == null || personIDs.isEmpty()) {
-			return false;
-		}
-		List<TPerson> persons = null;
-		Criteria selectCriteria;
-		List<int[]> personChunkList = GeneralUtils.getListOfChunks(personIDs);
-		Iterator<int[]> iterator = personChunkList.iterator();
-		while (iterator.hasNext()) {
-			int[] personIDChunk = iterator.next();
-			selectCriteria = new Criteria();
-			selectCriteria.addIn(TAttributeValuePeer.SYSTEMOPTIONID, personIDChunk);
-			selectCriteria.add(TAttributeValuePeer.SYSTEMOPTIONTYPE, SystemFields.PERSON);
-			selectCriteria.setDistinct();
-			try {
-				persons = doSelect(selectCriteria);
-			} catch (Exception e) {
-				LOGGER.error("Verifiying the dependent " + "oldPersonIDs " + personIDs.size() + " for the user picker failed with " + e.getMessage(), e);
-			}
-			if (persons != null && !persons.isEmpty()) {
-				return true;
-			}
-		}
-		return false;
-	}*/
 
 	/**
 	 * The reflection does not work because an additional condition should be
@@ -1044,41 +1049,13 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param oldPersonID
 	 * @param newPersonID
 	 */
-	/*public boolean hasDependencyInHistory(List<Integer> personIDs, boolean newValues) {
-		if (personIDs == null || personIDs.isEmpty()) {
-			return false;
-		}
-		List<TPerson> persons = null;
-		Criteria selectCriteria;
-		List<int[]> personChunkList = GeneralUtils.getListOfChunks(personIDs);
-		Iterator<int[]> iterator = personChunkList.iterator();
-		while (iterator.hasNext()) {
-			int[] personIDChunk = iterator.next();
-			selectCriteria = new Criteria();
-			if (newValues) {
-				selectCriteria.addIn(TFieldChangePeer.NEWSYSTEMOPTIONID, personIDChunk);
-			} else {
-				selectCriteria.addIn(TFieldChangePeer.OLDSYSTEMOPTIONID, personIDChunk);
-			}
-			selectCriteria.add(TFieldChangePeer.SYSTEMOPTIONTYPE, SystemFields.INTEGER_PERSON);
-			//selectCriteria.setDistinct();
-			try {
-				persons = doSelect(selectCriteria);
-			} catch (Exception e) {
-				LOGGER.error("Verifiying the dependent " + "oldPersonIDs " + personIDs.size() + " for the user picker failed with " + e.getMessage(), e);
-			}
-			if (persons != null && !persons.isEmpty()) {
-				return true;
-			}
-		}
-		return false;
-	}*/
 
 	/**
 	 * Delete a person without dependences
 	 * 
 	 * @param personID
 	 */
+	@Override
 	public void deletePerson(Integer personID) {
 		new TCardFieldOptionPeer().deleteOptionForField(SystemFields.INTEGER_MANAGER, personID);
 		new TCardFieldOptionPeer().deleteOptionForField(SystemFields.INTEGER_RESPONSIBLE, personID);
@@ -1098,6 +1075,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param oldPersonID
 	 * @param newPersonID
 	 */
+	@Override
 	public void replacePerson(Integer oldPersonID, Integer newPersonID) {
 		ReflectionHelper.replace(replacePersonPeerClasses, replacePersonFields, oldPersonID, newPersonID);
 	}
@@ -1109,6 +1087,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param oldPersonID
 	 * @param newPersonID
 	 */
+	@Override
 	public void replaceUserPicker(Integer oldPersonID, Integer newPersonID) {
 		Criteria selectCriteria = new Criteria();
 		Criteria updateCriteria = new Criteria();
@@ -1131,6 +1110,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param newPersonID
 	 * @param newValues
 	 */
+	@Override
 	public void replaceHistoryPerson(Integer oldPersonID, Integer newPersonID, boolean newValues) {
 		Criteria selectCriteria = new Criteria();
 		Criteria updateCriteria = new Criteria();
@@ -1150,6 +1130,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 		}
 	}
 
+	@Override
 	public void deleteGroup(Integer groupID) {
 		new TCardFieldOptionPeer().deleteOptionForField(SystemFields.INTEGER_RESPONSIBLE, groupID);
 		List<Integer> userPickerFieldIDs = FieldBL.getUserPickerFieldIDs();
@@ -1161,10 +1142,12 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 		ReflectionHelper.delete(deleteGroupPeerClasses, deleteGroupFields, groupID);
 	}
 
+	@Override
 	public boolean hasDependentGroupData(List<Integer> groupIDs) {
 		return ReflectionHelper.hasDependentData(replaceGroupPeerClasses, replaceGroupFields, groupIDs);
 	}
 
+	@Override
 	public void replaceGroup(Integer oldPerson, Integer newPerson) {
 		ReflectionHelper.replace(replaceGroupPeerClasses, replaceGroupFields, oldPerson, newPerson);
 	}
@@ -1176,6 +1159,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param personIDs
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> loadSortedPersonsOrGroups(List<Integer> personIDs) {
 		List<TPersonBean> list = new LinkedList<TPersonBean>();
 		if (personIDs == null || personIDs.isEmpty()) {
@@ -1210,6 +1194,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param listType
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> getPersonsWithWorkInProject(Integer entityID, int entityType, Integer listType) {
 		Criteria criteria = new Criteria();
 		criteria.addJoin(PKEY, TCostPeer.PERSON);
@@ -1231,7 +1216,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the persons woth work in a project/release " + entityID + " " + entityType + " failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the persons woth work in a project/release " + entityID + " " + entityType + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -1242,6 +1227,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param workItemID
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> loadNotifyThroughRaci(Integer workItemID) {
 		if (workItemID == null) {
 			return new LinkedList<TPersonBean>();
@@ -1260,7 +1246,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the raci role persons for notification for item " + workItemID + " failed  with " + e.getMessage(), e);
+			LOGGER.error("Loading the raci role persons for notification for item " + workItemID + " failed  with " + e.getMessage());
 			return null;
 		}
 	}
@@ -1271,6 +1257,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param groupKey
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> loadPersonsForGroup(Integer groupKey) {
 		Criteria crit = new Criteria();
 		crit.addJoin(BaseTGroupMemberPeer.PERSON, BaseTPersonPeer.PKEY);
@@ -1292,6 +1279,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param personID
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> loadGroupsForPerson(Integer personID) {
 		Criteria crit = new Criteria();
 		crit.addJoin(TGroupMemberPeer.THEGROUP, TPersonPeer.PKEY);
@@ -1312,6 +1300,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param personIDs
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> loadGroupsForPersons(List<Integer> personIDs) {
 		Criteria crit = new Criteria();
 		crit.addJoin(TGroupMemberPeer.THEGROUP, TPersonPeer.PKEY);
@@ -1320,7 +1309,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (Exception e) {
-			LOGGER.error("Loading the groups the persons " + personIDs.size() + " belongs to failed with " + e, e);
+			LOGGER.error("Loading the groups for the persons " + personIDs.size() + " belongs to failed with " + e, e);
 			LOGGER.debug(ExceptionUtils.getStackTrace(e), e);
 			return null;
 		}
@@ -1332,6 +1321,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param departmentID
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> loadPersonsForDepartment(Integer departmentID) {
 		Criteria crit = new Criteria();
 		crit.add(BaseTPersonPeer.DEPKEY, departmentID);
@@ -1352,6 +1342,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param groupKeys
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> loadPersonsForGroups(List<Integer> groupKeys) {
 		Criteria crit = new Criteria();
 		crit.addJoin(BaseTGroupMemberPeer.PERSON, BaseTPersonPeer.PKEY);
@@ -1365,6 +1356,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 		}
 	}
 
+	@Override
 	public List<TPersonBean> getDirectRaciPersons(Integer workItemKey, boolean group, String raciRole) {
 		if (workItemKey == null) {
 			return new LinkedList<TPersonBean>();
@@ -1397,6 +1389,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param workItemKey
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> getDirectInformants(Integer workItemKey) {
 		return getDirectRaci(workItemKey, RaciRole.INFORMANT);
 	}
@@ -1407,6 +1400,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param workItemKey
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> getDirectConsultants(Integer workItemKey) {
 		return getDirectRaci(workItemKey, RaciRole.CONSULTANT);
 	}
@@ -1422,7 +1416,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the raci role persons/groups for item " + workItemKey + " raci role " + raciRole + " failed  with " + e.getMessage(), e);
+			LOGGER.error("Loading the raci role persons/groups for item " + workItemKey + " raci role " + raciRole + " failed  with " + e.getMessage());
 			LOGGER.debug(ExceptionUtils.getStackTrace(e), e);
 			return null;
 		}
@@ -1434,6 +1428,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param workItemKey
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> loadPersonsWithEffort(Integer workItemKey) {
 		Criteria crit = new Criteria();
 		crit.addJoin(PKEY, TCostPeer.PERSON);
@@ -1473,6 +1468,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param projects
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> loadUsedManagersByProjects(Integer person, Integer[] projects) {
 		List<TPersonBean> personList = new ArrayList<TPersonBean>();
 		if (projects == null || projects.length == 0) {
@@ -1506,6 +1502,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param projects
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> loadUsedResonsiblesByProjects(Integer person, Integer[] projects) {
 		List<TPersonBean> personList = new ArrayList<TPersonBean>();
 		if (projects == null || projects.length == 0) {
@@ -1540,6 +1537,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param projects
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> loadUsedOriginatorsByProjects(Integer person, Integer[] projects) {
 		List<TPersonBean> personList = new ArrayList<TPersonBean>();
 		if (projects == null || projects.length == 0) {
@@ -1573,6 +1571,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param projects
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> loadUsedLastEditedByProjects(Integer[] projects) {
 		List<TPersonBean> personList = new ArrayList<TPersonBean>();
 		if (projects == null || projects.length == 0) {
@@ -1604,6 +1603,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param raciRole
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> loadUsedConsultantsInformantsByProjects(Integer[] projects, String raciRole) {
 		List<TPersonBean> personList = new ArrayList<TPersonBean>();
 		if (projects == null || projects.length == 0) {
@@ -1641,6 +1641,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param projects
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> loadUsedUserPickersByProjects(Integer fieldID, Integer[] projects) {
 		List<TPersonBean> personList = new ArrayList<TPersonBean>();
 		if (projects == null || projects.length == 0) {
@@ -1678,6 +1679,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param raciRole
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> loadUsedConsultantsInformantsByWorkItemIDs(List<Integer> workItemIDs, String raciRole) {
 		if (workItemIDs == null || workItemIDs.isEmpty()) {
 			return new LinkedList<TPersonBean>();
@@ -1694,7 +1696,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 			try {
 				personList.addAll(doSelect(criteria));
 			} catch (Exception e) {
-				LOGGER.error("Loading the used consultant/informant person by workItemIDs failed with " + e.getMessage(), e);
+				LOGGER.error("Loading the used consultant/informant person by workItemIDs failed with " + e.getMessage());
 			}
 		}
 		// some persons might get duplicated as a
@@ -1724,6 +1726,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @return List of personbeans for departments
 	 * @throws Exception
 	 */
+	@Override
 	public List<TPersonBean> loadByDepartments(Integer[] departmentKeys) {
 		if (departmentKeys != null && departmentKeys.length > 0) {
 			Criteria crit = new Criteria();
@@ -1747,6 +1750,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param currentOptions
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> loadByDepartments(List<Integer> departmentIDs, Integer[] currentOptions) {
 		Set<Integer> persons = new HashSet<Integer>();
 		if (departmentIDs != null && !departmentIDs.isEmpty()) {
@@ -1759,7 +1763,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 			try {
 				personsByDepartments = doSelect(criteria);
 			} catch (TorqueException e) {
-				LOGGER.error("Loading the persons by departments with current options failed with " + e.getMessage(), e);
+				LOGGER.error("Loading the persons by departments with current options failed with " + e.getMessage());
 			}
 			if (personsByDepartments != null) {
 				Iterator<TPerson> iterator = personsByDepartments.iterator();
@@ -1783,6 +1787,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param workItemIDs
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> getAttachmentPersons(int[] workItemIDs) {
 		List<TPersonBean> personBeanList = new LinkedList<TPersonBean>();
 		List<int[]> workItemIDChunksList = GeneralUtils.getListOfChunks(workItemIDs);
@@ -1797,7 +1802,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 				try {
 					personBeanList.addAll(convertTorqueListToBeanList(doSelect(criteria)));
 				} catch (Exception e) {
-					LOGGER.error("Loading the attachment personBeans failed with " + e.getMessage(), e);
+					LOGGER.error("Loading the attachment personBeans failed with " + e.getMessage());
 				}
 			}
 		}
@@ -1813,6 +1818,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * @param actionType
 	 * @return
 	 */
+	@Override
 	public List<TPersonBean> getObserverPersonsInProjects(List<Integer> personIDs, List<Integer> projects, Integer actionType) {
 		List<TPersonBean> personList = new LinkedList<TPersonBean>();
 		if (personIDs == null || personIDs.isEmpty()) {
@@ -1869,6 +1875,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 		return persons;
 	}
 
+	@Override
 	public TPersonBean loadByTokenPasswd(String tokenPasswd) {
 		if (tokenPasswd == null || tokenPasswd.length() < 1) {
 			LOGGER.error("Faulty parameter in loadByTokenPasswd.");
@@ -1889,6 +1896,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 		return null;
 	}
 
+	@Override
 	public TPersonBean loadByForgotPasswordToken(String tokenPasswd) {
 		if (tokenPasswd == null || tokenPasswd.length() < 1) {
 			LOGGER.error("Faulty parameter in loadByForgotPasswordToken.");
@@ -1914,6 +1922,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * reset the password for another person
 	 * 
 	 */
+	@Override
 	public void cancelForgotPasswordTokens() {
 
 		Criteria crit = new Criteria();
@@ -1944,6 +1953,7 @@ public class TPersonPeer extends com.aurel.track.persist.BaseTPersonPeer impleme
 	 * their registration within the grace period.
 	 * 
 	 */
+	@Override
 	public void removeUnconfirmedUsers() {
 
 		Criteria crit = new Criteria();

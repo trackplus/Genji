@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -30,31 +30,31 @@ com.trackplus.admin.Report = function() {
 com.trackplus.admin.Report.executeReport = function(scope, templateID, reportConfigNeeded, fromIssueNavigator, workItemIDs, projectID, dashboardID) {
 	if (!reportConfigNeeded) {
 		var url = 'reportDatasource.action?templateID='+templateID;
-		if (fromIssueNavigator!=null) {
+		if (fromIssueNavigator) {
 			url = url+"&fromIssueNavigator="+fromIssueNavigator;
 		}
-		if (workItemIDs!=null) {
+		if (workItemIDs) {
 			url = url+ "&workItemIDs="+workItemIDs;
 		}
-		if (projectID!=null) {
+		if (projectID) {
 			url = url+ "&projectID="+projectID;
 		}
-		if (dashboardID!=null) {
+		if (dashboardID) {
 			url = url+ "&dashboardID="+dashboardID;
 		}
 		window.open(url);
 	} else {
 		params = {templateID: templateID};
-		if (fromIssueNavigator!=null) {
+		if (fromIssueNavigator) {
 			params["fromIssueNavigator"]=fromIssueNavigator;
 		}
-		if (workItemIDs!=null) {
+		if (workItemIDs) {
 			params["workItemIDs"]=workItemIDs;
 		}
-		if (projectID!=null) {
+		if (projectID) {
 			params["projectID"]=projectID;
 		}
-		if (dashboardID!=null) {
+		if (dashboardID) {
 			params["dashboardID"]=dashboardID;
 		}
 		Ext.Ajax.request({
@@ -129,7 +129,8 @@ com.trackplus.admin.Report.executeReportFromIssueNavigator=function(workItemIDs)
 	var reportPicker = CWHF.createSingleTreePicker("admin.customize.reportTemplate.lblAlone",
 	    "templateID", [], null,
 	    {allowBlank:false,
-	     labelWidth:100
+	     labelWidth:100,
+	     itemId: 'templateID'
 	    });
 	var load = {loadUrl:"reportDatasource!chooseReport.action"};
 	var submitUrlParams = {
@@ -152,8 +153,8 @@ com.trackplus.admin.Report.executeReportFromIssueNavigator=function(workItemIDs)
 
 com.trackplus.admin.Report.postDataProcess = function(data, formPanel) {
 	var reportPicker = formPanel.getComponent("templateID");
-	if (reportPicker!=null) {
-	    reportPicker.updateData(data["categoryTree"]);
+	if (reportPicker) {
+	    reportPicker.updateMyOptions(data["categoryTree"]);
 	    reportPicker.setValue(data["templateID"]);
 	}
 };
@@ -161,7 +162,7 @@ com.trackplus.admin.Report.postDataProcess = function(data, formPanel) {
 com.trackplus.admin.Report.submitReport = function(window, submitUrl, submitUrlParams) {
 	var theForm = this.formEdit;
 	var templateID = theForm.getComponent("templateID").getSubmitValue();
-	if (templateID!=null) {
+	if (templateID) {
 		Ext.Ajax.request({
 			url: 'reportDatasource!hasDatasourcePlugin.action',
 			params: {templateID:templateID},

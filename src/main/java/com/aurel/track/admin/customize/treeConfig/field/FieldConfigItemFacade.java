@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -77,6 +77,7 @@ public class FieldConfigItemFacade extends ConfigItemAbstract implements ConfigI
 	 * Expand a tree node from tree
 	 * @return
 	 */
+	@Override
 	public List<TreeConfigNodeTO> getFirstLevelNodes(TPersonBean personBean, 
 			Locale locale) {
 		List<TreeConfigNodeTO> rootNodes = new ArrayList<TreeConfigNodeTO>();
@@ -131,6 +132,7 @@ public class FieldConfigItemFacade extends ConfigItemAbstract implements ConfigI
 	/**
 	 * Whether there are issue type specific configurations
 	 */
+	@Override
 	public boolean hasIssueTypeSpecificConfig(Integer issueType, Integer projectType, Integer project) {
 		List<TFieldConfigBean> fieldConfigBeans = fieldConfigDAO.loadAllByIssueType(issueType, projectType, project);
 		return fieldConfigBeans!=null && !fieldConfigBeans.isEmpty();
@@ -139,6 +141,7 @@ public class FieldConfigItemFacade extends ConfigItemAbstract implements ConfigI
 	/**
 	 * Whether there are project type specific configurations
 	 */
+	@Override
 	public boolean hasProjectTypeSpecificConfig(Integer projectType) {
 		List<TFieldConfigBean> fieldConfigBeans = fieldConfigDAO.loadAllByProjectType(projectType);
 		return fieldConfigBeans!=null && !fieldConfigBeans.isEmpty();
@@ -149,6 +152,7 @@ public class FieldConfigItemFacade extends ConfigItemAbstract implements ConfigI
 	 * @param projectIDs if null get all project specific configurations
 	 * @return
 	 */
+	@Override
 	public List<ConfigItem> loadAllProjectSpecificConfig(List<Integer> projectIDs) {
 		return (List)fieldConfigDAO.loadAllByProjects(projectIDs);
 	}
@@ -161,6 +165,7 @@ public class FieldConfigItemFacade extends ConfigItemAbstract implements ConfigI
 	 * @param isCustom
 	 * @return
 	 */
+	@Override
 	public boolean hasFieldTypeSpecificConfig(Integer issueType, Integer projectType,  Integer project, boolean isCustom) {
 		List<TFieldConfigBean> fieldConfigBeans = fieldConfigDAO.loadAllByFieldType(issueType, projectType, project, Boolean.valueOf(isCustom));
 		return fieldConfigBeans==null || fieldConfigBeans.isEmpty();
@@ -208,6 +213,7 @@ public class FieldConfigItemFacade extends ConfigItemAbstract implements ConfigI
 	 * @param projectID
 	 * @return
 	 */
+	@Override
 	public ConfigItem loadForConfigRelByIssueTypeAndProject(Integer configRel, Integer itemTypeID, Integer projectID) {
 		return fieldConfigDAO.loadByIssueTypeAndProject(configRel, itemTypeID, projectID);
 	}
@@ -219,6 +225,7 @@ public class FieldConfigItemFacade extends ConfigItemAbstract implements ConfigI
 	 * @param projectTypeID
 	 * @return
 	 */
+	@Override
 	public ConfigItem loadForConfigRelByIssueTypeAndProjectType(Integer configRel, Integer itemTypeID, Integer projectTypeID) {
 		return fieldConfigDAO.loadByIssueTypeAndProjectType(configRel, itemTypeID, projectTypeID);
 	}
@@ -229,6 +236,7 @@ public class FieldConfigItemFacade extends ConfigItemAbstract implements ConfigI
 	 * @param projectID
 	 * @return
 	 */
+	@Override
 	public ConfigItem loadForConfigRelByProject(Integer configRel, Integer projectID) {
 		return fieldConfigDAO.loadByProject(configRel, projectID);
 	}
@@ -239,6 +247,7 @@ public class FieldConfigItemFacade extends ConfigItemAbstract implements ConfigI
 	 * @param projectTypeID
 	 * @return
 	 */
+	@Override
 	public ConfigItem loadForConfigRelByProjectType(Integer configRel, Integer projectTypeID) {
 		return fieldConfigDAO.loadByProjectType(configRel, projectTypeID);
 	}
@@ -249,6 +258,7 @@ public class FieldConfigItemFacade extends ConfigItemAbstract implements ConfigI
 	 * @param itemTypeID
 	 * @return
 	 */
+	@Override
 	public ConfigItem loadForConfigRelByItemType(Integer configRel, Integer itemTypeID) {
 		return fieldConfigDAO.loadByIssueType(configRel, itemTypeID);
 	}
@@ -258,6 +268,7 @@ public class FieldConfigItemFacade extends ConfigItemAbstract implements ConfigI
 	 * @param configRel
 	 * @return
 	 */
+	@Override
 	public ConfigItem loadForConfigRelDefault(Integer configRel) {
 		return FieldConfigBL.loadDefault(configRel);
 	}
@@ -265,6 +276,7 @@ public class FieldConfigItemFacade extends ConfigItemAbstract implements ConfigI
 	/**
 	 * Deletes the configuration for a leaf or the configurations from a branch 
 	 */
+	@Override
 	public void deleteConfig(TreeConfigIDTokens treeConfigIDTokens) {
 		//delete only when not the default configuration!!!
 		if (!(treeConfigIDTokens.getIssueTypeID()==null && treeConfigIDTokens.getProjectTypeID()==null && 
@@ -284,6 +296,7 @@ public class FieldConfigItemFacade extends ConfigItemAbstract implements ConfigI
 	 * @param directConfig
 	 * @param fallbackConfig
 	 */
+	@Override
 	public Integer overwriteConfig(ConfigItem directConfig, ConfigItem fallbackConfig) {
 		if (fallbackConfig==null) {
 			return null;
@@ -312,6 +325,7 @@ public class FieldConfigItemFacade extends ConfigItemAbstract implements ConfigI
 	 * Whether after a reset operation a tree refresh is needed
 	 * @return
 	 */
+	@Override
 	public boolean refreshEntireTreeAfterReset() {
 		//only branch refresh is needed
 		return false;
@@ -322,6 +336,7 @@ public class FieldConfigItemFacade extends ConfigItemAbstract implements ConfigI
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public Map<Integer, Map<Integer, ILabelBean>> getLookupMap(Locale locale) {
 		Map<Integer, Map<Integer, ILabelBean>> lookupMap = new HashMap<Integer, Map<Integer,ILabelBean>>();
 		List<TFieldBean> fieldList = FieldBL.loadAll();
@@ -334,6 +349,7 @@ public class FieldConfigItemFacade extends ConfigItemAbstract implements ConfigI
 	 * @param cfg
 	 * @return
 	 */
+	@Override
 	public String getTitle(ConfigItem cfg, Map<Integer, Map<Integer, ILabelBean>> lookupMap) {
 		Map<Integer, ILabelBean> fieldMap = lookupMap.get(FIELD_KEY);
 		TFieldBean fieldBean = (TFieldBean)fieldMap.get(((TFieldConfigBean)cfg).getField());
@@ -343,6 +359,7 @@ public class FieldConfigItemFacade extends ConfigItemAbstract implements ConfigI
 	/**
 	 * Returns a new instance of TFieldConfigBean
 	 */
+	@Override
 	public ConfigItem createConfigItem() {
 		return new TFieldConfigBean();
 	}
@@ -401,6 +418,7 @@ public class FieldConfigItemFacade extends ConfigItemAbstract implements ConfigI
 	/**
 	 * @param cfg
 	 */
+	@Override
 	public List load(ConfigItem cfg) {
 		List<TFieldConfigBean> fieldConfigs = fieldConfigDAO.loadByFieldConfigParameters((TFieldConfigBean)cfg);
 		for (Iterator<TFieldConfigBean> iterator = fieldConfigs.iterator(); iterator.hasNext();) {
@@ -419,6 +437,7 @@ public class FieldConfigItemFacade extends ConfigItemAbstract implements ConfigI
 	 * @param cfgSource
 	 * @param cfgTarget
 	 */
+	@Override
 	public void copyExtraInfo(ConfigItem cfgSource, ConfigItem cfgTarget) {
 		TFieldConfigBean destFieldConfigBean=(TFieldConfigBean)cfgTarget;
 		TFieldConfigBean srcFieldConfigBean=(TFieldConfigBean)cfgSource;
@@ -428,11 +447,13 @@ public class FieldConfigItemFacade extends ConfigItemAbstract implements ConfigI
 		destFieldConfigBean.setHistory(srcFieldConfigBean.getHistory());
 	}
 	
+	@Override
 	public Integer saveConfig(ConfigItem cfg) {
 		return FieldConfigBL.save((TFieldConfigBean)cfg);
 		
 	}
 	
+	@Override
 	public ConfigItem loadConfigByPk(Integer pk) {
 		return FieldConfigBL.loadByPrimaryKey(pk);
 	}

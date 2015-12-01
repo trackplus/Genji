@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -33,7 +33,6 @@ import org.apache.struts2.interceptor.SessionAware;
 
 import com.aurel.track.Constants;
 import com.aurel.track.beans.TPersonBean;
-import com.aurel.track.dao.DAOFactory;
 import com.aurel.track.json.JSONUtility;
 import com.aurel.track.resources.LocalizeUtil;
 import com.aurel.track.user.ActionLogger;
@@ -61,6 +60,7 @@ public class PersonAction extends ActionSupport implements Preparable, SessionAw
 	private String featureID;
 	private boolean featureValue;
 
+	@Override
 	public void prepare() {
 		locale = (Locale) session.get(Constants.LOCALE_KEY);
 		currentUser = (TPersonBean) session.get(Constants.USER_KEY);
@@ -157,7 +157,7 @@ public class PersonAction extends ActionSupport implements Preparable, SessionAw
 	public String changeFeature() {
 		JSONUtility.encodeJSON(servletResponse,
 				PersonConfigBL.changeFeature(personID, featureID, featureValue, locale));
-				ActionLogger.log(session,"Change feature for user" + DAOFactory.getFactory().getPersonDAO().loadByPrimaryKey(personID).getFullName());
+		ActionLogger.log(session,"Change feature for " + personID);
 		return null;
 	}
 
@@ -224,9 +224,11 @@ public class PersonAction extends ActionSupport implements Preparable, SessionAw
 		return SUCCESS;
 	}
 
+	@Override
 	public void setSession(Map<String, Object> session) {
 		this.session = session;
 	}
+	@Override
 	public void setServletResponse(HttpServletResponse servletResponse) {
 		this.servletResponse = servletResponse;
 	}

@@ -1,0 +1,73 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="Sometimes it is necessary to prevent users from accessing the system, for example if a new version is to be deployed, or other maintenance tasks have been scheduled. Server accessibility may also be ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="concept"/><meta name="DC.Title" content="Observing and managing server state"/><meta name="abstract" content="Sometimes it is necessary to prevent users from accessing the system, for example if a new version is to be deployed, or other maintenance tasks have been scheduled. Server accessibility may also be effected by the number of users registered, because of license restrictions."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="Sometimes it is necessary to prevent users from accessing the system, for example if a new version is to be deployed, or other maintenance tasks have been scheduled. Server accessibility may also be effected by the number of users registered, because of license restrictions."/><meta name="DC.Relation" scheme="URI" content="../../Topics/07ForSystemAdmins/Chapter7Wrapper.html"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="id31statusPage"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Observing and managing server state</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../Topics/07ForSystemAdmins/Chapter7Wrapper.html" title="Administering the server"><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Administering the server</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../Topics/07ForSystemAdmins/Chapter7Wrapper.html" title="Administering the server">Administering the server</a></td></tr></tbody></table>
+
+    <div class="nested0" id="id31statusPage">
+        <h1 class="title topictitle1">Observing and managing server state</h1>
+
+        
+        <div class="body conbody"><p class="shortdesc">Sometimes it is necessary to prevent users from
+            accessing the system, for example if a new version is to be deployed, or other
+            maintenance tasks have been scheduled. Server
+            accessibility may also be effected by the number of users registered, because of license
+            restrictions.</p>
+
+            <p class="p">There is a state page available which permits to disable new server logins, and
+                which gives an overview over the number of users currently logged on, the number of
+                active and deactivated users, the total number of projects and items.</p>
+
+            <p class="p"><span class="ph">In the top toolbar select <span class="ph menucascade"><span class="ph uicontrol">Administration</span> &gt; <span class="ph uicontrol">Manage server</span> &gt; <span class="ph uicontrol">Server state</span></span>.</span></p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/serverStatus1.png" height="319" width="251"/></div><br/>
+                
+            </div>
+
+            <p class="p">The top left section of the state page displays the actual <span class="ph"><span class="ph">Track+</span></span> release number, the IP addresses of the
+                server as seen from the <span class="ph"><span class="ph">Track+</span></span> application, and
+                the maximum number of active users as defined by the license.</p>
+
+            <p class="p">Below you find a list with the users currently logged in, and a list of nodes in case
+                of a cluster configuration.</p>
+
+            <p class="p">At the bottom of the left part there is information on the database connected, and
+                the delay between the <span class="ph"><span class="ph">Track+</span></span> server and the
+                database server.</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/serverStatus2.png" height="160" width="249"/></div><br/>
+                
+            </div>
+
+            <p class="p">On the top right you find information on the memory configuration and consumption of
+                your <span class="ph"><span class="ph">Track+</span></span> installation, and the Java version
+                being used.</p>
+
+            <p class="p">The bottom right area permits to temporarily disable access to the <span class="ph"><span class="ph">Track+</span></span> system for all users but the system
+                administrator. If the system is disabled, you can provide an explanatory message on
+                the login screen. </p>
+
+            <p class="p">The application access lock is automatically removed when restarting the <span class="ph"><span class="ph">Track+</span></span> application on the server, or when
+                rebooting the server. Otherwise, the system administrator can remove the access
+                lock.</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/serverStatus3.png" height="186" width="249"/></div><br/>
+                
+            </div>
+
+        </div>
+
+    <div class="related-links"/>
+</div>
+
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../Topics/07ForSystemAdmins/Chapter7Wrapper.html" title="Administering the server"><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Administering the server</span></a></span>  </div>
+</body>
+</html>

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -65,6 +65,16 @@ public abstract class AbstractBulkSetter implements IBulkSetter {
 	}
 	
 	/**
+	 * Builds the name of the client side controls for submit
+	 * @param baseName
+	 * @return
+	 */
+	protected String getItemId(String baseName) {
+		StringBuilder stringBuilder = new StringBuilder();
+		return stringBuilder.append(baseName).append(getKeyPrefix()).toString();
+	}
+	
+	/**
 	 * The prefix for the map keys
 	 * @return
 	 */
@@ -83,6 +93,7 @@ public abstract class AbstractBulkSetter implements IBulkSetter {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public String getSetterValueJsonConfig(String baseName, Object value,
 		Object dataSource, Map<Integer, String> labelMap, boolean disabled, TPersonBean personBean, Locale locale) {
 		StringBuilder stringBuilder = new StringBuilder("{");
@@ -98,6 +109,7 @@ public abstract class AbstractBulkSetter implements IBulkSetter {
 	/**
 	 * @return the fieldID
 	 */
+	@Override
 	public Integer getFieldID() {
 		return fieldID;
 	}
@@ -105,6 +117,7 @@ public abstract class AbstractBulkSetter implements IBulkSetter {
 	/**
 	 * @return the relation
 	 */
+	@Override
 	public int getRelation() {
 		return relation;
 	}
@@ -112,19 +125,23 @@ public abstract class AbstractBulkSetter implements IBulkSetter {
 	/**
 	 * @param relation the relation to set
 	 */
+	@Override
 	public void setRelation(int relation) {
 		this.relation = relation;
 	}
 	
+	@Override
 	public boolean isSelectValueSurelyAllowed() {
 		return selectValueSurelyAllowed;
 	}
 
+	@Override
 	public void setSelectValueSurelyAllowed(boolean selectValueSurelyAllowed) {
 		this.selectValueSurelyAllowed = selectValueSurelyAllowed;
 	}
 
-	public List <Integer> getPossibleRelations(boolean required) {
+	@Override
+	public List<Integer> getPossibleRelations(boolean required) {
 		List <Integer> relations = new ArrayList<Integer>();
 		relations.add(Integer.valueOf(BulkRelations.SET_TO));
 		if (!required) {
@@ -143,6 +160,7 @@ public abstract class AbstractBulkSetter implements IBulkSetter {
 	 * @param value	
 	 * @return ErrorData if an error is found
 	 */
+	@Override
 	public ErrorData setWorkItemAttribute(TWorkItemBean workItemBean,
 			Integer fieldID, Integer parameterCode, 
 			BulkTranformContext bulkTranformContext, 

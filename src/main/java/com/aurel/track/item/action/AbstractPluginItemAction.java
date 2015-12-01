@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -34,13 +34,16 @@ import com.aurel.track.item.ItemLocationForm;
 import com.aurel.track.util.StringArrayParameterUtils;
 
 public class AbstractPluginItemAction implements IPluginItemAction{
+	@Override
 	public String encodeJsonDataStep1(Locale locale, TPersonBean user, Integer workItemID,
 									  Integer parentID, Integer projectID, Integer issueTypeID, String synopsis, String description) throws PluginItemActionException{
 		return "{}";
 	}
+	@Override
 	public WorkItemContext next(Locale locale, TPersonBean user, Integer workItemID, Integer parentID, Map<String, Object> params, String synopsis, String description) throws PluginItemActionException {
 		return null;
 	}
+	@Override
 	public Integer saveInFirsStep(Locale locale, TPersonBean user,Integer workItemID, Map<String, Object> params)
 			throws PluginItemActionException {
 		return null;
@@ -61,6 +64,7 @@ public class AbstractPluginItemAction implements IPluginItemAction{
 		return params;
 	}
 
+	@Override
 	public boolean canFinishInFirstStep(){
 		return false;
 	}
@@ -108,6 +112,7 @@ public class AbstractPluginItemAction implements IPluginItemAction{
 			return  null;
 		}
 	}
+	@Override
 	public boolean isEnabled(Integer personID,  TWorkItemBean workItemBean,
 			boolean allowedToChange, boolean allowedToCreate,
 			/*Map<String, Object> session, Integer workItemID,

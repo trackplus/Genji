@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -94,6 +94,7 @@ public class UserPickerRT extends CustomPickerRT {
 	 * Whether the datasource for the picker is tree or list
 	 * @return
 	 */
+	@Override
 	public boolean isTree() {
 		return false;
 	}
@@ -102,6 +103,7 @@ public class UserPickerRT extends CustomPickerRT {
 	 * Gets the iconCls class for label bean if dynamicIcons is false
 	 * @param labelBean
 	 */
+	@Override
 	public String getIconCls(ILabelBean labelBean) {
 		if (labelBean==null) {
 			return null;
@@ -136,6 +138,7 @@ public class UserPickerRT extends CustomPickerRT {
 	 * @param selectContext 
 	 * @return
 	 */
+	@Override
 	public List loadEditDataSource(SelectContext selectContext)	{
 		TWorkItemBean workItemBean = selectContext.getWorkItemBean();
 		Integer fieldID = selectContext.getFieldID();
@@ -156,6 +159,7 @@ public class UserPickerRT extends CustomPickerRT {
 	 * @param selectContext
 	 * @return
 	 */
+	@Override
 	public List loadCreateDataSource(SelectContext selectContext){
 		return loadDataSource(selectContext, null);
 	}
@@ -244,27 +248,6 @@ public class UserPickerRT extends CustomPickerRT {
 	 * @param locale
 	 * @return
 	 */
-	/*protected List<ILabelBean> getSelelectedLabelBeans(Integer[] optionIDs, Locale locale) {
-		//symbolic value used when getShowValue() is called from QueryTreeBL.updateNodeExpressionTitle()
-		//and in this case the array has only one element
-		boolean symbolicFound = false;
-		for (int i = 0; i < optionIDs.length; i++) {
-			if (MatcherContext.LOGGED_USER_SYMBOLIC.equals(optionIDs[i])) {
-				symbolicFound=true;
-				break;
-			}
-		}
-		//when called from other code the array can have more elements (when the select renderer is multiple)
-		List<ILabelBean> labelBeans = (List)PersonBL.loadSortedPersonsOrGroups(
-				GeneralUtils.createListFromIntArr(optionIDs));
-		if (labelBeans==null) {
-			labelBeans = new LinkedList<ILabelBean>();
-		}
-		if (symbolicFound) {
-			labelBeans.add(0, getLabelBean(MatcherContext.LOGGED_USER_SYMBOLIC, locale));
-		}
-		return labelBeans;
-	}*/
 	
 	/**
 	 * Gets the label bean for an objectID
@@ -272,6 +255,7 @@ public class UserPickerRT extends CustomPickerRT {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	protected ILabelBean lookupLabelBean(Integer objectID, Locale locale) {
 		return LookupContainer.getNotLocalizedLabelBean(getSystemOptionType(), objectID);
 	}
@@ -283,6 +267,7 @@ public class UserPickerRT extends CustomPickerRT {
 	 * @param matcherContext
 	 * @return
 	 */
+	@Override
 	protected Integer[] getMatchValue(Integer[] integerArr, MatcherContext matcherContext) {
 		if (integerArr!=null) {
 			for (int i = 0; i < integerArr.length; i++) {
@@ -310,6 +295,7 @@ public class UserPickerRT extends CustomPickerRT {
 	 * @param parameterCode for composite selects
 	 * @return the datasource (list or tree)
 	 */	
+	@Override
 	public Object getMatcherDataSource(IMatcherValue matcherValue, MatcherDatasourceContext matcherDatasourceContext, Integer parameterCode) {
 		List<TPersonBean> personList = new LinkedList<TPersonBean>();
 		Integer[] projects = matcherDatasourceContext.getProjectIDs(); 
@@ -547,6 +533,7 @@ public class UserPickerRT extends CustomPickerRT {
 	 * Loads the IBulkSetter object for configuring the bulk operation
 	 * @param fieldID
 	 */	
+	@Override
 	public IBulkSetter getBulkSetterDT(Integer fieldID) {		
 		return new UserPickerBulkSetter(fieldID);
 	}
@@ -604,6 +591,7 @@ public class UserPickerRT extends CustomPickerRT {
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public IActivityConfig getFieldChangeConfig(Integer fieldID) {
 		if(isMultipleSelectPicker(fieldID)) {
 			return new MultipleListFieldChangeConfig(fieldID, false, true);			
@@ -616,6 +604,7 @@ public class UserPickerRT extends CustomPickerRT {
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public IActivityExecute getFieldChangeApply(Integer fieldID) {
 		return new SelectFieldChangeApply(fieldID, true);
 	}
@@ -628,6 +617,7 @@ public class UserPickerRT extends CustomPickerRT {
 	 * @param personBean
 	 * @param locale
 	 */
+	@Override
 	public void loadFieldChangeDatasourceAndValue(WorkflowContext workflowContext,
 			FieldChangeValue fieldChangeValue, 
 			Integer parameterCode, TPersonBean personBean, Locale locale) {
@@ -703,6 +693,7 @@ public class UserPickerRT extends CustomPickerRT {
 	 * Creates a new empty serializableLabelBean
 	 * @return
 	 */
+	@Override
 	public ISerializableLabelBean getNewSerializableLabelBean() {
 		return new TPersonBean();
 	}
@@ -718,14 +709,12 @@ public class UserPickerRT extends CustomPickerRT {
 	 * @param componentPartsMap
 	 * @return
 	 */
+	@Override
 	public Integer getLookupIDByLabel(Integer fieldID,
 			Integer projectID, Integer issueTypeID, 
 			Locale locale, String label, 
 			Map<String, ILabelBean> lookupBeansMap, Map<Integer, Integer> componentPartsMap) {
 		if (label!=null) {
-			/*if (label.endsWith(TPersonBean.SYS_ADM)) {
-				label = label.replace(TPersonBean.SYS_ADM, "");
-			}*/
 			if (label.endsWith(TPersonBean.DEACTIVATED)) {
 				label = label.replace(TPersonBean.DEACTIVATED, "");
 			}
@@ -774,6 +763,7 @@ public class UserPickerRT extends CustomPickerRT {
 	 * @param serializableBeanAllowedContext
 	 * @return
 	 */
+	@Override
 	public boolean lookupBeanAllowed(Integer objectID, 
 			SerializableBeanAllowedContext serializableBeanAllowedContext) {
 		return true;
@@ -784,6 +774,7 @@ public class UserPickerRT extends CustomPickerRT {
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public List<ILabelBean> getDataSource(Integer fieldID) {
 		return (List)PersonBL.loadPersonsAndGroups();
 	}

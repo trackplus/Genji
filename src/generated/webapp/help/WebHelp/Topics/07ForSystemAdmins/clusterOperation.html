@@ -1,0 +1,165 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="Track+ can be operated in a clustered environment, i.e. one Track+ instance can run on a number of servers. This section gives examples of possible configurations and explains how Track+ behaves in a ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="concept"/><meta name="DC.Title" content="Cluster operation"/><meta name="abstract" content="Track+ can be operated in a clustered environment, i.e. one Track+ instance can run on a number of servers. This section gives examples of possible configurations and explains how Track+ behaves in a clustered environment."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="Track+ can be operated in a clustered environment, i.e. one Track+ instance can run on a number of servers. This section gives examples of possible configurations and explains how Track+ behaves in a clustered environment."/><meta name="DC.Relation" scheme="URI" content="../../Topics/07ForSystemAdmins/Chapter7Wrapper.html"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="id32clustering"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Cluster operation</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()" id="id32clustering">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../Topics/07ForSystemAdmins/Chapter7Wrapper.html" title="Administering the server"><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Administering the server</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../Topics/07ForSystemAdmins/Chapter7Wrapper.html" title="Administering the server">Administering the server</a></td></tr></tbody></table>
+
+    <h1 class="title topictitle1">Cluster operation</h1>
+
+    
+    <div class="body conbody"><p class="shortdesc"><span class="ph"><span class="ph">Track+</span></span> can be operated
+        in a clustered environment, i.e. one <span class="ph"><span class="ph">Track+</span></span> instance can
+        run on a number of servers. This section gives examples of possible configurations and
+        explains how <span class="ph"><span class="ph">Track+</span></span> behaves in a clustered
+        environment.</p>
+
+        <div class="section"><h2 class="title sectiontitle">Cluster configurations</h2>
+            
+            <p class="p">For web applications, there are two forms of clusters: high-availability (HA)
+                clusters, and load-balancing clusters.</p>
+
+            <p class="p">With a high-availability clusters you can improve the availability of the <span class="ph"><span class="ph">Track+</span></span> service, for example to ensure 24/7
+                operation. A HA cluster operates by having redundant nodes, which are then used to
+                provide service when system components fail. The most common size for an HA cluster
+                is two nodes, which is the minimum requirement to provide redundancy. By using
+                redundancy, HA cluster implementations eliminate single points of failure.</p>
+
+            <p class="p">The figure below shows a simple HA cluster with two application servers and a
+                database server. The database server is not redundant, but it would be possible to
+                use one of the application servers as a redundant database server. The router which
+                switches between application server 1 and application server 2 is not shown
+                here.</p>
+
+        </div>
+
+        <div class="section">
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" id="id32clustering__image_afj_nxv_3k" src="figures/clustersmall.png" height="102" width="122"/></div><br/>
+                
+            </div>
+
+            <p class="p">The purpose of a load-balancing clusters is to distribute a workload evenly over
+                multiple back end nodes. Typically the cluster will be configured with multiple
+                redundant load-balancing front ends. Since each element in a load-balancing cluster
+                has to offer full service, it can be thought of as an active/active HA cluster,
+                where all available servers process requests.</p>
+
+            <p class="p">The following figure shows a rather large configuration with a load balancer, five
+                application servers, two database servers, and two file servers.</p>
+
+            <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" id="id32clustering__image_gzg_lxv_3k" src="figures/clusterlarge.png" height="160" width="198"/></div><br/>
+                
+            </div>
+
+            <p class="p">All application servers operate on a single database, which is served in a redundant
+                fashion via two database servers. The attachments and full text search indices are
+                kept on a single file server, which also has a backup. The backup for the file
+                server is left to the operating system, there is no support for this within <span class="ph"><span class="ph">Track+</span></span>.</p>
+
+            <p class="p">The database management system needs to take care of the synchronisation between the
+                original database server and the backup database server.</p>
+
+            <p class="p">All communication between different <span class="ph"><span class="ph">Track+</span></span>
+                application servers of a cluster is handled via the database. There is no need to
+                open any special ports for communication between the application servers, or any
+                need for using patched Java virtual machines.</p>
+
+            <div class="note note"><span class="notetitle">Note:</span> There is basically no configuration required within <span class="ph"><span class="ph">Track+</span></span> to support operation in a clustered
+                environment. If you connect several <span class="ph"><span class="ph">Track+</span></span>
+                instances to the same database, <span class="ph"><span class="ph">Track+</span></span> will
+                automatically go into cluster operation mode. You do need an appropriate license key
+                though, which includes all application servers you connect to that database.</div>
+
+            <p class="p">Many other configurations are possible. For example, one of the application servers
+                can be at the same time the file server. Or the database server and file server can
+                be put on the same hardware. <span class="ph"><span class="ph">Track+</span></span> itself does
+                not care about all this, as long as you ensure that you have exactly one access
+                point (JDBC URL) for the database, and exactly one file path to the attachment and
+                index directories for all <span class="ph"><span class="ph">Track+</span></span> instances of
+                that cluster.</p>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Start-up behaviour</h2>
+            
+            <p class="p">When a <span class="ph"><span class="ph">Track+</span></span> instance is started it registers
+                itself as a node in the database. Then it checks the database for other nodes. If
+                there are nodes in the database which have not updated their record during a certain
+                timeout period (default is 5 minutes, can be set in file
+                    <span class="ph filepath">WEB-INF/quartz-jobs.xml</span>), that entry is cleared from the
+                table. </p>
+
+            <p class="p">Thereafter <span class="ph"><span class="ph">Track+</span></span> tries to set itself as the
+                master node, unless there is already another node marked as master node. If this is
+                the only node, the operation succeeds right away. Otherwise is may take as much as
+                the time out period until a new master node is completely established.</p>
+
+            <p class="p">The master node is responsible for </p>
+
+            <ol class="ol">
+                <li class="li">updating the full text search index</li>
+
+                <li class="li">getting e-mails from an e-mail server, when submission of items by e-mail is
+                    enabled.</li>
+
+            </ol>
+
+            <p class="p">In all other aspects, the master node acts like a regular node.</p>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Master node goes down</h2>
+            
+            <p class="p">In case the master node goes down, the full text search facility is temporarily not
+                updated. However, no activities requiring update of the full text search index get
+                lost, they are stored in the database.</p>
+
+            <p class="p">Furthermore, obtaining e-mails from the e-mail server is temporarily disabled. Again,
+                no submission will get lost as they are stored on the e-mail server.</p>
+
+            <p class="p">After at most a timeout period (default is 5 minutes, set in
+                    <span class="ph filepath">WEB-INF/quartz-jobs.xml</span>) negotiation between the remaining
+                nodes will begin for who will become the replacement for the original master node.
+                The outcome is random. The new master node will begin to update the full text search
+                index and start retrieving e-mails from the e-mail server.</p>
+
+            <p class="p">Thus, the drop out of a master node will result in slightly decreased performance,
+                and a lag of about 5 minutes in updating the full text search index.</p>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Regular node goes down</h2>
+            
+            <p class="p">In case a regular node goes down there will be some decrease in performance. The
+                other nodes will need less than the timeout period (default is 5 minutes, set in
+                    <span class="ph filepath">WEB-INF/quartz-jobs.xml</span>) to realize that a node has dropped
+                out. However, this does not have any further consequences.</p>
+
+        </div>
+
+        <div class="section"><h2 class="title sectiontitle">Forced switch of master node</h2>
+            
+            <p class="p">Usually all application nodes will negotiate among themselves who is going to become
+                the master node. The outcome is random. </p>
+
+            <p class="p">It is however possible to force one of the nodes to become the master node. This
+                requires to tell the current master node to seize its master node related
+                operations, like updating the full text search index, and giving way to the new
+                master node. This process may take up to the timeout period (5 minutes by default),
+                before the new node can take up its responsibility as the new master node.</p>
+
+        </div>
+
+    </div>
+
+<div class="related-links"/>
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../Topics/07ForSystemAdmins/Chapter7Wrapper.html" title="Administering the server"><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">Administering the server</span></a></span>  </div>
+</body>
+</html>

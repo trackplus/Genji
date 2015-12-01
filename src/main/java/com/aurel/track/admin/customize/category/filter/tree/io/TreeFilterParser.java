@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -71,17 +71,17 @@ public class TreeFilterParser extends DefaultHandler {
 			InputSource is=new InputSource(new StringReader(xml));
 			sp.parse(is, this);
 		}catch(SAXException se) {
-			LOGGER.warn("Parsing expression: " + xml + " failed with " + se.getMessage(), se);
+			LOGGER.warn("Parsing expression: " + xml + " failed with " + se.getMessage());
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug(ExceptionUtils.getStackTrace(se));
 			}
 		}catch(ParserConfigurationException pce) {
-			LOGGER.warn("Parsing expression: " + xml + " failed with " + pce.getMessage(), pce);
+			LOGGER.warn("Parsing expression: " + xml + " failed with " + pce.getMessage());
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug(ExceptionUtils.getStackTrace(pce));
 			}
 		}catch (IOException ie) {
-			LOGGER.warn("Reading expression: " + xml + " failed with " + ie.getMessage(), ie);
+			LOGGER.warn("Reading expression: " + xml + " failed with " + ie.getMessage());
 			LOGGER.debug(ExceptionUtils.getStackTrace(ie));
 		}
 	}
@@ -116,7 +116,8 @@ public class TreeFilterParser extends DefaultHandler {
 					fieldMoment = Integer.valueOf(strFieldMoment);
 					((QNodeExpression)currentNode).setFieldMoment(fieldMoment);
 				} catch (Exception e) {
-					LOGGER.info("Parsing the fieldMoment from " + strFieldMoment + " failed with " + e.getMessage(), e);
+					LOGGER.info("Parsing the fieldMoment from " + strFieldMoment + " failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 			}
 			String strFieldID = attributes.getValue("fieldId");
@@ -125,7 +126,8 @@ public class TreeFilterParser extends DefaultHandler {
 				try {
 					fieldID = Integer.valueOf(strFieldID);
 				} catch (Exception e) {
-					LOGGER.info("Parsing the fieldID from " + strFieldID + " failed with " + e.getMessage(), e);
+					LOGGER.info("Parsing the fieldID from " + strFieldID + " failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 			}
 			String strMatcher = attributes.getValue("matcherId");
@@ -134,7 +136,8 @@ public class TreeFilterParser extends DefaultHandler {
 				try {
 					matcherID = Integer.valueOf(strMatcher);
 				} catch (Exception e) {
-					LOGGER.info("Parsing the matcher from " + strMatcher + " failed with " + e.getMessage(), e);
+					LOGGER.info("Parsing the matcher from " + strMatcher + " failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 			}
 			((QNodeExpression)currentNode).setField(fieldID);
@@ -151,14 +154,7 @@ public class TreeFilterParser extends DefaultHandler {
 						//real (system or custom) and existing field
 						mc = fieldTypeRT.getMatcherConverter();
 					}
-						//((QNodeExpression)currentNode).setValue(mc.fromXMLString(value, matcherID));
-					/*} else {
-						//the field does not exists any more
-						//and mark this with setting the fieldID as null
-						//to avoid adding it to the tree (see endElement())
-						((QNodeExpression)currentNode).setField(null);
-						return;
-					}*/
+	
 				} else {
 					mc = FieldExpressionBL.getPseudoFieldMatcherConverter(fieldID);
 				}

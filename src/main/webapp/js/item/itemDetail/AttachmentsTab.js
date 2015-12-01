@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -30,7 +30,7 @@ Ext.define('com.aurel.trackplus.itemDetail.AttachmentsTab',{
 	initComponent : function(){
 		var me = this;
 		var attachmentNumber=0;
-		if(me.jsonData.attachmentNumber!=null){
+		if(me.jsonData.attachmentNumber){
 			attachmentNumber=me.jsonData.attachmentNumber;
 		}
 		me.title=getText('item.printItem.lbl.tab.attachments')+" ("+attachmentNumber+")";
@@ -47,7 +47,7 @@ Ext.define('com.aurel.trackplus.itemDetail.AttachmentsTab',{
 	},
 	onReadyHandler:function(){
 		var me=this;
-		if(me.dropFileSupported==false){
+		if(me.dropFileSupported===false){
 			return false;
 		}
 		var domEl=me.getEl().dom;
@@ -88,7 +88,7 @@ Ext.define('com.aurel.trackplus.itemDetail.AttachmentsTab',{
 			btnDragDrop.setDisabled(true);
 			btnDragDrop.setText(getText('item.tabs.attachment.dragDrop'))
 			var files = evt.dataTransfer.files;
-			if(files!=null&&files.length>0){
+			if(files&&files.length>0){
 				me.sendingFile(files);
 			}
 		}, false);
@@ -139,7 +139,7 @@ Ext.define('com.aurel.trackplus.itemDetail.AttachmentsTab',{
 
 	createAttachmentsConfig:function(){
 		var me=this;
-		if(me.jsonData!=null){
+		if(me.jsonData){
 			me.readOnly=me.jsonData.readOnly;
 		}
 		var gridConfig=new com.trackplus.itemDetail.GridConfig();
@@ -155,7 +155,6 @@ Ext.define('com.aurel.trackplus.itemDetail.AttachmentsTab',{
 			{name:'author', type:'string'},
 			{name:'authorID', type:'string'},
 			{name: 'editable', type: 'boolean'},
-			{name: 'imgHeight', type: 'int'},
 			{name: 'thumbnail', type: 'boolean'},
 			{name: 'isURL', type: 'boolean'}
 		];
@@ -165,16 +164,16 @@ Ext.define('com.aurel.trackplus.itemDetail.AttachmentsTab',{
 					var btnDelete=me.gridConfig.grid.down("#deleteAttachmentBtn");
 					var btnEdit=me.gridConfig.grid.down("#editAttachmentBtn");
 					var btnDownload=me.gridConfig.grid.down("#downloadAttachmentBtn");
-					if(selections==null||selections.length==0){
+					if(CWHF.isNull(selections)||selections.length===0){
 						btnDelete.setDisabled(true);
 						btnEdit.setDisabled(true);
 						btnDownload.setDisabled(true);
 					}else{
 						btnDownload.setDisabled(false);
-						if(selections.length==1){
+						if(selections.length===1){
 							var rowData=selections[0].data;
-							btnEdit.setDisabled(me.readOnly||rowData.editable==false);
-							btnDelete.setDisabled(me.readOnly||rowData.editable==false);
+							btnEdit.setDisabled(me.readOnly||rowData.editable===false);
+							btnDelete.setDisabled(me.readOnly||rowData.editable===false);
 							if(selections[0].data.isURL) {
 								btnDownload.setDisabled(true);
 							}
@@ -184,7 +183,7 @@ Ext.define('com.aurel.trackplus.itemDetail.AttachmentsTab',{
 							var disableDownload = false;
 							for(var i=0;i<selections.length;i++){
 								var rowData=selections[i].data;
-								if(!me.readOnly&&rowData.editable==true){
+								if(!me.readOnly&&rowData.editable===true){
 									enableDelete=true;
 								}
 								if(rowData.isURL) {
@@ -257,7 +256,7 @@ Ext.define('com.aurel.trackplus.itemDetail.AttachmentsTab',{
 				me.downloadAttachment.call(me);
 			}
 		});
-		if(me.dropFileSupported==true){
+		if(me.dropFileSupported===true){
 			tbarArray.push({
 				text:getText('item.tabs.attachment.dragDrop'),
 				itemId:'dragDropAttachemnt',
@@ -268,10 +267,10 @@ Ext.define('com.aurel.trackplus.itemDetail.AttachmentsTab',{
 		gridConfig.tbar=tbarArray;
 		gridConfig.dblClickHandler=me.editAttachment;
 		gridConfig.updateCol=function(col,layout,index){
-			if(layout.dataIndex=='description'){
+			if(layout.dataIndex==='description'){
 				col.flex=1;
 			}
-			if(layout.dataIndex=='fileName'){
+			if(layout.dataIndex==='fileName'){
 				col.renderer =  function(value, metaData, record, row, col, store, gridView){
 					if(record.data.isURL) {
 						var synopsisClass='synopsis_blue newWindow';
@@ -375,11 +374,11 @@ Ext.define('com.aurel.trackplus.itemDetail.AttachmentsTab',{
 	editAttachment:function(){
 		var me=this;
 		var selections=me.gridConfig.grid.getSelectionModel().getSelection();
-		if(selections==null){
+		if(CWHF.isNull(selections)){
 			return;
 		}
 		var rowData=selections[0].data;
-		if(me.readOnly||rowData.editable==false){
+		if(me.readOnly||rowData.editable===false){
 			return;
 		}
 		var originalDescription=rowData.description;
@@ -432,7 +431,7 @@ Ext.define('com.aurel.trackplus.itemDetail.AttachmentsTab',{
 		var me=this;
 		var selections=me.gridConfig.grid.getSelectionModel().getSelection();
 		//var row=attachmentsGridConfig.grid.getSelectionModel().getSelected();
-		if(selections==null||selections.length==0){
+		if(CWHF.isNull(selections)||selections.length===0){
 			return;
 		}
 		var row;
@@ -442,12 +441,12 @@ Ext.define('com.aurel.trackplus.itemDetail.AttachmentsTab',{
 			row=selections[i];
 			var attachID=row.data.id;
 			var attachmentURI;
-			if(me.workItemID==null){
+			if(CWHF.isNull(me.workItemID)){
 				attachmentURI='downloadAttachment.action?attachKey='+attachID;
 			}else{
 				attachmentURI='downloadAttachment.action?workItemID='+me.workItemID+'&attachKey='+attachID;
 			}
-			if(i==0){
+			if(i===0){
 				window.open(attachmentURI,'attachmentWindow');
 			}else{
 				window.open(attachmentURI);
@@ -457,7 +456,7 @@ Ext.define('com.aurel.trackplus.itemDetail.AttachmentsTab',{
 	addScreenshot:function(){
 		var me=this;
 		/*var javaEnabled=navigator.javaEnabled();
-		 if(javaEnabled==false){
+		 if(javaEnabled===false){
 		 alert(msgAppletNotSupported);
 		 return false;
 		 }*/
@@ -602,7 +601,7 @@ Ext.define('com.aurel.trackplus.itemDetail.AttachmentsTab',{
 		var msgEmptyClipboard=getText('item.tabs.attachment.addScreenshot.emptyClipbaord');
 		var msgClipboardNotSupported=getText('item.tabs.attachment.addScreenshot.clipboardNotSupported');
 		var msgUnknownError=getText('item.tabs.attachment.addScreenshot.unknownError');
-		if(javaEnabled==false){
+		if(javaEnabled===false){
 			CWHF.showMsgError(msgAppletNotSupported);
 			return false;
 		}
@@ -633,7 +632,7 @@ Ext.define('com.aurel.trackplus.itemDetail.AttachmentsTab',{
 	clearApplet:function(){
 		var me=this;
 		var javaEnabled=navigator.javaEnabled();
-		if(javaEnabled==false){
+		if(javaEnabled===false){
 			CWHF.showMsgError(msgAppletNotSupported);
 			return false;
 		}
@@ -647,7 +646,7 @@ Ext.define('com.aurel.trackplus.itemDetail.AttachmentsTab',{
 		cmpBytes.setValue(null);
 		var applet = document.getElementById( "AddScreenshotApplet" );
 		var bytes = applet.getEncodedString();
-		if(bytes==null||bytes==""){
+		if(CWHF.isNull(bytes)||bytes===""){
 			CWHF.showMsgError(msgNoData);
 			return false;
 		}

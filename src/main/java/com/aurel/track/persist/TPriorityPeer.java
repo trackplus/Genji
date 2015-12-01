@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -80,6 +80,7 @@ public class TPriorityPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TPriorityBean loadByPrimaryKey(Integer objectID) {
 		TPriority tPriority = null;
 		try {
@@ -99,13 +100,14 @@ public class TPriorityPeer
 	 * @param label
 	 * @return
 	 */
+	@Override
 	public List<TPriorityBean> loadByLabel(String label) {
 		Criteria crit = new Criteria();
 		crit.add(LABEL, label);
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (Exception e) {
-			LOGGER.error("Loading the priority by label " + label +  " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the priority by label " + label +  " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -114,6 +116,7 @@ public class TPriorityPeer
 	 * Loads all priorityBeans  
 	 * @return
 	 */
+	@Override
 	public List<TPriorityBean> loadAll() {
 		Criteria crit = new Criteria();
 		crit.addAscendingOrderByColumn(SORTORDER);
@@ -121,7 +124,7 @@ public class TPriorityPeer
 			return convertTorqueListToBeanList(doSelect(crit));
 		}
 		catch(Exception e) {
-			LOGGER.error("Loading all priorities failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all priorities failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -130,6 +133,7 @@ public class TPriorityPeer
 	 * Loads the priorities by IDs
 	 * @param priorityIDs
 	 */
+	@Override
 	public List<TPriorityBean> loadByPriorityIDs(List<Integer> priorityIDs) {
 		if (priorityIDs==null || priorityIDs.isEmpty()) {
 			LOGGER.warn("No priorityIDs specified " + priorityIDs);
@@ -141,7 +145,7 @@ public class TPriorityPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (Exception e) {
-			LOGGER.error("Loading of priorities by IDs failed with " + e.getMessage(), e);
+			LOGGER.error("Loading of priorities by IDs failed with " + e.getMessage());
 			return null;
 		}
 		
@@ -151,6 +155,7 @@ public class TPriorityPeer
 	 * Gets the next available sortorder
 	 * @return
 	 */
+	@Override
 	public Integer getNextSortOrder() {
 		Integer sortOrder = null;
 		String max = "max(" + SORTORDER + ")";
@@ -173,6 +178,7 @@ public class TPriorityPeer
 	 * @param priorityBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TPriorityBean priorityBean) {
 		TPriority tPriority;
 		try {
@@ -180,11 +186,12 @@ public class TPriorityPeer
 			tPriority.save();
 			return tPriority.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a priority failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a priority failed with " + e.getMessage());
 			return null;
 		}	
 	}
 	
+	@Override
 	public boolean hasDependentData(Integer pkey) {
 		return ReflectionHelper.hasDependentData(replacePeerClasses, replaceFields, pkey);
 	}
@@ -196,6 +203,7 @@ public class TPriorityPeer
 	 * @param oldOID
 	 * @param newOID
 	 */
+	@Override
 	public void replace(Integer oldOID, Integer newOID) {
 		ReflectionHelper.replace(replacePeerClasses, replaceFields, oldOID, newOID);
 	}
@@ -204,11 +212,13 @@ public class TPriorityPeer
 	 * Deletes a state from the TState table 
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		new TCardFieldOptionPeer().deleteOptionForField(SystemFields.INTEGER_PRIORITY, objectID);
 		ReflectionHelper.delete(deletePeerClasses, deleteFields, objectID);
 	}
 	
+	@Override
 	public List<TPriorityBean> loadByProjectAndIssueType(Integer project, Integer listType) {
 		Criteria crit = new Criteria();
 		crit.addJoin(TPpriorityPeer.PRIORITY, PKEY);
@@ -219,7 +229,7 @@ public class TPriorityPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the assigned priorities for project and list type failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the assigned priorities for project and list type failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -228,6 +238,7 @@ public class TPriorityPeer
 	 * Returns the sort order column name
 	 * @return
 	 */
+	@Override
 	public String getSortOrderColumn() {
 		return "SORTORDER";
 	}
@@ -236,6 +247,7 @@ public class TPriorityPeer
 	 * Returns the table name
 	 * @return
 	 */
+	@Override
 	public String getTableName() {
 		return TABLE_NAME;
 	}

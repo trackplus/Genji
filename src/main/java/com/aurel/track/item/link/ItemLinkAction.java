@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -31,34 +31,24 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.ServletResponseAware;
 import org.apache.struts2.interceptor.SessionAware;
 
 import com.aurel.track.Constants;
 import com.aurel.track.admin.customize.category.filter.execute.loadItems.LoadItemIDListItems;
-import com.aurel.track.admin.project.ProjectBL;
 import com.aurel.track.beans.TPersonBean;
-import com.aurel.track.beans.TWorkItemBean;
 import com.aurel.track.beans.TWorkItemLinkBean;
 import com.aurel.track.errors.ErrorData;
-import com.aurel.track.exchange.msProject.importer.LinkLagBL;
 import com.aurel.track.fieldType.constants.SystemFields;
 import com.aurel.track.fieldType.runtime.base.WBSComparable;
 import com.aurel.track.fieldType.runtime.base.WorkItemContext;
 import com.aurel.track.fieldType.runtime.helpers.MergeUtil;
 import com.aurel.track.item.ItemAction;
-import com.aurel.track.item.ItemBL;
 import com.aurel.track.item.ItemDetailBL;
-import com.aurel.track.item.ItemLoaderException;
-import com.aurel.track.itemNavigator.ItemNavigatorAction;
 import com.aurel.track.json.JSONUtility;
 import com.aurel.track.linkType.ILinkType;
 import com.aurel.track.linkType.LinkTypeBL;
-import com.aurel.track.linkType.MsProjectLinkTypeBL;
 import com.aurel.track.plugin.PluginManager;
 import com.aurel.track.report.execute.ReportBean;
 import com.aurel.track.resources.LocalizeUtil;
@@ -74,7 +64,6 @@ import com.opensymphony.xwork2.Preparable;
 public class ItemLinkAction extends ActionSupport
 	implements Preparable, SessionAware, ServletResponseAware {
 	private static final long serialVersionUID = 1L;
-	private static final Logger LOGGER = LogManager.getLogger(ItemLinkAction.class);
 	private Map<String,Object> session;
 	private HttpServletResponse servletResponse;
 	private Locale locale;
@@ -84,14 +73,17 @@ public class ItemLinkAction extends ActionSupport
 
 	private String deletedItems;
 	private boolean confirmSave;
-	private Map<Integer, String> parametersMap;
+	private Map<String, String> parametersMap;
 	private Integer linkedWorkItemID;
 	private String description;
 	private String linkTypeWithDirection;
 	private boolean includeLayout;
 	//add link(s) from issue navigator
 	private String workItemIDs;
+	//add link from Gantt
 	private boolean fromGantt = false;
+	//add a new item linked to me
+	private boolean addMeAsLinkToNewItem = false;
 	private WorkItemContext workItemContext = null;
 
 	/**
@@ -104,6 +96,7 @@ public class ItemLinkAction extends ActionSupport
 	/**
 	 * Prepare the parameters
 	 */
+	@Override
 	public void prepare() throws Exception {
 		locale = (Locale) session.get(Constants.LOCALE_KEY);
 		personBean = (TPersonBean) session.get(Constants.USER_KEY);
@@ -132,7 +125,7 @@ public class ItemLinkAction extends ActionSupport
 	 * @return
 	 */
 	public String editItemLink() {
-        JSONUtility.encodeJSON(servletResponse, ItemLinkConfigBL.editItemLink(workItemID, workItemContext, linkID, fromGantt, personBean, locale));
+        JSONUtility.encodeJSON(servletResponse, ItemLinkConfigBL.editItemLink(workItemID, workItemContext, linkID, fromGantt, addMeAsLinkToNewItem, personBean, locale));
 		return null;
 	}
 
@@ -307,9 +300,11 @@ public class ItemLinkAction extends ActionSupport
 	/**
 	 * @param session the session to set
 	 */
+	@Override
 	public void setSession(Map<String,Object> session) {
 		this.session = session;
 	}
+	@Override
 	public void setServletResponse(HttpServletResponse servletResponse) {
 		this.servletResponse = servletResponse;
 	}
@@ -345,11 +340,11 @@ public class ItemLinkAction extends ActionSupport
 		this.deletedItems = deletedItems;
 	}
 
-	public Map<Integer, String> getParametersMap() {
+	public Map<String, String> getParametersMap() {
 		return parametersMap;
 	}
 
-	public void setParametersMap(Map<Integer, String> parametersMap) {
+	public void setParametersMap(Map<String, String> parametersMap) {
 		this.parametersMap = parametersMap;
 	}
 
@@ -377,12 +372,13 @@ public class ItemLinkAction extends ActionSupport
 		this.confirmSave = confirmSave;
 	}
 
-	public boolean getFromGantt() {
-		return fromGantt;
-	}
-
 	public void setFromGantt(boolean fromGantt) {
 		this.fromGantt = fromGantt;
 	}
+	
+	public void setAddMeAsLinkToNewItem(boolean addMeAsLinkToNewItem) {
+		this.addMeAsLinkToNewItem = addMeAsLinkToNewItem;
+	}
 
+	
 }

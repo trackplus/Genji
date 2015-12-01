@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -61,12 +61,13 @@ public class TPstatePeer
 	 * Loads all TPstateBeans 
 	 * @return
 	 */
+	@Override
 	public List<TPstateBean> loadAll() {
 		Criteria crit = new Criteria();
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all pstates failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all pstates failed with " + e.getMessage());
 			return new LinkedList<TPstateBean>();
 		}
 	}
@@ -76,6 +77,7 @@ public class TPstatePeer
 	 * @param projectTypeID
 	 * @return
 	 */
+	@Override
 	public Map<Integer, Integer> loadNumberOfStatusesForIssueTypesInProjectType(Integer projectTypeID) {
 		Map<Integer, Integer> numberOfStatusesForIssueTypes = new HashMap<Integer, Integer>();
 		Criteria crit = new Criteria();
@@ -88,7 +90,7 @@ public class TPstatePeer
 		try {
 			records = doSelectVillageRecords(crit);
 		} catch(Exception e) {
-			LOGGER.error("Groupping the statuses by issueTypes in projectType " + projectTypeID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Groupping the statuses by issueTypes in projectType " + projectTypeID + " failed with " + e.getMessage());
 		}
 		try {
 			if (records!=null && !records.isEmpty()) {
@@ -99,7 +101,7 @@ public class TPstatePeer
 				}
 			}
 		} catch (Exception e) {
-			LOGGER.error("Getting the number of statuses by issueTypes in projectType " + projectTypeID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the number of statuses by issueTypes in projectType " + projectTypeID + " failed with " + e.getMessage());
 		}
 		return numberOfStatusesForIssueTypes;
 	}
@@ -110,6 +112,7 @@ public class TPstatePeer
 	 * @param issueTypeID
 	 * @return
 	 */
+	@Override
 	public Integer loadNumberOfStatusesForIssueTypeInProjectType(Integer projectTypeID, Integer issueTypeID) {
 		Criteria crit = new Criteria();
 		crit.add(PROJECTTYPE, projectTypeID);
@@ -134,6 +137,7 @@ public class TPstatePeer
 	 * @param issueType
 	 * issueTypes
 	 */
+	@Override
 	public List<TPstateBean> loadByProjectTypeAndIssueType(Integer projectType, Integer issueType) {
 		if (issueType!=null && projectType!=null) {
 			Criteria crit = new Criteria();
@@ -149,6 +153,7 @@ public class TPstatePeer
 		}
 		return new LinkedList<TPstateBean>();
 	}
+	@Override
 	public List<TPstateBean> loadByProjectType(Integer projectType) {
 		if (projectType!=null) {
 			Criteria crit = new Criteria();
@@ -170,6 +175,7 @@ public class TPstatePeer
 	 * @param issueTypes
 	 * issueTypes
 	 */
+	@Override
 	public List<TPstateBean> loadByProjectTypeAndIssueTypes(Integer projectType, List<Integer> issueTypes) {
 		if (issueTypes==null || issueTypes.isEmpty() || projectType==null) {
 			return new ArrayList<TPstateBean>();
@@ -192,6 +198,7 @@ public class TPstatePeer
 	 * @param pstateBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TPstateBean pstateBean) {
 		try {
 			TPstate tPstate = BaseTPstate.createTPstate(pstateBean);
@@ -199,7 +206,7 @@ public class TPstatePeer
 			return tPstate.getObjectID();
 			
 		} catch (Exception e) {
-			LOGGER.error("Saving pstateBean " + pstateBean.getLabel()  + ":" + pstateBean.getObjectID() + " failed with " + e.getMessage(), e);
+			LOGGER.error("Saving pstateBean " + pstateBean.getLabel()  + ":" + pstateBean.getObjectID() + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -209,6 +216,7 @@ public class TPstatePeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		Criteria crit = new Criteria();
 		crit.add(OBJECTID, objectID);
@@ -225,6 +233,7 @@ public class TPstatePeer
 	 * @param itemTypeID
 	 * @param statusIDs
 	 */
+	@Override
 	public void delete(Integer projectTypeID, Integer itemTypeID, List<Integer> statusIDs) {
 		if (projectTypeID==null || itemTypeID==null || statusIDs==null || statusIDs.isEmpty()) {
 			return;

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -102,6 +102,7 @@ public class SendItemEmailAction extends ActionSupport implements Preparable, Se
 	private List<IntegerStringBean> attachmentsList;
 	private String selectedAttachments;
 	private String subjectReadolnyPart;
+	@Override
 	public void prepare() throws Exception {
 		locale = (Locale) session.get(Constants.LOCALE_KEY);
 		personBean = (TPersonBean) session.get(Constants.USER_KEY);
@@ -174,6 +175,7 @@ public class SendItemEmailAction extends ActionSupport implements Preparable, Se
 			new Object[] {workItemID}, locale);*/
 		subjectReadolnyPart=part0+"["+projectBean.getLabel()+"]";
 	}
+	@Override
 	public void setSession(Map<String, Object> sess) {
 		this.session=sess;
 	}
@@ -183,7 +185,7 @@ public class SendItemEmailAction extends ActionSupport implements Preparable, Se
 		LOGGER.debug("SendItemMailAction.execute() for workItemID="+workItemID);
 		subject=workItemContext.getWorkItemBean().getSynopsis();
 
-		TSiteBean siteBean = ApplicationBean.getApplicationBean().getSiteBean();
+		TSiteBean siteBean = ApplicationBean.getInstance().getSiteBean();
 		SMTPMailSettings smtpMailSettings= OutgoingEmailBL.getSMTPMailSettings(siteBean);
 		if (smtpMailSettings.getHost() == null || "".equals(smtpMailSettings.getHost().trim() ) ) {
 			//It's acceptable that there is no SMTP server :)
@@ -489,6 +491,7 @@ public class SendItemEmailAction extends ActionSupport implements Preparable, Se
 		return application;
 	}
 
+	@Override
 	public void setApplication(Map application) {
 		this.application = application;
 	}

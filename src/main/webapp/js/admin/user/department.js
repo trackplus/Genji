@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -26,11 +26,9 @@
 Ext.define('com.trackplus.admin.user.Department',{
 	extend:'com.trackplus.admin.TreeDetailAssignment',
 	config: {
-		rootID: '',
-		baseAction: null,
-		dynamicIcons: false
+		rootID: '_'
 	},
-	baseAction:'department',
+	baseAction:"department",
 	editWidth: 400,
 	editHeight: 150,
 	/**
@@ -48,11 +46,10 @@ Ext.define('com.trackplus.admin.user.Department',{
 	actionDetachFromParentDepartment: null,
 	actionRemovePerson: null,
 
-	constructor: function(config) {
-		var config = config || {};
-		this.initialConfig = config;
-		Ext.apply(this, config);
-		this.init();
+	constructor: function(cfg) {
+		var config = cfg || {};
+		this.initConfig(config);
+		this.initBase();
 	},
 
 	getEntityLabel: function(extraConfig) {
@@ -101,7 +98,7 @@ Ext.define('com.trackplus.admin.user.Department',{
 			return [this.actionRemovePerson];
 		} else {
 			var actions = [this.actionAddSubdepartment, this.actionEditDepartment, this.actionDeleteDepartment];
-			if (selectedRecord!=null && selectedRecord.parentNode!=null && !selectedRecord.parentNode.isRoot()) {
+			if (selectedRecord && selectedRecord.parentNode && !selectedRecord.parentNode.isRoot()) {
 				actions.push(this.actionDetachFromParentDepartment);
 			}
 			return actions;
@@ -155,7 +152,7 @@ Ext.define('com.trackplus.admin.user.Department',{
 		if (addAsSubdepartment) {
 			nodeIDToReload = this.selectedNodeID;
 		} else {
-			nodeIDToReload = this.rootID;
+			nodeIDToReload = this.getRootID();
 		}
 		return this.onAddEdit(title, loadParams, submitParams, nodeIDToReload);
 	},
@@ -176,9 +173,9 @@ Ext.define('com.trackplus.admin.user.Department',{
 	 */
 	getEditParams: function() {
 		var recordData = this.getSingleSelectedRecordData(true);
-		if (recordData!=null) {
+		if (recordData) {
 			var nodeID = recordData['id'];
-			if (nodeID!=null) {
+			if (nodeID) {
 				return {node:nodeID};
 			}
 		}
@@ -194,15 +191,15 @@ Ext.define('com.trackplus.admin.user.Department',{
 	 * Get the node to reload after save after edit operation
 	 */
 	getParentNodeId: function() {
-		if (this.selectedNode!=null) {
+		if (this.selectedNode) {
 				//edited/copied from tree
 				var parentNode = this.selectedNode.parentNode;
-				if (parentNode!=null) {
+				if (parentNode) {
 					//the parent of the edited node should be reloaded
 					return {nodeIDToReload: parentNode.data['id']}
 				}
 		}
-		return {nodeIDToReload: this.rootID};
+		return {nodeIDToReload: this.getRootID()};
 	},
 
 	/**
@@ -218,9 +215,9 @@ Ext.define('com.trackplus.admin.user.Department',{
 	 * refreshParamsFromResult
 	 */
 	onAddEdit: function(title, loadParams, submitParams, nodeIDToReload) {
-		var loadUrl = this.baseAction + '!edit.action';
+		var loadUrl = this.getBaseAction() + '!edit.action';
 		var load = {loadUrl:loadUrl, loadUrlParams:loadParams};
-		var submitUrl = this.baseAction + '!save.action';
+		var submitUrl = this.getBaseAction() + '!save.action';
 		var submit = {	submitUrl:submitUrl,
 						submitUrlParams:submitParams,
 						submitButtonText:getText('common.btn.save'),
@@ -245,24 +242,24 @@ Ext.define('com.trackplus.admin.user.Department',{
 	},
 
 	onRemovePerson: function() {
-		this.reloadAssigned(this.baseAction+"!unassign.action", {})
+		this.reloadAssigned(this.getBaseAction()+"!unassign.action", {})
 	},
 
 	reload: com.trackplus.util.RefreshAfterSubmit.refreshTreeAfterSubmit,
 
 	getReloadParamsAfterDelete: function(selectedRecords, extraConfig, responseJson) {
 	    var reloadParams = {reloadTree:true};
-	    if (selectedRecords!=null) {
+	    if (selectedRecords) {
 	        //we suppose that only one selection is allowed in tree
 	        var selNode = selectedRecords;
-	        if (selNode!=null) {
+	        if (selNode) {
 	            reloadParams["nodeIDToReload"] = selNode.parentNode.data.id;
 	            var previousSibling = selNode.previousSibling;
-	            if (previousSibling!=null) {
+	            if (previousSibling) {
 	                reloadParams["nodeIDToSelect"] = previousSibling.data.id;
 	            } else {
 	                var nextSibling = selNode.nextSibling;
-	                if (nextSibling!=null) {
+	                if (nextSibling) {
 	                    reloadParams["nodeIDToSelect"] = nextSibling.data.id;
 	                } else {
 	                    reloadParams["resetDetail"] = true;
@@ -275,17 +272,17 @@ Ext.define('com.trackplus.admin.user.Department',{
 
 	onDeleteDepartment: function() {
 		var selectedRecords = this.getSelectedRecords(true);
-		if (selectedRecords!=null) {
+		if (selectedRecords) {
 			this.deleteHandler(selectedRecords, {fromTree:true});
 		}
 	},
 
 	onDetachFromParentDepartment: function() {
 		var selectedRecord = this.getLastSelected(true);
-		if (selectedRecord!=null) {
+		if (selectedRecord) {
 			var nodeID = selectedRecord.data["id"];
 			Ext.Ajax.request({
-				url: this.baseAction+"!clearParent.action",
+				url: this.getBaseAction()+"!clearParent.action",
 				params: {
 					node:nodeID
 				},
@@ -303,7 +300,7 @@ Ext.define('com.trackplus.admin.user.Department',{
 	 * extraConfig: for simple grid nothing, for tree with grid {fromTree:fromTree, isLeaf:isLeaf}
 	 */
 	getDeleteUrl: function(extraConfig){
-		return this.baseAction + '!delete.action';
+		return this.getBaseAction() + '!delete.action';
 	},
 
 	getDeleteParams: function(selectedRecords, extraConfig) {
@@ -319,11 +316,12 @@ Ext.define('com.trackplus.admin.user.Department',{
 				itemId: 'replacementWarning'},
 	            CWHF.createSingleTreePicker("Replacement",
 	            "replacementID", responseJson["replacementTree"], null,
-	            {allowBlank:false,
-	             blankText: getText('common.err.replacementRequired',
-	             this.getEntityLabel(extraConfig)),
-	             labelWidth:200,
-	             margin:'5 0 0 0'
+	            {itemId: "replacementID",
+	            allowBlank:false,
+	            blankText: getText('common.err.replacementRequired',
+	            this.getEntityLabel(extraConfig)),
+	            labelWidth:200,
+	            margin:'5 0 0 0'
 	            })
 			    ];
 	},
@@ -333,7 +331,7 @@ Ext.define('com.trackplus.admin.user.Department',{
 	 * Override this for different tree based pickers
 	 */
 	loadReplacementOptionData: function(replacementControl, data) {
-	    replacementControl.updateData(data["replacementTree"]);
+	    replacementControl.updateMyOptions(data["replacementTree"]);
 	},
 
 	getGridFields: function(record) {
@@ -349,23 +347,40 @@ Ext.define('com.trackplus.admin.user.Department',{
 	getColumnModel: function() {
 		return [{text:getText('admin.user.profile.lbl.userName'),
 			flex:2, dataIndex:'userName', sortable:true,
-			filterable:true, renderer:this.renderer
+			renderer:this.renderer,
+			filter: {
+	            type: "string"
+	        }
 		}, {
 			text:getText('common.lbl.name'),
 			flex:2, dataIndex:'name', sortable:true,
-			filterable:true, renderer:this.renderer
+			renderer:this.renderer,
+			filter: {
+	            type: "string"
+	        }
 		}, {
 			text:getText('admin.user.profile.lbl.department'),
 			flex:2, dataIndex:'department', sortable:true,
-			filterable:true, renderer:this.renderer
+			renderer:this.renderer,
+			filter: {
+	            type: "string"
+	        }
 		}, {
 			text:getText('admin.user.profile.lbl.employeeId'),
 			flex:1, dataIndex:'employeeId', sortable:true,
-			filterable:true, renderer:this.renderer, hidden: true
+			renderer:this.renderer, hidden: true,
+			filter: {
+	            type: "string"
+	        }
 		}, {
 			text:getText('admin.user.manage.lbl.activ'),
 			flex:1, dataIndex:'activeLabel', sortable:true,
-			filterable:true, renderer:this.renderer, hidden: true
+			renderer:this.renderer, hidden: true,
+			filter: {
+				type: "list",
+				options: [getText("common.boolean.Y"),
+							getText("common.boolean.N")]
+			}
 		}];
 	},
 
@@ -385,30 +400,6 @@ Ext.define('com.trackplus.admin.user.Department',{
 
 	enableColumnHide: function() {
 		return true;
-	},
-
-	getGridFeatures: function() {
-		return features = [{
-			ftype: 'filters',
-			encode: false,// json encode the filter query
-			local: true,// defaults to false (remote filtering)
-			filters: [{
-					type: 'string',
-					dataIndex: 'userName'
-				}, {
-					type: 'string',
-					dataIndex: 'name'
-				}, {
-					type: 'string',
-					dataIndex: 'department'
-				}, {
-					type: 'string',
-					dataIndex: 'activeLabel'
-				}, {
-					type: 'string',
-					dataIndex: 'employeeId'
-				}]
-			}]
 	},
 
 	getDetailWidth: function() {

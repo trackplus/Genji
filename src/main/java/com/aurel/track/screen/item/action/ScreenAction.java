@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -58,13 +58,11 @@ public class ScreenAction extends ActionSupport implements Preparable, SessionAw
 	private static final Logger LOGGER = LogManager.getLogger(ScreenAction.class);
 
 	private static final long serialVersionUID = 340L;
-	//private TScreenBean screen;
 	private String name;
 	private String tagLabel;
 	private String description;
 	private Integer screenID;
 	private String selectedScreenIDs;
-	//private List screens;
 	//private boolean newScreen=false;
 	private String sortKey;
 	private Map<String, Object> session;
@@ -72,17 +70,17 @@ public class ScreenAction extends ActionSupport implements Preparable, SessionAw
 	private boolean canViewScreen=false;
 	private static final String HOME="cockpit";
 	private boolean sysAdmin;
-	//private boolean editMode=false;
 	private boolean copy=false;
 	private Locale locale;
 	private List<Integer> selectedScreenIDList;
 	private Integer replacementID;
 
+	@Override
 	public void setSession(Map<String, Object> ses) {
 		this.session=ses;
 	}
+	@Override
 	public void prepare() throws Exception {
-		//screens= ScreenDesignBL.getInstance().getScreens();
 		if(sortKey==null){
 			sortKey=(String)session.get("sortKey");
 			if(sortKey==null){
@@ -189,33 +187,11 @@ public class ScreenAction extends ActionSupport implements Preparable, SessionAw
 	 * load the screen  
 	 * @return
 	 */
-	/*public String doCopy() {
-		if(!canViewScreen){
-			return HOME;
-		}
-		TScreenBean originalScreen=(TScreenBean) ScreenDesignBL.getInstance().loadScreen(screenID);
-		TScreenBean screenBean=new TScreenBean();
-		screenBean.setName(LocalizeUtil.getParametrizedString("common.lbl.copy",
-				new Object[] {originalScreen.getName()}, locale));
-		screenBean.setDescription(LocalizeUtil.getParametrizedString("common.lbl.copy",
-				new Object[] {originalScreen.getDescription()}, locale));
-		return doNew();
-	}*/
 	
 	/**
 	 * Delete a screen
 	 * @return
 	 */
-	/*public String doDelete() {
-		if (canViewScreen && canDeleteScreen()){
-			ItemScreenCache.getInstance().removeScreen(screenID);
-			ScreenDesignBL.getInstance().deleteScreen(screenID);
-			JSONUtility.encodeJSONSuccess(ServletActionContext.getResponse());
-		}else{//do not have right to edit
-			JSONUtility.encodeJSONFailure(ServletActionContext.getResponse(), "No right to delete", 0);
-		}
-		return null;
-	}*/
 	
 	/**
 	 * Deletes a person without dependency or offers the replacement list
@@ -223,17 +199,11 @@ public class ScreenAction extends ActionSupport implements Preparable, SessionAw
 	 * @return
 	 */
 	public String delete() {
-		/*List<Integer> screenIDs = null;
-		if (selectedScreenIDs==null) {
-			JSONUtility.encodeJSONSuccess(ServletActionContext.getResponse());
-			return null;
-		} else {*/
 			//screenIDs = GeneralUtils.createIntegerListFromStringArr(selectedScreenIDs.split(","));
 			if (selectedScreenIDList==null || selectedScreenIDList.isEmpty()) {
 				JSONUtility.encodeJSONSuccess(ServletActionContext.getResponse());
 				return null;
 			}
-		//}
 		if (canViewScreen && canDeleteScreen(selectedScreenIDList)) {
 			for (Integer screenID : selectedScreenIDList) {
 				ItemScreenCache.getInstance().removeScreen(screenID);
@@ -259,10 +229,6 @@ public class ScreenAction extends ActionSupport implements Preparable, SessionAw
 			return true;
 		}
 		//Need to load screen to check the owner
-		/*TScreenBean screenBean=(TScreenBean)ScreenDesignBL.getInstance().loadScreen(screenID);
-		if(userID.equals(screenBean.getOwner())){
-			return true;
-		}*/
 		return false;
 	}
 	
@@ -357,19 +323,6 @@ public class ScreenAction extends ActionSupport implements Preparable, SessionAw
 	 * Call when a new screen is fired
 	 * @return
 	 */
-	/*public String doNew() {
-		if(!canViewScreen){
-			return HOME;
-		}
-		newScreen=true;
-		boolean up=true;
-		Boolean oldUp=(Boolean)session.get("up");
-		if(oldUp!=null){
-			up=oldUp.booleanValue();
-		}
-		screens=ScreenDesignBL.getInstance().getScreens(sortKey,up);
-		return INPUT;
-	}*/
 	/**
 	 * Obtain all screen from db
 	 * @return
@@ -382,41 +335,21 @@ public class ScreenAction extends ActionSupport implements Preparable, SessionAw
 			screens=new ArrayList();
 		}
 		JSONUtility.encodeJSON(ServletActionContext.getResponse(), ScreenDesignBL.getInstance().encodeJSONScreenList(screens));
-		/*try {
-			JSONUtility.prepareServletResponseJSON(ServletActionContext.getResponse());
-			PrintWriter out = ServletActionContext.getResponse().getWriter();
-			out.println(ScreenDesignBL.getInstance().encodeJSONScreenList(screens));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			LOGGER.error(org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(e));
-		}*/
 		return null;
 	}
 	
 	/**
 	 * @return the screens
 	 */
-	/*public List getScreens() {
-		return screens;
-	}*/
 	/**
 	 * @param screens the screens to set
 	 */
-	/*public void setScreens(List screens) {
-		this.screens = screens;
-	}*/
 	/**
 	 * @return the newScreen
 	 */
-	/*public boolean isNewScreen() {
-		return newScreen;
-	}*/
 	/**
 	 * @param newScreen the newScreen to set
 	 */
-	/*public void setNewScreen(boolean newScreen) {
-		this.newScreen = newScreen;
-	}*/
 	/**
 	 * @param screenID the screenID to set
 	 */
@@ -430,9 +363,6 @@ public class ScreenAction extends ActionSupport implements Preparable, SessionAw
 		this.sortKey = sortKey;
 	}
 	
-	/*public void setEditMode(boolean editMode) {
-		this.editMode = editMode;
-	}*/
 
 	public void setCopy(boolean copy) {
 		this.copy = copy;

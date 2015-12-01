@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -25,6 +25,7 @@ package com.aurel.track.lucene.index.listFields;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.lucene.document.Document;
@@ -61,6 +62,7 @@ public class NotLocalizedListIndexer extends InternalListIndexer {
 	 * Gets the index writer ID
 	 * @return
 	 */
+	@Override
 	protected int getIndexWriterID() {
 		return LuceneUtil.INDEXES.NOT_LOCALIZED_LIST_INDEX;
 	}
@@ -68,6 +70,7 @@ public class NotLocalizedListIndexer extends InternalListIndexer {
 	 * Gets the field name of the combined key which is the unique identifier
 	 * @return
 	 */
+	@Override
 	protected String getCombinedKeyFieldName() {
 		return LuceneUtil.LIST_INDEX_FIELDS_NOT_LOCALIZED.COMBINEDKEY;
 	}
@@ -75,6 +78,7 @@ public class NotLocalizedListIndexer extends InternalListIndexer {
 	 * Gets the list field type for logging purposes  
 	 * @return
 	 */
+	@Override
 	protected String getListFieldType() {
 		return "not localized";
 	}
@@ -82,6 +86,7 @@ public class NotLocalizedListIndexer extends InternalListIndexer {
 	 * Gets the fieldID types stored in this index 
 	 * @return
 	 */
+	@Override
 	protected List<Integer> getFieldIDs() {
 		List<Integer> externalIDFields = new LinkedList<Integer>();
 		externalIDFields.add(SystemFields.INTEGER_PROJECT);
@@ -95,6 +100,7 @@ public class NotLocalizedListIndexer extends InternalListIndexer {
 	 * @param type
 	 * @return
 	 */
+	@Override
 	protected Document createDocument(ILabelBean labelBean, int type) {
 		String id = null;
 		try {
@@ -117,7 +123,8 @@ public class NotLocalizedListIndexer extends InternalListIndexer {
 		} catch (Exception e) {
 			LOGGER.error("Creating the document for non-localized list option " +
 					" with label " + labelBean.getLabel() + " id " + id +
-					" type " + type + " failed with " + e.getMessage(), e);
+					" type " + type + " failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			return null;
 		}
 	}

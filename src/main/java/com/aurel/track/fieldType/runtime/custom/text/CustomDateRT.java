@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -102,6 +103,7 @@ public class CustomDateRT extends CustomTextBoxBaseRT {
 	 * @param locale 
 	 * @return
 	 */
+	@Override
 	public String getShowValue(Integer fieldID, Integer parameterCode, Object value, 
 			Integer workItemID, LocalLookupContainer localLookupContainer, Locale locale) {
 		return getShowValue(value, locale);
@@ -119,7 +121,8 @@ public class CustomDateRT extends CustomTextBoxBaseRT {
 			} catch (Exception e) {
 				//it can happen when the value is an Integer (days relative in treeQueries)
 				if (LOGGER.isDebugEnabled()) {
-					LOGGER.debug("Getting the showValue for double " + value + " failed with " + e.getMessage(), e);
+					LOGGER.debug("Getting the showValue for double " + value + " failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 				return value.toString();
 			}
@@ -138,6 +141,7 @@ public class CustomDateRT extends CustomTextBoxBaseRT {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public String getShowISOValue(Integer fieldID, Integer parameterCode, Object value, 
 			Integer workItemID, LocalLookupContainer localLookupContainer, Locale locale) {
 		if (value!=null) {
@@ -180,6 +184,7 @@ public class CustomDateRT extends CustomTextBoxBaseRT {
 	/**
 	 * The value type of a textbox for date 
 	 */
+	@Override
 	public int getValueType() {
 		return ValueType.DATE;
 	}
@@ -227,7 +232,6 @@ public class CustomDateRT extends CustomTextBoxBaseRT {
 			validatorsList.add(dateValidator);
 		}
 		CalendarValidator calendarValidator = new CalendarValidator();
-		//calendarValidator.setPersonID(personID);
 		validatorsList.add(calendarValidator);
 		validatorsMap.put(parameterCode, validatorsList);
 		return validatorsMap;
@@ -273,6 +277,7 @@ public class CustomDateRT extends CustomTextBoxBaseRT {
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public IActivityConfig getFieldChangeConfig(Integer fieldID) {
 		return new DateFieldChangeConfig(fieldID);
 	}
@@ -282,6 +287,7 @@ public class CustomDateRT extends CustomTextBoxBaseRT {
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public IActivityExecute getFieldChangeApply(Integer fieldID) {
 		return new DateFieldChangeApply(fieldID);
 	}
@@ -291,6 +297,7 @@ public class CustomDateRT extends CustomTextBoxBaseRT {
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public IValueConverter getFieldValueConverter(Integer fieldID) {
 		return new DateSetterConverter(fieldID);
 	}
@@ -303,6 +310,7 @@ public class CustomDateRT extends CustomTextBoxBaseRT {
 	 * @param personBean
 	 * @param locale
 	 */
+	@Override
 	public void loadFieldChangeDatasourceAndValue(WorkflowContext workflowContext,
 			FieldChangeValue fieldChangeValue, 
 			Integer parameterCode, TPersonBean personBean, Locale locale) {
@@ -344,7 +352,8 @@ public class CustomDateRT extends CustomTextBoxBaseRT {
 			} catch (Exception e) {
 				LOGGER.error("Converting the new value of type " + 
 						newValue.getClass().getName() +  
-						" to Date failed with " + e.getMessage(), e);
+						" to Date failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		Date dateOld = null;
@@ -354,7 +363,8 @@ public class CustomDateRT extends CustomTextBoxBaseRT {
 			} catch (Exception e) {
 				LOGGER.error("Converting the old value of type " + 
 						newValue.getClass().getName() +  
-						" to Boolean failed with " + e.getMessage(), e);
+						" to Boolean failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		//Custom date contains typically no time value only date value
@@ -368,9 +378,6 @@ public class CustomDateRT extends CustomTextBoxBaseRT {
 	 * to be interpreted correctly according to the reports's locale  
 	 * @return
 	 */
-	/*public boolean isDate() {
-		return true;
-	}*/
 		
 	
 	/**
@@ -379,6 +386,7 @@ public class CustomDateRT extends CustomTextBoxBaseRT {
 	 * @param workItemBean the lucene value might depend on other fields of the workItem
 	 * @return
 	 */
+	@Override
 	public String getLuceneValue(Object value, TWorkItemBean workItemBean) {
 		return LuceneUtil.getLuceneDateValue(value);
 	}
@@ -387,6 +395,7 @@ public class CustomDateRT extends CustomTextBoxBaseRT {
 	 * Whether the field should be stored
 	 * @return
 	 */
+	@Override
 	public int getLuceneStored() {
 		return LuceneUtil.STORE.NO;
 	}
@@ -395,6 +404,7 @@ public class CustomDateRT extends CustomTextBoxBaseRT {
 	 * Whether the field should be tokenized
 	 * @return
 	 */
+	@Override
 	public int getLuceneTokenized() {
 		return LuceneUtil.TOKENIZE.NO;
 	}
@@ -403,6 +413,7 @@ public class CustomDateRT extends CustomTextBoxBaseRT {
 	 * Returns the lookup entity type related to the fieldType
 	 * @return
 	 */
+	@Override
 	public int getLookupEntityType() {
 		return LuceneUtil.LOOKUPENTITYTYPES.DIRECTDATE;
 	}

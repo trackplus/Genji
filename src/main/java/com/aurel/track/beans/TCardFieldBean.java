@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -45,22 +45,29 @@ public class TCardFieldBean
 
 	private static CardFieldDAO cardFieldDAO = DAOFactory.getFactory().getCardFieldDAO();
 
+	@Override
 	public String getLabel() {
 		return getName();
 	}
+	@Override
 	public String getDescription() {
 		return null;
 	}
+	@Override
 	public void setDescription(String description){
 	}
+	@Override
 	public void setIndex(Integer index){
 	}
+	@Override
 	public Integer getIndex(){
 		return null;
 	}
+	@Override
 	public Integer getParent(){
 		return this.getCardPanel();
 	}
+	@Override
 	public void setParent(Integer parentID){
 		this.setCardPanel(parentID);
 	}
@@ -95,6 +102,7 @@ public class TCardFieldBean
 	/**
 	 * serialize bean
 	 */
+	@Override
 	public Map<String, String> serializeBean() {
 
 		Map<String, String> attributesMap = new HashMap<String, String>();
@@ -112,7 +120,6 @@ public class TCardFieldBean
 		attributesMap.put("labelVAlign", getLabelVAlign().toString());
 		attributesMap.put("valueHAlign", getValueHAlign().toString());
 		attributesMap.put("valueVAlign", getValueVAlign().toString());
-		//attributesMap.put("isEmpty", getIsEmpty().toString());
 		attributesMap.put("parent", getParent().toString());
 		attributesMap.put("field", getField().toString());
 		String description = getDescription();
@@ -127,6 +134,7 @@ public class TCardFieldBean
 	/**
 	 * deserialize bean
 	 */
+	@Override
 	public ISerializableLabelBean deserializeBean(Map<String, String> attributes) {
 		String strObjectID = attributes.get("objectID");
 		if (strObjectID!=null) {
@@ -146,7 +154,6 @@ public class TCardFieldBean
 		this.setLabelVAlign(Integer.parseInt(attributes.get("labelVAlign")));
 		this.setValueHAlign(Integer.parseInt(attributes.get("valueHAlign")));
 		this.setValueVAlign(Integer.parseInt(attributes.get("valueVAlign")));
-		//this.setIsEmpty(attributes.get("isEmpty"));
 		this.setParent(Integer.parseInt(attributes.get("parent")));
 		this.setField(Integer.parseInt(attributes.get("field")));
 		String description = attributes.get("description");
@@ -161,6 +168,7 @@ public class TCardFieldBean
 		return this;
 	}
 
+	@Override
 	public boolean considerAsSame(ISerializableLabelBean serializableLabelBean,
 								  Map<String, Map<Integer, Integer>> matchesMap) {
 		if (serializableLabelBean==null) {
@@ -173,32 +181,10 @@ public class TCardFieldBean
 			return true;
 		}
 
-		/*Integer internalColIndex = getColIndex();
-		Integer externalColIndex = screenFieldBean.getColIndex();
-		Integer internalRowIndex = getRowIndex();
-		Integer externalRowIndex = screenFieldBean.getRowIndex();
-		Integer externalParent = getParent();
-		Integer internalParent = screenFieldBean.getParent();
-		Integer externalFieldKey = getField();
-		Integer internalFieldKey = screenFieldBean.getField();
-		Map<Integer, Integer> parentMatches = matchesMap.get(ExchangeFieldNames.SCREENPANEL);
-		Map<Integer, Integer> fieldMatches = matchesMap.get(ExchangeFieldNames.FIELD);
-
-		if (externalColIndex!=null && internalColIndex!=null &&
-			externalRowIndex!=null && internalRowIndex!=null &&
-			externalParent!=null && internalParent!=null && parentMatches!=null &&
-			parentMatches.get(externalParent)!=null &&
-			externalFieldKey!=null && internalFieldKey!=null &&
-			parentMatches.get(externalFieldKey)!=null)
-		{
-			return externalColIndex.equals(internalColIndex) &&
-					externalRowIndex.equals(internalRowIndex) &&
-					parentMatches.get(externalParent).equals(internalParent) &&
-					fieldMatches.get(externalFieldKey).equals(internalFieldKey);
-		}*/
 		return false;
 	}
 
+	@Override
 	public Integer saveBean(ISerializableLabelBean serializableLabelBean,
 							Map<String, Map<Integer, Integer>> matchesMap) {
 		TCardFieldBean screenFieldBean = (TCardFieldBean)serializableLabelBean;

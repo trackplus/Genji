@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -612,17 +612,12 @@ public class Recipients {
 						Integer.valueOf(CustomUserPicker.PARAMETERCODES.AUTOMAIL_OPTION));
 					if (automailSelectionBean!=null) {
 						Integer automailSelection = automailSelectionBean.getIntegerValue();
-						/*if (automailSelection==null) {
-							//on behalf of picker: get the auto mails as originator
-							userPickerFieldToRaciTemplate.put(userPickerFieldID, CustomUserPicker.AUTOMAIL_OPTIONS.ORIGINATOR);
-						} else {*/
 							if (automailSelection!=null && automailSelection.intValue()!=CustomUserPicker.AUTOMAIL_OPTIONS.NOMAIL) {
 								//the auto mail selection from user picker settings 
 								userPickerFieldToRaciTemplate.put(userPickerFieldID, automailSelection);
 								LOGGER.debug("Automail option for field config " + fieldConfigBean.getLabel() +
 										" ("+ userPickerFieldID +"): " + automailSelection);
 							}
-						//}
 					} else {
 						//on behalf of picker: get the auto mails as originator
 						userPickerFieldToRaciTemplate.put(userPickerFieldID, CustomUserPicker.AUTOMAIL_OPTIONS.ORIGINATOR);

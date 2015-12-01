@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -69,7 +69,7 @@ function screenConfigInit(){
 		 } else {
 		   this.collapse(node);
 		 }
-		 if(treeSelector.selectedNode==null){
+		 if(CWHF.isNull(treeSelector.selectedNode)){
 			treeSelector.doSelect(node);
 			onTreeCfgSelect();
 		}
@@ -96,9 +96,9 @@ function verifyErrorsOnTreeConfig(){
 }
 function haveErrorsOnTreeConfig(){
 	var errorListEl=document.getElementById("errorList");
-	if(errorListEl!=null){
+	if(errorListEl){
 		var liElemets=errorListEl.getElementsByTagName("li");
-		if(liElemets!=null&&liElemets.length>0){
+		if(liElemets&&liElemets.length>0){
 			return true;
 		}
 	}
@@ -115,7 +115,7 @@ function onTreeCfgSelect(){
 	var configType=getConfigType(widgetId);
 	var type=getType(widgetId);
 	var urlStr=getContextPath()+"/";
-	if(type=="configItem"){// leaf
+	if(type==="configItem"){// leaf
 		urlStr=urlStr+configType+"ConfigItemDetail";
 	}else{
 		urlStr=urlStr+"treeNodeConfigDetail";
@@ -185,16 +185,16 @@ Used to validate if a node can drop to another node
 function accept(/*TreeNode*/ source,/*TreeNode*/ target){
 	var targetWidgetId=target.widgetId;
 	var index=targetWidgetId.search("_");
-	if(index==-1){
+	if(index===-1){
 	 return false;
 	}
 	var targetType=getType(targetWidgetId);
-	if(targetType=="configItem"){
+	if(targetType==="configItem"){
 		return false;
 	}
 	var index2=source.widgetId.search("_");
 	var sourceType=getType(source.widgetId);
-	if(targetType!=sourceType){
+	if(targetType!==sourceType){
 		return false;
 	}
 	return true;
@@ -212,7 +212,7 @@ function changeConfig(urlStr,configType){
  		url: urlStr,
  		disableCaching:true,
 		success: function(result){
-			if(recursive==true){
+			if(recursive===true){
 				refreshAllTree();
 			}else{
 				refreshTree();
@@ -228,13 +228,13 @@ Refresh the parent of selected node
 */
 function refreshTree(){
 	var selectedNode=treeSelector.selectedNode;
-	if (selectedNode==null)
+	if (CWHF.isNull(selectedNode))
 	{
 		refreshNode(treeWidget);
 		return;
 	}
 	var node=treeSelector.selectedNode.parent;
-	if(node==treeWidget){
+	if(node===treeWidget){
 		//is a root treeNode
 		refreshNode(selectedNode);
 	}else{
@@ -259,11 +259,11 @@ function refreshAllTree(selectExactMatch, newWidgetId){
 	try{
 	var selectedNode=treeSelector.selectedNode;
 	var selectedSchema="";
-	if (newWidgetId!=null){
+	if (newWidgetId){
 		//new field created: no such node existed in the tree previousely
 		selectedSchema=getSchema(newWidgetId, selectExactMatch);
 	}else{
-		if (selectedNode==null){
+		if (CWHF.isNull(selectedNode)){
 			//no need to reselect any node
 			selectedSchema="";
 		}else{
@@ -282,7 +282,7 @@ function refreshAllTree(selectExactMatch, newWidgetId){
 		}
 		//treeController.collapse(node);
 		node.state= node.loadStates.UNCHECKED;
-		if(wasExpanded==true){
+		if(wasExpanded===true){
 			expandRecursive(node,tns.children[i],selectedSchema,selectExactMatch);
 		}
 	}
@@ -307,17 +307,17 @@ function refreshAllTree(selectExactMatch, newWidgetId){
 */
 function getSchema(widgetId, exactMatch)
 {
-	if (widgetId.indexOf("_")==widgetId.lastIndexOf("_"))
+	if (widgetId.indexOf("_")===widgetId.lastIndexOf("_"))
 	{
 		//node directly under the root, return widgetId independently of exactMatch flag
 		return widgetId;
 	}
-	if (exactMatch==null || exactMatch == false)
+	if (CWHF.isNull(exactMatch) || exactMatch === false)
 	{
 		//child node, no exact match needed the id is removed
 		return widgetId.substring(0,widgetId.lastIndexOf("_"));
 	}
-	if (exactMatch==true)
+	if (exactMatch===true)
 	{
 		//child node, exact match needed
 		return widgetId;
@@ -347,10 +347,10 @@ function createTreeSchema(selectExactMatch){
 Create a snap-shot of a treeNode expanded child recursive
 */
 function createTreeNodeSchema(node, selectExactMatch){
-	if(node.isFolder==false){
+	if(node.isFolder===false){
 		return null;
 	}
-	if(node.isExpanded==false){
+	if(node.isExpanded===false){
 		return null;
 	}
 	var tns;
@@ -358,7 +358,7 @@ function createTreeNodeSchema(node, selectExactMatch){
 	for(var i=0; i<node.children.length; i++) {
 		var child = node.children[i];
 		var childTns=createTreeNodeSchema(child, selectExactMatch);
-		if(childTns!=null){
+		if(childTns){
 			tns.add(childTns);
 		}
 	}
@@ -378,13 +378,13 @@ function expandRecursive(node,tns,selectedSchema,selectExactMatch){
 		var child = node.children[i];
 		var childId = node.children[i].widgetId;
 		var childScheme=getSchema(childId, selectExactMatch);
-		if(childScheme==selectedSchema){
+		if(childScheme===selectedSchema){
 			treeSelector.doSelect(child);
 			onTreeCfgSelect();
 		}
 		for(var j=0; j<tns.children.length; j++) {
 			var tnsChild=tns.children[j];
-			if(childScheme==tnsChild.id){
+			if(childScheme===tnsChild.id){
 				expandRecursive(child,tnsChild,selectedSchema,selectExactMatch);
 				break;
 			}
@@ -402,7 +402,7 @@ function refreshNode(node){
 	var nodeId=node.widgetId;
 	var	selectedNodeId = "";
 	var isExpanded = false;
-	if (treeSelector.selectedNode!=null)
+	if (treeSelector.selectedNode)
 	{
 		selectedNodeId=treeSelector.selectedNode.widgetId;
 		isExpanded=treeSelector.selectedNode.isExpanded;
@@ -422,14 +422,14 @@ function refreshNode(node){
 		// recursively expand opened node
 		this.process = function() {
 			var nodeToSelect=node;
-			if(node.widgetId==selectedNodeId){
+			if(node.widgetId===selectedNodeId){
 				nodeToSelect=node;
 			}else{
 				var scheme= selectedNodeId.substring(0,selectedNodeId.lastIndexOf("_"));
 				for(var i=0; i<node.children.length; i++) {
 					var childId = node.children[i].widgetId;
 					var childScheme=childId.substring(0,childId.lastIndexOf("_"));
-					if(scheme==childScheme){
+					if(scheme===childScheme){
 						nodeToSelect=node.children[i];
 						break;
 					}
@@ -438,7 +438,7 @@ function refreshNode(node){
 			/*if (treeSelector.selectedNode) {
 				treeSelector.deselect();
 			}*/
-			if (nodeToSelect!=null){
+			if (nodeToSelect){
 				treeSelector.doSelect(nodeToSelect);
 				onTreeCfgSelect();
 			}
@@ -460,11 +460,11 @@ function  resetSelectedNode(){
 	var widgetId=node.widgetId;
 	var configType=getConfigType(widgetId);
 	var type=getType(widgetId);
-	if(type!="configItem"){
+	if(type!=="configItem"){
 		//if is not a simple configItem
 		//request a confirmation
 		var r=confirm("Do you really want to reset "+node.title+"?");
-	  	if (r==false){
+	  	if (r===false){
 	  		return;
 		}
 
@@ -496,14 +496,14 @@ function getType(/*String */widgetId){
 }
 function getContextPath(){
 	var y=dojo.hostenv.getBaseScriptUri();
-	if(y.search("/")==0){
+	if(y.search("/")===0){
 		y=y.substring(1);
 	}
 	var ctxPath=y.substring(0,y.search("/"));
 	return "/"+ctxPath;
 }
 function isRecursiveType(configType){
-	if(configType=="screen"){
+	if(configType==="screen"){
 		return true;
 	}
 	return false;
@@ -540,16 +540,16 @@ function ajaxRequestWithSubmit(urlStr, formName, refreshNodeOnly, add){
 		success: function(result){
 			var data=result.responseText;
 			try{
-				if (data!=null && data.trim().length<50){
+				if (data && data.trim().length<50){
 					//return a jsp containing a widgetId string after a database operation
 					//the detailPane will not be directly actualized, instead a tree refresh
 					//and a node select will be triggered in order to actualize the detailPane section
-					if (refreshNodeOnly==true){
+					if (refreshNodeOnly===true){
 						//sucessfull save of an existing field config (which is not the default config)
 						//or copy the inherited field config
 						refreshTree();
 					}else{
-						if (add==true){
+						if (add===true){
 							//sucessfull save of a new field
 							/*
 							force the Field -> Custom Field branch to be expanded in order to
@@ -558,12 +558,12 @@ function ajaxRequestWithSubmit(urlStr, formName, refreshNodeOnly, add){
 							will be searched for the node to select which matches the  selected schema)
 							*/
 							var nodeField = treeWidget.children[0];
-							if (nodeField.isExpanded==false)
+							if (nodeField.isExpanded===false)
 							{
 								treeController.expand(nodeField,true);
 							}
 							var nodeCustom = nodeField.children[1];
-							if (nodeCustom!=null && nodeCustom.isExpanded==false)
+							if (nodeCustom && nodeCustom.isExpanded===false)
 							{
 								treeController.expand(nodeCustom,true);
 							}
@@ -621,15 +621,15 @@ function ajaxRequestNoSubmit(urlStr){
  * JavaScript warning by changing the field name:
  */
 function renameWarning(url, mayModifyField, confirmText) {
-		//avoid the warning for new custom fields (document.fieldDetailForm.oldFieldName.value=="")
+		//avoid the warning for new custom fields (document.fieldDetailForm.oldFieldName.value==="")
 		//and for same name values
-		if (document.fieldDetailForm.add!=null && document.fieldDetailForm.add.value=='false' &&
-				document.fieldDetailForm.oldFieldName.value!=null &&
-				document.fieldDetailForm.oldFieldName.value!="" &&
-				document.fieldDetailForm.elements['fieldBean.name'].value!=document.fieldDetailForm.oldFieldName.value) {
+		if (document.fieldDetailForm.add && document.fieldDetailForm.add.value==='false' &&
+				document.fieldDetailForm.oldFieldName.value &&
+				document.fieldDetailForm.oldFieldName.value!=="" &&
+				document.fieldDetailForm.elements['fieldBean.name'].value!==document.fieldDetailForm.oldFieldName.value) {
 			//field name modification: show the warning, and ask for confirmation
 			answer = confirm(confirmText);
-		 	if (answer==true) {
+		 	if (answer===true) {
 		 		if (mayModifyField) {
 				 	ajaxRequestWithSubmit(url, 'fieldDetailForm', false, true);
 			 	} else {
@@ -651,7 +651,7 @@ function renameWarning(url, mayModifyField, confirmText) {
  */
 function mouseOverTrigBtn(textField, picker, jsCalDateFormat){
 		document.getElementById(picker).style.background='#1d5090';
-		if(this["wasinit"+picker]==null){
+		if(CWHF.isNull(this["wasinit"+picker])){
 			Calendar.setup({
 				inputField : textField, // ID of the input field
 				ifFormat : jsCalDateFormat, // the date format
@@ -659,13 +659,13 @@ function mouseOverTrigBtn(textField, picker, jsCalDateFormat){
 			});
 			this["wasinit"+picker]=true;
 			this[picker]=picker;
-			if (picker=="datePickerDefault") {
+			if (picker==="datePickerDefault") {
 				oldPickerDefault = picker;
 			}
-			if (picker=="datePickerMinValue") {
+			if (picker==="datePickerMinValue") {
 				oldPickerMinValue = picker;
 			}
-			if (picker=="datePickerMaxValue") {
+			if (picker==="datePickerMaxValue") {
 				oldPickerMaxValue = picker;
 			}
 			//oldPicker=picker;
@@ -678,13 +678,13 @@ function mouseOverTrigBtn(textField, picker, jsCalDateFormat){
  * the same page will be reloaded again
  */
 function resetCalendars() {
-	if(oldPickerDefault!=null){
+	if(oldPickerDefault){
 		this["wasinit"+oldPickerDefault]=null;
 	}
-	if(oldPickerMinValue!=null){
+	if(oldPickerMinValue){
 		this["wasinit"+oldPickerMinValue]=null;
 	}
-	if(oldPickerMaxValue!=null){
+	if(oldPickerMaxValue){
 		this["wasinit"+oldPickerMaxValue]=null;
 	}
 }
@@ -746,11 +746,11 @@ function userPickerSettingChanged(radioBoxBaseName) {
 	var userPickerRadioBoxDepartment = document.getElementById(radioBoxBaseName+"2");
 	var roles = document.getElementById("roles");
 	var departments = document.getElementById("departments");
-	if (userPickerRadioBoxRole.checked==true){
+	if (userPickerRadioBoxRole.checked===true){
 		roles.disabled=false;
 		departments.disabled=true;
 	} else {
-			if (userPickerRadioBoxDepartment.checked==true) {
+			if (userPickerRadioBoxDepartment.checked===true) {
 				roles.disabled=true;
 				departments.disabled=false;
 			} else {

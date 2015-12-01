@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -220,7 +220,6 @@ public class ICalendarSynchronizeAction extends Action implements ApplicationAwa
 				// Create a TimeZone
 				// TODO: It is needed to tests if it manages the daylight times
 				final java.util.TimeZone serverTimeZone =  java.util.TimeZone.getDefault();
-				// final boolean daylight = serverTimeZone.inDaylightTime(new Date());
 				
 				TimeZoneRegistry registry = TimeZoneRegistryFactory.getInstance().createRegistry();
 				TimeZone timezone = registry.getTimeZone(serverTimeZone.getID());
@@ -270,34 +269,6 @@ public class ICalendarSynchronizeAction extends Action implements ApplicationAwa
 					
 				}
 				// the period is [StartDate,EndDate)
-				/*endDate.add(java.util.Calendar.DAY_OF_MONTH,1); 
-				
-				issueEvent = new VEvent(new Date(startDate.getTime()), new Date(endDate.getTime()), issue.getSynopsis());
-		
-				// add timezone info..
-				issueEvent.getProperties().add(tz.getTimeZoneId());
-	
-				// add description
-				issueEvent.getProperties().add(new Description(issue.getDescription()));
-	
-				// TODO: more adds
-				
-				// generate unique identifier..
-				UidGenerator ug = new UidGenerator(issue.getObjectID().toString());
-				issueEvent.getProperties().add(ug.generateUid());
-				
-				//add organizer to method=PUBLISH for Outlook
-				try {
-					String trackMail = Constants.getTrackEmailAddress();
-					URI mailToURI = new URI("MAILTO", trackMail, null);
-					Organizer organizer = new Organizer(mailToURI);
-					issueEvent.getProperties().add(new Organizer(mailToURI));
-				} catch (URISyntaxException e) {
-					// TODO Auto-generated catch block
-					LOGGER.error(ExceptionUtils.getStackTrace(e));
-				}
-				// add the issue to the calendar
-				calendar.getComponents().add(issueEvent);*/
 			}
 		}
 	}
@@ -319,13 +290,11 @@ public class ICalendarSynchronizeAction extends Action implements ApplicationAwa
 		
 		//add organizer to method=PUBLISH for Outlook
 		try {
-			//String trackMail = Constants.getTrackEmailAddress();
 			TPersonBean personBean = LookupContainer.getPersonBean(responsibleID);
 			if (personBean!=null) {
 				String email = personBean.getEmail();
 				if (email!=null) {
 					URI mailToURI = new URI("MAILTO", email, null);
-					//Organizer organizer = new Organizer(mailToURI);
 					issueEvent.getProperties().add(new Organizer(mailToURI));
 				}
 			}
@@ -346,6 +315,7 @@ public class ICalendarSynchronizeAction extends Action implements ApplicationAwa
 	/**
 	 * @param application the application to set
 	 */
+	@Override
 	public void setApplication(Map application) {
 		this.application = application;
 	}

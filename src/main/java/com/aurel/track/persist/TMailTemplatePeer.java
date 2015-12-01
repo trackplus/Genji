@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -63,6 +63,7 @@ public class TMailTemplatePeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TMailTemplateBean loadByPrimaryKey(Integer objectID) {
 		TMailTemplate tMailTemplate = null;
 		try {
@@ -82,13 +83,14 @@ public class TMailTemplatePeer
 	 * @param mailTemplateIDList
 	 * @return
 	 */
+	@Override
 	public List<TMailTemplateBean> loadByIDs(List<Integer> mailTemplateIDList) {
 		Criteria crit = new Criteria();
 		crit.addIn(OBJECTID, mailTemplateIDList);
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading mail templates failed with " + e.getMessage(), e);
+			LOGGER.error("Loading mail templates failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -99,32 +101,18 @@ public class TMailTemplatePeer
 	 * @param locale
 	 * @return
 	 */
-	/*public List<TMailTemplateBean> loadByTypeAndLocale(Integer type, String locale) {
-		Criteria crit = new Criteria();
-		crit.add(TEMPLATETYPE, type);
-		if (locale==null) {
-			crit.add(THELOCALE, (Object)null, Criteria.ISNULL);
-		} else {
-			crit.add(THELOCALE, locale);
-		}
-		try {
-			return convertTorqueListToBeanList(doSelect(crit));
-		} catch (TorqueException e) {
-			LOGGER.error("Loading mail templates by type " + type + " and locale " + locale +  " failed with " + e.getMessage(), e);
-			return null;
-		}
-	}*/
 	
 	/**
 	 * Gets all mail templates
 	 * @return
 	 */
+	@Override
 	public List<TMailTemplateBean> loadAll() {
 		Criteria crit = new Criteria();		
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all mail templates failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all mail templates failed with " + e.getMessage());
 			return null;
 		}	
 	}
@@ -134,6 +122,7 @@ public class TMailTemplatePeer
 	 * @param mailTemplateBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TMailTemplateBean mailTemplateBean) {
 		TMailTemplate tMailTemplate;		
 		try {
@@ -142,7 +131,7 @@ public class TMailTemplatePeer
 			Integer objectID=tMailTemplate.getObjectID();
 			return objectID;
 		} catch (Exception e) {
-			LOGGER.error("Saving of mail template failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of mail template failed with " + e.getMessage());
 			return null;
 		}		
 	}
@@ -152,6 +141,7 @@ public class TMailTemplatePeer
 	 * Is deletable should return true before calling this method
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		ReflectionHelper.delete(deletePeerClasses, deleteFields, objectID);
 	}

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -23,7 +23,6 @@
 
 package com.aurel.track.report.group;
 
-//import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -102,7 +101,6 @@ public class ReportGroupBL {
 		//contains the actual ordinal number for each level
 		List<IntegerStringBean> groupIdentifierList = new LinkedList<IntegerStringBean>();
 		//tree field management variables
-		//Stack<Integer> treeStack = new Stack<Integer>();
 		Map<Integer, Stack<Integer>> treeStacksMap = new HashMap<Integer, Stack<Integer>>();
 		//gather the tree type fields
 		Map<Integer, Boolean> fieldIsTreeMap = new HashMap<Integer, Boolean>();
@@ -122,7 +120,6 @@ public class ReportGroupBL {
 			}
 		}
 		Map<Integer, Map<Integer, GroupLimitBean>> treeLimitBeansMapForField = new HashMap<Integer, Map<Integer,GroupLimitBean>>();
-		//Map<Integer, GroupLimitBean> treeLimitBeansMap = new HashMap<Integer, GroupLimitBean>();
 		//previous values and next values to observe the group changes
 		Map<Integer, Object> previousValuesMap = new HashMap<Integer, Object>();
 		Map<Integer, Object> nextValuesMap = new HashMap<Integer, Object>();
@@ -230,10 +227,6 @@ public class ReportGroupBL {
 					for (int j = i+1; j<groupByList.size(); j++) {
 						if (groupIdentifierList.size()>i+1) {
 							groupIdentifierList.remove(i+1);
-							/*IntegerStringBean integerStringBean = groupIdentifierList.get(i+1);
-							if (integerStringBean!=null) {
-								groupIdentifierList.remove(integerStringBean);
-							}*/
 						}
 					}
 					String groupID = encodeGroupIdentifierString(groupIdentifierList);
@@ -250,7 +243,6 @@ public class ReportGroupBL {
 						Map<Integer, String> idToLabelMap = treeFieldsIDToLabelMap.get(fieldID);
 						//is tree field
 						Integer nextTreeValue = (Integer)nextValue;
-						//Integer previousTreeValue = (Integer)previousValue;
 						Map<Integer, Integer> childToParentMap = null;
 						if  (treeFieldsChildToParentMap!=null) {
 							childToParentMap = treeFieldsChildToParentMap.get(fieldID);
@@ -268,7 +260,6 @@ public class ReportGroupBL {
 									workItemID, groupID, isTreeField);
 							nextLevelGroupLimitBean.setNumberOfWorkItems(1);
 							groupingLimitsListForWorkItem.add(nextLevelGroupLimitBean);
-							//groupLimitBeansMap.put(Integer.valueOf(i), nextLevelGroupLimitBean);
 							//put the tree parents in stack as root of a branch
 							treeStack.push((Integer)nextTreeValue);
 							treeLimitBeansMap.put((Integer)nextTreeValue, nextLevelGroupLimitBean);
@@ -319,7 +310,6 @@ public class ReportGroupBL {
 								GROUPSEPARATOR + showValue, nextValue, reportBean.getSortOrder(fieldID), i, expanding, 
 								workItemID, groupID, isTreeField);
 						groupingLimitsListForWorkItem.add(nextLevelGroupLimitBean);
-						//groupLimitBeansMap.put(Integer.valueOf(i), groupLimitBean);
 						nextLevelGroupLimitBean.setNumberOfWorkItems(1);
 					}
 					if (nextLevelGroupLimitBean!=null) {

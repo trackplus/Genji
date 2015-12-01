@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -26,10 +26,7 @@
 Ext.define('com.trackplus.admin.project.RoleAssignment',{
 	extend:'com.trackplus.admin.TreeDetailAssignment',
 	config: {
-		rootID: '',
-		baseAction: null,
-		//rootMessage: null,
-		dynamicIcons: false
+		rootID: '_'
 	},
 	baseAction:'roleAssignments',
 
@@ -40,14 +37,13 @@ Ext.define('com.trackplus.admin.project.RoleAssignment',{
 
 	constructor: function(config) {
 		var config = config || {};
-		this.initialConfig = config;
-		Ext.apply(this, config);
-		this.init();
+		this.initConfig(config);
+		this.initBase();
 	},
 
 	getEntityLabel: function(extraConfig) {
 		var isGroup = false;
-		if (extraConfig!=null && extraConfig.selectedRecord!=null) {
+		if (extraConfig && extraConfig.selectedRecord) {
 			isGroup = extraConfig.selectedRecord.data["isGroup"];
 		}
 		if (isGroup) {
@@ -91,7 +87,7 @@ Ext.define('com.trackplus.admin.project.RoleAssignment',{
 	},
 
 	onRemovePerson: function() {
-		this.reloadAssigned(this.baseAction+"!unassign.action", {});
+		this.reloadAssigned(this.getBaseAction()+"!unassign.action", {});
 	},
 
 	/**
@@ -121,27 +117,49 @@ Ext.define('com.trackplus.admin.project.RoleAssignment',{
 		return [{
 			text:getText('common.lbl.name'),
 			flex:2, dataIndex:'name', sortable:true,groupable:false,
-			filterable:true, renderer:this.renderer
+			renderer:this.renderer,
+			filter: {
+	            type: "string"
+	        }
 		}, {
 			text:getText('admin.user.profile.lbl.userName'),
 			flex:1, dataIndex:'userName', sortable:true,groupable:false,
-			filterable:true, renderer:this.renderer
+			renderer:this.renderer,
+			filter: {
+	            type: "string"
+	        }
 		}, {
 			text:getText('admin.user.profile.lbl.department'),
 			flex:2, dataIndex:'department', sortable:true,groupable:true,
-			filterable:true, renderer:this.renderer
+			renderer:this.renderer,
+			filter: {
+	            type: "string"
+	        }
 		}, {
 			text:getText('admin.project.roleAssignment.lbl.group'),
-			flex:1, dataIndex:'groupLabel', sortable:true,groupable:true,
-			filterable:true, renderer:this.renderer
+			flex:1, dataIndex:'groupLabel', sortable:true, groupable:true,
+			renderer:this.renderer,
+			filter: {
+				type: "list",
+				options: [getText("common.boolean.Y"),
+							getText("common.boolean.N")]
+			}
 		}, {
 			text:getText('admin.user.profile.lbl.employeeId'),
 			flex:1, dataIndex:'employeeId', sortable:true,groupable:false,
-			filterable:true, renderer:this.renderer, hidden:true
+			renderer:this.renderer, hidden:true,
+			filter: {
+	            type: "string"
+	        }
 		},{
 			text: getText('admin.user.manage.lbl.activ'),
 			flex:1, dataIndex: 'activeLabel', sortable:true,groupable:true,
-			filterable: true, renderer:this.renderer, hidden:true
+			renderer:this.renderer, hidden:true,
+			filter: {
+				type: "list",
+				options: [getText("common.boolean.Y"),
+							getText("common.boolean.N")]
+			}
 		}];
 	},
 
@@ -167,24 +185,7 @@ Ext.define('com.trackplus.admin.project.RoleAssignment',{
 		var groupingFeature = Ext.create('Ext.grid.feature.Grouping',{
 			groupHeaderTpl: '{name} ({rows.length} Item{[values.rows.length > 1 ? "s" : ""]})'
 		});
-		return features = [groupingFeature,{
-			ftype: 'filters',
-			encode: false,// json encode the filter query
-			local: true,// defaults to false (remote filtering)
-			filters: [{
-					type: 'string',
-					dataIndex: 'name'
-				},{
-					type: 'string',
-					dataIndex: 'department'
-				},{
-					type: 'string',
-					dataIndex: 'groupLabel'
-				},{
-					type: 'string',
-					dataIndex: 'activeLabel'
-				}]
-			}];
+		return features = [groupingFeature];
 	},
 	getGroupingFeature:function(features){
 	  return features[0];

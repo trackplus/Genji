@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -174,7 +174,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 				ReflectionHelper.delete(dependentPeerClasses, fields, workItemID);
 			}
 		} catch (TorqueException e) {
-			LOGGER.error("Cascade deleteing the field configs failed with " + e.getMessage(), e);
+			LOGGER.error("Cascade deleteing the field configs failed with " + e.getMessage());
 		}
 	}
 
@@ -199,7 +199,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 			try {
 				doUpdate(selectCriteria, updateCriteria);
 			} catch (TorqueException e) {
-				LOGGER.error("Removing the deleted superior workItem from childen to be deleted  at loop " + i + failedWith + e.getMessage(), e);
+				LOGGER.error("Removing the deleted superior workItem from childen to be deleted  at loop " + i + failedWith + e.getMessage());
 			}
 		}
 	}
@@ -213,6 +213,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TWorkItemBean loadByPrimaryKey(Integer objectID) throws ItemLoaderException {
 		TWorkItem tWorkItem = null;
 		try {
@@ -228,6 +229,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 		return null;
 	}
 	
+	@Override
 	public TWorkItemBean loadByProjectSpecificID(Integer projectID,Integer idNumber) throws ItemLoaderException{
 		Criteria crit = new Criteria();
 		crit.add(PROJECTKEY,projectID);
@@ -238,7 +240,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 				return torqueList.get(0).getBean();
 			}
 		} catch (TorqueException e) {
-			LOGGER.error("loadByProjectSpecificID failed with " + e.getMessage(), e);
+			LOGGER.error("loadByProjectSpecificID failed with " + e.getMessage());
 		}
 
 		return null;
@@ -253,6 +255,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * @param dateLimit
 	 * @return
 	 */
+	@Override
 	public List<TWorkItemBean> loadReminderWorkItems(Integer personID, String remindMeAsOriginator, String remindMeAsManager, String remindMeAsResponsible, Date dateLimit) {
 		// now build the criteria
 		Criteria crit = new Criteria();
@@ -305,7 +308,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the reminder workItems failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the reminder workItems failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -314,6 +317,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * Gets the number of entries in TWORKITEM.
 	 * @return number of table entries in TWORKITEM
 	 */
+	@Override
 	public int count() {
 		String COUNT = "count(" + WORKITEMKEY + ")";
 		Criteria crit = new Criteria(); // use empty Criteria to get all entries		
@@ -321,9 +325,9 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 		try {
 			return ((Record) doSelectVillageRecords(crit).get(0)).getValue(1).asInt();
 		} catch (TorqueException e) {
-			LOGGER.error("Counting the workItems failed with " + e.getMessage(), e);
+			LOGGER.error("Counting the workItems failed with " + e.getMessage());
 		} catch (DataSetException e) {
-			LOGGER.error("Counting the workItems failed with " + e.getMessage(), e);
+			LOGGER.error("Counting the workItems failed with " + e.getMessage());
 		}
 		return 0;
 		// get the one and only returned record. Get the first value in this record.
@@ -335,6 +339,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * @param identifierFieldValues
 	 * @return
 	 */
+	@Override
 	public TWorkItemBean loadBySecondaryKeys(Map<Integer, Object> identifierFieldValues) throws ExcelImportNotUniqueIdentifiersException {
 		List<TWorkItem> workItems = null;
 		Criteria crit = new Criteria();
@@ -437,6 +442,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * Gets the list of all workItems
 	 * @return
 	 */	
+	@Override
 	public List<TWorkItemBean> loadAll() {
 		Criteria crit = new Criteria();
 		try {
@@ -452,6 +458,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * Gets the list of all issues with parent.
 	 * @return
 	 */
+	@Override
 	public List<TWorkItemBean> loadAllWithParent() {
 		Criteria crit = new Criteria();
 		crit.add(SUPERIORWORKITEM, (Object)null, Criteria.ISNOTNULL);
@@ -464,6 +471,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 		}
 	}
 	
+	@Override
 	public List<TWorkItemBean> getChildren(Integer key){
 		Criteria crit = new Criteria();
 		crit.add(BaseTWorkItemPeer.SUPERIORWORKITEM, key, Criteria.EQUAL);
@@ -486,6 +494,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * @param itemTypesList
 	 * @return
 	 */
+	@Override
 	public List<TWorkItemBean> getChildren(int[] workItemIDs,
 			boolean notClosed, Integer archived, Integer deleted, List<Integer> itemTypesList) {
 		List<TWorkItemBean> workItemList = new ArrayList<TWorkItemBean>();
@@ -527,6 +536,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * @param personID
 	 * @return
 	 */
+	@Override
 	public TWorkItemBean loadLastCreated(Integer personID) {
 		Date createdDate = null;
 		String max = "max(" + CREATED + ")";
@@ -573,6 +583,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * @param issueTypeID
 	 * @return
 	 */
+	@Override
 	public TWorkItemBean loadLastCreatedByProjectIssueType(Integer personID, Integer projectID, Integer issueTypeID) {
 		List<TWorkItem> workItemList = null;
 		Criteria criteria = new Criteria();
@@ -614,9 +625,11 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * @param workItemKeys
 	 * @return
 	 */
+	@Override
 	public List<TWorkItemBean> loadByWorkItemKeys(int[] workItemKeys) {
 		return  loadByWorkItemKeys(workItemKeys,(Date)null,(Date)null);
 	}
+	@Override
 	public List<TWorkItemBean> loadByWorkItemKeys(int[] workItemKeys,Date startDate,Date endDate){
 		List<TWorkItemBean> workItemList = new ArrayList<TWorkItemBean>();
 		if (workItemKeys==null || workItemKeys.length==0) {
@@ -653,6 +666,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * @param deleted 
 	 * @return A list with {@link TWorkItemBean}s.
 	 */
+	@Override
 	public List<TWorkItemBean> loadByWorkItemKeys(int[] workItemKeys, Integer archived, Integer deleted) {
 		List<TWorkItemBean> workItemList = new ArrayList<TWorkItemBean>();
 		if (workItemKeys==null || workItemKeys.length==0) {
@@ -688,6 +702,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * <p/>
 	 * @return A list with {@link TWorkItemBean}s.
 	 */
+	@Override
 	public List<TWorkItemBean> loadBySynopsisList(List<String> synopsisList) {
 		List<TWorkItemBean> workItemList = new ArrayList<TWorkItemBean>();
 		if (synopsisList==null || synopsisList.isEmpty()) {
@@ -722,6 +737,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * <p/>
 	 * @return A list with {@link TWorkItemBean}s.
 	 */
+	@Override
 	public List<TWorkItemBean> loadByUuids(List<String> uuids) {
 		List<TWorkItemBean> workItemList = new ArrayList<TWorkItemBean>();
 		if (uuids==null || uuids.isEmpty()) {
@@ -756,6 +772,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * @param entityID
 	 * @param entityType 
 	 */
+	@Override
 	public List<TWorkItemBean> loadMsProjectTasksForImport(Integer entityID, int entityType) {
 		Criteria crit = new Criteria();
 		crit.addJoin(WORKITEMKEY, BaseTMSProjectTaskPeer.WORKITEM);
@@ -774,7 +791,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch(Exception e) {
-			LOGGER.error("Loading WorkItems with task by entityID " + entityID + " entityType " + entityType + failedWith + e.getMessage(), e);
+			LOGGER.error("Loading WorkItems with task by entityID " + entityID + " entityType " + entityType + failedWith + e.getMessage());
 			return null;
 		}
 	}
@@ -787,6 +804,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * @param notClosed
 	 * @return
 	 */
+	@Override
 	public List<TWorkItemBean> loadMsProjectTasksForExport(Integer entityID, int entityType, boolean notClosed) {
 		Criteria crit = new Criteria();
 		//left join because the new task workItems doesn't have TMSProjectTask pair yet
@@ -813,7 +831,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch(Exception e) {
-			LOGGER.error("Loading WorkItems with task by entityID " + entityID + " entityType " + entityType + failedWith + e.getMessage(), e);
+			LOGGER.error("Loading WorkItems with task by entityID " + entityID + " entityType " + entityType + failedWith + e.getMessage());
 			return null;
 		}
 	}
@@ -823,6 +841,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * Loads all indexable workItems and sets the projectID fields
 	 * @return
 	 */
+	@Override
 	public List<TWorkItemBean> loadIndexable() {
 		//For example workItems from closed projects, closed workItems
 		List<TWorkItemBean> workItemBeans = loadAll();
@@ -832,6 +851,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	/**
 	 * Gets the maximal objectID
 	 */
+	@Override
 	public Integer getMaxObjectID() {
 		String max = "max(" + WORKITEMKEY + ")";
 		Criteria crit = new Criteria();
@@ -839,7 +859,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 		try {
 			return ((Record) doSelectVillageRecords(crit).get(0)).getValue(1).asIntegerObj();
 		} catch (Exception e) {
-			LOGGER.error("Getting the maximal workItemID failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the maximal workItemID failed with " + e.getMessage());
 		}
 		return null;
 	}
@@ -850,6 +870,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * @param chunkInterval
 	 * @return
 	 */
+	@Override
 	public List<TWorkItemBean> getNextChunk(Integer actualValue, Integer chunkInterval) {
 		SimpleCriteria crit = new SimpleCriteria();
 		int toValue = actualValue.intValue() + chunkInterval.intValue();
@@ -858,7 +879,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the workitems from " + actualValue + " to " + toValue + failedWith + e.getMessage(), e);
+			LOGGER.error("Getting the workitems from " + actualValue + " to " + toValue + failedWith + e.getMessage());
 			return null;
 		}
 		
@@ -870,6 +891,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * @param systemListID
 	 * @return
 	 */
+	@Override
 	public int[] loadBySystemList(int systemListType, Integer systemListID) {
 		Criteria crit = new Criteria();
 		switch (systemListType) {
@@ -924,6 +946,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	/**
 	 * Get all the issue from an project, include the closed/archived/deleted issues.
 	 */
+	@Override
 	public List<TWorkItemBean> loadAllByProject(Integer projectID, Integer archived, Integer deleted) {
 		Criteria crit = new Criteria();
 		crit.add(PROJECTKEY, projectID);
@@ -932,7 +955,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all workItems by project " + projectID + failedWith + e.getMessage(), e);
+			LOGGER.error("Loading all workItems by project " + projectID + failedWith + e.getMessage());
 			return null;
 		}
 	}
@@ -945,6 +968,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * because then no lucene indexing takes place!!!
 	 * @param workItemBean
 	 */
+	@Override
 	public Integer save(TWorkItemBean workItemBean) throws ItemPersisterException {
 		boolean isNew = false;
 		Integer objectID = null;
@@ -983,7 +1007,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 				ClusterMarkChangesBL.markDirtyWorkitemInCluster(objectID, ClusterMarkChangesBL.getChangeTypeByAddOrUpdateIndex(isNew));
 			}
 		} catch (Exception e) {
-			LOGGER.error("Saving the workitem in lucene index failed with " + e.getMessage(), e);
+			LOGGER.error("Saving the workitem in lucene index failed with " + e.getMessage());
 		}
 		return objectID;
 	}
@@ -1003,7 +1027,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 			try {
 				connection = Transaction.begin(DATABASE_NAME);
 			} catch (TorqueException e) {
-				LOGGER.error("Getting the connection for failed with " + e.getMessage(), e);
+				LOGGER.error("Getting the connection for failed with " + e.getMessage());
 				return null;
 			}
 			if (connection!=null) {
@@ -1046,6 +1070,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * Saves a workItemBean in the TWorkItem table without lucene update. 
 	 * @param workItemBean
 	 */
+	@Override
 	public Integer saveSimple(TWorkItemBean workItemBean) throws ItemPersisterException {
 		Integer objectID = null;
 		try {
@@ -1069,6 +1094,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public List<TWorkItemBean> getOpenChildren(Integer objectID, List<Integer> exceptChildrenIDs) {
 		Criteria crit = new Criteria();
 		crit.add(SUPERIORWORKITEM, objectID);
@@ -1092,6 +1118,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * @param workItemIDs
 	 * @return
 	 */
+	@Override
 	public boolean isAnyWorkItemOpen(int[] workItemIDs) {
 		if (workItemIDs==null || workItemIDs.length==0) {
 			return false;
@@ -1116,6 +1143,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * @param workItemBean
 	 * @return
 	 */
+	@Override
 	public TWorkItemBean copyDeep(TWorkItemBean workItemBean) {
 		TWorkItem tWorkItemOriginal = null;
 		try {
@@ -1147,7 +1175,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the workItems by criteria " + criteria.toString() + failedWith + e.getMessage(), e);
+			LOGGER.error("Loading the workItems by criteria " + criteria.toString() + failedWith + e.getMessage());
 			return null;
 		}
 	}
@@ -1217,6 +1245,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * @param personID
 	 * @return
 	 */
+	@Override
 	public Integer countResponsibleWorkItems(Integer personID) {
 		Criteria crit = ResponsibleCriteria.prepareResponsibleCriteria(personID);
 		String COUNT = "count(" + WORKITEMKEY + ")";
@@ -1224,9 +1253,9 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 		try {
 			return ((Record) doSelectVillageRecords(crit).get(0)).getValue(1).asInt();
 		} catch (TorqueException e) {
-			LOGGER.error("Counting the workItems failed with " + e.getMessage(), e);
+			LOGGER.error("Counting the workItems failed with " + e.getMessage());
 		} catch (DataSetException e) {
-			LOGGER.error("Counting the workItems failed with " + e.getMessage(), e);
+			LOGGER.error("Counting the workItems failed with " + e.getMessage());
 		}
 		return 0;
 	}
@@ -1239,12 +1268,13 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * @param entityFlag the meaning of the project: can be project, release, subproject etc.
 	 * @return
 	 */
+	@Override
 	public List<TWorkItemBean> loadResponsibleWorkItems(Integer personID) {
 		Criteria crit = ResponsibleCriteria.prepareResponsibleCriteria(personID);
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the responsible workItems for person " + personID + failedWith + e.getMessage(), e);
+			LOGGER.error("Loading the responsible workItems for person " + personID + failedWith + e.getMessage());
 			return new ArrayList<TWorkItemBean>();
 		}
 	}
@@ -1258,12 +1288,13 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * @param entityFlag the meaning of the project: can be project, release, subproject etc.
 	 * @return
 	 */
+	@Override
 	public List<TWorkItemBean> loadOrigManRespMeetings(Integer personID, Integer[] projectIDs, Integer[] releaseIDs) {
 		Criteria crit = MeetingCriteria.prepareOrigManRespMeetingsCriteria(personID, projectIDs, releaseIDs);
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the my workItems for person " + personID + failedWith + e.getMessage(), e);
+			LOGGER.error("Loading the my workItems for person " + personID + failedWith + e.getMessage());
 			return new ArrayList<TWorkItemBean>();
 		}
 	}
@@ -1277,12 +1308,13 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * @param entityFlag the meaning of the project: can be project, release, subproject etc.
 	 * @return
 	 */
+	@Override
 	public List<TWorkItemBean> loadConsInfMeetings(Integer personID, Integer[] projectIDs, Integer[] releaseIDs) {
 		Criteria crit = MeetingCriteria.prepareConsInfMeetingsCriteria(personID, projectIDs, releaseIDs);
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the my workItems for person " + personID + failedWith + e.getMessage(), e);
+			LOGGER.error("Loading the my workItems for person " + personID + failedWith + e.getMessage());
 			return new ArrayList<TWorkItemBean>();
 		}
 	}
@@ -1292,6 +1324,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * @param filterSelectsTO
 	 * @return
 	 */
+	@Override
 	public Set<Integer> loadParentsInContext(Integer[] projectIDs, Integer itemTypeID) {
 		Set<Integer> parentIDSet = new HashSet<Integer>();
 		Criteria crit = new Criteria();
@@ -1312,7 +1345,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 		try {
 			records = doSelectVillageRecords(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the context items with parent  failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the context items with parent  failed with " + e.getMessage());
 			return parentIDSet;
 		}
 		try {
@@ -1323,7 +1356,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 				}
 			}
 		} catch (Exception e) {
-			LOGGER.error("Getting the parent itemID failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the parent itemID failed with " + e.getMessage());
 		}
 		return parentIDSet;
 	}
@@ -1335,6 +1368,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * @param personID
 	 * @return
 	 */
+	@Override
 	public Integer countTreeFilterItems(FilterUpperTO filterUpperTO, RACIBean raciBean, Integer personID) {
 		Integer[] selectedProjects = filterUpperTO.getSelectedProjects();
 		if (selectedProjects==null  || selectedProjects.length==0) {
@@ -1350,13 +1384,14 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 		try {
 			return ((Record) doSelectVillageRecords(crit).get(0)).getValue(1).asInt();
 		} catch (TorqueException e) {
-			LOGGER.error("Counting the workItems failed with " + e.getMessage(), e);
+			LOGGER.error("Counting the workItems failed with " + e.getMessage());
 		} catch (DataSetException e) {
-			LOGGER.error("Counting the workItems failed with " + e.getMessage(), e);
+			LOGGER.error("Counting the workItems failed with " + e.getMessage());
 		}
 		return 0;
 	}
 	
+	@Override
 	public List<TWorkItemBean> loadTreeFilterItems(FilterUpperTO filterUpperTO, RACIBean raciBean, Integer personID, Date startDate,Date endDate) {
 		Integer[] selectedProjects = filterUpperTO.getSelectedProjects();
 		if (selectedProjects==null  || selectedProjects.length==0) {
@@ -1371,7 +1406,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the custom report workItems failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the custom report workItems failed with " + e.getMessage());
 			return new ArrayList<TWorkItemBean>();
 		}
 	}
@@ -1385,6 +1420,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * @param enddDate
 	 * @return
 	 */
+	@Override
 	public Set<Integer> loadTreeFilterParentIDs(FilterUpperTO filterSelectsTO, RACIBean raciBean, Integer personID, Date startDate, Date endDate) {
 		Integer[] selectedProjects = filterSelectsTO.getSelectedProjects();
 		if (selectedProjects==null  || selectedProjects.length==0) {
@@ -1414,7 +1450,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 		try {
 			records = doSelectVillageRecords(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the context items with parent  failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the context items with parent  failed with " + e.getMessage());
 			return parentIDSet;
 		}
 		try {
@@ -1425,7 +1461,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 				}
 			}
 		} catch (Exception e) {
-			LOGGER.error("Getting the parent itemID failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the parent itemID failed with " + e.getMessage());
 		}
 		return parentIDSet;
 	}
@@ -1440,13 +1476,14 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * @param endDate
 	 * @return
 	 */
+	@Override
 	public List<TWorkItemBean> loadTQLFilterItems(String filterString, TPersonBean personBean, Locale locale, List<ErrorData> errors, Date startDate, Date endDate) {
 		Criteria tqlCriteria = TqlBL.createCriteria(filterString, personBean, locale, errors);
 		addDateCriteria(tqlCriteria,startDate, endDate);
 		try {
 			return convertTorqueListToBeanList(doSelect(tqlCriteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the TQL workItems failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the TQL workItems failed with " + e.getMessage());
 			return new ArrayList<TWorkItemBean>();
 		}	
 	}
@@ -1459,6 +1496,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * @param errors
 	 * @return
 	 */
+	@Override
 	public Set<Integer> loadTQLFilterParentIDs(String filterString, TPersonBean personBean, Locale locale, List<ErrorData> errors) {
 		Criteria tqlCriteria = TqlBL.createCriteria(filterString, personBean, locale, errors);
 		return getParentItems(tqlCriteria);
@@ -1473,6 +1511,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * @param meAndMySubstitutedAndGroups
 	 * @return
 	 */
+	@Override
 	public Set<Integer> loadOrigManRespProjects(List<Integer> meAndMySubstituted, List<Integer> meAndMySubstitutedAndGroups) {
 		Criteria criteria = new Criteria();
 		Criterion originator = criteria.getNewCriterion(TWorkItemPeer.ORIGINATOR, meAndMySubstituted, Criteria.IN);
@@ -1488,6 +1527,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * @param meAndMySubstitutedAndGroups
 	 * @return
 	 */
+	@Override
 	public Set<Integer> loadConsultantInformantProjects(List<Integer> meAndMySubstitutedAndGroups) {
 		Criteria criteria = new Criteria();
 		criteria.addJoin(TWorkItemPeer.WORKITEMKEY, TNotifyPeer.WORKITEM);
@@ -1502,6 +1542,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * @param meAndMySubstitutedAndGroups
 	 * @return
 	 */
+	@Override
 	public Set<Integer> loadOnBehalfOfProjects(List<Integer> meAndMySubstitutedAndGroups, List<Integer> onBehalfPickerFieldIDs) {
 		Criteria criteria = new Criteria();
 		criteria.addJoin(TWorkItemPeer.WORKITEMKEY, TAttributeValuePeer.WORKITEM);
@@ -1534,12 +1575,12 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 							}
 						}
 					} catch (DataSetException e) {
-						LOGGER.error("Getting the projectID failed with " + e.getMessage(), e);
+						LOGGER.error("Getting the projectID failed with " + e.getMessage());
 					}
 				}
 			}
 		} catch (TorqueException e) {
-			LOGGER.error("Loading of " + raciRoles +" projects failed with " + e.getMessage(), e);
+			LOGGER.error("Loading of " + raciRoles +" projects failed with " + e.getMessage());
 		}
 		return projectIDs;
 	}
@@ -1565,6 +1606,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * sets the wbs for the entire project
 	 * @param projectID
 	 */
+	@Override
 	public void setWbs(Integer projectID) {
 		Criteria crit = new Criteria();
 		crit.add(PROJECTKEY, projectID);
@@ -1576,7 +1618,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 		try {
 			workItems = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the workItems by project " + projectID + failedWith + e.getMessage(), e);
+			LOGGER.error("Loading the workItems by project " + projectID + failedWith + e.getMessage());
 		}
 		Map<Integer, List<Integer>> childerenIDsForParentIDsMap = new HashMap<Integer, List<Integer>>();
 		Map<Integer, TWorkItem> workItemsMap = new HashMap<Integer, TWorkItem>();
@@ -1626,7 +1668,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 								LOGGER.debug("Set the WBS " + wbs + " for workItem " + workItemID);
 							}
 						} catch (Exception e) {
-							LOGGER.error("Setting the WBS " + wbs + failedWith + e.getMessage(), e);
+							LOGGER.error("Setting the WBS " + wbs + failedWith + e.getMessage());
 						}
 					}
 				}
@@ -1640,6 +1682,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * @param droppedToWorkItemID
 	 * @param before
 	 */
+	@Override
 	public synchronized void dropNearWorkItem(Integer draggedWorkItemID, Integer droppedToWorkItemID, boolean before) {
 
 		TWorkItemBean workItemBeanDragged = null;
@@ -1778,6 +1821,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * @param workItemBeanOriginal
 	 * @param contextInformation
 	 */
+	@Override
 	public void parentChanged(TWorkItemBean workItemBean, TWorkItemBean workItemBeanOriginal, 
 			Map<String, Object> contextInformation) {
 		if (workItemBeanOriginal==null) {
@@ -1919,7 +1963,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 						try {
 							saveSimple(nextSiblingworkItemBean);
 						} catch (ItemPersisterException e) {
-							LOGGER.warn("Saving the outdented present workitem " + nextSiblingworkItemBean.getObjectID() + failedWith + e.getMessage(), e);
+							LOGGER.warn("Saving the outdented present workitem " + nextSiblingworkItemBean.getObjectID() + failedWith + e.getMessage());
 						}
 					}
 				}
@@ -1938,7 +1982,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 								try {
 									saveSimple(nextSiblingworkItemBean);
 								} catch (ItemPersisterException e) {
-									LOGGER.warn("Saving the outdented not present workItem " + nextSiblingworkItemBean.getObjectID() + failedWith + e.getMessage(), e);
+									LOGGER.warn("Saving the outdented not present workItem " + nextSiblingworkItemBean.getObjectID() + failedWith + e.getMessage());
 								}
 							}
 						}
@@ -1969,6 +2013,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * @param workItemBean
 	 * @param workItemBeanOriginal
 	 */
+	@Override
 	public void projectChanged(TWorkItemBean workItemBean, TWorkItemBean workItemBeanOriginal) {
 		if (workItemBeanOriginal==null) {
 			//new item
@@ -2055,7 +2100,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 		try {
 			maxWBSOnLevel = ((Record) doSelectVillageRecords(crit).get(0)).getValue(1).asIntegerObj();
 		} catch (Exception e) {
-			LOGGER.error("Getting the maximal wbs for parent " + parentID + " projectID " + projectID + failedWith + e.getMessage(), e);			
+			LOGGER.error("Getting the maximal wbs for parent " + parentID + " projectID " + projectID + failedWith + e.getMessage());			
 		}
 		if (maxWBSOnLevel==null) {
 			return Integer.valueOf(1);
@@ -2121,7 +2166,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 				maxIDNumber = records.get(0).getValue(1).asIntegerObj();
 			}
 		} catch (Exception e) {
-			LOGGER.error("Getting the maximal IDNumber for projectID " + projectID + failedWith + e.getMessage(), e);
+			LOGGER.error("Getting the maximal IDNumber for projectID " + projectID + failedWith + e.getMessage());
 		}
 		if (maxIDNumber==null) {
 			return Integer.valueOf(1);
@@ -2137,6 +2182,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * @param lastModified
 	 * @return
 	 */
+	@Override
 	public List<TWorkItemBean> getInStatusUnmodifiedAfter(WorkflowContext workflowContext, Integer statusID, Date lastModified) {
 		Criteria crit = new Criteria();
 		CriteriaUtil.addActiveInactiveProjectCriteria(crit);
@@ -2151,7 +2197,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 			}
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the items in status " + statusID + " not modifed after " + lastModified + failedWith + e.getMessage(), e);
+			LOGGER.error("Loading the items in status " + statusID + " not modifed after " + lastModified + failedWith + e.getMessage());
 			return new ArrayList<TWorkItemBean>();
 		}
 	}
@@ -2163,6 +2209,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 	 * @param lastModified
 	 * @return
 	 */
+	@Override
 	public List<Integer> getInStatusNoStatusChangeAfter(WorkflowContext workflowContext, Integer statusID, Date lastModified) {
 		List<Integer> itemIDs = null;
 		Criteria crit = new Criteria();
@@ -2186,7 +2233,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 			}
 			records = doSelectVillageRecords(crit);
 		} catch(Exception e) {
-			LOGGER.error("Groupping the workitems by date of the last modified status before " + lastModified + failedWith + e.getMessage(), e);
+			LOGGER.error("Groupping the workitems by date of the last modified status before " + lastModified + failedWith + e.getMessage());
 		}
 		try {
 			if (records!=null && !records.isEmpty()) {
@@ -2197,7 +2244,7 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 				}
 			}
 		} catch (Exception e) {
-			LOGGER.error("Loading the items in status " + statusID + " not modifed after " + lastModified + failedWith + e.getMessage(), e);
+			LOGGER.error("Loading the items in status " + statusID + " not modifed after " + lastModified + failedWith + e.getMessage());
 		}
 		return itemIDs;
 		

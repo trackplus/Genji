@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -25,6 +25,7 @@ package com.aurel.track.fieldType.runtime.matchers.converter;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -54,6 +55,7 @@ public class AccountingTimeMatcherConverter implements MatcherConverter {
 	 * @param matcherRelation
 	 * @return
 	 */
+	@Override
 	public String toXMLString(Object value, Integer matcherRelation) {
 		if (value==null || matcherRelation==null) {
 			return null;
@@ -83,6 +85,7 @@ public class AccountingTimeMatcherConverter implements MatcherConverter {
 	 * @param matcherRelation
 	 * @return
 	 */
+	@Override
 	public Object fromXMLString(String value, Integer matcherRelation) {
 		if (value==null || "".equals(value) || matcherRelation==null) {
 			return null;
@@ -103,7 +106,8 @@ public class AccountingTimeMatcherConverter implements MatcherConverter {
 						accountingTimeTO.setValue(Double.valueOf(doubleStr));
 					}
 				} catch (Exception e) {
-					LOGGER.warn("Converting the " + partsArr[0] +  " to Double from xml string failed with " + e.getMessage(), e);
+					LOGGER.warn("Converting the " + partsArr[0] +  " to Double from xml string failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 				if (partsArr.length>1) {
 					try {
@@ -112,7 +116,8 @@ public class AccountingTimeMatcherConverter implements MatcherConverter {
 							accountingTimeTO.setUnit(Integer.valueOf(unitStr));
 						}
 					} catch (Exception e) {
-						LOGGER.warn("Converting the " + partsArr[1] +  " to Integer from xml string failed with " + e.getMessage(), e);
+						LOGGER.warn("Converting the " + partsArr[1] +  " to Integer from xml string failed with " + e.getMessage());
+						LOGGER.debug(ExceptionUtils.getStackTrace(e));
 					}
 				}
 			}
@@ -131,6 +136,7 @@ public class AccountingTimeMatcherConverter implements MatcherConverter {
 	 * @param matcherRelation
 	 * @return
 	 */
+	@Override
 	public Object fromDisplayString(Map<String, String> displayStringMap,
 			Integer fieldID, Locale locale, Integer matcherRelation) {
 		if (displayStringMap == null) {
@@ -175,6 +181,7 @@ public class AccountingTimeMatcherConverter implements MatcherConverter {
 	 * @param matcherRelation
 	 * @return
 	 */
+	@Override
 	public Object fromValueString(String valueString, Locale locale, Integer matcherRelation) {
 		if (valueString==null || "".equals(valueString) || matcherRelation==null) {
 			return null;
@@ -192,13 +199,15 @@ public class AccountingTimeMatcherConverter implements MatcherConverter {
 				try {	
 					accountingTimeTO.setValue(DoubleNumberFormatUtil.getInstance().parseGUI(partsArr[0], locale));
 				} catch (Exception e) {
-					LOGGER.warn("Converting the " + partsArr[0] +  " to Double from xml string failed with " + e.getMessage(), e);
+					LOGGER.warn("Converting the " + partsArr[0] +  " to Double from xml string failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 				if (partsArr.length>1) {
 					try {	
 						accountingTimeTO.setUnit(Integer.valueOf(partsArr[1]));
 					} catch (Exception e) {
-						LOGGER.warn("Converting the " + partsArr[1] +  " to Integer from xml string failed with " + e.getMessage(), e);
+						LOGGER.warn("Converting the " + partsArr[1] +  " to Integer from xml string failed with " + e.getMessage());
+						LOGGER.debug(ExceptionUtils.getStackTrace(e));
 					}
 				}
 			}

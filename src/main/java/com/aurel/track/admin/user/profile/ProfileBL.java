@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -183,15 +183,11 @@ public class ProfileBL {
 			//this should be an exception from the rule of forcing all users to be ldap users in case a user is not (yet) registered in ldap
 			mainTO.setForceLdap(false);
 		}
-		/*if (mainTO.getForceLdap()!=null && mainTO.getForceLdap().booleanValue() &&
-			!personBean.getIsSysAdmin() && !personBean.isAnonimous()) {
-			mainTO.setLdapUser(true);
-		}*/
 		mainTO.setLocales(LocaleHandler.getPossibleLocales());
 		mainTO.setLocale(personBean.getPrefLocale());
 		mainTO.setUserTz(personBean.getUserTimeZoneId());
 		mainTO.setTimeZones(DateTimeUtils.getTimeZones(personBean.getLocale()));
-		mainTO.setDomainPat(ApplicationBean.getApplicationBean().getSiteBean().getAllowedEmailPattern());
+		mainTO.setDomainPat(ApplicationBean.getInstance().getSiteBean().getAllowedEmailPattern());
 		mainTO.setAdminOrGuest(TPersonBean.ADMIN_USER.equals(personBean.getUsername()) || TPersonBean.GUEST_USER.equals(personBean.getUsername()));
 		return mainTO;
 	}
@@ -264,7 +260,7 @@ public class ProfileBL {
 		otherTO.setCsvSeparator(personBean.getCsvCharacter().toString());
 		otherTO.setSaveAttachments(personBean.isAlwaysSaveAttachment());
 		otherTO.setDesignPath(personBean.getDesignPath());
-		otherTO.setDesignPaths(ApplicationBean.getApplicationBean().getDesigns());
+		otherTO.setDesignPaths(ApplicationBean.getInstance().getDesigns());
 		otherTO.setActivateInlineEdit(personBean.isPrintItemEditable());
 		otherTO.setActivateLayout(personBean.isEnableQueryLayout());
 		otherTO.setHomePage(personBean.getHomePage());
@@ -277,7 +273,7 @@ public class ProfileBL {
 		if (actualUserLevel==null) {
 			actualUserLevel = TPersonBean.USERLEVEL.FULL;
 		}
-		if (!ApplicationBean.getApplicationBean().isGenji()) {
+		if (!ApplicationBean.getInstance().isGenji()) {
 			userLevelList.add(new IntegerStringBean(LocalizeUtil.getLocalizedEntity(new TUserLevelBean().getKeyPrefix(), TPersonBean.USERLEVEL.CLIENT, locale), TPersonBean.USERLEVEL.CLIENT));
 		}
 		if (!TPersonBean.USERLEVEL.CLIENT.equals(actualUserLevel)) {
@@ -429,7 +425,7 @@ public class ProfileBL {
 		personBean.setLoginName(mainTO.getUserName());
 		personBean.setLastName(mainTO.getLastName());
 		personBean.setFirstName(mainTO.getFirstName());
-		TSiteBean siteBean=ApplicationBean.getApplicationBean().getSiteBean();
+		TSiteBean siteBean=ApplicationBean.getInstance().getSiteBean();
 		Perl5Pattern allowedEmailPattern = SiteConfigBL.getSiteAllowedEmailPattern(siteBean);
 		Perl5Matcher pm = new Perl5Matcher();
 		if (allowedEmailPattern!=null) {
@@ -561,7 +557,7 @@ public class ProfileBL {
 	}
 
 	static Integer saveUserProfile(TPersonBean personBean, TPersonBean currentUser, Integer context, Boolean isUser) {
-		ApplicationBean appBean = ApplicationBean.getApplicationBean();
+		ApplicationBean appBean = ApplicationBean.getInstance();
 		Integer personID = null;
 		if (currentUser != null || context == ProfileMainTO.CONTEXT.SELFREGISTRATION) {
 			LOGGER.debug("Updating user profile information");
@@ -569,7 +565,7 @@ public class ProfileBL {
 					context == ProfileMainTO.CONTEXT.SELFREGISTRATION) {
 				Integer userLevel = personBean.getUserLevel();
 				if (userLevel==null) {
-					boolean isGenji = ApplicationBean.getApplicationBean().isGenji();
+					boolean isGenji = ApplicationBean.getInstance().isGenji();
 					if (context == ProfileMainTO.CONTEXT.SELFREGISTRATION) {
 						if (isGenji) {
 							//no client modus in Genji
@@ -600,15 +596,6 @@ public class ProfileBL {
 			if (context != ProfileMainTO.CONTEXT.SELFREGISTRATION) {
 				personBean.setTokenPasswd(null);
 			}
-			/*TSiteBean siteBean = appBean.getSiteBean();
-			if (siteBean!=null && siteBean.getIsLDAPOnBool() && siteBean.getIsForceLdap() &&
-					(context == ProfileMainTO.CONTEXT.SELFREGISTRATION ||
-					context == ProfileMainTO.CONTEXT.USERADMINADD)) {
-				//ldapUser is not submitted because it is disabled: it should be forced to the ldap password
-				if (!TPersonBean.ADMIN_USER.equals(personBean.getLoginName())) {
-					personBean.setIsLdapUser();
-				}
-			}*/
 			personID=PersonBL.save(personBean);
 			personBean.setObjectID(personID);
 
@@ -699,15 +686,15 @@ public class ProfileBL {
 				LOGGER.error("Can't get mail template for registration");
 				return false;
 			}
-	
+
 			if (template==null) {
 					LOGGER.error("No valid template found for registration e-mail (maybe compilation errors).");
 				return false;
 			}
 			Locale locale = new  Locale(personBean.getPrefLocale());
-	
+
 			String tokenExpDate=DateTimeUtils.getInstance().formatGUIDateTime(personBean.getTokenExpDate(),locale);
-			
+
 			//The path starts with a "/" character but does not end with a "/"
 			String contextPath=ApplicationBean.getInstance().getServletContext().getContextPath();
 			String siteURL=siteBean.getServerURL();
@@ -732,7 +719,7 @@ public class ProfileBL {
 			try {
 				template.process(root, w);
 			} catch (Exception e) {
-				LOGGER.error("Processing registration template " + template.getName() + " failed with " + e.getMessage(), e);
+				LOGGER.error("Processing registration template " + template.getName() + " failed with " + e.getMessage());
 			}
 			w.flush();
 			String messageBody = w.toString();
@@ -747,10 +734,9 @@ public class ProfileBL {
 				   LOGGER.error("Registration.populate.SendMail", t);
 			}
 		}
-		
+
 		try {
 			// Notify administrator of system
-			//String ufBody = null;
 			String CRLF="\r\n";
 			TPersonBean admin = PersonBL.loadByLoginName(TPersonBean.ADMIN_USER);
 			if (admin == null) {
@@ -762,7 +748,6 @@ public class ProfileBL {
 										 + " [" + personBean.getEmail() + "]"};
 				String theSubject = LocalizeUtil.getParametrizedString("registration.mail.admin.subject", sbjArguments, adminLocale);
 				StringBuffer theBody = new StringBuffer();
-				//ufBody = LocalizeUtil.getParametrizedString("registration.mail.admin.line1", sbjArguments, adminLocale);
 				theBody.append(CRLF+CRLF);
 				theBody.append(LocalizeUtil.getLocalizedTextFromApplicationResources("registration.mail.admin.line2", adminLocale));
 				theBody.append(CRLF);

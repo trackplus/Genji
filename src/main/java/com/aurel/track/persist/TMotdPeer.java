@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -54,6 +54,7 @@ public class TMotdPeer
      * @param locale
      * @return
      */
+    @Override
     public List<TMotdBean> loadByLocale(String locale) {
     	Criteria crit = new Criteria();    	
     	if (locale==null) {
@@ -64,7 +65,7 @@ public class TMotdPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading motd by " + locale +  " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading motd by " + locale +  " failed with " + e.getMessage());
 			return null;
 		}
     }
@@ -74,6 +75,7 @@ public class TMotdPeer
 	 * @param motdBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TMotdBean motdBean) {
 		TMotd tMotd;		
 		try {
@@ -81,7 +83,7 @@ public class TMotdPeer
 			tMotd.save();
 			return tMotd.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of motd failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of motd failed with " + e.getMessage());
 			return null;
 		}	
 	}
@@ -91,13 +93,14 @@ public class TMotdPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		Criteria crit = new Criteria();
         crit.add(OBJECTID, objectID);        
         try {
 			doDelete(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Deleting the motd " + objectID +  " failed with " + e.getMessage(), e);
+			LOGGER.error("Deleting the motd " + objectID +  " failed with " + e.getMessage());
 		}
 	}
 	
@@ -109,43 +112,6 @@ public class TMotdPeer
      * @param locale the locale for which the message shall be retrieved.
      * @return
      */
-    /*public static TMotd load(Locale locale)  {
-        
-        TMotd motd = null;
-        
-        if (locale == null) {      
-            return motd;
-        }
-        
-        String language = locale.getLanguage();
-        
-        Criteria crit = new Criteria();
-        
-        // First try the complete language plus country code
-        crit.add(BaseTMotdPeer.THELOCALE, (Object) locale.toString(), Criteria.EQUAL );
-
-        List list = null;
-        try {
-            list = BaseTMotdPeer.doSelect(crit);
-            
-            if (list == null || list.size() < 1) {
-                crit.clear();
-                // Tough luck, now let's try language only
-                crit.add(BaseTMotdPeer.THELOCALE, (Object) language, Criteria.EQUAL );
-                list = BaseTMotdPeer.doSelect(crit);
-            }
-            if (list != null && list.size() > 0) {
-                // Great, we got a message!
-                motd = (TMotd) list.get(0);
-            }
-        }
-        catch (Exception e) {
-            log.error("Exception when loading message of the day: " 
-                    + e.getMessage(), e);
-        }
-        
-        return motd;
-    }*/
     
     private List<TMotdBean> convertTorqueListToBeanList(List<TMotd> torqueList) {
 		List<TMotdBean> beanList = new LinkedList<TMotdBean>();

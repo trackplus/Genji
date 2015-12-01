@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -44,16 +44,16 @@ Ext.define('com.trackplus.logon.LogonPage',{
 		var config = config || {};
 		me.initialConfig = config;
 		Ext.apply(me, config);
+		this.initConfig(config);
 	},
-	view:null,
-	controller:null,
+	logonView:null,
+	logonController:null,
 	createCenterPanel:function(){
 		var me=this;
-		me.controller=Ext.create('com.trackplus.logon.LogonPageController',{
+		me.logonController=Ext.create('com.trackplus.logon.LogonPageController',{
 			model:me.jsonData
 		});
-		me.view=me.controller.createView.call(me.controller);
-
+		me.logonView=me.logonController.createView.call(me.logonController);
 		if(isDemo){
 			me.infoMessage=Ext.create('Ext.Component',{
 				html: initData.teaserText,
@@ -70,9 +70,9 @@ Ext.define('com.trackplus.logon.LogonPage',{
 				unstyled: true,
 				layout:{
 					type:'ux.center',
-					maxWidth:me.controller.WIDTH_COLLAPSED
+					maxWidth:me.logonController.WIDTH_COLLAPSED
 				},
-				items:[me.view]
+				items:[me.logonView]
 			});
 			return Ext.create('Ext.panel.Panel',{
 				region: 'center',
@@ -81,11 +81,10 @@ Ext.define('com.trackplus.logon.LogonPage',{
 				unstyled: true,
 				layout:{
 					type:'border',
-					maxWidth:me.controller.WIDTH_COLLAPSED
+					maxWidth:me.logonController.WIDTH_COLLAPSED
 				},
 				items:[me.infoMessage,cmpLogin]
 			});
-
 		}else{
 			return Ext.create('Ext.panel.Panel',{
 				region: 'center',
@@ -95,14 +94,14 @@ Ext.define('com.trackplus.logon.LogonPage',{
 				unstyled: true,
 				layout:{
 					type:'ux.center',
-					maxWidth:me.controller.WIDTH_COLLAPSED
+					maxWidth:me.logonController.WIDTH_COLLAPSED
 				},
-				items:[me.view]
+				items:[me.logonView]
 			});
 		}
 	},
 	setFocus:function(){
-		this.controller.setFocus.call(this.controller);
+		this.logonController.setFocus.call(this.logonController);
 	}
 
 });
@@ -111,47 +110,40 @@ Ext.define('com.trackplus.logon.LogonPageView',{
 	extend: 'Ext.form.Panel',
 	config:{
 		model:{},
-		controller:null
+		logonController:null
 	},
 	id: 'logonpageview', //custom
 	url:'logon!login.action',
 	standardSubmit : false,
 	title:getText('common.btn.login'),
+	/*header:{
+		height:38
+	},*/
 	//iconCls: 'custom_lock', //'login16',
-
 	layout:'border',
-
 	txtHiddenPassword:null,
 	txtUsername:null,
 	txtPassword:null,
 	linkForgotPassword:null,
 	linkSelfRegistration:null,
-	panelMotd:null,
+	cmpMotd:null,
 	linkExpandMOTD:null,
-	panelMessage:null,
-
 	toolExpanCollapse:null,
-
-
 
 	initComponent: function(){
 		var me=this;
 		me.items=me.createChildren();
-		me.height=me.controller.HEIGHT_COLLAPSED;
+		me.height=me.logonController.HEIGHT_COLLAPSED;
 		me.width='100%';
-		//me.width=me.controller.WIDTH_COLLAPSED;
+		//me.width=me.logonController.WIDTH_COLLAPSED;
 		me.callParent();
-		me.addListener('afterrender',function(panel) {
-			var header = panel.header;
-			// header.add(me.linkExpandMOTD);
-		});
 	},
 	createChildren:function(){
 		var me=this;
 		me.txtHiddenPassword=Ext.create('com.trackplus.ACField',{
 			hidden:true,
 			name:'j_password',
-            inputId: 'password'
+			inputId: 'password'
 		});
 		me.txtUsername=Ext.create('com.trackplus.ACField',{
 			cls:'loginInputField',
@@ -159,11 +151,12 @@ Ext.define('com.trackplus.logon.LogonPageView',{
 			labelAlign :'right',
 			itemId :'j_username',
 			name:'j_username',
-            inputId: 'username',
+			inputId: 'username',
 			allowBlank :false,
 			validateOnBlur :false,
 			validateOnChange:true,
 			tabIndex:1,
+			width:310,
 			value:Ext.util.Cookies.get('username'),//  me.model.j_username,
 			blankText:getText('logon.err.username.required')
 		});
@@ -181,7 +174,7 @@ Ext.define('com.trackplus.logon.LogonPageView',{
 			validateOnChange:true,
 			submitValue: false,
 			tabIndex:2,
-
+			width:310,
 			value:Ext.util.Cookies.get('passwd'),
 			blankText:com.trackplus.TrackplusConfig.getText('logon.err.password.required')
 			//addChildEls:me.linkForgotPassword
@@ -190,16 +183,16 @@ Ext.define('com.trackplus.logon.LogonPageView',{
 			text: getText('common.btn.login'),
 			tabIndex:3,
 			formBind: true, //only enabled once the form is valid
-			handler: me.controller.login,
-			scope:me.controller,
+			handler: me.logonController.login,
+			scope:me.logonController,
 			minWidth:75
 		});
 
 
 		if(com.trackplus.TrackplusConfig.isSelfRegAllowed){
 			me.linkSelfRegistration=Ext.create('Ext.ux.LinkComponent',{
-				handler:me.controller.selfRegistration,
-				scope:me.controller,
+				handler:me.logonController.selfRegistration,
+				scope:me.logonController,
 				id: 'registerLink',
 				clsLink:'registerLink',
 				tabIndex:10,
@@ -214,8 +207,8 @@ Ext.define('com.trackplus.logon.LogonPageView',{
 		}
 
 		me.linkForgotPassword=Ext.create('Ext.ux.LinkComponent',{
-			handler:me.controller.forgetPassword,
-			scope:me.controller,
+			handler:me.logonController.forgetPassword,
+			scope:me.logonController,
 			id: 'pw_forgot',
 			clsLink:'forgotPwd',
 			tabIndex:4,
@@ -242,65 +235,37 @@ Ext.define('com.trackplus.logon.LogonPageView',{
 			width: 310,
 			tabIndex:5,
 			inputValue : true,
-			checked : Ext.util.Cookies.get('rememberMe')=='true'
+			checked : Ext.util.Cookies.get('rememberMe')==='true'
 		});
 
-
-		me.lbl=Ext.create('Ext.form.Label',{
-			 text: 'My Awesome Field'
-		});
-
-		me.linkExpandMOTD=Ext.create('Ext.ux.LinkComponent',{
-			handler:me.controller.expandMOTD,
-			scope:me.controller,
-			label: getText("logon.lbl.expandMOTD"),
-			clsLink:'expandMOTD',
-			tabIndex:6,
-			style:{
-				textAlign:'left',
-				whiteSpace:'nowrap',
-				padding:'0px 5px 0px 10px',
-				margin:'2px 0 2px 0'
-			}
-		});
-
-		var panelUsername1=Ext.create('Ext.panel.Panel',{
+		var panelUsername=Ext.create('Ext.container.Container',{
 			layout: {
 				type:'vbox',
 				padding:'0',
 				align:'left'
 			},
 			id:'usernamePanel',
-			height:42,
+			//height:42,
 			width:310,
 			border:false,
-			bodyBorder:false,
 			items:[me.txtUsername, me.checkRemeberMe]
 		});
 
 		var pwdItems=[];
 		pwdItems.push(me.txtPassword);
 		pwdItems.push(me.linkForgotPassword);
-		if(me.linkSelfRegistration!=null){
-//			pwdItems.push({
-//				xtype: 'tbspacer',
-//				cls: 'toolbarSeperator',
-//				margin:0,
-//				padding:0,
-//				border: 'none',
-//				overCls:null
-//			});
+		if(me.linkSelfRegistration){
 			pwdItems.push(me.linkSelfRegistration);
 		}
 
-		var panelPassword1=Ext.create('Ext.panel.Panel',{
+		var panelPassword=Ext.create('Ext.container.Container',{
 			layout: {
 				type:'vbox',
 				padding:'0',
 				align:'left'
 			},
 			id:'passwordPanel',
-			height:58,
+			//height:58,
 			width:310,
 			border:false,
 			bodyBorder:false,
@@ -310,57 +275,46 @@ Ext.define('com.trackplus.logon.LogonPageView',{
 
 
 		var items=[];
+		items.push(panelUsername);
+		items.push(panelPassword);
 		items.push(me.txtHiddenPassword);
-		items.push(panelUsername1); //me.txtUsername);
-		items.push(panelPassword1);
-		//items.push(me.txtPassword);
-		//items.push(me.btnLogin);
 
-
-		var inputPanel={
-			xtype:'panel',
+		var inputPanel=Ext.create('Ext.container.Container',{
 			region:'center',
 			layout:'hbox',
 			border:false,
-			bodyBorder:false,
-			bodyPadding:'5 0 5 5',
+			padding:'6 0 5 5',
 			margin:'15 0 0 0',
 			cls: 'loginPanel',
 			items:items
-		};
+		});
 
-		var linkAreaItems=[];
-//		if(me.linkSelfRegistration!=null){
-			//linkAreaItems.push(me.linkSelfRegistration);
-//		}
-		//linkAreaItems.push(me.linkForgotPassword);
-
-		me.linkArea=Ext.create('Ext.panel.Panel', {
+		var panelEast=Ext.create('Ext.container.Container',{
+			layout:{
+				type:'vbox',
+				align:'left',
+				padding:'19 25 5 0'
+			},
 			border:false,
-			bodyBorder:false,
-			id:"linkArea",
-			autoScroll:false,
-			region:'center',
-			layout:'hbox',
-			bodyPadding:5,
-			items:linkAreaItems
+			region:'east',
+			cls:'tpspecial',
+			items:[me.btnLogin]
 		});
 
 
+		var panelTeaser=me.createTeaserPanel();
 
-		me.panelMessage=Ext.create('Ext.panel.Panel', {
+		var northPanel=Ext.create('Ext.container.Container',{
+			layout:'border',
 			border:false,
-			bodyBorder:false,
-			id:"panelMessage",
-			html: me.model.teaserText,
-			autoScroll:false,
-			region:'center',
-			//baseCls:'x-plain',
-			//cls:'motd',
-			flex:1//with will be flexed horizontally according to each item's relative flex value compared to the sum of all items with a flex value specified.
+			region:'north',
+			cls: 'loginNorthPanel',
+			//padding: '15 0 0 0',
+			items:[inputPanel,panelEast,panelTeaser],
+			height:me.logonController.HEIGHT_COLLAPSED-35
 		});
 
-		me.panelMotd=Ext.create('Ext.panel.Panel', {
+		me.cmpMotd=Ext.create('Ext.Component', {
 			region:'center',
 			cls: "motd",
 			border:false,
@@ -369,20 +323,24 @@ Ext.define('com.trackplus.logon.LogonPageView',{
 			html:''
 		});
 
-		var panelEast=Ext.create('Ext.panel.Panel',{
-			layout:{
-				type:'vbox',
-				align:'left',
-				padding:'19 5 5 0'
-			},
-			minWidth:100,
-			border:false,
-			bodyBorder:false,
-			region:'east',
-			cls:'tpspecial',
-			items:[me.btnLogin]
+		return [northPanel,me.cmpMotd];
+	},
+	createTeaserPanel:function(){
+		var me=this;
+		var items=[];
+		me.linkExpandMOTD=Ext.create('Ext.ux.LinkComponent',{
+			handler:me.logonController.expandMOTD,
+			scope:me.logonController,
+			label: getText("logon.lbl.expandMOTD"),
+			clsLink:'expandMOTD',
+			tabIndex:6,
+			style:{
+				textAlign:'left',
+				whiteSpace:'nowrap',
+				padding:'0px 5px 0px 10px',
+				margin:'2px 5px 2px 0'
+			}
 		});
-		var southItems=[];
 		me.teaserText=Ext.create('Ext.Component',{
 			html:me.model.teaserText,
 			cls: 'versionInfoLabel',
@@ -394,30 +352,18 @@ Ext.define('com.trackplus.logon.LogonPageView',{
 			},
 			flex:1
 		});
-		southItems.push(me.teaserText);
-		southItems.push(me.linkExpandMOTD);
+		items.push(me.teaserText);
+		items.push(me.linkExpandMOTD);
 
-		var panelSouth=Ext.create('Ext.panel.Panel',{
+		var panelTeaser=Ext.create('Ext.container.Container',{
 			layout:'hbox',
-			border:false,
-			bodyBorder:false,
 			region:'south',
 			cls:'panelTeaser',
 			height:42,
-			bodyPadding: '10 0 0 20',
-			items:southItems
+			padding: '10 0 0 20',
+			items:items
 		});
-		var northPanel=Ext.create('Ext.panel.Panel',{
-			layout:'border',
-			border:false,
-			bodyBorder:false,
-			region:'north',
-			cls: 'loginNorthPanel',
-			padding: '15 0 0 0',
-			items:[inputPanel,panelEast,panelSouth],
-			height:me.controller.HEIGHT_COLLAPSED-35
-		});
-		return [northPanel,me.panelMotd];
+		return panelTeaser;
 	}
 });
 
@@ -428,7 +374,7 @@ Ext.define('com.trackplus.logon.LogonPageController',{
 		context: 1,
 		model: {}
 	},
-	view:null,
+	logonView:null,
 	expandedMOTD:false,
 	HEIGHT_EXPANDED:600,
 	HEIGHT_COLLAPSED:175,
@@ -442,78 +388,79 @@ Ext.define('com.trackplus.logon.LogonPageController',{
 		var config = config || {};
 		me.initialConfig = config;
 		Ext.apply(me, config);
+		this.initConfig(config);
 	},
 	createView:function(){
 		var me=this;
-		me.view=Ext.create('com.trackplus.logon.LogonPageView',{
+		me.logonView=Ext.create('com.trackplus.logon.LogonPageView',{
 			model:me.model,
-			controller:me
+			logonController:me
 		});
 		me.addListeners();
-		return me.view;
+		return me.logonView;
 	},
 	addListeners:function(){
 		var me=this;
-		me.view.txtUsername.addListener('specialkey',me.onInputKeyPressed,me);
-		me.view.txtPassword.addListener('specialkey',me.onInputKeyPressed,me);
+		me.logonView.txtUsername.addListener('specialkey',me.onInputKeyPressed,me);
+		me.logonView.txtPassword.addListener('specialkey',me.onInputKeyPressed,me);
 	},
 
 	setFocus:function(){
 		var me = this;
-		var uf = me.view.txtUsername;
+		var uf = me.logonView.txtUsername;
 		uf.focus(true);
 	},
 
 	expandMOTD:function(){
 		var me=this;
 		me.expandedMOTD=!me.expandedMOTD;
-		var y=me.view.ownerCt.getEl().getY();
-		var height=me.view.ownerCt.body.getSize().height;
+		var y=me.logonView.ownerCt.getEl().getY();
+		var height=me.logonView.ownerCt.body.getSize().height;
 		if(me.expandedMOTD){
-			if(me.view.linkSelfRegistration!=null){
-				me.view.linkSelfRegistration.getEl().fadeIn({
+			if(me.logonView.linkSelfRegistration){
+				me.logonView.linkSelfRegistration.getEl().fadeIn({
 					opacity: 1, //can be any value between 0 and 1 (e.g. .5)
 					easing: 'easeOut',
 					duration: 600
 				});
 			}
-			me.view.linkForgotPassword.getEl().fadeIn({
+			me.logonView.linkForgotPassword.getEl().fadeIn({
 				opacity: 1, //can be any value between 0 and 1 (e.g. .5)
 				easing: 'easeOut',
 				duration: 600
 			});
-			me.view.checkRemeberMe.getEl().fadeIn({
+			me.logonView.checkRemeberMe.getEl().fadeIn({
 				opacity: 1, //can be any value between 0 and 1 (e.g. .5)
 				easing: 'easeOut',
 				duration: 600
 			});
-			/*me.view.teaserText.getEl().fadeIn({
+			/*me.logonView.teaserText.getEl().fadeIn({
 				opacity: 1, //can be any value between 0 and 1 (e.g. .5)
 				easing: 'easeOut',
 				duration: 600
 			});*/
 
-			me.view.getEl().animate({
+			me.logonView.getEl().animate({
 				y:y+20,
 				duration:600
 			});
-			me.view.body.animate({
+			me.logonView.body.animate({
 				height:height-40,
 				duration:600,
 				listeners:{
 					'afteranimate':{
 						fn:function(){
-							me.view.height='100%';
-							me.view.width='100%';
-							me.view.panelMotd.getEl().fadeOut({
+							me.logonView.height='100%';
+							me.logonView.width='100%';
+							me.logonView.cmpMotd.getEl().fadeOut({
 								opacity: 0.1, //can be any value between 0 and 1 (e.g. .5)
 								easing: 'easeOut',
 								duration: 15,
 								remove: false,
 								useDisplay: false,
 								callback:function(){
-											me.view.panelMotd.update(me.model.motd);
-											me.view.panelMotd.getEl().fadeIn({
+											me.logonView.cmpMotd.update(me.model.motd);
+											me.logonView.cmpMotd.getEl().fadeIn({
 												opacity: 1, //can be any value between 0 and 1 (e.g. .5)
 												easing: 'easeOut',
 												duration: 300
@@ -522,17 +469,17 @@ Ext.define('com.trackplus.logon.LogonPageController',{
 							});
 
 
-							me.view.linkExpandMOTD.setClsLink("collapseMOTD");
-							me.view.linkExpandMOTD.setLabel(getText("logon.lbl.collapseMOTD"));
-							me.view.ownerCt.doLayout();
-							me.view.doLayout();
+							me.logonView.linkExpandMOTD.setClsLink("collapseMOTD");
+							me.logonView.linkExpandMOTD.setLabel(getText("logon.lbl.collapseMOTD"));
+							me.logonView.ownerCt.updateLayout ();
+							me.logonView.updateLayout ();
 						}
 					}
 				}
 			});
 		}else{
-			if(me.view.linkSelfRegistration!=null){
-				me.view.linkSelfRegistration.getEl().fadeOut({
+			if(me.logonView.linkSelfRegistration){
+				me.logonView.linkSelfRegistration.getEl().fadeOut({
 					opacity: 0,
 					easing: 'easeOut',
 					duration: 600,
@@ -540,21 +487,21 @@ Ext.define('com.trackplus.logon.LogonPageController',{
 					useDisplay: false
 				});
 			}
-			me.view.linkForgotPassword.getEl().fadeOut({
+			me.logonView.linkForgotPassword.getEl().fadeOut({
 				opacity: 0,
 				easing: 'easeOut',
 				duration: 600,
 				remove: false,
 				useDisplay: false
 			});
-			me.view.checkRemeberMe.getEl().fadeOut({
+			me.logonView.checkRemeberMe.getEl().fadeOut({
 				opacity: 0,
 				easing: 'easeOut',
 				duration: 600,
 				remove: false,
 				useDisplay: false
 			});
-			/*me.view.teaserText.getEl().fadeOut({
+			/*me.logonView.teaserText.getEl().fadeOut({
 				opacity: 0,
 				easing: 'easeOut',
 				duration: 600,
@@ -563,27 +510,27 @@ Ext.define('com.trackplus.logon.LogonPageController',{
 			});*/
 
 
-			var height=me.view.ownerCt.body.getSize().height;
-			var y=me.view.ownerCt.getEl().getY();
+			var height=me.logonView.ownerCt.body.getSize().height;
+			var y=me.logonView.ownerCt.getEl().getY();
 			var pos=Math.round(height/2)-Math.round(me.HEIGHT_COLLAPSED/2);
-			me.view.getEl().animate({
+			me.logonView.getEl().animate({
 				y:y+20+pos,
 				duration:600
 			});
-			me.view.body.animate({
+			me.logonView.body.animate({
 				height:me.HEIGHT_COLLAPSED-40,
 				duration:625,
 				listeners:{
 					'afteranimate':{
 						fn:function(){
-							me.view.height=me.HEIGHT_COLLAPSED;
-							me.view.width='100%';
-							//me.view.width=me.WIDTH_COLLAPSED;
-							me.view.panelMotd.update('');
-							me.view.linkExpandMOTD.setClsLink("expandMOTD");
-							me.view.linkExpandMOTD.setLabel(getText("logon.lbl.expandMOTD"));
-							me.view.ownerCt.doLayout();
-							me.view.doLayout();
+							me.logonView.height=me.HEIGHT_COLLAPSED;
+							me.logonView.width='100%';
+							//me.logonView.width=me.WIDTH_COLLAPSED;
+							me.logonView.cmpMotd.update('');
+							me.logonView.linkExpandMOTD.setClsLink("expandMOTD");
+							me.logonView.linkExpandMOTD.setLabel(getText("logon.lbl.expandMOTD"));
+							me.logonView.ownerCt.updateLayout ();
+							me.logonView.updateLayout ();
 						}
 					}
 				}
@@ -592,7 +539,7 @@ Ext.define('com.trackplus.logon.LogonPageController',{
 	},
 	onTxtEmailTestInputKeyPressed:function(field, e){
 		var me=this;
-		if (e.getKey() == e.ENTER&&me.txtEmail.isValid()) {
+		if (e.getKey() === e.ENTER&&me.txtEmail.isValid()) {
 			me.doForgetPassword();
 		}
 	},
@@ -611,7 +558,7 @@ Ext.define('com.trackplus.logon.LogonPageController',{
 				failure: function(form, action) {
 					me.logon_forgotWin.setLoading(false);
 					var msg="";
-					if(action.result.errors!=null&&action.result.errors.length>0){
+					if(action.result.errors&&action.result.errors.length>0){
 						var errs=action.result.errors;
 						for(var i=0;i<errs.length;i++){
 							msg=msg+errs[i].message;
@@ -630,7 +577,7 @@ Ext.define('com.trackplus.logon.LogonPageController',{
 	},
 	forgetPassword:function(){
 		var me = this;
-		if(me.logon_forgotWin!=null){
+		if(me.logon_forgotWin){
 			me.logon_forgotWin.destroy();
 		}
 		me.txtEmail=Ext.create('Ext.form.field.Text',{
@@ -641,8 +588,8 @@ Ext.define('com.trackplus.logon.LogonPageController',{
 		});
 		me.txtEmail.addListener('specialkey',me.onTxtEmailTestInputKeyPressed,me);
 		me.forgotForm=Ext.create('Ext.form.Panel', {
-			border:false,
-			autoScroll:true,
+			border: false,
+			autoScroll:false,
 			margin: '0 0 0 0',
 			bodyStyle:{
 				padding:'10px'
@@ -660,7 +607,6 @@ Ext.define('com.trackplus.logon.LogonPageController',{
 		});
 
 		me.logon_forgotWin = Ext.create('Ext.window.Window',{
-			layout	  : 'fit',
 			width	   : 400,
 			height	  : 155,
 			closeAction :'hide',
@@ -696,23 +642,23 @@ Ext.define('com.trackplus.logon.LogonPageController',{
 	},
 	onInputKeyPressed:function(field, e){
 		var me=this;
-		if (e.getKey() == e.ENTER) {
+		if (e.getKey() === e.ENTER) {
 			me.login.call(me);
 		}
 	},
 	login:function(){
 		var me=this;
-		var form = me.view.getForm();
+		var form = me.logonView.getForm();
 		if (!form.isValid()) {
 			return true;
 		}
-		var pw = me.view.txtHiddenPassword;
-		var kpw = me.view.txtPassword.getValue();
+		var pw = me.logonView.txtHiddenPassword;
+		var kpw = me.logonView.txtPassword.getValue();
 
-		var usernameValue=me.view.txtUsername.getValue();
+		var usernameValue=me.logonView.txtUsername.getValue();
 		var expiry = new Date(new Date().getTime() + 30 * 24 * 60 * 60 * 1000);
-		var rememberMe=me.view.checkRemeberMe.getValue();
-		if(rememberMe==true){
+		var rememberMe=me.logonView.checkRemeberMe.getValue();
+		if(rememberMe===true){
 			Ext.util.Cookies.set('username', usernameValue,expiry);
 			Ext.util.Cookies.set('passwd', kpw,expiry);
 			Ext.util.Cookies.set('rememberMe','true',expiry);
@@ -743,11 +689,12 @@ Ext.define('com.trackplus.logon.LogonPageController',{
 					var jsonURL=action.result.data.jsonURL;
 					var ftever=action.result.data.ftever;
 					var licURL=action.result.data.licURL;
+								borderLayout.setLoading(true);
 								document.location=jsonURL;
 				},
 				failure: function(form, action) {
-					if(me.model.nonce!=action.result.data.nonce){
-						if(action.result.data.nonce==null) {
+					if(me.model.nonce!==action.result.data.nonce){
+						if(CWHF.isNull(action.result.data.nonce)) {
 							location.reload(true);
 							return true;
 						}else {
@@ -757,21 +704,23 @@ Ext.define('com.trackplus.logon.LogonPageController',{
 						}
 					}
 					borderLayout.setLoading(false);
-					if (action.failureType!='client') {
+					if (action.failureType!=='client') {
 						me.handleErrors(action.result.data);
 					}
 				}
 			}
 		);
 	},
+
 	decimalToHex:function(d, padding) {
 		var hex = Number(d).toString(16);
-		padding = typeof (padding) === "undefined" || padding === null ? padding = 2 : padding;
+		padding =  CWHF.isNull(padding) ? padding = 2 : padding;
 		while (hex.length < padding) {
 			hex = "0" + hex;
 		}
 		return hex;
 	},
+
 	handleErrors:function(data){
 		var me = this;
 		var errors =  data.errors;
@@ -780,30 +729,30 @@ Ext.define('com.trackplus.logon.LogonPageController',{
 		if (data.banned) {
 			document.location=data.jsonURL;
 		}
-		if(errors!=null&&errors.length>0){
+		if(errors&&errors.length>0){
 			for(var i=0;i<errors.length;i++){
-				if(errors[i].label=='errCredentials') {
-					var un = me.view.txtUsername;
-					var pn = me.view.txtPassword;
+				if(errors[i].label==='errCredentials') {
+					var un = me.logonView.txtUsername;
+					var pn = me.logonView.txtPassword;
 					un.markInvalid(errors[i].id);
 					pn.markInvalid(errors[i].id);
 					data.continyou=false;
 				}
-				if(errors[i].label=='errGeneralError') {
+				if(errors[i].label==='errGeneralError') {
 					strErr+=errors[i].id+"\n";
 					data.continyou=false;
 				}
-				if(errors[i].label=='errLicenseError') {
+				if(errors[i].label==='errLicenseError') {
 					strErr+=errors[i].id+"\n";
 				}
 			}
-			if (strErr != null && strErr.length > 0) {
+			if (strErr  && strErr.length > 0) {
 				Ext.MessageBox.show({
 					title: '',
 					msg: strErr,
 					modal: true,
 					fn: function(btn){
-						if (data.continyou==true) {
+						if (data.continyou===true) {
 							document.location=data.jsonURL;
 						}
 					},
@@ -817,9 +766,9 @@ Ext.define('com.trackplus.logon.LogonPageController',{
 	},
 	shakeWin:function(){
 		var me=this;
-		var x=me.view.getEl().getX();
+		var x=me.logonView.getEl().getX();
 		var dif=15;
-		me.view.getEl().animate({
+		me.logonView.getEl().animate({
 			keyframes:{
 				'0%': {x:x-dif},
 				'25%':{x:x+dif},

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -39,11 +39,6 @@ public class TWorkflowActivityBean
     implements Serializable,ISerializableLabelBean{
 	public static final long serialVersionUID = 400L;
 	
-	/*public interface ACTIVITY_TYPE {
-		public static final int NEW_MANAGER = 1;
-		public static final int NEW_RESPONSIBLE = 2;
-		public static final int GROOVY_SCRIPT = 3;
-	}*/
 
 	@Override
 	public Map<String, String> serializeBean() {
@@ -86,6 +81,45 @@ public class TWorkflowActivityBean
 		if(activityType!=null){
 			attributesMap.put("activityType",activityType.toString());
 		}
+
+
+		String activityParams=getActivityParams();
+		if(activityParams!=null){
+			attributesMap.put("activityParams",activityParams);
+		}
+
+		Integer fieldSetterRelation=getFieldSetterRelation();
+		if(fieldSetterRelation!=null){
+			attributesMap.put("fieldSetterRelation",fieldSetterRelation.toString());
+		}
+		String paramName=getParamName();
+		if(paramName!=null){
+			attributesMap.put("paramName",paramName);
+		}
+		Integer fieldSetMode=getFieldSetMode();
+		if(fieldSetMode!=null){
+			attributesMap.put("fieldSetMode",fieldSetMode.toString());
+		}
+
+		Integer sortOrder=getSortOrder();
+		if(sortOrder!=null){
+			attributesMap.put("sortOrder",sortOrder.toString());
+		}
+
+		Integer sla=getSla();
+		if(sla!=null){
+			attributesMap.put("sla",sla.toString());
+		}
+
+		Integer screen=getScreen();
+		if(screen!=null){
+			attributesMap.put("screen",screen.toString());
+		}
+
+
+
+
+
 		return attributesMap;
 	}
 
@@ -121,6 +155,35 @@ public class TWorkflowActivityBean
 		if(attributes.get("activityType")!=null){
 			this.setActivityType(Integer.parseInt(attributes.get("activityType")));
 		}
+
+
+		if(attributes.get("activityParams")!=null){
+			this.setActivityParams(attributes.get("activityParams"));
+		}
+		if(attributes.get("fieldSetterRelation")!=null){
+			this.setFieldSetterRelation(Integer.parseInt(attributes.get("fieldSetterRelation")));
+		}
+
+		if(attributes.get("paramName")!=null){
+			this.setParamName(attributes.get("paramName"));
+		}
+
+		if(attributes.get("fieldSetMode")!=null){
+			this.setFieldSetMode(Integer.parseInt(attributes.get("fieldSetMode")));
+		}
+
+		if(attributes.get("sortOrder")!=null){
+			this.setSortOrder(Integer.parseInt(attributes.get("sortOrder")));
+		}
+
+		if(attributes.get("sla")!=null){
+			this.setSla(Integer.parseInt(attributes.get("sla")));
+		}
+
+		if(attributes.get("screen")!=null){
+			this.setScreen(Integer.parseInt(attributes.get("screen")));
+		}
+
 		return this;
 	}
 

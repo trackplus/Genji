@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -79,6 +80,7 @@ public class CustomDoubleRT extends CustomTextBoxBaseRT {
 	 * @param locale 
 	 * @return
 	 */
+	@Override
 	public String getShowValue(Integer fieldID, Integer parameterCode, Object value, 
 			Integer workItemID, LocalLookupContainer localLookupContainer, Locale locale) {
 		return getShowValue(value, locale);
@@ -96,7 +98,8 @@ public class CustomDoubleRT extends CustomTextBoxBaseRT {
 				return doubleNumberFormatUtil.formatGUI(doubleValue, locale);
 			} catch (Exception e) {
 				if (LOGGER.isDebugEnabled()) {
-					LOGGER.debug("Getting the showValue for double " + value + " failed with " + e.getMessage(), e);
+					LOGGER.debug("Getting the showValue for double " + value + " failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 				return value.toString();
 			}
@@ -115,6 +118,7 @@ public class CustomDoubleRT extends CustomTextBoxBaseRT {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public String getShowISOValue(Integer fieldID, Integer parameterCode, Object value, 
 			Integer workItemID, LocalLookupContainer localLookupContainer, Locale locale) {
 		if (value!=null) {
@@ -158,6 +162,7 @@ public class CustomDoubleRT extends CustomTextBoxBaseRT {
 	/**
 	 * The value type of a textbox for float 
 	 */
+	@Override
 	public int getValueType() {		
 		return ValueType.DOUBLE;
 	}
@@ -231,6 +236,7 @@ public class CustomDoubleRT extends CustomTextBoxBaseRT {
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public IActivityConfig getFieldChangeConfig(Integer fieldID) {
 		return new DoubleFieldChangeConfig(fieldID);
 	}
@@ -240,6 +246,7 @@ public class CustomDoubleRT extends CustomTextBoxBaseRT {
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public IActivityExecute getFieldChangeApply(Integer fieldID) {
 		return new DoubleFieldChangeApply(fieldID);
 	}
@@ -249,6 +256,7 @@ public class CustomDoubleRT extends CustomTextBoxBaseRT {
 	 * @param fieldID
 	 * @return
 	 */
+	@Override
 	public IValueConverter getFieldValueConverter(Integer fieldID) {
 		return new DoubleSetterConverter(fieldID);
 	}
@@ -258,14 +266,12 @@ public class CustomDoubleRT extends CustomTextBoxBaseRT {
 	 * Typically fields which are typically unique should not be groupable   
 	 * @return
 	 */
-	/*public boolean isGroupable() {
-		return false;
-	}*/
     
     /**
 	 * Whether the field should be stored
 	 * @return
 	 */
+	@Override
 	public int getLuceneStored() {
 		return LuceneUtil.STORE.NO;
 	}
@@ -274,6 +280,7 @@ public class CustomDoubleRT extends CustomTextBoxBaseRT {
 	 * Whether the field should be tokenized
 	 * @return
 	 */
+	@Override
 	public int getLuceneTokenized() {
 		return LuceneUtil.TOKENIZE.NO;
 	}
@@ -282,6 +289,7 @@ public class CustomDoubleRT extends CustomTextBoxBaseRT {
 	 * Returns the lookup entity type related to the fieldType
 	 * @return
 	 */
+	@Override
 	public int getLookupEntityType() {
 		return LuceneUtil.LOOKUPENTITYTYPES.DIRECTDOUBLE;
 	}

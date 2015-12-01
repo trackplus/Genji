@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.SortedMap;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.torque.util.Criteria;
@@ -51,6 +52,7 @@ private static final Logger LOGGER = LogManager.getLogger(CustomSelectMatcherRT.
 	 * @param attributeValue
 	 * @return
 	 */
+	@Override
 	public boolean match(Object attributeValue) {		
 		Boolean nullMatch = nullMatcher(attributeValue);
 		if (nullMatch!=null) {
@@ -64,14 +66,16 @@ private static final Logger LOGGER = LogManager.getLogger(CustomSelectMatcherRT.
 			attributeValueMap = (Map<Integer, Object>) attributeValue;
 		} catch (Exception e) {
 			LOGGER.warn("Converting the attribute value of type " + 
-					attributeValue.getClass().getName() + " to Map<Integer, Object failed with " + e.getMessage(), e);			
+					attributeValue.getClass().getName() + " to Map<Integer, Object failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		SortedMap<Integer, Object> matcherValueMap = null;
 		try {
 			matcherValueMap = (SortedMap<Integer, Object>)matchValue;
 		} catch (Exception e) {
 			LOGGER.warn("Converting the matcher value of type " + 
-					matchValue.getClass().getName() + " to SortedMap<Integer, Object> failed with " + e.getMessage(), e);
+					matchValue.getClass().getName() + " to SortedMap<Integer, Object> failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		if (attributeValueMap==null || matcherValueMap==null) {
 			return false;
@@ -84,7 +88,8 @@ private static final Logger LOGGER = LogManager.getLogger(CustomSelectMatcherRT.
 				attributeValueCustomOption = (Object[])attributeValueMap.get(parameterCode);
 			} catch(Exception e) {
 				LOGGER.warn("Converting the attribute value for part " + parameterCode +  
-						" to Object[] failed with " + e.getMessage(), e);
+						" to Object[] failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				return false;
 			}
 			Integer[] matcherValueCustomOption = null;
@@ -92,7 +97,8 @@ private static final Logger LOGGER = LogManager.getLogger(CustomSelectMatcherRT.
 				matcherValueCustomOption =  (Integer[])matcherValueMap.get(parameterCode);
 			} catch(Exception e) {
 				LOGGER.error("Converting the matcher value for part " + parameterCode + 
-						" to Integer[] failed with " + e.getMessage(), e);
+						" to Integer[] failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				return false;
 			}
 
@@ -158,6 +164,7 @@ private static final Logger LOGGER = LogManager.getLogger(CustomSelectMatcherRT.
 	/**
 	 * Add a match expression to the criteria
 	 */
+	@Override
 	public void addCriteria(Criteria crit) {
 		if (relation==MatchRelations.IS_NULL || relation==MatchRelations.NOT_IS_NULL) {
 			String alias = addAliasAndJoin(crit);
@@ -169,7 +176,8 @@ private static final Logger LOGGER = LogManager.getLogger(CustomSelectMatcherRT.
 			matcherValueMap = (SortedMap<Integer, Object>)matchValue;
 		} catch (Exception e) {
 			LOGGER.warn("Converting the matcher value of type " + 
-					matchValue.getClass().getName() + " to SortedMap<Integer, Object> failed with " + e.getMessage(), e);
+					matchValue.getClass().getName() + " to SortedMap<Integer, Object> failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		if (matcherValueMap!=null && matcherValueMap.size()!=0) {
 			Iterator<Integer> iterator = matcherValueMap.keySet().iterator();
@@ -181,7 +189,8 @@ private static final Logger LOGGER = LogManager.getLogger(CustomSelectMatcherRT.
 					matcherValueCustomOption =  (Integer[])matcherValueMap.get(parameterCode);
 				} catch(Exception e) {
 					LOGGER.error("Converting the matcher value for part " + parameterCode + 
-							" to Integer[] failed with " + e.getMessage(), e);
+							" to Integer[] failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 					return;
 				}
 				if (matcherValueCustomOption==null || matcherValueCustomOption.length==0) {

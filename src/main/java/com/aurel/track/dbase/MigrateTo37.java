@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -102,7 +102,7 @@ public class MigrateTo37 extends Thread {
 
 	@Override
 	public void run() {
-		//ApplicationBean appBean = ApplicationBean.getApplicationBean();
+		//ApplicationBean appBean = ApplicationBean.getInstance();
 		boolean wasMaintenance = false;
 		TSiteBean siteBean = siteDAO.load1(); // update the siteBean, it may be outdated by now...
 		String userMsg = siteBean.getUserMessage(); /*appBean.getUserMsg();*/
@@ -165,7 +165,7 @@ public class MigrateTo37 extends Thread {
 		try {
 			UpgradeDatabase.upgradeFrom370(servletContext);
 		} catch (Exception e) {
-			LOGGER.error("Upgrading from 370 faield with " + e.getMessage(), e);
+			LOGGER.error("Upgrading from 370 faield with " + e.getMessage());
 			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 	}
@@ -228,7 +228,7 @@ public class MigrateTo37 extends Thread {
 				}
 			}
 		} catch (Exception e){
-			LOGGER.error("Serious error when trying to create UUIDs: " + e.getMessage(), e);
+			LOGGER.error("Serious error when trying to create UUIDs: " + e.getMessage());
 			System.err.println(ExceptionUtils.getStackTrace(e));
 		}
 	}
@@ -265,7 +265,7 @@ public class MigrateTo37 extends Thread {
 			stmt.executeUpdate("UPDATE ID_TABLE SET NEXT_ID = " + transactionID
 					+ " WHERE TABLE_NAME = 'THISTORYTRANSACTION'");
 		} catch (SQLException e) {
-			LOGGER.error("Updating the THISTORYTRANSACTION ID in ID_TABLE failed with " + e.getMessage(), e);
+			LOGGER.error("Updating the THISTORYTRANSACTION ID in ID_TABLE failed with " + e.getMessage());
 			System.err.println(ExceptionUtils.getStackTrace(e));
 		}
 		try {
@@ -273,7 +273,7 @@ public class MigrateTo37 extends Thread {
 			stmt.executeUpdate("UPDATE ID_TABLE SET NEXT_ID = " + fieldChangeID
 					  + " WHERE TABLE_NAME = 'TFIELDCHANGE'");
 		} catch (SQLException e) {
-			LOGGER.error("Updating the TFIELDCHANGE ID in ID_TABLE failed with " + e.getMessage(), e);
+			LOGGER.error("Updating the TFIELDCHANGE ID in ID_TABLE failed with " + e.getMessage());
 			System.err.println(ExceptionUtils.getStackTrace(e));
 		}
 	}
@@ -431,7 +431,7 @@ public class MigrateTo37 extends Thread {
 					" NEWDATEVALUE, OLDDATEVALUE, VALIDVALUE, TPUUID) " +
 					" VALUES  (?, ?, ?, ?, ?, ?, ?)");
 		} catch (Exception e) {
-			LOGGER.error("Creating the prepared statment failed with + " + e.getMessage(), e);
+			LOGGER.error("Creating the prepared statment failed with + " + e.getMessage());
 		}
 		
 		int transactionID = 0;
@@ -448,7 +448,7 @@ public class MigrateTo37 extends Thread {
 			}
 			stmt.close();
 		} catch (Exception e) {
-			LOGGER.error("Getting the actual transactionID failed with + " + e.getMessage(), e);
+			LOGGER.error("Getting the actual transactionID failed with + " + e.getMessage());
 		}	
 		try {
 			String sqlStmt = "SELECT NEXT_ID FROM ID_TABLE WHERE TABLE_NAME = 'TFIELDCHANGE'";	
@@ -462,7 +462,7 @@ public class MigrateTo37 extends Thread {
 			}
 			stmt.close();
 		} catch (Exception e) {
-			LOGGER.error("Getting the actual fieldChangeID failed with + " + e.getMessage(), e);
+			LOGGER.error("Getting the actual fieldChangeID failed with + " + e.getMessage());
 		}	
 		
 		int longTextSize = 6000;//Firebird
@@ -484,7 +484,7 @@ public class MigrateTo37 extends Thread {
 			}
 			stmt.close();
 		} catch (Exception e) {
-			LOGGER.error("Getting the maximum long text length failed with + " + e.getMessage(), e);
+			LOGGER.error("Getting the maximum long text length failed with + " + e.getMessage());
 		}
 		
 		//migrate the status changes

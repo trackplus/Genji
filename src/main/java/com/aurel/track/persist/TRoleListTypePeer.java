@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -60,54 +60,18 @@ public class TRoleListTypePeer
      * @param issueType
      * @return
      */
-	/*public static List<Integer> filterRoleByIssueType(List<Integer> selectedRoleIDs, Integer issueType) {
-		List filteredRoleIDs = new ArrayList();
-		if (selectedRoleIDs==null || selectedRoleIDs.isEmpty()) {
-			return filteredRoleIDs;
-		}
-		List assignmentsList = null;
-        Criteria criteria = new Criteria();
-        criteria.addIn(PROLE, selectedRoleIDs);
-        try {
-        	assignmentsList = doSelect(criteria);
-		} catch (TorqueException e) {
-			LOGGER.error("Loading the roles to issueTypes by roles " + selectedRoleIDs + " failed with " + e.getMessage(), e);
-		}
-		//assignments found with this issue
-		Set<Integer> foundWithAccordingIssueType = new HashSet<Integer>();
-		//assignments found with other issue
-		Set<Integer> foundWithOtherIssueType = new HashSet<Integer>();		
-		if (assignmentsList!=null) {
-			Iterator iterator = assignmentsList.iterator();
-			while (iterator.hasNext()) {
-				TRoleListType roleListType = (TRoleListType) iterator.next();
-				if (issueType.equals(roleListType.getListType())) {
-					foundWithAccordingIssueType.add(roleListType.getRole());					
-				} else {
-					foundWithOtherIssueType.add(roleListType.getRole());
-				}
-			}
-		}
-		Iterator iterator = selectedRoleIDs.iterator();
-		while (iterator.hasNext()) {
-			Integer roleID = (Integer) iterator.next();
-			if (foundWithAccordingIssueType.contains(roleID) || !foundWithOtherIssueType.contains(roleID)) {
-				filteredRoleIDs.add(roleID);
-			}			
-		}
-		return filteredRoleIDs;
-	}*/
 	
 	/**
 	 * Loads all RoleListTypeBeans
 	 * @return 
 	 */
+	@Override
 	public List<TRoleListTypeBean> loadAll() {
 		Criteria criteria = new Criteria();
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all roleListTypes failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all roleListTypes failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -117,6 +81,7 @@ public class TRoleListTypePeer
 	 * @param roleID
 	 * @return
 	 */
+	@Override
 	public List<TRoleListTypeBean> loadByRole(Integer roleID) {
 		Criteria criteria = new Criteria();
 		criteria.addJoin(LISTTYPE, TListTypePeer.PKEY);
@@ -125,7 +90,7 @@ public class TRoleListTypePeer
 		try {
 			return convertTorqueListToBeanList(doSelect(criteria));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading roleListTypes for role " + roleID +  " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading roleListTypes for role " + roleID +  " failed with " + e.getMessage());
 			return null;
 		}			
 	}
@@ -135,6 +100,7 @@ public class TRoleListTypePeer
 	 * @param roleIDs
 	 * @return
 	 */
+	@Override
 	public List<TRoleListTypeBean> loadByRoles(List<Integer> roleIDs) {
 		if (roleIDs==null || roleIDs.isEmpty()) {
 			return new LinkedList<TRoleListTypeBean>();
@@ -156,6 +122,7 @@ public class TRoleListTypePeer
 	 * @param listType
 	 * @return
 	 */
+	@Override
 	public List<TRoleListTypeBean> loadByRolesAndListType(Object[] roleIDs, Integer listType) {
 		if (roleIDs==null || roleIDs.length==0) {
 			return new LinkedList<TRoleListTypeBean>();
@@ -189,6 +156,7 @@ public class TRoleListTypePeer
 	 * @param roleBean
 	 * @return the created optionID
 	 */
+	@Override
 	public Integer save(TRoleListTypeBean roleListTypebean) {
 		try {			
 			TRoleListType tToleListType = BaseTRoleListType.createTRoleListType(roleListTypebean);
@@ -196,7 +164,7 @@ public class TRoleListTypePeer
 			Integer objectID = tToleListType.getObjectID();			
 			return objectID;
 		} catch (Exception e) {
-			LOGGER.error("Saving of a roleListType failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a roleListType failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -206,6 +174,7 @@ public class TRoleListTypePeer
 	 * @param roleID
 	 * @param issueTypeID
 	 */
+	@Override
 	public void delete(Integer roleID, Integer issueTypeID) {
 		Criteria crit = new Criteria();
         crit.add(PROLE, roleID);

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -47,7 +47,7 @@ import com.aurel.track.prop.ApplicationBean;
 /**
  * This class upgrades the Genji database schema if necessary.
  *
- * @version $Revision: 1439 $ $Date: 2015-09-28 13:37:25 +0200 (Mon, 28 Sep 2015) $
+ * @version $Revision: 1695 $ $Date: 2015-10-29 08:06:44 +0100 (Thu, 29 Oct 2015) $
  */
 public final class UpdateDbSchema {
 
@@ -70,7 +70,9 @@ public final class UpdateDbSchema {
 	};
 
 
+	private UpdateDbSchema() {
 
+	}
 
 
 	/**
@@ -130,28 +132,20 @@ public final class UpdateDbSchema {
 					if (dbVersion < UpgradeDatabase.DBVERSION && dbVersion > 200) {
 						migrateIndex = getMigrateScriptIndex(dbVersion);
 						runMigrateScripts(migrateIndex, servletContext);
-						/*try {
-							SiteDAO siteDAO = DAOFactory.getFactory().getSiteDAO();
-							TSiteBean site = InitDatabase.getSiteConfiguration();
-							site.setInstDate(new Long(new Date().getTime()).toString());
-							siteDAO.save(site);
-						} catch (ServletException e) {
-							LOGGER.error(e.getMessage(), e);
-						}*/	
 					}
 				}
 			} else {
 				// create new database scheme
 				LOGGER.info("Creating a new database schema...");
 				ApplicationStarter.getInstance().actualizePercentComplete(ApplicationStarter.getInstance().DB_TRACK_SCHEMA[0], ApplicationStarter.DB_SCHEMA_UPGRADE_SCRIPT_TEXT + " track-schema.sql...");
-				runSQLScript("track-schema.sql", Math.round(ApplicationStarter.DB_TRACK_SCHEMA[1]*0.8f), 
+				runSQLScript("track-schema.sql", Math.round(ApplicationStarter.DB_TRACK_SCHEMA[1]*0.8f),
 						                         ApplicationStarter.getInstance().getProgressText());
-				runSQLScript("id-table-schema.sql", Math.round(ApplicationStarter.DB_TRACK_SCHEMA[1]*0.1f), 
+				runSQLScript("id-table-schema.sql", Math.round(ApplicationStarter.DB_TRACK_SCHEMA[1]*0.1f),
 						      ApplicationStarter.DB_SCHEMA_UPGRADE_SCRIPT_TEXT + " id-table-schema.sql...");
-				runSQLScript("quartz.sql", Math.round(ApplicationStarter.DB_TRACK_SCHEMA[1]*0.1f), 
+				runSQLScript("quartz.sql", Math.round(ApplicationStarter.DB_TRACK_SCHEMA[1]*0.1f),
 						ApplicationStarter.DB_SCHEMA_UPGRADE_SCRIPT_TEXT + " quartz.sql...");
 			}
-			return true;	
+			return true;
 		} catch (Exception e) {
 			return false;
 		} finally {
@@ -209,8 +203,7 @@ public final class UpdateDbSchema {
 			cono.setAutoCommit(false);
 			Statement ostmt = cono.createStatement();
 			script = "/dbase/" + folderName + "/" + script;
-			URL populateURL = ApplicationBean.getApplicationBean().getServletContext().getResource(script);
-			//LOGGER.info("Script URL: " + populateURL.toString());
+			URL populateURL = ApplicationBean.getInstance().getServletContext().getResource(script);
 			InputStream in = populateURL.openStream();
 			java.util.Scanner s = new java.util.Scanner(in, "UTF-8").useDelimiter(";");
 			while (s.hasNext()) {
@@ -222,11 +215,11 @@ public final class UpdateDbSchema {
 			in = populateURL.openStream();
 			s = new java.util.Scanner(in, "UTF-8").useDelimiter(";");
 			String st = null;
-			StringBuffer stb = new StringBuffer();		
-			
+			StringBuilder stb = new StringBuilder();
+
 			int modc = 0;
 			progress = Math.round(new Float(mod)/new Float(noOfLines) * maxValue);
-			
+
 			LOGGER.info("Running SQL script " + script);
 			while (s.hasNext()) {
 				stb.append(s.nextLine().trim());
@@ -240,10 +233,10 @@ public final class UpdateDbSchema {
 						}catch (Exception ex){
 							LOGGER.error(ExceptionUtils.getStackTrace(ex));
 						}
-						stb=new StringBuffer();
+						stb=new StringBuilder();
 					}else{
 						if (st.endsWith(";")) {
-							stb = new StringBuffer(); // clear buffer
+							stb = new StringBuilder(); // clear buffer
 							st = st.substring(0, st.length()-1); // remove the semicolon
 							try {
 								if ("commit".equals(st.trim().toLowerCase())||
@@ -251,11 +244,10 @@ public final class UpdateDbSchema {
 									cono.commit();
 								} else {
 									ostmt.executeUpdate(st);
-									if (mod > 4 && (modc >= mod)) {
+									if (mod > 4 && modc >= mod) {
 										modc = 0;
-										ApplicationStarter.getInstance().actualizePercentComplete(progress, progressText);										
+										ApplicationStarter.getInstance().actualizePercentComplete(progress, progressText);
 									}
-									// LOGGER.info(st);
 								}
 							} catch (Exception exc) {
 								if (!("Derby".equals(folderName) && exc.getMessage().contains("DROP TABLE") && exc.getMessage().contains("not exist"))) {
@@ -268,13 +260,13 @@ public final class UpdateDbSchema {
 						}
 					}
 				} else {
-					stb = new StringBuffer();
+					stb = new StringBuilder();
 				}
 			}
 			in.close();
 			cono.commit();
 			cono.setAutoCommit(true);
-			
+
 			long now = new Date().getTime();
 			LOGGER.info("Database schema creation took "+ (now - start)/1000 + " seconds.");
 
@@ -336,7 +328,7 @@ public final class UpdateDbSchema {
 		String folderName = null;
 		try {
 		PropertiesConfiguration tcfg = HandleHome.getTorqueProperties(
-				ApplicationBean.getApplicationBean().getServletContext(), false);
+				ApplicationBean.getInstance().getServletContext(), false);
 
 		folderName = tcfg.getString("torque.database.track.adapter");
 
@@ -377,21 +369,7 @@ public final class UpdateDbSchema {
 				LOGGER.info("Getting the tables metadata");
 				if (rsTables != null && rsTables.next()) {
 					LOGGER.info("Find TSITE table...");
-					//}
-					/*
-					ResultSet rsCatalogs = md.getCatalogs();
-					System.out.println("====================================================================");
-					System.out.println("Databases: ");
-					while(rsCatalogs.next()) {
-						System.out.println(" * " + rsCatalogs.getString("TABLE_CAT"));
-					}
 
-
-					// getTables(catalog, schemaPattern, tableNamePattern, types)
-					rsTables = md.getTables(conn.getCatalog(), null, null, null);
-					System.out.println("====================================================================");
-					System.out.println("Tables: ");
-					System.out.print("\n"); */
 					while(rsTables.next()) {
 						String tableName = rsTables.getString("TABLE_NAME");
 						String tablenameUpperCase = tableName.toUpperCase();
@@ -406,17 +384,12 @@ public final class UpdateDbSchema {
 								break;
 							}
 						}
-						/*System.out.print(" ** " + tableName);
-						System.out.print(" || Type: " + rsTables.getString("TABLE_TYPE"));
-						System.out.print(" || Catalog: " + rsTables.getString("TABLE_CAT"));
-						System.out.println(" || Scheme: " + rsTables.getString("TABLE_SCHEM"));*/
-						//getTables(catalog, schemaPattern, tableNamePattern, columnNamePattern)
 					}
 				}
 			} catch (Exception e) {
 				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
-			if (hasTables==false) {
+			if (!hasTables) {
 				Statement stmt = null;
 				ResultSet rs = null;
 				try {

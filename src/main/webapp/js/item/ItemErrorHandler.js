@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -33,12 +33,12 @@ com.trackplus.item.ItemErrorHandler={
 				var errors=data.errors;
 				for(var i=0;i<errors.length;i++){
 					var fieldID=errors[i].id;
-					if(fieldID!=null){
+					if(fieldID){
 						var fieldTypeRenderer=fieldTypeRenderersMap["f"+fieldID];
-						if(fieldTypeRenderer!=null){
+						if(fieldTypeRenderer){
 							fieldTypeRenderer.markInvalid(errors[i].label);
 						}else{
-							if(fieldID==17&&synopsisTxt!=null){
+							if(fieldID===17&&synopsisTxt){
 								//synopsis
 								synopsisTxt.markInvalid(errors[i].label);
 							}
@@ -66,15 +66,15 @@ com.trackplus.item.ItemErrorHandler={
 			buttons: Ext.MessageBox.YESNOCANCEL,
 			buttonText: {yes: getText('item.err.btn.ignore'), no: getText('item.err.btn.overwrite'), cancel: getText('item.err.btn.merge')},
 			fn: function(btn){
-				if(btn=="yes"){
+				if(btn==="yes"){
 					com.trackplus.item.ItemErrorHandler.outOfDateHandler_ignore(itemAction,data);
 					return;
 				}
-				if(btn=="no"){
+				if(btn==="no"){
 					com.trackplus.item.ItemErrorHandler.outOfDateHandler_overwrite(itemAction,data);
 					return;
 				}
-				if(btn=="cancel"){
+				if(btn==="cancel"){
 					com.trackplus.item.ItemErrorHandler.outOfDateHandler_merge(itemAction,data);
 					return;
 				}
@@ -97,7 +97,7 @@ com.trackplus.item.ItemErrorHandler={
 		for(var f in fieldConfigs){
 			var fieldCfg=fieldConfigs[f];
 			var fieldTypeRenderer=fieldTypeRenderersMap[f];
-			if(fieldTypeRenderer!=null){
+			if(fieldTypeRenderer){
 				fieldTypeRenderer.update.call(fieldTypeRenderer,{
 					fieldConfig:fieldCfg,
 					value:fieldValues[f],
@@ -118,13 +118,13 @@ com.trackplus.item.ItemErrorHandler={
 		for(var f in fieldConfigs){
 			var fieldCfg=fieldConfigs[f];
 			var fieldTypeRenderer=fieldTypeRenderersMap[f];
-			if(fieldTypeRenderer!=null){
+			if(fieldTypeRenderer){
 				var newValue=fieldValues[f];
 				var myValue=fieldTypeRenderer.getValue();
 				var originalValue=fieldTypeRenderer.getOriginalValue();
-				if(newValue!=originalValue){
+				if(newValue!==originalValue){
 					//somebody else modify the field value
-					if(myValue!=originalValue){
+					if(myValue!==originalValue){
 						//also modify by me ->conflict
 						fieldTypeRenderer.markConflict(newValue);
 					}else{
@@ -132,7 +132,7 @@ com.trackplus.item.ItemErrorHandler={
 					}
 				}else{
 					//other people do not change the field value
-					if(myValue!=originalValue){
+					if(myValue!==originalValue){
 						//I change the value
 						fieldTypeRenderer.markModifiedByMe();
 					}

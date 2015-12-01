@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -51,6 +51,7 @@ public class CompositeSelectMatcherDT extends AbstractMatcherDT {
 	 * @param inTree
 	 * @return
 	 */
+	@Override
 	public List<Integer> getPossibleRelations(boolean withParameter, boolean inTree) {
 		List <Integer> relations = new ArrayList<Integer>();		
 		relations.add(Integer.valueOf(MatchRelations.EQUAL));
@@ -73,6 +74,7 @@ public class CompositeSelectMatcherDT extends AbstractMatcherDT {
 	 * @param matcher
 	 * @return
 	 */
+	@Override
 	public int getNegatedMatcher(int matcher) {
 		switch (matcher) {
 		case MatchRelations.EQUAL:	
@@ -93,6 +95,7 @@ public class CompositeSelectMatcherDT extends AbstractMatcherDT {
 	 * the control for rendering the matcher value
 	 * @return
 	 */
+	@Override
 	public String getMatchValueControlClass() {
 		switch (relation) {
 		case MatchRelations.EQUAL:
@@ -140,7 +143,7 @@ public class CompositeSelectMatcherDT extends AbstractMatcherDT {
 			Integer numberOfParts = compositeBaseRT.getNumberOfParts();
 			JSONUtility.appendIntegerValue(stringBuilder, "numberOfParts", numberOfParts);
 			JSONUtility.appendIntegerValue(stringBuilder, "fieldID", fieldID);
-			stringBuilder.append("partNames").append(":{");					
+			JSONUtility.appendFieldName(stringBuilder, "partNames").append(":{");
 			for (int i=1; i<=numberOfParts; i++) {				
 				JSONUtility.appendStringValue(stringBuilder, Integer.valueOf(i).toString(),
 						getNameWithMergedKey(baseName, index, Integer.valueOf(i)), i==compositeBaseRT.getNumberOfParts());
@@ -148,8 +151,7 @@ public class CompositeSelectMatcherDT extends AbstractMatcherDT {
 			stringBuilder.append("},");		
 		if (value!=null) {
 			Map<Integer, Integer[]> valueMap = (Map<Integer, Integer[]>)value;			
-			//JSONUtility.appendIntegerIntegerMap(stringBuilder, JSONUtility.JSON_FIELDS.VALUE, valueMap);
-			stringBuilder.append("partValues").append(":{");
+			JSONUtility.appendFieldName(stringBuilder, "partValues").append(":{");
 			if (valueMap!=null && !valueMap.isEmpty()) {				
 				for (Iterator<Integer> iterator = valueMap.keySet().iterator(); iterator.hasNext();) {
 					Integer parameterID = iterator.next();

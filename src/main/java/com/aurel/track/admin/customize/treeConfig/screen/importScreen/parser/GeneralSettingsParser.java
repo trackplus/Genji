@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -43,12 +43,12 @@ import com.aurel.track.admin.customize.treeConfig.screen.importScreen.ITableType
 import com.aurel.track.beans.TGeneralSettingsBean;
 
 
-public class GeneralSettingsParser extends ParserFactory //implements IParser  
+public class GeneralSettingsParser extends ParserFactory //implements IParser
 {
 	private static final Logger LOGGER = LogManager.getLogger(GeneralSettingsParser.class);
 	private TGeneralSettingsBean tmpGeneralSettingsBean;
 	private List<TGeneralSettingsBean> generalSettingsBeans;
-		 
+
 	private boolean isGeneralSettings = false;
 	private boolean isSubGeneralSettings = false;
 	private boolean isConfig = false;
@@ -61,43 +61,43 @@ public class GeneralSettingsParser extends ParserFactory //implements IParser
     private boolean isValidValue = false;
     private StringBuffer buffer ;
 
-    
-    
+
+
 	public List<TGeneralSettingsBean> parse()
-	{	
+	{
 		generalSettingsBeans = new ArrayList<TGeneralSettingsBean>();
 		File file = getFile();
-		 try 
+		 try
 		 {
 			 SAXParserFactory parserFact = SAXParserFactory.newInstance();
 			 SAXParser parser = parserFact.newSAXParser();
 			 parser.parse(file, this);
-		 } 
+		 }
 		 catch(SAXException e) {
-			 LOGGER.error("Parsing Sax Exception:" + e.getMessage(), e);
+			 LOGGER.error("Parsing Sax Exception:" + e.getMessage());
 		 }
 		 catch(ParserConfigurationException e) {
-			 LOGGER.error("Parse Configuration Exception:" + e.getMessage(), e);
+			 LOGGER.error("Parse Configuration Exception:" + e.getMessage());
 		 }
 		 catch (IOException e) {
-			 LOGGER.error("IO exception:" + e.getMessage(), e);
+			 LOGGER.error("IO exception:" + e.getMessage());
 		 }
 		 catch (Exception e)
 		 {
-			 LOGGER.error("Error parsing file " +file.getName() + " :" + e.getMessage(), e);
+			 LOGGER.error("Error parsing file " +file.getName() + " :" + e.getMessage());
 		 }
 		 return generalSettingsBeans;
 	}
-	  
 
-		
+
+
 
 	 @Override
-	public void startElement(String uri, String localName, 
+	public void startElement(String uri, String localName,
 				 String element_name, Attributes attributes) throws SAXException
 	 {
 		 buffer = new StringBuffer();
-		 if (element_name.equals(IExchangeFieldNames.ITEM)){ 
+		 if (element_name.equals(IExchangeFieldNames.ITEM)){
 			 if (ITableTypes.GENERALSETTINGS.equals(attributes.getValue("type"))) {
 				 tmpGeneralSettingsBean = new TGeneralSettingsBean();
 				 tmpGeneralSettingsBean.setObjectID(Integer.parseInt(attributes.getValue(IExchangeFieldNames.OBJECT_ID)));
@@ -111,7 +111,7 @@ public class GeneralSettingsParser extends ParserFactory //implements IParser
 		 }
 		 if (isGeneralSettings && !isSubGeneralSettings)
 		 {
-			 if (element_name.equals("config")){
+			 if ("config".equals(element_name)){
 				 isConfig = true;
 			 }
 			 else if (element_name.equals(IExchangeFieldNames.INTEGERVALUE)){
@@ -137,9 +137,9 @@ public class GeneralSettingsParser extends ParserFactory //implements IParser
 			 }
 		 }
 	 }
-	 
+
 	 @Override
-	public void endElement(String uri, String localName, 
+	public void endElement(String uri, String localName,
 			 String element_name) throws SAXException
 	 {
 		 if (element_name.equals(IExchangeFieldNames.ITEM)&& isGeneralSettings){
@@ -149,7 +149,7 @@ public class GeneralSettingsParser extends ParserFactory //implements IParser
 			 }
 		 }
 		 if ( isGeneralSettings && !isSubGeneralSettings) {
-			 if (element_name.equals("config")){
+			 if ("config".equals(element_name)){
 				 tmpGeneralSettingsBean.setConfig(Integer.parseInt(buffer.toString()));
 				 isConfig = false;
 			 }
@@ -188,18 +188,18 @@ public class GeneralSettingsParser extends ParserFactory //implements IParser
 				 tmpGeneralSettingsBean.setValidValue(Integer.parseInt(buffer.toString()));
 				 isValidValue = false;
 			 }
-		 } 
-		 
+		 }
+
 	 }
 
 	@Override
 	public void characters(char[] ch, int start, int len) throws SAXException{
 		String str = new String (ch, start, len);
-		
+
 		if (isConfig){
 			buffer.append(str);
 		}
-		
+
 		if (isIntegerValue){
 			buffer.append(str);
 		}

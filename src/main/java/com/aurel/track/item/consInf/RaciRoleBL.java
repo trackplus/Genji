@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -111,12 +111,10 @@ public class RaciRoleBL {
 			}
 		}
 		WorkItemContext workItemContext = FieldsManagerRT.loadWorkItem(personID, workItemKey, locale, SystemActions.EDIT);
-		//TWorkItemBean workItemBean = ItemBL2.loadWorkItemSystemAttributes(workItemKey);
 		AfterItemSaveEventParam afterItemSaveEventParam = new AfterItemSaveEventParam();
 		afterItemSaveEventParam.setWorkItemNew(workItemContext.getWorkItemBean());
 		afterItemSaveEventParam.setWorkItemOld(workItemContext.getWorkItemBean());
 		afterItemSaveEventParam.setSelectedPersons(GeneralUtils.createListFromIntArr(arrSelectedPersons));
-		//afterItemSaveEventParam.setSelectedGroups(GeneralUtils.createListFromIntArr(arrSelectedGroups));
 		afterItemSaveEventParam.setFieldConfigs(workItemContext.getFieldConfigs());
 		afterItemSaveEventParam.setLocale(locale);
 		EventPublisher eventPublisher = EventPublisher.getInstance();
@@ -155,21 +153,16 @@ public class RaciRoleBL {
 			return errors;
 		} 
 		Integer[] arrSelectedPersons = consInfEdit.getSelectedPersons();
-		//Integer[] arrSelectedGroups = consInfEdit.getSelectedGroups();
 		List<TPersonBean> realPersons = null;
-		//List<TPersonBean> realGroups = null;
 		boolean addMe = false;
 		if (RaciRole.CONSULTANT.equalsIgnoreCase(raciRole.trim().toLowerCase())) {
 			realPersons = consInfShow.getRealConsultantPersons();
-			//realGroups = consInfShow.getRealConsultantGroups();
 		} else {
 			if (RaciRole.INFORMANT.equalsIgnoreCase(raciRole.trim().toLowerCase())) {
 				realPersons = consInfShow.getRealInformantPersons();
-				//realGroups = consInfShow.getRealInformantGroups();
 			}
 		}
 		List<Integer> realPersonIDs = GeneralUtils.createIntegerListFromBeanList(realPersons);
-		//List<Integer> realGroupIDs = GeneralUtils.createIntegerListFromBeanList(realGroups);
 		//add the newly selected personIDs
 		if (arrSelectedPersons!=null) {
 			for (int i=0; i<arrSelectedPersons.length; i++) {
@@ -179,18 +172,11 @@ public class RaciRoleBL {
 				}
 			}
 		}
-		/*if (arrSelectedGroups!=null) {
-			for (int i=0; i<arrSelectedGroups.length; i++) {
-				realGroupIDs.add(arrSelectedGroups[i]);
-			}
-		}*/
 		
 		//reread from the database to sort them alphabetically
 		realPersons = PersonBL.loadSortedPersonsOrGroups(realPersonIDs);
-		//realGroups = PersonBL.loadSortedPersonsOrGroups(realGroupIDs);
 		if (RaciRole.CONSULTANT.equalsIgnoreCase(raciRole.trim().toLowerCase())) {
 			consInfShow.setRealConsultantPersons(realPersons);
-			//consInfShow.setRealConsultantGroups(realGroups);
 			consInfShow.setSelectedConsultantPersons(new Integer[0]);
 			consInfShow.setSelectedConsultantGroups(new Integer[0]);
 			if (addMe) {
@@ -199,7 +185,6 @@ public class RaciRoleBL {
 		} else {
 			if (RaciRole.INFORMANT.equalsIgnoreCase(raciRole.trim().toLowerCase())) {
 				consInfShow.setRealInformantPersons(realPersons);
-				//consInfShow.setRealInformantGroups(realGroups);
 				consInfShow.setSelectedInformantPersons(new Integer[0]);
 				consInfShow.setSelectedInformantGroups(new Integer[0]);
 				if (addMe) {
@@ -485,7 +470,6 @@ public class RaciRoleBL {
 	private static List<ErrorData> getSaveErrors(ConsInfEdit consInfEdit) {
 		List<ErrorData> errors = new LinkedList<ErrorData>();
 		Integer[] arrSelectedPersons = consInfEdit.getSelectedPersons();
-		//Integer[] arrSelectedGroups = consInfEdit.getSelectedGroups();
 		if ((arrSelectedPersons==null || arrSelectedPersons.length==0) /*&&
 				(arrSelectedGroups==null || arrSelectedGroups.length==0)*/) {
 			ErrorData errorData = new ErrorData("addRaciRole.error.notSelected");

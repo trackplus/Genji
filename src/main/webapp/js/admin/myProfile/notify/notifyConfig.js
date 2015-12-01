@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -29,8 +29,6 @@ Ext.define('com.trackplus.admin.NotifyConfig',{
 		//the exclusiveProject set only for automail in project settings
 		exclusiveProjectID: null
 	},
-	defaultSettings: false,
-	exclusiveProjectID: null,
 	baseAction: 'notify',
 	entityID:'node',
 	//actions
@@ -48,8 +46,7 @@ Ext.define('com.trackplus.admin.NotifyConfig',{
 
 	constructor: function(config) {
 		var config = config || {};
-		this.initialConfig = config;
-		Ext.apply(this, config);
+		this.initConfig(config);
 	},
 
 	/**
@@ -64,34 +61,34 @@ Ext.define('com.trackplus.admin.NotifyConfig',{
 
 	/**
 	 * Called from two places:
-	 * 1. projectConfig.js: selecting the automail node (nodeId=='10')
+	 * 1. projectConfig.js: selecting the automail node (nodeId==='10')
 	 * 2. from this class by selecting either an automail assignment/trigger/filter node
 	 */
 	loadDetailPanel: function(node, leaf, opts) {
 		var nodeId = node.data['id'];
-		if (nodeId=='10') {
-			//called from projectConfig.js: selecting the automail node (nodeId=='10')
+		if (nodeId==='10') {
+			//called from projectConfig.js: selecting the automail node (nodeId==='10')
 			return this.createCenterPanel();
 		} else {
 			switch (nodeId) {
 			case this.AUTOMAIL_ASSIGNMENT:
-				if (this.notifySettings==null) {
+				if (CWHF.isNull(this.notifySettings)) {
 					this.notifySettings = Ext.create('com.trackplus.admin.NotifySettingsList',
-						{defaultSettings: this.defaultSettings, exclusiveProjectID:this.exclusiveProjectID});
+						{defaultSettings: this.getDefaultSettings(), exclusiveProjectID:this.getExclusiveProjectID()});
 				}
 				this.loadGrid(this.notifySettings);
 				break;
 			case this.AUTOMAIL_TRIGGER:
-				if (this.notifyTriggers==null) {
+				if (CWHF.isNull(this.notifyTriggers)) {
 					this.notifyTriggers = Ext.create('com.trackplus.admin.NotifyTriggerList',
-							{defaultSettings: this.defaultSettings});
+							{defaultSettings: this.getDefaultSettings()});
 				}
 				this.loadGrid(this.notifyTriggers);
 				break;
 			case this.AUTOMAIL_FILTER:
-				if (this.notifyFilters==null) {
+				if (CWHF.isNull(this.notifyFilters)) {
 					this.notifyFilters = Ext.create('com.trackplus.admin.customize.category.CategoryConfig',
-							{rootID:'notifyFilter', projectID:this.exclusiveProjectID, excludePrivate:this.defaultSettings});
+							{rootID:'notifyFilter', projectID:this.getExclusiveProjectID(), excludePrivate:this.getDefaultSettings()});
 				}
 				this.loadTreeWithGrid(this.notifyFilters);
 				break;
@@ -104,19 +101,19 @@ Ext.define('com.trackplus.admin.NotifyConfig',{
 		//if grid is not null, and grid is not null after the first call but somehow the this.centerPanel.removeAll()
 		//leaves the grid in an inconsistent state that's why initGrid() should be called again although grid is not null.
 		//Otherwise the further attempts to select the grid result in empty detail section even through the grid data is received
-		gridConfig.initGrid();
+		/*gridConfig.initGrid();
 		var grid=gridConfig.getGrid();
-		gridConfig.reload();
-		if (this.centerPanel!=null) {
+		gridConfig.reload();*/
+		if (this.centerPanel) {
 			this.mainPanel.remove(this.centerPanel, true);
 		}
-		this.centerPanel = grid;
+		this.centerPanel = gridConfig;
 		this.mainPanel.add(this.centerPanel);
-		borderLayout.setActiveToolbarActionList(gridConfig.getToolbarActions());
+		//borderLayout.setActiveToolbarActionList(gridConfig.getToolbarActions());
 	},
 
 	loadTreeWithGrid: function(treeWithGridConfig) {
-		if (this.centerPanel!=null) {
+		if (this.centerPanel) {
 			this.mainPanel.remove(this.centerPanel, true);
 		}
 		this.centerPanel = treeWithGridConfig.createCenterPanel();

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -33,12 +33,12 @@ Ext.define('js.ext.com.track.dashboard.ReleaseNotes',{
 	},
 	createChildren:function(){
 		var me=this;
-		if(me.jsonData.tooManyItems==true){
+		if(me.jsonData.tooManyItems===true){
 			return [me.createErrorCmp(getText('cockpit.err.tooManyItems'))];
 		}
 		var projects=me.jsonData.result;
 		var prjItems=[];
-		if(projects!=null){
+		if(projects){
 			for(var i=0;i<projects.length;i++){
 				prjItems.push(me.createReleaseHeaderGroup.call(me,projects[i]));
 				prjItems.push(me.createReleaseGroup.call(me,projects[i],i<projects.length-1));
@@ -64,10 +64,10 @@ Ext.define('js.ext.com.track.dashboard.ReleaseNotes',{
 			'&dashboardParams.dashboardID='+me.jsonData.dashboardID;
 		var projectID=project.projectID;
 		var releaseID=project.releaseID;
-		if(projectID!=null){
+		if(projectID){
 			baseURL+="&dashboardParams.projectID="+projectID;
 		}
-		if(releaseID!=null){
+		if(releaseID){
 			baseURL+="&dashboardParams.releaseID="+releaseID;
 		}
 		var urlNrA=baseURL+"&dashboardParams.showAll=true";
@@ -87,7 +87,7 @@ Ext.define('js.ext.com.track.dashboard.ReleaseNotes',{
 
 		htmNr = htmNrUnRes;
 
-		if(project.areResolved != null && project.areResolved==true) {
+		if(project.areResolved  && project.areResolved===true) {
 			htmNr=htmNrRes;
 		}
 
@@ -98,16 +98,12 @@ Ext.define('js.ext.com.track.dashboard.ReleaseNotes',{
 
 		items.push({
 			xtype:'component',
-			width:35,
-			style:{
-				paddingLeft:'5px'
-			},
 			html:htmSymbol
 		});
 		items.push({
 			xtype:'component',
 			style:{
-				paddingTop:'5px',
+				paddingLeft:'2px',
 				whiteSpace:'nowrap',
 				overflow:'hidden'
 			},
@@ -116,31 +112,23 @@ Ext.define('js.ext.com.track.dashboard.ReleaseNotes',{
 		});
 		items.push({
 			xtype:'component',
-			style:{
-				paddingTop:'5px',
-				paddingRight:'5px'
+			style: {
+				paddingRight: '5px',
+				paddingLeft: '5px'
 			},
 			html:htmNr
 		});
 		items.push({
 			xtype:'component',
-			style:{
-				paddingLeft:'5px',
-				paddingRight:'5px',
-				paddingTop:'7px'
-			},
 			html:htmlImgs
 		});
-		return Ext.create('Ext.panel.Panel',{
-			border:false,
-			bodyBorder:false,
-			bodyPadding: 0,
+		return Ext.create('Ext.container.Container',{
+			cls:'dashboard-releaseHeaderGroup',
 			layout: {
 				type: 'hbox',
-				pack: 'start',
-				align: 'stretch'
+				pack: 'center',
+				align: 'middle'
 			},
-			height:24,
 			items:items
 		});
 	},
@@ -148,7 +136,7 @@ Ext.define('js.ext.com.track.dashboard.ReleaseNotes',{
 		var me=this;
 		var data=[];
 		var list=project.list;
-		if(list!=null){
+		if(list){
 			for(var i=0;i<list.length;i++){
 				var releaseNote=list[i];
 				var issueType=releaseNote.issueType;
@@ -181,20 +169,17 @@ Ext.define('js.ext.com.track.dashboard.ReleaseNotes',{
 		var groupingFeature = Ext.create('Ext.grid.feature.Grouping',{
 			groupHeaderTpl: '{name} ({rows.length} Item{[values.rows.length > 1 ? "s" : ""]})'
 		});
-		var margin= '0 0 5 0';
-		if(hasNext){
-			margin='0 0 5 0';
-		}
 		return Ext.create('Ext.grid.Panel', {
 			store: store,
 			cls:'gridWithIcons',
-			//height:120,
 			features: [groupingFeature],
 			columns: [
 				{
 					text	 : 'icon',
-					width	 : 32,
+					width	 : 47,
 					sortable : true,
+					align:'right',
+					tdCls:'iconTreeGridCell',
 					dataIndex: 'issueTypeSymbol'
 				},{
 					text	 : 'objectID',
@@ -212,7 +197,6 @@ Ext.define('js.ext.com.track.dashboard.ReleaseNotes',{
 			bodyBorder:false,
 			border:false,
 			columnLines :false,
-			margin:margin,
 			lines :false,
 			viewConfig: {
 				stripeRows: true

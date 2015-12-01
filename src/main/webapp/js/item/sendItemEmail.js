@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -24,24 +24,25 @@
 Ext.define('com.trackplus.item.SendEmail',{
 	extend:'Ext.Base',
 	config: {
-		workItemID:null
+		workItemID:null,
+		projectID:null
 	},
 	constructor: function(config) {
 		var me = this;
 		var config = config || {};
-		me.initialConfig = config;
-		Ext.apply(me, config);
+		this.initConfig(config);
 	},
 	view:null,
-	controller:null,
+	seController:null,
 	show:function(){
 		var me=this;
-		if(me.controller==null){
-			me.controller=Ext.create('com.trackplus.item.SendEmailController',{
-				workItemID:me.workItemID
+		if(CWHF.isNull(me.seController)){
+			me.seController=Ext.create('com.trackplus.item.SendEmailController',{
+				workItemID:me.getWorkItemID(),
+				projectID:me.getProjectID()
 			});
 		}
-		me.controller.show();
+		me.seController.show();
 	}
 });
 
@@ -50,7 +51,7 @@ Ext.define('com.trackplus.item.SendEmailView',{
 	extend: 'Ext.form.Panel',
 	config:{
 		model:{},
-		controller:null
+		seController:null
 	},
 	layout:'border',
 	border:false,
@@ -78,7 +79,7 @@ Ext.define('com.trackplus.item.SendEmailView',{
 			cls:'toolbarItemAction-noText',
 			text:label,
 			handler:handler,
-			enableToggle:enableToggle!=null?enableToggle==true:false,
+			enableToggle:enableToggle?enableToggle===true:false,
 			scope:me
 		});
 	},
@@ -93,7 +94,7 @@ Ext.define('com.trackplus.item.SendEmailView',{
 		var toolbarItems=new Array();
 		toolbarItems.push(me.btnCC);
 		toolbarItems.push(me.btnBCC);
-		if(me.model.attachmentsList!=null&&me.model.attachmentsList.length>0){
+		if(me.model.attachmentsList&&me.model.attachmentsList.length>0){
 			toolbarItems.push(me.btnAttachemnt);
 		}
 		toolbarItems.push(me.btnSend);
@@ -266,7 +267,7 @@ Ext.define('com.trackplus.item.SendEmailView',{
 			margin:'0 0 0 80',
 			boxLabel:getText('item.action.sendItemEmail.lbl.submitterEmail')+'&nbsp;&lt;'+submitterEmail+'&gt;',
 			name: 'includeSubmitterEmail',
-			hidden:submitterEmail==null,
+			hidden:CWHF.isNull(submitterEmail),
 			inputValue : true
 		});
 		me.txtSubjectPrefix=Ext.create('Ext.form.field.Text',{
@@ -308,12 +309,14 @@ Ext.define('com.trackplus.item.SendEmailView',{
 		var bodyCfg={
 			region:'center',
 			margin:'5 5 5 5',
-			border:false
+			border:false,
+			cls:'rteField',
 			/*cls:'ckeField100Percent'*/
 		};
 		var ckeditorCfg={
-			workItemID:me.controller.workItemID
-		};
+			workItemID:me.seController.workItemID,
+			projectID:me.seController.projectID
+		}
 		me.txtBody=CWHF.createRichTextEditorField('mailBody',bodyCfg,false,true,ckeditorCfg);
 		me.chkIncludeItemInformation=Ext.create('Ext.form.field.Checkbox',{
 			boxLabel:getText('item.action.sendItemEmail.lbl.includeItemInformation'),
@@ -352,25 +355,25 @@ Ext.define('com.trackplus.item.SendEmailView',{
 	openLinkTo:function(){
 		var me=this;
 		var title=getText('item.action.sendItemEmail.choosePerson.title',getText('item.action.sendItemEmail.lbl.to'));
-		me.controller.openPersonDialog.call(me.controller,me.txtTo,title);
+		me.seController.openPersonDialog.call(me.seController,me.txtTo,title);
 	},
 	openLinkCC:function(){
 		var me=this;
 		var title=getText('item.action.sendItemEmail.choosePerson.title',getText('item.action.sendItemEmail.lbl.cc'));
-		me.controller.openPersonDialog.call(me.controller,me.txtCC,title);
+		me.seController.openPersonDialog.call(me.seController,me.txtCC,title);
 	},
 	openLinkBCC:function(){
 		var me=this;
 		var title=getText('item.action.sendItemEmail.choosePerson.title',getText('item.action.sendItemEmail.lbl.bcc'));
-		me.controller.openPersonDialog.call(me.controller,me.txtBCC,title);
+		me.seController.openPersonDialog.call(me.seController,me.txtBCC,title);
 	},
 	sendEmail:function(){
 		var me=this;
-		me.controller.sendEmail.call(me.controller);
+		me.seController.sendEmail.call(me.seController);
 	},
 	cancelHandler:function(){
 		var me=this;
-		me.controller.cancelHandler.call(me.controller);
+		me.seController.cancelHandler.call(me.seController);
 	}
 });
 
@@ -392,12 +395,13 @@ Ext.define('com.trackplus.item.SendEmailController',{
 		var config = config || {};
 		me.initialConfig = config;
 		Ext.apply(me, config);
+		this.initConfig(config);
 	},
 	createView:function(data){
 		var me=this;
 		me.view=Ext.create('com.trackplus.item.SendEmailView',{
 			model:data,
-			controller:me
+			seController:me
 		});
 		me.addListeners();
 		return me.view;
@@ -409,7 +413,7 @@ Ext.define('com.trackplus.item.SendEmailController',{
 		me.currentTxtTo=txtTo;
 		var personPikerDialog=Ext.create('com.trackplus.util.PersonPickerDialog',{
 			title:title,
-			data:null,
+			options:null,
 			includeEmail:true,
 			includeGroups:true,
 			handler:me.addPersonHandler,
@@ -419,12 +423,12 @@ Ext.define('com.trackplus.item.SendEmailController',{
 	},
 	addPersonHandler:function(value,displayValue){
 		var me=this;
-		if(displayValue==null){
+		if(CWHF.isNull(displayValue)){
 			return ;
 		}
 		var oldValue=me.currentTxtTo.getValue();
 		var newValue="";
-		if(oldValue!=null&&oldValue!=''){
+		if(oldValue&&oldValue!==''){
 			newValue=oldValue+";"
 		}
 		newValue+=displayValue.join('; ');
@@ -441,12 +445,12 @@ Ext.define('com.trackplus.item.SendEmailController',{
 			success: function(response){
 				var responseJson = Ext.decode(response.responseText);
 				borderLayout.setLoading(false);
-				if (responseJson.success==true) {
+				if (responseJson.success===true) {
 					me.successHandler.call(me,responseJson.data);
 				}else{
 					var errorCode=responseJson.errorCode;
 					var errorMessage=responseJson.errorMessage;
-					if(errorCode==me.ERROR_EMAIL_NOT_SEND){
+					if(errorCode===me.ERROR_EMAIL_NOT_SEND){
 						CWHF.showMsgError(getText('item.action.sendItemEmail.err.noSMTP'));
 					}else{
 						CWHF.showMsgError(errorMessage);
@@ -461,11 +465,11 @@ Ext.define('com.trackplus.item.SendEmailController',{
 	},
 	successHandler:function(data){
 		var me=this;
-		if(me.view!=null){
+		if(me.view){
 			me.view.destroy();
 		};
 		me.view=me.createView(data);
-		if(me.win!=null){
+		if(me.win){
 			me.win.destroy();
 			me.win=null;
 		}
@@ -483,7 +487,7 @@ Ext.define('com.trackplus.item.SendEmailController',{
 				margin:'0 0 0 0'
 			},
 			iconCls:'buttonEmail16',
-			width       : 800,
+			width       : 880,
 			height      : 600,
 			closeAction :'destroy',
 			plain       : true,
@@ -492,14 +496,14 @@ Ext.define('com.trackplus.item.SendEmailController',{
 			items       :[me.view],
 			autoScroll  :true
 		});
-		var width=800;
+		var width=880;
 		var height=600;
 		var size=borderLayout.ensureSize(width,height);
 		width=size.width;
 		height=size.height;
 		me.win.setWidth(width);
 		me.win.setHeight(height);
-		if(width<800||height<600){
+		if(width<880||height<600){
 			me.win.setPosition(10,10);
 		}
 		me.win.show();

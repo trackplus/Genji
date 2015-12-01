@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -46,6 +46,7 @@ public class TWorkflowGuardPeer
 	public static final long serialVersionUID = 400L;
 	private static final Logger LOGGER = LogManager.getLogger(TWorkflowGuardPeer.class);
 
+	@Override
 	public TWorkflowGuardBean loadByPrimaryKey(Integer objectID) {
 		TWorkflowGuard tobject = null;
 		try{
@@ -61,23 +62,25 @@ public class TWorkflowGuardPeer
 		return null;
 	}
 
+	@Override
 	public List<TWorkflowGuardBean> loadAll() {
 		Criteria crit = new Criteria();
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all workflow guards failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all workflow guards failed with " + e.getMessage());
 			return null;
 		}
 	}
 
+	@Override
 	public List<TWorkflowGuardBean> loadByTransition(Integer transitionID) {
 		Criteria crit = new Criteria();
 		crit.add(WORKFLOWTRANSITION,transitionID);
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading workflow guards by transition:"+transitionID+" failed with " + e.getMessage(), e);
+			LOGGER.error("Loading workflow guards by transition:"+transitionID+" failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -89,6 +92,7 @@ public class TWorkflowGuardPeer
 	 * @param includeHooks whether to include the transitions to the same station
 	 * @return
 	 */
+	@Override
 	public List<TWorkflowGuardBean> loadFromStation(Integer stationFrom, Integer triggerEvent, boolean includeHooks) {
 		Criteria crit = new Criteria();
 		crit.addJoin(WORKFLOWTRANSITION, TWorkflowTransitionPeer.OBJECTID);
@@ -102,22 +106,24 @@ public class TWorkflowGuardPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading workflow guards for transitions starting from:"+stationFrom+" failed with " + e.getMessage(), e);
+			LOGGER.error("Loading workflow guards for transitions starting from:"+stationFrom+" failed with " + e.getMessage());
 			return null;
 		}
 	}
 	
+	@Override
 	public Integer save(TWorkflowGuardBean workflowGuardBean) {
 		try {
 			TWorkflowGuard tobject = TWorkflowGuard.createTWorkflowGuard(workflowGuardBean);
 			tobject.save();
 			return tobject.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a workflow guard failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a workflow guard failed with " + e.getMessage());
 			return null;
 		}
 	}
 
+	@Override
 	public void delete(Integer objectID) {
 		try {
 			doDelete(SimpleKey.keyFor(objectID));

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -178,6 +178,7 @@ public class TReportLayoutPeer
 			}
 		}
 	}
+	@Override
 	public TReportLayoutBean loadByPrimaryKey(Integer objectID){
 		TReportLayout tobject = null;
 		try {
@@ -193,18 +194,20 @@ public class TReportLayoutPeer
 
 	}
 
+	@Override
 	public List loadAll() {
 		List torqueList = null;
 		Criteria crit = new Criteria();
 		try {
 			torqueList = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all failed with " + e.getMessage());
 		}
 		return convertTorqueListToBeanList(torqueList);
 	}
 	
 	
+	@Override
 	public List getByPerson(Integer personKey, boolean grouping, Integer layoutType) {
 		List torqueList = null;
 		Criteria crit = new Criteria();
@@ -225,10 +228,11 @@ public class TReportLayoutPeer
 		try {
 			torqueList = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading ReportLayout for key:"+personKey+" failed with " + e.getMessage(), e);
+			LOGGER.error("Loading ReportLayout for key:"+personKey+" failed with " + e.getMessage());
 		}
 		return convertTorqueListToBeanList(torqueList);
 	}
+	@Override
 	public List<TReportLayoutBean> getByQuery(Integer personKey,Integer queryType,Integer queryID){
 		List torqueList = null;
 		Criteria crit = new Criteria();
@@ -254,10 +258,11 @@ public class TReportLayoutPeer
 		try {
 			torqueList = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading ReportLayout for key:"+personKey+" failed with " + e.getMessage(), e);
+			LOGGER.error("Loading ReportLayout for key:"+personKey+" failed with " + e.getMessage());
 		}
 		return convertTorqueListToBeanList(torqueList);
 	}
+	@Override
 	public void save(List layout) {
 		if(layout==null||layout.isEmpty()){
 			return;
@@ -276,6 +281,7 @@ public class TReportLayoutPeer
 			LOGGER.error("Saving reportLayouts failed with: " + e);
 		}  
 	}
+	@Override
 	public void save(TReportLayoutBean reportLayoutBean){
 		try {
 			BaseTReportLayout.createTReportLayout(reportLayoutBean).save();
@@ -285,9 +291,11 @@ public class TReportLayoutPeer
 			LOGGER.error("Saving reportLayouts failed with: " + e);
 		}
 	}
+	@Override
 	public void remove(TReportLayoutBean reportLayoutBean) {
 		doDeleteByPersonAndPosition(reportLayoutBean.getPerson(), reportLayoutBean.getFieldPosition());
 	}
+	@Override
 	public void removeByPerson(Integer personKey, /*Integer fieldType,*/ Integer layoutType){
 		Criteria crit = new Criteria();
 		if (personKey!=null) {
@@ -303,6 +311,7 @@ public class TReportLayoutPeer
 			LOGGER.error("Remove reportLayouts by person failed with: " + e);
 		}
 	}
+	@Override
 	public void removeByQueryPerson(Integer personKey,Integer queryType,Integer queryID){
 		Criteria crit = new Criteria();
 		if (personKey!=null) {
@@ -329,6 +338,7 @@ public class TReportLayoutPeer
 			LOGGER.error("Remove reportLayouts by person failed with: " + e);
 		}
 	}
+	@Override
 	public void removeByPersonAndReportFieldNotIn(Integer personKey, Integer layoutType,List<Integer> remainIds,Integer queryType,Integer queryID){
 		Criteria crit = new Criteria();
 		if (personKey!=null) {

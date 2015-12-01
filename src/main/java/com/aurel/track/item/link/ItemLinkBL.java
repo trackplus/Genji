@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -324,7 +324,6 @@ public class ItemLinkBL {
 
 	/**
 	 * Merge the predecessor and successor links for a workItem
-	 * @param itemID
 	 * @return
 	 */
 	static List<TWorkItemLinkBean> getLinks(Collection<TWorkItemLinkBean> successorsForMeAsPredecessor,
@@ -368,7 +367,6 @@ public class ItemLinkBL {
 	/**
 	 * Gets the links for a workItem
 	 * @param itemID
-	 * @param loaderResourceBundleMessages
 	 * @return
 	 */
 	public static List<Integer> getLinkedItemIDs(Integer itemID, Integer linkType, Integer linkDirection) {
@@ -454,7 +452,6 @@ public class ItemLinkBL {
 	/**
 	 * Gets the links for a workItem
 	 * @param itemID
-	 * @param loaderResourceBundleMessages
 	 * @return
 	 */
 	static Set<Integer> getLinkedItemIDs(Integer itemID) {
@@ -499,8 +496,6 @@ public class ItemLinkBL {
 
 	/**
 	 * Gets the links for a workItem
-	 * @param itemID
-	 * @param locale
 	 * @return
 	 */
 	static List<ItemLinkListEntry> getLinks(SortedMap<Integer, TWorkItemLinkBean> successorsForMeAsPredecessorMap,
@@ -560,6 +555,7 @@ public class ItemLinkBL {
 				ILinkType linkTypeInstance = LinkTypeBL.getLinkTypePluginInstanceByLinkTypeKey(linkType);
 				if (linkTypeInstance!=null) {
 					itemLinkListEntry.setParameters(linkTypeInstance.prepareParametersOnLinkTab(workItemLinkBean, linkTypeDirection, locale));
+					itemLinkListEntry.setParameterMap(linkTypeInstance.prepareParametersMap(workItemLinkBean));
 					isInline = linkTypeInstance.isInline();
 				}
 				itemLinkListEntry.setEditable(editable && !isInline);
@@ -622,6 +618,7 @@ public class ItemLinkBL {
 				boolean isInline = false;
 				if (linkTypeInstance!=null) {
 					itemLinkListEntry.setParameters(linkTypeInstance.prepareParametersOnLinkTab(workItemLinkBean, linkTypeDirection, locale));
+					itemLinkListEntry.setParameterMap(linkTypeInstance.prepareParametersMap(workItemLinkBean));
 					isInline = linkTypeInstance.isInline();
 				}
 				itemLinkListEntry.setEditable(editable && !isInline);
@@ -742,7 +739,7 @@ public class ItemLinkBL {
 						itemLinkTO.setLinkedWorkItemTitle(linkedWorkItemBean.getSynopsis());
 					}
 				} catch (ItemLoaderException e) {
-					LOGGER.error("Loading the linkSucc failed with " + e.getMessage(), e);
+					LOGGER.error("Loading the linkSucc failed with " + e.getMessage());
 				}
 
 			} else {
@@ -770,7 +767,7 @@ public class ItemLinkBL {
 							itemLinkTO.setLinkedWorkItemTitle(linkedWorkItemBean.getSynopsis());
 						}
 					} catch (ItemLoaderException e) {
-						LOGGER.error("Loading the linkPred failed with " + e.getMessage(), e);
+						LOGGER.error("Loading the linkPred failed with " + e.getMessage());
 					}
 
 				}
@@ -779,6 +776,11 @@ public class ItemLinkBL {
 			itemLinkTO.setLinkType(workItemLinkBean.getLinkType());
 			itemLinkTO.setLinkDirection(linkDirection);
 			itemLinkTO.setDescription(workItemLinkBean.getDescription());
+
+			ILinkType linkTypeInstance = LinkTypeBL.getLinkTypePluginInstanceByLinkTypeKey(workItemLinkBean.getLinkType());
+			if (linkTypeInstance!=null) {
+				itemLinkTO.setParameterMap(linkTypeInstance.prepareParametersMap(workItemLinkBean));
+			}
 		}
 		return itemLinkTO;
 	}
@@ -997,7 +999,7 @@ public class ItemLinkBL {
 	 * @param specificParameterErrors output parameter
 	 */
 	public static void prepareLink(Integer linkPred, Integer linkSucc, Integer linkTypeID, Integer linkDirection, String description,
-			ILinkType linkType, Map<Integer, String> parametersMap, TPersonBean personBean, Locale locale,
+			ILinkType linkType, Map<String, String> parametersMap, TPersonBean personBean, Locale locale,
 			List<TWorkItemLinkBean> linksToAdd, Map<String, List<LabelValueBean>> errorMap, List<LabelValueBean> specificParameterErrors) {
 		if (linkPred!=null && linkSucc!=null) {
 			TWorkItemLinkBean workItemLinkBean = new TWorkItemLinkBean();
@@ -1042,7 +1044,7 @@ public class ItemLinkBL {
 						}
 						String predItemID = "";
 						String succItemID = "";
-						if (ApplicationBean.getApplicationBean().getSiteBean().getProjectSpecificIDsOn()) {
+						if (ApplicationBean.getInstance().getSiteBean().getProjectSpecificIDsOn()) {
 							Integer fieldID =SystemFields.INTEGER_PROJECT_SPECIFIC_ISSUENO;
 							IFieldTypeRT fieldTypeRT = FieldTypeManager.getFieldTypeRT(fieldID);
 							Integer predIDNumber = null;

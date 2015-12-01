@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -49,6 +49,23 @@ GRID.odd.opacity = '1';
 GRID.odd.stroke = '#eaeaea';
 GRID.odd['stroke-width'] = '1';
 
+Ext.define('Ext.chart.theme.Trackplus', {
+	extend: 'Ext.chart.theme.Base',
+    alias: 'chart.theme.Trackplus',
+    config: {
+    	axis: {
+    		defaults: {
+    			style: {strokeStyle: '#000000'}
+    	    },
+    	    left: {
+    	    	title: {fillStyle: '#000000', fontSize: '16', fontFamily: 'bold 14px Arial'}
+    	    },
+    	    bottom: {
+    	    	title: {fillStyle: '#000000', fontSize: '16', fontFamily: 'bold 14px Arial'}
+      	    }
+    	}
+    }
+});
 
 Ext.define('js.ext.com.track.dashboard.BurnDownChart',{
     extend:'js.ext.com.track.dashboard.DashboardRenderer',
@@ -66,102 +83,17 @@ Ext.define('js.ext.com.track.dashboard.BurnDownChart',{
 		me.callParent();
     },
 
-    defineTheme: function(gradID) {
-    	var colors = ['url(#' + gradID + '0)',
-    	              'url(#' + gradID + '1)',
-                      'url(#' + gradID + '2)',
-                      'url(#' + gradID + '3)',
-                      'url(#' + gradID + '4)',
-                      'url(#' + gradID + '5)',
-                      'url(#' + gradID + '6)',
-                      'url(#' + gradID + '7)',
-                      'url(#' + gradID + '8)'];
-
-    	Ext.define('Ext.chart.theme.Trackplus', {
-	    	extend: 'Ext.chart.theme.Base',
-	    	constructor: function(config) {
-	    	this.callParent([Ext.apply({
-	    		axis: {
-	    			fill: '#000',
-	            	'stroke-width': 1
-	    		},
-	            axisLabelTop: {
-	            	fill: '#000',
-	            	font: '11px Arial'
-	            },
-	            axisLabelLeft: {
-	            	fill: '#000',
-	            	font: '11px Arial'
-	            },
-	            axisLabelRight: {
-	            	fill: '#000',
-	            	font: '11px Arial'
-	            },
-	            axisLabelBottom: {
-	            	fill: '#000',
-	            	font: '11px Arial'
-	            },
-	            axisTitleTop: {
-	            	fill: '#000',
-	            	font: '11px Arial'
-	            },
-	            axisTitleLeft: {
-	            	fill: '#000',
-	            	font: '11px Arial'
-	            },
-	            axisTitleRight: {
-	            	fill: '#000',
-	            	font: '11px Arial'
-	            },
-	            axisTitleBottom: {
-	            	fill: '#000',
-	            	font: '11px Arial'
-	            },
-	            series: {
-	            	'stroke-width': 1
-	            },
-	            seriesLabel: {
-	            	font: '12px Arial',
-	            	fill: '#333'
-	            },
-	            marker: {
-	            	stroke: '#555',
-	            	fill: '#000',
-	            	radius: 3,
-	            	size: 3
-	            },
-	            colors: colors,
-	            	seriesThemes: [{
-	            		fill: colors[0]
-	            	}, {
-	            		fill: colors[1]
-	            	}],
-	            	markerThemes: [{
-	            		fill: '#084594',
-	            		type: 'circle'
-	            	}, {
-	            		fill: '#2171B5',
-	            		type: 'cross'
-	            	}, {
-	            		fill: '#4292C6',
-	            		type: 'plus'
-	            	}]
-	            }, config)]);
-	        }
-	    });
-    },
-
     createHtmlString:function(){
     	var me=this;
     },
 
     createChildren:function(){
     	var me = this;
-		if(me.jsonData.tooManyItems==true){
+		if(me.jsonData.tooManyItems===true){
 			return [me.createErrorCmp(getText('cockpit.err.tooManyItems'))];
 		}
 
-		if(me.jsonData.empty == false) {
+		if(me.jsonData.empty === false) {
 			myChart = me.createChart();
 		}else {
 			myChart = me.createEmptyChart();
@@ -172,19 +104,21 @@ Ext.define('js.ext.com.track.dashboard.BurnDownChart',{
     createChart: function() {
     	var me = this;
     	var gradID = Math.random().toString(36).substring(7);
-    	me.defineTheme(gradID);
         var chartData = me.jsonData.chartData;
         var maxValue = me.calculateMaxValue(chartData);
         var jsonArg1 = me.createYAxeCommonConfig(maxValue);
         var jsonArg2 = me.createXAxeCommonConfig();
         Ext.Function.defer(function(){
-        	me.myChart.legend.origX  = me.getLegendXValue();
-        	me.myChart.legend.origY  = me.LEGEN_TOP_OFFSET;
-            me.myChart.legend.visible = true;
-            me.myChart.legend.redraw();
+//        	me.myChart.legend.origX  = 150;//me.getLegendXValue();
+//        	me.myChart.legend.origY  = me.LEGEN_TOP_OFFSET;
+//        	me.myChart.legend.setLocalX(35);//me.getLegendXValue());
+//        	me.myChart.legend.setY(me.LEGEN_TOP_OFFSET);
+//            me.myChart.legend.visible = true;
+//            me.myChart.legend.refreshView();
+
         }, 100);
 
-        var fieldsForStore = JSON.parse('[{"name": "date", "type":"string"}, {"name": "plannedValue", "type":"Numeric"}, {"name": "earnedValue", "type":"Numeric"}]');
+        var fieldsForStore = JSON.parse('[{"name": "date", "type":"string"}, {"name": "plannedValue", "type":"int"}, {"name": "earnedValue", "type":"int"}]');
         var store = Ext.create('Ext.data.Store', {
             id:'store',
             fields: fieldsForStore,
@@ -195,36 +129,58 @@ Ext.define('js.ext.com.track.dashboard.BurnDownChart',{
         axesArray.push(jsonArg2);
         var axesJSONArray = JSON.parse(JSON.stringify(axesArray));
         me.myChart =
-        	Ext.create('Ext.chart.Chart', {
+        	Ext.create('Ext.chart.CartesianChart', {
         	theme: 'Trackplus',
             gradients: me.getGradients(gradID),
-            background: {
-                fill:'white'
-            },
             legend: {
-            	position: 'float',
-            	visible: false
+            	docked: 'bottom',
+//            	visible: false,
+            	tpl: [
+             	     '<table><tr class="x-legend-container">',
+ 	                 	'<tpl for=".">',
+ 	                  		'<tr>',
+ 	                  			'<td class="x-legend-item">',
+ 	                  				'<div class="x-legend-item-marker {[ values.disabled ? Ext.baseCSSPrefix + \'legend-inactive\' : \'\' ]}">',
+ 	                  					'<div style="cursor:pointer; display: inline-block;width:10px;height:10px;background:{mark};"></div>',
+ 	                  					'<div style= "margin-left: 2px; cursor:pointer; display: inline-block;">{name}</div>',
+ 	                  				'</div>',
+ 	                  			'</td>',
+ 	                  		'</tr>',
+ 	            	     '</tpl>',
+ 	            	  '</table>'
+ 	            ],
+ 	           itemSelector: 'td',
+ 	           style: {
+ 	        	   borderColor: '#000000',
+ 	        	   borderStyle: 'solid'
+ 	           },
+ 	           margin: '0 0 5 0',
+ 	           border: '1px'
             },
             height: me.jsonData.height,
             animate: true,
             store: store,
-            axes: axesJSONArray
+            axes: axesJSONArray,
+            border: false,
+            bodyBorder: false
         });
         var plannedSeriesLabel = "";
         var actualSeriesLabel = "";
-        if(me.jsonData.selectedEffortType == 1) {
+        if(me.jsonData.selectedEffortType === 1) {
         	plannedSeriesLabel = getText('burnDownChart.series.ideal.effort');
             actualSeriesLabel = getText('burnDownChart.series.actual.effort');
 
-        }else if(me.jsonData.selectedEffortType == 2) {
+        }else if(me.jsonData.selectedEffortType === 2) {
         	plannedSeriesLabel = getText('burnDownChart.series.ideal.no.of.items');
             actualSeriesLabel = getText('burnDownChart.series.actual.no.of.items');
         }else {
         	plannedSeriesLabel = getText('burnDownChart.series.ideal.story.point');
             actualSeriesLabel = getText('burnDownChart.series.actual.story.point');
         }
-        me.myChart.series.add(me.createSeries('plannedValue', 0, plannedSeriesLabel));
-        me.myChart.series.add(me.createSeries('earnedValue', 1, actualSeriesLabel));
+        var seriesArr = [];
+        seriesArr.push(me.createSeries('plannedValue', 0, plannedSeriesLabel));
+        seriesArr.push(me.createSeries('earnedValue', 1, actualSeriesLabel));
+        me.myChart.setSeries(seriesArr);
 		return me.myChart;
     },
 
@@ -233,11 +189,11 @@ Ext.define('js.ext.com.track.dashboard.BurnDownChart',{
     	var chartWidth = me.lastBox.width;
     	legenXValue = 0;
 
-    	if(me.jsonData.selectedEffortType == 1) {
+    	if(me.jsonData.selectedEffortType === 1) {
     		legenXValue = chartWidth - me.LEGEND_WIDTH_EFFORT_TYPE_TIME - me.LEGEN_RIGHT_OFFSET;
-    	}if(me.jsonData.selectedEffortType == 2) {
+    	}if(me.jsonData.selectedEffortType === 2) {
     		legenXValue = chartWidth - me.LEGEND_WIDTH_EFFORT_TYPE_NO_ITEMS - me.LEGEN_RIGHT_OFFSET;
-    	}if(me.jsonData.selectedEffortType == 3) {
+    	}if(me.jsonData.selectedEffortType === 3) {
     		legenXValue = chartWidth - me.LEGEND_WIDTH_EFFORT_TYPE_STORY_POINT - me.LEGEN_RIGHT_OFFSET;
     	}
     	return legenXValue;
@@ -297,7 +253,7 @@ Ext.define('js.ext.com.track.dashboard.BurnDownChart',{
     createYAxeCommonConfig: function(maxValue) {
     	var me = this;
     	var jsonArg1 = {
-    		type: 'Numeric',
+    		type: 'numeric',
     	    position: 'left',
     	    grid: GRID,
     	    minimum: '0',
@@ -329,8 +285,8 @@ Ext.define('js.ext.com.track.dashboard.BurnDownChart',{
         	},
         	grid: GRID
         };
-        if (me.jsonData.reportingInterval== "1" &&  me.jsonData.empty == false) {
-        	jsonArg2.type = 'Time';
+        if (me.jsonData.reportingInterval=== "1" &&  me.jsonData.empty === false) {
+        	jsonArg2.type = 'time';
             jsonArg2.fields = 'date';
             jsonArg2.dateFormat = 'M d';
             jsonArg2.fromDate = new Date(me.jsonData.dateFrom);
@@ -341,13 +297,13 @@ Ext.define('js.ext.com.track.dashboard.BurnDownChart',{
             jsonArg2.step = stepType;
 
         //Axes specific configuration WEEKLY  GRANULARITY
-        }else if (me.jsonData.reportingInterval== "2" &&  me.jsonData.empty == false) {
-            jsonArg2.type = 'Category';
+        }else if (me.jsonData.reportingInterval=== "2" &&  me.jsonData.empty === false) {
+            jsonArg2.type = 'category';
             jsonArg2.fields = 'date';
 
         //Axes specific configuration MONTHLY  GRANULARITY*/
-        } else if(me.jsonData.empty == false) {
-            jsonArg2.type = 'Category';
+        } else if(me.jsonData.empty === false) {
+            jsonArg2.type = 'category';
             jsonArg2.fields = 'date';
         }
         return jsonArg2;
@@ -359,7 +315,7 @@ Ext.define('js.ext.com.track.dashboard.BurnDownChart',{
         for(var i = 0; i <  chartdata.length; i++){
             var obj =  chartdata[i];
             for(var key in obj){
-                if ( key != "date") {
+                if ( key !== "date") {
                     if (parseInt(obj[key]) > parseInt(maxValue)) {
                         maxValue = obj[key];
                     }
@@ -375,10 +331,10 @@ Ext.define('js.ext.com.track.dashboard.BurnDownChart',{
     	me.defineTheme(gradID);
         var store = Ext.create('Ext.data.Store', {
             id: 'store',
-            fields: [{"name": "date", "type":"Time"}],
+            fields: [{"name": "date", "type":"date"}],
             data: [{"date":"2013-01-01"}]
         });
-        myChart = Ext.create('Ext.chart.Chart', {
+        myChart = Ext.create('Ext.chart.CartesianChart', {
             background: {
                 fill:'white'
             },
@@ -390,14 +346,14 @@ Ext.define('js.ext.com.track.dashboard.BurnDownChart',{
                 position: 'left',
                 title:getText('statusOverTime.prompt.emptyChart'),
                 labelTitle: {font: 'bold 10px Arial'},
-                type: 'Numeric',
+                type: 'numeric',
                 minimum: 0,
                 maximum: 4,
                 majorTickSteps: 1 // one less than max
             },{
                 id: 'bottom',
                 position: 'bottom',
-                type: 'Category',
+                type: 'category',
                 fields: 'date',
                 title:getText('statusOverTime.prompt.emptyChart'),
                 labelTitle: {font: 'bold 10px Arial'}
@@ -411,19 +367,22 @@ Ext.define('js.ext.com.track.dashboard.BurnDownChart',{
     		showMarkers: true,
 	        type: 'line',
 	        stacked: true,
+	        fill: false,
 	        xField: 'date',
 	        yField: name,
-	        smooth: true,
+	        colors: [COLORS[nr]],
 	        title: seriesTitle,
 	        style: {
 	        	stroke: COLORS[nr],
-	            fill: COLORS[nr],
+	        	fillStyle: COLORS[nr],
 	            'stroke-width': SERIES_STROKE_WIDTH
 	         },
-	         renderer: function(sprite, record, attr, index, store){
-	        	 return Ext.apply(attr, {
-	        		 fill: COLORS[nr]
-	        	 });
+	         marker: {
+	        	 type: 'circle',
+	        	 fx: {
+	        		 duration: 200,
+	        		 easing: 'backOut'
+	        	 }
 	         }
     	};
     	return series;

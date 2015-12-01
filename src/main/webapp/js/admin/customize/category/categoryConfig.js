@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -30,21 +30,14 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	    // exclude private repository entities by default automail conditions
 	    // (project specific or global)
 	    excludePrivate : false
-	// btnExecute: 'common.btn.applyFilter',
-	// for report templates: whether we are coming here from an issue navigator
-	// fromIssueNavigator:false,
-	// workItemID: null
 	},
-	// used in FieldExpressionAction (not directly here)
+	//used in FieldExpressionAction (not directly here)
 	issueFilter : false,
 	confirmDeleteEntity : true,
 	confirmDeleteNotEmpty : true,
 	folderAction : "categoryConfig",
-	// showGridForLeaf:false,
-	leafDetailUrl : null,
 	entityID : 'node',
-	// category edit sizes
-
+	//category edit sizes
 	folderEditWidth : 400,
 	folderEditHeight : 115,
 	reportEditWidth : 500,
@@ -192,8 +185,7 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 
 	constructor : function(config) {
 	    var config = config || {};
-	    this.initialConfig = config;
-	    Ext.apply(this, config);
+		this.initConfig(config);
 	    this.baseAction = this.initBaseAction();
 	    if (this.isIssueFilter()) {
 		    this.btnExecute = "common.btn.applyFilter";
@@ -202,38 +194,27 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 			    this.btnExecute = "common.btn.executeReport";
 		    }
 	    }
-	    this.init();
+	    this.initBase();
 	},
 
 	isIssueFilter : function() {
 	    // this.rootID cold be a project specific branch node
-	    return this.rootID.indexOf("issueFilter") == 0;
+	    return this.getRootID().indexOf("issueFilter") === 0;
 	},
 
 	isNotifyFilter : function() {
 	    // this.rootID cold be a project specific branch node
-	    return this.rootID.indexOf("notifyFilter") == 0;
+	    return this.getRootID().indexOf("notifyFilter") === 0;
 	},
 
 	isReport : function() {
 	    // this.rootID cold be a project specific branch node
-	    return this.rootID.indexOf("report") == 0;
+	    return this.getRootID().indexOf("report") === 0;
 	},
 
 	getShowGridForLeaf : function() {
 	    return this.isReport();
 	},
-
-//    /**
-//	 * Get the extra parameters for the gridStore
-//	 */
-//    getGridExtraParams : function(node, opts) {
-//	    params = this.callParent(arguments);
-//	    if (this.projectID != null) {
-//		    params['projectID'] = this.projectID;
-//	    }
-//	    return params;
-//    },
 
 	/**
 	 * Gets the base action depending on the rootID
@@ -311,7 +292,7 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	getEntityLabel : function(extraConfig) {
 	    var entityLabel = null;
 	    var isLeaf = true;
-	    if (extraConfig != null) {
+	    if (extraConfig ) {
 		    isLeaf = extraConfig.isLeaf;
 	    }
 	    if (isLeaf) {
@@ -333,7 +314,7 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	 * The label for the save button
 	 */
 	/* protected */getSaveLabel : function(operation) {
-	    if (operation == "instant") {
+	    if (operation === "instant") {
 		    return getText(this.btnExecute);
 	    } else {
 		    return getText('common.btn.save');
@@ -345,7 +326,7 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	 * the leafDetailUrl should be specified in the config
 	 */
 	/* protected */getLeafDetailUrl : function() {
-	    return this.folderAction + '!leafDetail.action';
+	    return this.getFolderAction() + '!leafDetail.action';
 	},
 
 	initActions : function() {
@@ -379,8 +360,8 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	    }), addLeafIconCls, this.onAddLeaf, this.getTitle(this.getAddTitleKey(), {
 		    isLeaf : true
 	    }), true);
-	    this.actionEditGridRow = this.createAction(this.getEditButtonKey(), editIconCls, this.onEditGridRow, true, this
-	            .getEditTitleKey(), "editGridRow");
+	    this.actionEditGridRow = this.createAction(this.getEditButtonKey(), editIconCls, this.onEditGridRow, true, 
+	    		this.getEditTitleKey(), "editGridRow");
 	    this.actionEditTreeNode = this.createAction(this.getEditButtonKey(), editIconCls, this.onEditTreeNode, false,
 	            this.getEditTitleKey(), "editTreeNode");
 	    if (this.isIssueFilter()) {
@@ -441,14 +422,14 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	 */
 	getTreeExpandExtraParams : function(node) {
 	    var extraParams = {
-		    excludePrivate : this.excludePrivate
+		    excludePrivate : this.getExcludePrivate()
 	    /*
 		 * , fromIssueNavigator:this.fromIssueNavigator
 		 */
 	    };
-	    if (this.projectID != null) {
+	    if (this.getProjectID()) {
 		    // in project configuration
-		    extraParams["projectID"] = this.projectID;
+		    extraParams["projectID"] = this.getProjectID();
 	    }
 	    return extraParams;
 	},
@@ -457,20 +438,20 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	 * Get the extra parameters for the gridStore
 	 */
 	getGridExtraParams : function(node, opts) {
-	    if (node == null) {
+	    if (CWHF.isNull(node)) {
 		    // called manually
 		    node = this.selectedNode;
 	    }
 	    var params = {
 	        node : node.data['id'],
-	        excludePrivate : this.excludePrivate
+	        excludePrivate : this.getExcludePrivate()
 	    /*
 		 * , fromIssueNavigator:this.fromIssueNavigator
 		 */
 	    };
-	    if (this.projectID != null) {
+	    if (this.getProjectID() ) {
 		    // in project configuration
-		    params["projectID"] = this.projectID;
+		    params["projectID"] = this.getProjectID();
 	    }
 	    return params;
 	},
@@ -500,7 +481,7 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	},
 
 	/* protected */getDragDropBaseAction : function(draggedNodeIsLeaf) {
-	    return this.folderAction;
+	    return this.getFolderAction();
 	},
 
 	/**
@@ -508,8 +489,8 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	 */
 	getToolbarActionChangesForTreeNodeSelect : function(selectedNode) {
 	    var canAddChild = false;
-	    if (selectedNode != null) {
-		    if (this.projectID != null && selectedNode.isRoot()) {
+	    if (selectedNode ) {
+		    if (this.getProjectID()  && selectedNode.isRoot()) {
 			    // after initializing the project specific branch for issue
 			    // filter and report:
 			    // although in the filter/report tree no node is selected, the
@@ -549,7 +530,7 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	 * Automatically expand the private repository
 	 */
 	onTreeNodeLoad : function(treeStore, node) {
-	    if (node.isRoot() && this.projectID == null) {
+	    if (node.isRoot() && CWHF.isNull(this.getProjectID())) {
 		    // for not project specific categories expand the private repository
 		    // (first child)
 		    treeStore.load({
@@ -566,14 +547,14 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	 */
 	onTreeNodeDblClick : function(view, record) {
 	    var readOnly = record.data['readOnly'];
-	    if (readOnly == null || readOnly == false) {
+	    if (CWHF.isNull(readOnly) || readOnly === false) {
 		    this.onEditTreeNode();
 	    }
 	},
 
 	onGridRowDblClick : function(view, record) {
 	    var readOnly = record.data['readOnly'];
-	    if (readOnly == null || readOnly == false) {
+	    if (CWHF.isNull(readOnly) || readOnly === false) {
 		    this.onEditGridRow();
 	    }
 	},
@@ -639,7 +620,7 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	 * Should be implemented if showGridForLeaf is false
 	 */
 	getLeafDetailItems : function(node, add, responseJson) {
-	    if (responseJson.success == true) {
+	    if (responseJson.success === true) {
 		    var detailData = responseJson.errorMessage;
 		    return [ Ext.create('Ext.Component', {
 		        html : detailData,
@@ -661,7 +642,7 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	 * Gets the grid store's fields for the selected node
 	 */
 	getGridFields : function(node) {
-	    if (this.isIssueFilter() && node.data['id'] != "issueFilter_3") {
+	    if (this.isIssueFilter() && node.data['id'] !== "issueFilter_3") {
 		    // Fields for issue filters
 		    return [ {
 		        name : 'node',
@@ -743,22 +724,22 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	    // Common columns for notify filters/issue filters/reports/(hardcoded)
 	    // projects/
 	    var columns = [ {
-	        header : getText('common.lbl.name'),
+	    	text : getText('common.lbl.name'),
 	        flex : 1,
 	        dataIndex : 'text',
 	        sortable : false,
 	        hidden : false
 	    }, {
-	        header : getText('common.lbl.type'),
+	    	text : getText('common.lbl.type'),
 	        flex : 1,
 	        dataIndex : 'typeLabel',
 	        sortable : false,
 	        hidden : false
 	    } ];
-	    if (this.isIssueFilter() && node.data['id'] != "issueFilter_3") {
+	    if (this.isIssueFilter() && node.data['id'] !== "issueFilter_3") {
 		    // Extra columns for issue filters
 		    columns.push({
-		        header : getText('admin.customize.queryFilter.lbl.styleField'),
+		    	text : getText('admin.customize.queryFilter.lbl.styleField'),
 		        flex : 1,
 		        dataIndex : 'styleFieldLabel',
 		        sortable : false,
@@ -766,14 +747,14 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 		    });
 		    columns.push({
 		        xtype : 'checkcolumn',
-		        header : getText('admin.customize.queryFilter.lbl.menu'),
+		        text : getText('admin.customize.queryFilter.lbl.menu'),
 		        flex : 1,
 		        dataIndex : 'includeInMenu',
 		        sortable : false,
 		        hidden : false,
 		        listeners: {"checkchange": {fn: this.changeSubscribe, scope:this}}});
 		    columns.push({
-		        header : getText('admin.customize.queryFilter.lbl.view'),
+		    	text : getText('admin.customize.queryFilter.lbl.view'),
 		        flex : 1,
 		        dataIndex : 'viewName',
 		        sortable : false,
@@ -783,7 +764,7 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 		    if (this.isReport()) {
 			    // Extra columns for reports
 			    /*
-				 * columns.push({header:
+				 * columns.push({text:
 				 * getText('admin.customize.reportTemplate.lbl.icon'), flex:1,
 				 * dataIndex: 'icon', sortable: false, hidden:false,
 				 * renderer:function (val) { return '<img src="' + val + '"/>';
@@ -796,10 +777,10 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 
 	changeSubscribe: function(checkBox, rowIndex, checked, eOpts) {
 		var record = this.grid.getStore().getAt(rowIndex);
-		if (record!=null) {
+		if (record) {
 			var params = {node:record.data["node"], includeInMenu:checked};
 			Ext.Ajax.request({
-				url: this.baseAction + "!changeSubscribe.action",
+				url: this.getBaseAction() + "!changeSubscribe.action",
 				params: params,
 				scope: this,
 				success: function(response) {
@@ -839,7 +820,7 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 					            listeners : {
 						            render : function(c) {
 							            c.getEl().on('load', function() {
-								            tip.doLayout();
+								            tip.updateLayout();
 							            });
 						            }
 					            }
@@ -879,7 +860,7 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	getSelectedReportIDs : function() {
 	    var selectedReportIDs = new Array();
 	    var selectedRecordsArr = this.getSelection();
-	    if (selectedRecordsArr != null) {
+	    if (selectedRecordsArr ) {
 		    Ext.Array.forEach(selectedRecordsArr, function(record, index, allItems) {
 			    var nodeID = record.data['node'];
 			    var lastIndexOf = nodeID.lastIndexOf("_");
@@ -890,7 +871,7 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	},
 
 	enableDisableToolbarButtons : function(view, arrSelections) {
-	    if (arrSelections == null || arrSelections.length == 0) {
+	    if (CWHF.isNull(arrSelections) || arrSelections.length === 0) {
 		    this.actionDeleteGridRow.setDisabled(true);
 		    this.actionEditGridRow.setDisabled(true);
 		    if (this.isIssueFilter() || this.isReport()) {
@@ -903,7 +884,7 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 			    }
 		    }
 	    } else {
-		    if (arrSelections.length == 1) {
+		    if (arrSelections.length === 1) {
 			    var selectedRecord = arrSelections[0];
 			    var isLeaf = selectedRecord.data.leaf;
 			    var modifiable = selectedRecord.data.modifiable;
@@ -971,14 +952,14 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	    if (add) {
 		    modifiable = true;
 	    } else {
-		    modifiable = (data == null || data["modifiable"]);
+		    modifiable = (CWHF.isNull(data) || data["modifiable"]);
 	    }
 	    if (this.isIssueFilter()) {
 		    var instant = false;
 		    /*
-			 * if (operation=="instant") { instant = true; }
+			 * if (operation==="instant") { instant = true; }
 			 */
-		    if (add || data == null || data["treeFilter"] == null || data["treeFilter"]) {
+		    if (add || CWHF.isNull(data) || CWHF.isNull(data["treeFilter"]) || data["treeFilter"]) {
 			    return com.trackplus.admin.Filter.getTreeFilterItems(modifiable, instant);
 		    } else {
 			    return com.trackplus.admin.Filter.getTQLFilterItems(modifiable);
@@ -1006,7 +987,8 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 		    windowItems.push(CWHF.createFileField('admin.customize.reportTemplate.lbl.reportFile', "reportFile", {
 		        disabled : !modifiable,
 		        allowBlank : false,
-		        labelWidth : this.labelWidth
+		        labelWidth : this.labelWidth,
+		        itemId     : "reportFile"
 		    }));
 	    }
 	    return windowItems;
@@ -1018,7 +1000,7 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	 */
 	getEditLeafPostDataProcess : function(recordData, add) {
 	    if (this.isIssueFilter()) {
-		    if (recordData == null || add || recordData['treeFilter']) {
+		    if (CWHF.isNull(recordData) || add || recordData['treeFilter']) {
 			    return com.trackplus.admin.Filter.postLoadProcessTreeFilter;
 		    } else {
 			    return com.trackplus.admin.Filter.postLoadProcessTQLFilter;
@@ -1036,7 +1018,7 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	 */
 	getEditLeafPreSubmitProcess : function(recordData, add) {
 	    // is not TQL filter
-	    if (this.isIssueFilter() && (recordData == null || recordData['treeFilter'] || add)) {
+	    if (this.isIssueFilter() && (CWHF.isNull(recordData) || recordData['treeFilter'] || add)) {
 		    return com.trackplus.admin.Filter.preSubmitProcessIssueFilter;
 	    } else {
 		    if (this.isNotifyFilter()) {
@@ -1055,7 +1037,7 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	 * types it can be customized
 	 */
 	getExtraWindowParameters : function(recordData, operation) {
-	    if (this.isReport() && operation == "addLeaf") {
+	    if (this.isReport() && operation === "addLeaf") {
 		    // only by add (by edit no upload)
 		    return {
 		        fileUpload : true,
@@ -1077,7 +1059,7 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	onInstantFilter : function() {
 	    this.instant = true;
 	    this.indexMax = 0;
-	    com.trackplus.admin.CategoryConfig.showInstant(this, this.baseAction + '!edit.action');
+	    com.trackplus.admin.CategoryConfig.showInstant(this, this.getBaseAction() + '!edit.action');
 	},
 
 	/**
@@ -1099,7 +1081,7 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	 */
 	onExecute : function(fromTree) {
 	    var recordData = this.getSingleSelectedRecordData(fromTree);
-	    if (recordData != null) {
+	    if (recordData ) {
 		    var leaf = this.selectedIsLeaf(fromTree);
 		    var node = this.getRecordID(recordData, {
 			    fromTree : fromTree
@@ -1135,7 +1117,7 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	 */
 	onLink : function(fromTree) {
 	    var recordData = this.getSingleSelectedRecordData(fromTree);
-	    if (recordData != null) {
+	    if (recordData ) {
 		    var leaf = this.selectedIsLeaf(fromTree);
 		    if (leaf && this.isIssueFilter()) {
 			    var node = this.getRecordID(recordData, {
@@ -1165,13 +1147,13 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	 */
 	downloadReport : function(fromTree) {
 	    var recordData = this.getSingleSelectedRecordData(fromTree);
-	    if (recordData != null) {
+	    if (recordData ) {
 		    var leaf = this.selectedIsLeaf(fromTree);
 		    if (leaf && this.isReport()) {
 			    var node = this.getRecordID(recordData, {
 				    fromTree : fromTree
 			    });
-			    attachmentURI = this.baseAction + '!download.action?node=' + node;
+			    attachmentURI = this.getBaseAction() + '!download.action?node=' + node;
 			    window.open(attachmentURI);
 		    }
 	    }
@@ -1195,9 +1177,9 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	 */
 	getAdditionalActions : function(recordData, submitParams, operation, items) {
 	    // only for "edit", not for "add" or "instant"
-	    if (this.isIssueFilter() && recordData != null && recordData.leaf) {
+	    if (this.isIssueFilter() && recordData  && recordData.leaf) {
 		    var actions = [];
-		    if (operation == "edit") {
+		    if (operation === "edit") {
 			    actions.push({
 			        submitUrl : 'savedFilterExecute!unwrappedContainsParameter.action',
 			        submitUrlParams : submitParams,
@@ -1207,7 +1189,7 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 		    }
 		    var modifiable = recordData["modifiable"];
 		    if (modifiable) {
-			    if (submitParams == null) {
+			    if (CWHF.isNull(submitParams)) {
 				    submitParams = new Object();
 			    }
 			    submitParams["clearFilter"] = true;
@@ -1292,7 +1274,7 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	 * are made in the folderAction
 	 */
 	getDeleteUrlBase : function(extraConfig) {
-	    return this.folderAction;
+	    return this.getFolderAction();
 	},
 
 	/**
@@ -1301,12 +1283,12 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	getReplacementItems : function(responseJson, selectedRecords, extraConfig) {
 	    // var excludePrivate = selectedRecords.data["repository"];
 	    /*
-		 * var nodeIDField = "node"; var fromTree = true; if (extraConfig!=null &&
+		 * var nodeIDField = "node"; var fromTree = true; if (extraConfig &&
 		 * extraConfig.fromTree) { nodeIDField = "id"; } var nodeID =
 		 * selectedRecords.data[nodeIDField]; var excludePrivate = false; var
-		 * exceptID = null; if (nodeID!=null) { var parts = nodeID.split("_");
-		 * if (parts!=null) { if (parts.length>1) { var repository = parts[1];
-		 * if (repository!="1") { //replacing a non-private only with a
+		 * exceptID = null; if (nodeID) { var parts = nodeID.split("_");
+		 * if (parts) { if (parts.length>1) { var repository = parts[1];
+		 * if (repository!=="1") { //replacing a non-private only with a
 		 * non-private excludePrivate = true; } } if (parts.length>3) { exceptID =
 		 * parts[3]; } } }
 		 */
@@ -1317,7 +1299,8 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	        allowBlank : false,
 	        blankText : getText('common.err.replacementRequired', this.getEntityLabel(extraConfig)),
 	        labelWidth : 200,
-	        margin : '5 0 0 0'
+	        margin : '5 0 0 0',
+	        itemId:'replacementID'
 	    }) ];
 	},
 
@@ -1326,7 +1309,7 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	 * this for different tree based pickers
 	 */
 	loadReplacementOptionData : function(replacementControl, data) {
-	    replacementControl.setData(data["replacementTree"]);
+	    replacementControl.updateMyOptions(data["replacementTree"]);
 	},
 
 	/**
@@ -1345,32 +1328,15 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	        method : 'POST',
 	        fileUpload : true,
 	        items : [ CWHF.createCheckbox('common.lbl.overwriteExisting', 'overwriteExisting', {
-		        labelWidth : 200
+		        labelWidth : 200,itemId:'overwriteExisting'
 	        }), CWHF.createFileField('admin.customize.reportTemplate.lbl.reportFile', 'uploadFile', {
 	            allowBlank : false,
-	            labelWidth : 200
+	            labelWidth : 200,
+	            itemId     : "uploadFile"
 	        }) ]
 	    });
 	    return this.formPanel;
 	},
-
-	/*
-	 * onImport: function() { var submit = [{submitUrl:this.baseAction +
-	 * "!importReports.action", submitButtonText:getText('common.btn.upload'),
-	 * validateHandler: Upload.validateUpload, expectedFileType: /^.*\.(zip)$/,
-	 * refreshAfterSubmitHandler:this.reload}]; var title =
-	 * getText('common.lbl.upload',
-	 * getText('admin.customize.reportTemplate.lbl.reportFile')); var
-	 * windowParameters = {title:title, width:500, height:175, submit:submit,
-	 * formPanel: this.getImportPanel(), cancelButtonText:
-	 * getText('common.btn.done')}; var windowConfig =
-	 * Ext.create('com.trackplus.util.WindowConfig', windowParameters);
-	 * windowConfig.showWindowByConfig(this); },
-	 *
-	 * onExport: function() { attachmentURI = this.baseAction +
-	 * '!exportReports.action?selectedReportTemplateIDs='+this.getSelectedReportIDs();
-	 * window.open(attachmentURI); },
-	 */
 
 	/**
 	 * Get the actions available in context menu depending on the currently
@@ -1414,7 +1380,7 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 			    }
 			    actions.push(this.actionCopyTreeNode);
 		    }
-		    if (canAddChild && this.cutCopyNode != null) {
+		    if (canAddChild && this.cutCopyNode ) {
 			    actions.push(this.actionPasteTreeNode);
 		    }
 	    }
@@ -1486,7 +1452,7 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	 * Toolbar items for issue filter
 	 */
 	getIssueFilterToolbarItems : function() {
-	    if (this.projectID == null) {
+	    if (CWHF.isNull(this.getProjectID())) {
 		    return [ this.actionInstantFilter, this.actionAddFolder, this.actionAddLeaf, this.actionEditGridRow,
 		            this.actionExecuteGridRow, this.actionLinkGridRow, this.actionDeleteGridRow ];
 	    } else {

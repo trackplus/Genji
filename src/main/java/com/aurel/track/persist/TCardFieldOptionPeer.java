@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -48,6 +48,7 @@ public class TCardFieldOptionPeer
 
     	static private Logger LOGGER = LogManager.getLogger(TCardFieldOptionPeer.class);
 
+    	@Override
     	public List<TCardFieldOptionBean> loadByCardGroupingField(Integer cardGroupingFieldID){
     		List<TCardFieldOption> torqueList = null;
     		Criteria crit = new Criteria();
@@ -56,10 +57,11 @@ public class TCardFieldOptionPeer
     		try {
     			torqueList = doSelect(crit);
     		} catch (TorqueException e) {
-    			LOGGER.error("Loading TCardFieldOptions for cardField key:"+cardGroupingFieldID+" failed with " + e.getMessage(), e);
+    			LOGGER.error("Loading TCardFieldOptions for cardField key:"+cardGroupingFieldID+" failed with " + e.getMessage());
     		}
     		return convertTorqueListToBeanList(torqueList);
     	}
+    	@Override
     	public TCardFieldOptionBean loadByCardGroupingFieldAndOption(Integer cardGroupingFieldID,Integer optionID){
     		List<TCardFieldOption> cardFieldOptions = null;
     		Criteria crit = new Criteria();
@@ -68,7 +70,7 @@ public class TCardFieldOptionPeer
     		try {
     			cardFieldOptions = doSelect(crit);
     		} catch(Exception e) {
-    			LOGGER.error("Loading by loadByCardGroupingFieldAndOption cardGroupingFieldID=" +cardGroupingFieldID+" optionID="+optionID + " failed with " + e.getMessage(), e);
+    			LOGGER.error("Loading by loadByCardGroupingFieldAndOption cardGroupingFieldID=" +cardGroupingFieldID+" optionID="+optionID + " failed with " + e.getMessage());
     		}
     		if (cardFieldOptions!=null && !cardFieldOptions.isEmpty()) {
     			return cardFieldOptions.get(0).getBean();
@@ -76,6 +78,7 @@ public class TCardFieldOptionPeer
     			return null;
     		}
     	}
+    	@Override
     	public Integer save(TCardFieldOptionBean cardFieldOptionBean){
     		try {
     			TCardFieldOption cardFieldOption = BaseTCardFieldOption.createTCardFieldOption(cardFieldOptionBean);
@@ -87,6 +90,7 @@ public class TCardFieldOptionPeer
     			return null;
     		}
     	}
+    	@Override
     	public void delete(Integer objectID) {
     		try {
     			doDelete(SimpleKey.keyFor(objectID));
@@ -110,7 +114,7 @@ public class TCardFieldOptionPeer
     		try {
     			doDelete(criteria);
     		} catch (TorqueException e) {
-    			LOGGER.error("Deleting the field for triggers failed with " + e.getMessage(), e);
+    			LOGGER.error("Deleting the field for triggers failed with " + e.getMessage());
     		}
     	}
     	

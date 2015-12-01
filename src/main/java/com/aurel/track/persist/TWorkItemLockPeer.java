@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -55,6 +55,7 @@ public class TWorkItemLockPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TWorkItemLockBean loadByPrimaryKey(Integer objectID) {		
 		TWorkItemLock tWorkItemLock = null;
     	try {		
@@ -76,6 +77,7 @@ public class TWorkItemLockPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TWorkItemLockBean loadBySessionID(String sessionID) {
 		List workItemLocks = null;
 		Criteria crit = new Criteria();
@@ -83,7 +85,7 @@ public class TWorkItemLockPeer
         try {
         	workItemLocks = doSelect(crit);
         } catch (TorqueException e) {
-        	LOGGER.error("Loading of a workItemLockBean by sessionID " + sessionID + " failed with " + e.getMessage(), e);
+        	LOGGER.error("Loading of a workItemLockBean by sessionID " + sessionID + " failed with " + e.getMessage());
         }
         if (workItemLocks!=null && workItemLocks.size()>1) {
         	LOGGER.error("Loading of a workItemLockBean by sessionID " + sessionID + " resulted in " + workItemLocks.size() + " number of records");
@@ -100,6 +102,7 @@ public class TWorkItemLockPeer
 	 * @param workItemIDsList
 	 * @return
 	 */
+	@Override
 	public List<TWorkItemLockBean> getLockedIssues(List<Integer> workItemIDsList) {
 		List<TWorkItemLockBean> lockedList=new LinkedList<TWorkItemLockBean>();
 		if (workItemIDsList==null || workItemIDsList.isEmpty()) {
@@ -118,7 +121,7 @@ public class TWorkItemLockPeer
 			try {
 				lockedList.addAll(convertTorqueListToBeanList(doSelect(criteria)));
 			} catch(Exception e) {
-	        	LOGGER.error("Getting the locked workItemLockBeans failed with " + e.getMessage(), e);
+	        	LOGGER.error("Getting the locked workItemLockBeans failed with " + e.getMessage());
 	        }			
 		}
         return lockedList;
@@ -129,6 +132,7 @@ public class TWorkItemLockPeer
 	 * @param workItemLockBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TWorkItemLockBean workItemLockBean) {
 		TWorkItemLock tWorkItemLock;		
 		try {
@@ -136,7 +140,7 @@ public class TWorkItemLockPeer
 			tWorkItemLock.save();
 			return tWorkItemLock.getWorkItem();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a workItemLock failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a workItemLock failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -145,6 +149,7 @@ public class TWorkItemLockPeer
 	 * Deletes an TWorkItemLockBean by primary key
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		Criteria crit = new Criteria();
         crit.add(WORKITEM, objectID);
@@ -160,6 +165,7 @@ public class TWorkItemLockPeer
 	 * Deletes an TWorkItemLockBean by sessionID
 	 * @param sessionID
 	 */
+	@Override
 	public void deleteBySession(String sessionID) {
 		Criteria crit = new Criteria();
         crit.add(HTTPSESSION, sessionID);
@@ -174,6 +180,7 @@ public class TWorkItemLockPeer
 	 * Deletes an TWorkItemLockBean by personID
 	 * @param personID
 	 */
+	@Override
 	public void deleteByPerson(Integer personID) {
 		Criteria crit = new Criteria();
         crit.add(PERSON, personID);
@@ -189,6 +196,7 @@ public class TWorkItemLockPeer
 	/**
 	 * Deletes all TWorkItemLockBeans from the database by starting the server
 	 */
+	@Override
 	public void deleteAll() {
 		Criteria crit = new Criteria();        
         try {

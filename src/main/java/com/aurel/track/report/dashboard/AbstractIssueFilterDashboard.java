@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -27,6 +27,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.aurel.track.Constants;
 import com.aurel.track.admin.customize.category.filter.execute.loadItems.TooManyItemsToLoadException;
@@ -48,11 +51,12 @@ import com.aurel.track.report.execute.ReportBeans;
 import com.aurel.track.resources.LocalizeUtil;
 import com.aurel.track.util.LabelValueBean;
 
-public abstract class AbstractIssueFilterDashboard extends BasePluginDashboardView {
+abstract class AbstractIssueFilterDashboard extends BasePluginDashboardView {
+	private static final Logger LOGGER = LogManager.getLogger(AbstractIssueFilterDashboard.class);
 	protected static int MAX_NUMBER_OF_ISSUES_TO_SHOW = 100;
-	
+
 	protected abstract List<ReportBean> getReportBeanList(FilterInfo filter,TPersonBean user,Integer projectID,Integer releaseID, List<ErrorData> errors) throws TooManyItemsToLoadException;
-	
+
 	protected abstract FilterInfo getFilterInfo(Map session, Map parameters, TPersonBean user,Integer projectID,Integer releaseID);
 
 
@@ -100,7 +104,7 @@ public abstract class AbstractIssueFilterDashboard extends BasePluginDashboardVi
 				List<LabelValueBean> localizedErrors=new ArrayList<LabelValueBean>();
 				for (int i = 0; i < errors.size(); i++) {
 					ErrorData errorData=(ErrorData) errors.get(i);
-					//String resourceKey = errorData.getResourceKey();
+
 					String label= ErrorHandlerJSONAdapter.createMessage(errorData, locale);
 					localizedErrors.add(new LabelValueBean(label,errorData.getFieldName()));
 				}
@@ -116,6 +120,7 @@ public abstract class AbstractIssueFilterDashboard extends BasePluginDashboardVi
 							maxIssuesToShow=MAX_NUMBER_OF_ISSUES_TO_SHOW;
 						}
 					}catch (Exception e) {
+						LOGGER.debug(e);
 						maxIssuesToShow=MAX_NUMBER_OF_ISSUES_TO_SHOW;
 					}
 				}
@@ -128,7 +133,7 @@ public abstract class AbstractIssueFilterDashboard extends BasePluginDashboardVi
 				JSONUtility.appendStringValue(sb,"chunkedText",maxIssuesToShow+" from "+originalSize);
 				ReportBeans reportBeans=new ReportBeans(reportBeanList, locale, null, true, false);
 				//layout
-				List<ColumnFieldTO> shortFields=getShortFields(session, parameters, user, projectID, releaseID);
+				List<ColumnFieldTO> shortFields=getShortFields(session, parameters);
 				int sum=0;
 				for (Iterator<ColumnFieldTO> iter = shortFields.iterator(); iter.hasNext();) {
 					ColumnFieldTO rlb = iter.next();
@@ -142,11 +147,10 @@ public abstract class AbstractIssueFilterDashboard extends BasePluginDashboardVi
 				JSONUtility.appendIntegerValue(sb,"attachmentFieldID",TReportLayoutBean.PSEUDO_COLUMNS.ATTACHMENT_SYMBOL);
 				JSONUtility.appendIntegerValue(sb,"noOfFields",shortFields.size());
 				JSONUtility.appendIntegerValue(sb,"personKey", user.getObjectID());
-				//ReportItemLayout reportItemLayout=new ReportItemLayout();
 				LayoutTO layoutTO = new LayoutTO();
 				layoutTO.setShortFields(shortFields);
 				boolean  useProjectSpecificID=false;
-				ApplicationBean appBean =ApplicationBean.getApplicationBean();
+				ApplicationBean appBean =ApplicationBean.getInstance();
 				if(appBean.getSiteBean().getProjectSpecificIDsOn()!=null){
 					useProjectSpecificID=appBean.getSiteBean().getProjectSpecificIDsOn().booleanValue();
 				}
@@ -157,11 +161,11 @@ public abstract class AbstractIssueFilterDashboard extends BasePluginDashboardVi
 		return sb.toString();
 	}
 
-	protected List<ColumnFieldTO> getShortFields(Map session,Map parameters, TPersonBean user,Integer projectID,Integer releaseID){
+	protected List<ColumnFieldTO> getShortFields(Map session,Map parameters){
 		List<ColumnFieldTO> shortFields=new ArrayList<ColumnFieldTO>();
 		Locale locale = (Locale) session.get(Constants.LOCALE_KEY);
 		int[] field=new int[]{SystemFields.ISSUENO,TReportLayoutBean.PSEUDO_COLUMNS.ISSUETYPE_SYMBOL, SystemFields.SYNOPSIS,SystemFields.STATE, SystemFields.LASTMODIFIEDDATE};
-		Map<Integer, TFieldConfigBean> defaultConfigsMap = FieldRuntimeBL.getLocalizedDefaultFieldConfigsMap(locale);//getLocalizeAllDefaultConfigs(locale);
+		Map<Integer, TFieldConfigBean> defaultConfigsMap = FieldRuntimeBL.getLocalizedDefaultFieldConfigsMap(locale);
 		int[] fieldSize=new int[]{100,30,350,100, 120};
 		boolean[] renderAsImg=new boolean[]{false,true,false,false, false};
 		TFieldConfigBean fieldConfigBean;
@@ -179,7 +183,7 @@ public abstract class AbstractIssueFilterDashboard extends BasePluginDashboardVi
 		}
 		return shortFields;
 	}
-	
+
 	protected static class FilterInfo{
 		private Integer id;
 		private Integer type;

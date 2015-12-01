@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -75,7 +75,6 @@ public class ExcelImportJSON {
 		static final String INVALID_VALUE_HANDLING_VALUE = "invalidValueHandlingValue";
 		
 
-		//static final String ERROR_MESSAGES = "errorMessages";
 		static final String GRID_ERRORS = "gridErrors";
 		static final String ROW_ERRORS = "rowErrors";
 		static final String SOLUTION_MESSAGE = "solutionMessage";
@@ -144,7 +143,6 @@ public class ExcelImportJSON {
 		JSONUtility.appendIntegerStringBeanList(stringBuilder, JSON_FIELDS.FIELD_LIST, fieldBeans);
 		JSONUtility.appendIntegerSetAsArray(stringBuilder, JSON_FIELDS.POSSIBLE_IDENTIFIERS, possibleIdentifiersSet);
 		JSONUtility.appendIntegerSetAsArray(stringBuilder, JSON_FIELDS.MANDATORY_IDENTIFIERS, mandatoryIdentifiersSet);
-		//JSONUtility.appendIntegerValue(stringBuilder, JSONUtility.JSON_FIELDS.ACTUAL_STEP, Integer.valueOf(2));
 		//JSONUtility.appendIntegerValue(stringBuilder, JSONUtility.JSON_FIELDS.TOTAL_STEP, Integer.valueOf(3));
 		stringBuilder.append(getExcelFieldMatcherRows(columnIndexToColumNameMap,
 				columnIndexNumericToLetter,
@@ -435,7 +433,6 @@ public class ExcelImportJSON {
 				Integer row = itrRow.next();
 				stringBuilder.append("{");
 				JSONUtility.appendIntegerValue(stringBuilder, JSON_FIELDS.ROW, row);
-				//stringBuilder.append("{");
 				SortedMap<Integer, Map<Integer, Object>> rowConflicts = conflictsMap.get(row);
 				stringBuilder.append(JSON_FIELDS.FIELDS).append(":[");
 				for (Iterator<Integer> itrField = rowConflicts.keySet().iterator(); itrField.hasNext();) {

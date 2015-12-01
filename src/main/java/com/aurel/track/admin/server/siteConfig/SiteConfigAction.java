@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -51,9 +51,9 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.Preparable;
 
 
-/** 
+/**
 * Implementation of <strong>SiteConfigAction</strong> that processes the site
-* configuration requests 
+* configuration requests
 */
 public class SiteConfigAction extends ActionSupport implements Preparable, SessionAware, ApplicationAware, ServletResponseAware {
 
@@ -61,12 +61,12 @@ public class SiteConfigAction extends ActionSupport implements Preparable, Sessi
 	private static final Logger LOGGER = LogManager.getLogger(SiteConfigAction.class);
 	private Map<String, Object> session;
 	private HttpServletResponse servletResponse;
-	private Locale locale; 
+	private Locale locale;
 	private Map application;
 	private TSiteBean siteApp;
 	private ApplicationBean appBean;
 	private TPersonBean user;
-	
+
 
 	// The transfer objects to and from the user interface
 	private LicenseTO licenseTo;
@@ -88,15 +88,16 @@ public class SiteConfigAction extends ActionSupport implements Preparable, Sessi
 	/**
 	 * This routine is called first by Struts2 on any action.
 	 */
+	@Override
 	public void prepare() throws Exception {
-		appBean = ApplicationBean.getApplicationBean();
+		appBean = ApplicationBean.getInstance();
 		siteApp = (TSiteBean) application.get("SITECONFIG");
 		user = (TPersonBean) session.get(Constants.USER_KEY);
 		locale = (Locale) session.get(Constants.LOCALE_KEY);
 	}
-	
+
 	/**
-	 * This routine is being called after prepare() in case of GET, 
+	 * This routine is being called after prepare() in case of GET,
 	 * e.g. before the load action
 	 */
 	@Override
@@ -109,12 +110,12 @@ public class SiteConfigAction extends ActionSupport implements Preparable, Sessi
 		initData=sb.toString();
 		return INPUT;
 	}
-	
+
 	/**
 	 * This is the <code>load</code> action. It prints a suitable
 	 * JSON object directly into the response stream. The site and application
 	 * have already been loaded by the <code>prepare</code> method.
-	 * 
+	 *
 	 * @return usually nothing, response is directly printed into the response stream. Can also
 	 * throw back to logon page in case of insufficient authorization.
 	 */
@@ -129,35 +130,35 @@ public class SiteConfigAction extends ActionSupport implements Preparable, Sessi
 	 * This saves the server configuration coming from the user interface to
 	 * the database. Some validation is performed when it cannot be directly
 	 * done at the user interface.
-	 * 
+	 *
 	 * @return usually nothing, output is directly printed into response stream
 	 */
 	public String save (){
-		LOGGER.debug("Processing save()");		
+		LOGGER.debug("Processing save()");
 		if (appBean == null) {
 			LOGGER.error("FATAL: No applicationBean found");
 			return "done";
-		}			
+		}
 		List<ControlError> errors = SiteConfigBL.save(siteApp, licenseTo,
 				outgoingEmailTo,
 				fullTextSearchTo, ldapTo, otherSiteConfigTo,
-				appBean, application, locale);		
+				appBean, application, locale);
 		if (errors.isEmpty()) {
 			Support support = new Support();
 			support.setURIs(ServletActionContext.getRequest());
 			application.remove("FirstTime");
 
-			JSONUtility.encodeJSON(servletResponse, SiteConfigJSON.buildLicenseJSON(appBean, siteApp, locale)); 
+			JSONUtility.encodeJSON(servletResponse, SiteConfigJSON.buildLicenseJSON(appBean, siteApp, locale));
 		} else {
 			LOGGER.debug("We got validation errors when saving the server configuration");
 			JSONUtility.encodeJSON(servletResponse, SiteConfigJSON.encodeJSONSiteConfigErrorList(errors, locale));
-		}		
+		}
 		return null;
 	}
-	
+
 	/**
-	 * This action clears the SMTP password. 
-	 * 
+	 * This action clears the SMTP password.
+	 *
 	 * @return usually nothing, output is directly printed into response stream
 	 */
 	public String clearSMTPPassword() {
@@ -177,7 +178,7 @@ public class SiteConfigAction extends ActionSupport implements Preparable, Sessi
 			out.println(sb);
 		} catch (IOException e) {
 			// not much can be done here
-			LOGGER.error(Support.readStackTrace(e));
+			LOGGER.error(e);
 		}
 		return null;
 	}
@@ -191,9 +192,9 @@ public class SiteConfigAction extends ActionSupport implements Preparable, Sessi
 			// just throw her to the logon page
 			return "logon";
 		}
-		
+
 		List<ControlError> errors = new LinkedList<ControlError>();
-		
+
 		// use the current configuration
 		OutgoingEmailBL.validateOutgoingEmail(outgoingEmailTo, errors, locale);
 		if(errors.isEmpty()){
@@ -241,14 +242,16 @@ public class SiteConfigAction extends ActionSupport implements Preparable, Sessi
 	//-------------------------------------------------------------------------------------
 	//
 	// The setters and getters for Struts2 follow...
-	
+
+	@Override
 	public void setServletResponse(HttpServletResponse servletResponse) {
 		this.servletResponse = servletResponse;
 	}
-	
+
 	/**
 	 * @param session the session to set
 	 */
+	@Override
 	public void setSession(Map<String, Object> session) {
 		this.session = session;
 	}
@@ -263,10 +266,11 @@ public class SiteConfigAction extends ActionSupport implements Preparable, Sessi
 	/**
 	 * @param application the application to set
 	 */
+	@Override
 	public void setApplication(Map application) {
 		this.application = application;
 	}
-	
+
 	public boolean isHasInitData() {
 		return hasInitData;
 	}
@@ -274,7 +278,7 @@ public class SiteConfigAction extends ActionSupport implements Preparable, Sessi
 	public String getInitData() {
 		return initData;
 	}
-	
+
 	public LicenseTO getLicense() {
 		return licenseTo;
 	}

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -27,6 +27,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.struts2.ServletActionContext;
@@ -74,11 +75,9 @@ public class SavedFilterExecuteBL {
 	static IntegerStringBean encodedQueryContainsNotSpecifiedParameter(
 			String query, TPersonBean personBean, Locale locale) {
 		IntegerStringBean integerStringBean = new IntegerStringBean(null, Integer.valueOf(NO_PARAMETER));
-		//boolean keepMeLogged=false;
 		if (query!=null && query.length()>0) {
 			String linkReport = ReportQueryBL.b(query);
 			Map<String,String> queryEncodedMap = ReportQueryBL.decodeMapFromUrl(linkReport);
-			//String keepMeLoggedStr = queryEncodedMap.get("keepMeLogged");
 			//keepMeLogged=keepMeLoggedStr!=null && keepMeLoggedStr.equalsIgnoreCase("true");
 			boolean clear = false; 
 			String queryIDStr= queryEncodedMap.get("queryID");
@@ -100,7 +99,6 @@ public class SavedFilterExecuteBL {
 										extendedRootNode, true, true, personBean, locale, true);
 								QNode rootNode = TreeFilterLoaderBL.getOriginalTree(extendedRootNode);
 								boolean hasListWithParameter = false;
-								
 								if (FilterSelectsParametersUtil.containsParameter(filterUpperTO)) {
 									hasListWithParameter = true;
 									//replace the corresponding query parameters with corresponding request parameters
@@ -116,7 +114,8 @@ public class SavedFilterExecuteBL {
 										FilterSelectsParametersUtil.replaceFilterSelectsParameters(
 												filterUpperTO, request, personBean, locale, clear);
 									} catch (NotExistingBeanException e) {
-										LOGGER.warn(e.getMessage(), e);
+										LOGGER.warn(e.getMessage());
+										LOGGER.debug(ExceptionUtils.getStackTrace(e));
 									}
 								}
 								if ((FilterSelectsParametersUtil.containsParameter(filterUpperTO) ||
@@ -220,7 +219,6 @@ public class SavedFilterExecuteBL {
 				encodedQueryCtx.setQueryContext(queryContext);
 				return encodedQueryCtx;
 			case CONTAINS_PARAMETER_AFTER_REQUEST_REPLACE:
-				//throw new HasParametersException();
 			case CONTAINS_PARAMETER_ORIGINAL:
 				queryContext=new QueryContext();
 				//although a parameterized filter is a saved filter, it is saved in QueryContext as INSTANT_REPORT_FILTER

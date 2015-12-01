@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -75,6 +75,7 @@ public abstract class BasePluginDashboardView implements IPluginDashboard {
 	/**
 	 * Return the className as the plugin id
 	 */
+	@Override
 	public String getPluginID() {
 		return this.getClass().getName();
 	}
@@ -88,6 +89,7 @@ public abstract class BasePluginDashboardView implements IPluginDashboard {
 	 *	If you need some parameters in configuration that are not of type String,
 	 *	you should re-implement this method using proper conversion
 	 */
+	@Override
 	public Map<String,String> convertMapFromPageConfig(Map<String,String> properties, TPersonBean user,
 			Locale locale, Integer entityId, Integer entityType, List<LabelValueBean> errors) {
 		Map<String,String> map=new HashMap<String,String>();
@@ -100,14 +102,6 @@ public abstract class BasePluginDashboardView implements IPluginDashboard {
 					map.put(key, value);
 				}
 			}
-			/*Iterator<String> it=properties.keySet().iterator();
-			while (it.hasNext()) {
-				String key=it.next();
-				String value=properties.get(key);
-				if(value!=null){
-					map.put(key, value);
-				}
-			}*/
 		}
 		validateConfig(properties, user, locale, entityId, entityType, errors);
 		return map;
@@ -165,6 +159,7 @@ public abstract class BasePluginDashboardView implements IPluginDashboard {
 		return result;
 	}
 
+	@Override
 	public String createJsonData(Integer dashboardID, Map<String, Object> session, Map<String, String> parameters,
 								 Integer projectID, Integer releaseID,Map<String,String> ajaxParams){
 		String title=parameters.get(RENDERING_PARAMS.TITLE);
@@ -199,7 +194,6 @@ public abstract class BasePluginDashboardView implements IPluginDashboard {
 		try{
 			sb.append(encodeJSONExtraData(dashboardID, session, parameters, projectID, releaseID,ajaxParams));
 		}catch (TooManyItemsToLoadException e){
-			//LOGGER.info("Number of items to load " + e.getItemCount());
 			JSONUtility.appendBooleanValue(sb,"tooManyItems",true);
 		} catch (Exception ex){
 			List<LabelValueBean> localizedErrors=new ArrayList<LabelValueBean>();
@@ -229,6 +223,7 @@ public abstract class BasePluginDashboardView implements IPluginDashboard {
 		}
 	}
 
+	@Override
 	public String createJsonDataConfig(Map<String,String> parameters, TPersonBean user, Integer entityId, Integer entityType){
 		String title=parameters.get(RENDERING_PARAMS.TITLE);
 		DashboardDescriptor desc=this.getDescriptor();
@@ -245,6 +240,7 @@ public abstract class BasePluginDashboardView implements IPluginDashboard {
 	public String encodeJSONExtraDataConfig(Map<String,String> parameters, TPersonBean user, Integer entityId, Integer entityType){
 		return "";
 	}
+	@Override
 	public List<ReportBean> getIssues(Map<String, String> configParams, Map<String, String> filterParams, TPersonBean personBean, Locale locale) throws TooManyItemsToLoadException {
 		return null;
 	}

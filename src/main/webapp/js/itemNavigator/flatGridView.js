@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -37,14 +37,6 @@ Ext.define('com.trackplus.itemNavigator.FlatGridViewPlugin',{
 	pageSize:10,
 	cellInlineCtr:null,
 
-	UNIFORMIZED_FIELD_TYPES: {
-		singleSelect: 'SINGLE_SELECT',
-		datePicker: 'DATE_PICKER',
-		simpleTextField: 'SIMPLE_TEXT_FIELD',
-		checkBox: "CHECK_BOX",
-		numberEditor: "NUMBER_EDITOR"
-	},
-
 	constructor: function(config){
 		var me=this;
 		this.callParent(arguments);
@@ -54,7 +46,7 @@ Ext.define('com.trackplus.itemNavigator.FlatGridViewPlugin',{
 	},
 	refreshData:function(data){
 		var me=this;
-		if(me.view!=null){
+		if(me.view){
 			me.view.getStore().loadData(data);
 		}
 	},
@@ -62,7 +54,7 @@ Ext.define('com.trackplus.itemNavigator.FlatGridViewPlugin',{
 		var me=this;
 		var fields=me.callParent();
 		var longFields=me.model.layout.longFields;
-		if(longFields!=null){
+		if(longFields){
 			for(var i=0;i<longFields.length;i++){
 				fields.push({name:'f'+longFields[i].reportField});
 			}
@@ -104,7 +96,7 @@ Ext.define('com.trackplus.itemNavigator.FlatGridViewPlugin',{
 		});
 	},
 	changePageSize:function(field, e){
-		if (e.getKey() == e.ENTER) {
+		if (e.getKey() === e.ENTER) {
 			var me = this;
 			me.view.setLoading(true);
 			me.pageSize = me.txtPageSize.getValue();
@@ -136,6 +128,7 @@ Ext.define('com.trackplus.itemNavigator.FlatGridViewPlugin',{
 			border:false,
 			bodyBorder:false,
 			columnLines :true,
+			rowLines:true,
 			cls:'simpleGridView gridNoBorder',
 			plugins: [{
 		        ptype: 'cellediting',
@@ -143,6 +136,9 @@ Ext.define('com.trackplus.itemNavigator.FlatGridViewPlugin',{
 		    }],
 			viewConfig: {
 				stripeRows: true,
+				selectionModel: {
+					type: 'rowmodel'
+				},
 				plugins:me.getTreeViewPlugins(),
 				getRowClass: function (record, rowIndex, rp, ds) {
 					return me.getRowClass.call(me,record, rowIndex, rp, ds);
@@ -153,7 +149,7 @@ Ext.define('com.trackplus.itemNavigator.FlatGridViewPlugin',{
 			selModel:me.createSelModel(),
 			features:me.createFeatures.call(me)
 		};
-		if(me.paginate==true){
+		if(me.paginate===true){
 			me.txtPageSize=Ext.create('Ext.form.field.Number',{
 				name: 'pageSize',
 				fieldLabel: getText('itemov.lbl.pageSize'),
@@ -179,7 +175,7 @@ Ext.define('com.trackplus.itemNavigator.FlatGridViewPlugin',{
 		me.view=Ext.create('Ext.grid.Panel',cfg);
 		me.initMyListeners();
 
-	    me.cellInlineCtr.grid = me.view;
+	    me.cellInlineCtr.setGrid(me.view);
         me.cellInlineCtr.initListeners();
 
 		return me.view;
@@ -202,7 +198,7 @@ Ext.define('com.trackplus.itemNavigator.FlatGridViewPlugin',{
 		var issueIds=[];
 		if(me.model.layout.bulkEdit){
 			var selections=me.view.getSelectionModel().getSelection();
-			if(selections!=null&&selections.length>0){
+			if(selections&&selections.length>0){
 				for(var i=0;i<selections.length;i++){
 					issueIds.push(selections[i].data.workItemID);
 				}
@@ -223,7 +219,7 @@ Ext.define('com.trackplus.itemNavigator.FlatGridViewPlugin',{
 	selectItem:function(workItemID){
 		var me=this;
 		var grid=me.getGrid();
-		if(grid==null||workItemID==null){
+		if(CWHF.isNull(grid)||CWHF.isNull(workItemID)){
 			return null;
 		}
 		return me.selectItemGrid(grid,workItemID);
@@ -231,7 +227,7 @@ Ext.define('com.trackplus.itemNavigator.FlatGridViewPlugin',{
 	deselectItem:function(workItemID){
 		var me=this;
 		var grid=me.getGrid();
-		if(grid==null||workItemID==null){
+		if(CWHF.isNull(grid)||CWHF.isNull(workItemID)){
 			return null;
 		}
 		me.deselectItemGrid(grid,workItemID);
@@ -248,8 +244,8 @@ Ext.define('com.trackplus.itemNavigator.FlatGridViewPlugin',{
 		me.view.addListener('columnresize',me.columnResizeHandler,me);
 		me.view.addListener('columnmove',me.columnMoveHandler,me);
 		me.view.addListener('sortchange',me.sortChangeHandler,me);
-		me.view.addListener('afteritemexpand',me.afterItemExpandHandler,me);
-		me.view.addListener('afteritemcollapse',me.afterItemCollapseHandler,me);
+		//me.view.addListener('afteritemexpand',me.afterItemExpandHandler,me);
+		//me.view.addListener('afteritemcollapse',me.afterItemCollapseHandler,me);
 		//me.addListener('columnhide',me.columnHideHandler,me);
 		//me.addListener('columnshow',me.columnShowHandler,me);
 		me.view.getSelectionModel().addListener('selectionchange',me.onGridSelectionChange,me);
@@ -261,7 +257,7 @@ Ext.define('com.trackplus.itemNavigator.FlatGridViewPlugin',{
 //			me.callParent(sm, selections);
 			me.fireEvent.call(me,'selectionchange',selections);
 		}
-		if(me.cellInlineCtr != null) {
+		if(me.cellInlineCtr ) {
 			me.cellInlineCtr.onGridSelectionChnage(sm, selections);
 		}
 	},
@@ -269,15 +265,15 @@ Ext.define('com.trackplus.itemNavigator.FlatGridViewPlugin',{
 	onGridAfterRenderer:function(){
 		var me=this;
 		var rowExpandAllTrgEl=Ext.get('rowExpandAllTrg');
-		if(rowExpandAllTrgEl!=null){
+		if(rowExpandAllTrgEl){
 			rowExpandAllTrgEl.addListener('click',me.rowExpandAll,me);
 		}
 		var rowCollapseAllTrgEl=Ext.get('rowCollapseAllTrg');
-		if(rowCollapseAllTrgEl!=null){
+		if(rowCollapseAllTrgEl){
 			rowCollapseAllTrgEl.addListener('click',me.rowCollapseAll,me);
 		}
 		var dragZone=this.view.view.plugins[0].dragZone;
-		if(dragZone!=null){
+		if(dragZone){
 			dragZone.onStartDrag=function(x,y){
 				var records=this.dragData.records;
 				var workItems=me.getSelectedItemIds(records);
@@ -302,7 +298,7 @@ Ext.define('com.trackplus.itemNavigator.FlatGridViewPlugin',{
 			}catch(e){
 				workItemID=-1;
 			}
-			if(!isNaN(workItemID)&&workItemID!=-1){
+			if(!isNaN(workItemID)&&workItemID!==-1){
 				workItems+=workItemID+",";
 			}
 		}
@@ -318,7 +314,7 @@ Ext.define('com.trackplus.itemNavigator.FlatGridViewPlugin',{
 		var me=this;
 
 		e.stopEvent();
-		if(me.model.layout.bulkEdit==true&&cellIndex==0){
+		if(me.model.layout.bulkEdit===true&&cellIndex===0){
 			return false;
 		}
 		me.fireEvent.call(me,'itemdblclick',record.data,td);
@@ -353,13 +349,13 @@ Ext.define('com.trackplus.itemNavigator.FlatGridViewPlugin',{
 		var me=this;
 		var sortField = column.dataIndex.substring(1);
 		//false = ascending, true = descending
-		var sortOrder = (direction=='DESC');
+		var sortOrder = (direction==='DESC');
 		me.model.layout.sortField=sortField;
 		me.model.layout.sortOrder=sortOrder;
 		me.model.layout.sortWithSO=column.sortWithSO;
 		var filterType = null;
 		var filterID = null;
-		if (me.model.queryContext!=null) {
+		if (me.model.queryContext) {
 			filterType = me.model.queryContext.queryType;
 			filterID = me.model.queryContext.queryID;
 		}
@@ -378,7 +374,7 @@ Ext.define('com.trackplus.itemNavigator.FlatGridViewPlugin',{
 				filterID: filterID
 			},
 			success:function(){
-				if(me.paginate==true) {
+				if(me.paginate===true) {
 					me.view.getDockedComponent('paginateToolbar').moveFirst();
 				}
 			}
@@ -388,10 +384,10 @@ Ext.define('com.trackplus.itemNavigator.FlatGridViewPlugin',{
 	createFeatures:function(){
 		var me=this;
 		var features=new Array();
-		if(me.model.layout.longFields!=null&&me.model.layout.longFields.length>0){
+		if(me.model.layout.longFields&&me.model.layout.longFields.length>0){
 			features.push(me.createRowBodyFeature());
 		}
-		features.push({ftype: 'rowwrap'});
+		//features.push({ftype: 'rowwrap'});
 		return features;
 	},
 	createRowBodyFeature:function(){
@@ -404,16 +400,17 @@ Ext.define('com.trackplus.itemNavigator.FlatGridViewPlugin',{
 	getSorters:function(){
 		var me=this;
 		var sorters=null;
-		if(me.model.layout.sortField!=null){
+		return null;
+		if(me.model.layout.sortField){
 			var sortField="f"+me.model.layout.sortField;
 			var sortDirection;
-			if(me.model.layout.sortOrder==true){
+			if(me.model.layout.sortOrder===true){
 				sortDirection='DESC';
 			}else{
 				sortDirection='ASC';
 			}
 			sorters=[];
-			if(me.model.layout.sortWithSO==true){
+			if(me.model.layout.sortWithSO===true){
 				sorters.push({
 					property:sortField,
 					direction :sortDirection,
@@ -440,15 +437,15 @@ Ext.define('com.trackplus.itemNavigator.FlatGridViewPlugin',{
 		var cfg={
 			fields:fields,
 			pageSize: me.pageSize,
-			autoLoad: true,
-			sorters:me.getSorters()
+			autoLoad: true/*,
+			sorters:me.getSorters()*/
 		};
-		if(me.paginate==true){
+		if(me.paginate===true){
 			cfg.proxy={
 				type: 'ajax',
 				url: 'itemNavigator!navigate.action',
 				reader:Ext.create('com.trackplus.itemNavigator.FlatGridReader',{
-					root: 'issues',
+					rootProperty: 'issues',
 					totalProperty: 'totalCount',
 					flatGridViewPlugin:me
 				}),
@@ -458,7 +455,7 @@ Ext.define('com.trackplus.itemNavigator.FlatGridViewPlugin',{
 			cfg.data=me.model.issues;
 		}
 		var store=Ext.create('Ext.data.Store',cfg);
-		if(me.paginate==true){
+		if(me.paginate===true){
 			store.addListener('beforeload',me.beforeLoadPage,me);
 		}
 		//store.addListener("refresh",me.onStoreRefresh,me);
@@ -480,10 +477,10 @@ Ext.define('com.trackplus.itemNavigator.FlatGridViewPlugin',{
 		var shortFields=me.model.layout.shortFields;
 		var columnModel=new Array(0);
 		var layoutData;
-		if(me.model.layout.indexNumber==true){
+		if(me.model.layout.indexNumber===true){
 			var count=me.model.totalCount;
 			var size=0;
-			if(count==null||count==0){
+			if(CWHF.isNull(count)||count===0){
 				size=21;
 			}else{
 				size=(count+"").length*5+17;
@@ -504,10 +501,10 @@ Ext.define('com.trackplus.itemNavigator.FlatGridViewPlugin',{
 			var sortable= !me.disableSort;//&&layoutData.sortable;
 			var col=me.createColumn(i,layoutData,sortable,false);
 			me.cellInlineCtr.setColumnEditor(shortFields[i], col);
-			var uniformizedFieldType = me.getUniformizedFieldType(layoutData.extJsRendererClass);
-			if(uniformizedFieldType != null) {
-				var renderer = me.getRendererForSpecificColumns(uniformizedFieldType);
-				if(renderer != null) {
+			var uniformizedFieldType = me.cellInlineCtr.getUniformizedFieldType(layoutData.extJsRendererClass);
+			if(uniformizedFieldType ) {
+				var renderer = me.cellInlineCtr.getRendererForSpecificColumns(uniformizedFieldType);
+				if(renderer ) {
 					col.renderer = renderer;
 				}
 		    }
@@ -516,86 +513,9 @@ Ext.define('com.trackplus.itemNavigator.FlatGridViewPlugin',{
 		return columnModel;
 	},
 
-	getRendererForSpecificColumns: function(uniformizedFieldType) {
-		var me = this;
-		var renderer = null;
-		if(uniformizedFieldType == me.UNIFORMIZED_FIELD_TYPES.datePicker) {
-	    	renderer = function (value, metaData, record, row, col, store, gridView) {
-	    		if(value != null && value != "") {
-		    		var valueDate = Ext.Date.parse(value, com.trackplus.TrackplusConfig.DateFormat);
-		    		var isProject = false;
-		    		if(record.data.isProject != null) {
-		    			isProject = record.data.isProject;
-		    		}
-		    		if(!isProject) {
-		    			return Ext.util.Format.date(valueDate, com.trackplus.TrackplusConfig.DateFormat);
-		    		}
-	    		}else {
-	    			return "";
-	    		}
-	    	};
-	    }
-	    if(uniformizedFieldType == me.UNIFORMIZED_FIELD_TYPES.singleSelect) {
-	    	renderer = function (val, metaData) {
-	    		var combo = metaData.column.getEditor();
-	    		if(val && combo && combo.store && combo.displayField){
-	    			var valueFieldInt = parseInt(val);
-	    			var index = combo.store.findExact(combo.valueField, valueFieldInt);
-	    			if(index >= 0){
-	    				return combo.store.getAt(index).get(combo.displayField);
-	    			}
-	    		}
-	    		return val;
-	    	};
-	    }
-	    if(uniformizedFieldType == me.UNIFORMIZED_FIELD_TYPES.checkBox) {
-	    	renderer = function (val, metaData) {
-	    		var checkBox = metaData.column.getEditor();
-	    		if (val == 'true' || val == 'false') {
-	    			if(checkBox.checked) {
-	    				return getText('common.boolean.Y');
-	    			}else {
-	    				return getText('common.boolean.N');
-	    			}
-	    		}else {
-	    			return val;
-	    		}
-	    	};
-	    }
-	    return renderer;
-	},
-
 	dataChangeSuccess:function(opts){
 		var me = this;
 		me.cellInlineCtr.dataChangeSuccess();
-	},
-
-	getUniformizedFieldType: function(extJsRendererClass) {
-		var me = this;
-		switch(extJsRendererClass) {
-		    case "com.aurel.trackplus.field.SynopsisTypeRenderer":
-		        return me.UNIFORMIZED_FIELD_TYPES.simpleTextField;
-		        break;
-		    case "com.aurel.trackplus.field.PersonPickerRenderer":
-		    case "com.aurel.trackplus.field.StateRenderer":
-		    case "com.aurel.trackplus.field.PriorityRenderer":
-		    case "com.aurel.trackplus.field.SelectTypeRenderer":
-		    	return me.UNIFORMIZED_FIELD_TYPES.singleSelect;
-		    	break;
-		    case "com.aurel.trackplus.field.DateTypeRenderer":
-		    case "com.aurel.trackplus.field.StartDateRenderer":
-		    case "com.aurel.trackplus.field.EndDateRenderer":
-		    case "com.aurel.trackplus.field.StartDateTargetRenderer":
-		    case "com.aurel.trackplus.field.EndDateTargetRenderer":
-		    	return me.UNIFORMIZED_FIELD_TYPES.datePicker;
-		    	break;
-		    case "com.aurel.trackplus.field.CheckBoxTypRenderer":
-		    	return me.UNIFORMIZED_FIELD_TYPES.checkBox;
-		    case "com.aurel.trackplus.field.DurationRenderer":
-		    	return me.UNIFORMIZED_FIELD_TYPES.numberEditor;
-		    default:
-		        return null;
-		}
 	}
 });
 
@@ -608,58 +528,8 @@ Ext.define('com.trackplus.itemNavigator.FlatGridReader',{
 		var me = this;
 		var totalCount=data.totalCount;
 		var count=data.count;
-		me.flatGridViewPlugin.fireEvent('totalChange',totalCount,count);
+		me.getFlatGridViewPlugin().fireEvent('totalChange',totalCount,count);
 		return me.callParent(arguments);
-	}
-});
-
-Ext.define('com.trackplus.itemNavigator.CheckboxModel',{
-	extend: 'Ext.selection.CheckboxModel',
-	updateHeaderState: function() {
-		var me = this,
-			store = me.store,
-			storeCount = store.getCount(),
-			views = me.views,
-			hdSelectStatus = false,
-			selectedCount = 0,
-			selected, len, i;
-		var selectedGroups=0;
-		var items = me.store.getRange();
-		for(var i=0;i<items.length;i++){
-			if(items[i].get('group')==true){
-				selectedGroups++;
-			}
-		}
-
-		if (!store.buffered && storeCount > 0) {
-			selected = me.selected;
-			hdSelectStatus = true;
-			for (i = 0, len = selected.getCount(); i < len; ++i) {
-				if (!me.storeHasSelected(selected.getAt(i))) {
-					break;
-				}
-				++selectedCount;
-			}
-			hdSelectStatus = storeCount === selectedCount+ selectedGroups;
-		}
-
-		if (views && views.length) {
-			me.toggleUiHeader(hdSelectStatus);
-		}
-	},
-	deselectAll:function(){
-		var me=this;
-		//this.selectedGroups=0;
-		me.callParent(arguments);
-	},
-
-	listeners:{
-		beforeselect:function(selModel, record, index) {
-			return record.get('group') != true;
-		},
-		beforedeselect:function(selModel, record, index) {
-			return record.get('group') != true;
-		}
 	}
 });
 
@@ -676,7 +546,7 @@ Ext.define('com.trackplus.itemNavigator.RowBody',{
 			'this.nextTpl.applyOut(values, out, parent);',
 			'%}',
 				'<tr class="' + Ext.baseCSSPrefix + 'grid-rowbody-tr {rowBodyCls}">',
-			me.model.layout.bulkEdit?'<tpl if="emptyCellClass == \'\'" ><td class="x-grid-cell-special"></td><tpl else><td class="x-grid-cell-special" style="border-top-width:1px;"></td></tpl> ':'',
+			me.model.layout.bulkEdit?'<tpl if="emptyCellClass === \'\'" ><td class="x-grid-cell-special"></td><tpl else><td class="x-grid-cell-special" style="border-top-width:1px;"></td></tpl> ':'',
 			me.model.layout.indexNumber?'<td class="simpleTreeGridRowBodyEmptyCell {emptyCellClass}"></td>':'',
 			'<td class="simpleTreeGridRowBodyEmptyCell {emptyCellClass}"></td>',
 				'<td class="' + Ext.baseCSSPrefix + 'grid-cell-rowbody' + '" colspan="{rowBodyColspan}">',
@@ -727,13 +597,13 @@ Ext.define('com.trackplus.itemNavigator.RowBody',{
 		if(me.model.layout.indexNumber){
 			colspan=colspan-1;
 		}
-		if(data['group']==true){//grouping
+		if(data['group']===true){//grouping
 			return null;
 		}
 		var rowBody='';
 		var rowBodyContent='';
 		var emptyCellClass='';
-		if(me.model.layout.longFields!=null&&me.model.layout.longFields.length>0){
+		if(me.model.layout.longFields&&me.model.layout.longFields.length>0){
 			rowBody='<div class="simpleTreeGridRowBody">';
 			var longField;
 			for(var i=0;i<me.model.layout.longFields.length;i++){
@@ -745,7 +615,7 @@ Ext.define('com.trackplus.itemNavigator.RowBody',{
 					case -1005:{
 						//history
 						var history=data['f'+longFieldID];
-						if(history!=null&&history.length>0){
+						if(history&&history.length>0){
 							rowBodyContent+=me.createHistoryTemplate.call(me,data, idx, record,orig,longFieldLabel,history);
 						}
 						break;
@@ -753,7 +623,7 @@ Ext.define('com.trackplus.itemNavigator.RowBody',{
 					case 23:{
 						//comment
 						var comments=data['f'+longFieldID];
-						if(comments!=null&&comments.length>0){
+						if(comments&&comments.length>0){
 							rowBodyContent+=me.createCommentsTemplate.call(me,data, idx, record,orig,longFieldLabel,comments);
 						}
 						break;
@@ -761,7 +631,7 @@ Ext.define('com.trackplus.itemNavigator.RowBody',{
 					case -1008:{
 						//cost
 						var costs=data['f'+longFieldID];
-						if(costs!=null&&costs.length>0){
+						if(costs&&costs.length>0){
 							rowBodyContent+=me.createCostsTemplate.call(me,data, idx, record,orig,longFieldLabel,costs);
 						}
 						break;
@@ -770,7 +640,7 @@ Ext.define('com.trackplus.itemNavigator.RowBody',{
 					case -1011:{
 						//PLAN_HISTORY_LIST = -1011
 						var budgetHistory=data['f'+longFieldID];
-						if(budgetHistory!=null&&budgetHistory.length>0){
+						if(budgetHistory&&budgetHistory.length>0){
 							rowBodyContent+=me.createBudgetHistoryTemplate.call(me,data, idx, record,orig,longFieldLabel,budgetHistory);
 							//longFieldValue="someething here";
 							//rowBodyContent+=me.createLongFieldTemplate.call(me,data, idx, record, orig,longFieldID,longFieldLabel,longFieldValue);
@@ -778,13 +648,13 @@ Ext.define('com.trackplus.itemNavigator.RowBody',{
 						break;
 					}
 					default:{
-						if(longFieldValue!=null&&longFieldValue!=''){
+						if(longFieldValue&&longFieldValue!==''){
 							rowBodyContent+=me.createLongFieldTemplate.call(me,data, idx, record, orig,longFieldID,longFieldLabel,longFieldValue);
 						}
 					}
 				}
 			}
-			hasContent=rowBodyContent!='';
+			hasContent=rowBodyContent!=='';
 			if(hasContent){
 				emptyCellClass='simpleTreeGridRowBodyEmptyCell-bodyContent';
 			}
@@ -800,7 +670,7 @@ Ext.define('com.trackplus.itemNavigator.RowBody',{
 	},
 	createLongFieldTemplate:function(data, idx, record, orig,longFieldID,lonFieldLabel,longFieldValue){
 		var me=this;
-		if(me.longFieldTpl==null){
+		if(CWHF.isNull(me.longFieldTpl)){
 			me.initLongFieldTpl();
 		}
 		return me.longFieldTpl.applyTemplate({lonFieldLabel: lonFieldLabel, longFieldValue:longFieldValue});
@@ -816,7 +686,7 @@ Ext.define('com.trackplus.itemNavigator.RowBody',{
 	},
 	createCommentsTemplate:function(data, idx, record, orig,longFieldLabel,comments){
 		var me=this;
-		if(me.commentsTpl==null){
+		if(CWHF.isNull(me.commentsTpl)){
 			me.initCommentsTpl();
 		}
 		return me.commentsTpl.applyTemplate({longFieldLabel:longFieldLabel,comments: comments});
@@ -850,7 +720,7 @@ Ext.define('com.trackplus.itemNavigator.RowBody',{
 	},
 	createHistoryTemplate:function(data, idx, record, orig,longFieldLabel,history){
 		var me=this;
-		if(me.historyTpl==null){
+		if(CWHF.isNull(me.historyTpl)){
 			me.initHistoryTpl();
 		}
 		return me.historyTpl.applyTemplate({longFieldLabel:longFieldLabel,history: history});
@@ -883,7 +753,7 @@ Ext.define('com.trackplus.itemNavigator.RowBody',{
 	},
 	createCostsTemplate:function(data, idx, record, orig,longFieldLabel,costs){
 		var me=this;
-		if(me.costsTpl==null){
+		if(CWHF.isNull(me.costsTpl)){
 			me.initCostsTpl();
 		}
 		return me.costsTpl.applyTemplate({longFieldLabel:longFieldLabel,costs: costs});
@@ -918,7 +788,7 @@ Ext.define('com.trackplus.itemNavigator.RowBody',{
 	},
 	createBudgetHistoryTemplate:function(data, idx, record, orig,longFieldLabel,costs){
 		var me=this;
-		if(me.budgetHistoryTpl==null){
+		if(CWHF.isNull(me.budgetHistoryTpl)){
 			me.initBudgetHistoryTpl();
 		}
 		return me.budgetHistoryTpl.applyTemplate({longFieldLabel:longFieldLabel,costs: costs});
@@ -958,7 +828,7 @@ function openAttachments(workItemID,attachmentIds){
 	for(var i=0;i<selections.length;i++){
 		var attachID=selections[i];
 		var attachmentURI='downloadAttachment.action?workItemID='+workItemID+'&attachKey='+attachID;
-		if(i==0){
+		if(i===0){
 			window.open(attachmentURI,'attachmentWindow');
 		}else{
 			window.open(attachmentURI);

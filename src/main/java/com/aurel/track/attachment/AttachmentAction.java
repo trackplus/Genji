@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -79,7 +79,6 @@ public class AttachmentAction extends ActionSupport implements Preparable,Sessio
 	private HttpServletRequest servletRequest;
 	private Map<String, Object> session;
 	private String description;
-	//protected FormFile theFile = null;
 	private String theFile;
 	private Integer workItemID;
 	private Integer attachKey;
@@ -103,11 +102,9 @@ public class AttachmentAction extends ActionSupport implements Preparable,Sessio
 	Integer attachmentID;
 
 
+    @Override
     public void prepare() throws Exception {
     	locale = (Locale) session.get(Constants.LOCALE_KEY);
-		/*if(workItemID==null){
-			workItemID=new Integer(-1);
-		}*/
 		TPersonBean person=((TPersonBean) session.get(Constants.USER_KEY));
 		if(person!=null){
 			personID=person.getObjectID();
@@ -180,7 +177,6 @@ public class AttachmentAction extends ActionSupport implements Preparable,Sessio
 	public String save(){
 		MultiPartRequestWrapper wrapper=(MultiPartRequestWrapper)servletRequest;
 		HttpServletResponse response=ServletActionContext.getResponse();
-		//response.setHeader("Content-Type", "text/html");
 		//response.setContentType("text/html");
 		if (wrapper.hasErrors()) {
 			StringBuffer sb=new StringBuffer();
@@ -202,7 +198,6 @@ public class AttachmentAction extends ActionSupport implements Preparable,Sessio
 		}
 		File[] files=wrapper.getFiles("theFile");
 		String[] fileNames=wrapper.getFileNames("theFile");
-		//theFile=fileName;
 		if(files == null || files.length==0||fileNames==null || fileNames.length==0){
 			String err=getText("common.err.required",new String[]{getText("report.export.manager.upload.file")});
 			addFieldError("theFile",err );
@@ -357,14 +352,14 @@ public class AttachmentAction extends ActionSupport implements Preparable,Sessio
 					attachments=new ArrayList<TAttachmentBean>();
 				}
 				String sessionID=httpSession.getId();
-				attachments=AttachBL.deleteLocalAttachment(attachments, attachmentsToDelete[i], sessionID);
+				AttachBL.deleteLocalAttachment(attachments, attachmentsToDelete[i], sessionID);
 				workItemContext.setAttachmentsList(attachments);
 			} else {
 				TWorkItemBean workItemBean=null;
 				try {
 					workItemBean = ItemBL.loadWorkItem(workItemID);
 				} catch (ItemLoaderException e) {
-					LOGGER.error("Loading the workItem failed with " + e.getMessage(), e);
+					LOGGER.error("Loading the workItem failed with " + e.getMessage());
 				}
 				if (workItemBean!=null && AccessBeans.isAllowedToChange(workItemBean, personID)) {
 					if(workItemBean!=null){
@@ -577,7 +572,6 @@ public class AttachmentAction extends ActionSupport implements Preparable,Sessio
 	private TAttachmentBean extractAttachmentBean() {
 		TAttachmentBean attach;
 		if(workItemID==null/*||workItemID.intValue()==-1*/){
-			//HttpSession httpSession=request.getSession();
 			//String sessionID=httpSession.getId();
 			WorkItemContext ctx=(WorkItemContext)session.get("workItemContext");
 			if(ctx==null){
@@ -605,6 +599,7 @@ public class AttachmentAction extends ActionSupport implements Preparable,Sessio
 	/**
 	 * @param session the session to set
 	 */
+	@Override
 	public void setSession(Map<String, Object> session) {
 		this.session = session;
 	}
@@ -618,6 +613,7 @@ public class AttachmentAction extends ActionSupport implements Preparable,Sessio
 	/**
 	 * @param servletRequest the servletRequest to set
 	 */
+	@Override
 	public void setServletRequest(HttpServletRequest servletRequest) {
 		this.servletRequest = servletRequest;
 	}
@@ -697,15 +693,10 @@ public class AttachmentAction extends ActionSupport implements Preparable,Sessio
 	 * To remove the thousend separator
 	 * @return
 	 */
-	/*public String getFormattedWorkItemID() {
-		if (workItemID!=null) {
-			return IntegerNumberFormatUtil.getInstance().formatGUI(workItemID, null);
-		}
-		return "";
-	}*/
 	public Map getApplication() {
 		return application;
 	}
+	@Override
 	public void setApplication(Map application) {
 		this.application = application;
 	}

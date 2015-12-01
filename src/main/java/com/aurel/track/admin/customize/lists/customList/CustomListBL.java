@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -74,6 +74,7 @@ public class CustomListBL implements ListOrOptionBaseBL {
 	 * @param repository
 	 * @return
 	 */
+	@Override
 	public int getEntityType(Integer repository) {
 		if (repository!=null && repository.intValue() == ListBL.REPOSITORY_TYPE.PUBLIC) {
 			return OptionBaseBL.ENTRY_TYPE.GLOBAL_LIST;
@@ -113,6 +114,7 @@ public class CustomListBL implements ListOrOptionBaseBL {
 	 * @param listID
 	 * @return
 	 */
+	@Override
 	public ILabelBean getLabelBean(Integer optionID, Integer listID) {
 		ILabelBean labelBean = null;
 		if (listID!=null) {
@@ -134,6 +136,7 @@ public class CustomListBL implements ListOrOptionBaseBL {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public ILabelBean getLocalizedLabelBean(Integer optionID, Integer listID, Locale locale) {
 		return getLabelBean(optionID, listID);
 	}
@@ -148,6 +151,7 @@ public class CustomListBL implements ListOrOptionBaseBL {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public DetailBaseTO loadDetailTO(Integer optionID, Integer listID,
 			boolean add, boolean copy, TPersonBean personBean, Locale locale) {
 		TListBean listBean = (TListBean)getLocalizedLabelBean(optionID, listID, locale);
@@ -373,6 +377,7 @@ public class CustomListBL implements ListOrOptionBaseBL {
 	 * @param locale 
 	 * @return
 	 */
+	@Override
 	public Integer save(ILabelBean labelBean, boolean copy, Integer personID, Locale locale) {
 		TListBean listBean = (TListBean)labelBean;
 		//boolean create = labelBean.getObjectID()==null; 
@@ -392,6 +397,7 @@ public class CustomListBL implements ListOrOptionBaseBL {
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public boolean hasDependentData(Integer objectID) {
 		//was any workItem or history assigned to a member of this list
 		if (listDAO.isListAssignedToWorkitem(objectID) || 
@@ -429,6 +435,7 @@ public class CustomListBL implements ListOrOptionBaseBL {
 	 * 			- false if delete is unsuccessful: workItem refers to this option or one of their suboption
 	 * 			In this case the deleted flag will be set
 	 */	
+	@Override
 	public void delete(Integer listID) {
 		if (hasDependentData(listID)) {
 			//set the list as deleted	

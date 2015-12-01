@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -34,13 +34,13 @@ Ext.define('js.ext.com.track.dashboard.IssuesView',{
 	initComponent : function(){
 		var me=this;
 		var errors=me.jsonData.errors;
-		if(errors!=null&&errors.length>0){
+		if(errors&&errors.length>0){
 			me.haveErrors=true;
 			me.addCls("dashboardError");
 			me.items=[{xtpe:'component',border:false,html:me.getErrorsHtml(errors)}];
 			me.bodyPadding=5;
 		}
-		if(me.jsonData.tooManyItems==true){
+		if(me.jsonData.tooManyItems===true){
 			me.items=[me.createErrorCmp(getText('cockpit.err.tooManyItems'))];
 			me.haveErrors=true;
 		}
@@ -49,8 +49,8 @@ Ext.define('js.ext.com.track.dashboard.IssuesView',{
 			me.items=[me.treeGrid];
 		}
 		me.callParent();
-		if(me.jsonData.filterTitle!=null){
-			if (me.title != null && !""==me.title) {
+		if(me.jsonData.filterTitle){
+			if (me.title  && !""===me.title) {
 			   me.title=me.title+"&nbsp;-&nbsp;"
 			}
 			me.title=me.title+"<i>"+me.jsonData.filterTitle+"</i>";
@@ -67,16 +67,16 @@ Ext.define('js.ext.com.track.dashboard.IssuesView',{
 	getRowClass: function(record, rowIndex, rp, ds){
      	var me=this;
 		var cls="";
-		if(record.data['group']==true){//grouping
+		if(record.data['group']===true){//grouping
 			cls+=" reportsTableGrouping";
-			if(record.data['cssColorClassGroup']!=null){
+			if(record.data['cssColorClassGroup']){
 				cls+=" "+record.data['cssColorClassGroup'];
 			}
 		}
-		if(record.data['cssColorClass']!=null){
+		if(record.data['cssColorClass']){
 			cls+=" "+record.data['cssColorClass'];
 		}
-		if(me.queryFieldCSS!=null&&record.data['queryFieldCSS']!=null){
+		if(me.queryFieldCSS&&record.data['queryFieldCSS']){
 			cls+=' queryFieldCSS rowCls_'+me.queryFieldCSS+"_"+ record.data['queryFieldCSS'];
 		}
 		return cls;
@@ -89,9 +89,9 @@ Ext.define('js.ext.com.track.dashboard.IssuesView',{
 		var sfield;
 		for(var i=0;i<shortFields.length;i++){
 			sfield=shortFields[i];
-			fields.push({name:'f'+sfield.reportField,type:sfield.extJsType,useNull:true});
+			fields.push({name:'f'+sfield.reportField,type:sfield.extJsType,allowNull:true});
 			if(sfield.so===true){
-				fields.push({name:'f_so'+sfield.reportField,type:'int',useNull:true});
+				fields.push({name:'f_so'+sfield.reportField,type:'int',allowNull:true});
 			}
 		}
 		fields.push({name:'workItemID',type:'int'});
@@ -125,8 +125,8 @@ Ext.define('js.ext.com.track.dashboard.IssuesView',{
 				xpanded: true,
 				text:"",
 				children:treeData
-			},
-			sorters:sorters
+			}/*,
+			sorters:sorters*/
 		});
 		var columnModel1=new Array(0);
 		var layoutData;
@@ -137,13 +137,17 @@ Ext.define('js.ext.com.track.dashboard.IssuesView',{
 			colHeader=layoutData.label;
 			var colCls=null;
 			var colResizable=true;
-			if(i==0){
+
+			var align='left';
+
+			if(i===0){
 				colType='Ext.tree.Column';
 			}else{
-				if(layoutData.renderContentAsImg==true){
-					colCls='headerIcon'+layoutData.reportField;
+				if(layoutData.renderContentAsImg===true){
+					colCls='headerIcon headerIcon'+layoutData.reportField;
 					colHeader='&nbsp;';
 					colResizable=false;
+					align='center';
 				}
 			}
 			var col=Ext.create(colType,{
@@ -152,6 +156,7 @@ Ext.define('js.ext.com.track.dashboard.IssuesView',{
 				dataIndex:'f'+layoutData.reportField,
 				tdCls:'simpleTreeGridCell',
 				cls:colCls,
+				align:align,
 				resizable:colResizable,
 				menuDisabled:true,
 				sortable:true,
@@ -159,12 +164,12 @@ Ext.define('js.ext.com.track.dashboard.IssuesView',{
 				draggable:false,
 				hidden:false
 			});
-			if(layoutData.so==true){
+			if(layoutData.so===true){
 				col.getSortParam=function(){
 					return 'f_so'+this.dataIndex.substring(1);
 				};
 			}
-			/*if(layoutData.reportField==17&&i!=0){
+			/*if(layoutData.reportField===17&&i!==0){
 				//synopsis
 				col.renderer=function(value,metaData,record,rowIndex,colIndex,store,view){
 					var urlStr='printItem.action?key='+record.data.workItemID;
@@ -172,18 +177,18 @@ Ext.define('js.ext.com.track.dashboard.IssuesView',{
 					return '<a href="'+urlStr+'" class="'+synopsisClass+'" target="printItem'+record.data.workItemID+'">'+value+'</a>';
 				};
 			}*/
-			if(layoutData.renderContentAsImg==true){
+			if(layoutData.renderContentAsImg===true){
 				col.width=25;
 				col.tdCls='iconTreeGridCell';
 				col.renderer=function(value,metaData,record,rowIndex,colIndex,store,view){
 					var reportField=this.columns[colIndex].dataIndex.substring(1);
-					if(reportField==-1006){
+					if(reportField===-1006){
 						//private symbol
-						return '<img src="'+com.trackplus.TrackplusConfig.icon16Path+value+'" style="padding-top:2px;">';
+						return '<img src="'+com.trackplus.TrackplusConfig.icon16Path+value+'">';
 					}else{
-						if(value!=null&&value!=''){
+						if(value&&value!==''){
 							var srcImg="optionIconStream.action?fieldID="+reportField+"&optionID="+value;//com.trackplus.TrackplusConfig.listIconsPath+reportField+"/"+value;
-							return '<img src="'+srcImg+'" style="padding-top:2px;">';
+							return '<img src="'+srcImg+'">';
 						}else{
 							return "";
 						}
@@ -241,7 +246,7 @@ Ext.define('js.ext.com.track.dashboard.IssuesView',{
 		var me=this;
 		me.jsonData=jsonData;
 		var errors=me.jsonData.errors;
-		if(errors!=null&&errors.length>0){
+		if(errors&&errors.length>0){
 			me.haveErrors=true;
 			me.removeAll(true);
 			me.addCls("dashboardError");
@@ -267,7 +272,7 @@ Ext.define('js.ext.com.track.dashboard.IssuesView',{
 				me.add(me.treeGrid);
 
 
-				if(me.jsonData.filterTitle!=null){
+				if(me.jsonData.filterTitle){
 					me.setTitle(me.originalTitle+"&nbsp;-&nbsp;<i>"+me.jsonData.filterTitle+"</i>");
 				}else{
 					me.setTitle(me.originalTitle);
@@ -275,12 +280,12 @@ Ext.define('js.ext.com.track.dashboard.IssuesView',{
 			}
 
 		}
-		me.doLayout();
+		me.updateLayout ();
 	},
 	updateTitle:function(){
 		var me=this;
 		var title=me.callParent();
-		if(me.jsonData.filterTitle!=null){
+		if(me.jsonData.filterTitle){
 			title=title+"&nbsp;-&nbsp;<i>"+me.jsonData.filterTitle+"</i>";
 		}
 		return title;

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -65,7 +65,7 @@ import com.aurel.track.util.numberFormatter.DoubleWithDecimalDigitsNumberFormatU
  */
 public class LocaleHandler {
 
-	private static final Logger LOGGER = LogManager.getLogger(LocaleHandler.class); 
+	private static final Logger LOGGER = LogManager.getLogger(LocaleHandler.class);
 	//map with all locales supported by the JRE
 	private static SortedMap<String, Locale> javaLocaleMap = new TreeMap<String,Locale>();
 	//list with all locales supported by the JRE for importing new locales
@@ -84,31 +84,31 @@ public class LocaleHandler {
 	 * the Genji application, based on the ApplicationResources files.
 	 * Only these locales are being offered to the user.
 	 * <br>
-	 * If there is no support within Java, but the locale is available 
+	 * If there is no support within Java, but the locale is available
 	 * as a resource file, still add this locale.
-	 * 
+	 *
 	 * @return an ArrayList with all available locales.
 	 */
 	public static void getLocales() {
 		LOGGER.debug("Loading locales...");
-		helpMap.clear();	
+		helpMap.clear();
 		localeMap.clear();
 		javaLanguages.clear();
 		possibleLocales.clear();
 		availableLocales.clear();
 
 		/**
-		 * Get the locales available on Java 
+		 * Get the locales available on Java
 		 */
 		Locale[] javaLocalesArr = Locale.getAvailableLocales(); // all on this system
 		LOGGER.debug("Number of locales available in JVM " + javaLocalesArr.length);
 		javaLocaleMap = new TreeMap<String, Locale>();
-		
+
 		for (Locale locale : javaLocalesArr) {
 			// language + "_" + country
-			javaLocaleMap.put(locale.toString(), locale);	
+			javaLocaleMap.put(locale.toString(), locale);
 		}
-		
+
 		/**
 		 * Get the locales available in database
 		 */
@@ -116,15 +116,14 @@ public class LocaleHandler {
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("Number of locales available in DB localized resources " + existingDatabaseLocales.size() + ": " + existingDatabaseLocales);
 		}
-		
+
 		// Always add Farsi
 		javaLocaleMap.put("fa", new Locale("fa"));
-		possibleLocales.add(new LabelValueBean("Browser",""));
-
+		possibleLocales.add(new LabelValueBean("Browser","browser"));
 		for (String javaLocaleString : javaLocaleMap.keySet()) {
 			Locale javaLocale = javaLocaleMap.get(javaLocaleString);
 			javaLanguages.add(new LabelValueBean(javaLocale.getDisplayName(javaLocale), javaLocaleString));
-			
+
 			// Match available locales in the JRE with resource
 			// files provided for the Genji system. Only those locales
 			// are being offered.
@@ -168,7 +167,7 @@ public class LocaleHandler {
 		}
 		createExtjsMap(); // create the extJS locale map on the fly
 	}
-	
+
 	public static void addLanguage(String localeStr) {
 		if (localeStr!=null) {
 			for (String name : javaLocaleMap.keySet()) {
@@ -202,22 +201,22 @@ public class LocaleHandler {
 	}
 
 	/**
-	 * @return Returns the available locales in string format, including country code only when there is a . 
+	 * @return Returns the available locales in string format, including country code only when there is a .
 	 */
 	public static List<LabelValueBean> getAvailableLocales() {
 		return availableLocales;
 	}
 
 	/**
-	 * returns the available languages in java 
+	 * returns the available languages in java
 	 * @return
 	 */
 	public static List<LabelValueBean> getJavaLanguages() {
 		return javaLanguages;
 	}
 
-	
-	
+
+
 	public static List<Locale> getPropertiesLocales() {
 
 		if (propertiesLocales==null) {
@@ -226,7 +225,7 @@ public class LocaleHandler {
 		if (propertiesLocales.isEmpty()) {
 
 			/**
-			 * Get the locales available on java 
+			 * Get the locales available on java
 			 */
 			Locale[] javaLocalesArr = Locale.getAvailableLocales(); // all on this system
 			LOGGER.debug("Number of locales available in JVM " + javaLocalesArr.length);
@@ -234,7 +233,6 @@ public class LocaleHandler {
 			for (Locale locale : javaLocalesArr) {
 				javaLocaleMap.put(locale.toString(), locale);
 			}
-			//List<Locale> localeList = new LinkedList<Locale>();
 			for (String name : javaLocaleMap.keySet()) {
 				Locale loc = javaLocaleMap.get(name);
 				// Match available locales in the JRE with resource
@@ -247,7 +245,7 @@ public class LocaleHandler {
 				//in order to include also the country specific locales
 				//(the country specific files does not have to be present)
 				//because we need the formatting features linked with the countries
-				if (EqualUtils.equal(thepRealLoc.getLanguage(), loc.getLanguage()) && 
+				if (EqualUtils.equal(thepRealLoc.getLanguage(), loc.getLanguage()) &&
 						EqualUtils.equal(thepRealLoc.getCountry(), loc.getCountry())) {
 					propertiesLocales.add(loc);
 					LOGGER.debug("Property file found for " + loc);
@@ -267,7 +265,7 @@ public class LocaleHandler {
 	 * the standard locale (English).
 	 * @param locale desired by the user
 	 * @return a best match existing locale
-	 * 
+	 *
 	 */
 	public static Locale getExistingLocale(Locale locale) {
 		if (locale == null) {
@@ -280,7 +278,7 @@ public class LocaleHandler {
 
 
 	/**
-	 * Retrieve the preferred existing locale for this user. 
+	 * Retrieve the preferred existing locale for this user.
 	 * @param locales - the preferred locales as sent by the browser
 	 * @return the first preferred existing locale out of this list, or the system default
 	 * if none exists
@@ -303,7 +301,7 @@ public class LocaleHandler {
 				LOGGER.debug("Language and country match for " + locale.toString());
 				return locale;
 			}
-		} 
+		}
 		// We were not successful. Now let's try just the language.
 		for (Locale locale : localesList) {
 			if (localeMap.get(locale.getLanguage()) != null) {
@@ -320,7 +318,7 @@ public class LocaleHandler {
 	 * <br>
 	 * @param locale online help locale desired by the user
 	 * @return a best match existing online help locale
-	 * 
+	 *
 	 */
 	public static String getExistingOnlineHelpLanguageCode(Locale locale) {
 		if (locale == null) {
@@ -342,12 +340,9 @@ public class LocaleHandler {
 	 * <br>
 	 * @param locale
 	 */
-	/*private static void addLocale(Locale locale) {
-		localeMap.put(locale.toString(), locale);
-	}*/
 
 	/**
-	 * 
+	 *
 	 * @param loc the locale in toString format (e.g. de_DE_BA)
 	 * @return a locale object for this locale
 	 */
@@ -364,7 +359,7 @@ public class LocaleHandler {
 
 	private static String getCountry(String loc) {
 		String[] token = loc.split("_");
-		if (token.length > 1) { 
+		if (token.length > 1) {
 			return token[1];
 		}
 		else {
@@ -374,12 +369,12 @@ public class LocaleHandler {
 
 	private static String getVariant(String loc) {
 		String[] token = loc.split("_");
-		if (token.length > 2) { 
+		if (token.length > 2) {
 			return token[2];
 		}
 		else {
 			return "";
-		}		
+		}
 	}
 
 	/**
@@ -406,7 +401,6 @@ public class LocaleHandler {
 
 	public static void exportLocaleToSession(Map<String, Object> sessionMap , Locale locale) {
 		// For I18N support of Struts1 framework.
-		//httpSession.setAttribute(Globals.LOCALE_KEY, locale);
 		// For I18N interceptor of Struts2 framework.
 		// See http://struts.apache.org/2.x/docs/i18n-interceptor.html
 		sessionMap.put(Constants.LOCALE_KEY, locale);
@@ -425,7 +419,6 @@ public class LocaleHandler {
 		sessionMap.put("EXTJSDATEFORMAT", DateTimeUtils.getInstance().getExtJSDateFormat(locale));
 		//submitFormat for Ext.form.field.Date to be interpretable by struts after submit
 		sessionMap.put("EXTJSSUBMITDATEFORMAT", DateTimeUtils.getInstance().getExtJsTwoDigitsYearDateFormat(locale));
-		//httpSession.setAttribute("EXTJSDATETIMEFMT", DateTimeUtils.getInstance().getExtJsDateTimeFormat(locale));
 		sessionMap.put("EXTJSDATETIMEFORMAT", DateTimeUtils.getInstance().getExtJsLongDateTimeFormat(locale));
 		sessionMap.put("EXTJSTIMEFORMAT", DateTimeUtils.getInstance().getExtJSTimeFormat(locale));
 		sessionMap.put("EXTJSTIMEFORMATNOSECONDS", DateTimeUtils.getInstance().getExtJSTimeFormatNoSeconds(locale));

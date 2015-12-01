@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -51,9 +51,9 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.Preparable;
 
 public class DatabaseRestoreAction extends ActionSupport implements Preparable, SessionAware,ServletRequestAware {
-	
+
 	private static final Logger LOGGER = LogManager.getLogger(DatabaseRestoreAction.class);
-	
+
 	private static final long serialVersionUID = 400L;
 	private HttpServletRequest servletRequest;
 	private Map<String, Object> session;
@@ -65,15 +65,16 @@ public class DatabaseRestoreAction extends ActionSupport implements Preparable, 
 	private String user;
 	private String password;
 	private boolean restoreSuccess;
-	
+
 	private List<BackupTO> backups;
 	private String backupFile;
 	private String attachmentDir;
-	
+
 	private boolean sendNotifyEmail;
-	
+
 	PropertiesConfiguration torqueProperties;
 
+	@Override
 	public void prepare() throws Exception {
 		locale = (Locale) session.get(Constants.LOCALE_KEY);
 		try {
@@ -86,11 +87,11 @@ public class DatabaseRestoreAction extends ActionSupport implements Preparable, 
 			includeAttachmentsTooltip=getText("datbaseBackup.prompt.includeAttachments.tt");
 			sendNotifyEmail=true;
 		} catch (Exception e) {
-			LOGGER.error(Support.readStackTrace(e));
+			LOGGER.error(e);
 		}
 	}
-	
-	
+
+
 	@Override
 	public String execute() {
 		if(backups!=null && !backups.isEmpty()){
@@ -117,11 +118,11 @@ public class DatabaseRestoreAction extends ActionSupport implements Preparable, 
 			PrintWriter out = ServletActionContext.getResponse().getWriter();
 			out.println(sb);
 		} catch (IOException e) {
-			LOGGER.error(Support.readStackTrace(e));
+			LOGGER.error(e);
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Tests the connection parameters for the database into which the backup is to be restored.
 	 * @return nothing, writes directly into the output stream
@@ -129,7 +130,7 @@ public class DatabaseRestoreAction extends ActionSupport implements Preparable, 
 	public String testConnection() {
 
 		List<LabelValueBean> errors = new ArrayList<LabelValueBean>();
-		
+
 		errors = checkConnectionParameters(errors);
 
 		if (errors.isEmpty()) {
@@ -147,7 +148,7 @@ public class DatabaseRestoreAction extends ActionSupport implements Preparable, 
 	 */
 	public String restore(){
 		List<LabelValueBean> errors = new ArrayList<LabelValueBean>();
-		
+
 		errors = checkConnectionParameters(errors);
 
 		if (!errors.isEmpty()) {
@@ -165,19 +166,19 @@ public class DatabaseRestoreAction extends ActionSupport implements Preparable, 
 			messageBody.append("\n\n");
 			messageBody.append(getText("admin.server.databaseBackup.lbl.backupName")).append(":");
 			messageBody.append(" ").append(backupFile).append("\n\n");
-		
+
 			messageBody.append(getText("admin.server.databaseRestore.lbl.driverClassName")).append(":");
 			messageBody.append(" ").append(driverClassName).append("\n\n");
-			
+
 			messageBody.append(getText("admin.server.databaseRestore.lbl.url")).append(":");
 			messageBody.append(" ").append(url).append("\n\n");
-			
+
 			messageBody.append(getText("admin.server.databaseRestore.lbl.user")).append(":");
 			messageBody.append(" ").append(user).append("\n\n");
-			
+
 			messageBody.append(getText("admin.server.databaseBackup.lbl.includeAttachments")).append(":");
 			messageBody.append(" ").append(includeAttachments).append("\n\n");
-			
+
 			messageBody.append(getText("admin.server.databaseRestore.lbl.attachmentRestoreDir")).append(":");
 			messageBody.append(" ").append(attachmentDir).append("\n\n");
 		}
@@ -199,17 +200,17 @@ public class DatabaseRestoreAction extends ActionSupport implements Preparable, 
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Deletes a backup from the file system.
 	 * @return nothing, writes directly into output stream
 	 */
 	public String delete(){
 		List<LabelValueBean> errors = new ArrayList<LabelValueBean>();
-		
+
 		String fs = ApplicationBean.getInstance().getSiteBean().getBackupDir()
 		+ File.separator + getBackupFile();
-		
+
 		File f = new File (fs);
 		boolean success = false;
 		try {
@@ -219,7 +220,7 @@ public class DatabaseRestoreAction extends ActionSupport implements Preparable, 
 			}
 		}
 		catch (Exception e) {
-			LOGGER.error(Support.readStackTrace(e));
+			LOGGER.error(e);
 			errors.add(new LabelValueBean(e.getMessage(), "errorList"));
 		}
 
@@ -240,7 +241,7 @@ public class DatabaseRestoreAction extends ActionSupport implements Preparable, 
 				PrintWriter out = ServletActionContext.getResponse().getWriter();
 				out.println(sb);
 			} catch (IOException e) {
-				LOGGER.error(Support.readStackTrace(e));
+				LOGGER.error(e);
 			}
 
 		} else {
@@ -249,12 +250,12 @@ public class DatabaseRestoreAction extends ActionSupport implements Preparable, 
 		}
 		return null;
 	}
-	
+
 	/*
 	 * Check whatever can be checked before we start...
 	 */
 	private List<LabelValueBean> checkConnectionParameters(List<LabelValueBean> errors) {
-		
+
 		String appDatabaseURL=(String) torqueProperties.getProperty("torque.dsfactory.track.connection.url");
 		if (appDatabaseURL.indexOf('?') > 0) {  // remove the parameters
 			appDatabaseURL = appDatabaseURL.substring(0,appDatabaseURL.indexOf('?'));
@@ -275,28 +276,28 @@ public class DatabaseRestoreAction extends ActionSupport implements Preparable, 
 				errors.add(new LabelValueBean(getText("admin.server.databaseRestore.err.attachmentRestoreDirAsCurrent", locale),"attachmentDir"));
 			}
 
-			try {			
+			try {
 				File f = new File (attachmentDir);
 				if (!f.exists()&&!f.mkdirs()) {
 					errors.add(new LabelValueBean(getText("admin.server.databaseRestore.err.attachmentRestoreDirNotCreated", locale), "attachmentDir"));
 				}
 			}
 			catch (Exception e) {
-				LOGGER.error(Support.readStackTrace(e));
+				LOGGER.error(e);
 				errors.add(new LabelValueBean(e.getMessage(), "attachmentDir"));
 			}
 		}
-		
+
 		return errors;
 	}
 
-	
 
-	
+
+
 	private String getText(String s, Locale locale){
 		return LocalizeUtil.getLocalizedTextFromApplicationResources(s, locale);
 	}
-	
+
 	public boolean isIncludeAttachments() {
 		return includeAttachments;
 	}
@@ -316,6 +317,7 @@ public class DatabaseRestoreAction extends ActionSupport implements Preparable, 
 		return servletRequest;
 	}
 
+	@Override
 	public void setServletRequest(HttpServletRequest servletRequest) {
 		this.servletRequest = servletRequest;
 	}
@@ -344,14 +346,15 @@ public class DatabaseRestoreAction extends ActionSupport implements Preparable, 
 		this.password = password;
 	}
 
+	@Override
 	public void setSession(Map<String, Object> session) {
 		this.session=session;
 	}
-	
+
 	public Map<String, Object> getSession() {
 		return session;
 	}
-	
+
 	public boolean isRestoreSuccess() {
 		return restoreSuccess;
 	}

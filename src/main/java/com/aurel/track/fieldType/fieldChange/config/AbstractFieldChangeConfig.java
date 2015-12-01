@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -52,6 +52,7 @@ public abstract class AbstractFieldChangeConfig extends AbstractActivity impleme
 	 * Whether the activity refers to a field (system or custom) or to an other hardcoded activity
 	 * @return
 	 */
+	@Override
 	public boolean hasSetter() {
 		return true;
 	}
@@ -62,6 +63,7 @@ public abstract class AbstractFieldChangeConfig extends AbstractActivity impleme
 	 * @param value
 	 * @return
 	 */
+	@Override
 	public boolean hasValueParams(String value) {
 		return false;
 	}
@@ -90,18 +92,11 @@ public abstract class AbstractFieldChangeConfig extends AbstractActivity impleme
 	 * @param baseName
 	 * @return
 	 */
-	/*protected String getName(String baseName) {
-		StringBuilder stringBuilder = new StringBuilder();
-		return stringBuilder.append(baseName).append(".").append(getKeyPrefix()).toString();
-	}*/
 	
 	/**
 	 * The prefix for the map keys
 	 * @return
 	 */
-	/*protected String getKeyPrefix() {
-		return MassOperationBL.getKeyPrefix(getActivityType());
-	}*/
 	
 	/**
 	 * Loads the datasource and value for configuring the activity
@@ -112,6 +107,7 @@ public abstract class AbstractFieldChangeConfig extends AbstractActivity impleme
 	 * @param locale
 	 * @param withParameter whether to include $PARAMETER in datasource
 	 */
+	@Override
 	public void loadDatasourceAndValue(WorkflowContext workflowContext,
 			FieldChangeValue fieldChangeValue, Integer parameterCode, TPersonBean personBean, Locale locale, boolean withParameter) {
 		IFieldTypeRT fieldTypeRT = FieldTypeManager.getFieldTypeRT(activityType);
@@ -132,6 +128,7 @@ public abstract class AbstractFieldChangeConfig extends AbstractActivity impleme
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public String getValueRendererJsonConfig(Object configuredValue, Object assignedValue, Object dataSource,
 			boolean withParameter, TPersonBean personBean, Locale locale) {
 		StringBuilder stringBuilder = new StringBuilder("{");

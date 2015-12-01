@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -145,6 +145,7 @@ public class FaqsDatasource extends ReportBeanDatasource {
 	 * @return
 	 * @throws TooManyItemsToLoadException 
 	 */
+	@Override
 	public Object getDatasource(Map<String, String[]> parameters, DatasourceDescriptor datasourceDescriptor,
 			Map<String, Object> contextMap, Map<String, Object> templateDescriptionMap,
 			Integer templateID, TPersonBean personBean, Locale locale) throws TooManyItemsToLoadException {
@@ -290,13 +291,13 @@ public class FaqsDatasource extends ReportBeanDatasource {
 			transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, "-//W3C//DTD XHTML 1.0 Transitional//EN");
 			transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd");
 		} catch (TransformerConfigurationException e){
-			LOGGER.error ("Creating the transformer failed with TransformerConfigurationException: " + e.getMessage(), e);
+			LOGGER.error ("Creating the transformer failed with TransformerConfigurationException: " + e.getMessage());
 			return;
 		}
 		try{
 			transformer.transform (new DOMSource(dom), new StreamResult(outputStream));
 		} catch (TransformerException e){
-			LOGGER.error ("Transform failed with TransformerException: " + e.getMessage(), e);
+			LOGGER.error ("Transform failed with TransformerException: " + e.getMessage());
 		}
 	}
 
@@ -352,10 +353,10 @@ public class FaqsDatasource extends ReportBeanDatasource {
 				DocumentBuilder builder = factory.newDocumentBuilder ();
 				dom = builder.newDocument ();	
 			}catch (FactoryConfigurationError e){
-				LOGGER.error ("Creating the DOM document failed with FactoryConfigurationError:" + e.getMessage(), e);
+				LOGGER.error ("Creating the DOM document failed with FactoryConfigurationError:" + e.getMessage());
 				return null;
 			}catch (ParserConfigurationException e){
-				LOGGER.error ("Creating the DOM document failed with ParserConfigurationException: " + e.getMessage(), e);
+				LOGGER.error ("Creating the DOM document failed with ParserConfigurationException: " + e.getMessage());
 				return null;
 			}
 			return dom;
@@ -404,7 +405,7 @@ public class FaqsDatasource extends ReportBeanDatasource {
 				}
 				cleanDirectory(FAQ_DIR, ".*\\.html");
 			} catch (Exception e) {
-				LOGGER.error(e.getMessage(), e);
+				LOGGER.error(e.getMessage());
 			}
 
 			for (ReportBean reportBean : items) {
@@ -427,7 +428,7 @@ public class FaqsDatasource extends ReportBeanDatasource {
 				}
 				for (TFieldBean fieldBean : fields) {
 					Integer fieldID = fieldBean.getObjectID();
-					if (ApplicationBean.getApplicationBean().getSiteBean().getProjectSpecificIDsOn()) {
+					if (ApplicationBean.getInstance().getSiteBean().getProjectSpecificIDsOn()) {
 						if (fieldID == SystemFields.PROJECT_SPECIFIC_ISSUENO) {
 							Object attributeValue = workItemBean.getAttribute(fieldID);
 							if (attributeValue != null && !"null".equals(attributeValue)) {
@@ -518,7 +519,7 @@ public class FaqsDatasource extends ReportBeanDatasource {
 				try {
 				files[i] = new File(FAQ_TMP_DIR+File.separator+faq);
 				} catch (Exception e) {
-					LOGGER.error("Problem creating file array for FAQs: " + e.getMessage(), e);
+					LOGGER.error("Problem creating file array for FAQs: " + e.getMessage());
 				}
 				++i;
 			}
@@ -531,7 +532,7 @@ public class FaqsDatasource extends ReportBeanDatasource {
 					createProjFile(fname, proj.getLabel());
 					files[i] = projFile;
 				} catch (Exception e) {
-					LOGGER.error("Problem creating file array for FAQs: " + e.getMessage(), e);
+					LOGGER.error("Problem creating file array for FAQs: " + e.getMessage());
 				}
 				++i;
 			}
@@ -548,7 +549,7 @@ public class FaqsDatasource extends ReportBeanDatasource {
 			/*try {
 				FileUtils.deleteDirectory(new File(FAQ_TMP_DIR));
 			} catch (Exception e) {
-				LOGGER.error("Can't delete temporary FAQ directory: " + e.getMessage(), e);
+				LOGGER.error("Can't delete temporary FAQ directory: " + e.getMessage());
 			}*/
 
 			return;	
@@ -585,7 +586,7 @@ public class FaqsDatasource extends ReportBeanDatasource {
 				url = out.toURI().toURL();
 				LOGGER.debug("Wrote FAQ file " + out.getAbsolutePath());
 			} catch (Exception e) {
-				LOGGER.error ("Writing FAQs failed with exception: " + e.getMessage(), e);
+				LOGGER.error ("Writing FAQs failed with exception: " + e.getMessage());
 			} finally {
 				try {
 					// Close the stream regardless of what happens...
@@ -630,7 +631,7 @@ public class FaqsDatasource extends ReportBeanDatasource {
 					transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, systemID);
 				}
 			} catch (TransformerConfigurationException e){
-				LOGGER.error ("Creating the transformer failed with TransformerConfigurationException: " + e.getMessage(), e);
+				LOGGER.error ("Creating the transformer failed with TransformerConfigurationException: " + e.getMessage());
 				return null;
 			}
 			StreamResult outputStream = null;
@@ -642,7 +643,7 @@ public class FaqsDatasource extends ReportBeanDatasource {
 				LOGGER.debug("Wrote FAQ file " + out.getAbsolutePath());
 				return url;
 			} catch (TransformerException e){
-				LOGGER.error ("Transform failed with TransformerException: " + e.getMessage(), e);
+				LOGGER.error ("Transform failed with TransformerException: " + e.getMessage());
 			} catch (Exception ex) {
 				LOGGER.error ("Transform failed with exception: " + ex.getMessage());				
 			}
@@ -661,10 +662,10 @@ public class FaqsDatasource extends ReportBeanDatasource {
 				DocumentBuilder builder = factory.newDocumentBuilder ();
 				dom = builder.newDocument ();	
 			}catch (FactoryConfigurationError e){
-				LOGGER.error ("Creating the DOM document failed with FactoryConfigurationError:" + e.getMessage(), e);
+				LOGGER.error ("Creating the DOM document failed with FactoryConfigurationError:" + e.getMessage());
 				return;
 			}catch (ParserConfigurationException e){
-				LOGGER.error ("Creating the DOM document failed with ParserConfigurationException: " + e.getMessage(), e);
+				LOGGER.error ("Creating the DOM document failed with ParserConfigurationException: " + e.getMessage());
 				return;
 			}
 
@@ -764,7 +765,7 @@ public class FaqsDatasource extends ReportBeanDatasource {
 					it.close();
 				}
 			} catch (Exception e) {
-				LOGGER.error("Can't copy project.html template file: " + e.getMessage(), e);
+				LOGGER.error("Can't copy project.html template file: " + e.getMessage());
 			}
 			writeFile(buf.toString(), file);
 		}
@@ -777,7 +778,7 @@ public class FaqsDatasource extends ReportBeanDatasource {
 			FileUtils.copyFile(new File(FAQ_DIR+File.separator+"whc_template"+File.separator+"index.html"), 
 					           new File(FAQ_TMP_DIR+File.separator+"index.html"));
 			} catch (Exception e) {
-				LOGGER.error("Can't copy index.html template file: " + e.getMessage(), e);
+				LOGGER.error("Can't copy index.html template file: " + e.getMessage());
 			}
 		}
 
@@ -817,6 +818,7 @@ public class FaqsDatasource extends ReportBeanDatasource {
 			return element;
 		}
 		
+		@Override
 		public void showMessage(String message, MessageType type) {
 			if (type.equals(MessageType.ERROR)) {
 				LOGGER.error(message);
@@ -856,7 +858,7 @@ public class FaqsDatasource extends ReportBeanDatasource {
 					LOGGER.error("Problem compiling WebHelp");
 				}
 			} catch (IOException e) {
-				LOGGER.error(e.getMessage(), e);
+				LOGGER.error(e.getMessage());
 			}
 		}
 		
@@ -899,13 +901,13 @@ public class FaqsDatasource extends ReportBeanDatasource {
 				os.write(emptyIndex.getBytes(Charset.forName("UTF-8")));
 
 			} catch (Exception e) {
-				LOGGER.error(e.getMessage(), e);
+				LOGGER.error(e.getMessage());
 			} finally {
 				try {
 					os.flush();
 					os.close();
 				} catch (Exception te) {
-					LOGGER.error(te.getMessage(), te);
+					LOGGER.error(te.getMessage());
 				}
 			}
 		}
@@ -932,7 +934,7 @@ public class FaqsDatasource extends ReportBeanDatasource {
 					++i;
 				}
 			} catch (Exception e) {
-				LOGGER.error(e.getMessage(), e);
+				LOGGER.error(e.getMessage());
 			} finally {
 				try {
 					os.flush();
@@ -942,12 +944,12 @@ public class FaqsDatasource extends ReportBeanDatasource {
 					//FileUtils.forceDelete(in);
 					//FileUtils.copyFile(out, in);
 				} catch (Exception te) {
-					LOGGER.error(te.getMessage(), te);
+					LOGGER.error(te.getMessage());
 				}
 				try {
 					FileUtils.copyFile(out, in);
 				} catch (Exception te) {
-					LOGGER.error(te.getMessage(), te);
+					LOGGER.error(te.getMessage());
 				}
 			}
 		}

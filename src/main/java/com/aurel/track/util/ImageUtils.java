@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -42,13 +42,13 @@ public class ImageUtils {
 		int scaledHeight = thumbnail.getHeight();
 		
 		int x = (newWidth - scaledWidth) / 2;
-        int y = (newWidth - scaledHeight) / 2;
+        	int y = (newWidth - scaledHeight) / 2;
         
-		BufferedImage newImg = new BufferedImage(newWidth,newWidth, BufferedImage.TYPE_INT_ARGB);
+		BufferedImage newImg = new BufferedImage(newWidth,newHeight, BufferedImage.TYPE_INT_ARGB);
 		
 		Graphics2D g = newImg.createGraphics();
 		g.setColor(new Color(0, 0, 0, 0));
-		g.fillRect(0, 0, newWidth, newWidth);
+		g.fillRect(0, 0, newWidth, newHeight);
 		g.drawImage(thumbnail, x, y, x + scaledWidth, y + scaledHeight, 0, 0, scaledWidth, scaledHeight,
 				new Color(0, 0, 0, 0), null);
 		g.dispose();

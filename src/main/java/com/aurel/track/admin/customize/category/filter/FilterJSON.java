@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -831,8 +831,9 @@ public class FilterJSON {
 		String MATCHER_LIST = "matcherList";
 		String NEED_MATCHER_VALUE = "needMatcherValue";
 		String MATCHER_NAME = "matcherName";
-		String VALUE_NAME = "valueName";
+		String MATCHER_ITEM_ID = "matcherItemId";
 		String VALUE_RENDEDER = "valueRenderer";
+		String VALUE_ITEM_ID = "valueItemId";
 		String JSON_CONFIG = "jsonConfig";
 	}
 	
@@ -886,11 +887,12 @@ public class FilterJSON {
 		JSONUtility.appendIntegerValue(stringBuilder, FIELD_EXPRESSION_SIMPLE_JSON_FIELDS.FIELD,
 				fieldExpressionSimpleTO.getField());
 		JSONUtility.appendStringValue(stringBuilder, FIELD_EXPRESSION_SIMPLE_JSON_FIELDS.MATCHER_NAME, fieldExpressionSimpleTO.getMatcherName());
+		JSONUtility.appendStringValue(stringBuilder, FIELD_EXPRESSION_SIMPLE_JSON_FIELDS.MATCHER_ITEM_ID, fieldExpressionSimpleTO.getMatcherItemId());
 		JSONUtility.appendIntegerValue(stringBuilder, FIELD_EXPRESSION_SIMPLE_JSON_FIELDS.SELECTED_MATCHER,
 				fieldExpressionSimpleTO.getSelectedMatcher());
 		JSONUtility.appendIntegerStringBeanList(stringBuilder,  FIELD_EXPRESSION_SIMPLE_JSON_FIELDS.MATCHER_LIST, 
 				fieldExpressionSimpleTO.getMatchersList());
-		stringBuilder.append(getFieldExpressionValueBaseJSON(fieldExpressionSimpleTO.getValueName(), fieldExpressionSimpleTO.isNeedMatcherValue(),
+		stringBuilder.append(getFieldExpressionValueBaseJSON(fieldExpressionSimpleTO.getValueItemId(), fieldExpressionSimpleTO.isNeedMatcherValue(),
 				fieldExpressionSimpleTO.getValueRenderer(), fieldExpressionSimpleTO.getJsonConfig(), false));
 		return stringBuilder.toString();
 	}
@@ -913,13 +915,14 @@ public class FilterJSON {
 	
 	/**
 	 * Gets the base JSON for field expression value
+	 * @param valueItemId
 	 * @param needMatcherValue
 	 * @param valueRenderer
 	 * @param jsonConfig
 	 * @param last
 	 * @return
 	 */
-	public static String getFieldExpressionValueBaseJSON(String name, boolean needMatcherValue,	
+	public static String getFieldExpressionValueBaseJSON(String valueItemId, boolean needMatcherValue,	
 			String valueRenderer, String jsonConfig, boolean last) {
 		StringBuilder stringBuilder = new StringBuilder();
 		JSONUtility.appendBooleanValue(stringBuilder,
@@ -929,7 +932,7 @@ public class FilterJSON {
 		JSONUtility.appendStringValue(stringBuilder,
 				FIELD_EXPRESSION_SIMPLE_JSON_FIELDS.VALUE_RENDEDER, valueRenderer);
 		JSONUtility.appendStringValue(stringBuilder,
-				FIELD_EXPRESSION_SIMPLE_JSON_FIELDS.VALUE_NAME, name, last);
+				FIELD_EXPRESSION_SIMPLE_JSON_FIELDS.VALUE_ITEM_ID, valueItemId, last);
 		return stringBuilder.toString();
 	}
 	
@@ -950,6 +953,7 @@ public class FilterJSON {
 		
 		String FIELD_LIST = "fieldList";
 		String FIELD_NAME = "fieldName";
+		String FIELD_ITEM_ID = "fieldItemId";
 		
 		String SELECTED_PARENTHESIS_OPEN = "parenthesisOpen";
 		String PARENTHESIS_OPEN_LIST = "parenthesisOpenList";
@@ -962,6 +966,7 @@ public class FilterJSON {
 		String SELECTED_OPERATION = "operation";
 		String OPERATION_LIST = "operationsList";
 		String OPERATION_NAME = "operationsName";
+		String OPERATION_ITEM_ID = "operationItemId";
 		
 		String SELECTED_NEGATE = "negation";
 		String NEGATE_LIST = "negationList";
@@ -1021,7 +1026,8 @@ public class FilterJSON {
 				fieldExpressionInTreeTO.getFieldsList());
 		JSONUtility.appendStringValue(stringBuilder,  FIELD_EXPRESSION_IN_TREE_JSON_FIELDS.FIELD_NAME, 
 				fieldExpressionInTreeTO.getFieldName());
-		
+		JSONUtility.appendStringValue(stringBuilder,  FIELD_EXPRESSION_IN_TREE_JSON_FIELDS.FIELD_ITEM_ID, 
+				fieldExpressionInTreeTO.getFieldItemId());
 		stringBuilder.append(getFieldExpressionSimpleJSONBase(fieldExpressionInTreeTO));
 		
 		JSONUtility.appendIntegerValue(stringBuilder, FIELD_EXPRESSION_IN_TREE_JSON_FIELDS.SELECTED_PARENTHESIS_OPEN,
@@ -1044,6 +1050,8 @@ public class FilterJSON {
 				fieldExpressionInTreeTO.getOperationsList());
 		JSONUtility.appendStringValue(stringBuilder, FIELD_EXPRESSION_IN_TREE_JSON_FIELDS.OPERATION_NAME,
 				fieldExpressionInTreeTO.getOperationName());
+		JSONUtility.appendStringValue(stringBuilder, FIELD_EXPRESSION_IN_TREE_JSON_FIELDS.OPERATION_ITEM_ID,
+				fieldExpressionInTreeTO.getOperationItemId());
 
 		JSONUtility.appendIntegerValue(stringBuilder, FIELD_EXPRESSION_IN_TREE_JSON_FIELDS.INDEX, fieldExpressionInTreeTO.getIndex(),true);
 

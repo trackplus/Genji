@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -40,6 +40,7 @@ public class GeneralSettings {
 		public static String LIMIT_SMTP_CONNECTIONS = "limitSMTPconnections";
 		public static String MAX_ITEMS = "maxItems";
 		public static String HISTORY_AND_EMAIL_DELAY = "historyAndEmailDelay";
+		public static String ACTION_LOG_TIMEOUT = "actionLogTimeout";
 		public static String EXPORT_DOCX_STYLE_IMAGE_CAPTION = "export.docx.style.imageCaptionStyle";
 		public static String EXPORT_DOCX_HIGHLIGHT_INLINE_CONTENT = "export.docx.style.highlightInlineContent";
 		public static String EXPORT_DOCX_STYLE_INLINE_CONTENT = "export.docx.style.inlineContentStyle";
@@ -51,9 +52,9 @@ public class GeneralSettings {
 	 */
 	public static void loadGeneralConfigs() {
 		try {
-			configMap = HandleHome.getProperties(HandleHome.GENERAL_SETTINGS_FILE, ApplicationBean.getApplicationBean().getServletContext());
+			configMap = HandleHome.getProperties(HandleHome.GENERAL_SETTINGS_FILE, ApplicationBean.getInstance().getServletContext());
 		} catch (ServletException e) {
-			LOGGER.error("ServletException by getting the " + HandleHome.GENERAL_SETTINGS_FILE + " from war " + e.getMessage(), e);
+			LOGGER.error("ServletException by getting the " + HandleHome.GENERAL_SETTINGS_FILE + " from war " + e.getMessage());
 		}
 	}
 
@@ -83,7 +84,7 @@ public class GeneralSettings {
 				try {
 					maxItems = Integer.valueOf(maxItemsStr);
 				} catch (NumberFormatException e) {
-					LOGGER.warn("Getting " + GENERAL_CONFIG.MAX_ITEMS + " as int from " +  maxItemsStr  + " failed with " + e.getMessage(), e);
+					LOGGER.warn("Getting " + GENERAL_CONFIG.MAX_ITEMS + " as int from " +  maxItemsStr  + " failed with " + e.getMessage());
 				}
 				
 			}
@@ -103,12 +104,31 @@ public class GeneralSettings {
 				try {
 					historyAndEmailDelay = Integer.valueOf(historyAndEmailDelayStr);
 				} catch (NumberFormatException e) {
-					LOGGER.warn("Getting " + GENERAL_CONFIG.HISTORY_AND_EMAIL_DELAY + " as int from " +  historyAndEmailDelayStr  + " failed with " + e.getMessage(), e);
+					LOGGER.warn("Getting " + GENERAL_CONFIG.HISTORY_AND_EMAIL_DELAY + " as int from " +  historyAndEmailDelayStr  + " failed with " + e.getMessage());
 				}
 				
 			}
 		}
 		return historyAndEmailDelay;
+	}
+	
+	/**
+	 * Gets the maximal number of items loaded from the database for performance reasons
+	 * @return
+	 */
+	public static int getActionLogTimeout() {
+		int actionLogTimeout = 10000;
+		if (configMap!=null) {
+			String actionLogTimeoutStr = configMap.getString(GENERAL_CONFIG.ACTION_LOG_TIMEOUT);
+			if (actionLogTimeoutStr!=null) {
+				try {
+					actionLogTimeout = Integer.valueOf(actionLogTimeoutStr);
+				} catch (NumberFormatException e) {
+					LOGGER.warn("Getting " + GENERAL_CONFIG.ACTION_LOG_TIMEOUT + " as int from " +  actionLogTimeoutStr  + " failed with " + e.getMessage(), e);
+				}
+			}
+		}
+		return actionLogTimeout;
 	}
 	
 	/**

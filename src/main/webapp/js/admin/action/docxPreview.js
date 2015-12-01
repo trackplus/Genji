@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -74,28 +74,24 @@ Ext.define("com.trackplus.admin.action.DocxPreview",{
 	 * Create the tree
 	 */
 	initTree: function() {
-		var modelName = this.getTreeProxyURL();//"projectPickerModel";
 		var treeFields = [{name : "id", mapping : "id", type: "string"},
 						{name : "text", mapping : "text", type: "string"},
 						{name : "leaf", mapping : "leaf", type: "boolean"},
 						{name : "iconCls", mapping : "iconCls", type: "string"}];
-		Ext.define(modelName, { extend: "Ext.data.Model",
-			proxy: {
-				type: "ajax",
-				url: this.getTreeProxyURL(),
-				extraParams: this.extraProxyParameters
-			},
-			fields: treeFields
-		});
 		var treeStore = Ext.create("Ext.data.TreeStore", {
-			model: modelName,
 			root: {
 				expanded: true,
 				id:this.getRootNodeID()
 			},
 			listeners: {
 				load: {fn: this.selectNode, scope:this}
-			}
+			},
+			proxy: {
+				type: "ajax",
+				url: this.getTreeProxyURL(),
+				extraParams: this.extraProxyParameters
+			},
+			fields: treeFields
 		});
 		this.treeConfig.store = treeStore;
 		this.tree= Ext.create("Ext.tree.Panel", this.treeConfig);

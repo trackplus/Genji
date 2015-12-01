@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -63,6 +63,7 @@ public class SystemProjectSpecificIssueNoRT extends SystemOutputBaseRT {
 	 * (avoid Integer parsing error in jasper reports)
 	 * @return
 	 */
+	@Override
 	public int getValueType() {
 		return ValueType.TEXT;
 	}
@@ -71,6 +72,7 @@ public class SystemProjectSpecificIssueNoRT extends SystemOutputBaseRT {
 	 * Whether the value of this field can be changed
 	 * @return
 	 */
+	@Override
 	public boolean isReadOnly() {
 		return true;
 	}
@@ -79,8 +81,8 @@ public class SystemProjectSpecificIssueNoRT extends SystemOutputBaseRT {
 	 * Creates the matcher object for configuring the matcher
 	 * @param fieldID
 	 */
+	@Override
 	public IMatcherDT getMatcherDT(Integer fieldID) {
-		//return new StringMatcherDT(fieldID);
 		//should not appear in the tree filter because only issueNo appears
 		return null;
 	}
@@ -94,13 +96,11 @@ public class SystemProjectSpecificIssueNoRT extends SystemOutputBaseRT {
 	@Override
 	public IMatcherRT getMatcherRT(Integer fieldID, int relation, Object matchValue,
 			MatcherContext matcherContext){
-		//return new IntegerMatcherRT(fieldID, relation, matchValue, matcherContext);
 		return new StringMatcherRT(fieldID, relation, matchValue, matcherContext);
 	}
 
 	@Override
 	public MatcherConverter getMatcherConverter() {
-		//return IntegerMatcherConverter.getInstance();
 		return StringMatcherConverter.getInstance();
 	}
 
@@ -114,6 +114,7 @@ public class SystemProjectSpecificIssueNoRT extends SystemOutputBaseRT {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public String getShowValue(Integer fieldID, Integer parameterCode, Object value,
 			Integer workItemID, LocalLookupContainer localLookupContainer, Locale locale) {
 		if (workItemID!=null) {
@@ -178,6 +179,7 @@ public class SystemProjectSpecificIssueNoRT extends SystemOutputBaseRT {
 	 * Whether the field might be matched in for an excel column
 	 * @return
 	 */
+	@Override
 	public boolean mightMatchExcelColumn() {
 		return false;
 	}
@@ -188,6 +190,7 @@ public class SystemProjectSpecificIssueNoRT extends SystemOutputBaseRT {
 	 * @param workItemBean the lucene value might depend on other fields of the workItem
 	 * @return
 	 */
+	@Override
 	public String getLuceneValue(Object value, TWorkItemBean workItemBean) {
 		String showValue = getShowValue(value, workItemBean);
 		if (showValue==null) {
@@ -202,6 +205,7 @@ public class SystemProjectSpecificIssueNoRT extends SystemOutputBaseRT {
 	 * Whether the field should be stored
 	 * @return
 	 */
+	@Override
 	public int getLuceneStored() {
 		return LuceneUtil.STORE.YES;
 	}
@@ -210,10 +214,12 @@ public class SystemProjectSpecificIssueNoRT extends SystemOutputBaseRT {
 	 * Whether the field should be tokenized
 	 * @return
 	 */
+	@Override
 	public int getLuceneTokenized() {
 		return LuceneUtil.TOKENIZE.NO;
 	}
 
+	@Override
 	public int getLookupEntityType() {
 		return LuceneUtil.LOOKUPENTITYTYPES.DIRECTTEXT;
 	}

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -54,7 +54,7 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 			titleKey = '';
 	    }
 
-	    if (titleKey != null) {
+	    if (titleKey ) {
 		    return getText(titleKey);
 	    } else {
 		    return '';
@@ -74,17 +74,17 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 	},
 
 	getImportWizardUrl : function(card, reload) {
-	    if (card == 1) {
+	    if (card === 1) {
 		    return 'docxlUploadRender.action';
 	    } else {
-		    if (card == 2) {
+		    if (card === 2) {
 			    return "docxUpload.action";
 		    } else {
-			    if (card == 3) {
+			    if (card === 3) {
 				    // return 'docxAddTo.action';
 				    return "docxPreview.action";
 			    } else {
-				    if (card == 4) {
+				    if (card === 4) {
 					    return "docxImport.action";
 				    }
 			    }
@@ -100,7 +100,7 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 	 * problem which prevents navigating to the next card
 	 */
 	loadDataForCard : function(cardNo, reload, params) {
-	    if (cardNo == 1) {
+	    if (cardNo === 1) {
 		    // for the very first card nothing to submit only render (load)
 		    var panel1 = this.wizardPanel.getComponent('card1');
 		    panel1.add(this.getImportWizardItemsForCard(cardNo));
@@ -120,7 +120,7 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 		    });
 	    } else {
 		    // from card to each card starts with a submit
-		    if (cardNo == 2) {
+		    if (cardNo === 2) {
 			    var panel1 = this.wizardPanel.getComponent('card1');
 			    if (!panel1.getForm().isValid()) {
 				    Ext.MessageBox.show({
@@ -150,7 +150,7 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 			    // this.submitFromCardToCardMessageOnFailure(1, 2, null, reload,
 				// true);
 		    } else {
-			    if (cardNo == 3) {
+			    if (cardNo === 3) {
 				    var params = {
 				        fileName : this.fileName,
 				        workItemID : this.workItemID,
@@ -159,8 +159,8 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 				    };
 				    this.submitFromCardToCard(2, 3, params, false, 300);
 			    } else {
-				    if (cardNo == 4) {
-					    if (params == null) {
+				    if (cardNo === 4) {
+					    if (CWHF.isNull(params)) {
 						    params = {
 							    fileName : this.fileName
 						    };
@@ -177,17 +177,17 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 	 * data is back from the server
 	 */
 	getImportWizardItemsForCard : function(card) {
-	    if (card == 1) {
+	    if (card === 1) {
 		    return this.getImportWizardUploadItems();
 	    } else {
-		    if (card == 2) {
+		    if (card === 2) {
 			    return this.getImportWizardAddToItems();
 		    } else {
-			    if (card == 3) {
+			    if (card === 3) {
 				    return this.createPreviewPanel();
 				    // return this.getExcelInvalidHandlingItems();
 			    } else {
-				    if (card == 4) {
+				    if (card === 4) {
 					    return this.getExcelErrorAndConflictHandlingItems();
 				    }
 			    }
@@ -196,16 +196,16 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 	},
 
 	postDataProcess : function(panel, jsonResult, cardTo, cardFrom) {
-	    if (cardTo == 1) {
+	    if (cardTo === 1) {
 		    this.postProcessUpload(panel, jsonResult);
 	    } else {
-		    if (cardTo == 2) {
+		    if (cardTo === 2) {
 			    this.postProcessAddTo(panel, jsonResult);
 		    } else {
-			    if (cardTo == 3) {
+			    if (cardTo === 3) {
 				    this.postProcessPreview(panel, jsonResult);
 			    } else {
-				    if (cardTo == 4) {
+				    if (cardTo === 4) {
 					    this.postProcessInvalidHandling(panel, jsonResult, cardTo, cardFrom);
 					    // this.postProcessExcelErrorAndConflictHandling(panel,
 						// jsonResult);
@@ -225,7 +225,8 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 	        allowBlank : false,
 	        labelWidth : 150,
 	        width : 500,
-	        labelIsLocalized : true
+	        labelIsLocalized : true,
+	        itemId: "uploadFile"
 	    }, {
 		    change : {
 		        fn : function() {
@@ -248,7 +249,7 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 	},
 
 	getImportWizardAddToItems : function() {
-	    if (this.workItemID == null) {
+	    if (CWHF.isNull(this.workItemID)) {
 		    var options = [ {
 		        id : 1,
 		        label : "admin.actions.importDocx.lbl.projectRelease"
@@ -257,12 +258,8 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 		        label : "admin.actions.importDocx.lbl.parent"
 		    } ];
 		    var optionList = CWHF.getRadioButtonItems(options, "addTo", 'id', 'label', 1, false, false);
-		    var addToRadioGroup = CWHF.getRadioGroup("addToType", "admin.actions.importDocx.lbl.addTo", 350,
-		            optionList, null,
-		            /*
-					 * { labelWidth: this.labelWidth, labelAlign:
-					 * this.labelAlign, labelStyle: this.labelStyle},
-					 */
+		    var addToRadioGroup = CWHF.getRadioGroup("admin.actions.importDocx.lbl.addTo", 350,
+		            optionList, {itemId:"addToType"},
 		            {
 			            change : {
 			                fn : this.addToTypeChanged,
@@ -277,7 +274,8 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 		        closedFlag : false,
 		        projectIsSelectable : true,
 		        labelWidth : 150,
-		        width : 400
+		        width : 400,
+		        itemId: 'projectOrReleaseID'
 		    };
 		    var releasePicker = CWHF.createSingleTreePicker("admin.actions.importDocx.lbl.projectRelease",
 		            "projectOrReleaseID", null, null, releasePickerConfig);
@@ -285,13 +283,15 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 		    var parentIssueNo = CWHF.createTextField(null, "txtIssueNo", {
 		        disabled : true,
 		        readOnly : true,
-		        width : 50
+		        width : 50,
+		        itemId :'txtIssueNo'
 		    });
 		    var parentIssueTitle = CWHF.createTextField(null, "txtIssueTitle", {
 		        disabled : true,
 		        readOnly : true,
 		        margin : '0 5 0 5',
-		        width : 300
+		        width : 300,
+		        itemId : 'txtIssueTitle'
 		    });
 		    var selectParent = {
 		        xtype : 'button',
@@ -318,16 +318,17 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 		    });
 		    return [ addToRadioGroup, releasePicker, parentPanel ];
 	    } else {
-		    // var workItemHidden = CWHF.createHiddenField("workItemID");
 		    var issueNo = CWHF.createTextField(null, "txtIssueNo", {// disabled:this.jsonData.disabled,
 		        readOnly : true,
-		        width : 50
+		        width : 50,
+		        itemdId : 'createHiddenField'
 		    });
 		    var issueTitle = CWHF.createTextField(null, "txtIssueTitle", {// disabled:
 																			// this.jsonData.disabled,
 		        readOnly : true,
 		        margin : '0 5 0 5',
-		        width : 300
+		        width : 300,
+		        itemId: 'txtIssueTitle'
 		    });
 		    return [ issueNo, issueTitle ];
 	    }
@@ -348,11 +349,11 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 	    var parentPanel = formPanel.getComponent("parentPanel");
 	    this.parentID = item["objectID"];
 	    var txtIssueNo = parentPanel.getComponent("txtIssueNo");
-	    if (txtIssueNo != null) {
+	    if (txtIssueNo ) {
 		    txtIssueNo.setValue(item["id"]);
 	    }
 	    var txtIssueTitle = parentPanel.getComponent("txtIssueTitle");
-	    if (txtIssueTitle != null) {
+	    if (txtIssueTitle ) {
 		    txtIssueTitle.setValue(item["title"])
 	    }
 	},
@@ -360,15 +361,15 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 	addToTypeChanged : function(radioGroup, newValue, oldValue, options) {
 	    var formPanel = radioGroup.ownerCt;
 	    var checkedArr = radioGroup.getChecked();
-	    if (checkedArr.length == 1) {
+	    if (checkedArr.length === 1) {
 		    var checkedRadio = checkedArr[0];
 		    var value = checkedRadio.getSubmitValue();
 		    // project=1, parent=2
 		    var projectReleasesPicker = formPanel.getComponent("projectOrReleaseID");
-		    projectReleasesPicker.setDisabled(value != 1);
+		    projectReleasesPicker.setDisabled(value !== 1);
 		    var parentPanel = formPanel.getComponent("parentPanel");
 		    var searchParent = parentPanel.getComponent("searchParent");
-		    searchParent.setDisabled(value == 1);
+		    searchParent.setDisabled(value === 1);
 	    }
 	},
 
@@ -378,10 +379,9 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 	postProcessAddTo : function(formPanel, data) {
 	    this.workItemID = data["workItemID"];
 	    this.fileName = data["fileName"];
-	    if (this.workItemID == null) {
+	    if (CWHF.isNull(this.workItemID)) {
 		    var projectReleasesPicker = formPanel.getComponent("projectOrReleaseID");
-		    projectReleasesPicker.updateData(data["projectReleaseTree"]);
-		    // projectReleasesPicker.setValue(data["selectedProjectReleaseID"]);
+		    projectReleasesPicker.updateMyOptions(data["projectReleaseTree"]);
 	    } else {
 		    var issueNo = formPanel.getComponent("txtIssueNo");
 		    issueNo.setValue(data["itemID"]);
@@ -432,7 +432,7 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 	    var rootNode = itemTree.store.getRootNode();
 	    rootNode.removeAll(true);
 	    var data = jsonResult.data;
-	    if (data != null) {
+	    if (data ) {
 		    rootNode.appendChild(data.itemTree);
 	    }
 	},
@@ -475,7 +475,7 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 	},
 
 	postProcessInvalidHandling : function(panel, jsonResult, cardTo, cardFrom) {
-	    if (cardFrom == 2) {
+	    if (cardFrom === 2) {
 		    this.postProcessInvalidHandlingFirstTime(panel, jsonResult)
 	    } else {
 		    this.postProcessInvalidHandlingUpdate(panel, jsonResult);
@@ -491,7 +491,7 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 	    var fieldList = data['fieldList'];
 	    var possibleValues = data['possibleValues'];
 	    var invalidValueHandlingList = data['invalidValueHandlingList'];
-	    if (panel != null) {
+	    if (panel ) {
 		    var invalidValueHandlingPanel = panel.getComponent("invalidValueHandlingPanel");
 		    items = [];
 		    items.push({
@@ -504,7 +504,7 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 		        html : '<b>' + getText('admin.actions.importExcel.invalidValueHadling.lbl.defaultfieldValue') + '</b>',
 		        colspan : 2
 		    });
-		    if (fieldList != null) {
+		    if (fieldList ) {
 			    Ext.Array.forEach(fieldList, function(fieldBean) {
 				    var fieldId = fieldBean.id;
 				    var possibleFieldValues = possibleValues['fieldID' + fieldId];
@@ -520,8 +520,8 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 				    var invalidValueHandlingRadioButtons = CWHF.getRadioButtonItems(invalidValueHandlingList,
 				            'invalidValueHandlingMap[' + fieldId + ']', 'id', 'label', invalidValueHandlingValue,
 				            false, true);
-				    var invalidValueHandlingRadioGroup = CWHF.getRadioGroup('invalidValueHandling' + fieldId, '', 250,
-				            invalidValueHandlingRadioButtons, null, {
+				    var invalidValueHandlingRadioGroup = CWHF.getRadioGroup('', 250,
+				            invalidValueHandlingRadioButtons, {itemId:'invalidValueHandling' + fieldId}, {
 					            change : {
 					                fn : this.onInvalidHandlingChange,
 					                scope : this,
@@ -531,11 +531,11 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 				            });
 				    items.push(invalidValueHandlingRadioGroup);
 				    var control;
-				    if (fieldId == 1) {
+				    if (fieldId === 1) {
 					    control = CWHF.createSingleTreePicker(null, "defaultValuesMap[" + fieldId + "]",
 					            possibleValueList, defaultFieldValue, {
 					                allowBlank : false,
-					                disabled : invalidValueHandlingValue == 2,
+					                disabled : invalidValueHandlingValue === 2,
 					                itemId : 'defaultValues' + fieldId
 					            }, {
 						            select : {
@@ -546,7 +546,7 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 					            });
 				    } else {
 					    control = CWHF.createCombo(null, 'defaultValuesMap[' + fieldId + ']', {
-					        disabled : invalidValueHandlingValue == 2,
+					        disabled : invalidValueHandlingValue === 2,
 					        width : 200,
 					        maxWidth : 250,
 					        data : possibleValueList,
@@ -592,18 +592,18 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 	    var data = jsonResult.data;
 	    var fieldList = data['fieldList'];
 	    var possibleValues = data['possibleValues'];
-	    if (panel != null) {
+	    if (panel ) {
 		    var invalidValueHandlingPanel = panel.getComponent("invalidValueHandlingPanel");
-		    if (fieldList != null) {
+		    if (fieldList ) {
 			    Ext.Array.forEach(fieldList, function(fieldId) {
 				    var possibleFieldValues = possibleValues['fieldID' + fieldId];
 				    // var invalidValueHandlingValue =
 					// possibleFieldValues['invalidValueHandlingValue'];
 				    var possibleValueList = possibleFieldValues['possibleFieldValues'];
 				    var defaultFieldValue = possibleFieldValues['defaultFieldValue'];
-				    if (fieldId != 1) {
+				    if (fieldId !== 1) {
 					    control = invalidValueHandlingPanel.getComponent('defaultValues' + fieldId);
-					    if (control != null) {
+					    if (control ) {
 						    control.getStore().loadData(possibleValueList);
 						    control.setValue(defaultFieldValue);
 					    }
@@ -624,16 +624,16 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 	    var checkedRadioValue = null;
 	    if (checkedArr.length > 0) {
 		    checkedRadio = checkedArr[0];
-		    if (checkedRadio != null) {
+		    if (checkedRadio ) {
 			    checkedRadioValue = checkedRadio.getSubmitValue();
 		    }
 	    }
-	    fieldSelect.setDisabled(checkedRadioValue == 2);
+	    fieldSelect.setDisabled(checkedRadioValue === 2);
 	    this.onRefreshInvalidHandling(fieldId);
 	},
 
 	onRefreshInvalidHandling : function(fieldId) {
-	    if (fieldId == 1 || fieldId == 2) {
+	    if (fieldId === 1 || fieldId === 2) {
 		    // reload is needed only for project or issueType change
 		    // most of the other lists depend on project and issueType
 		    this.loadDataForCard(3, true);
@@ -702,9 +702,9 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 	    // previous.setDisabled(disableFinal);
 	    var errorAndConflictPanel = panel.getComponent('errorAndConflict');
 	    var errorCode = data['errorCode'];
-	    if (errorCode == null) {
+	    if (CWHF.isNull(errorCode)) {
 		    var message = data['message'];
-		    if (message != null) {
+		    if (message ) {
 			    var errorPanel = errorAndConflictPanel.getComponent('errorPanel');
 			    errorPanel.add({
 			        xtype : 'label',
@@ -737,12 +737,12 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 		    // grid and row errors
 		    var errorPanel = errorAndConflictPanel.getComponent('errorPanel');
 		    var gridErrors = data['gridErrors'];
-		    if (gridErrors != null) {
+		    if (gridErrors ) {
 			    for (var i = 0; i < gridErrors.length; i++) {
 				    var gridError = gridErrors[i];
 				    var errorMessage = gridError['errorMessage'];
 				    var locationList = gridError['locationList'];
-				    if (locationList != null) {
+				    if (locationList ) {
 					    errorPanel.add({
 					        xtype : 'label',
 					        html : '<b>' + errorMessage + '</b>'
@@ -757,7 +757,7 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 			    }
 		    }
 		    var rowErrors = data['rowErrors'];
-		    if (rowErrors != null) {
+		    if (rowErrors ) {
 			    for (var i = 0; i < rowErrors.length; i++) {
 				    var rowError = rowErrors[i];
 				    var errorMessage = rowError['errorMessage'];
@@ -777,11 +777,11 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 		    // field conflicts
 		    var errorMessage = data['errorMessage'];
 		    var conflicts = data['conflicts'];
-		    if (conflicts != null) {
+		    if (conflicts ) {
 			    var conflictPanel = errorAndConflictPanel.getComponent('conflictPanel');
 			    var conflictResolutionList = data['conflictResolutionList'];
 			    items = [];
-			    if (errorMessage != null) {
+			    if (errorMessage ) {
 				    items.push({
 				        xtype : 'label',
 				        html : errorMessage,
@@ -821,8 +821,8 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 			    }, this);
 			    var conflictResolutionRadioButtons = CWHF.getRadioButtonItems(conflictResolutionListBold,
 			            'conflictResoultionEntry', 'id', 'label', false, false, true);
-			    var conflictResolutionRadioGroup = CWHF.getRadioGroup('conflictResoultionRadioGroup', '', 300,
-			            conflictResolutionRadioButtons, null, {
+			    var conflictResolutionRadioGroup = CWHF.getRadioGroup('', 300,
+			            conflictResolutionRadioButtons, {itemId:'conflictResoultionRadioGroup'}, {
 				            change : {
 				                fn : this.onExcelConflictHandlingForAll,
 				                scope : this,
@@ -836,7 +836,7 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 				    var row = conflict['row'];
 				    var fields = conflict['fields'];
 				    Ext.Array.forEach(fields, function(field, index) {
-					    if (index == 0) {
+					    if (index === 0) {
 						    items.push({
 						        xtype : 'label',
 						        html : row,
@@ -868,8 +868,7 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 					    this.workItemIDFieldIDs.push(workItemIDFieldID);
 					    var conflictResolutionRadioButtons = CWHF.getRadioButtonItems(conflictResolutionList,
 					            'overwriteMap[' + workItemIDFieldID + "]", 'id', 'label', false, false, true);
-					    var conflictResolutionRadioGroup = CWHF.getRadioGroup('conflictResoultion' + workItemIDFieldID,
-					            '', 300, conflictResolutionRadioButtons);
+					    var conflictResolutionRadioGroup = CWHF.getRadioGroup('', 300, conflictResolutionRadioButtons,{itemId:'conflictResoultion' + workItemIDFieldID});
 					    items.push(conflictResolutionRadioGroup);
 				    }, this);
 			    }, this);
@@ -894,7 +893,7 @@ Ext.define('com.trackplus.admin.action.ImportDocx', {
 			    // radioGroup.setValue(conflictResolutionValue);
 			    // Once setValue fixed remove this cycle
 			    radioGroup.items.each(function(item) {
-				    item.setValue(item.inputValue == conflictResolutionValue);
+				    item.setValue(item.inputValue === conflictResolutionValue);
 			    });
 		    }, this)
 	    }, this)

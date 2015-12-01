@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -41,6 +41,7 @@ import java.util.Stack;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.poi.ss.usermodel.Cell;
@@ -528,7 +529,7 @@ public class ExcelImportBL {
 			projectSpecificLookups = loadProjectLookups(GeneralUtils.createIntegerListFromBeanList(GeneralUtils.createListFromCollection(projectLookups
 					.values())));
 		}
-		boolean projectSpecificIDsActive = ApplicationBean.getApplicationBean().getSiteBean().getProjectSpecificIDsOn();
+		boolean projectSpecificIDsActive = ApplicationBean.getInstance().getSiteBean().getProjectSpecificIDsOn();
 		Map<Integer, TProjectBean> projectBeansMap = new HashMap<Integer, TProjectBean>();
 		if (projectSpecificIDsActive) {
 			List<TProjectBean> projectBeans = ProjectBL.loadUsedProjectsFlat(personID);
@@ -1161,7 +1162,7 @@ public class ExcelImportBL {
 								}
 								/*
 								 * if
-								 * (ApplicationBean.getApplicationBean().getSiteBean
+								 * (ApplicationBean.getInstance().getSiteBean
 								 * ().getSummaryItemsBehavior() &&
 								 * ItemBL2.hasChildren
 								 * (workItemBean.getObjectID())) { Date
@@ -1918,7 +1919,8 @@ public class ExcelImportBL {
 				}
 			}
 		} catch (Exception e) {
-			LOGGER.debug("Getting the string value failed with " + e.getMessage(), e);
+			LOGGER.debug("Getting the string value failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		return "";
 	}

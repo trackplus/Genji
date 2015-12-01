@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -73,17 +73,17 @@ public class AddScreenshotAction extends ActionSupport implements Preparable,Ses
 	private Map application;
 	private Map<String, Object> session;
 
+	@Override
 	public void setSession(Map<String, Object> session) {
 		this.session=session;
 	}
+	@Override
 	public void setApplication(Map application) {
 		this.application = application;
 	}
+	@Override
 	public void prepare() throws Exception {
 		locale = (Locale) session.get(Constants.LOCALE_KEY);
-		/*if(workItemID==null){
-			workItemID=new Integer(-1);
-		}*/
 		TPersonBean person=((TPersonBean) session.get(Constants.USER_KEY));
 		if(person!=null){
 			personID=person.getObjectID();
@@ -144,7 +144,7 @@ public class AddScreenshotAction extends ActionSupport implements Preparable,Ses
 
 		}
 		InputStream is = new ByteArrayInputStream(bytearray);
-		ApplicationBean appBean = ApplicationBean.getApplicationBean();
+		ApplicationBean appBean = ApplicationBean.getInstance();
 		if(appBean.isBackupInProgress()){
 			errors.add(new LabelValueBean(getText("item.tabs.attachment.err.backupInProgress"),"file"));
 			JSONUtility.encodeJSONErrors(ServletActionContext.getResponse(), errors);
@@ -166,7 +166,7 @@ public class AddScreenshotAction extends ActionSupport implements Preparable,Ses
 			}
 			String sessionID=httpSession.getId();
 			try {
-				attachments=AttachBL.saveLocal(workItemID, description, file, is, attachments, sessionID,personID);
+				AttachBL.saveLocal(workItemID, description, file, is, attachments, sessionID,personID);
 			} catch (AttachBLException e) {
 				String err="";
 				if(e.getLocalizedKey()!=null){
@@ -181,12 +181,10 @@ public class AddScreenshotAction extends ActionSupport implements Preparable,Ses
 			}
 			ctx.setAttachmentsList(attachments);
 		}else{
-			//Integer userID=((TPerson) session.get(Constants.USER_KEY)).getObjectID();
 			try {
 				AttachBL.save(workItemID, description, file,is,personID);
 				//add to history
 				HistorySaverBL.addAttachment(workItemID, personID, locale, file, description, Long.valueOf(bytearray.length), false);
-						/*HistorySaverBL.getAttachmentHistoryText(file, description, Long.valueOf(bytearray.length), locale);*/
 			} catch (AttachBLException e) {
 				LOGGER.error("Can't save attachemnt",e);
 				String err="";

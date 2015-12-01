@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -93,6 +93,7 @@ public class JasperReportExporter implements ReportExporter {
 		static String DYNAMIC_ICONS_URL = "DYNAMIC_ICONS_URL";
 	}
 
+	@Override
 	public void exportReport(Document document, TPersonBean personBean, Locale locale,
 			Map<String, Object> parameters, OutputStream os, Map<String, Object> contextMap,
 			Map<String, Object> description)	throws ReportExportException {
@@ -141,7 +142,7 @@ public class JasperReportExporter implements ReportExporter {
 			try {
 				jasperReport = JasperCompileManager.compileReport(jasperDesign);
 			} catch (JRException e) {
-				LOGGER.error("Compiling the report failed with failed with " + e.getMessage(), e);
+				LOGGER.error("Compiling the report failed with failed with " + e.getMessage());
 				if (LOGGER.isDebugEnabled()) {
 					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
@@ -164,7 +165,8 @@ public class JasperReportExporter implements ReportExporter {
 			try {
 				jasperReport = (JasperReport) JRLoader.loadObject(templateIn);
 			} catch (JRException e) {
-				LOGGER.error("Loading the template from " + completeURL + " failed with " + e.getMessage(), e);
+				LOGGER.error("Loading the template from " + completeURL + " failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 			String resourceBundleName=jasperReport.getResourceBundle();
 			if(resourceBundleName!=null) {
@@ -189,17 +191,17 @@ public class JasperReportExporter implements ReportExporter {
 		in=this.getClass().getClassLoader().getResourceAsStream("logo-254x105.png");
 		try {
 			if (in != null) {
-				imageURL = new URL(ApplicationBean.getApplicationBean().getServletContext().getResource("/") + "logoAction.action?type=r");
+				imageURL = new URL(ApplicationBean.getInstance().getServletContext().getResource("/") + "logoAction.action?type=r");
 			} else {
 				String theResource = "/WEB-INF/classes/resources/Logos/logo-254x105.png";
-				imageURL = ApplicationBean.getApplicationBean().getServletContext().getResource(theResource);
+				imageURL = ApplicationBean.getInstance().getServletContext().getResource(theResource);
 				parameters.put(REPORT_PARAMETERS.LOGO_URL, imageURL.toExternalForm());
 			}
 		} catch (Exception e) {
 			System.err.println(e.getStackTrace());	
 		}
 
-		String copyrightHolder = ApplicationBean.getApplicationBean().getLicenseHolder();
+		String copyrightHolder = ApplicationBean.getInstance().getLicenseHolder();
 		if (copyrightHolder != null && !"".equals(copyrightHolder)) {
 			parameters.put(REPORT_PARAMETERS.COPYRIGHTHOLDER, copyrightHolder);
 		}
@@ -229,7 +231,7 @@ public class JasperReportExporter implements ReportExporter {
 			LOGGER.debug("After filling the report");
 			virtualizer.setReadOnly(true);
 		} catch (Exception e) {
-			LOGGER.error(e.getMessage(), e);
+			LOGGER.error(e.getMessage());
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
@@ -301,16 +303,16 @@ public class JasperReportExporter implements ReportExporter {
 					LOGGER.debug("after export");
 				}
 			} catch (IOException e) {				
-				LOGGER.error(e.getMessage(),e);
+				LOGGER.error(e.getMessage());
 				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 
 				throw new ReportExportException(ERROR_CREATE_REPORT, e);
 			} catch (JRException e) {
-				LOGGER.error(e.getMessage(), e);
+				LOGGER.error(e.getMessage());
 				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				throw new ReportExportException(ERROR_CREATE_REPORT, e);
 			} catch (Exception e) {
-				LOGGER.error("Export failed with " + e.getMessage(),e);
+				LOGGER.error("Export failed with " + e.getMessage());
 
 				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
@@ -330,7 +332,8 @@ public class JasperReportExporter implements ReportExporter {
 						virtualizer.cleanup();
 					}
 				} catch (Exception e) {
-					LOGGER.warn("Cleaning up the virtualized temporary files failed with " + e.getMessage(), e);
+					LOGGER.warn("Cleaning up the virtualized temporary files failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				}
 			}
 
@@ -363,7 +366,8 @@ public class JasperReportExporter implements ReportExporter {
 				dir.mkdirs();
 			}
 		} catch (Exception e) {
-			LOGGER.error("Creating the temporary directory failed with " + e.getMessage(), e);
+			LOGGER.error("Creating the temporary directory failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		LOGGER.debug("Temp directory " + dir.getAbsolutePath());
 		return dir.getAbsolutePath();

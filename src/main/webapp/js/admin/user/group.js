@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -26,12 +26,9 @@
 Ext.define('com.trackplus.admin.user.Group',{
 	extend:'com.trackplus.admin.TreeDetailAssignment',
 	config: {
-		rootID: '',
-		baseAction: null,
-		//rootMessage: null,
-		dynamicIcons: false
+		rootID: '_'
 	},
-	baseAction:'group',
+	baseAction:"group",
 	editWidth: 475,
 	editHeight: 305,
 	labelWidth:145,
@@ -52,9 +49,8 @@ Ext.define('com.trackplus.admin.user.Group',{
 
 	constructor: function(config) {
 		var config = config || {};
-		this.initialConfig = config;
-		Ext.apply(this, config);
-		this.init();
+		this.initConfig(config);
+		this.initBase();
 	},
 
 	getEntityLabel: function(extraConfig) {
@@ -122,7 +118,7 @@ Ext.define('com.trackplus.admin.user.Group',{
 	getToolbarActionChangesForTreeNodeSelectionChange: function(selectedNodes) {
 		var noSelection = false;
 		var multipleSelection = false;
-		if (selectedNodes==null) {
+		if (CWHF.isNull(selectedNodes)) {
 			noSelection = true;
 		} else {
 			multipleSelection = selectedNodes.length>1;
@@ -165,7 +161,7 @@ Ext.define('com.trackplus.admin.user.Group',{
 		var load = {loadHandler: this.showAssignmentsLoadHandler};
 		var personID = null;
 		var recordData = this.getSingleSelectedRecordData(true);
-		if (recordData!=null) {
+		if (recordData) {
 			personID = recordData['id'];
 		}
 		var windowParameters = {title:title,
@@ -189,10 +185,10 @@ Ext.define('com.trackplus.admin.user.Group',{
 
 	getAssignmentGrid: function(personID) {
 		var gridComponent = Ext.create("com.trackplus.admin.user.UserRolesInProject",
-				{urlStore:'rolesInProjects.action', personID:personID, group:true});
-		var grid = gridComponent.getGrid();
+				{personID:personID, group:true});
+		//var grid = gridComponent.getGrid();
 		//grid.store.load();
-		return [grid];
+		return [gridComponent];
 	},
 
 	/**
@@ -201,9 +197,9 @@ Ext.define('com.trackplus.admin.user.Group',{
 	 */
 	getEditParams: function() {
 		var recordData = this.getSingleSelectedRecordData(true);
-		if (recordData!=null) {
+		if (recordData) {
 			var nodeID = recordData['id'];
-			if (nodeID!=null) {
+			if (nodeID) {
 				return {node:nodeID};
 			}
 		}
@@ -222,14 +218,14 @@ Ext.define('com.trackplus.admin.user.Group',{
 	 * refreshParamsFromResult
 	 */
 	onAddEdit: function(title, loadParams, submitParams) {
-		var loadUrl = this.baseAction + '!edit.action';
+		var loadUrl = this.getBaseAction() + '!edit.action';
 		var load = {loadUrl:loadUrl, loadUrlParams:loadParams};
-		var submitUrl = this.baseAction + '!save.action';
+		var submitUrl = this.getBaseAction() + '!save.action';
 		var submit = {submitUrl:submitUrl,
 					submitUrlParams:submitParams,
 					submitButtonText:getText('common.btn.save'),
 					refreshAfterSubmitHandler:com.trackplus.util.RefreshAfterSubmit.refreshTreeAfterSubmit,
-					refreshParametersBeforeSubmit:{nodeIDToReload: this.rootID},
+					refreshParametersBeforeSubmit:{nodeIDToReload: this.getRootID()},
 					refreshParametersAfterSubmit:[{parameterName:'nodeIDToSelect', fieldNameFromResult:'node'},
 												{parameterName:'reloadTree', fieldNameFromResult:'reloadTree'}]};
 		var items = this.getPanelItems();
@@ -260,26 +256,26 @@ Ext.define('com.trackplus.admin.user.Group',{
 	},
 
 	onRemovePerson: function() {
-		this.reloadAssigned(this.baseAction+"!unassign.action", {})
+		this.reloadAssigned(this.getBaseAction()+"!unassign.action", {})
 	},
 
 	reload: com.trackplus.util.RefreshAfterSubmit.refreshTreeAfterSubmit,
 
 	getReloadParamsAfterDelete: function(selectedRecords, extraConfig, responseJson) {
 	    var reloadParams = {reloadTree:true};
-	    if (selectedRecords!=null && selectedRecords.length>0) {
+	    if (selectedRecords && selectedRecords.length>0) {
 	        //we suppose that only one selection is allowed in tree
 	    	var selNode = selectedRecords[0];
 	    	reloadParams["nodeIDToReload"] = selNode.parentNode.data.id;
-	    	if (selectedRecords.length==1) {
+	    	if (selectedRecords.length===1) {
 	    		//one group was deleted: select the previous or next if exist
-	            if (selNode!=null) {
+	            if (selNode) {
 	                var previousSibling = selNode.previousSibling;
-	                if (previousSibling!=null) {
+	                if (previousSibling) {
 	                    reloadParams["nodeIDToSelect"] = previousSibling.data.id;
 	                } else {
 	                    var nextSibling = selNode.nextSibling;
-	                    if (nextSibling!=null) {
+	                    if (nextSibling) {
 	                        reloadParams["nodeIDToSelect"] = nextSibling.data.id;
 	                    } else {
 	                        reloadParams["resetDetail"] = true;
@@ -309,7 +305,7 @@ Ext.define('com.trackplus.admin.user.Group',{
 
 	onDeleteGroup: function() {
 		var selectedRecords = this.getSelection(true);
-		if (selectedRecords!=null) {
+		if (selectedRecords) {
 			this.deleteHandler(selectedRecords, {fromTree:true});
 		}
 	},
@@ -319,7 +315,7 @@ Ext.define('com.trackplus.admin.user.Group',{
 	 * extraConfig: for simple grid nothing, for tree with grid {fromTree:fromTree, isLeaf:isLeaf}
 	 */
 	getDeleteUrl: function(extraConfig){
-		return this.baseAction + '!delete.action';
+		return this.getBaseAction() + '!delete.action';
 	},
 
 	/*getDeleteParams: function(selectedRecords, extraConfig) {
@@ -343,23 +339,40 @@ Ext.define('com.trackplus.admin.user.Group',{
 	getColumnModel: function() {
 		return [{text:getText('admin.user.profile.lbl.userName'),
 			flex:2, dataIndex:'userName', sortable:true,
-			filterable:true, renderer:this.renderer
+			renderer:this.renderer,
+			filter: {
+	            type: "string"
+	        }
 		}, {
 			text:getText('common.lbl.name'),
 			flex:2, dataIndex:'name', sortable:true,
-			filterable:true, renderer:this.renderer
+			renderer:this.renderer,
+			filter: {
+	            type: "string"
+	        }
 		}, {
 			text:getText('admin.user.profile.lbl.department'),
 			flex:2, dataIndex:'department', sortable:true,
-			filterable:true, renderer:this.renderer
+			renderer:this.renderer,
+			filter: {
+	            type: "string"
+	        }
 		}, {
 			text:getText('admin.user.profile.lbl.employeeId'),
 			flex:1, dataIndex:'employeeId', sortable:true,
-			filterable:true, renderer:this.renderer, hidden: true
+			renderer:this.renderer, hidden: true,
+			filter: {
+	            type: "string"
+	        }
 		}, {
 			text:getText('admin.user.manage.lbl.activ'),
 			flex:1, dataIndex:'activeLabel', sortable:true,
-			filterable:true, renderer:this.renderer, hidden: true
+			renderer:this.renderer, hidden: true,
+			filter: {
+				type: "list",
+				options: [getText("common.boolean.Y"),
+							getText("common.boolean.N")]
+			}
 		}];
 	},
 
@@ -379,30 +392,6 @@ Ext.define('com.trackplus.admin.user.Group',{
 
 	enableColumnHide: function() {
 		return true;
-	},
-
-	getGridFeatures: function() {
-		return[{
-			ftype: 'filters',
-			encode: false,// json encode the filter query
-			local: true,// defaults to false (remote filtering)
-			filters: [{
-				type: 'string',
-				dataIndex: 'userName'
-			}, {
-				type: 'string',
-				dataIndex: 'name'
-			}, {
-				type: 'string',
-				dataIndex: 'department'
-			}, {
-				type: 'string',
-				dataIndex: 'activeLabel'
-			}, {
-				type: 'string',
-				dataIndex: 'employeeId'
-			}]
-		}];
 	},
 
 	getDetailWidth: function() {

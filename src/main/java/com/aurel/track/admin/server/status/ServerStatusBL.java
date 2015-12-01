@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -209,7 +209,7 @@ public class ServerStatusBL {
 					+ dbm.getDriverVersion());
 			serverStatusTO.setJdbcUrl(dbm.getURL());
 		} catch (Exception e) {
-			LOGGER.error("Problem retrieving database meta data: " + e.getMessage(), e);
+			LOGGER.error("Problem retrieving database meta data: " + e.getMessage());
 		} finally {
 			if (conn!=null) {
 				Torque.closeConnection(conn);
@@ -274,32 +274,10 @@ public class ServerStatusBL {
 	 * 
 	 */
 	public static Double loadPing() {
-//		EntityManager em = TpEm.getEntityManager();
-//		if (em !=  null) {
-//			try {
-//				em.getTransaction().begin();
 //
-//				java.sql.Connection connection = em.unwrap(java.sql.Connection.class);
-//				ResultSet rs = null;
 //
-//				Date start = new Date();
-//				for (int i = 0; i < 10; ++ i) {
-//					Statement stmt = connection.createStatement();
-//					rs = stmt.executeQuery("SELECT OBJECTID FROM TSITE");
-//					while (rs.next()) {
-//						int result = rs.getInt(1);
-//					}
-//					stmt.close();
-//				}
-//				Date stop = new Date();
 //
-//				em.getTransaction().commit();
 //
-//				return  new Double((stop.getTime() - start.getTime()))/10.0;
-//			} catch (Exception e) {
-//				LOGGER.error("Can't ping: " + e.getMessage(), e);
-//			}
-//		} else {
 			Connection connection = null;
 			try {
 				connection = InitDatabase.getConnection(); 
@@ -316,7 +294,7 @@ public class ServerStatusBL {
 				Date stop = new Date();
 				return  new Double((stop.getTime() - start.getTime()))/10.0;
 			} catch (Exception e) {
-				LOGGER.error("Can't ping: " + e.getMessage(), e);
+				LOGGER.error("Can't ping: " + e.getMessage());
 			} finally {
 				if (connection != null) {
 					try {
@@ -327,7 +305,6 @@ public class ServerStatusBL {
 					}
 				}
 			}
-//		}
 		return -999.99;
 	}
 

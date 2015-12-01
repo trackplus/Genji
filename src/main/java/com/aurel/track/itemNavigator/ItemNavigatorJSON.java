@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -71,7 +71,6 @@ public class ItemNavigatorJSON {
 
 
 		JSONUtility.appendJSONValue(sb, "lastQueries", FilterInMenuJSON.encodeFiltersInMenu(lastQueries));
-		//JSONUtility.appendLabelValueBeanList(sb, "lastQueries", lastQueries);
 		JSONUtility.appendIntegerValue(sb,"totalCount",totalCount);
 		JSONUtility.appendIntegerValue(sb,"count",count);
 		JSONUtility.appendIntegerValue(sb,"overflowItems",overflowItems);
@@ -86,32 +85,14 @@ public class ItemNavigatorJSON {
 		 * */
 		StringBuilder holidays = new StringBuilder();
 		holidays.append("[");
-//		Calendar cal = Calendar.getInstance();
-//		cal.set(Calendar.YEAR, 2010);
-//		cal.set(Calendar.MONTH, 0);
-//		cal.set(Calendar.DAY_OF_MONTH, 1);
-//		cal.set(Calendar.HOUR_OF_DAY,0);
-//		cal.set(Calendar.MINUTE,0);
-//		cal.set(Calendar.SECOND,0);
-//		Date d = cal.getTime();
-//		WorkDaysConfig.exceptionFromWorkDays.clear();
-//		WorkDaysConfigImplementation.add("Exception", d);
-//		SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-//		for(Map.Entry<Date, String> entry: WorkDaysConfig.exceptionFromWorkDays.entrySet()) {
-//			holidays.append("{");
-//			JSONUtility.appendStringValue(holidays, "Date", dateFormatter.format(entry.getKey()));
-//			JSONUtility.appendStringValue(holidays, "Cls", "gnt-national-holiday");
-//			JSONUtility.appendStringValue(holidays, "Name", entry.getValue(), true);
-//			holidays.append("}");
-//		}
 		holidays.append("]");
 		JSONUtility.appendJSONValue(sb, "holidays", holidays.toString());
 		JSONUtility.appendBooleanValue(sb, "isPrintItemEditable", personBean.isPrintItemEditable());
-		JSONUtility.appendBooleanValue(sb, "showBaseline", ApplicationBean.getApplicationBean().getSiteBean().getShowBaseline());
-		JSONUtility.appendBooleanValue(sb, "showBoth", ApplicationBean.getApplicationBean().getSiteBean().getShowBothGantt());
-		JSONUtility.appendBooleanValue(sb, "highlightCriticalPath", ApplicationBean.getApplicationBean().getSiteBean().getHighlightCriticalPathGantt());
-		JSONUtility.appendBooleanValue(sb, "validateRelationships", ApplicationBean.getApplicationBean().getSiteBean().getValidateRelationshipsGantt());
-		JSONUtility.appendBooleanValue(sb, "isActiveTopDownDate", ApplicationBean.getApplicationBean().getBudgetActive());
+		JSONUtility.appendBooleanValue(sb, "showBaseline", ApplicationBean.getInstance().getSiteBean().getShowBaseline());
+		JSONUtility.appendBooleanValue(sb, "showBoth", ApplicationBean.getInstance().getSiteBean().getShowBothGantt());
+		JSONUtility.appendBooleanValue(sb, "highlightCriticalPath", ApplicationBean.getInstance().getSiteBean().getHighlightCriticalPathGantt());
+		JSONUtility.appendBooleanValue(sb, "validateRelationships", ApplicationBean.getInstance().getSiteBean().getValidateRelationshipsGantt());
+		JSONUtility.appendBooleanValue(sb, "isActiveTopDownDate", ApplicationBean.getInstance().getBudgetActive());
 
 		JSONUtility.appendBooleanValue(sb, "tooManyItems", tooManyItems);
 

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -107,7 +107,6 @@ import com.aurel.track.resources.LocalizationKeyPrefixes;
 import com.aurel.track.screen.dashboard.bl.design.DashboardScreenDesignBL;
 import com.aurel.track.util.EqualUtils;
 import com.aurel.track.util.PropertiesHelper;
-import com.aurel.track.util.TagReplacer;
 
 
 /**
@@ -117,7 +116,7 @@ import com.aurel.track.util.TagReplacer;
 * not be done with SQL scripts across many different platforms.
 *
 * @author Joerg Friedrich
-* @version $Revision: 1570 $
+* @version $Revision: 1795 $
 *
 */
 public class UpgradeDatabase {
@@ -152,12 +151,6 @@ public class UpgradeDatabase {
 	 */
 	public void upgrade(ServletContext servletContext) throws TorqueException, SQLException, ItemPersisterException {
 		LoggingConfigBL.setLevel(LOGGER, Level.INFO);
-//		TSiteBean siteBean = siteDAO.load1();
-//		if (isNewInstall(siteBean)) {
-//			siteBean.setDbVersion(new Integer(DBVERSION).toString());
-//			siteDAO.save(siteBean);
-//			return;
-//		}
 		upgrade220To300();
 		upgrade300To310();
 		upgrade310To320();
@@ -218,7 +211,7 @@ public class UpgradeDatabase {
 			}
 		}
 		} catch (Exception e) {
-			LOGGER.error(e.getMessage(), e);
+			LOGGER.error(e.getMessage());
 		}
 
 
@@ -250,19 +243,19 @@ public class UpgradeDatabase {
 	  // 9,'ReleaseNotes',9
 
 	  try {
-		  List list = BaseTPstatePeer.doSelect(new Criteria());
-		  Iterator i = list.iterator();
+		  List<TPstate> list = BaseTPstatePeer.doSelect(new Criteria());
+		  Iterator<TPstate> i = list.iterator();
 		  TPstate pstate = null;
 		  if (!i.hasNext()) {  // not a single entry here
 			  LOGGER.info("Adding entries to TPSTATE");
-			  List listTypeList = BaseTListTypePeer.doSelect(new Criteria());
-			  Iterator il = listTypeList.iterator();
+			  List<TListType> listTypeList = BaseTListTypePeer.doSelect(new Criteria());
+			  Iterator<TListType> il = listTypeList.iterator();
 			  TState state = null;
 			  TListType listType = null;
 			  while (il.hasNext()) {
 				  listType = (TListType) il.next();
-				  List stateList = BaseTStatePeer.doSelect(new Criteria());
-				  Iterator is = stateList.iterator();
+				  List<TState> stateList = BaseTStatePeer.doSelect(new Criteria());
+				  Iterator<TState> is = stateList.iterator();
 				  while (is.hasNext()) {
 					  state = (TState) is.next();
 					  pstate = new TPstate();
@@ -294,7 +287,7 @@ public class UpgradeDatabase {
 		  }
 	  }
 	  catch (Exception e) {
-		  LOGGER.error(e.getMessage(), e);
+		  LOGGER.error(e.getMessage());
 		  LOGGER.error("Problem adding entries to TPSTATE");
 	  }
 
@@ -305,8 +298,8 @@ public class UpgradeDatabase {
 	  // This operation can take some time on a big database...
 	  try {
 		  System.err.print("Upgrading TWORKITEM table...");
-		  List list = BaseTWorkItemPeer.doSelect(new Criteria());
-		  Iterator i = list.iterator();
+		  List<TWorkItem> list = BaseTWorkItemPeer.doSelect(new Criteria());
+		  Iterator<TWorkItem> i = list.iterator();
 		  TWorkItem wi = null;
 		  Integer reln = null;
 		  Integer classn = null;
@@ -331,7 +324,7 @@ public class UpgradeDatabase {
 		  LOGGER.info("done");
 	  }
 	  catch (Exception e) {
-		  LOGGER.error(e.getMessage(), e);
+		  LOGGER.error(e.getMessage());
 		  LOGGER.error("Problem checking TWORKITEM");
 	  }
 
@@ -366,7 +359,7 @@ public class UpgradeDatabase {
 	  }
 	  catch (Exception e) {
 		  LOGGER.error("Problem saving TSITE");
-		  LOGGER.error(e.getMessage(), e);
+		  LOGGER.error(e.getMessage());
 		  LOGGER.error("Continuing nonetheless");
 	  }
 	  try {
@@ -391,7 +384,7 @@ public class UpgradeDatabase {
 	  }
 	  catch (Exception e) {
 		  LOGGER.error("Error when trying to update TPROJECT");
-		  LOGGER.error(e.getMessage(), e);
+		  LOGGER.error(e.getMessage());
 	  }
 
 	  LOGGER.info("Database upgrade from 300 to 310 completed.");
@@ -466,7 +459,7 @@ public class UpgradeDatabase {
 	  //copy the content of lastEdit to the effortDate for the costs
 	  List<TCostBean> costList = ExpenseBL.loadAll();
 	  if (costList!=null && !costList.isEmpty()) {
-		  Iterator iterator = costList.iterator();
+		  Iterator<TCostBean> iterator = costList.iterator();
 		  while (iterator.hasNext()) {
 			  TCostBean costBean = (TCostBean)iterator.next();
 			  if (costBean.getEffortdate()==null) {
@@ -491,12 +484,12 @@ public class UpgradeDatabase {
 
 	  LOGGER.info("Performing upgrade step 340 to 350.");
 
-	  TagReplacer tagReplacer = new TagReplacer(Locale.ENGLISH);
+	  MigrateTagReplacer tagReplacer = new MigrateTagReplacer(Locale.ENGLISH);
 	  tagReplacer.setContextPath("");
 	  //replace the trail descriptions
-	  List trails = trailDAO.loadAll();
+	  List<TTrailBean> trails = trailDAO.loadAll();
 	  if (trails!=null) {
-		  Iterator iterator = trails.iterator();
+		  Iterator<TTrailBean> iterator = trails.iterator();
 		  while (iterator.hasNext()) {
 			TTrailBean trailBean = (TTrailBean) iterator.next();
 			if (replaceDescriptionForHistoryBean(trailBean, tagReplacer)) {
@@ -505,9 +498,9 @@ public class UpgradeDatabase {
 		}
 	  }
 	  //replace the state change descriptions
-	  List stateChanges = stateChangeDAO.loadAll();
+	  List<TStateChangeBean> stateChanges = stateChangeDAO.loadAll();
 	  if (stateChanges!=null) {
-		  Iterator iterator = stateChanges.iterator();
+		  Iterator<TStateChangeBean> iterator = stateChanges.iterator();
 		  while (iterator.hasNext()) {
 			TStateChangeBean stateChangeBean = (TStateChangeBean) iterator.next();
 			if (replaceDescriptionForHistoryBean(stateChangeBean, tagReplacer)) {
@@ -516,9 +509,9 @@ public class UpgradeDatabase {
 		}
 	  }
 	  //replace the base line change descriptions
-	  List baseLineChanges = baseLineDAO.loadAll();
+	  List<TBaseLineBean> baseLineChanges = baseLineDAO.loadAll();
 	  if (baseLineChanges!=null) {
-		  Iterator iterator = baseLineChanges.iterator();
+		  Iterator<TBaseLineBean> iterator = baseLineChanges.iterator();
 		  while (iterator.hasNext()) {
 			TBaseLineBean baseLineBean = (TBaseLineBean) iterator.next();
 			if (replaceDescriptionForHistoryBean(baseLineBean, tagReplacer)) {
@@ -527,9 +520,9 @@ public class UpgradeDatabase {
 		}
 	  }
 
-	  List allItems=workItemDAO.loadAll();
+	  List<TWorkItemBean> allItems=workItemDAO.loadAll();
 	  if (allItems!=null) {
-		  Iterator iterator = allItems.iterator();
+		  Iterator<TWorkItemBean> iterator = allItems.iterator();
 		  while (iterator.hasNext()) {
 			TWorkItemBean workItemBean = (TWorkItemBean) iterator.next();
 			if (replaceDescriptionForItemBean(workItemBean, tagReplacer)) {
@@ -614,7 +607,7 @@ public class UpgradeDatabase {
 		  }
 	  }
 	  catch (Exception e) {
-		  LOGGER.error("Updating the ID_TABLE for TEXPORTTEMPLATE ID failed with " + e.getMessage(), e);
+		  LOGGER.error("Updating the ID_TABLE for TEXPORTTEMPLATE ID failed with " + e.getMessage());
 	  } finally {
 		  Torque.closeConnection(con);
 	  }
@@ -744,7 +737,7 @@ public class UpgradeDatabase {
 		  }
 	  }
 	  catch(Exception e) {
-		  LOGGER.error("Adding new templates in database for 3.7.2 failed with " + e.getMessage(), e);
+		  LOGGER.error("Adding new templates in database for 3.7.2 failed with " + e.getMessage());
 	  }
 
   }
@@ -786,7 +779,7 @@ public class UpgradeDatabase {
 		  }
 	  }
 	  catch(Exception e) {
-		  LOGGER.error("Adding new templates in database for 3.7.3 failed with " + e.getMessage(), e);
+		  LOGGER.error("Adding new templates in database for 3.7.3 failed with " + e.getMessage());
 	  }
 
   }
@@ -809,7 +802,7 @@ public class UpgradeDatabase {
 		  }
 	  }
 	  catch(Exception e) {
-		  LOGGER.error("Adding new templates in database for 3.8.0 failed with " + e.getMessage(), e);
+		  LOGGER.error("Adding new templates in database for 3.8.0 failed with " + e.getMessage());
 	  }
 
   }
@@ -979,7 +972,7 @@ public class UpgradeDatabase {
    * @throws SQLException
  * @throws TorqueException
    */
-  	private boolean replaceDescriptionForHistoryBean(HistoryBean historyBean, TagReplacer tagReplacer) throws SQLException, TorqueException {
+  	private boolean replaceDescriptionForHistoryBean(HistoryBean historyBean, MigrateTagReplacer tagReplacer) throws SQLException, TorqueException {
 	  	Integer workItemID = historyBean.getWorkItemID();
 	  	TProjectBean projectBean = ProjectBL.loadByWorkItemKey(workItemID);
 	  	String originalDescription = historyBean.getDescription();
@@ -1031,7 +1024,7 @@ public class UpgradeDatabase {
   	 * @throws TorqueException
 	 */
 	private boolean replaceDescriptionForItemBean(TWorkItemBean workItemBean,
-			TagReplacer tagReplacer) throws SQLException, TorqueException {
+			MigrateTagReplacer tagReplacer) throws SQLException, TorqueException {
 		Integer workItemID = workItemBean.getObjectID();
 		TProjectBean projectBean = ProjectBL.loadByWorkItemKey(workItemID);
 		String originalDescription = workItemBean.getDescription();

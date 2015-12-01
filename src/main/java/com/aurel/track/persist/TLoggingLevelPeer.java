@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -55,7 +55,6 @@ public class TLoggingLevelPeer
 	 */
 	public static void save(Logger theLogger, Level newLevel) {
 		String level = storedLoggers.get(theLogger.getName());
-//		if (level == null || !level.equals(theLogger.getEffectiveLevel().toString())) {
 		if (level == null || !level.equals(newLevel.name())) {
 			try {
 				Criteria crit = new Criteria();
@@ -65,7 +64,6 @@ public class TLoggingLevelPeer
 			    	Iterator<TLoggingLevel> it = result.iterator();
 			    	while (it.hasNext()) {
 			    		TLoggingLevel llbean = (TLoggingLevel)it.next();
-//			    		llbean.setLogLevel(theLogger.getEffectiveLevel().toString());
 			    		//Level ll = theLogger.getLevel();
 			    		//String ln = ll.name();
 			    		llbean.setLogLevel(newLevel.name());
@@ -74,14 +72,13 @@ public class TLoggingLevelPeer
 			    }
 			    else {
 			    	TLoggingLevel llbean = new TLoggingLevel();
-//			    	llbean.setLogLevel(theLogger.getEffectiveLevel().toString());
 			    	llbean.setLogLevel(newLevel.name());
 			    	llbean.setTheClassName(theLogger.getName());
 			    	llbean.save();
 			    }				
 			}
 			catch (Exception se) {
-				LOGGER.error("Problem saving LOGGER level: " + se.getMessage(), se);
+				LOGGER.error("Problem saving LOGGER level: " + se.getMessage());
 			}
 		}
 		

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -185,7 +185,7 @@ public class DocxTemplateBL {
 				outputStream.write(buffer, 0, bytesRead);
 			}
 		} catch (FileNotFoundException fnfe) {
-			LOGGER.error("FileNotFoundException thrown " + fnfe.getMessage(), fnfe);
+			LOGGER.error("FileNotFoundException thrown " + fnfe.getMessage());
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.error(ExceptionUtils.getStackTrace(fnfe));
 			}
@@ -248,10 +248,8 @@ public class DocxTemplateBL {
 			byte[] buffer = new byte[BUFFER_SIZE];
 			int bytesRead = 0;
 			while ((bytesRead = fileInputStream.read(buffer, 0, BUFFER_SIZE)) != -1) {
-				// outputStream.write(buffer, 0, bytesRead);
 				fileOutputStream.write(buffer, 0, bytesRead);
 			}
-			//blobBean.setBLOBValue(byteArrayOutputStream.toByteArray());
 			//blobID = save(blobBean);
 		} catch (FileNotFoundException fnfe) {
 			LOGGER.error("Storing the iconFile on disk failed with FileNotFoundException", fnfe);

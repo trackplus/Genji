@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -90,6 +90,7 @@ public class UserPickerBulkSetter extends SystemSelectBulkSetter {
 	 * the control for rendering the bulk value
 	 * @return
 	 */
+	@Override
 	public String getSetterValueControlClass() {
 		switch (relation) {
 		case BulkRelations.SET_TO:
@@ -147,7 +148,6 @@ public class UserPickerBulkSetter extends SystemSelectBulkSetter {
 					for (IBeanID beanID : allowedIBeanList) {
 						if (newValue!=null && newValue.length>0 && EqualUtils.equal(newValue[0], beanID.getObjectID())) {
 							//if target value found among the possible values then set as allowed change 																
-							//workItemChangesMap.put(fieldID, newValue);
 							workItemBean.setAttribute(fieldID, parameterCode, newValue);
 							return null;
 						}

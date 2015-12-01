@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -55,6 +55,7 @@ public class TLocalizedResourcesPeer
 	 * Gets the locales used in the database
 	 * @return
 	 */
+	@Override
 	public Set<String> getExistingLocales() {
 		Set<String> localesList = new TreeSet<String>();
 		Criteria crit = new Criteria();
@@ -79,6 +80,7 @@ public class TLocalizedResourcesPeer
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public List<TLocalizedResourcesBean> getLocalizedResourceForKey(String fieldName, Integer key, String locale){
 		Criteria crit = new Criteria();
 		if (fieldName==null) {
@@ -114,6 +116,7 @@ public class TLocalizedResourcesPeer
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public TLocalizedResourcesBean getKeyForLocalizedResource(String fieldName, String localizedText, String locale) {
 		Criteria crit = new Criteria();
 		if (fieldName==null || localizedText==null) {
@@ -146,6 +149,7 @@ public class TLocalizedResourcesPeer
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public List<TLocalizedResourcesBean> getLocalizedResourcesForType(String fieldName, String locale) {
 		List<TLocalizedResources> localizedResourceList = null;
 		Criteria crit = new Criteria();
@@ -177,6 +181,7 @@ public class TLocalizedResourcesPeer
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public List<TLocalizedResourcesBean> getLocalizedResourcesForTypeAndPrefixLike(String fieldName, String likeString, String locale) {
 		List<TLocalizedResources> localizedResourceList = null;
 		Criteria crit = new Criteria();		
@@ -208,6 +213,7 @@ public class TLocalizedResourcesPeer
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public List<TLocalizedResourcesBean> getLocalizedResourcesForTypeAndPrimaryKeys(
 			String fieldName, List<Integer> primaryKeys, String locale) {
 		List<TLocalizedResources> localizedResourceList = null;
@@ -242,6 +248,7 @@ public class TLocalizedResourcesPeer
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public List<TLocalizedResourcesBean> getLocalizedResourcesForTypeAndLikeAndPrimaryKeys(
 			String fieldName, String likeString, List<Integer> primaryKeys, String locale) {
 		List<TLocalizedResources> localizedResourceList = null;
@@ -276,6 +283,7 @@ public class TLocalizedResourcesPeer
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public List<TLocalizedResourcesBean> getLocalizedResourcesForLocale(String locale) {
 		Criteria crit = new Criteria();
 		if (locale==null) {
@@ -299,6 +307,7 @@ public class TLocalizedResourcesPeer
 	 * @param withPrimaryKey whether to get the localized entities (withPrimaryKey = true) or the UI label resources
 	 * @return
 	 */  
+	 @Override
 	 public List<TLocalizedResourcesBean> getResourcesForLocale(String locale, boolean withPrimaryKey) {
 		Criteria crit = new Criteria();
 		if (locale==null) {
@@ -327,6 +336,7 @@ public class TLocalizedResourcesPeer
 		 * @param locale
 		 * @return
 		 */
+	@Override
 	public List<TLocalizedResourcesBean> getUIResourcesForFieldNameLike(String fieldNameLike, String locale) {
 		Criteria crit = new Criteria();
 		crit.add(FIELDNAME, (Object)fieldNameLike, Criteria.LIKE);
@@ -353,6 +363,7 @@ public class TLocalizedResourcesPeer
 	   * @param locale
 	   * @return
 	   */
+	  @Override
 	  public List<TLocalizedResourcesBean> getUIResourcesForFieldNames(List<String> fieldNames, String locale) {
 		if (fieldNames==null || fieldNames.isEmpty()) {
 			return new LinkedList<TLocalizedResourcesBean>();
@@ -380,6 +391,7 @@ public class TLocalizedResourcesPeer
 	 * @param localizedResourcesBean 
 	 * @return
 	 */
+	@Override
 	public  Integer save(TLocalizedResourcesBean localizedResourcesBean) {
 		if (localizedResourcesBean!=null) {
 		try {
@@ -393,9 +405,6 @@ public class TLocalizedResourcesPeer
 					" localized text " + localizedResourcesBean.getLocalizedText() +
 					" primary key " + localizedResourcesBean.getPrimaryKeyValue() +
 					"  failed with " + e.getMessage(), e);
-			/*if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("Failed with " + e + localizedResourcesBean.getLocalizedText());
-			}*/
 				return null;
 			}
 		}
@@ -407,6 +416,7 @@ public class TLocalizedResourcesPeer
 	 * @param localizedResourcesBean 
 	 * @return
 	 */
+	@Override
 	public  Integer saveNoCommit(TLocalizedResourcesBean localizedResourcesBean, Connection con) {
 		if (localizedResourcesBean!=null) {
 		try {
@@ -420,9 +430,6 @@ public class TLocalizedResourcesPeer
 					" localized text " + localizedResourcesBean.getLocalizedText() +
 					" primary key " + localizedResourcesBean.getPrimaryKeyValue() +
 					"  failed with " + e.getMessage(), e);
-			/*if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("Failed with " + e + localizedResourcesBean.getLocalizedText());
-			}*/
 				return null;
 			}
 		}
@@ -434,12 +441,12 @@ public class TLocalizedResourcesPeer
 	 * @param localizedResourcesBean 
 	 * @return
 	 */
+	@Override
 	public Integer insert(TLocalizedResourcesBean localizedResourcesBean) {
 		if (localizedResourcesBean!=null) {
 			try {
 				TLocalizedResources localizedResources = 
 					BaseTLocalizedResources.createTLocalizedResources(localizedResourcesBean);
-				//localizedResources.save();
 				//db = Torque.getConnection(DATABASE_NAME);
 				// it's the same name for all tables here, so we don't care
 				doInsert(localizedResources/*, db*/);
@@ -450,10 +457,6 @@ public class TLocalizedResourcesPeer
 						" localized text " + localizedResourcesBean.getLocalizedText() +
 						" primary key " + localizedResourcesBean.getPrimaryKeyValue() +
 						"  failed with " + e.getMessage(), e);
-				/*LOGGER.error("Inserting the localizedResourcesBean failed with " + e.getMessage(), e);
-				if (LOGGER.isDebugEnabled()) {
-					LOGGER.debug("Failed with " + e + localizedResourcesBean.getLocalizedText());
-				}*/
 				return null;
 			}
 		}
@@ -465,6 +468,7 @@ public class TLocalizedResourcesPeer
 	 * @param localizedResourcesBean 
 	 * @return
 	 */
+	@Override
 	public Integer insertNoCommit(TLocalizedResourcesBean localizedResourcesBean, Connection con) {
 		if (localizedResourcesBean!=null) {
 			try {
@@ -491,6 +495,7 @@ public class TLocalizedResourcesPeer
 	 * @param resourceID 
 	 * @return
 	 */
+	@Override
 	public void delete(Integer resourceID) {
 		Criteria crit = new Criteria();
 		crit.add(OBJECTID, resourceID);
@@ -507,6 +512,7 @@ public class TLocalizedResourcesPeer
 	 * @param key	
 	 * @return
 	 */
+	@Override
 	public void deleteLocalizedResourcesForFieldNameLikeAndKey(String fieldName, Integer key) {
 		Criteria crit = new Criteria();
 		crit.add(FIELDNAME, (Object)fieldName, Criteria.LIKE);
@@ -528,6 +534,7 @@ public class TLocalizedResourcesPeer
 	 * @param fieldName 
 	 * @return
 	 */
+	@Override
 	public void deleteLocalizedResourcesForFieldName(String fieldName) {
 		Criteria crit = new Criteria();
 		crit.add(FIELDNAME, (Object)fieldName, Criteria.LIKE);
@@ -545,6 +552,7 @@ public class TLocalizedResourcesPeer
 	 * @param key
 	 * @return
 	 */
+	@Override
 	public void deleteLocalizedResourcesForFieldNameAndKey(String fieldName, Integer key) {
 		Criteria crit = new Criteria();
 		crit.add(FIELDNAME, fieldName);
@@ -568,6 +576,7 @@ public class TLocalizedResourcesPeer
 	 * @param localeStr
 	 * @return
 	 */
+	@Override
 	public void deleteLocalizedResourcesForFieldNameAndKeyAndLocale(String fieldName, Integer key, String localeStr) {
 		Criteria crit = new Criteria();
 		crit.add(FIELDNAME, (Object)fieldName, Criteria.LIKE);
@@ -593,6 +602,7 @@ public class TLocalizedResourcesPeer
 	 * Deletes all resources for a locale 
 	 * @param localeStr
 	 */
+	@Override
 	public void deleteAllForLocale(String localeStr) {
 		Criteria crit = new Criteria();
 		if (localeStr==null || "".equals(localeStr)) {

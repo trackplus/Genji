@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -98,7 +98,6 @@ public interface PersonDAO {
 	 * @param emails
 	 * @return
 	 */
-	//List<TPersonBean> loadByEmails(List<String> emails);
 	
 	/**
 	 * Gets the person(s) with an email
@@ -208,7 +207,6 @@ public interface PersonDAO {
 	 * Loads all persons and groups except client
 	 * @return
 	 */
-	//List<TPersonBean> loadPersonsAndGroupsExceptClient();
 	
 	/**
 	 * Loads the persons with any of the specified roles in a project
@@ -258,14 +256,12 @@ public interface PersonDAO {
 	 * should be satisfied (no direct foreign key relationship exists)
 	 * @param personIDs
 	 */
-	//boolean hasDependencyInUserPicker(List<Integer> personIDs);
 	
 	/**
 	 * The reflection does not work because an additional condition 
 	 * should be satisfied (no direct foreign key relationship exists)
 	 * @param personIDs
 	 */
-	//boolean hasDependencyInHistory(List<Integer> personIDs, boolean newValues); 
 	
 	/**
 	 * Whether the group has dependent data

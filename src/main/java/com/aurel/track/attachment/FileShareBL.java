@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -51,40 +51,6 @@ public class FileShareBL {
 	 * @param dir - directory relative to the root of the file share
 	 * @return
 	 */
-	/*public static String loadDirTree(TPerson person, String dir ) {
-		List<Integer> groupIds = DAOFactory.getFactory().getGroupMemberDAO().getGroupsIDsForPerson(person.getObjectID());
-		if (groupIds == null) {
-			groupIds = new ArrayList<Integer>();
-		}
-		groupIds.add(person.getObjectID());
-		int[] groupsAndSelf = new int[groupIds.size()];
-	    int i = 0;
-	    for (Integer n : groupIds) {
-	    	groupsAndSelf[i++] = n;
-	    }
-
-	    // Get the projects as keys in the access control beans
-		List<TAccessControlListBean> aclBeans = 
-				DAOFactory.getFactory().getAccessControlListDAO().getProjectsWithRoleForPerson(groupsAndSelf, new int[]{
-						AccessBeans.AccessFlagMigrationIndexes.READANYTASK,
-						AccessBeans.AccessFlagMigrationIndexes.MODIFYANYTASK,
-						AccessBeans.AccessFlagMigrationIndexes.CREATETASK,
-						AccessBeans.AccessFlagMigrationIndexes.PROJECTADMIN});
-		
-		// Prepare the map with the projects
-		HashMap<String, TProjectBean> projects = new HashMap<String, TProjectBean>();
-		
-		for (TAccessControlListBean aclBean: aclBeans) {
-			TProjectBean pbean = ProjectBL.loadByPrimaryKey(aclBean.getProjectID());
-			projects.put(pbean.getLabel(), pbean);
-		}
-		
-		//TODO we need to check at the top level if we are permitted to go into the given directory
-		// or to list it at all
-		String fileShareRoot = ApplicationBean.getApplicationBean().getSiteBean().getFileShareRoot();
-		
-		return dirsToJson(projects, new File(fileShareRoot+File.separator+dir));
-	}*/
 	
 	
     public static String dirsToJson(HashMap<String, TProjectBean> projects, File file) {

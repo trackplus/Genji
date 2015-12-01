@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -121,7 +121,7 @@ public class LdapUtil {
 		try {
 			uri = new URI(ldapServerURL);
 		} catch (URISyntaxException e) {
-			LOGGER.warn("Creating an URI from " + ldapServerURL + " failed with " + e.getMessage(), e);
+			LOGGER.warn("Creating an URI from " + ldapServerURL + " failed with " + e.getMessage());
 		}
 		if (uri != null) {
 			// uri.get
@@ -380,7 +380,7 @@ public class LdapUtil {
 			LOGGER.debug("LDAP entry cn: " + (String) attributes.get("cn").get());
 			LOGGER.debug("Processed " + personBean.getLoginName() + " (" + personBean.getFirstName() + " " + personBean.getLastName() + ")");
 		} catch (Exception e) {
-			LOGGER.warn("Problem setting attributes from LDAP: " + e.getMessage(), e);
+			LOGGER.warn("Problem setting attributes from LDAP: " + e.getMessage());
 			LOGGER.warn("This is probably a configuration error in the LDAP mapping section of quartz-jobs.xml");
 			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
@@ -478,7 +478,7 @@ public class LdapUtil {
 								LOGGER.debug("LDAP entry cn: " + (String) attributes.get("cn").get());
 								LOGGER.debug("Processed group " + groupName);
 							} catch (Exception e) {
-								LOGGER.warn("Problem setting attributes from LDAP: " + e.getMessage(), e);
+								LOGGER.warn("Problem setting attributes from LDAP: " + e.getMessage());
 								LOGGER.warn("This is probably a configuration error in the LDAP mapping section of quartz-jobs.xml");
 								if (LOGGER.isDebugEnabled()) {
 									LOGGER.debug("Stack trace:", e);
@@ -511,7 +511,7 @@ public class LdapUtil {
 				} catch (SizeLimitExceededException sle) {
 					if (recordCount < ctls.getCountLimit()) {
 						LOGGER.error("Searching LDAP asked for more entries than permitted by the LDAP server.");
-						LOGGER.error("Size limit exceeded error occurred after record " + recordCount + " with " + sle.getMessage(), sle);
+						LOGGER.error("Size limit exceeded error occurred after record " + recordCount + " with " + sle.getMessage());
 						LOGGER.error("You have to ask your LDAP server admin to increase the limit or specify a more suitable search base or filter.");
 					} else {
 						LOGGER.error("Searching LDAP asked for more entries than permitted by the Genji server (" + recordCount + ").");
@@ -619,7 +619,7 @@ public class LdapUtil {
 						LOGGER.debug("LDAP entry cn: " + (String) attributes.get("cn").get());
 						LOGGER.debug("Processed " + personBean.getLoginName() + " (" + personBean.getFirstName() + " " + personBean.getLastName() + ")");
 					} catch (Exception e) {
-						LOGGER.warn("Problem setting attributes from LDAP: " + e.getMessage(), e);
+						LOGGER.warn("Problem setting attributes from LDAP: " + e.getMessage());
 						LOGGER.warn("This is probably a configuration error in the LDAP mapping section of quartz-jobs.xml");
 						if (LOGGER.isDebugEnabled()) {
 							LOGGER.debug("Stack trace:", e);
@@ -652,7 +652,7 @@ public class LdapUtil {
 		} catch (SizeLimitExceededException sle) {
 			if (recordCount < ctls.getCountLimit()) {
 				LOGGER.error("Searching LDAP asked for more entries than permitted by the LDAP server.");
-				LOGGER.error("Size limit exceeded error occurred after record " + recordCount + " with " + sle.getMessage(), sle);
+				LOGGER.error("Size limit exceeded error occurred after record " + recordCount + " with " + sle.getMessage());
 				LOGGER.error("You have to ask your LDAP server admin to increase the limit or specify a more suitable search base or filter.");
 			} else {
 				LOGGER.error("Searching LDAP asked for more entries than permitted by the Genji server (" + recordCount + ").");
@@ -919,7 +919,7 @@ public class LdapUtil {
 		} catch (SizeLimitExceededException sle) {
 			if (recordCount < ctls.getCountLimit()) {
 				LOGGER.error("Searching LDAP asked for more entries than permitted by the LDAP server.");
-				LOGGER.error("Size limit exceeded error occurred after record " + recordCount + " with " + sle.getMessage(), sle);
+				LOGGER.error("Size limit exceeded error occurred after record " + recordCount + " with " + sle.getMessage());
 				LOGGER.error("You have to ask your LDAP server admin to increase the limit or specify a more suitable search base or filter.");
 			} else {
 				LOGGER.error("Searching LDAP asked for more entries than permitted by the Genji server (" + recordCount + ").");
@@ -1229,7 +1229,7 @@ public class LdapUtil {
 		} catch (SizeLimitExceededException sle) {
 			if (recordCount < ctls.getCountLimit()) {
 				LOGGER.error("Searching LDAP asked for more entries than permitted by the LDAP server.");
-				LOGGER.error("Size limit exceeded error occurred after record " + recordCount + " with " + sle.getMessage(), sle);
+				LOGGER.error("Size limit exceeded error occurred after record " + recordCount + " with " + sle.getMessage());
 				LOGGER.error("You have to ask your LDAP server admin to increase the limit or specify a more suitable search base or filter.");
 			} else {
 				LOGGER.error("Searching LDAP asked for more entries than permitted by the Genji server (" + recordCount + ").");

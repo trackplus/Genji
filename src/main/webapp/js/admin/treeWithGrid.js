@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -84,9 +84,8 @@ Ext.define('com.trackplus.admin.TreeWithGrid',{
 
 	constructor: function(config) {
 		var config = config || {};
-		this.initialConfig = config;
-		Ext.apply(this, config);
-		this.init();
+		this.initConfig(config);
+		this.initBase();
 	},
 
 	getShowGridForLeaf: function() {
@@ -240,7 +239,7 @@ Ext.define('com.trackplus.admin.TreeWithGrid',{
 	 * Which actions to enable/disable depending on tree selection
 	 */
 	/*protected*/getToolbarActionChangesForTreeNodeSelect: function(selectedNode) {
-		//var singleSelection = arrSelectedNodes.length==1;
+		//var singleSelection = arrSelectedNodes.length===1;
 		this.actionAddFolder.setDisabled(false);
 		this.actionAddLeaf.setDisabled(false);
 		//nothing selected in the grid
@@ -261,11 +260,11 @@ Ext.define('com.trackplus.admin.TreeWithGrid',{
 
 	/*protected*/onGridDrop: function(node, data, dropRec, dropPosition) {
 		var before = false;
-		if (dropPosition=="before") {
+		if (dropPosition==="before") {
 			before = true;
 		}
 		var request={node:data.records[0].get('node'), droppedToNode:dropRec.get('node'), before:before};
-		this.onOrderChange(this.baseAction + "!droppedNear.action", request);
+		this.onOrderChange(this.getBaseAction() + "!droppedNear.action", request);
 	},
 
 	/**
@@ -273,9 +272,9 @@ Ext.define('com.trackplus.admin.TreeWithGrid',{
 	 */
 	onMoveUpGridRow: function() {
 		var gridRow = this.getLastSelectedGridRow();
-		if (gridRow!=null) {
+		if (gridRow) {
 			nodeID = gridRow.data.node;
-			this.onOrderChange(this.baseAction + "!moveUp.action", {node:nodeID});
+			this.onOrderChange(this.getBaseAction() + "!moveUp.action", {node:nodeID});
 		}
 	},
 
@@ -284,9 +283,9 @@ Ext.define('com.trackplus.admin.TreeWithGrid',{
 	 */
 	onMoveDownGridRow: function() {
 		var gridRow = this.getLastSelectedGridRow();
-		if (gridRow!=null) {
+		if (gridRow) {
 			nodeID = gridRow.data.node;
-			this.onOrderChange(this.baseAction + "!moveDown.action", {node:nodeID});
+			this.onOrderChange(this.getBaseAction() + "!moveDown.action", {node:nodeID});
 		}
 	},
 
@@ -329,23 +328,17 @@ Ext.define('com.trackplus.admin.TreeWithGrid',{
 	/*private*/getGridPanel: function(node, opts) {
 		var fields = this.getGridFields(node);
 		var columnModelArr = this.getGridColumns(node);
-		var modelName = this.baseAction + "GridModel";
-		//var me = this;
-		Ext.define(modelName, {
-			extend: "Ext.data.Model",
-			fields: fields,
-			idProperty: "node"
-		});
 		var store = Ext.create("Ext.data.Store", {
 			proxy: {
 				type: "ajax",
-				url: this.getStrutsBaseAction({isLeaf:false}) + "!loadList.action",
+				url: this.getNodeBaseAction({isLeaf:false}) + "!loadList.action",
 				extraParams: this.getGridExtraParams(node, opts),
 				reader: {
 					type: 'json'
 				}
 			},
-			model: modelName,
+			fields: fields,
+			idProperty: "node",
 			autoLoad: true,
 			listeners: {load: {fn:this.onGridStoreLoad, scope:this}}
 		});
@@ -362,23 +355,6 @@ Ext.define('com.trackplus.admin.TreeWithGrid',{
 				stripeRows: true
 			};
 		gridConfig.viewConfig = this.getGridViewConfig(node);
-		/*if (this.hasDragAndDropOnGrid(node)) {
-			gridConfig.viewConfig = {
-				plugins: {
-					ptype: "gridviewdragdrop",
-					dragGroup: this.baseAction + "gridDDGroup",
-					dropGroup: this.baseAction + "gridDDGroup",
-					enableDrag: true,
-					enableDrop: true
-				},
-				listeners: {
-					drop: {scope:this, fn: function(node, data, dropRec, dropPosition) {
-						this.onGridDrop(node, data, dropRec, dropPosition);
-						}
-					}
-				}
-			};
-		}*/
 		var gridListeners = {selectionchange: {fn:this.onGridSelectionChange, scope:this}};
 		if (this.gridHasItemcontextmenu) {
 			gridListeners.itemcontextmenu = {fn:this.onGridRowCtxMenu, scope:this};
@@ -388,11 +364,11 @@ Ext.define('com.trackplus.admin.TreeWithGrid',{
 		}
 		gridConfig.listeners = gridListeners;
 		this.grid = Ext.create("Ext.grid.Panel", gridConfig);
-		if (this.centerPanel!=null) {
+		if (this.centerPanel) {
 			this.mainPanel.remove(this.centerPanel, true);
 		}
 		this.centerPanel = this.grid;
-		if (this.replaceCenterPanel!=null) {
+		if (this.replaceCenterPanel) {
 			this.replaceCenterPanel.call(this,this.centerPanel);
 		} else {
 			this.mainPanel.add(this.centerPanel);
@@ -406,8 +382,8 @@ Ext.define('com.trackplus.admin.TreeWithGrid',{
 			return {
 				plugins: {
 					ptype: "gridviewdragdrop",
-					dragGroup: this.baseAction + "gridDDGroup",
-					dropGroup: this.baseAction + "gridDDGroup",
+					dragGroup: this.getBaseAction() + "gridDDGroup",
+					dropGroup: this.getBaseAction() + "gridDDGroup",
 					enableDrag: true,
 					enableDrop: true
 				},
@@ -429,15 +405,15 @@ Ext.define('com.trackplus.admin.TreeWithGrid',{
 	 * Once the data for store is loaded select the corresponding row from the grid if rowIdToSelect is set
 	 */
 	onGridStoreLoad: function(store) {
-		if (this.rowIdToSelect!=null) {
+		if (this.rowIdToSelect) {
 			var row = store.getById(this.rowIdToSelect);
-			if (row!=null) {
+			if (row) {
 				var gridSelectionModel = this.grid.getSelectionModel();
 				gridSelectionModel.select(row);
 			}
 		} else {
-			if (store.getTotalCount()==1) {
-				//if the grid contains only one entry (especially by showGridForLeaf==true)
+			if (store.getTotalCount()===1) {
+				//if the grid contains only one entry (especially by showGridForLeaf===true)
 				//then select it also automatically to activate the grid selection specific toolbar buttons
 				var gridSelectionModel = this.grid.getSelectionModel();
 				gridSelectionModel.select(0);
@@ -452,7 +428,7 @@ Ext.define('com.trackplus.admin.TreeWithGrid',{
 	/*protected*/onGridSelectionChange: function (view, selections) {
 		this.enableDisableToolbarButtons(view, selections);
 		var selectedRow = null;
-		if (selections!=null && selections.length>0) {
+		if (selections && selections.length>0) {
 			selectedRow = selections[0];
 		}
 		this.adjustToolbarButtonsTooltip(selectedRow, false);
@@ -466,19 +442,19 @@ Ext.define('com.trackplus.admin.TreeWithGrid',{
 	 * Enable/disable actions based on the actual selection
 	 */
 	/*protected*/enableDisableToolbarButtons: function (view, selections) {
-		if (selections==null || selections.length==0) {
-			if (this.actionDeleteGridRow!=null) {
+		if (CWHF.isNull(selections) || selections.length===0) {
+			if (this.actionDeleteGridRow) {
 				this.actionDeleteGridRow.setDisabled(true);
 			}
-			if (this.actionEditGridRow!=null) {
+			if (this.actionEditGridRow) {
 				this.actionEditGridRow.setDisabled(true);
 			}
 		} else {
-			if (this.actionDeleteGridRow!=null) {
+			if (this.actionDeleteGridRow) {
 				this.actionDeleteGridRow.setDisabled(false);
 			}
-			if (this.actionEditGridRow!=null) {
-				if (selections.length==1) {
+			if (this.actionEditGridRow) {
+				if (selections.length===1) {
 					this.actionEditGridRow.setDisabled(false);
 				} else {
 					this.actionEditGridRow.setDisabled(true);
@@ -496,14 +472,14 @@ Ext.define('com.trackplus.admin.TreeWithGrid',{
 	 * edit: "node" is the id of the edited entity (whether it is folder or leaf is decoded based on the structure of the "node")
 	 */
 	/*protected*/getEditUrl: function(isLeaf) {
-		return this.getStrutsBaseAction({isLeaf:isLeaf}) + '!edit.action';
+		return this.getNodeBaseAction({isLeaf:isLeaf}) + '!edit.action';
 	},
 
 	/**
 	 * Url for saving of an entity
 	 */
 	/*protected*/getSaveUrl: function(isLeaf) {
-		return this.getStrutsBaseAction({isLeaf:isLeaf}) + '!save.action';
+		return this.getNodeBaseAction({isLeaf:isLeaf}) + '!save.action';
 	},
 
 	/**
@@ -515,12 +491,12 @@ Ext.define('com.trackplus.admin.TreeWithGrid',{
 	 * Get the node to reload after save after add operation
 	 */
 	/*protected*/getAddReloadParamsAfterSave: function(addLeaf) {
-		if (this.selectedNode!=null) {
+		if (this.selectedNode) {
 			var leaf = this.selectedNode.data['leaf'];
 			if (leaf) {
 				//selected node is leaf: add to a leaf
 				var parentNode = this.selectedNode.parentNode;
-				if (parentNode!=null) {
+				if (parentNode) {
 					if (addLeaf) {
 						//add leaf to a leaf -> means add sibling -> the parent of the selectedNode should be reloaded
 						return {nodeIDToReload: parentNode.data['id']};
@@ -528,7 +504,7 @@ Ext.define('com.trackplus.admin.TreeWithGrid',{
 						//add folder when a leaf is selected -> add sibling to the parent's node, the parent of the parent should be reloaded
 						//(from tree context menu it is not possible, only from toolbar)
 						parentNode = parentNode.parentNode;
-						if (parentNode!=null) {
+						if (parentNode) {
 							return {nodeIDToReload: parentNode.data['id']};
 						}
 					}
@@ -540,7 +516,7 @@ Ext.define('com.trackplus.admin.TreeWithGrid',{
 				/*} else {
 					//add folder when a folder is selected
 					var parentNode = this.selectedNode.parentNode;
-					if (parentNode!=null) {
+					if (parentNode) {
 						return {nodeIDToReload: parentNode.data['id']};
 					}
 				}*/
@@ -553,11 +529,11 @@ Ext.define('com.trackplus.admin.TreeWithGrid',{
 	 * Get the node to reload after save after edit operation
 	 */
 	/*protected*/getEditReloadParamsAfterSave: function(fromTree) {
-		if (this.selectedNode!=null) {
+		if (this.selectedNode) {
 			if (fromTree) {
 				//edited/copied from tree
 				var parentNode = this.selectedNode.parentNode;
-				if (parentNode!=null) {
+				if (parentNode) {
 					//the parent of the edited node should be reloaded
 					return {nodeIDToReload: parentNode.data['id']};
 				}
@@ -567,7 +543,7 @@ Ext.define('com.trackplus.admin.TreeWithGrid',{
 					//in the tree a leaf node selected -> grid with a single row: the parent of the selected tree node should be reloaded
 					var parentNode = this.selectedNode.parentNode;
 
-					if (parentNode!=null) {
+					if (parentNode) {
 						//the parent of the edited node should be reloaded
 						return {nodeIDToReload: parentNode.data['id']};
 					}
@@ -624,7 +600,7 @@ Ext.define('com.trackplus.admin.TreeWithGrid',{
 		var reloadParams = this.getAddReloadParamsAfterSave(false);
 		var reloadParamsFromResult = this.getAddSelectionAfterSaveFromResult();
 		var selectedRecord = this.getSingleSelectedRecord(true);
-		if (selectedRecord==null) {
+		if (CWHF.isNull(selectedRecord)) {
 			selectedRecord = this.tree.getRootNode();
 		}
 		return this.onAddEdit(title, selectedRecord, operation, false, true, true,
@@ -642,7 +618,7 @@ Ext.define('com.trackplus.admin.TreeWithGrid',{
 		var reloadParams = this.getAddReloadParamsAfterSave(true);
 		var reloadParamsFromResult = this.getAddSelectionAfterSaveFromResult();
 		var selectedRecord = this.getSingleSelectedRecord(true);
-		if (selectedRecord==null) {
+		if (CWHF.isNull(selectedRecord)) {
 			selectedRecord = this.tree.getRootNode();
 		}
 		return this.onAddEdit(title, selectedRecord, operation, true, true, true,
@@ -695,7 +671,7 @@ Ext.define('com.trackplus.admin.TreeWithGrid',{
 	/*private*/onAddEdit: function(title, record, operation, isLeaf, add, fromTree, loadParams, submitParams,
 			refreshParams, refreshParamsFromResult) {
 		var recordData = null;
-		if (record!=null) {
+		if (record) {
 			recordData = record.data;
 		}
 		var width = this.getEditWidth(recordData, isLeaf, add, fromTree, operation);
@@ -704,27 +680,24 @@ Ext.define('com.trackplus.admin.TreeWithGrid',{
 		var load = {loadUrl:loadUrl, loadUrlParams:loadParams};
 		var submitUrl = this.getSaveUrl(isLeaf);
 		var submit = {
-						submitUrl:submitUrl,
-						submitUrlParams:submitParams,
-						submitButtonText:this.getSaveLabel(operation),
-						submitHandler:this.submitHandler,
-						submitAction:operation,
-						refreshAfterSubmitHandler:this.reload,
-						refreshParametersBeforeSubmit:refreshParams,
-						refreshParametersAfterSubmit:refreshParamsFromResult
-					};
+			submitUrl:submitUrl,
+			submitUrlParams:submitParams,
+			submitButtonText:this.getSaveLabel(operation),
+			submitHandler:this.submitHandler,
+			submitAction:operation,
+			refreshAfterSubmitHandler:this.reload,
+			refreshParametersBeforeSubmit:refreshParams,
+			refreshParametersAfterSubmit:refreshParamsFromResult
+		};
 		var postDataProcess = this.getEditPostDataProcess(record, isLeaf, add, fromTree, operation);
 		var preSubmitProcess = this.getEditPreSubmitProcess(recordData, isLeaf, add);
 		var items = this.getPanelItems(recordData, isLeaf, add, fromTree, operation);
 
 	    var additionalActions = this.getAdditionalActions(recordData, submitParams, operation, items);
-	    if (additionalActions!=null) {
+	    if (additionalActions) {
 	        additionalActions.push(submit);
 	        submit = additionalActions;
 	    }
-
-		//TODO do we need?
-		//this.formEdit = this.createEditForm(recordData, operation);
 		var windowParameters = {title:title,
 			width:width,
 			height:height,
@@ -734,7 +707,7 @@ Ext.define('com.trackplus.admin.TreeWithGrid',{
 			postDataProcess:postDataProcess,
 			preSubmitProcess:preSubmitProcess};
 		var extraWindowParameters = this.getExtraWindowParameters(recordData, operation);
-		if (extraWindowParameters!=null) {
+		if (extraWindowParameters) {
 			for (propertyName in extraWindowParameters) {
 				windowParameters[propertyName] = extraWindowParameters[propertyName];
 			}
@@ -829,11 +802,11 @@ Ext.define('com.trackplus.admin.TreeWithGrid',{
 
 	/*private*/getEditPreSubmitProcess: function(recordData, isLeaf, add) {
 		if (isLeaf) {
-			if (this.getEditLeafPreSubmitProcess!=null) {
+			if (this.getEditLeafPreSubmitProcess) {
 				return this.getEditLeafPreSubmitProcess(recordData, add);
 			}
 		} else {
-			if (this.getEditFolderPreSubmitProcess!=null) {
+			if (this.getEditFolderPreSubmitProcess) {
 				return this.getEditFolderPreSubmitProcess(recordData, add);
 			}
 		}
@@ -893,7 +866,7 @@ Ext.define('com.trackplus.admin.TreeWithGrid',{
 	 */
 	/*private*/onDelete: function(fromTree) {
 		var selectedRecords = this.getSelectedRecords(fromTree);
-		if (selectedRecords!=null) {
+		if (selectedRecords) {
 			var isLeaf = this.selectedIsLeaf(fromTree);
 			var extraConfig = {fromTree:fromTree, isLeaf:isLeaf};
 			this.deleteHandler(selectedRecords, extraConfig);
@@ -904,18 +877,18 @@ Ext.define('com.trackplus.admin.TreeWithGrid',{
 	 * Get the refresh parameters after delete
 	 */
 	/*private*/getReloadParamsAfterDelete: function(selectedRecords, extraConfig, responseJson) {
-		if (selectedRecords!=null) {
+		if (selectedRecords) {
 			//we suppose that only one selection is allowed in tree
 			var selNode = selectedRecords;
-			if (selNode!=null) {
+			if (selNode) {
 				var parentNode = null;
 				var parentNodeID = null;
-				if (extraConfig!=null) {
+				if (extraConfig) {
 					fromTree = extraConfig.fromTree;
 					if (fromTree) {
 						//delete from tree
 						parentNode = selNode.parentNode;
-						if (parentNode!=null) {
+						if (parentNode) {
 							parentNodeID = parentNode.data.id;
 							//select the parent of the deleted node for reload and select
 							return {nodeIDToReload:parentNodeID, nodeIDToSelect:parentNodeID};
@@ -925,7 +898,7 @@ Ext.define('com.trackplus.admin.TreeWithGrid',{
 						if (this.getShowGridForLeaf() && this.selectedNode.isLeaf()) {
 							//in the tree a leaf node selected -> grid with a single row: the parent of the selected tree node should be reloaded
 							var parentNode = this.selectedNode.parentNode;
-							if (parentNode!=null) {
+							if (parentNode) {
 								//the parent of the edited node should be reloaded
 								return {nodeIDToReload: parentNode.data['id']};
 							}
@@ -938,5 +911,26 @@ Ext.define('com.trackplus.admin.TreeWithGrid',{
 			}
 		}
 		return null;
+	},
+	
+	/**
+	 * Get the configuration for selection model
+	 */
+	/*protected*/getGridSelectionModel: function() {
+		var selectionModelConfig = new Object();
+		if (this.allowMultipleSelections) {
+			selectionModelConfig.mode="MULTI";
+		} else {
+			selectionModelConfig.mode="SINGLE";
+			if (this.allowDeselect) {
+				selectionModelConfig.allowDeselect=this.allowDeselect;
+			}
+		}
+		if (CWHF.isNull(this.gridSelectionModel)) {
+			return Ext.create("Ext.selection.RowModel", selectionModelConfig);
+		} else {
+			return this.gridSelectionModel;
+		}
 	}
+	
 });

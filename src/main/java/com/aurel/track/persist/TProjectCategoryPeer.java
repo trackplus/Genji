@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -76,7 +76,7 @@ public class TProjectCategoryPeer
 		try {
 			list = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Getting the list of TProjectCategorys to be deleted failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the list of TProjectCategorys to be deleted failed with " + e.getMessage());
 		}			
         if (list == null || list.size() < 1) {
             return;
@@ -96,6 +96,7 @@ public class TProjectCategoryPeer
 	 * @param projectID 
 	 * @return
 	 */
+	@Override
 	public List<TProjectCategoryBean> loadByProject(Integer projectID) {		
 		if (projectID==null) {
 			return new ArrayList<TProjectCategoryBean>();
@@ -106,7 +107,7 @@ public class TProjectCategoryPeer
     	try {
     		return convertTorqueListToBeanList(doSelect(crit));
         } catch (Exception e) {
-            LOGGER.error("Loading the subprojects for project " + projectID + " failed with " + e.getMessage(), e);
+            LOGGER.error("Loading the subprojects for project " + projectID + " failed with " + e.getMessage());
             return null;
         }		
 	}

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -74,7 +74,7 @@ public class TWorkflowTransitionPeer
 				ReflectionHelper.delete(deletePeerClasses, deleteFields, tWorkflowTransition.getObjectID());
 			}
 		} catch (TorqueException e) {
-			LOGGER.error("Deleting the workflow transitions by criteria " + crit.toString() + " failed with " + e.getMessage(), e);
+			LOGGER.error("Deleting the workflow transitions by criteria " + crit.toString() + " failed with " + e.getMessage());
 		}
 	}
 
@@ -83,6 +83,7 @@ public class TWorkflowTransitionPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TWorkflowTransitionBean loadByPrimaryKey(Integer objectID) {
 		TWorkflowTransition tobject = null;
 		try{
@@ -102,22 +103,24 @@ public class TWorkflowTransitionPeer
 	 * Loads all workflow transitions
 	 * @return
 	 */
+	@Override
 	public List<TWorkflowTransitionBean> loadAll() {
 		Criteria crit = new Criteria();
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all workflow transitions failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all workflow transitions failed with " + e.getMessage());
 			return null;
 		}
 	}
+	@Override
 	public List<TWorkflowTransitionBean> loadByWorkflow(Integer workflowID){
 		Criteria crit = new Criteria();
 		crit.add(WORKFLOW,workflowID);
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading workflow transitions by workflow:"+workflowID+" failed with " + e.getMessage(), e);
+			LOGGER.error("Loading workflow transitions by workflow:"+workflowID+" failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -128,6 +131,7 @@ public class TWorkflowTransitionPeer
 	 * @param workflowIDs
 	 * @return
 	 */
+	@Override
 	public List<TWorkflowTransitionBean> loadByTransitionEvent(Integer[] transitionEvents, Object[] workflowIDs) {
 		Criteria crit = new Criteria();
 		crit.addIn(ACTIONKEY, transitionEvents);
@@ -141,7 +145,7 @@ public class TWorkflowTransitionPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading workflow transitions by transitionEvent " + transitionEvents + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading workflow transitions by transitionEvent " + transitionEvents + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -154,6 +158,7 @@ public class TWorkflowTransitionPeer
 	 * @param actionID if it is a direct status change then actionID is null 
 	 * @return
 	 */
+	@Override
 	public List<TWorkflowTransitionBean> loadByWorkflowAndStates(Integer workflowID, Integer stateFrom, Integer stateTo, Integer actionID) {
 		Criteria crit = new Criteria();
 		String stationFrom = "STATIONFROMTABLE";
@@ -165,11 +170,6 @@ public class TWorkflowTransitionPeer
 		crit.addJoin(stationTo + ".OBJECTID", STATIONTO);
 		crit.add(stationFrom + ".STATUS", stateFrom);
 		crit.add(stationTo + ".STATUS", stateTo);
-		/*if (actionID==null) {
-			crit.add(ACTIONKEY, (Object)null, Criteria.ISNULL);
-		} else {
-			crit.add(ACTIONKEY, actionID);
-		}*/
 		Criterion actionKeyIs = crit.getNewCriterion(ACTIONKEY, actionID, Criteria.EQUAL);
 		Criterion actionKeyIsNull = crit.getNewCriterion(ACTIONKEY, null, Criteria.ISNULL);
 		crit.add(actionKeyIs.or(actionKeyIsNull));
@@ -190,6 +190,7 @@ public class TWorkflowTransitionPeer
 	 * @param actionID if it is a direct status change then actionID is null 
 	 * @return
 	 */
+	@Override
 	public List<TWorkflowTransitionBean> loadFromCreate(Integer workflowID, Integer stationType, Integer stateTo, Integer actionID) {
 		Criteria crit = new Criteria();
 		String stationFrom = "STATIONFROMTABLE";
@@ -222,6 +223,7 @@ public class TWorkflowTransitionPeer
 	 * @param includeHooks whether to include the transitions to the same station
 	 * @return
 	 */
+	@Override
 	public List<TWorkflowTransitionBean> loadFromStation(Integer fromStation, Integer triggerEvent, boolean includeHooks) {
 		Criteria crit = new Criteria();
 		crit.add(STATIONFROM, fromStation);
@@ -234,7 +236,7 @@ public class TWorkflowTransitionPeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading workflow transitions from station " + fromStation + " for escaltionEvent " + triggerEvent + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading workflow transitions from station " + fromStation + " for escaltionEvent " + triggerEvent + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -245,20 +247,6 @@ public class TWorkflowTransitionPeer
 	 * @param fromState
 	 * @return
 	 */
-	/*public List<TWorkflowTransitionBean> loadFromState(Integer workflowID, Integer fromState) {
-		Criteria crit = new Criteria();
-		crit.add(WORKFLOW, workflowID);
-		crit.addJoin(STATIONFROM, TWorkflowStationPeer.OBJECTID);
-		crit.add(TWorkflowStationPeer.STATUS, fromState);
-		crit.add(ACTIONKEY, (Object)null, Criteria.ISNULL);
-		try {
-			return convertTorqueListToBeanList(doSelect(crit));
-		} catch (TorqueException e) {
-			LOGGER.error("Loading workflow transitions for workflow " + workflowID +
-					" from state " + fromState + " failed with " + e.getMessage(), e);
-			return null;
-		}
-	}*/
 	
 	/**
 	 * Loads all possible transitions from stations of stationType in workflow
@@ -266,20 +254,6 @@ public class TWorkflowTransitionPeer
 	 * @param stationType
 	 * @return
 	 */
-	/*public List<TWorkflowTransitionBean> loadFromStationType(Integer workflowID, Integer stationType) {
-		Criteria crit = new Criteria();
-		crit.add(WORKFLOW, workflowID);
-		crit.addJoin(STATIONFROM, TWorkflowStationPeer.OBJECTID);
-		crit.add(TWorkflowStationPeer.STATIONTYPE, stationType);
-		crit.add(ACTIONKEY, (Object)null, Criteria.ISNULL);
-		try {
-			return convertTorqueListToBeanList(doSelect(crit));
-		} catch (TorqueException e) {
-			LOGGER.error("Loading workflow transitions for workflow " + workflowID +
-					" from stationType " + stationType + " failed with " + e.getMessage(), e);
-			return null;
-		}
-	}*/
 	
 	/**
 	 * Gets the workflow transitions starting from the pseudo create station
@@ -287,24 +261,13 @@ public class TWorkflowTransitionPeer
 	 * @param stationType
 	 * @return
 	 */
-	/*public List<TWorkflowTransitionBean> loadFromPseudoCreateStation(Integer workflowID, Integer stationType) {
-		Criteria crit = new Criteria();
-		crit.add(WORKFLOW, workflowID);
-		crit.addJoin(STATIONFROM, TWorkflowStationPeer.OBJECTID);
-		crit.add(TWorkflowStationPeer.STATIONTYPE, stationType);
-		try {
-			return convertTorqueListToBeanList(doSelect(crit));
-		} catch (TorqueException e) {
-			LOGGER.error("Loading workflow transitions from pseudio create station for workflow "+workflowID+" failed with " + e.getMessage(), e);
-			return null;
-		}
-	}*/
 	
 	/**
 	 * Whether workflow contains stationID (either as from or to)
 	 * @param stationID
 	 * @return
 	 */
+	@Override
 	public boolean stationInWorkflow(Integer workflowID, Integer stationID) {
 		Criteria crit = new Criteria();
 		crit.add(WORKFLOW, workflowID);
@@ -315,7 +278,7 @@ public class TWorkflowTransitionPeer
 			List<TWorkflowTransition> transitions = doSelect(crit);
 			return transitions!=null && !transitions.isEmpty();
 		} catch (TorqueException e) {
-			LOGGER.error("Does workflow transitions in workflow " + workflowID + " contains station "+stationID+" failed with " + e.getMessage(), e);
+			LOGGER.error("Does workflow transitions in workflow " + workflowID + " contains station "+stationID+" failed with " + e.getMessage());
 			return false;
 		}
 	}
@@ -326,13 +289,14 @@ public class TWorkflowTransitionPeer
 	 * @param workflowTransitionBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TWorkflowTransitionBean workflowTransitionBean) {
 		try {
 			TWorkflowTransition tobject = TWorkflowTransition.createTWorkflowTransition(workflowTransitionBean);
 			tobject.save();
 			return tobject.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of a workflow transition failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a workflow transition failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -342,6 +306,7 @@ public class TWorkflowTransitionPeer
 	 * Is deletable should return true before calling this method
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		ReflectionHelper.delete(deletePeerClasses, deleteFields, objectID);
 	}

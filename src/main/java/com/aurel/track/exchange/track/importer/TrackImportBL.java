@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -315,7 +315,8 @@ public class TrackImportBL {
 						try {
 							workItemDAO.save(internalWorkItemBean);
 						} catch (ItemPersisterException e) {
-							LOGGER.error("Saving of the workItem by setting the parent failed with" + e.getMessage(), e);
+							LOGGER.error("Saving of the workItem by setting the parent failed with" + e.getMessage());
+							LOGGER.debug(ExceptionUtils.getStackTrace(e));
 						}
 					}
 				}
@@ -380,7 +381,8 @@ public class TrackImportBL {
 					try {
 						FieldChangeBL.save(fieldChangeBean);
 					} catch (ItemPersisterException e) {
-						LOGGER.error("Saving of the field change failed with" + e.getMessage(), e);
+						LOGGER.error("Saving of the field change failed with" + e.getMessage());
+						LOGGER.debug(ExceptionUtils.getStackTrace(e));
 					}
 				}
 			}
@@ -667,7 +669,8 @@ public class TrackImportBL {
 													} catch (ItemPersisterException e) {
 														LOGGER.warn("Updating the comment for workItem externalWorkItemID " + externalWorkItemID
 																+ " and internalWorkItemID " + internalWorkItemID + ", historyTransactionID "
-																+ internalTransactionUUID + " failed with " + e.getMessage(), e);
+																+ internalTransactionUUID + " failed with " + e.getMessage());
+														LOGGER.debug(ExceptionUtils.getStackTrace(e));
 													}
 													LOGGER.info("Comment modified for workItem externalWorkItemID " + externalWorkItemID
 															+ " and internalWorkItemID " + internalWorkItemID);
@@ -784,7 +787,8 @@ public class TrackImportBL {
 									} catch (ItemPersisterException e) {
 										LOGGER.warn("Inserting the  fieldChange for workItem externalWorkItemID " + externalWorkItemID
 												+ " and internalWorkItemID " + internalWorkItemID + " for field " + internalFieldID + ", historyTransactionID "
-												+ historyTransactionID + " failed with " + e.getMessage(), e);
+												+ historyTransactionID + " failed with " + e.getMessage());
+										LOGGER.debug(ExceptionUtils.getStackTrace(e));
 									}
 									LOGGER.debug("History added for workItem externalWorkItemID " + externalWorkItemID + " and internalWorkItemID "
 											+ internalWorkItemID + " and field " + internalFieldID);

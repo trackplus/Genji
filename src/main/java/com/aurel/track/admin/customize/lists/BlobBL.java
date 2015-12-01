@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -228,17 +228,19 @@ public class BlobBL {
 		if (defaultIconPath!=null) {
 			if (imageContent==null||imageContent.length==0) {
 				try {
-					URL defaultIconURL = ApplicationBean.getApplicationBean().getServletContext().getResource(defaultIconPath);
-					imageContent = IOUtils.toByteArray(defaultIconURL.openStream());
+					URL defaultIconURL = ApplicationBean.getInstance().getServletContext().getResource(defaultIconPath);
+					if (defaultIconURL!=null) {
+						imageContent = IOUtils.toByteArray(defaultIconURL.openStream());
+					}
 				} catch (IOException e) {
-					LOGGER.info("Getting the icon content for " + defaultIconPath + " from URL failed with " + e.getMessage(), e);
+					LOGGER.info("Getting the icon content for " + defaultIconPath + " from URL failed with " + e.getMessage());
 					if (LOGGER.isDebugEnabled()) {
 						LOGGER.debug(ExceptionUtils.getStackTrace(e));
 					}
 				}
 			}
 			if (imageContent==null||imageContent.length==0) {
-				InputStream is = ApplicationBean.getApplicationBean().getServletContext().getResourceAsStream(defaultIconPath);
+				InputStream is = ApplicationBean.getInstance().getServletContext().getResourceAsStream(defaultIconPath);
 				ByteArrayOutputStream output = new ByteArrayOutputStream();
 				try {
 					byte[] buf = new byte[1024];
@@ -250,7 +252,7 @@ public class BlobBL {
 					output.close();
 					is.close();
 				} catch (IOException e) {
-					LOGGER.info("Getting the icon content for " + defaultIconPath + " as resource stream failed with " + e.getMessage(), e);
+					LOGGER.info("Getting the icon content for " + defaultIconPath + " as resource stream failed with " + e.getMessage());
 					if (LOGGER.isDebugEnabled()) {
 						LOGGER.debug(ExceptionUtils.getStackTrace(e));
 					}
@@ -282,17 +284,17 @@ public class BlobBL {
 		if (defaultIconPath!=null) {
 			if (imageContent==null||imageContent.length==0) {
 				try {
-					URL defaultIconURL = ApplicationBean.getApplicationBean().getServletContext().getResource(defaultIconPath);
+					URL defaultIconURL = ApplicationBean.getInstance().getServletContext().getResource(defaultIconPath);
 					imageContent = IOUtils.toByteArray(defaultIconURL.openStream());
 				} catch (IOException e) {
-					LOGGER.info("Getting the icon content for " + defaultIconPath + " from URL failed with " + e.getMessage(), e);
+					LOGGER.info("Getting the icon content for " + defaultIconPath + " from URL failed with " + e.getMessage());
 					if (LOGGER.isDebugEnabled()) {
 						LOGGER.debug(ExceptionUtils.getStackTrace(e));
 					}
 				}
 			}
 			if (imageContent==null||imageContent.length==0) {
-				InputStream is = ApplicationBean.getApplicationBean().getServletContext().getResourceAsStream(defaultIconPath);
+				InputStream is = ApplicationBean.getInstance().getServletContext().getResourceAsStream(defaultIconPath);
 				ByteArrayOutputStream output = new ByteArrayOutputStream();
 				try {
 					byte[] buf = new byte[1024];
@@ -304,7 +306,7 @@ public class BlobBL {
 					output.close();
 					is.close();
 				} catch (IOException e) {
-					LOGGER.info("Getting the icon content for " + defaultIconPath + " as resource stream failed with " + e.getMessage(), e);
+					LOGGER.info("Getting the icon content for " + defaultIconPath + " as resource stream failed with " + e.getMessage());
 					if (LOGGER.isDebugEnabled()) {
 						LOGGER.debug(ExceptionUtils.getStackTrace(e));
 					}
@@ -342,7 +344,7 @@ public class BlobBL {
 				outputStream.write(buffer, 0, bytesRead);
 			}
 		} catch (FileNotFoundException fnfe) {
-			LOGGER.error("FileNotFoundException thrown " + fnfe.getMessage(), fnfe);
+			LOGGER.error("FileNotFoundException thrown " + fnfe.getMessage());
 			LOGGER.debug(ExceptionUtils.getStackTrace(fnfe));
 			return;
 		} catch (Exception ioe) {

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -36,8 +36,8 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.aurel.track.Constants;
 import com.aurel.track.accessControl.AccessBeans;
@@ -45,7 +45,6 @@ import com.aurel.track.admin.customize.category.filter.execute.ExecuteMatcherBL;
 import com.aurel.track.admin.customize.mailTemplate.MailTemplateBL;
 import com.aurel.track.admin.customize.notify.settings.NotifySettingsBL;
 import com.aurel.track.admin.customize.notify.trigger.NotifyTriggerBL;
-import com.aurel.track.admin.customize.treeConfig.field.FieldBL;
 import com.aurel.track.admin.user.group.GroupMemberBL;
 import com.aurel.track.admin.user.person.PersonBL;
 import com.aurel.track.beans.TMailTemplateBean;
@@ -87,6 +86,7 @@ public class FreemarkerMailHandlerIssueChange implements IEventSubscriber {
 	 * At the same time can be more events in the list
 	 * (IEventSubscriber.getInterestedEvents())
 	 */
+	@Override
 	public List<Integer> getInterestedEvents() {
 		List<Integer> events = new ArrayList<Integer>();
 		events.add(Integer.valueOf(IEventSubscriber.EVENT_POST_ISSUE_CREATE));
@@ -116,6 +116,7 @@ public class FreemarkerMailHandlerIssueChange implements IEventSubscriber {
 	 * The operations to be executed on event
 	 * IEventSubscriber.update()
 	 */
+	@Override
 	public boolean update(List<Integer> events, Object eventContextObject) {
 		AfterItemSaveEventParam afterItemSaveEventParam =
 			(AfterItemSaveEventParam)eventContextObject;
@@ -130,10 +131,8 @@ public class FreemarkerMailHandlerIssueChange implements IEventSubscriber {
 	 * @author Tamas Ruff
 	 */
 	public static class MailHandlerIssueChange extends MailHandler {
-		//private AfterItemSaveEventParam afterItemSaveEventParam;
 		private TWorkItemBean workItemNew = null;
 		private TWorkItemBean workItemOld = null;
-		private Locale locale = null;
 		//to not to load it from the database for every email
 		protected TPersonBean createdByPerson = null;
 		private boolean isStateChanged; //other than isClose/isReopen
@@ -159,7 +158,6 @@ public class FreemarkerMailHandlerIssueChange implements IEventSubscriber {
 	private MailHandlerIssueChange(List<Integer> events, AfterItemSaveEventParam afterItemSaveEventParam) {
 		super(afterItemSaveEventParam.getWorkItemNew(), afterItemSaveEventParam.getWorkItemOld(), afterItemSaveEventParam.getLocale());
 		this.afterItemSaveEventParam = afterItemSaveEventParam;
-		//workItemContext = afterItemSaveEventParam.getWorkItemContext();
 		this.workItemNew = afterItemSaveEventParam.getWorkItemNew();
 		this.workItemOld = afterItemSaveEventParam.getWorkItemOld();
 		if (workItemNew!=null && workItemNew.getProjectID()!=null &&
@@ -229,7 +227,6 @@ public class FreemarkerMailHandlerIssueChange implements IEventSubscriber {
 		} else {
 			eventID = IEventSubscriber.EVENT_POST_ISSUE_UPDATE;
 		}
-		//TProjectBean project=getProjectBean();
 		Integer projectID = workItemBean.getProjectID();
 		Integer issuTypeID = workItemBean.getListTypeID();
 		Integer templateID = MailTemplateBL.findMailTemplateID(eventID, projectID, issuTypeID);
@@ -264,6 +261,7 @@ public class FreemarkerMailHandlerIssueChange implements IEventSubscriber {
 	 * Get the resource key of the detailed explanation
 	 * @return
 	 */
+	@Override
 	protected String getChangeDetailKey() {
 		if (isCreated || isCopy) {
 			return "item.mail.subject.new";
@@ -333,6 +331,7 @@ public class FreemarkerMailHandlerIssueChange implements IEventSubscriber {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	protected Object[] getChangeDetailParameters(String itemID, TWorkItemBean workItemBean, SortedMap<Integer, FieldChange> fieldChangesMap,  Locale locale) {
 		FieldChange stateChange = fieldChangesMap.get(SystemFields.INTEGER_STATE);
 		String newStateLabel = "";
@@ -351,6 +350,7 @@ public class FreemarkerMailHandlerIssueChange implements IEventSubscriber {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	protected SortedMap<Integer, FieldChange> getLocalizedFieldChangesMap(AfterItemSaveEventParam afterItemSaveEventParam, Locale locale) {
 		return HistorySaverBL.getLocalizedFieldChanges(afterItemSaveEventParam, locale, false);
 	}
@@ -375,7 +375,6 @@ public class FreemarkerMailHandlerIssueChange implements IEventSubscriber {
 			for (Integer fieldID : restrictedFieldsMap.keySet()) {
 				Integer accessFlag = restrictedFieldsMap.get(fieldID);
 				if (accessFlag.intValue()==TRoleFieldBean.ACCESSFLAG.NOACCESS) {
-					//interestingFields.remove(fieldID);
 					restrictedFields.add(fieldID);
 				}
 			}
@@ -657,7 +656,6 @@ public class FreemarkerMailHandlerIssueChange implements IEventSubscriber {
 			}
 		}
 		LOGGER.debug("Get the most specific notification setting(s) for issue number " + workItemBeanNew.getObjectID()  + " and person " + personID);
-		//boolean genericProjectIsMostSpecific = false;
 		//boolean defaultSettingsIsMostSpecific = false;
 		Integer projectIDNew = workItemBeanNew.getProjectID();
 		//makes sense only if project was changed
@@ -812,27 +810,6 @@ public class FreemarkerMailHandlerIssueChange implements IEventSubscriber {
 			return null;
 		}
 		//trigger surely specified
-		/*List<Integer> projectIDs = new LinkedList<Integer>();
-		if (genericProjectIsMostSpecific) {
-			projectIDs.add(NotifySettingsBL.OTHERPROJECTSID);
-		} else {
-			if (notifySettingsBean!=null && oldProjectNotifySettingsBean!=null) {
-				//not necessarily projectIDNew but it can be an ancestor of that
-				projectIDs.add(notifySettingsBean.getProject());
-				//not necessarily projectIDOld but it can be an ancestor of that
-				projectIDs.add(oldProjectNotifySettingsBean.getProject());
-			} else {
-				if (notifySettingsBean!=null) {
-					//not necessarily projectIDNew but it can be an ancestor of that
-					projectIDs.add(notifySettingsBean.getProject());
-				} else {
-					if (oldProjectNotifySettingsBean!=null) {
-					//not necessarily projectIDOld but it can be an ancestor of that
-						projectIDs.add(oldProjectNotifySettingsBean.getProject());
-					}
-				}
-			}
-		}*/
 		/*
 		 * the settings person should be null if a default setting is the most specific
 		 */
@@ -845,7 +822,6 @@ public class FreemarkerMailHandlerIssueChange implements IEventSubscriber {
 		}
 		Integer personForOldProject = null;
 		List<Integer> oldProjectIDList = new LinkedList<Integer>();
-		//Integer projectIDForOld = null;
 		if (oldProjectNotifySettingsBean!=null) {
 			personForOldProject = oldProjectNotifySettingsBean.getPerson();
 			//not necessarily projectIDOld but it can be an ancestor of that

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -53,18 +53,16 @@ public class RoleJSON {
 				sb.append(",");
 			}
 			sb.append("{");
-			JSONUtility.appendStringValue(sb,"name",roleBean.getLabel());
+			JSONUtility.appendStringValue(sb, JSONUtility.JSON_FIELDS.NAME, roleBean.getLabel());
 			Boolean[] unfoldedFlags=RoleBL.getUnfoldedFlags(roleBean.getExtendedaccesskey());
 			Map<Integer,IntegerStringBooleanBean> allFlags=RoleBL.createUnfoldedFlagsMap(unfoldedFlags,locale);
 			List<IntegerStringBooleanBean> unfoldedFullAccessFlags=RoleBL.wrapCategoryFlags(RoleBL.fullAccessFlags,allFlags);
 			List<IntegerStringBooleanBean> unfoldedRaciRoles=RoleBL.wrapCategoryFlags(RoleBL.raciRoles,allFlags);
-
-			sb.append("accessFlags:{");
+			JSONUtility.appendFieldName(sb, "accessFlags").append(":{");
 			JSONUtility.appendIntegerStringBooleanBeanList(sb,"fullAccessFlags",unfoldedFullAccessFlags);
 			JSONUtility.appendIntegerStringBooleanBeanList(sb,"raciRoles",unfoldedRaciRoles,true);
 			sb.append("},");
-
-			sb.append("issueTypesAssigned:[");
+			JSONUtility.appendFieldName(sb, "issueTypesAssigned").append(":[");
 			List<Integer> issueTypeIDs = issueTypesForRoles.get(roleID);
 			if(issueTypeIDs!=null){
 				for (Iterator<Integer> iterator = issueTypeIDs.iterator(); iterator.hasNext();) {

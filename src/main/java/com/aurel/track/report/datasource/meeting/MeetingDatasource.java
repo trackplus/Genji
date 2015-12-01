@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -84,40 +84,40 @@ import com.aurel.track.util.StringArrayParameterUtils;
  *
  */
 public class MeetingDatasource extends ReportBeanDatasource {
-	
+
 	private static final Logger LOGGER = LogManager.getLogger(MeetingDatasource.class);
-	
+
 	public static interface MEETING_PARAMETER_NAME {
 		public static String MEETING = "meeting";
 		public static String MEETING_OPTIONS = MEETING + PARAMETER_NAME.OPTION_SUFFIX;
 		public static String MEETING_NAME_FIELD = MEETING + PARAMETER_NAME.NAME_SUFFIX;
 		public static String MEETING_NAME_VALUE = PARAMETER_NAME.MAP_PREFIX + MEETING;
-		
+
 		public static String ONLY_ACTIVE_MEETINGS = "onlyActiveMeetings";
 		public static String ONLY_ACTIVE_MEETINGS_FIELD = ONLY_ACTIVE_MEETINGS + PARAMETER_NAME.NAME_SUFFIX;
 		public static String ONLY_ACTIVE_MEETINGS_VALUE = PARAMETER_NAME.MAP_PREFIX + ONLY_ACTIVE_MEETINGS;
-		
+
 		public static String ONLY_NOT_CLOSED_CHILDREN = "onlyNotClosedChildren";
 		public static String ONLY_NOT_CLOSED_CHILDREN_FIELD = ONLY_NOT_CLOSED_CHILDREN + PARAMETER_NAME.NAME_SUFFIX;
 		public static String ONLY_NOT_CLOSED_CHILDREN_VALUE = PARAMETER_NAME.MAP_PREFIX + ONLY_NOT_CLOSED_CHILDREN;
-		
+
 		public static String LINK_TYPE = "linkType";
 		public static String LINK_TYPE_OPTIONS = LINK_TYPE + PARAMETER_NAME.OPTION_SUFFIX;
 		public static String LINK_TYPE_NAME_FIELD = LINK_TYPE + PARAMETER_NAME.NAME_SUFFIX;
 		public static String LINK_TYPE_NAME_VALUE = PARAMETER_NAME.MAP_PREFIX + LINK_TYPE;
 	}
-	
+
 	/**
 	 * The name of the long text custom field for Participants
 	 */
 	private static String PARTICIPANTS_FIELD_NAME = "Participants";
 	private static String FROMTOTIME_FIELD_NAME = "FromToTime";
-	
+
 	/**
 	 * The issue type name of the meeting issue (hard coded to differentiate from the children of the meeting)
 	 */
 	protected static String MEETING_ISSUETYPE = "MeetingIssue";
-	
+
 	public static interface MEETING_JASPER_PARAMETER_NAME {
 		public static String PARTICIPANTS = "PARTICIPANTS";
 		public static String MEETINGDATE = "MEETINGDATE";
@@ -125,11 +125,11 @@ public class MeetingDatasource extends ReportBeanDatasource {
 		public static String MEETINGTITLE = "MEETINGTITLE";
 		public static String FROMTOTIME = "FROMTOTIME";
 	}
-	
+
 	// Necessary for the DocxReportExporter
 	public static TWorkItemBean WORK_ITEM_BEAN = null;
 	public static ReportBeans REPORT_BEANS = null;
-	
+
 	/**
 	 * Gets the data source object (a Document object in this case) retrieved using the parameters settings
 	 * @param parameters
@@ -141,6 +141,7 @@ public class MeetingDatasource extends ReportBeanDatasource {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public Object getDatasource(Map<String, String[]> parameters, DatasourceDescriptor datasourceDescriptor,
 			Map<String, Object> contextMap, Map<String, Object> templateDescriptionMap,
 			Integer templateID, TPersonBean personBean, Locale locale) {
@@ -156,81 +157,8 @@ public class MeetingDatasource extends ReportBeanDatasource {
 		Integer meetingID = (Integer)savedParamsMap.get(MEETING_PARAMETER_NAME.MEETING);
 		String linkType = (String)savedParamsMap.get(MEETING_PARAMETER_NAME.LINK_TYPE);
 		Boolean onlyActiveChildren = (Boolean)savedParamsMap.get(MEETING_PARAMETER_NAME.ONLY_NOT_CLOSED_CHILDREN);
-		/*Integer direction = null;
-		if (onlyActiveChildren==null || onlyActiveChildren.booleanValue()) {
-			direction = PARENT_CHILD_EXPRESSION.ALL_NOT_CLOSED_CHILDREN;
-		} else {
-			direction = PARENT_CHILD_EXPRESSION.ALL_CHILDREN;
-		}
-		List<ReportBean> reportBeanList = null;
-		if (meetingID!=null) {
-			Set<Integer> childrenSet = ItemBL.getChildHierarchy(
-					new int[] {meetingID}, direction, null, null, null);
-			childrenSet.add(meetingID);
-			List<TWorkItemBean> workItemBeanList = new LinkedList<TWorkItemBean>();
-			reportBeanList = LoadItemIDListItems.getReportBeansByWorkItemIDs(
-					GeneralUtils.createIntArrFromIntegerCollection(childrenSet),
-					false, personBean.getObjectID(), locale, false);
-			if (reportBeanList!=null) {
-				//set a hardcoded issue type for the parent meeting
-				for (ReportBean reportBean : reportBeanList) {
-					TWorkItemBean workItemBean = reportBean.getWorkItemBean();
-					if (meetingID.equals(workItemBean.getObjectID())) {
-						//remove all links from meeting
-						reportBean.setReportBeanLinksSet(null);
-					}
-					WORK_ITEM_BEAN = workItemBean;
-					workItemBeanList.add(workItemBean);
-					Integer objectID = workItemBean.getObjectID();
-					if (objectID.equals(meetingID)) {
-						reportBean.getShowISOValuesMap().put(SystemFields.INTEGER_ISSUETYPE, MEETING_ISSUETYPE);
-						break;
-					}
-				}
-			}
-			if (linkType!=null) {
-				Integer linkTypeID = null;
-				Integer linkDirection = null;
-				if (linkType!=null) {
-					Integer[] parts = MergeUtil.getParts(linkType);
-					if (parts!=null && parts.length==2) {
-						linkTypeID = parts[0];
-						linkDirection = parts[1];
-					}
-				}
-				//the linked itemIDs sorted by sortOrder 
-				List<Integer> linkedWorkItemIDs = ItemLinkBL.getLinkedItemIDs(meetingID, linkTypeID, linkDirection);
-				if (linkedWorkItemIDs!=null && !linkedWorkItemIDs.isEmpty()) {
-					List<ReportBean> linkedReportBeans = LoadItemIDListItems.getReportBeansByWorkItemIDs(
-						GeneralUtils.createIntArrFromIntegerList(linkedWorkItemIDs), false, personBean.getObjectID(), locale, false);
-					Map<Integer, ReportBean> reportBeanMap = new HashMap<Integer, ReportBean>();
-					for (ReportBean reportBean : linkedReportBeans) {
-						SortedSet<ReportBeanLink> reportBeanLinks = reportBean.getReportBeanLinksSet();
-						if (reportBeanLinks!=null) {
-							for (Iterator<ReportBeanLink> iterator = reportBeanLinks.iterator(); iterator.hasNext();) {
-								ReportBeanLink reportBeanLink = iterator.next();
-								Integer linkedItemID = reportBeanLink.getWorkItemID();
-								if (!meetingID.equals(linkedItemID)) {
-									//leave only the meeting topic links to meeting
-									iterator.remove();
-								}	
-							}
-						}
-						reportBeanMap.put(reportBean.getWorkItemBean().getObjectID(), reportBean);
-					}
-					for (Integer linkedItemID : linkedWorkItemIDs) {
-						ReportBean reportBean = reportBeanMap.get(linkedItemID);
-						if (reportBean!=null) {
-							//enforce the link order
-							reportBeanList.add(reportBean);
-						}
-					}
-				}
-			}
-		}*/
 		reportBeans = getReportBeans(meetingID, onlyActiveChildren, linkType, personBean, locale);//  new ReportBeans(reportBeanList, locale, null, false);
 		REPORT_BEANS = reportBeans;
-		//}
 		String exportFormat = (String)contextMap.get(CONTEXT_ATTRIBUTE.EXPORT_FORMAT);
 		if (exportFormat==null) {
 			//not dynamically generated, get it from description
@@ -248,18 +176,18 @@ public class MeetingDatasource extends ReportBeanDatasource {
 						withHistory = history.booleanValue();
 					}
 				} catch (Exception e) {
-					LOGGER.warn("history should be a boolean string " + e.getMessage(), e);
+					LOGGER.warn("history should be a boolean string " + e.getMessage());
 				}
 			}
 		}
 		//if it will be exported to CSV or XLS then make the long texts plain, otherwise simplified HTML
-		boolean longTextIsPlain = ReportExporter.FORMAT_CSV.equals(exportFormat) || 
-			ReportExporter.FORMAT_XLS.equals(exportFormat) || 
+		boolean longTextIsPlain = ReportExporter.FORMAT_CSV.equals(exportFormat) ||
+			ReportExporter.FORMAT_XLS.equals(exportFormat) ||
 			ReportExporter.FORMAT_XML.equals(exportFormat);
 		return getDocumentFromReportBeans(reportBeans, withHistory, false,
 			personBean, locale, null, null, longTextIsPlain, useProjectSpecificID);
 	}
-	
+
 	/**
 	 * Gets the report beans
 	 * @param meetingID
@@ -312,7 +240,7 @@ public class MeetingDatasource extends ReportBeanDatasource {
 						linkDirection = parts[1];
 					}
 				}
-				//the linked itemIDs sorted by sortOrder 
+				//the linked itemIDs sorted by sortOrder
 				List<Integer> linkedWorkItemIDs = ItemLinkBL.getLinkedItemIDs(meetingID, linkTypeID, linkDirection);
 				if (linkedWorkItemIDs!=null && !linkedWorkItemIDs.isEmpty()) {
 					List<ReportBean> linkedReportBeans = LoadItemIDListItems.getReportBeansByWorkItemIDs(
@@ -327,7 +255,7 @@ public class MeetingDatasource extends ReportBeanDatasource {
 								if (!meetingID.equals(linkedItemID)) {
 									//leave only the meeting topic links to meeting
 									iterator.remove();
-								}	
+								}
 							}
 						}
 						reportBeanMap.put(reportBean.getWorkItemBean().getObjectID(), reportBean);
@@ -344,7 +272,7 @@ public class MeetingDatasource extends ReportBeanDatasource {
 		}
 		return new ReportBeans(reportBeanList, locale, null, false);
 	}
-	
+
 	/**
 	 * Gets the extra parameters from the datasource
 	 * @param params
@@ -356,18 +284,18 @@ public class MeetingDatasource extends ReportBeanDatasource {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public Map<String, Object> getJasperReportParameters(Map<String, String[]> params, DatasourceDescriptor datasourceDescriptor,
 			Map<String, Object> contextMap, Map<String, Object> templateDescriptionMap,
 			Integer templateID, TPersonBean personBean, Locale locale) {
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		Boolean fromIssueNavigator = (Boolean)contextMap.get(CONTEXT_ATTRIBUTE.FROM_ISSUE_NAVIGATOR);
 		Integer meetingID = null;
-		//Integer workItemID = (Integer)contextMap.get(CONTEXT_ATTRIBUTE.WORKITEMID);
 		List<Integer> workItemIDs = (List<Integer>)contextMap.get(CONTEXT_ATTRIBUTE.WORKITEMIDS);
 		if (fromIssueNavigator!=null && fromIssueNavigator.booleanValue() && workItemIDs!=null && !workItemIDs.isEmpty()) {
 			meetingID = workItemIDs.get(0);
 		} else {
-			meetingID = StringArrayParameterUtils.parseIntegerValue(params, MEETING_PARAMETER_NAME.MEETING); 
+			meetingID = StringArrayParameterUtils.parseIntegerValue(params, MEETING_PARAMETER_NAME.MEETING);
 		}
 		TWorkItemBean workItemBean = null;
 		if (meetingID!=null) {
@@ -403,7 +331,7 @@ public class MeetingDatasource extends ReportBeanDatasource {
 		}
 		return parameters;
 	}
-	
+
 	/**
 	 * Gets the datasource parameters
 	 * @param datasourceDescriptor
@@ -419,7 +347,7 @@ public class MeetingDatasource extends ReportBeanDatasource {
 		//override the default because the classic datasource (project/filter) is not needed only extra parameters
 		return getDatasourceExtraParams(savedParamsMap, datasourceDescriptor, contextMap, personBean, locale);
 	}
-	
+
 	/**
 	 * Extra datasource configurations
 	 * Whether beyond the item list also other datasource configuration parameters are needed (important when coming from item navigator)
@@ -429,6 +357,7 @@ public class MeetingDatasource extends ReportBeanDatasource {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public String getDatasourceExtraParams(Map<String, Object> savedParamsMap,
 			DatasourceDescriptor datasourceDescriptor, Map<String, Object> contextMap,
 			TPersonBean personBean, Locale locale) {
@@ -451,7 +380,7 @@ public class MeetingDatasource extends ReportBeanDatasource {
 		JSONUtility.appendBooleanValue(stringBuilder, MEETING_PARAMETER_NAME.ONLY_ACTIVE_MEETINGS, onlyActiveMeetings.booleanValue());
 		JSONUtility.appendStringValue(stringBuilder, MEETING_PARAMETER_NAME.ONLY_ACTIVE_MEETINGS_FIELD,
 				MEETING_PARAMETER_NAME.ONLY_ACTIVE_MEETINGS_VALUE);
-		
+
 		Boolean onlyOpenChilderen = (Boolean)savedParamsMap.get(MEETING_PARAMETER_NAME.ONLY_NOT_CLOSED_CHILDREN);
 		if (onlyOpenChilderen==null) {
 			onlyOpenChilderen = Boolean.TRUE;
@@ -464,7 +393,7 @@ public class MeetingDatasource extends ReportBeanDatasource {
 		JSONUtility.appendIntegerValue(stringBuilder, MEETING_PARAMETER_NAME.MEETING, meetingID);
 		JSONUtility.appendIntegerStringBeanList(stringBuilder,
 				MEETING_PARAMETER_NAME.MEETING_OPTIONS, meetingOptions);
-		
+
 		JSONUtility.appendStringValue(stringBuilder, MEETING_PARAMETER_NAME.LINK_TYPE_NAME_FIELD, MEETING_PARAMETER_NAME.LINK_TYPE_NAME_VALUE);
 		List<LabelValueBean> linkTypeOptions = LinkTypeBL.getLinkTypeFilterSupersetExpressions(locale, false);
 		String linkTypeID = (String)savedParamsMap.get(MEETING_PARAMETER_NAME.LINK_TYPE);
@@ -484,7 +413,7 @@ public class MeetingDatasource extends ReportBeanDatasource {
 							}
 						}
 					}
-				}		
+				}
 			}
 		}
 		JSONUtility.appendStringValue(stringBuilder, MEETING_PARAMETER_NAME.LINK_TYPE, linkTypeID);
@@ -492,7 +421,7 @@ public class MeetingDatasource extends ReportBeanDatasource {
 				MEETING_PARAMETER_NAME.LINK_TYPE_OPTIONS, linkTypeOptions, true);
 		return stringBuilder.toString();
 	}
-	
+
 	/**
 	 * Gets the meeting options
 	 * @param personID
@@ -511,7 +440,7 @@ public class MeetingDatasource extends ReportBeanDatasource {
 			List<TStateBean> activeStateBeans = StatusBL.loadActiveStates();
 			filterUpperTO.setSelectedStates(GeneralUtils.createIntegerArrFromCollection(GeneralUtils.createIntegerListFromBeanList(activeStateBeans)));
 		}
-		//get and sort the meetings by date 
+		//get and sort the meetings by date
 		List<TWorkItemBean> meetingWorkItems = null;
 		try {
 			meetingWorkItems = LoadTreeFilterItems.getTreeFilterWorkItemBeans(filterUpperTO, personBean, locale, false);
@@ -545,7 +474,7 @@ public class MeetingDatasource extends ReportBeanDatasource {
 				meetingsOnDate.add(new IntegerStringBean(meetingTitle, workItemID));
 			}
 		}
-		
+
 		for (Date date : meetingsByDate.keySet()) {
 			List<IntegerStringBean> meetingsOnDate = meetingsByDate.get(date);
 			if (meetingsOnDate!=null) {
@@ -564,12 +493,13 @@ public class MeetingDatasource extends ReportBeanDatasource {
 			return null;
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param paramSettings
 	 * @return
 	 */
+	@Override
 	protected Map<String, Object> loadParamObjectsFromPropertyStrings(String paramSettings) {
 		Map<String, Object> paramsMap = new HashMap<String, Object>();
 		if (paramSettings!=null) {
@@ -584,14 +514,15 @@ public class MeetingDatasource extends ReportBeanDatasource {
 		}
 		return paramsMap;
 	}
-	
+
 	/**
-	 * Gets the parameter settings for report to be executed and the parameters to be saved 
+	 * Gets the parameter settings for report to be executed and the parameters to be saved
 	 * @param parameters parameters as String[]
 	 * @param locale
 	 * @param savedParamsMap output parameter: parameters transformed to the actual types
 	 * @return
 	 */
+	@Override
 	protected String loadParamObjectsAndPropertyStringsAndFromStringArrParams(
 			Map<String, String[]> params, Locale locale, Map<String, Object> savedParamsMap) {
 		String paramSettings = "";
@@ -609,22 +540,22 @@ public class MeetingDatasource extends ReportBeanDatasource {
 		savedParamsMap.put(MEETING_PARAMETER_NAME.ONLY_NOT_CLOSED_CHILDREN, onlyNotClosedChildren);
 		String linkType = StringArrayParameterUtils.getStringValue(params, MEETING_PARAMETER_NAME.LINK_TYPE);
 		savedParamsMap.put(MEETING_PARAMETER_NAME.LINK_TYPE, linkType);
-		
+
 		paramSettings = PropertiesHelper.setIntegerProperty(paramSettings, MEETING_PARAMETER_NAME.MEETING, meeting);
 		paramSettings = PropertiesHelper.setBooleanProperty(paramSettings, MEETING_PARAMETER_NAME.ONLY_ACTIVE_MEETINGS, onlyActiveMeetings);
 		paramSettings = PropertiesHelper.setBooleanProperty(paramSettings, MEETING_PARAMETER_NAME.ONLY_NOT_CLOSED_CHILDREN, onlyNotClosedChildren);
 		paramSettings = PropertiesHelper.setProperty(paramSettings, MEETING_PARAMETER_NAME.LINK_TYPE, linkType);
 		return paramSettings;
 	}
-	
+
 	/**
-	 * Refreshing of some parameters through ajax: only a part of the parameters should be recalculated 
+	 * Refreshing of some parameters through ajax: only a part of the parameters should be recalculated
 	 * @param params
 	 * @param templateID
 	 * @param datasourceDescriptor
 	 * @param contextMap
 	 * @param personBean
-	 * @param locale 
+	 * @param locale
 	 * @return
 	 */
 	@Override

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -27,17 +27,17 @@ Ext.define('js.ext.com.track.dashboard.TwoDimensionalStatistic',{
 		var me=this;
 		me.items=me.createChildren();
 		me.callParent();
-		if(me.jsonData.filterTitle!=null){
+		if(me.jsonData.filterTitle){
 			me.title=me.title+"&nbsp;-&nbsp;<i>"+me.jsonData.filterTitle+"</i>";
 		}
 	},
 	createChildren:function(){
 		var me=this;
-		if(me.jsonData.tooManyItems==true){
+		if(me.jsonData.tooManyItems===true){
 			return [me.createErrorCmp(getText('cockpit.err.tooManyItems'))];
 		}
 		var statistic=me.jsonData.statistic;
-		if(statistic!=null){
+		if(statistic){
 			return [me.createGrid()];
 		}else{
 			return [];
@@ -48,12 +48,12 @@ Ext.define('js.ext.com.track.dashboard.TwoDimensionalStatistic',{
 		me.jsonData=jsonData;
 		me.removeAll();
 		me.add(me.createChildren());
-		me.doLayout();
+		me.updateLayout();
 	},
 	updateTitle:function(){
 		var me=this;
 		var title=me.callParent();
-		if(me.jsonData.filterTitle!=null){
+		if(me.jsonData.filterTitle){
 			title=title+"&nbsp;-&nbsp;<i>"+me.jsonData.filterTitle+"</i>";
 		}
 		return title;
@@ -64,7 +64,7 @@ Ext.define('js.ext.com.track.dashboard.TwoDimensionalStatistic',{
 		var fields=[];
 		fields.push({name:'labelV'});
 		fields.push({name:'linkV'});
-		if(statistic.optionsH!=null){
+		if(statistic.optionsH){
 			for(var i=0;i<statistic.optionsH.length;i++){
 				fields.push({name:'label'+i});
 				fields.push({name:'link'+i});
@@ -80,7 +80,7 @@ Ext.define('js.ext.com.track.dashboard.TwoDimensionalStatistic',{
 			scope:me,
 			isLink:me.isLinkV
 		});
-		if(statistic.optionsH!=null){
+		if(statistic.optionsH){
 			for(var i=0;i<statistic.optionsH.length;i++){
 				columns.push({
 					xtype:'linkcolumn',
@@ -107,7 +107,7 @@ Ext.define('js.ext.com.track.dashboard.TwoDimensionalStatistic',{
 		var data=[];
 		var firstRow={};
 		firstRow.labelV="&nbsp;&nbsp;&nbsp;"+statistic.labelH+"</BR>"+statistic.labelV;
-		if(statistic.optionsH!=null){
+		if(statistic.optionsH){
 			for(var i=0;i<statistic.optionsH.length;i++){
 				firstRow['label'+i]=statistic.optionsH[i].label;
 				firstRow['link'+i]=statistic.optionsH[i].id;
@@ -115,7 +115,7 @@ Ext.define('js.ext.com.track.dashboard.TwoDimensionalStatistic',{
 		}
 		firstRow['total']=getText('twoDimensionalStatistic.total');
 		data.push(firstRow);
-		if(statistic.optionsV!=null){
+		if(statistic.optionsV){
 			for(var i=0;i<statistic.optionsV.length;i++){
 				var row={};
 				var option=statistic.optionsV[i];
@@ -132,7 +132,7 @@ Ext.define('js.ext.com.track.dashboard.TwoDimensionalStatistic',{
 		}
 		var lastRow={};
 		lastRow.labelV=getText('twoDimensionalStatistic.total');
-		if(statistic.totalH!=null){
+		if(statistic.totalH){
 			for(var i=0;i<statistic.totalH.length;i++){
 				lastRow['label'+i]=statistic.totalH[i];
 			}
@@ -145,6 +145,7 @@ Ext.define('js.ext.com.track.dashboard.TwoDimensionalStatistic',{
 		});
 
 		return Ext.create('Ext.grid.Panel', {
+			cls:'dashboardGrid-noBottomBorder',
 			store: store,
 			columns:columns,
 			hideHeaders:true,
@@ -170,16 +171,16 @@ Ext.define('js.ext.com.track.dashboard.TwoDimensionalStatistic',{
 		};
 		
 		//overwrite projectID and entity type if dashboard is in browse projects page
-		if(me.jsonData!=null&&me.jsonData.projectID!=null){
+		if(me.jsonData&&me.jsonData.projectID){
 			params['dashboardParams.project']=me.jsonData.projectID;
 		}
-		if(me.jsonData!=null&&me.jsonData.releaseID!=null){
+		if(me.jsonData&&me.jsonData.releaseID){
 			params['dashboardParams.release']=me.jsonData.releaseID;
 		}
-		if(fieldValueH!=null){
+		if(fieldValueH){
 			params['dashboardParams.fieldValueH']=fieldValueH;
 		}
-		if(fieldValueV!=null){
+		if(fieldValueV){
 			params['dashboardParams.fieldValueV']=fieldValueV;
 		}
 		var dummyForm = Ext.create('Ext.form.Panel', {
@@ -198,7 +199,7 @@ Ext.define('js.ext.com.track.dashboard.TwoDimensionalStatistic',{
 	},
 	isLinkV:function(value,metaData,record,rowIndex,colIndex,store,view){
 		var link=record.data['linkV'];
-		return (link!=null&&link!="");
+		return (link&&link!=="");
 	},
 	clickOnLink:function(record,cellIndex){
 		var me=this;
@@ -206,7 +207,7 @@ Ext.define('js.ext.com.track.dashboard.TwoDimensionalStatistic',{
 		var idx=link.indexOf(";");
 		var fieldValueH=null;
 		var fieldValueV=null;
-		if(idx==-1){
+		if(idx===-1){
 			fieldValueH=link;
 		}else{
 			fieldValueH=link.substring(0,idx);
@@ -216,16 +217,16 @@ Ext.define('js.ext.com.track.dashboard.TwoDimensionalStatistic',{
 	},
 	isLink:function(value,metaData,record,rowIndex,colIndex,store,view){
 		var link=record.data['link'+(colIndex-1)];
-		if(value=="0"){
+		if(value==="0"){
 			return false;
 		}
-		return (link!=null&&link!="");
+		return (link&&link!=="");
 	},
 	postProcessRendererLink:function(value,metaData,record,rowIndex,colIndex,store,view){
 		var htmlStr=value;
 		var link=record.data['link'+(colIndex-1)];
-		if(link!=null&&link!=""){
-			if(value=="0"){
+		if(link&&link!==""){
+			if(value==="0"){
 				htmlStr='<span style="color:#CACACA;">0</span>';
 			}
 		}else{
@@ -235,7 +236,7 @@ Ext.define('js.ext.com.track.dashboard.TwoDimensionalStatistic',{
 	},
 	formatTotal:function(value,metaData,record,rowIndex,colIndex,store,view){
 		var htmlStr="";
-		if(rowIndex>0&&value!=null){
+		if(rowIndex>0&&value){
 			htmlStr='<B>'+value+'</B>'
 		}else{
 			htmlStr=value;

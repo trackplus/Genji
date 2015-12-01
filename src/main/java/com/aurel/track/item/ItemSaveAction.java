@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -77,6 +77,7 @@ public class ItemSaveAction implements Preparable, SessionAware,ApplicationAware
 	public void setWorkItemIDAbove(Integer workItemIDAbove) {
 		this.workItemIDAbove = workItemIDAbove;
 	}
+	@Override
 	public void prepare() throws Exception {
 		locale = (Locale) session.get(Constants.LOCALE_KEY);
 		personBean = (TPersonBean) session.get(Constants.USER_KEY);
@@ -129,13 +130,12 @@ public class ItemSaveAction implements Preparable, SessionAware,ApplicationAware
 				workItemContext=ItemBL.getWorkItemContext(actionID, workItemID, projectID, issueTypeID, stateID, accessLevelFlag, personID, locale);
 				jsonResponse=ItemSaveJSON.encodeErrorOutOfDate(workItemContext,locale, useProjectSpecificID,personBean, MobileBL.isMobileApp(session));
 			}else{
-				//ItemSaveBL.updateCtx(workItemContext,fieldValuesObject);
 				HttpSession httpSession = ServletActionContext.getRequest().getSession();
 				workItemContext.setSessionID(httpSession.getId());				
 				List<ErrorData> errorDataList=new ArrayList<ErrorData>();
 				Integer newWorkItemID=ItemBL.saveWorkItem(workItemContext, errorDataList, actionID, confirm);
 				if(!errorDataList.isEmpty()) {
-					LOGGER.warn("There are:"+errorDataList.size()+" error(s) on save item!");
+					LOGGER.warn("There were " + errorDataList.size() + " error(s) by saving the item");
 					if(LOGGER.isDebugEnabled()){
 						debugErrors(errorDataList);
 					}
@@ -181,7 +181,7 @@ public class ItemSaveAction implements Preparable, SessionAware,ApplicationAware
 	private void  debugErrors(List<ErrorData> errorDataList){
 		for (int i=0;i<errorDataList.size();i++) {
 			ErrorData errorData=errorDataList.get(i);
-			LOGGER.debug(i+"key="+errorData.getResourceKey());
+			LOGGER.debug(i+" key="+errorData.getResourceKey() + " field " + errorData.getFieldID());
 		}
 	}
 	private String encodeResult(String jsonResponse){
@@ -195,6 +195,7 @@ public class ItemSaveAction implements Preparable, SessionAware,ApplicationAware
 		}
 		return null;
 	}
+	@Override
 	public void setSession(Map<String, Object> session) {
 		this.session=session;
 	}
@@ -229,6 +230,7 @@ public class ItemSaveAction implements Preparable, SessionAware,ApplicationAware
 		return application;
 	}
 
+	@Override
 	public void setApplication(Map application) {
 		this.application = application;
 	}

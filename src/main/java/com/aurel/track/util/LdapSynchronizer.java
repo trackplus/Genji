@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -45,12 +45,12 @@ public class LdapSynchronizer implements IEventHandler {
 	
 	private static final Logger LOGGER = LogManager.getLogger(LdapSynchronizer.class);
 
+	@Override
 	public Map handleEvent(Map inputBinding) {
 		TSiteBean siteBean = (TSiteBean)inputBinding.get(BINDING_PARAMS.SITEBEAN);
 		String ldapURL = siteBean.getLdapServerURL();
 		String baseURL = LdapUtil.getBaseURL(ldapURL);
 		boolean deactivateUnknown = true;
-		//String groupAttributeName = null;
 		Map<String, String> ldapMap = LdapUtil.getLdapMap();
 		if (ldapMap!=null) {
 			try {
@@ -58,7 +58,6 @@ public class LdapSynchronizer implements IEventHandler {
 			} catch (Exception e) {
 				
 			}
-			//groupAttributeName = ldapMap.get(LdapUtil.LDAP_CONFIG.GROUP_NAME);
 		}
 	    /**
 	     * Format of parameter file is "Group name : ldap URL"

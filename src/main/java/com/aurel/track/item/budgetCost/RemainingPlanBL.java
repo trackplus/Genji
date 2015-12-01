@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -144,8 +144,9 @@ public class RemainingPlanBL {
 	 * @param hoursPerWorkingDay
 	 * @param forceRecompute cover the case then the remaining plan was set form a non null value to null
 	 * (the ancestors contain the previous non-null values in their sum)
+	 * FIXME it should be synchronized but performance is also important
 	 */
-	public static synchronized void actualizeAncestorRemainingPlannedValues(Integer workItemID,
+	public static /*synchronized*/ void actualizeAncestorRemainingPlannedValues(Integer workItemID,
 			Integer parentID, Double hoursPerWorkingDay) {
 		//recalculate remaining planned values for ancestors
 		Set<Integer> visistedAscendentsSet = new HashSet<Integer>();
@@ -326,7 +327,6 @@ public class RemainingPlanBL {
 				}
 			}
 			//sum up the children in an additional cycle once the commonDenominatorTimeUnit is known
-			//double childenPlanSum = 0.0;
 			double childenPlanHourSum = 0.0;
 			double childenPlanCostSum = 0.0;
 			if (!childPlans.isEmpty()) {
@@ -430,7 +430,7 @@ public class RemainingPlanBL {
 		saveRemainingPlanAndNotify(actualEstimatedBudgetBeanNew, actualEstimatedBudgetBeanOld, personBean, workItemBean,notify);
 		//actualize ancestor planned values
 		Integer parentID = workItemBean.getSuperiorworkitem(); 
-		if (parentID!=null && ApplicationBean.getApplicationBean().getSiteBean().getSummaryItemsBehavior()) {
+		if (parentID!=null && ApplicationBean.getInstance().getSiteBean().getSummaryItemsBehavior()) {
 			Double hoursPerWorkingday = ProjectBL.getHoursPerWorkingDay(workItemBean.getProjectID());
 			RemainingPlanBL.actualizeAncestorRemainingPlannedValues(workItemBean.getObjectID(), parentID, hoursPerWorkingday);
 		}

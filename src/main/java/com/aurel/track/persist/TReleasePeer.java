@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -106,7 +106,6 @@ public class TReleasePeer
 			}
 			for (TRelease tRelease : releaseList) {
 				Integer releaseID = tRelease.getObjectID();
-				//TLastExecutedQueryPeer.deleteByRelease(tRelease.getObjectID());
 				LastExecutedBL.deleteByFilterIDAndFilterType(releaseID, QUERY_TYPE.PROJECT_RELEASE);
 				new TCardFieldOptionPeer().deleteOptionForField(SystemFields.INTEGER_RELEASENOTICED, releaseID);
 				new TCardFieldOptionPeer().deleteOptionForField(SystemFields.INTEGER_RELEASESCHEDULED, releaseID);
@@ -117,7 +116,7 @@ public class TReleasePeer
 				ClusterMarkChangesBL.markDirtySystemListEntryInCluster(SystemFields.INTEGER_RELEASE, tRelease.getObjectID(), ClusterMarkChangesBL.getChangeTypeByDelete());
 			}
 		} catch (TorqueException e) {
-			LOGGER.error("Deleting the release by criteria " + crit.toString() + " failed with " + e.getMessage(), e);
+			LOGGER.error("Deleting the release by criteria " + crit.toString() + " failed with " + e.getMessage());
 		}
 	}
 	
@@ -126,6 +125,7 @@ public class TReleasePeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TReleaseBean loadByPrimaryKey(Integer objectID) {
 		TRelease tRelease = null;
 		try {
@@ -145,6 +145,7 @@ public class TReleasePeer
 	 * @param projectID 
 	 * @return
 	 */
+	@Override
 	public List<TReleaseBean> loadAllByProject(Integer projectID) {
 		Criteria crit = new Criteria();
 		crit.add(PROJKEY, projectID);
@@ -163,6 +164,7 @@ public class TReleasePeer
 	 * @param projectID 
 	 * @return
 	 */
+	@Override
 	public List<TReleaseBean> loadMainByProject(Integer projectID) {
 		Criteria crit = new Criteria();
 		crit.add(PROJKEY, projectID);
@@ -184,6 +186,7 @@ public class TReleasePeer
 	 * @param states
 	 * @return
 	 */
+	@Override
 	public List<TReleaseBean> loadAllByProjectAndStates(Integer projectID, int[] states) {
 		Criteria crit = new Criteria();
 		if(projectID!=null){
@@ -208,6 +211,7 @@ public class TReleasePeer
 	 * @param states
 	 * @return
 	 */
+	@Override
 	public List<TReleaseBean> loadMainByProjectAndStates(Integer projectID, int[] states) {
 		Criteria crit = new Criteria();
 		crit.add(PROJKEY, projectID);
@@ -232,6 +236,7 @@ public class TReleasePeer
 	 * @param selectedReleaseIDsSet
 	 * @return
 	 */
+	@Override
 	public List<TReleaseBean> loadMainByProjectsAndStates(List<Integer> projectIDs, int[] states, Set<Integer> selectedReleaseIDsSet) {
 		List<TReleaseBean> releasesList = new LinkedList<TReleaseBean>();
 		if (projectIDs==null || projectIDs.isEmpty()) {
@@ -301,6 +306,7 @@ public class TReleasePeer
 	 * @param releaseID
 	 * @return
 	 */
+	@Override
 	public List<TReleaseBean> loadChildren(Integer releaseID) {
 		Criteria crit = new Criteria();
 		crit.add(PARENT, releaseID);
@@ -308,7 +314,7 @@ public class TReleasePeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (Exception e) {
-			LOGGER.error("Loading of all children of the release " + releaseID +  " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading of all children of the release " + releaseID +  " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -319,6 +325,7 @@ public class TReleasePeer
 	 * @param states
 	 * @return
 	 */
+	@Override
 	public List<TReleaseBean> loadChildrenByParentAndStates(Integer releaseID, int[] states) {
 		Criteria crit = new Criteria();
 		crit.add(PARENT, releaseID);
@@ -342,6 +349,7 @@ public class TReleasePeer
 	 * @param selectedReleaseIDsSet
 	 * @return
 	 */
+	@Override
 	public List<TReleaseBean> loadChildrenByParentsAndStates(List<Integer> releaseIDs, int[] states, Set<Integer> selectedReleaseIDsSet) {
 		List<TReleaseBean> releasesList = new LinkedList<TReleaseBean>();
 		if (releaseIDs==null || releaseIDs.isEmpty()) {
@@ -377,6 +385,7 @@ public class TReleasePeer
 	 * Gets the sort order column name 
 	 * @return
 	 */
+	@Override
 	public String getSortOrderColumn() {
 		return "SORTORDER";
 	}
@@ -385,6 +394,7 @@ public class TReleasePeer
 	 * Returns the table name
 	 * @return
 	 */
+	@Override
 	public String getTableName() {
 		return TABLE_NAME;
 	}
@@ -395,6 +405,7 @@ public class TReleasePeer
 	 * @param label
 	 * @return
 	 */
+	@Override
 	public TReleaseBean loadByProjectAndLabel(Integer projectID, String label) {
 		List<TRelease> torqueList = null;
 		Criteria crit = new Criteria();
@@ -418,6 +429,7 @@ public class TReleasePeer
 	 * @param uuids
 	 * @return
 	 */
+	@Override
 	public List<TReleaseBean> loadByUUIDs(List<String> uuids) {
 		return loadByFieldValues(uuids, TPUUID);
 	}
@@ -427,6 +439,7 @@ public class TReleasePeer
 	 * @param labels
 	 * @return
 	 */
+	@Override
 	public List<TReleaseBean> loadByLabels(List<String> labels) {
 		return loadByFieldValues(labels, LABEL);
 	}
@@ -470,6 +483,7 @@ public class TReleasePeer
 	 * @param releaseIDs
 	 * @return
 	 */
+	@Override
 	public List<TReleaseBean> loadByReleaseIDs(List<Integer> releaseIDs) {
 		if (releaseIDs==null || releaseIDs.isEmpty()) {
 			LOGGER.warn("No releaseIDs specified " + releaseIDs);
@@ -481,7 +495,7 @@ public class TReleasePeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (Exception e) {
-			LOGGER.error("Loading of releases by IDs failed with " + e.getMessage(), e);
+			LOGGER.error("Loading of releases by IDs failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -490,13 +504,14 @@ public class TReleasePeer
 	 * Loads all ReleaseBeans
 	 * @return 
 	 */
+	@Override
 	public List<TReleaseBean> loadAll() {
 		Criteria crit = new Criteria();
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		}
 		catch (Exception e) {
-			LOGGER.error("Loading of all releases failed with " + e.getMessage(), e);
+			LOGGER.error("Loading of all releases failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -506,6 +521,7 @@ public class TReleasePeer
 	 * @param workItemIDs
 	 * @return
 	 */
+	@Override
 	public List<TReleaseBean> loadNoticedByWorkItemKeys(int[] workItemIDs) {
 		if (workItemIDs==null || workItemIDs.length==0) {
 			return new LinkedList<TReleaseBean>();
@@ -525,7 +541,7 @@ public class TReleasePeer
 			try {
 				releases.addAll(doSelect(criteria));
 			} catch(Exception e) {
-				LOGGER.error("Loading the noticed releaseBeans by workItemKeys failed with " + e.getMessage(), e);
+				LOGGER.error("Loading the noticed releaseBeans by workItemKeys failed with " + e.getMessage());
 			}			
 		}
 		return convertTorqueListToBeanList(releases);
@@ -536,6 +552,7 @@ public class TReleasePeer
 	 * @param workItemIDs
 	 * @return
 	 */
+	@Override
 	public List<TReleaseBean> loadScheduledByWorkItemKeys(int[] workItemIDs) {
 		if (workItemIDs==null || workItemIDs.length==0) {
 			return new LinkedList<TReleaseBean>();
@@ -555,7 +572,7 @@ public class TReleasePeer
 			try {
 				releases.addAll(doSelect(criteria));
 			} catch(Exception e) {
-				LOGGER.error("Loading the scheduled releaseBeans by workItemKeys failed with " + e.getMessage(), e);
+				LOGGER.error("Loading the scheduled releaseBeans by workItemKeys failed with " + e.getMessage());
 			}
 		}
 		return convertTorqueListToBeanList(releases);
@@ -597,7 +614,7 @@ public class TReleasePeer
 		}
 		catch(Exception e)
 		{
-			LOGGER.error("Loading the active and inactive releases failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the active and inactive releases failed with " + e.getMessage());
 		} 
 		
 		Map projectsMap = TProjectPeer.loadActiveInactiveProjectsMap();
@@ -656,7 +673,7 @@ public class TReleasePeer
 		try {
 			return doSelect(crit);
 		} catch(Exception e) {
-			LOGGER.error("Loading releases by project " + projectKey + " and release states " + stateFlags + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading releases by project " + projectKey + " and release states " + stateFlags + " failed with " + e.getMessage());
 			return new ArrayList<TRelease>();
 		}						
 	}*/
@@ -709,7 +726,7 @@ public class TReleasePeer
 		}
 		catch(Exception e)
 		{
-			LOGGER.error("Loading used releases by project " + projectID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading used releases by project " + projectID + " failed with " + e.getMessage());
 		}				
 		return convertTorqueListToBeanList(releases);
 	}*/
@@ -718,6 +735,7 @@ public class TReleasePeer
 	 * Load all active and inactive releases for a list of projects
 	 * @return
 	 */
+	@Override
 	public List<TReleaseBean> loadNotClosedByProjectIDs(List<Integer> projectIDs) {
 		if (projectIDs==null || projectIDs.isEmpty()) {
 			return new LinkedList<TReleaseBean>();
@@ -735,7 +753,7 @@ public class TReleasePeer
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch(Exception e) {
-			LOGGER.error("Loading releases by projects " + projectIDs + "and release states " + statusFlags + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading releases by projects " + projectIDs + "and release states " + statusFlags + " failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -745,6 +763,7 @@ public class TReleasePeer
 	 * @param projectIDs
 	 * @return
 	 */
+	@Override
 	public List<TReleaseBean> loadByProjectKeys(List<Integer> projectIDs) {
 		if (projectIDs==null || projectIDs.isEmpty()) {
 			return new LinkedList<TReleaseBean>();
@@ -766,7 +785,7 @@ public class TReleasePeer
 			try {
 				releasesList.addAll(doSelect(criteria));
 			} catch(Exception e) {
-				LOGGER.error("Loading the defined releases for " + projectIDs.size() +  " projects failed with " + e.getMessage(), e);
+				LOGGER.error("Loading the defined releases for " + projectIDs.size() +  " projects failed with " + e.getMessage());
 			}
 		}
 		return convertTorqueListToBeanList(releasesList);
@@ -795,7 +814,7 @@ public class TReleasePeer
 			}
 			return objectID;
 		} catch (Exception e) {
-			LOGGER.error("Saving of a release failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a release failed with " + e.getMessage());
 			return null;
 		}
 	}*/
@@ -805,13 +824,14 @@ public class TReleasePeer
 	 * @param releaseBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TReleaseBean releaseBean) {
 		try {
 			TRelease tRelease = BaseTRelease.createTRelease(releaseBean);
 			tRelease.save();
 			return tRelease.getObjectID();
 		} catch (Exception e) {
-			LOGGER.error("Saving of release failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of release failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -821,11 +841,12 @@ public class TReleasePeer
 	 * @param releaseBean
 	 * @param deep
 	 */
+	@Override
 	public TReleaseBean copy(TReleaseBean releaseBean, boolean deep) {
 		try {
 			return  (BaseTRelease.createTRelease(releaseBean).copy(deep)).getBean();
 		} catch (TorqueException e) {
-			LOGGER.error("Deep " + deep + " copying a release failed with " + e.getMessage(), e);
+			LOGGER.error("Deep " + deep + " copying a release failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -835,6 +856,7 @@ public class TReleasePeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public boolean hasDependentIssues(Integer objectID) {
 		return ReflectionHelper.hasDependentData(replacePeerClasses, replaceFields, objectID);
 	}
@@ -844,6 +866,7 @@ public class TReleasePeer
 	 * Deletes a list by primary key
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		Criteria crit = new Criteria();
 		crit.add(PKEY, objectID);
@@ -860,6 +883,7 @@ public class TReleasePeer
 	 * @param oldReleaseID
 	 * @param newReleaseID
 	 */
+	@Override
 	public void replace(Integer oldReleaseID, Integer newReleaseID) {
 		ReflectionHelper.replace(replacePeerClasses, replaceFields, oldReleaseID, newReleaseID);
 		replaceHistoryRelease(oldReleaseID, newReleaseID, true);
@@ -946,7 +970,7 @@ public class TReleasePeer
 		try {
 			return getReportReleasesScheduled(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the manager scheduled releases for person " + personID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the manager scheduled releases for person " + personID + " failed with " + e.getMessage());
 			return null;
 		}		
 	}*/
@@ -961,7 +985,7 @@ public class TReleasePeer
 		try {
 			return getReportReleasesScheduled(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the responsible scheduled releases for person " + personID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the responsible scheduled releases for person " + personID + " failed with " + e.getMessage());
 			return null;
 		}
 	}*/
@@ -976,7 +1000,7 @@ public class TReleasePeer
 		try {
 			return getReportReleasesScheduled(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the my scheduled releases for person " + personID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the my scheduled releases for person " + personID + " failed with " + e.getMessage());
 			return null;
 		}
 	}*/
@@ -992,7 +1016,7 @@ public class TReleasePeer
 		try {
 			return getReportReleasesScheduled(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the reporter scheduled releases for person " + personID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the reporter scheduled releases for person " + personID + " failed with " + e.getMessage());
 			return null;
 		}	
 	}*/
@@ -1014,7 +1038,7 @@ public class TReleasePeer
 		try {
 			return getReportReleasesScheduled(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the scheduled releases for custom report failed with failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the scheduled releases for custom report failed with failed with " + e.getMessage());
 			return null;
 		}		
 	}*/
@@ -1031,7 +1055,7 @@ public class TReleasePeer
 		try {
 			return getReportReleasesScheduled(tqlCriteria);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the scheduled releases for TQL report failed with failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the scheduled releases for TQL report failed with failed with " + e.getMessage());
 			return null;
 		}		
 	}*/
@@ -1048,7 +1072,7 @@ public class TReleasePeer
 		try {
 			return getReportReleasesNoticed(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the manager noticed releases for person " + personID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the manager noticed releases for person " + personID + " failed with " + e.getMessage());
 			return null;
 		}			
 	}*/
@@ -1063,7 +1087,7 @@ public class TReleasePeer
 		try {
 			return getReportReleasesNoticed(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the responsible noticed releases for person " + personID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the responsible noticed releases for person " + personID + " failed with " + e.getMessage());
 			return null;
 		}			
 	}*/
@@ -1078,7 +1102,7 @@ public class TReleasePeer
 		try {
 			return getReportReleasesNoticed(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the reporter noticed releases for person " + personID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the reporter noticed releases for person " + personID + " failed with " + e.getMessage());
 			return null;
 		}	
 	}*/
@@ -1093,7 +1117,7 @@ public class TReleasePeer
 		try {
 			return getReportReleasesNoticed(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the my noticed releases for person " + personID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the my noticed releases for person " + personID + " failed with " + e.getMessage());
 			return null;
 		}			
 	}*/
@@ -1109,7 +1133,7 @@ public class TReleasePeer
 		try {
 			return getReportReleasesNoticed(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the noticed releases for custom report failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the noticed releases for custom report failed with " + e.getMessage());
 			return null;
 		}		
 	}*/
@@ -1126,7 +1150,7 @@ public class TReleasePeer
 		try {
 			return getReportReleasesNoticed(tqlCriteria);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the noticed releases for TQL report failed with failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the noticed releases for TQL report failed with failed with " + e.getMessage());
 			return null;
 		}		
 	}*/
@@ -1144,7 +1168,7 @@ public class TReleasePeer
 		try {
 			return getReportPickerReleases(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the manager picker releases for person " + personID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the manager picker releases for person " + personID + " failed with " + e.getMessage());
 			return null;
 		}		
 	}*/
@@ -1160,7 +1184,7 @@ public class TReleasePeer
 		try {
 			return getReportPickerReleases(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the responsible picker releases for person " + personID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the responsible picker releases for person " + personID + " failed with " + e.getMessage());
 			return null;
 		}		
 	}*/
@@ -1176,7 +1200,7 @@ public class TReleasePeer
 		try {
 			return getReportPickerReleases(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the my picker releases for person " + personID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the my picker releases for person " + personID + " failed with " + e.getMessage());
 			return null;
 		}	
 	}*/
@@ -1191,7 +1215,7 @@ public class TReleasePeer
 		try {
 			return getReportPickerReleases(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the picker releases for custom report failed with failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the picker releases for custom report failed with failed with " + e.getMessage());
 			return null;
 		}	
 	}*/
@@ -1208,7 +1232,7 @@ public class TReleasePeer
 		try {
 			return getReportPickerReleases(tqlCriteria);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading the picker releases for TQL report failed with failed with " + e.getMessage(), e);
+			LOGGER.error("Loading the picker releases for TQL report failed with failed with " + e.getMessage());
 			return null;
 		}	
 	}*/
@@ -1237,7 +1261,7 @@ public class TReleasePeer
 			try {
 				releases.addAll(getReportPickerReleases(criteria));
 			} catch(Exception e) {
-				LOGGER.error("Loading the picker releaseBeans by workItemKeys failed with " + e.getMessage(), e);
+				LOGGER.error("Loading the picker releaseBeans by workItemKeys failed with " + e.getMessage());
 			}			
 		}
 		return releases;
@@ -1254,6 +1278,7 @@ public class TReleasePeer
 	 * @param personID in null do not filter by personID
 	 * @return
 	 */
+	@Override
 	public Map<Integer, TReleaseBean> loadHistoryReleases(int[] workItemIDs) {
 		List<TReleaseBean> releaseBeanList = new LinkedList<TReleaseBean>();
 		List<int[]> workItemIDChunksList = GeneralUtils.getListOfChunks(workItemIDs);
@@ -1267,14 +1292,14 @@ public class TReleasePeer
 				try {
 					releaseBeanList.addAll(convertTorqueListToBeanList(doSelect(criteria)));
 				} catch(Exception e) {
-					LOGGER.error("Loading the new history releaseBeans  for workItems failed with " + e.getMessage(), e);
+					LOGGER.error("Loading the new history releaseBeans  for workItems failed with " + e.getMessage());
 				}
 				criteria = HistoryDropdownContainerLoader.prepareHistorySystemOptionCriteria(
 						workItemIDChunk, false, PKEY, SystemFields.RELEASE);
 				try {
 					releaseBeanList.addAll(convertTorqueListToBeanList(doSelect(criteria)));
 				} catch(Exception e) {
-					LOGGER.error("Loading the old history releaseBeans for workItems failed with " + e.getMessage(), e);
+					LOGGER.error("Loading the old history releaseBeans for workItems failed with " + e.getMessage());
 				}
 				
 			}

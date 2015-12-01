@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -61,6 +61,7 @@ public class TDashboardPanelPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public TDashboardPanelBean loadByPrimaryKey(Integer objectID)  {
 		TDashboardPanel tobject = null;
 		try{
@@ -75,6 +76,7 @@ public class TDashboardPanelPeer
 		}
 		return null;
 	}
+	@Override
 	public TDashboardPanelBean loadFullByPrimaryKey(Integer objectID){
 		TDashboardPanelBean panelBean=null;
 		Connection con = null;
@@ -125,13 +127,14 @@ public class TDashboardPanelPeer
 	 * Loads all DashboardPanels from TDashboardPanel table
 	 * @return
 	 */
+	@Override
 	public List loadAll() {
 		List torqueList = null;
 		Criteria crit = new Criteria();
 		try {
 			torqueList = doSelect(crit);
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all DashboardPanels failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all DashboardPanels failed with " + e.getMessage());
 		}
 		return convertTorqueListToBeanList(torqueList);
 	}
@@ -141,6 +144,7 @@ public class TDashboardPanelPeer
 	 * @param bean
 	 * @return
 	 */
+	@Override
 	public Integer save(TDashboardPanelBean bean){
 		Connection con = null;
 		try{
@@ -163,7 +167,7 @@ public class TDashboardPanelPeer
 			return tobject.getObjectID();
 		} catch (Exception e) {
 			Transaction.safeRollback(con);
-			LOGGER.error("Saving of a DashboardPanel failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of a DashboardPanel failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -173,6 +177,7 @@ public class TDashboardPanelPeer
 	 * Is deletable should return true before calling this method
 	 * @param objectID
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		Connection con = null;
 		try{
@@ -219,7 +224,6 @@ public class TDashboardPanelPeer
             BaseTDashboardParameterPeer.doDelete(critparams,con);
 
 			//delete the last executed query associated with this dashboard
-			//TLastExecutedQueryPeer.deleteByDashboard(dashboardFieldID,con);
 			LastExecutedBL.deleteByFilterIDAndFilterType(dashboardFieldID, QUERY_TYPE.DASHBOARD, con);
         }
         BaseTDashboardFieldPeer.doDelete(critChild,con);
@@ -229,6 +233,7 @@ public class TDashboardPanelPeer
 	 * Verify is a DashboardPanel can be delete
 	 * @param objectID
 	 */
+	@Override
 	public boolean isDeletable(Integer objectID){
 		return true;
 	}
@@ -238,6 +243,7 @@ public class TDashboardPanelPeer
 	 * @param parentID
 	 * @return
 	 */
+	@Override
 	public List loadByParent(Integer parentID){
 		List torqueList = new ArrayList();
 	    Criteria crit = new Criteria();
@@ -247,7 +253,7 @@ public class TDashboardPanelPeer
 			torqueList = doSelect(crit);
 		}
 		catch(TorqueException e){
-			LOGGER.error("Loading panels by Parent failed with " + e.getMessage(), e);
+			LOGGER.error("Loading panels by Parent failed with " + e.getMessage());
 		}
 		return convertTorqueListToBeanList(torqueList);
 	}
@@ -265,7 +271,6 @@ public class TDashboardPanelPeer
 		try {
 			sortOrder = ((Record) doSelectVillageRecords(crit,con).get(0)).getValue(1).asIntegerObj();
 		} catch (Exception e) {
-			//LOGGER.error("Getting the next sortorder for the list " + listID + " failed with: " + e);
 		}
 		if (sortOrder!=null){
 			sortOrder = new Integer(sortOrder.intValue()+1);

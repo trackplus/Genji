@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -59,6 +59,7 @@ public class TCostBean
 	private String accountName;
 	private Integer timeUnit = AccountingBL.TIMEUNITS.HOURS; //the default is hour;	
 	
+	@Override
 	public String getLabel() {
 		return getSubject();
 	}
@@ -68,6 +69,7 @@ public class TCostBean
 	 * It should be one of the HISTORY_TYPE constants
 	 * @return
 	 */
+	@Override
 	public int getType() {
 		return HistoryBean.HISTORY_TYPE.COST;
 	}
@@ -123,10 +125,12 @@ public class TCostBean
 		return costBeanNew;
 	}
 	
+	@Override
 	public String getCurrency() {
 		return currency;
 	}
 
+	@Override
 	public void setCurrency(String currency) {
 		this.currency = currency;
 	}
@@ -135,6 +139,7 @@ public class TCostBean
 	* The name of the person who made the modification on a workItem
 	* @return
 	*/
+	@Override
 	public String getChangedByName() {
 		
 		return changedByName;
@@ -143,6 +148,7 @@ public class TCostBean
 	/**
 	 * @param changedByName the changedByName to set
 	 */
+	@Override
 	public void setChangedByName(String changedByName) {
 		this.changedByName = changedByName;
 	}
@@ -151,6 +157,7 @@ public class TCostBean
 	 * The ID of the person who made the modification on a workItem
 	 * @return
 	 */
+	@Override
 	public Integer getChangedByID() { 
 		return getPerson();
 	}
@@ -159,6 +166,7 @@ public class TCostBean
 	 * The ID of the workItem, the the history bean refers to
 	 * @return
 	 */
+	@Override
 	public Integer getWorkItemID() {
 		return getWorkitem();
 	}
@@ -190,6 +198,7 @@ public class TCostBean
 	 * @param labelBean
 	 * @return
 	 */
+	@Override
 	public Map<String, String> serializeBean() {
 		Map<String, String> attributesMap = new HashMap<String, String>();
 		attributesMap.put("objectID", getObjectID().toString());
@@ -265,6 +274,7 @@ public class TCostBean
 	 * @param attributes
 	 * @return
 	 */
+	@Override
 	public TCostBean deserializeBean(Map<String, String> attributes) {
 		TCostBean costBean = new TCostBean();
 		String strObjectID = attributes.get("objectID");
@@ -365,6 +375,7 @@ public class TCostBean
 		}
 	}
 
+	@Override
 	public boolean considerAsSame(ISerializableLabelBean serializableLabelBean,
 			Map<String, Map<Integer, Integer>> matchesMap) {
 		//never same (two costs are the same only if the uuids are same)
@@ -372,6 +383,7 @@ public class TCostBean
 		return false;
 	}
 
+	@Override
 	public Integer saveBean(ISerializableLabelBean serializableLabelBean,
 			Map<String, Map<Integer, Integer>> matchesMap) {
 		TCostBean costBean = (TCostBean)serializableLabelBean;

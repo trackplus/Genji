@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -40,7 +40,6 @@ import org.docx4j.wml.STFldCharType;
 import org.docx4j.wml.Text;
 
 public class AddingTableOfContent {
-    //private static ObjectFactory factory;
  
     /**
      *  First we create the factory and the package and extract the document part
@@ -48,7 +47,6 @@ public class AddingTableOfContent {
      *  paragraphs with assorted heading styles. Finally we save the package.
      */
     public static void main(String[] args) throws Docx4JException {
-        //factory = Context.getWmlObjectFactory();
         WordprocessingMLPackage wordMLPackage =
             WordprocessingMLPackage.createPackage();
         MainDocumentPart documentPart = wordMLPackage.getMainDocumentPart();

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -27,17 +27,19 @@ Ext.define('com.trackplus.admin.user.DashboardAssignment',{
 	extend:'Ext.Base',
 	baseAction:'dashboardAssignment',
 	entityName:getText('menu.admin.users.cockpitDefault'),
+
 	constructor: function(config) {
 		var config = config || {};
-		this.initialConfig = config;
-		Ext.apply(this, config);
+		this.initConfig(config);
 		this.myInit();
 	},
+
 	myInit:function(){
 		var me=this;
 		me.initActions();
 		me.initGrid();
 	},
+
 	createCenterPanel: function() {
 		var me=this;
 		return me.grid;
@@ -55,17 +57,23 @@ Ext.define('com.trackplus.admin.user.DashboardAssignment',{
 
 	getGridColumns: function() {
 		return [{
-				header: getText('common.lbl.name'), width:300,
-				dataIndex: 'name',id:'name',sortable:true,
-				filterable: true
+				text: getText('common.lbl.name'), width:300,
+				dataIndex: 'name',sortable:true,
+				filter: {
+		            type: "string"
+		        }
 			},{
-				header: getText('common.lbl.description'),flex:1,
-				dataIndex: 'description',id:'description',sortable:true,
-				filterable: true
+				text: getText('common.lbl.description'),flex:1,
+				dataIndex: 'description',sortable:true,
+				filter: {
+		            type: "string"
+		        }
 			},{
-				header: getText('admin.customize.form.config.owner'), width:200,
-				dataIndex: 'owner',id:'owner',sortable:true,
-				filterable: true
+				text: getText('admin.customize.form.config.owner'), width:200,
+				dataIndex: 'owner',sortable:true,
+				filter: {
+		            type: "string"
+		        }
 			}
 		];
 	},
@@ -88,31 +96,13 @@ Ext.define('com.trackplus.admin.user.DashboardAssignment',{
 			store: store,
 			selModel: Ext.create('Ext.selection.CheckboxModel', {mode:"MULTI"}), //for screen export
 			columns: this.getGridColumns(),
+			plugins: ["gridfilters"],
 			autoWidth: true,
 			border: false,
 			bodyBorder:false,
 			cls:'gridNoBorder',
 			stripeRows: true
 		};
-		gridConfig.features = [{
-			ftype: 'filters',
-			encode: false, // json encode the filter query
-			local: true,// defaults to false (remote filtering)
-			filters: [
-				{
-					type: 'string',
-					dataIndex: 'name'
-				},
-				{
-					type: 'string',
-					dataIndex: 'description'
-				},
-				{
-					type: 'string',
-					dataIndex: 'owner'
-				}
-			]
-		}];
 		var gridListeners = {selectionchange: {fn:this.onGridSelectionChange, scope:this}};
 		gridListeners.itemcontextmenu = {fn:this.onGridRowCtxMenu, scope:this};
 		gridListeners.itemdblclick = {fn:this.editDashboard, scope:this};
@@ -124,12 +114,12 @@ Ext.define('com.trackplus.admin.user.DashboardAssignment',{
 	onGridSelectionChange: function (view, selections) {
 		this.enableDisableToolbarButtons(view, selections);
 		var selectedRow = null;
-		if (selections!=null && selections.length>0) {
+		if (selections && selections.length>0) {
 			selectedRow = selections[0];
 		}
 	},
 	enableDisableToolbarButtons: function (view, selections) {
-		if (selections==null || selections.length==0) {
+		if (CWHF.isNull(selections) || selections.length===0) {
 			this.actionEdit.setDisabled(true);
 			this.actionCopy.setDisabled(true);
 			this.actionDelete.setDisabled(true);
@@ -211,7 +201,7 @@ Ext.define('com.trackplus.admin.user.DashboardAssignment',{
 		var me=this;
 		var title = getText('common.lbl.edit',me.entityName);
 		var objectID = this.getSelectedId();
-		if(objectID==null){
+		if(CWHF.isNull(objectID)){
 			return null;
 		}
 		var loadParams = {
@@ -233,7 +223,7 @@ Ext.define('com.trackplus.admin.user.DashboardAssignment',{
 		var messageNoSelection=getText("common.lbl.messageBox.removeSelected.notSelected");
 		var titleDelete=getText("common.btn.delete");
 		var okLabel=getText("common.btn.ok");
-		if(selections==null||selections.length==0){
+		if(CWHF.isNull(selections)||selections.length===0){
 			Ext.MessageBox.show({
 				title:titleNotSelected,
 				msg:messageNoSelection ,
@@ -248,7 +238,7 @@ Ext.define('com.trackplus.admin.user.DashboardAssignment',{
 			//buttons:{yes : yesLabel, no : noLabel},
 			buttons: Ext.MessageBox.YESNO,
 			fn: function(btn){
-				if(btn=="yes"){
+				if(btn==="yes"){
 					var selections=me.grid.getSelectionModel().getSelection();
 					var deletedItems="";
 					var row;
@@ -290,7 +280,7 @@ Ext.define('com.trackplus.admin.user.DashboardAssignment',{
 		var me=this;
 		var title = getText('common.lbl.copy',me.entityName);
 		var objectID = this.getSelectedId();
-		if(objectID==null){
+		if(CWHF.isNull(objectID)){
 			return null;
 		}
 		var loadParams = {
@@ -306,14 +296,14 @@ Ext.define('com.trackplus.admin.user.DashboardAssignment',{
 	getSelectedId:function(){
 		var me=this;
 		var sel=this.grid.getSelectionModel().getSelection();
-		if(sel!=null&&sel.length>0){
+		if(sel&&sel.length>0){
 			return sel[0].data['id'];
 		}
 		return null;
 	},
 	configDashboard:function(){
 		var objectID = this.getSelectedId();
-		if(objectID==null){
+		if(CWHF.isNull(objectID)){
 			return null;
 		}
 		var urlEditScreen="dashboardEdit.action?backAction=admin.action&componentID="+objectID;

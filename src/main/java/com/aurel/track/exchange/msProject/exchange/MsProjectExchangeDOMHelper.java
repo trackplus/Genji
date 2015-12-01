@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -98,7 +98,6 @@ public class MsProjectExchangeDOMHelper {
     	if (elementList!=null) {
     		for(int i = 0; i < elementList.size(); i++) {
     			Task element = elementList.get(i);
-//				Integer UID = element.getUniqueID();
     			Double UIDTmp = (Double)element.getFieldByAlias("trackPlusId");
 				Integer UID;
 				if(UIDTmp != null) {
@@ -231,7 +230,6 @@ public class MsProjectExchangeDOMHelper {
 		if (elementList!=null) {
 			for(int i = 0; i < elementList.size(); i++) {
 				ResourceAssignment element = elementList.get(i);
-//				Integer taskUID = getSubelementInteger(element, subelementName);
 				Integer taskUID = element.getTaskUniqueID();
 				if (taskUID!=null) {
 					List<ResourceAssignment> subelementList = subElementBasedMap.get(taskUID);
@@ -252,7 +250,6 @@ public class MsProjectExchangeDOMHelper {
      * @return
      */
     public static boolean UIDIsValidTask(Task element) {
-//    	Integer UID = element.getUniqueID();
     	Double UIDTmp = (Double)element.getFieldByAlias("trackPlusId");
 		Integer UID;
 		if(UIDTmp != null) {
@@ -302,7 +299,6 @@ public class MsProjectExchangeDOMHelper {
 			try {
 				List<Relation> predecessorLinks = taskElement.getPredecessors();
 				if (predecessorLinks!=null && !predecessorLinks.isEmpty()) {
-//					Integer dependentUID = taskElement.getUniqueID();
 					Double UIDTmp = (Double)taskElement.getFieldByAlias("trackPlusId");
 					Integer dependentUID;
 					if(UIDTmp != null) {
@@ -318,7 +314,6 @@ public class MsProjectExchangeDOMHelper {
 						Relation existingPredecessorLink = predecessorMap.get(predecessorUID);
 						if (existingPredecessorLink!=null) {
 							//the same link between the two tasks again: should never happen but just in case remove it
-//							existingPredecessorLink.getParentNode().removeChild(existingPredecessorLink); //TODO with MPXJ API
 							
 						} else {
 							predecessorMap.put(predecessorUID, predecessorLink);

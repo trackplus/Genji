@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -189,7 +189,7 @@ public class ReportBeansToLaTeXConverter implements Console {
 				}
 			}
 		} catch (IOException e) {
-			LOGGER.error("Could not prepare template file for Freemarker processing " + template.getAbsolutePath(), e);
+			LOGGER.error("Could not prepare template file for Freemarker processing " + template.getAbsolutePath());
 			debugTrace.append(ExceptionUtils.getStackTrace(e) + CRLF);
 		}
 
@@ -228,7 +228,7 @@ public class ReportBeansToLaTeXConverter implements Console {
 			try {
 				createDebugInfoPdf(pdf, latexFile);
 			} catch (Exception e) {
-				LOGGER.error(e.getMessage(),e);
+				LOGGER.error(e.getMessage());
 			}
 		}
 		return new File(pdf);
@@ -408,7 +408,7 @@ public class ReportBeansToLaTeXConverter implements Console {
 
 		String TOKEN = ".X27645154678345875";
 		int index = 0;
-		
+
 		for (TFieldBean fieldBean : fields) {
 			Integer fieldID = fieldBean.getObjectID();
 			Object value = reportBean.getShowValue(fieldID);
@@ -417,9 +417,6 @@ public class ReportBeansToLaTeXConverter implements Console {
 				if (fieldTypeRT.isLong()) {
 					String s = value.toString();
 					s = s.trim();
-					// if (s.startsWith("<p>")) {
-					// s = s.substring(3, s.lastIndexOf("</p>"));
-					// }
 					Matcher matcher = inlineItemNoPattern.matcher(s);
 					HashMap<Integer, String> inlines = new HashMap<Integer, String>();
 					
@@ -631,7 +628,7 @@ public class ReportBeansToLaTeXConverter implements Console {
 		try {
 			FileUtils.writeStringToFile(latexFile, processedTex.toString(), "UTF-8");
 		} catch (Exception e) {
-			LOGGER.error("Cannot write file :" + latexFile.getAbsolutePath(), e);
+			LOGGER.error("Cannot write file :" + latexFile.getAbsolutePath());
 		}
 		return latexFile;
 	}
@@ -694,10 +691,12 @@ public class ReportBeansToLaTeXConverter implements Console {
 			rootElement.setAttributeNode(attr);
 
 		} catch (FactoryConfigurationError e) {
-			LOGGER.error("Creating the DOM document failed with FactoryConfigurationError:" + e.getMessage(), e);
+			LOGGER.error("Creating the DOM document failed with FactoryConfigurationError:" + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			return null;
 		} catch (ParserConfigurationException e) {
-			LOGGER.error("Creating the DOM document failed with ParserConfigurationException: " + e.getMessage(), e);
+			LOGGER.error("Creating the DOM document failed with ParserConfigurationException: " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			return null;
 		}
 
@@ -780,12 +779,13 @@ public class ReportBeansToLaTeXConverter implements Console {
 					FileUtils.copyFile(imageFile, new File(latexTmpDir + File.separator + "fig" + figure.getObjectID() + figSuffix));
 
 				} catch (IOException e) {
-					LOGGER.error("Could not read attached image file " + imageFile.getAbsolutePath(), e);
+					LOGGER.error("Could not read attached image file " + imageFile.getAbsolutePath());
 				}
 			}
 		}
 	}
 
+	@Override
 	public void showMessage(String message, MessageType type) {
 		if (type.equals(MessageType.ERROR)) {
 			LOGGER.error(message);
@@ -849,7 +849,7 @@ public class ReportBeansToLaTeXConverter implements Console {
 				}
 			}
 		} catch (Exception e) {
-			LOGGER.error(e.getMessage(), e);
+			LOGGER.error(e.getMessage());
 		}
 
 		/*
@@ -859,7 +859,7 @@ public class ReportBeansToLaTeXConverter implements Console {
 		try {
 			FileUtils.copyDirectory(new File(templateDir.getAbsolutePath()), flatexTmpDir);
 		} catch (IOException e) {
-			LOGGER.error("Could not copy template files from " + templateDir.getAbsolutePath(), e);
+			LOGGER.error("Could not copy template files from " + templateDir.getAbsolutePath());
 		}
 	}
 
@@ -897,8 +897,6 @@ public class ReportBeansToLaTeXConverter implements Console {
 				env.put("PATH", path);
 			}
 			
-			// latexProcessBuilder.redirectErrorStream(true);
-
 			File stdoutlog = new File(workDir+File.separator+"stdout.log");
 			latexProcessBuilder.redirectOutput(Redirect.appendTo(stdoutlog));
 			
@@ -972,9 +970,6 @@ public class ReportBeansToLaTeXConverter implements Console {
 			try {
 				theProcess = processBuilder.start();
 
-				// consumeStream(theProcess.getInputStream());
-				// consumeStream(theProcess.getErrorStream());
-
 				theProcess.waitFor();
 				exitValue = theProcess.exitValue();
 			} catch (Exception ex) {
@@ -1000,30 +995,6 @@ public class ReportBeansToLaTeXConverter implements Console {
 			return exitValue;
 		}
 
-//		public void consumeStream(final InputStream is) {
-//			new Thread() {
-//				@Override
-//				public void run() {
-//					BufferedReader r = new BufferedReader(new InputStreamReader(is));
-//					String line;
-//					try {
-//						boolean skip = true;
-//						while ((line = r.readLine()) != null) {
-//							LOGGER.debug("consumeStream: " + line);
-//							if (skip && line.startsWith("! ")) {
-//								skip = false;
-//							}
-//							if (!skip) {
-//								debugTrace.append(line + CRLF);
-//							}
-//						}
-//					} catch (Exception ex) {
-//						LOGGER.info(ex.getMessage());
-//						LOGGER.debug(ExceptionUtils.getStackTrace(ex), ex);
-//					}
-//				}
-//			}.start();
-//		}
 	}
 
 }

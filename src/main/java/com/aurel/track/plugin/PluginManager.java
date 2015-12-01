@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -116,13 +116,13 @@ public class PluginManager {
 			try {
 				pluginClass = Class.forName(pluginClassName);
 			} catch (ClassNotFoundException e) {
-				LOGGER.error("The plugin class " + pluginClassName + "  not found found in the classpath " + e.getMessage(), e);
+				LOGGER.error("The plugin class " + pluginClassName + "  not found found in the classpath " + e.getMessage());
 			}
 			if (pluginClass!=null) {
 				try {
 					return  pluginClass.newInstance();
 				} catch (Exception e) {
-					LOGGER.error("Instantiating the plugin class class " + pluginClassName + "  failed with " + e.getMessage(), e);
+					LOGGER.error("Instantiating the plugin class class " + pluginClassName + "  failed with " + e.getMessage());
 				}
 			}
 		}
@@ -306,14 +306,12 @@ public class PluginManager {
 		item=new ItemActionDescription();
 		item.setId(SystemActions.PRINT+"");
 		item.setUseWizard(false);
-		//item.setFirstPageTemplate("plugins/itemAction/templates/copyItemStep1.ftl");
 		item.setUseBottomTabs(true);
 		item.setCssClass("buttonViewAll");
 		item.setTooltipKey("common.btn.viewAll");
 		item.setLabelKey("common.btn.viewAll");
 		item.setImageInactive("view-all-inactive.gif");
 		item.setTheClassName("com.aurel.track.item.action.PrintItemActionPlugin");
-		//item.setFinishLabelKey("common.btn.copy");
 		item.setTitle("item.view.title");
 		item.setMenuPath("item.view.title");
 		item.setHelpPage("WebHelp/Concepts/02ForTeamMembers/issues/cIssueOverview.html");
@@ -348,10 +346,6 @@ public class PluginManager {
 		item.setFirstPageTemplate("com.trackplus.item.action.ItemLocationStepRenderer");
 		item.setFinishLabelKey("common.btn.save");
 		item.setUseBottomTabs(true);
-		/*item.setCssClass("buttonCopy");
-		item.setTooltipKey("common.btn.copy");
-		item.setLabelKey("common.btn.copy");
-		item.setImageInactive("copy-inactive.gif");*/
 		item.setTheClassName("com.aurel.track.item.action.NewItemActionPlugin");
 		
 		item.setTitle1("item.action.create.firstStep.title");
@@ -438,7 +432,6 @@ public class PluginManager {
 		item.setPreselectedTab(new Integer(ItemDetailBL.TAB_LINKS));
 		item.setTooltipKey("common.btn.addLinkedItem.tt");
 		item.setLabelKey("common.btn.addLinkedItem");
-		//item.setImageInactive("addLinkedItem-inactive.gif");
 		item.setTheClassName("com.aurel.track.item.action.NewLinkedItemActionPlugin");
 		
 		item.setTitle1("item.action.create.firstStep.title");
@@ -455,7 +448,6 @@ public class PluginManager {
 		item=new ItemActionDescription();
 		item.setId(SystemActions.CHANGE_STATUS+"");
 		item.setUseWizard(false);
-		//item.setFirstPageTemplate("plugins/itemAction/templates/copyItemStep1.ftl");
 		item.setUseBottomTabs(false);
 		item.setCssClass("itemAction_changeStatus");
 		item.setTooltipKey("common.btn.changeStatus.tt");
@@ -470,25 +462,6 @@ public class PluginManager {
 		l.add(item);
 		
 		//ADD_COMMENT
-		/*item=new ItemActionDescription();
-		item.setId(SystemActions.ADD_COMMENT+"");
-		item.setUseWizard(false);
-		//item.setFirstPageTemplate("plugins/itemAction/templates/copyItemStep1.ftl");
-		item.setUseBottomTabs(false);
-		item.setCssClass("buttonComment");
-		item.setTooltipKey("common.btn.addComment.tt");
-		item.setLabelKey("common.btn.addComment");
-		item.setImageInactive("addComment-inactive.gif");
-		item.setTheClassName("com.aurel.track.item.action.AddCommentActionPlugin");
-		item.setTitle1("item.action.copy.firstStep.title");
-		item.setMenuPath1("item.action.copy.firstStep");
-		item.setHelpPage1("WebHelp/Concepts/02ForTeamMembers/issues/cCopyIssue.html");
-		
-		item.setTitle("item.action.edit.title");
-		item.setMenuPath("menu.item.editItem");
-		item.setHelpPage("WebHelp/Concepts/02ForTeamMembers/issues/addComment.html");
-		
-		l.add(item);*/
 		return l;
 	}
 }

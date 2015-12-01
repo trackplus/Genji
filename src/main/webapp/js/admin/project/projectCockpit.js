@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -29,9 +29,7 @@ Ext.define('com.trackplus.admin.project.ProjectCockpit',{
 	constructor : function(config) {
 		var me = this;
 		var config = config || {};
-		me.initialConfig = config;
-		Ext.apply(me, config);
-		//this.init();
+		this.initConfig(config);
 	},
 	configButton:null,
 
@@ -40,7 +38,7 @@ Ext.define('com.trackplus.admin.project.ProjectCockpit',{
 	 */
 	getToolbarActions: function() {
 		var me=this;
-		if (this.configButton==null) {
+		if (CWHF.isNull(this.configButton)) {
 			this.configButton = new Ext.Button({
 				overflowText:getText('admin.project.cockpit.lbl.configProject'),
 				tooltip:getText('admin.project.cockpit.lbl.configProject'),
@@ -49,7 +47,7 @@ Ext.define('com.trackplus.admin.project.ProjectCockpit',{
 				disabled:false,
 				handler:function(){
 					//project
-					var urlEditScreen="dashboardEdit.action?backAction=admin.action&projectID="+me.projectID+"&entityType=1";
+					var urlEditScreen="dashboardEdit.action?backAction=admin.action&projectID="+me.getProjectID()+"&entityType=1";
 					window.location.href=urlEditScreen;
 				}
 			});
@@ -61,7 +59,7 @@ Ext.define('com.trackplus.admin.project.ProjectCockpit',{
 				disabled:false,
 				handler:function(){
 					//release
-					var urlEditScreen="dashboardEdit.action?backAction=admin.action&projectID="+me.projectID+"&entityType=9";
+					var urlEditScreen="dashboardEdit.action?backAction=admin.action&projectID="+me.getProjectID()+"&entityType=9";
 					window.location.href=urlEditScreen;
 				}
 			});
@@ -89,7 +87,7 @@ Ext.define('com.trackplus.admin.project.ProjectCockpit',{
 	onAssignProjectCockpit:function(){
 		var me=this;
 		com.trackplus.dashboard.resetDashboard('project!cokpitAssignment.action',
-			{projectID:me.projectID,entityType:1},me.projectCokpitAssignmentSuccess,me);
+			{projectID:me.getProjectID(),entityType:1},me.projectCokpitAssignmentSuccess,me);
 	},
 	projectCokpitAssignmentSuccess: function() {
 		CWHF.showMsgInfo(getText('admin.project.msg.resetProjectCockpit'));
@@ -97,7 +95,7 @@ Ext.define('com.trackplus.admin.project.ProjectCockpit',{
 	onAssignReleaseCockpit:function(){
 		var me=this;
 		com.trackplus.dashboard.resetDashboard('project!cokpitAssignment.action',
-			{projectID:me.projectID,entityType:9}, me.releaseCokpitAssignmentSuccess,me);
+			{projectID:me.getProjectID(),entityType:9}, me.releaseCokpitAssignmentSuccess,me);
 	},
 	releaseCokpitAssignmentSuccess: function() {
 		CWHF.showMsgInfo(getText('admin.project.msg.resetReleaseCockpit'));

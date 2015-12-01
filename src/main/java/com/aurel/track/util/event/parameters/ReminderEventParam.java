@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -37,17 +37,10 @@ public class ReminderEventParam {
 	protected List<TWorkItemBean> managerItems;
 	protected Map<Integer, List<TPersonBasketBean>> personDateBasketItemsMap;
 	protected Map<Integer, List<TPersonBasketBean>> personTimeBasketItemsMap;
-	//protected List<TWorkItemBean> reminderBasketItems;
 	//protected List<TWorkItemBean> delegatedBasketItems;
 	//private Map<Integer, TProjectBean> projects;
 	protected TPersonBean receiver;
 	
-	/*public Map<Integer, TProjectBean> getProjects() {
-		return projects;
-	}
-	public void setProjects(Map<Integer, TProjectBean> projects) {
-		this.projects = projects;
-	}*/
 	
 	public TPersonBean getReceiver() {
 		return receiver;

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -160,7 +160,6 @@ public class ItemNavigatorFilterBL {
 					ItemOperation operation= ItemOperationManager.getOperation(operationType);
 					if(operation!=null){
 							if(!operation.canDrop(workItems,nodeObjectID)){
-								//result.add(workItemBean);
 							}
 
 					}
@@ -213,7 +212,15 @@ public class ItemNavigatorFilterBL {
 					}
 					case NODE_TYPE.QUERY_STATUS:{
 						try{
-							MassOperationBL.saveExtern(workItems,SystemFields.INTEGER_STATE,nodeObjectID,personID,locale,false);
+							boolean confirmSave=false;
+							String confirmSaveStr=null;
+							if(params!=null){
+								confirmSaveStr=params.get("confirmSave");
+							}
+							if(confirmSaveStr!=null && "true".equalsIgnoreCase(confirmSaveStr)){
+								confirmSave=true;
+							}
+							MassOperationBL.saveExtern(workItems,SystemFields.INTEGER_STATE,nodeObjectID,personID,locale,confirmSave);
 						}catch (MassOperationException ex){
 							throw  new ItemOperationException(ItemOperationException.TYPE_MASS_OPERATION, ex);
 						}
@@ -243,7 +250,6 @@ public class ItemNavigatorFilterBL {
 		}
 		if(hasAccessSubFilters){
 			Boolean hasAccessSubFiltersWorkspacesBoolean=userLevelMap.get(UserLevelBL.USER_LEVEL_ACTION_IDS.SUBFILTER_PROJECT);
-			//Boolean hasAccessSubFiltersFiltersBoolean=userLevelMap.get(USER_LEVEL_IDS.ITEM_NAVIGATOR_HAS_SUBFILTERS_HAS_FILTERS);
 			Boolean hasAccessSubFiltersBasketsBoolean=userLevelMap.get(UserLevelBL.USER_LEVEL_ACTION_IDS.SUBFILTER_BASKET);
 			Boolean hasAccessSubFiltersStatesBoolean=userLevelMap.get(UserLevelBL.USER_LEVEL_ACTION_IDS.SUBFILTER_STATUS);		
 			Boolean hasAccessSubFiltersItemTypesBoolean=userLevelMap.get(UserLevelBL.USER_LEVEL_ACTION_IDS.SUBFILTER_ITEMTYPE);
@@ -251,7 +257,6 @@ public class ItemNavigatorFilterBL {
 			Boolean hasAccessSubFiltersScheduleBoolean=userLevelMap.get(UserLevelBL.USER_LEVEL_ACTION_IDS.SUBFILTER_SCHEDULE);
 
 			boolean hasAccessSubFiltersWorkspaces=hasAccessSubFiltersWorkspacesBoolean != null && hasAccessSubFiltersWorkspacesBoolean.booleanValue();
-			//boolean hasAccessSubFiltersFilters=hasAccessSubFiltersFiltersBoolean != null &&  hasAccessSubFiltersFiltersBoolean.booleanValue();
 			boolean hasAccessSubFiltersBaskets=hasAccessSubFiltersBasketsBoolean != null && hasAccessSubFiltersBasketsBoolean.booleanValue();
 			boolean hasAccessSubFiltersStates=hasAccessSubFiltersStatesBoolean != null && hasAccessSubFiltersStatesBoolean.booleanValue();
 			boolean hasAccessSubFiltersItemTypes=hasAccessSubFiltersItemTypesBoolean != null &&  hasAccessSubFiltersItemTypesBoolean.booleanValue();
@@ -349,7 +354,6 @@ public class ItemNavigatorFilterBL {
 			}
 		}
 
-		//sections.add(createScheduledSection(locale));
 
 		queryView.setSections(sections);
 		return queryView;
@@ -595,7 +599,6 @@ public class ItemNavigatorFilterBL {
 						result=getRootNodes(CategoryBL.REPOSITORY_TYPE.PROJECT,nodeObjectID,personID, locale);
 						break;
 					case NODE_TYPE.QUERY_PROJECT_RELEASE:
-						//result=getProjectReleaseChildrenMenu(personBean, nodeObjectID);
 						break;
 				}
 				break;

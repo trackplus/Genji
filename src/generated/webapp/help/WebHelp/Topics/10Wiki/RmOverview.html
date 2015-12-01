@@ -1,0 +1,95 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="This section explains how Track+ manages document versions Any item can be &#34;tagged&#34;, that is put into a collection together with other items. Documents and document sections can be versioned. The ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="concept"/><meta name="DC.Title" content="Document versioning (tbd)"/><meta name="abstract" content="This section explains how Track+ manages document versions Any item can be &#34;tagged&#34;, that is put into a collection together with other items. Documents and document sections can be versioned. The elements of such versions can be modified without affecting other versions. Different versions can be merged back into a single version."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="This section explains how Track+ manages document versions Any item can be &#34;tagged&#34;, that is put into a collection together with other items. Documents and document sections can be versioned. The elements of such versions can be modified without affecting other versions. Different versions can be merged back into a single version."/><meta name="DC.Relation" scheme="URI" content="../../Topics/10Wiki/Chapter10Wrapper.html"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="concept_zr5_hll_q4"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Document versioning (tbd)</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()" id="concept_zr5_hll_q4">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../Topics/10Wiki/Chapter10Wrapper.html" title="The Track+ Wiki"><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">The Track+ Wiki</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../Topics/10Wiki/Chapter10Wrapper.html" title="The Track+ Wiki">The Track+ Wiki</a></td></tr></tbody></table>
+
+ <h1 class="title topictitle1">Document versioning (tbd)</h1>
+
+ 
+ <div class="body conbody"><p class="shortdesc">This section explains how <span class="ph"><span class="ph">Track+</span></span> manages document
+  versions Any item can be "tagged", that is put into a collection together with other items.
+  Documents and document sections can be versioned. The elements of such versions can be modified
+  without affecting other versions. Different versions can be merged back into a single
+  version.</p>
+
+  <div class="section"><h2 class="title sectiontitle">Revisions</h2>
+   
+   <p class="p">All items exist in <span class="q">"<strong class="ph b">revisions</strong>"</span>. A revision defines the item with all its property
+    values at a certain moment in time. As property values are changed new revisions are created,
+    as shown below.</p>
+
+   <div class="p">
+    <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/revisions.png" height="-1" width="-1"/></div><br/><p class="figcapcenter">Item revisions</p>
+     
+     
+    </div>
+
+   </div>
+
+  </div>
+
+  <div class="section"><h2 class="title sectiontitle">Tags</h2>
+   
+   <p class="p"> A <span class="q">"<strong class="ph b">tag</strong>"</span> constitutes a collection of items with a specific revision. The dates
+    associated with the item revisions may differ. A tag can collect items with revisions spanning
+    an arbitrary time period.</p>
+
+   <p class="p">The figure below shows an example where Tag 2 differs from Tag 1 in the revisions it uses for
+    requirements R1 and R2. Tag 3 drops item R2 and uses new revisions for R1 and R3.</p>
+
+   <div class="fig figborder"><br/><div class="imagecenter"><img class="image imagecenter" src="figures/versions.png" height="-1" width="-1"/></div><br/><p class="figcapcenter">Tags</p>
+    
+    
+   </div>
+
+  </div>
+
+  <div class="section"><h2 class="title sectiontitle">Document Versioning</h2>
+   
+   <p class="p">A <span class="q">"<strong class="ph b">document</strong>"</span> is just a regular work item that is treated in a special way. It
+    consists of a hierarchy of <span class="q">"<strong class="ph b">document sections</strong>"</span>. A <span class="q">"<strong class="ph b">document version</strong>"</span>
+    consists of a link to a document in a specific revision and bundles a hierarchy of links to
+    document sections in a specific revision.</p>
+
+   <div class="p">
+    <div class="fig figborder" id="concept_zr5_hll_q4__fig_gcm_gl1_pp"><br/><div class="imagecenter"><img class="image imagecenter" id="concept_zr5_hll_q4__image_scm_gl1_pp" src="figures/DocVersions.png" height="341" width="444"/></div><br/><p class="figcapcenter">Document versions</p>
+     
+     
+    </div>
+
+   </div>
+
+  </div>
+
+  <div class="section"><h2 class="title sectiontitle">Branching and Merging</h2>
+   
+   <p class="p">A document version can be branched off the main development trunk. Such a branched version can
+    be modified without loosing its connection to the original document and document sections. A
+    change in the trunk can be merged into a branched version. Changes in a branched version can be
+    merged back into the trunk.</p>
+
+   <div class="p">
+    <div class="fig figborder" id="concept_zr5_hll_q4__fig_gcm_gl1_pf"><br/><div class="imagecenter"><img class="image imagecenter" id="concept_zr5_hll_q4__image_scm_gl1_pf" src="figures/Branches.png" height="195" width="469"/></div><br/><p class="figcapcenter">Branching and merging</p>
+     
+     
+    </div>
+
+   </div>
+
+  </div>
+
+ </div>
+
+<div class="related-links"/>
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../Topics/10Wiki/Chapter10Wrapper.html" title="The Track+ Wiki"><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">The Track+ Wiki</span></a></span>  </div>
+</body>
+</html>

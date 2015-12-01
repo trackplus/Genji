@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -104,6 +104,7 @@ public class ItemDetailAction extends ActionSupport implements Preparable, Sessi
 	private List<RevisionTO> revisions;
 	private String lastModified;
 	
+	@Override
 	public void prepare() {
 		locale = (Locale) session.get(Constants.LOCALE_KEY);
 		person = (TPersonBean) session.get(Constants.USER_KEY);
@@ -186,7 +187,6 @@ public class ItemDetailAction extends ActionSupport implements Preparable, Sessi
 				String id=stCol.nextToken();
 				String hidden=stCol.nextToken();
 				String width=stCol.nextToken();
-				//String sortable=stCol.nextToken();
 				String direction=stCol.nextToken();
 				if(direction.equals("-")){
 					direction=null;
@@ -208,7 +208,6 @@ public class ItemDetailAction extends ActionSupport implements Preparable, Sessi
 				reportLayoutBean.setReportField(Integer.parseInt(id));
 				reportLayoutBean.setFieldSortDirection(direction); //null, Y, N
 				reportLayoutBean.setFieldType(getFieldType(hidden));
-				//reportLayoutBean.setFieldSortOrder(grouping.equalsIgnoreCase("true"));
 				layout.add(reportLayoutBean);
 				boolean isGrouping = getGrouping(grouping);
 				if (isGrouping) {
@@ -219,7 +218,6 @@ public class ItemDetailAction extends ActionSupport implements Preparable, Sessi
 					reportLayoutBean.setReportField(Integer.parseInt(id));
 					//reportLayoutBean.setFieldSortDirection(direction); //null, Y, N
 					reportLayoutBean.setFieldType(TReportLayoutBean.FIELD_TYPE.GROUP);
-					//reportLayoutBean.setExpanding(???);
 					groupingList.add(reportLayoutBean);
 				}
 			}
@@ -242,7 +240,25 @@ public class ItemDetailAction extends ActionSupport implements Preparable, Sessi
 	private static boolean getGrouping(String groupingString) {
 		return groupingString.equalsIgnoreCase("true");
 	}
-	
+
+
+	public String editComment(){
+		String comment=HistoryLoaderBL.getLongTextField(commentID, true, LONG_TEXT_TYPE.ISFULLHTML);
+		StringBuilder sb=new StringBuilder();
+		sb.append("{");
+		JSONUtility.appendBooleanValue(sb, JSONUtility.JSON_FIELDS.SUCCESS, true);
+		JSONUtility.appendFieldName(sb, JSONUtility.JSON_FIELDS.DATA).append(":{");
+		JSONUtility.appendStringValue(sb, "comment",comment,true);
+		sb.append("}}");
+		try {
+			JSONUtility.prepareServletResponseJSON(ServletActionContext.getResponse());
+			PrintWriter out = ServletActionContext.getResponse().getWriter();
+			out.println(sb);
+		} catch (IOException e) {
+			LOGGER.error(ExceptionUtils.getStackTrace(e));
+		}
+		return null;
+	}
 	/**
 	 * Saves a new/modified comment
 	 * @return
@@ -472,9 +488,7 @@ public class ItemDetailAction extends ActionSupport implements Preparable, Sessi
 	public String itemDetailVersionControl(){
 		HttpServletRequest request = org.apache.struts2.ServletActionContext.getRequest();
 		String personPath=person.getDesignPath();
-		//if(personPath==null){
 		personPath="silver";
-		//}
 		iconsPath= request.getContextPath()+"/design/"+personPath;
 		Map<String,RepositoryFileViewer>  mapViewer;
 		synchronized(VersionControlMap.class){
@@ -484,6 +498,7 @@ public class ItemDetailAction extends ActionSupport implements Preparable, Sessi
 		return SUCCESS;
 	}
 
+	@Override
 	public void setSession(Map<String, Object> session) {
 		this.session = session;
 	}

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -110,6 +110,7 @@ Ext.define('com.trackplus.util.WindowConfig',{
 		var config = config || {};
 		me.initialConfig = config;
 		Ext.apply(me, config);
+		this.initConfig(config);
 	},
 	/**
 	 * Text for failure
@@ -123,7 +124,7 @@ Ext.define('com.trackplus.util.WindowConfig',{
 	 * label for the cancel button
 	 */
 	getCancelButtonText: function() {
-		if (this.cancelButtonText!=null) {
+		if (this.cancelButtonText) {
 			return this.cancelButtonText;
 		} else {
 			return getText('common.btn.cancel');
@@ -134,10 +135,10 @@ Ext.define('com.trackplus.util.WindowConfig',{
 	 * label for save button
 	 */
 	getSubmitButtonText: function(submit) {
-		if (this.submitButtonText!=null) {
+		if (this.submitButtonText) {
 			submit.submitButtonText = this.submitButtonText;
 		}
-		if (submit.submitButtonText!=null) {
+		if (submit.submitButtonText) {
 		    return submit.submitButtonText;
 		} else {
 			return getText('common.btn.save');
@@ -145,7 +146,7 @@ Ext.define('com.trackplus.util.WindowConfig',{
 	},
 
     getButtonDisabled: function(submit) {
-        if (submit!=null && submit.disabled!=null)   {
+        if (submit && submit.disabled)   {
            return submit.disabled;
         }
         return false;
@@ -155,7 +156,7 @@ Ext.define('com.trackplus.util.WindowConfig',{
 	 * Handler for canceling the window
 	 */
 	cancelHandler:function(scope, submit) {
-		if(submit!=null && submit.specialSubmitFailHandler != null) {
+		if(submit && submit.specialSubmitFailHandler ) {
 			submit.specialSubmitFailHandler.call(scope);
 		}
 		if (this.refreshAfterCancel) {
@@ -181,7 +182,7 @@ Ext.define('com.trackplus.util.WindowConfig',{
 	},
 	setLoading:function(b){
 		var me=this;
-		if(me.win!=null){
+		if(me.win){
 			me.win.setLoading(b);
 		}
 	},
@@ -196,12 +197,12 @@ Ext.define('com.trackplus.util.WindowConfig',{
 	 */
 	showWindowByConfig: function(scope) {
 		var me = this;
-		if(me.win!=null){
+		if(me.win){
 			me.win.destroy();
 		}
 		me.ensureSize();
-		if (me.items!=null || me.formPanel!=null) {
-			if (me.items!=null) {
+		if (me.items || me.formPanel) {
+			if (me.items) {
 				//the formPanel is made here according to the items
 				var panelConfig = {
 						fileUpload:	me.fileUpload,
@@ -225,13 +226,13 @@ Ext.define('com.trackplus.util.WindowConfig',{
 						method: "POST",
 						items : me.items
 					};
-				if (me.panelConfig!=null) {
+				if (me.panelConfig) {
 					//add extra panel configuration
 					for (propertyName in me.panelConfig) {
 						panelConfig[propertyName] = me.panelConfig[propertyName];
 					}
 				}
-                if (me.submit!=null && me.submit.timeout!=null)  {
+                if (me.submit && me.submit.timeout)  {
                     panelConfig.timeout = me.submit.timeout;
                 }
 				me.formPanel = Ext.create('Ext.form.Panel', panelConfig);
@@ -239,14 +240,14 @@ Ext.define('com.trackplus.util.WindowConfig',{
 			scope.formEdit = me.formPanel;
 			var buttons = [];
 			var submit = me.submit;
-			if(me.overrideButtons==null) {
-				if (submit!=null) {
+			if(CWHF.isNull(me.overrideButtons)) {
+				if (submit) {
 					var submitByEnter = null;
 					//var submitHandler_submitButtonIndex;
 					if (submit instanceof Array) {
 						//more than one submit: for example a save and an execute
 						//for (i=0;i<submit.length;i++) {
-						if (submit[0]!=null) {
+						if (submit[0]) {
 							submitByEnter = submit[0];
 							buttons.push({text: me.getSubmitButtonText(submit[0]),
 	                            disabled: me.getButtonDisabled(submit[0]),
@@ -257,7 +258,7 @@ Ext.define('com.trackplus.util.WindowConfig',{
 								})
 
 						}
-						if (submit[1]!=null) {
+						if (submit[1]) {
 							buttons.push({text: me.getSubmitButtonText(submit[1]),
 	                            disabled: me.getButtonDisabled(submit[1]),
 								scope: scope,
@@ -266,7 +267,7 @@ Ext.define('com.trackplus.util.WindowConfig',{
 									}
 								})
 	                    }
-	                    if (submit[2]!=null) {
+	                    if (submit[2]) {
 	                            buttons.push({text: me.getSubmitButtonText(submit[2]),
 	                                disabled: me.getButtonDisabled(submit[2]),
 	                                scope: scope,
@@ -275,7 +276,7 @@ Ext.define('com.trackplus.util.WindowConfig',{
 	                                }
 	                            })
 						}
-	                    if (submit[3]!=null) {
+	                    if (submit[3]) {
 	                        buttons.push({text: me.getSubmitButtonText(submit[3]),
 	                            disabled: me.getButtonDisabled(submit[3]),
 	                            scope: scope,
@@ -295,7 +296,7 @@ Ext.define('com.trackplus.util.WindowConfig',{
 									}
 								}]
 					}
-					if (me.formPanel!=null) {
+					if (me.formPanel) {
 						me.formPanel.addListener('afterRender',function(thisForm, options){
 							this.keyNav = Ext.create('Ext.util.KeyNav',{
 								target:this.el,
@@ -303,7 +304,7 @@ Ext.define('com.trackplus.util.WindowConfig',{
 								enter: {
 									fn:function(e){
 										var target = e.getTarget();
-										if(target['type']=='textarea'){
+										if(target['type']==='textarea'){
 											return true;
 										}
 										me.submitHandler(submitByEnter, scope, 0, me.extraConfig);
@@ -325,7 +326,7 @@ Ext.define('com.trackplus.util.WindowConfig',{
 				buttons = me.overrideButtons;
 			}
 			//show window
-			if (me.formPanel!=null) {
+			if (me.formPanel) {
 				var windowConfig = {
 					title	: me.title,
 					width	: me.width,
@@ -338,7 +339,7 @@ Ext.define('com.trackplus.util.WindowConfig',{
 					buttons	: buttons
 
 				};
-				if (me.windowConfig!=null) {
+				if (me.windowConfig) {
 					//add extra window configuration
 					for (propertyName in me.windowConfig) {
 						windowConfig[propertyName] = me.windowConfig[propertyName];
@@ -357,9 +358,9 @@ Ext.define('com.trackplus.util.WindowConfig',{
 				scope.win = me.win;
 				me.win.show();
 			};
-			if (me.load!=null) {
+			if (me.load) {
 				var loadHandler = me.load.loadHandler;
-				if (loadHandler==null) {
+				if (CWHF.isNull(loadHandler)) {
 					//load data for form panel
 					me.formPanel.setLoading(true);
 					me.formPanel.getForm().load({
@@ -367,12 +368,13 @@ Ext.define('com.trackplus.util.WindowConfig',{
 						params: me.load.loadUrlParams,
 						scope: scope,
 						success: function(form, action) {
+							me.formPanel.setLoading(false);
 							//call postDataProcess only after window is rendered because
 							//some fields (like labelEl) are available only after the window is rendered
-							if (me.postDataProcess!=null) {
+							if (me.postDataProcess) {
 								me.postDataProcess.call(scope, action.result.data, me.formPanel, me.extraConfig);
 							}
-							me.formPanel.setLoading(false);
+							//me.formPanel.setLoading(false);
 						},
 						failure: function(form, action) {
 							me.formPanel.setLoading(false);
@@ -382,7 +384,7 @@ Ext.define('com.trackplus.util.WindowConfig',{
 								buttons: Ext.Msg.OK,
 								icon: Ext.MessageBox.ERROR
 							})
-							me.formPanel.setLoading(false);
+							//me.formPanel.setLoading(false);
 						}
 					});
 				} else {
@@ -407,13 +409,13 @@ Ext.define('com.trackplus.util.WindowConfig',{
 			}
 			me.disableSubmitButton(scope.win, false, submitButtonIndex);
 			var result = action.result;
-			if (result!=null) {
+			if (result) {
 				if (result.success) {
 					//refresh after successful submit
-					if (submit.refreshAfterSubmit==null || submit.refreshAfterSubmit==true) {
+					if (CWHF.isNull(submit.refreshAfterSubmit) || submit.refreshAfterSubmit===true) {
 						me.refreshHandler(scope, result, submit);
 					}
-					if (submit.closeAfterSubmit==null || submit.closeAfterSubmit==true) {
+					if (CWHF.isNull(submit.closeAfterSubmit) || submit.closeAfterSubmit===true) {
 						me.win.close();
 					}
 				} else {
@@ -427,17 +429,17 @@ Ext.define('com.trackplus.util.WindowConfig',{
 			}
 			me.disableSubmitButton(scope.win, false, submitButtonIndex);
 			result = action.result;
-			if (result!=null) {
+			if (result) {
 				var errorCode = result.errorCode;
 				var title = result.title;
-				if (errorCode!=null && (errorCode==4 || errorCode==5)) {
-					//4==NEED_CONFIRMATION
-					if (errorCode==4) {
+				if (errorCode && (errorCode===4 || errorCode===5)) {
+					//4===NEED_CONFIRMATION
+					if (errorCode===4) {
 						var errorMessage = result.errorMessage;
 						Ext.MessageBox.confirm(title,
 							errorMessage,
 							function(btn){
-								if (btn=="no") {
+								if (btn==="no") {
 									return false;
 								} else {
 									submitUrlParams["confirmSave"]=true;
@@ -445,19 +447,19 @@ Ext.define('com.trackplus.util.WindowConfig',{
 								}
 							}, this);
 					} else {
-						//5==RECOMMENDED_REPLACE
-						if (errorCode==5) {
+						//5===RECOMMENDED_REPLACE
+						if (errorCode===5) {
 							scope.recommendedReplace.call(scope, me, submit, result);
 						}
 					}
 				} else {
 					errors = result.errors;
-					if (errors!=null) {
+					if (errors) {
 						//form control errors (with control itemIds)
 						form.markInvalid(errors);
 					} else {
 						var errorMessage = result.errorMessage;
-						if (errorMessage!=null) {
+						if (errorMessage) {
 							//only error message, no errorCode
 							com.trackplus.util.showError(result);
 						} else {
@@ -467,29 +469,29 @@ Ext.define('com.trackplus.util.WindowConfig',{
 				}
 			}
 
-			if(submit.specialSubmitFailHandler != null) {
+			if(submit.specialSubmitFailHandler ) {
 				submit.specialSubmitFailHandler.call(scope, result);
 			}
 		};
-		if (submit.validateHandler!=null) {
+		if (submit.validateHandler) {
 			var valid = submit.validateHandler.call(scope, submit);
-			if (valid!=null && !valid) {
+			if (valid && !valid) {
 				return;
 			}
 		}
-		if (me.preSubmitProcess!=null) {
+		if (me.preSubmitProcess) {
 			//add extra (dynamic client side) request parameters, right before submit
 			submitUrlParams = me.preSubmitProcess.call(scope, submitUrlParams, me.formPanel, submit.submitAction);
 		}
 		var standardSubmit = submit.standardSubmit;
-		if (standardSubmit!=null) {
+		if (standardSubmit) {
 			me.formPanel.getForm().standardSubmit = standardSubmit;
 		}
 		var timeOut = submit.timeout;
-		if (timeOut!=null) {
+		if (timeOut) {
 			me.formPanel.getForm().timeOut = timeOut;
 		}
-		if (manualSubmitHandler==null) {
+		if (CWHF.isNull(manualSubmitHandler)) {
 			if (submit.loading) {
 				me.formPanel.setLoading(true);
 			}
@@ -508,7 +510,7 @@ Ext.define('com.trackplus.util.WindowConfig',{
 			//this handler might close the window
 			manualSubmitHandler.call(scope, me.win, submitUrl, submitUrlParams, extraConfig);
 		}
-		if (standardSubmit && me.formPanel.getForm().isValid()) {
+		if (standardSubmit && (me.formPanel.getForm().monitor&&me.formPanel.getForm().isValid())) {
 			//by standardSubmit the handlers onSuccess or onFailure are not called consequently the popup window would not be closed
 			//1. if after a standardSubmit the result is another page, closing the popup does not hurt
 			//because anyway the entire page is newly loaded (close the instant query popup after executing it)
@@ -516,7 +518,7 @@ Ext.define('com.trackplus.util.WindowConfig',{
 			//In this case a standardSubmit should be used because even if AJAX submit would be used the result is a stream so
 			//the resulting data is not JSON containing a "success" field i.e. the submit handlers would not be called.
 			//A download dialog will appear but the actual page remains consequently the popup should be closed here:
-			if(submit.submitMessage!=null){
+			if(submit.submitMessage){
 				CWHF.showMsgInfo(submit.submitMessage);
 			}
 			Ext.defer(function(){
@@ -531,9 +533,9 @@ Ext.define('com.trackplus.util.WindowConfig',{
 	 */
 	disableSubmitButton: function(window, disable, submitButtonIndex) {
 		var toolbars = window.getDockedItems('toolbar[dock="bottom"]');
-		if (toolbars!=null && toolbars.length>0) {
+		if (toolbars && toolbars.length>0) {
 			//disable submit button
-			if (submitButtonIndex==null) {
+			if (CWHF.isNull(submitButtonIndex)) {
 				submitButtonIndex=0;
 			}
 			toolbars[0].getComponent(submitButtonIndex).setDisabled(disable);
@@ -541,12 +543,12 @@ Ext.define('com.trackplus.util.WindowConfig',{
 	},
 
 	refreshHandler: function(scope, result, submit) {
-		if (submit!=null && submit.refreshAfterSubmitHandler!=null) {
+		if (submit && submit.refreshAfterSubmitHandler) {
 			var refreshParameters = submit.refreshParametersBeforeSubmit;
-			if (refreshParameters==null) {
+			if (CWHF.isNull(refreshParameters)) {
 				refreshParameters = new Object();
 			}
-			if (submit.refreshParametersAfterSubmit!=null && result!=null) {
+			if (submit.refreshParametersAfterSubmit && result) {
 				Ext.each(submit.refreshParametersAfterSubmit, function(refreshAfterExecuteParmeter) {
 					var parameterName = refreshAfterExecuteParmeter.parameterName;
 					var fieldNameFromResult = refreshAfterExecuteParmeter.fieldNameFromResult;

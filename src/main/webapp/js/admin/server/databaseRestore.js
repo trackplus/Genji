@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -44,7 +44,7 @@ gridAvailableBackups:null,
 
 createToolbar:function(){
 	var me=this;
-	if(me.btnStart==null){
+	if(CWHF.isNull(me.btnStart)){
 		me.btnStart=new Ext.Button({
 			text:getText('admin.server.databaseRestore.button.restoreExecute'),
 			overflowText:getText('admin.server.databaseRestore.button.restoreExecute'),
@@ -56,7 +56,7 @@ createToolbar:function(){
 			}
 		});
 	}
-	if(me.btnDelete==null){
+	if(CWHF.isNull(me.btnDelete)){
 		me.btnDelete=new Ext.Button({
 			text:getText('admin.server.databaseRestore.button.delete'),
 			overflowText:getText('admin.server.databaseRestore.button.delete'),
@@ -98,10 +98,10 @@ createMainComponent:function(){
 		mode:'SINGLE',
 		listeners:{
 			beforeselect:function(selModel, record, index) {
-				return record.get('valid')==true;
+				return record.get('valid')===true;
 			},
 			beforedeselect:function(selModel, record, index) {
-				return record.get('valid')== true;
+				return record.get('valid')=== true;
 			}
 		}
 	});
@@ -132,7 +132,7 @@ createMainComponent:function(){
 			stripeRows:true,
 			getRowClass: function(record) {
 				var cls="";
-				if(record.data['valid']==false){
+				if(record.data['valid']===false){
 					cls="invalidBackupRow";
 				}
 				return cls;
@@ -202,11 +202,6 @@ createMainComponent:function(){
 
 	me.txtAttachmentDir=CWHF.createTextField("admin.server.databaseRestore.lbl.attachmentRestoreDir",
 			"attachmentDir", {width:675});
-		/*Ext.create('Ext.form.field.Text',{
-		name:'attachmentDir',
-		fieldLabel:getText('admin.server.databaseRestore.lbl.attachmentRestoreDir'),
-		width:675
-	});*/
 
 	me.formPanel=Ext.create('Ext.form.Panel', {
 		layout:'anchor',
@@ -269,9 +264,9 @@ execute:function(){
 		failure: function(form, action) {
 			me.formPanel.setLoading(false);
 			var errorMessage=action.result.errorMessage;
-			if(errorMessage==null||errorMessage==''){
+			if(CWHF.isNull(errorMessage)||errorMessage===''){
 				errorMessage="";
-				if(action.result.errors!=null){
+				if(action.result.errors){
 					for(var x in action.result.errors){
 						errorMessage+=action.result.errors[x]+"</br>";
 					}
@@ -300,7 +295,7 @@ exeDelete:function(){
 			me.formPanel.setLoading(false);
 			var errorCode=action.result.errorCode;
 			var errorMessage="";
-			if(action.result.errors!=null){
+			if(action.result.errors){
 				for(var i=0;i<action.result.errors.length;i++){
 					errorMessage+=action.result.errors[i].label+"</br>";
 				}

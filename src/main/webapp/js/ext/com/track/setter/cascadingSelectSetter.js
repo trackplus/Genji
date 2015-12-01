@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -64,7 +64,7 @@ Ext.define("js.ext.com.track.setter.cascadingSelectSetter", {
 				var parts = cascadingListData.jsonConfig.parts;
 				for (var i=0;i<this.items.getCount();i++) {
 					var partCombo = this.items.getAt(i);
-					if (partCombo!=null) {
+					if (partCombo) {
 						var dataSource = parts[i].dataSource;
 						var value =   parts[i].value;
 						partCombo.store.loadData(dataSource);
@@ -84,7 +84,7 @@ Ext.define("js.ext.com.track.setter.cascadingSelectSetter", {
 		for (var i=0;i<this.items.getCount();i++) {
 			var partCombo = this.items.getAt(i);
 			var value = partCombo.getValue();
-			if (value!=null) {
+			if (value) {
 				valueArr.push(value);
 			}
 		}
@@ -95,13 +95,13 @@ Ext.define("js.ext.com.track.setter.cascadingSelectSetter", {
 		var labelsArr = [];
 		for (var i=0;i<this.items.getCount();i++) {
 			var partCombo = this.items.getAt(i);
-			if (partCombo!=null) {
+			if (partCombo) {
 				var partValue = partCombo.getValue();
-				if (partValue!=null) {
+				if (partValue) {
 					var index = partCombo.getStore().find('id', partValue);
-					if (index!=null) {
+					if (index) {
 						var partLabel = partCombo.getStore().getAt(index).get('label');
-						if (partLabel!=null) {
+						if (partLabel) {
 							labelsArr.push(partLabel);
 						}
 					}

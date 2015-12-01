@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -206,7 +207,8 @@ public abstract class SystemLookupBaseRT extends SystemOutputBaseRT implements I
 		try	{
 			optionID = (Integer)value;
 		} catch (Exception e) {
-			LOGGER.error("Converting the value " + value + " to integer failed with " + e.getMessage(), e);
+			LOGGER.error("Converting the value " + value + " to integer failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		if (optionID!=null) {
 			ISortedBean sortedBean = LookupContainer.getPersonBean(optionID);
@@ -233,7 +235,8 @@ public abstract class SystemLookupBaseRT extends SystemOutputBaseRT implements I
 		try {
 			optionID = (Integer)value;
 		}catch (Exception e) {
-			LOGGER.error("Converting the value to integer failed with " + e.getMessage(), e);
+			LOGGER.error("Converting the value to integer failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		if (optionID!=null) {	
 			ILabelBean labelBean = LookupContainer.getPersonBean(optionID);
@@ -291,7 +294,8 @@ public abstract class SystemLookupBaseRT extends SystemOutputBaseRT implements I
 				optionIDs = (Integer[])value;
 			} catch (Exception e) {
 				LOGGER.warn("Casting the value type " + value.getClass().getName() +
-						" to Integer[] failed with " + e.getMessage(), e);
+						" to Integer[] failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				return "";
 			}
 			return LookupContainer.getNotLocalizedLookupCommaSepatatedString(fieldID, optionIDs, locale);
@@ -348,7 +352,8 @@ public abstract class SystemLookupBaseRT extends SystemOutputBaseRT implements I
 					}
 				}
 			} catch (Exception e) {
-				LOGGER.warn("Converting the match value to Integer[] failed with " + e.getMessage(), e);
+				LOGGER.warn("Converting the match value to Integer[] failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		return matcherRT;
@@ -356,7 +361,6 @@ public abstract class SystemLookupBaseRT extends SystemOutputBaseRT implements I
 	
 	@Override
 	public MatcherConverter getMatcherConverter() {
-		//return SelectMatcherConverter.getInstance();
 		return MultipleSelectMatcherConverter.getInstance();
 	}
 		

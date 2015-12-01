@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -379,7 +379,7 @@ public class ItemBL {
         if (workItemID==null) {
             return "";
         }
-        if (ApplicationBean.getApplicationBean().getSiteBean().getProjectSpecificIDsOn()) {
+        if (ApplicationBean.getInstance().getSiteBean().getProjectSpecificIDsOn()) {
             TWorkItemBean workItemBean = null;
             try {
                 workItemBean = ItemBL.loadWorkItem(workItemID);
@@ -406,7 +406,7 @@ public class ItemBL {
         if (workItemBean==null) {
             return "";
         }
-        if (ApplicationBean.getApplicationBean().getSiteBean().getProjectSpecificIDsOn()) {
+        if (ApplicationBean.getInstance().getSiteBean().getProjectSpecificIDsOn()) {
             return SystemProjectSpecificIssueNoRT.getShowValue(workItemBean.getIDNumber(), workItemBean);
         } else {
             return workItemBean.getObjectID().toString();
@@ -433,20 +433,20 @@ public class ItemBL {
 					String label = projectBean.getLabel();
 					projectFound = projectID;
 					String projectPrefix = projectBean.getPrefix();
-					if (projectPrefix==null || "".equals(projectPrefix) || !projectSpecificID.startsWith(projectPrefix)) {
+					if (projectPrefix==null || "".equals(projectPrefix)) {
 						try {
 							//because the project is identified we can deal also with the error prone case when no project prefix is specified
 							idNumberFound = Integer.parseInt(projectSpecificID);
 						} catch(Exception e) {
-							LOGGER.warn("Parsing " + projectSpecificID + " to integer failed with " + e.getMessage(), e);
+							LOGGER.warn("Parsing " + projectSpecificID + " to integer failed with " + e.getMessage());
 						}
 					} else {
 						String intStr = projectSpecificID.substring(projectPrefix.length());
-						if (intStr!=null && projectSpecificID.startsWith(projectPrefix)) {
+						if (intStr!=null) {
 							try {
 								idNumberFound = Integer.parseInt(intStr.trim());
 							} catch(Exception e) {
-								LOGGER.warn("Parsing " + projectSpecificID + " to integer failed with " + e.getMessage(), e);
+								LOGGER.warn("Parsing " + projectSpecificID + " to integer failed with " + e.getMessage());
 							}
 						}
 					}
@@ -588,7 +588,7 @@ public class ItemBL {
 		try {
 			workItemBean = workItemDAO.loadByPrimaryKey(workItemKey);
 		} catch (ItemLoaderException e) {
-			LOGGER.warn("Loading the workItem by workItemExists() faield with " + e.getMessage(), e);
+			LOGGER.warn("Loading the workItem by workItemExists() faield with " + e.getMessage());
 		}
 		if(workItemBean==null){
 			return false;
@@ -615,7 +615,7 @@ public class ItemBL {
 			try {
 				parent = workItemDAO.loadByPrimaryKey(itemID);
 			} catch (ItemLoaderException e) {
-				LOGGER.error("Getting the parent failed with " + e.getMessage(), e);
+				LOGGER.error("Getting the parent failed with " + e.getMessage());
 			}
 			if(parent!=null){
 				parentSynopsis=parent.getSynopsis();
@@ -771,7 +771,7 @@ public class ItemBL {
 	 * @return
 	 */
 	public static boolean getShowAccountingTab(TWorkItemBean workItem, Integer userID){
-		if (!ApplicationBean.getApplicationBean().isGenji()) {
+		if (!ApplicationBean.getInstance().isGenji()) {
 			Integer projectID=workItem.getProjectID();
 			Integer issueTypeID=workItem.getListTypeID();
 			ProjectAccountingTO projectAccountingTO = ProjectBL.getProjectAccountingTO(projectID);
@@ -904,7 +904,6 @@ public class ItemBL {
         int[] rights = GeneralUtils.createIntArrFromIntegerList(accessRights);
         List<TreeNode> projectTree = ProjectBL.getProjectNodesByRightEager(true, user, false, rights, false, false);
         form.setProjectTree(projectTree);
-		//List<TProjectBean>  projectList=ItemBL2.getProjectsForNew(personID);
 		if(projectTree==null || projectTree.isEmpty()){
 			return null;
 		}
@@ -962,7 +961,6 @@ public class ItemBL {
 			}
 		}
 		form.setProjectID(projectID);
-		//form.setProjectDisplayValue(projectDisplayValue);
 		//form.setProjectList(GeneralUtils.createIntegerStringBeanListFromLabelBeanList(projectList));
 
 		form.setIssueTypeID(issueTypeID);
@@ -1035,11 +1033,7 @@ public class ItemBL {
 		if(workItemBean!=null){
 			Integer stateID = workItemBean.getStateID();
 			ILabelBean stateBean=null;
-			//if(!workItemCtx.getPresentFieldIDs().contains(SystemFields.INTEGER_STATE)){
 				stateBean=LookupContainer.getStatusBean(stateID,workItemCtx.getLocale());
-			/*}else{
-				stateBean= workItemCtx.getILabelBean(stateID,SystemFields.INTEGER_STATE);
-			}*/
 			if(stateBean!=null){
 				return stateBean.getLabel();
 			}
@@ -1063,11 +1057,7 @@ public class ItemBL {
 		if(workItemBean!=null){
 			Integer issueTypeID = workItemBean.getListTypeID();
 			ILabelBean issueTypeBean=null;
-			//if(!workItemCtx.getPresentFieldIDs().contains(SystemFields.INTEGER_ISSUETYPE)){
 				issueTypeBean=LookupContainer.getItemTypeBean(issueTypeID,workItemCtx.getLocale());
-			/*}else{
-				issueTypeBean= workItemCtx.getILabelBean(issueTypeID,SystemFields.INTEGER_ISSUETYPE);
-			}*/
 			if(issueTypeBean!=null){
 				return issueTypeBean.getLabel();
 			}
@@ -1146,7 +1136,6 @@ public class ItemBL {
 				projectBean = LookupContainer.getProjectBean(projectID);
 			}
 		}
-		//TProjectBean projectBean = workItemContext.getProject();
 		String projectPrefix = null;
 		if (projectBean!=null) {
 			projectPrefix = projectBean.getPrefix();
@@ -1279,20 +1268,6 @@ public class ItemBL {
 	 * @param releaseID
 	 * @return
 	 */
-	/*public static List<TWorkItemBean> loadConsInfWorkItems(Integer personID, Integer projectID, Integer releaseID) {
-		Integer objectID = null;
-		Integer entityType = null;
-		if (projectID!=null) {
-			if (releaseID!=null) {
-				objectID = releaseID;
-				entityType = SystemFields.RELEASE;
-			} else {
-				objectID = projectID;
-				entityType = SystemFields.PROJECT;
-			}
-		}
-		return LoadWatcherItems.loadConsInf(personID, objectID, entityType);
-	}*/
 
 
 	public static boolean isSynopsysReadonly(WorkItemContext workItemContext){

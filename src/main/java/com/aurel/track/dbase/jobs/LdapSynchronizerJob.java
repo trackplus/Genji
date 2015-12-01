@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -67,11 +67,12 @@ public class LdapSynchronizerJob implements Job{
 	 * expression so that we do not synchronize all entries in the
 	 * LDAP directory.
 	 */
+	@Override
 	public void execute(JobExecutionContext context) {
 		JobDetail jobDetail = context.getJobDetail();
 		JobDataMap jobDataMap = jobDetail.getJobDataMap();
 		setJobDataMap(jobDataMap);
-		if (!ApplicationBean.getApplicationBean().getSiteBean().getIsLDAPOnBool()
+		if (!ApplicationBean.getInstance().getSiteBean().getIsLDAPOnBool()
 				|| !enabledAutomaticSync) {
 				return;
 			}
@@ -83,7 +84,7 @@ public class LdapSynchronizerJob implements Job{
 				synchronizeWithLdap();
 			}
 			catch (Exception e) {
-				LOGGER.error("Problem with running scheduler " + e.getMessage(), e);  
+				LOGGER.error("Problem with running scheduler " + e.getMessage());  
 			}
 		}
 	}
@@ -95,7 +96,7 @@ public class LdapSynchronizerJob implements Job{
 				enabledAutomaticSync = Boolean.valueOf(enableStr);
 				LOGGER.debug(LdapUtil.LDAP_CONFIG.ENABLE_AUTOMATIC_SYNC + ": " + enabledAutomaticSync);
 			} catch(Exception e) {
-				LOGGER.warn("Converting " + LdapUtil.LDAP_CONFIG.ENABLE_AUTOMATIC_SYNC + " value " + enableStr + " to boolean failed with " + e.getMessage(), e);
+				LOGGER.warn("Converting " + LdapUtil.LDAP_CONFIG.ENABLE_AUTOMATIC_SYNC + " value " + enableStr + " to boolean failed with " + e.getMessage());
 			}
 		}
 		String enableUserSyncStr = jobDataMap.getString(LdapUtil.LDAP_CONFIG.ENABLE_USER_SYNC);
@@ -104,7 +105,7 @@ public class LdapSynchronizerJob implements Job{
 				enabledUserSync = Boolean.valueOf(enableUserSyncStr);
 				LOGGER.debug(LdapUtil.LDAP_CONFIG.ENABLE_USER_SYNC + ": " + enabledUserSync);
 			} catch(Exception e) {
-				LOGGER.warn("Converting " + LdapUtil.LDAP_CONFIG.ENABLE_USER_SYNC + " value " + enableUserSyncStr + " to boolean failed with " + e.getMessage(), e);
+				LOGGER.warn("Converting " + LdapUtil.LDAP_CONFIG.ENABLE_USER_SYNC + " value " + enableUserSyncStr + " to boolean failed with " + e.getMessage());
 			}
 		}
 		String enableGroupSyncStr = jobDataMap.getString(LdapUtil.LDAP_CONFIG.ENABLE_GROUP_SYNC);
@@ -113,7 +114,7 @@ public class LdapSynchronizerJob implements Job{
 				enabledGroupSync = Boolean.valueOf(enableGroupSyncStr);
 				LOGGER.debug(LdapUtil.LDAP_CONFIG.ENABLE_GROUP_SYNC + ": " + enabledGroupSync);
 			} catch(Exception e) {
-				LOGGER.warn("Converting " + LdapUtil.LDAP_CONFIG.ENABLE_GROUP_SYNC + " value " + enableGroupSyncStr + " to boolean failed with " + e.getMessage(), e);
+				LOGGER.warn("Converting " + LdapUtil.LDAP_CONFIG.ENABLE_GROUP_SYNC + " value " + enableGroupSyncStr + " to boolean failed with " + e.getMessage());
 			}
 		}
 		String deactivateUnknownStr = jobDataMap.getString(LdapUtil.LDAP_CONFIG.DEACTIVATE_UNKNOWN);
@@ -122,7 +123,7 @@ public class LdapSynchronizerJob implements Job{
 				deactivateUnknown = Boolean.valueOf(deactivateUnknownStr);
 				LOGGER.debug(LdapUtil.LDAP_CONFIG.DEACTIVATE_UNKNOWN + ": " + deactivateUnknown);
 			} catch(Exception e) {
-				LOGGER.warn("Converting " + LdapUtil.LDAP_CONFIG.DEACTIVATE_UNKNOWN + " value " + deactivateUnknownStr + " to boolean failed with " + e.getMessage(), e);
+				LOGGER.warn("Converting " + LdapUtil.LDAP_CONFIG.DEACTIVATE_UNKNOWN + " value " + deactivateUnknownStr + " to boolean failed with " + e.getMessage());
 			}
 		}
 		filter = jobDataMap.getString(LdapUtil.LDAP_CONFIG.LDAP_FILTER_PERSONS);
@@ -157,9 +158,9 @@ public class LdapSynchronizerJob implements Job{
 	 */
 	public static void synchronizeWithLdap() throws Exception {
 		Map<String, Object> returnMap = GroovyScriptExecuter.executeLdapScript(GroovyScriptExecuter.EVENT_HANDLER_LDAP_SYNCHRONIZER_CLASS, 
-				                        ApplicationBean.getApplicationBean().getSiteBean(), filter); 
+				                        ApplicationBean.getInstance().getSiteBean(), filter); 
 		if (returnMap==null/*|| returnMap.isEmpty()*/) {
-			TSiteBean siteBean = ApplicationBean.getApplicationBean().getSiteBean();
+			TSiteBean siteBean = ApplicationBean.getInstance().getSiteBean();
 			Map<String, TPersonBean> ldapPersons = new HashMap<String, TPersonBean>();
 			if (enabledUserSync) {
 				LOGGER.info("User sync start");

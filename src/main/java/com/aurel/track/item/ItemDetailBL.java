@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -290,19 +290,6 @@ public class ItemDetailBL {
 				
 				sb.append("editable:").append(editableAttachemnt(attachBean, personID,isProjectActive,editable)).append(",");
 				boolean thumbnail=AttachBL.isImage(attachBean);
-				if(thumbnail==true){
-					Integer imgHeight=null;
-					try{
-						imgHeight=AttachBL.getThumbnailHeight(sessionID,attachBean);
-					}catch (Exception ex){
-						LOGGER.error("Error on determinate attachment thumbnail height:"+ attachBean.getFileName());
-						thumbnail=false;
-						if(LOGGER.isDebugEnabled()){
-							LOGGER.error(ExceptionUtils.getStackTrace(ex));
-						}
-					}
-					JSONUtility.appendIntegerValue(sb,"imgHeight",imgHeight);
-				}
 				sb.append("thumbnail:").append(thumbnail);
 				sb.append("}");
 			}
@@ -412,7 +399,7 @@ public class ItemDetailBL {
 					Integer personID=new Integer(token);
 					intList.add(personID);
 				}catch (Exception e) {
-					LOGGER.warn("Converting the semicolon separated value  " + token + " to integer failed with " + e.getMessage(), e);
+					LOGGER.warn("Converting the semicolon separated value  " + token + " to integer failed with " + e.getMessage());
 				}
 			}
 			selectedItems=new Integer[intList.size()];
@@ -444,7 +431,7 @@ public class ItemDetailBL {
 	
 	private static boolean editableAttachemnt(TAttachmentBean attachBean,
 			Integer personID, boolean isProjectActive,boolean editable) {
-		return (isProjectActive&&editable)||attachBean.getChangedBy().equals(personID);
+		return (isProjectActive && editable) || (attachBean.getChangedBy()!=null && attachBean.getChangedBy().equals(personID));
 	}
 	private static boolean editableExpense(TCostBean costBean, Integer personID, boolean isProjectActive, boolean personIsProjectAdmin) { 
 		return isProjectActive && (personIsProjectAdmin || personID.equals(costBean.getChangedByID()));
@@ -629,10 +616,9 @@ public class ItemDetailBL {
 		}
 		boolean enabledAttachments=!invisibleAttachment;
 
-		//boolean enabledWorklog=AccountingBL.isEnableTab(personID, project, workItemBean.getListTypeID());
 		boolean enabledWorklog = false;
 		ProjectAccountingTO projectAccountingTO = null;
-		if (!ApplicationBean.getApplicationBean().isGenji()) {
+		if (!ApplicationBean.getInstance().isGenji()) {
 			projectAccountingTO = ProjectBL.getProjectAccountingTO(workItemBean.getProjectID());
 			if (projectAccountingTO.isWorkTracking() || projectAccountingTO.isCostTracking()) {
 				enabledWorklog= AccessBeans.showAccountingTab(personID, projectID, issueTypeID);
@@ -822,7 +808,7 @@ public class ItemDetailBL {
 				expenseAddDisabled = true;
 				expenseEditDeleteDisabled = true;
 			} else {
-				if (ApplicationBean.getApplicationBean().getSiteBean().getSummaryItemsBehavior()) {
+				if (ApplicationBean.getInstance().getSiteBean().getSummaryItemsBehavior()) {
 					if (workItemID != null && ItemBL.hasChildren(workItemID)) {
 						expenseAddDisabled = true;
 						expenseEditDeleteDisabled = true;

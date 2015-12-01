@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -81,7 +81,7 @@ public class JobScheduler {
 			qcfg.load(in);
 			in.close();
 		} catch (Exception e) {
-			LOGGER.error("Getting the Quartz.properties failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the Quartz.properties failed with " + e.getMessage());
 			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		if (qcfg==null) {
@@ -108,7 +108,7 @@ public class JobScheduler {
 			LOGGER.debug("Getting the scheduler from factory");
 			sched = sf.getScheduler();
 		} catch (SchedulerException se) {
-			LOGGER.error(se.getMessage(), se);
+			LOGGER.error(se.getMessage());
 			LOGGER.error("Trying recovery...");
 			clearJobs();  // clean out any debris...
 			try { // ... again
@@ -132,7 +132,7 @@ public class JobScheduler {
 			LOGGER.debug("quartz-jobs.xml processed");
 			in.close();
 		} catch (Exception e) {
-			LOGGER.error("Processing the configuration file failed with " + e.getMessage(), e);
+			LOGGER.error("Processing the configuration file failed with " + e.getMessage());
 			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		} finally {
 			try {
@@ -150,7 +150,7 @@ public class JobScheduler {
 			initializeJabDataMapsInJobs();  // for all jobs with "Public static void setJobDataMap(JobDataMap jdm)
 			LOGGER.info("Job data maps initialized");
 		} catch (Exception se) {
-			LOGGER.error(se.getMessage(), se);
+			LOGGER.error(se.getMessage());
 			LOGGER.error("Trying recovery...");
 			clearJobs();  // clean out any debris...
 			try { // ... again

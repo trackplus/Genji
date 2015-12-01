@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -38,6 +38,7 @@ import java.util.zip.ZipInputStream;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.struts2.interceptor.ServletResponseAware;
@@ -67,6 +68,7 @@ public class TrackImportAction extends ActionSupport implements Preparable, Sess
 	private Locale locale;
 	
 	
+	@Override
 	public void prepare() throws Exception {
 		locale = (Locale)session.get(Constants.LOCALE_KEY);
 		personID = ((TPersonBean) session.get(Constants.USER_KEY)).getObjectID();
@@ -76,13 +78,6 @@ public class TrackImportAction extends ActionSupport implements Preparable, Sess
 	 * Render the import page
 	 */
 	@Override
-	/*public String execute() {
-		String warningMessage = getText("admin.actions.importTp.warning");
-		String accept = "application/zip";
-		JSONUtility.encodeJSON(servletResponse, 
-				TrackplusImportJSON.getUploadJSON(accept, warningMessage));
-		return null;
-	}*/
 	
 	/**
 	 * Save the zip file and import the data 
@@ -94,7 +89,8 @@ public class TrackImportAction extends ActionSupport implements Preparable, Sess
 		try {
 			inputStream = new FileInputStream(uploadFile);
 		} catch (FileNotFoundException e) {
-			LOGGER.error("Getting the input stream for the zip failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the input stream for the zip failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			JSONUtility.encodeJSON(servletResponse,
 					JSONUtility.encodeJSONFailure(getText("admin.actions.importTp.err.failed")));
 			return null;
@@ -134,7 +130,8 @@ public class TrackImportAction extends ActionSupport implements Preparable, Sess
 			}
 			zipInputStream.close();
 		} catch (Exception e) {
-			LOGGER.error("Extracting the zip to the temporary directory failed with " +e.getMessage(), e);
+			LOGGER.error("Extracting the zip to the temporary directory failed with " +e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			JSONUtility.encodeJSON(servletResponse,
 					JSONUtility.encodeJSONFailure(getText("admin.actions.importTp.err.failed")), false);
 			return null;
@@ -202,6 +199,7 @@ public class TrackImportAction extends ActionSupport implements Preparable, Sess
 		return null;
 	}
 
+	@Override
 	public void setSession(Map<String, Object> session) {
 		this.session = session;
 	}
@@ -218,6 +216,7 @@ public class TrackImportAction extends ActionSupport implements Preparable, Sess
 		this.uploadFileFileName = uploadFileFileName;
 	}
 	
+	@Override
 	public void setServletResponse(HttpServletResponse servletResponse) {
 		this.servletResponse = servletResponse;
 	}

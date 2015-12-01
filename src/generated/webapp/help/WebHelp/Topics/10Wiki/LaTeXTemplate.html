@@ -1,0 +1,255 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="You can create beautiful PDF documents from the Wiki using LaTeX/Freemarker templates. There are thousands of ready made templates available for free in the internet. This section explains how to get ..."/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="copyright" content="(C) Copyright 2005"/><meta name="DC.rights.owner" content="(C) Copyright 2005"/><meta name="DC.Type" content="concept"/><meta name="DC.Title" content="Creating LaTeX/Freemarker templates"/><meta name="abstract" content="You can create beautiful PDF documents from the Wiki using LaTeX/Freemarker templates. There are thousands of ready made templates available for free in the internet. This section explains how to get text and meta data from your Wiki document into a LaTeX document."/><meta xmlns="http://www.w3.org/1999/xhtml" name="description" content="You can create beautiful PDF documents from the Wiki using LaTeX/Freemarker templates. There are thousands of ready made templates available for free in the internet. This section explains how to get text and meta data from your Wiki document into a LaTeX document."/><meta name="indexterms" content="Wiki, export, LaTeX export, generate PDF, Freemarker template, LaTeX template, tlx, export, Wiki to PDF, LaTeX template, PDF, from Wiki"/><meta name="DC.subject" content="Wiki, export, LaTeX export, generate PDF, Freemarker template, LaTeX template, tlx, Wiki to PDF, LaTeX template, PDF, from Wiki"/><meta name="keywords" content="Wiki, export, LaTeX export, generate PDF, Freemarker template, LaTeX template, tlx, Wiki to PDF, LaTeX template, PDF, from Wiki"/><meta name="DC.Relation" scheme="URI" content="../../Topics/10Wiki/Chapter10Wrapper.html"/><meta name="DC.Format" content="XHTML"/><meta name="DC.Identifier" content="concept_wordtemplates"/><link rel="stylesheet" type="text/css" href="../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><title>Creating LaTeX/Freemarker templates</title><meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Type" content="text/html; charset=utf-8"><!----></meta><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../oxygen-webhelp/resources/css/commonltr.css"><!----></link><link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" type="text/css" href="../../oxygen-webhelp/resources/css/webhelp_topic.css"><!----></link><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript"><!--
+          
+          var prefix = "../../index.html";
+          
+          --></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../oxygen-webhelp/resources/js/jquery-1.8.2.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../oxygen-webhelp/resources/js/jquery.cookie.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../../oxygen-webhelp/resources/js/jquery-ui.custom.min.js"><!----></script><script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" charset="utf-8" src="../../oxygen-webhelp/resources/js/webhelp_topic.js"><!----></script></head>
+<body onload="highlightSearchTerm()" id="concept_wordtemplates">
+<table class="nav"><tbody><tr><td colspan="2"><div id="permalink"><a href="#">Link to this page</a></div><div id="printlink"><a href="javascript:window.print();">Print this page</a></div></td></tr><tr><td><div class="navheader">
+<span class="navparent"><a class="link" href="../../Topics/10Wiki/Chapter10Wrapper.html" title="The Track+ Wiki"><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">The Track+ Wiki</span></a></span>  </div></td><td width="75%"><a class="navheader_parent_path" href="../../Topics/10Wiki/Chapter10Wrapper.html" title="The Track+ Wiki">The Track+ Wiki</a></td></tr></tbody></table>
+
+  <h1 class="title topictitle1">Creating LaTeX/Freemarker templates</h1>
+
+  
+  
+  <div class="body conbody"><p class="shortdesc">You can create beautiful PDF documents from the Wiki using LaTeX/Freemarker templates.
+    There are thousands of ready made templates available for free in the internet. This section
+    explains how to get text and meta data from your Wiki document into a LaTeX
+    document.</p>
+
+    <div class="section" id="concept_wordtemplates__opendope"><h2 class="title sectiontitle">Obtaining a free LaTeX distribution</h2>
+      
+      <p class="p">To develop LaTeX templates you should have a complete TeX distribution installed on your
+        server and your local PC. Please have a look at the <span class="ph"><span class="ph">Track+</span></span> installation manual on how to obtain and install it.</p>
+
+    </div>
+
+    <div class="section" id="concept_wordtemplates__addingfields"><h2 class="title sectiontitle">Export workflow</h2>
+      <p class="p">When you export a Wiki document <span class="ph"><span class="ph">Track+</span></span> proceeds as follows:</p>
+<div class="p">
+        <ol class="ol" id="concept_wordtemplates__ol_ax3_tmw_ft">
+          <li class="li">The Wiki document is pulled together including inline referenced sections or items.
+            The attributes of the document itself and the attributes for each document section are
+            placed into a “Freemarker context”.</li>
+
+          <li class="li">A temporary working area is created at
+              <span class="ph filepath">TRACKPLUS_HOME/Reports/LaTeX/tmpxxx...</span></li>
+
+          <li class="li">Figures from attachments are copied into this working area.</li>
+
+          <li class="li">The template you chose for the export is copied from
+              <span class="ph filepath">TRACKPLUS_HOME/ExportTemplates/latexTemplates/xxxx</span>to the working
+            area, including all auxiliary files like style definition files, logos, etc.</li>
+
+          <li class="li">The <span class="ph"><span class="ph">Track+</span></span> pre-processor prrepares the template for
+            processing with the Freemarker processor.</li>
+
+          <li class="li">The Freemarker processor processes the LaTeX template, replacing all Freemarker code
+            with data from the context.</li>
+
+          <li class="li">The xelatex processor is called and compiles the Freemarker output to the final
+            PDF.</li>
+
+        </ol>
+
+      </div>
+A LaTeX/Freemarker template is simply a ZIP archive of a directory containing all required
+      LaTeX files, having the same basename as the LaTeX file and the suffix “.tlx”.</div>
+
+    <div class="section">For example, a LaTex/Freemarker template named “<span class="ph filepath">Report.tlx</span>” would
+      unzip into a directory “<span class="ph filepath">Report</span>” containing a LaTeX file called
+        “<span class="ph filepath">Report.tex</span>”.</div>
+
+    <div class="section"><h2 class="title sectiontitle">Freemarker markup in LaTeX document files</h2><p class="p">The LaTeX document must
+        contain Freemarker markup. To be able to test the appearance of a template outside of the
+        server environment, the Freemarker markup is escaped for the standard LaTeX processor. The
+        following example shows how this is done.</p>
+<p class="p">The markup <samp class="ph codeph">% %%TP &lt;#if
+          ...</samp> to the LaTeX processor appears as a comment and is ignored. The <span class="ph"><span class="ph">Track+</span></span> Freemarker pre-processor removes all occurrences of
+          “<samp class="ph codeph">% %%TP </samp>“ before the Freemarker processor executes. Thus the Freemarker
+        processor just sees “<samp class="ph codeph">&lt;#if ...</samp>”.
+        </p>
+<pre class="pre codeblock">
+% Template for a general report document
+% Copyright 2015 Steinbeis GmbH &amp; Co. KG - Task Management Solutions
+
+\documentclass[10pt,a4paper]{report}
+\pagestyle{plain}
+
+% %%TP &lt;#if (locale)?has_content &amp;&amp; locale=="de"&gt;
+% %%TP \usepackage[ngerman]{babel}
+% %%TP  &lt;#else&gt;
+% %%TP  \usepackage[british]{babel}
+% %%TP &lt;/#if&gt;
+</pre>
+<p class="p">The
+        code shown above after the pre-processor and the Freemarker processor have run looks like
+        this in case the users locale was set to anything but
+        “de”:</p>
+<pre class="pre codeblock">
+% Template for a general report document
+% Copyright 2015 Steinbeis GmbH &amp; Co. KG - Task Management Solutions
+
+\documentclass[10pt,a4paper]{report}
+\pagestyle{plain}
+
+\usepackage[british]{babel}
+</pre>
+<p class="p">The
+        next code example demonstrates the handling of inline items. Whenever an inline item is
+        encountered, the pre-processor fills in the code behind the “<samp class="ph codeph">% %%ITP </samp>“
+        marker. Thereafter the Freemarker processor replaces the context variables. Note that the
+        replacement will not be here in the LaTeX document but further down as often as there is an
+        inline item. The “<samp class="ph codeph">% %%ITP </samp>“ marker thus acts as a macro for the
+        pre-processor and not for the Freemarker
+        processor.</p>
+<pre class="pre codeblock">\usepackage{docstyle}
+
+\usepackage{draftwatermark}
+
+\SetWatermarkText{\${Status}}
+\SetWatermarkLightness{0.93}
+\SetWatermarkScale{0.8}
+
+% The following line defines how inline items are being rendered. 
+% %%ITP   \begin{framed}
+% %%ITP \href{${serverurl}/printItem.action?key=${IssueNo}}{\textbf{\color{tpred}${Project}:[${ProjectSpecificIssueNo}]}: ${Title}} 
+% %%ITP \vspace{2mm}\newline
+% %%ITP    {\color{tpblue}${Description}}
+% %%ITP \end{framed}
+</pre>
+<p class="p">Assuming
+        some values for the various variables, the final LaTeX code would look like
+        this:</p>
+<pre class="pre codeblock">  
+\begin{framed}
+\href{mydomain.com/printItem.action?key=4711}{\textbf{\color{tpred}My Project:[MP-234]}: Test case TRX 46} 
+\vspace{2mm}\newline
+{\color{tpblue}Here goes the description of the test case...}
+\end{framed}
+</pre>
+<p class="p">Now
+        we define some Freemarker makros and some localized strings we can conveniently use later
+        on. Note that outside of makros we have to escape $ signs with a backslash
+        \.</p>
+<pre class="pre codeblock">
+
+\AddToShipoutPicture{\put(30,280){\rotatebox{90}{\scalebox{0.8}{Copyright © \the\year \ \${licenseHolder}, All rights reserved}}}}
+
+\fancyfoot[C]{\${Title}}
+
+
+\begin{document}
+
+% %%TP &lt;#if (locale)?has_content &amp; locale=="de"&gt;
+% %%TP \renewcommand\StrRequirements{Anforderungen}
+% %%TP \renewcommand\StrDate{Datum}
+% %%TP \renewcommand\StrPriority{Priorität}
+% %%TP \renewcommand\StrStatus{Status}
+% %%TP \renewcommand\StrPage{Seite}
+% %%TP &lt;/#if&gt;
+
+
+% %%TP &lt;#macro mDate&gt;
+% %%TP    &lt;#if (MeetingDate)?has_content&gt;
+% %%TP      ${MeetingDate}
+% %%TP    &lt;#else&gt;
+% %%TP      ${.now?date}
+% %%TP    &lt;/#if&gt;
+% %%TP &lt;/#macro&gt;
+
+% %%TP &lt;#macro mLocation&gt;
+% %%TP    &lt;#if (Location)?has_content&gt;
+% %%TP    ${Location}
+% %%TP    &lt;/#if&gt;
+% %%TP &lt;/#macro&gt;
+
+
+% %%TP &lt;#macro makeTopicTable meetingTopics&gt;     
+% %%TP &lt;#list meetingTopics as topic&gt;	   		
+% %%TP \rule[-4mm]{0mm}{10mm}\${topic.IssueNo} \${topic.title} &amp; \rule[-4mm]{0mm}{10mm}\${topic.Priority}  &amp; \rule[-4mm]{0mm}{10mm}\${topic.Status} &amp; \rule[-4mm]{0mm}{10mm}\pageref{top\${topic.IssueNo}} \\ \htpline
+% %%TP &lt;/#list&gt;
+% %%TP &lt;/#macro&gt;
+
+% %%TP &lt;#macro makeTopics meetingTopics&gt; 
+% %%TP &lt;#list meetingTopics as topic&gt;
+% %%TP  &lt;#assign slevel=topic.WBS-WBS/&gt;  		   
+% %%TP {\color{tpred}&lt;#if (slevel)==1&gt;\chapter&lt;/#if&gt;&lt;#if (slevel)==2&gt;\section&lt;/#if&gt;&lt;#if (slevel)==3&gt;\subsection&lt;/#if&gt;&lt;#if (slevel)==4&gt;\subsubsubsection&lt;/#if&gt; {\${topic.title} }}
+% %%TP \label{top\${topic.IssueNo}}
+% %%TP \${topic.Description}
+% %%TP &lt;/#list&gt;
+% %%TP &lt;/#macro&gt;
+
+
+\newpage
+%\begin{textblock*}{150mm}(160mm,10mm)%
+% \textblockcolour{}
+%       \includegraphics[width=28mm]{trackLogo.jpg}
+%\end{textblock*}
+
+\ 
+\vskip 8cm
+\begin{center}
+{\LARGE\color{tpred}\bf \${project}}\\ \vskip 1.0em
+{\Huge\color{tpred}\bf \${title}}\\ \vskip 1.0em
+%{\LARGE\color{tpred}\bf{\StrRequirements}}\\ \vskip 1.0em
+\end{center}
+
+\vfill{}
+\begin{tabularx}{\textwidth}{!{\Vl}l!{\Vl}X!{\Vl}l!{\Vl}} \noalign{\hrule height 1pt}
+\rule[-3.5mm]{0pt}{10mm} Created: &amp; \${Responsible} &amp; 
+\${LastModifiedDate}
+\\ \htpline
+\rule[-3.5mm]{0pt}{10mm} Assessed: &amp; \${Manager} &amp; 
+\${LastModifiedDate}
+\\ \htpline
+\rule[-3.5mm]{0pt}{10mm} Released: &amp; \${Manager} &amp; 
+\${LastModifiedDate}
+\\ \htpline
+
+\end{tabularx}
+\vskip 1.5cm
+\ 
+
+\newpage
+
+\tableofcontents
+
+% %%TP &lt;#if noOfFigures gt 0 &gt;\newpage \listoffigures&lt;/#if&gt;
+
+% %%TP &lt;#if noOfFigures gt 8  || noOfFigures == 0&gt; 
+% %%TP     &lt;#if noOfTables gt 0 &gt;\newpage &lt;/#if&gt;
+% %%TP &lt;/#if&gt;
+% %%TP &lt;#if noOfTables gt 0 &gt;\listoftables&lt;/#if&gt;
+
+\newpage
+
+% %%TP &lt;@makeTopics meetingTopics/&gt;
+
+\end{document}
+   </pre>
+<p class="p">Figures are scaled based on the scaling in your Wiki document. If the
+        original size was 800 pixels times 400 pixes, and you would scale it to 400 pixels times 200
+        pixels, the image would be rendered with a scale of 0.5 in the LaTeX document.</p>
+<p class="p">The
+        real size depends on the dpi of the original attachment. It is advisable to stick with the
+        same dpi for all your images, using a tool like imagemagick to convert from other
+        densities:</p>
+<pre class="pre codeblock">convert -units PixelsPerInch original.png -resample 96 normalized.png</pre>
+<p class="p">or without resampling (faster)</p>
+<pre class="pre codeblock">convert -units PixelsPerInch original.png -density 96 normalized.png</pre>
+
+      <p class="p">The
+        density is usually a compromise between screen appearance and size in the PDF.</p>
+</div>
+
+  </div>
+
+<div class="related-links"/>
+<div class="navfooter"><!---->
+<span class="navparent"><a class="link" href="../../Topics/10Wiki/Chapter10Wrapper.html" title="The Track+ Wiki"><span class="navheader_label">Parent topic</span><span class="navheader_separator">: </span><span class="navheader_linktext">The Track+ Wiki</span></a></span>  </div>
+</body>
+</html>

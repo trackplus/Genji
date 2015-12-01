@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -29,7 +29,6 @@ Ext.define('com.trackplus.admin.customize.projectType.ProjectType',{
 	leafDetailByFormLoad: true,
 	folderDetailByFormLoad: true,
 	replaceToolbarOnTreeNodeSelect: true,
-	leafDetailUrl: null,
 	entityID:'node',
 	//actions
 	actionAdd: null,
@@ -65,12 +64,11 @@ Ext.define('com.trackplus.admin.customize.projectType.ProjectType',{
 
 	constructor: function(config) {
 		var config = config || {};
-		this.initialConfig = config;
-		Ext.apply(this, config);
-		this.init();
+		this.initConfig(config);
+		this.myInit();
 	},
 
-	init: function() {
+	myInit: function() {
 		this.initActions();
 	},
 
@@ -83,7 +81,7 @@ Ext.define('com.trackplus.admin.customize.projectType.ProjectType',{
 		//this.centerPanel.removeAll(true);
 		var noOfSelectedNodes = 0;
 		var leaf = false;
-		if (node!=null) {
+		if (node) {
 			//typical: called for the select event from the tree
 			leaf = node.data['leaf'];
 			this.selectedNodeID = node.data['id'];
@@ -96,7 +94,7 @@ Ext.define('com.trackplus.admin.customize.projectType.ProjectType',{
 			this.actualizeToolbarOnTreeSelect.call(selectedNodeClass, node);
 		} else {
 			if (this.getSelectedNodeIsDetailBased(node)) {
-				if (this.centerPanel!=null) {
+				if (this.centerPanel) {
 					this.mainPanel.remove(this.centerPanel, true);
 				}
 				this.centerPanel = selectedNodeClass.getDetailPanel(node, leaf, opts);
@@ -111,23 +109,19 @@ Ext.define('com.trackplus.admin.customize.projectType.ProjectType',{
 	},
 
 	loadTreeWithGrid: function(treeWithGridConfig, node) {
-		//var branchRoot = null;
 		var projectTypeID = null;
-	    if (node != null) {
-	        //branchRoot = node.data["branchRoot"];
-	        projectTypeID = node.data["projectTypeID"];
+	    if (node) {
+	       projectTypeID = node.data["projectTypeID"];
 	    }
-		if (this.centerPanel!=null) {
+		if (this.centerPanel) {
 			this.mainPanel.remove(this.centerPanel, true);
 		}
-		//treeWithGridConfig.rootID = branchRoot;
 		//for workflow config
 		treeWithGridConfig.projectOrProjectTypeID = projectTypeID;
 		this.centerPanel = treeWithGridConfig.createCenterPanel();
 		this.mainPanel.add(this.centerPanel);
 		var rootNode = treeWithGridConfig.tree.getRootNode();
 	    treeWithGridConfig.selectedNode = rootNode;
-	    //treeWithGridConfig.selectedNodeID = branchRoot;
 	    borderLayout.setActiveToolbarActionList(treeWithGridConfig.getToolbarActions());
 		return rootNode;
 	},
@@ -154,9 +148,9 @@ Ext.define('com.trackplus.admin.customize.projectType.ProjectType',{
 	 */
 	getSelectedNodeIsDetailBased: function(node) {
 		var projectConfigType = node.data['configType'];
-		return projectConfigType==this.ISSUE_TYPE_ASSIGNMENT ||
-			projectConfigType==this.CHILD_PROJECT_TYPE_ASSIGNMENT ||
-			projectConfigType==this.ROLE_ASSIGNMENT;
+		return projectConfigType===this.ISSUE_TYPE_ASSIGNMENT ||
+			projectConfigType===this.CHILD_PROJECT_TYPE_ASSIGNMENT ||
+			projectConfigType===this.ROLE_ASSIGNMENT;
 
 	},
 
@@ -174,7 +168,7 @@ Ext.define('com.trackplus.admin.customize.projectType.ProjectType',{
 		var id = node.data["id"];
 		var branchRoot = node.data["branchRoot"];
 		var projectTypeID = node.data["projectTypeID"];
-		if (configType==null) {
+		if (CWHF.isNull(configType)) {
 			return this;
 		}
 		switch (configType) {
@@ -183,72 +177,72 @@ Ext.define('com.trackplus.admin.customize.projectType.ProjectType',{
 		case this.STATUS_ASSIGNMENT:
 		case this.PRIORITY_ASSIGNMENT:
 		case this.SEVERITY_ASSIGNMENT:
-			if (this.assignment==null) {
+			if (CWHF.isNull(this.assignment)) {
 				this.assignment = Ext.create("com.trackplus.admin.TreeDetailAssignment",
 					{rootID:id,
-					baseAction:"projectTypeListAssignments",
 					dynamicIcons:true, reloadGrids:true});
+				this.assignment.baseAction = "projectTypeListAssignments";
 			}
-			this.assignment.rootID = id;
+			this.assignment.setRootID(id);
 			var rootMessageKey = null;
-			if (configType==this.STATUS_ASSIGNMENT) {
+			if (configType===this.STATUS_ASSIGNMENT) {
 				rootMessageKey = "admin.customize.projectType.lbl.assignmentInfoStatusGeneral";
 			} else {
-				if (configType==this.PRIORITY_ASSIGNMENT) {
+				if (configType===this.PRIORITY_ASSIGNMENT) {
 					rootMessageKey = "admin.customize.projectType.lbl.assignmentInfoPriorityGeneral";
 				} else {
 					rootMessageKey = "admin.customize.projectType.lbl.assignmentInfoSeverityGeneral";
 				}
 			}
-			this.assignment.rootMessage = getText(rootMessageKey);
+			this.assignment.setRootMessage(getText(rootMessageKey));
 			return this.assignment;
 		case this.ISSUE_TYPE_ASSIGNMENT:
-			if (this.issueTypeAssignment==null) {
+			if (CWHF.isNull(this.issueTypeAssignment)) {
 				this.issueTypeAssignment = Ext.create("com.trackplus.admin.SimpleAssignment",
-					{baseAction:"projectTypeSimpleAssignment",
-					assignmentType: this.ISSUE_TYPE_ASSIGNMENT,
+					{assignmentType: this.ISSUE_TYPE_ASSIGNMENT,
 					assignmentTypeParameterName: "configType",
 					objectIDParamName: "projectTypeID",
 					dynamicIcons:true});
+				this.issueTypeAssignment.baseAction = "projectTypeSimpleAssignment";
 			}
-			this.issueTypeAssignment.objectID = node.parentNode.data['id'];
+			this.issueTypeAssignment.setObjectID(node.parentNode.data['id']);
 			return this.issueTypeAssignment;
 		case this.CHILD_PROJECT_TYPE_ASSIGNMENT:
-			if (this.childProjectTypeAssignment==null) {
+			if (CWHF.isNull(this.childProjectTypeAssignment)) {
 				this.childProjectTypeAssignment = Ext.create("com.trackplus.admin.SimpleAssignment",
-					{baseAction:"projectTypeSimpleAssignment",
-					assignmentType: this.CHILD_PROJECT_TYPE_ASSIGNMENT,
+					{assignmentType: this.CHILD_PROJECT_TYPE_ASSIGNMENT,
 					assignmentTypeParameterName: "configType",
 					objectIDParamName: "projectTypeID"});
+				this.childProjectTypeAssignment.baseAction = "projectTypeSimpleAssignment";
 			}
-			this.childProjectTypeAssignment.objectID = node.parentNode.data['id'];
+			this.childProjectTypeAssignment.setObjectID(node.parentNode.data['id']);
 			return this.childProjectTypeAssignment;
 		case this.ROLE_ASSIGNMENT:
-			if (this.roleAssignment==null) {
+			if (CWHF.isNull(this.roleAssignment)) {
 				this.roleAssignment = Ext.create("com.trackplus.admin.SimpleAssignment",
-					{baseAction:"projectTypeSimpleAssignment",
-					assignmentType: this.ROLE_ASSIGNMENT,
+					{assignmentType: this.ROLE_ASSIGNMENT,
 					assignmentTypeParameterName: "configType",
 					objectIDParamName: "projectTypeID"});
+				this.roleAssignment.baseAction = "projectTypeSimpleAssignment";
 			}
-			this.roleAssignment.objectID = node.parentNode.data['id'];
+			this.roleAssignment.setObjectID(node.parentNode.data['id']);
 			return this.roleAssignment;
 		case this.FIELD_CONFIGURATION:
-			if (this.fieldConfig==null) {
+			if (CWHF.isNull(this.fieldConfig)) {
 				var branchRoot = node.data['branchRoot'];
 				this.fieldConfig = Ext.create("com.trackplus.admin.customize.treeConfig.FieldConfig",
 						{rootID:branchRoot});
 			}
 			return this.fieldConfig;
 		case this.SCREEN_ASSIGNMENT:
-			if (this.screenConfig==null) {
+			if (CWHF.isNull(this.screenConfig)) {
 				var branchRoot = node.data['branchRoot'];
 				this.screenConfig = Ext.create("com.trackplus.admin.customize.treeConfig.ScreenConfig",
 						{rootID:branchRoot});
 			}
 			return this.screenConfig;
 		case this.WORKFLOW_ASSIGNMENT:
-			if (this.workflowConfig==null) {
+			if (CWHF.isNull(this.workflowConfig)) {
 				var branchRoot = node.data['branchRoot'];
 				this.workflowConfig = Ext.create("com.trackplus.admin.customize.treeConfig.WorkflowConfig",
 						{rootID:branchRoot, projectOrProjectTypeID:projectTypeID});
@@ -312,7 +306,7 @@ Ext.define('com.trackplus.admin.customize.projectType.ProjectType',{
 	 * Initialize all actions and return the toolbar actions
 	 */
 	getToolbarActions: function() {
-		if (com.trackplus.TrackplusConfig.appType != APPTYPE_BUGS) {
+		if (com.trackplus.TrackplusConfig.appType !== APPTYPE_BUGS) {
 		    return [this.actionAdd, this.actionSave, this.actionDelete, this.actionImport,this.actionExport];
 		} else {
 			return [this.actionSave, this.actionExport];
@@ -335,7 +329,7 @@ Ext.define('com.trackplus.admin.customize.projectType.ProjectType',{
 	 */
 	onSave: function() {
 		this.centerPanel.getForm().submit({
-			url: this.baseAction + '!save.action',
+			url: this.getBaseAction() + '!save.action',
 			params: this.getSubmitParams(true),
 			scope: this,
 			success: function(form, action) {
@@ -363,7 +357,7 @@ Ext.define('com.trackplus.admin.customize.projectType.ProjectType',{
 		var record = this.getSingleSelectedRecord(fromTree);
 		var recordData = null;
 		var nodeID = null;
-		if (record!=null) {
+		if (record) {
 			recordData = record.data;
 			if (fromTree) {
 				nodeID = recordData['id'];
@@ -373,7 +367,7 @@ Ext.define('com.trackplus.admin.customize.projectType.ProjectType',{
 		}
 		//var params = this.getTypeParam(record, fromTree);
 		var params = new Object();
-		if (nodeID!=null) {
+		if (nodeID) {
 			params['node']=nodeID;
 		}
 		return params;
@@ -381,7 +375,7 @@ Ext.define('com.trackplus.admin.customize.projectType.ProjectType',{
 
 	onDelete: function() {
 		var selectedRecords = this.getSelectedRecords(true);
-		if (selectedRecords!=null) {
+		if (selectedRecords) {
 			var extraConfig = {fromTree:true, isLeaf:false};
 			this.deleteHandler(selectedRecords, extraConfig);
 		}
@@ -406,7 +400,7 @@ Ext.define('com.trackplus.admin.customize.projectType.ProjectType',{
 
 	onExport: function() {
 		var selectedRecords = this.getSelectedRecords(true);
-		if (selectedRecords!=null) {
+		if (selectedRecords) {
 			var projectTypeID = selectedRecords.data['id'];
 			var submit = [{
 				submitHandler:this.doExport,
@@ -433,7 +427,7 @@ Ext.define('com.trackplus.admin.customize.projectType.ProjectType',{
 		var projectTypeID = selectedRecords.data['id'];
 		var includeGlobal=this.checkIncludeGlobal.getInputComponent().getValue();
 		win.close();
-		var urlStr=this.baseAction + '!export.action?projectTypeID='+projectTypeID+'&includeGlobal='+includeGlobal;
+		var urlStr=this.getBaseAction() + '!export.action?projectTypeID='+projectTypeID+'&includeGlobal='+includeGlobal;
 		window.open(urlStr);
 	},
 
@@ -454,7 +448,7 @@ Ext.define('com.trackplus.admin.customize.projectType.ProjectType',{
 			items: [
 				CWHF.createCheckbox('common.lbl.overwriteExisting', 'overwriteExisting', {labelWidth:200}),
 				CWHF.createFileField('common.lbl.attachment.file', 'uploadFile',
-					{allowBlank:false, labelWidth:200})]
+					{itemId:"uploadFile", allowBlank:false, labelWidth:200})]
 		});
 		return this.formPanel;
 	},
@@ -489,23 +483,23 @@ Ext.define('com.trackplus.admin.customize.projectType.ProjectType',{
 			//tree reload is needed: after delete, add and edit with label change
 			var treeStore = this.tree.getStore();
 			var options = {};
-			if (nodeID==null && treeStore.getRootNode().hasChildNodes()) {
+			if (CWHF.isNull(nodeID) && treeStore.getRootNode().hasChildNodes()) {
 				var firstNode = treeStore.getRootNode().getChildAt(0);
-				if (firstNode!=null) {
+				if (firstNode) {
 					var selectedNodeID = null;
-					if (this.selectNode!=null) {
+					if (this.selectNode) {
 						selectedNodeID = this.selectedNode.get("id");
 					}
 					nodeID = firstNode.get("id");
-					if (nodeID==selectedNodeID) {
+					if (nodeID===selectedNodeID) {
 						var secondNode = treeStore.getRootNode().getChildAt(1);
-						if (secondNode!=null) {
+						if (secondNode) {
 							nodeID = secondNode.get("id");
 						}
 					}
 				}
 			}
-			if (nodeID!=null) {
+			if (nodeID) {
 				options.callback = this.selectNode;
 				options.scope = {tree:this.tree, nodeIdToSelect:nodeID}
 			} else {
@@ -530,10 +524,10 @@ Ext.define('com.trackplus.admin.customize.projectType.ProjectType',{
 	 * Implement only if replaceToolbarOnTreeNodeSelect is true
 	 */
 	getToolbarActionsForTreeNodeSelect: function(selectedNode) {
-		if (selectedNode!=null) {
+		if (selectedNode) {
 			this.actionSave.setDisabled(false);
 			var projectTypeID = selectedNode.data['projectTypeID'];
-			if (projectTypeID!=null && projectTypeID<0) {
+			if (projectTypeID && projectTypeID<0) {
 				//do not delete the private project type
 				this.actionDelete.setDisabled(true);
 				this.actionExport.setDisabled(true);
@@ -546,7 +540,7 @@ Ext.define('com.trackplus.admin.customize.projectType.ProjectType',{
 			this.actionDelete.setDisabled(true);
 			this.actionExport.setDisabled(true);
 		}
-		if (com.trackplus.TrackplusConfig.appType != APPTYPE_BUGS) {
+		if (com.trackplus.TrackplusConfig.appType !== APPTYPE_BUGS) {
 			return [this.actionAdd, this.actionSave, this.actionDelete, this.actionImport, this.actionExport];
 		} else {
 			return [this.actionSave,this.actionExport];
@@ -557,7 +551,7 @@ Ext.define('com.trackplus.admin.customize.projectType.ProjectType',{
 	 * Gets the URL for loading the node detail
 	 */
 	getDetailUrl: function(node, add) {
-		return this.baseAction + '!edit.action';
+		return this.getBaseAction() + '!edit.action';
 	},
 
 	/**
@@ -565,7 +559,7 @@ Ext.define('com.trackplus.admin.customize.projectType.ProjectType',{
 	 */
 	getDetailParams: function(node, add) {
 		var params = new Object();
-		if (node!=null) {
+		if (node) {
 			nodeID = node.data['id'];
 			params['node']=nodeID;
 		}
@@ -578,10 +572,10 @@ Ext.define('com.trackplus.admin.customize.projectType.ProjectType',{
 	 */
 	getDetailItems: function(node, add) {
 		var projectTypeID = null;
-		if (node!=null) {
+		if (node) {
 			projectTypeID = node.data['projectTypeID'];
 		}
-		var hideDetail = !add && projectTypeID!=null && projectTypeID<0;
+		var hideDetail = !add && projectTypeID && projectTypeID<0;
 		var items = [CWHF.createTextField('common.lbl.name', 'projectTypeTO.label',
 			{allowBlank:false, labelWidth:this.labelWidth, width:this.textFieldWidth})];
 		if (!hideDetail) {
@@ -590,19 +584,19 @@ Ext.define('com.trackplus.admin.customize.projectType.ProjectType',{
 			items.push(CWHF.createCheckboxWithHelp('admin.customize.projectType.lbl.enableRelease', 'projectTypeTO.useReleases'));
 			items.push(CWHF.createCheckboxWithHelp('admin.customize.projectType.lbl.enableVersionControl','projectTypeTO.useVersionControl'));
 		}
-		if (com.trackplus.TrackplusConfig.appType != APPTYPE_BUGS) {
+		if (com.trackplus.TrackplusConfig.appType !== APPTYPE_BUGS) {
 			items.push(CWHF.createCheckboxWithHelp('admin.customize.projectType.lbl.enableAccounting', 'projectTypeTO.useAccounts',
 					null, {change: {fn: this.onAccountingChange, scope:this}}));
 			items.push(CWHF.createNumberFieldWithHelp('common.lbl.hoursPerWorkday',
 					'projectTypeTO.hoursPerWorkday', 2, 0, 24,
-					{labelWidth:this.labelWidth, width:this.textFieldWidthShort}));
+					{labelWidth:this.labelWidth, width:this.textFieldWidthShort, itemId:'projectTypeTOHoursPerWorkday'}));
 			items.push(CWHF.createComboWithHelp('admin.project.lbl.defaultWorkUnit',
 					'projectTypeTO.defaultWorkUnit', {itemId: 'defaultWorkUnit',labelWidth:this.labelWidth}));
 			items.push(CWHF.createTextFieldWithHelp("admin.project.lbl.currencyName", "projectTypeTO.currencyName",
-					{labelWidth:this.labelWidth, width:this.textFieldWidthShort}));
+					{labelWidth:this.labelWidth, width:this.textFieldWidthShort,itemId:'projectTypeTOCurrencyName'}));
 			items.push(CWHF.createTextFieldWithHelp("admin.project.lbl.currencySymbol", "projectTypeTO.currencySymbol",
-					{labelWidth:this.labelWidth, width:this.textFieldWidthShort}));
-			if (com.trackplus.TrackplusConfig.appType != APPTYPE_DESK) {
+					{labelWidth:this.labelWidth, width:this.textFieldWidthShort,itemId:'projectTypeTOCurrencySymbol'}));
+			if (com.trackplus.TrackplusConfig.appType !== APPTYPE_DESK) {
 				items.push(CWHF.createCheckboxWithHelp("admin.customize.projectType.lbl.enableMsProjectExportImport",
 						"projectTypeTO.useMsProjectExportImport", {labelWidth:this.labelWidth, width:this.textFieldWidthShort}));
 			}
@@ -627,10 +621,10 @@ Ext.define('com.trackplus.admin.customize.projectType.ProjectType',{
 		},
 
 		enableAccountingFields: function(enableAccounting) {
-			this.getHelpWrapper("projectTypeFS", "projectTypeTO.hoursPerWorkday").setDisabled(!enableAccounting);
+			this.getHelpWrapper("projectTypeFS", "projectTypeTOHoursPerWorkday").setDisabled(!enableAccounting);
 			this.getHelpWrapper("projectTypeFS", "defaultWorkUnit").setDisabled(!enableAccounting);
-			this.getHelpWrapper("projectTypeFS", "projectTypeTO.currencyName").setDisabled(!enableAccounting);
-			this.getHelpWrapper("projectTypeFS", "projectTypeTO.currencySymbol").setDisabled(!enableAccounting);
+			this.getHelpWrapper("projectTypeFS", "projectTypeTOCurrencyName").setDisabled(!enableAccounting);
+			this.getHelpWrapper("projectTypeFS", "projectTypeTOCurrencySymbol").setDisabled(!enableAccounting);
 		},
 
 		/**
@@ -645,16 +639,16 @@ Ext.define('com.trackplus.admin.customize.projectType.ProjectType',{
 		 */
 		postDataLoadCombo: function(data, panel) {
 			var projectTypeFlag = this.getWrappedControl("projectTypeFS", "projectTypeFlag");
-			if (projectTypeFlag!=null) {
+			if (projectTypeFlag) {
 				projectTypeFlag.store.loadData(data['projectTypeFlagList']);
 				projectTypeFlag.setValue(data['projectTypeTO.projectTypeFlag']);
 			}
 			var projectTypeFlag = this.getWrappedControl("projectTypeFS", "defaultWorkUnit");
-			if (projectTypeFlag!=null) {
+			if (projectTypeFlag) {
 				projectTypeFlag.store.loadData(data['workUnitList']);
 				projectTypeFlag.setValue(data['projectTypeTO.defaultWorkUnit']);
 			}
-			//if (data["forPrivateProjects"]==null || data["forPrivateProjects"]==false) {
+			//if (CWHF.isNull(data["forPrivateProjects"]) || data["forPrivateProjects"]===false) {
 				this.enableAccountingFields(data["projectTypeTO.useAccounts"]);
 			//}
 		}

@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.lucene.analysis.Analyzer;
@@ -60,6 +61,7 @@ public class NotLocalizedListSearcher extends AbstractListFieldSearcher {
 	 * Gets the index writer ID
 	 * @return
 	 */
+	@Override
 	protected int getIndexSearcherID() {
 		return LuceneUtil.INDEXES.NOT_LOCALIZED_LIST_INDEX;
 	}
@@ -68,6 +70,7 @@ public class NotLocalizedListSearcher extends AbstractListFieldSearcher {
 	 * Gets the fieldID types stored in this index 
 	 * @return
 	 */
+	@Override
 	protected List<Integer> getFieldIDs() {
 		List<Integer> externalIDFields = new LinkedList<Integer>();
 		externalIDFields.add(SystemFields.INTEGER_PROJECT);
@@ -84,6 +87,7 @@ public class NotLocalizedListSearcher extends AbstractListFieldSearcher {
 	 * @param indexStart the index to start looking for fieldName 
 	 * @return
 	 */
+	@Override
 	public String preprocessExplicitField(Analyzer analyzer, String toBeProcessedString,
 			Locale locale, int indexStart) {
 		List<Integer> fieldIDs = getFieldIDs();
@@ -135,6 +139,7 @@ public class NotLocalizedListSearcher extends AbstractListFieldSearcher {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	protected Query getExplicitFieldQuery(Analyzer analyzer,
 			String fieldName, String fieldValue, Integer fieldID, Locale locale) {
 		Query query = null;
@@ -147,7 +152,8 @@ public class NotLocalizedListSearcher extends AbstractListFieldSearcher {
 			query = queryParser.parse(typedFieldQueryString);
 		} catch (ParseException e) {
 			LOGGER.error("Parsing the query string for fieldName  " + fieldName +
-				" and fieldValue '" + fieldValue + "' failed with " + e.getMessage(), e);
+				" and fieldValue '" + fieldValue + "' failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		return query;
 	}
@@ -161,6 +167,7 @@ public class NotLocalizedListSearcher extends AbstractListFieldSearcher {
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	protected Query getNoExlplicitFieldQuery(Analyzer analyzer,
 			String toBeProcessedString, Locale locale) {
 		QueryParser queryParser = new QueryParser(getLabelFieldName(), analyzer);
@@ -168,31 +175,36 @@ public class NotLocalizedListSearcher extends AbstractListFieldSearcher {
 		try {
 			query = queryParser.parse(toBeProcessedString);
 		} catch (ParseException e) {
-			LOGGER.error("Parsing the no field query string for fieldValue '" + toBeProcessedString + "' failed with " + e.getMessage(), e);
+			LOGGER.error("Parsing the no field query string for fieldValue '" + toBeProcessedString + "' failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 		}
 		return query;
 	}
 	/**
 	 * Gets the workItem field names for a type 
 	 */
+	@Override
 	protected String[] getWorkItemFieldNames(Integer type) {
 		return getWorkItemFieldNamesForLookupType(type.intValue());
 	}
 	/**
 	 * Gets the lucene field from document representing the list label
 	 */
+	@Override
 	protected String getLabelFieldName() {
 		return LuceneUtil.LIST_INDEX_FIELDS_NOT_LOCALIZED.LABEL;
 	}
 	/**
 	 * Gets the lucene field from document representing the type
 	 */
+	@Override
 	protected String getTypeFieldName() {
 		return LuceneUtil.LIST_INDEX_FIELDS_NOT_LOCALIZED.TYPE;
 	}
 	/**
 	 * Gets the lucene field from document representing the list label
 	 */
+	@Override
 	protected String getValueFieldName() {
 		return LuceneUtil.LIST_INDEX_FIELDS_NOT_LOCALIZED.VALUE;
 	}

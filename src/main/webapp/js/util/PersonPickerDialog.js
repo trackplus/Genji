@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -24,7 +24,7 @@ Ext.define('com.trackplus.util.PersonPickerDialog',{
 	extend:'Ext.Base',
 	config: {
 		title:"",
-		data:null,
+		options:null,
 		includeEmail:false,
 		includeGroups:false,
 		handler:null,
@@ -39,17 +39,25 @@ Ext.define('com.trackplus.util.PersonPickerDialog',{
 		var config = config || {};
 		me.initialConfig = config;
 		Ext.apply(me, config);
+		this.initConfig(config);
 	},
 	showDialog:function(){
 		var me=this;
 		me.view=Ext.create('com.trackplus.util.PersonPickerDialogView',{
-			data:me.data
+			options:me.getOptions()
 		});
 
-		if(me.win!=null){
+		if(me.win){
 			me.win.destroy();
 		}
-
+		var w=me.getWidth();
+		var h=me.getHeight();
+		if(CWHF.isNull(w)){
+			w=250;
+		}
+		if(CWHF.isNull(h)){
+			h=400;
+		}
 		me.win = Ext.create('Ext.window.Window',{
 			layout      : 'fit',
 			cls:'bottomButtonsDialog',
@@ -61,8 +69,8 @@ Ext.define('com.trackplus.util.PersonPickerDialog',{
 			},
 			bodyPadding:'0px',
 			iconCls:'user16',
-			width:me.width,
-			height:me.height,
+			width:w,
+			height:h,
 			closeAction :'destroy',
 			title:me.title,
 			modal:true,
@@ -85,11 +93,11 @@ Ext.define('com.trackplus.util.PersonPickerDialog',{
 			]
 		});
 		me.win.show();
-		if(me.data==null){
-			me.refreshData();
+		if(CWHF.isNull(me.getOptions())){
+			me.refreshMyOptions();
 		}
 	},
-	refreshData:function(){
+	refreshMyOptions:function(){
 		var me=this;
 		me.view.setLoading(true);
 		var urlStr='personPicker.action';
@@ -100,7 +108,7 @@ Ext.define('com.trackplus.util.PersonPickerDialog',{
 				me.view.setLoading(false);
 				var responseJson = Ext.decode(result.responseText);
 				var data=responseJson.data;
-				me.view.replaceData.call(me.view,data);
+				me.view.replaceOptions.call(me.view,data);
 			},
 			failure: function(){
 				me.view.setLoading(false);
@@ -116,7 +124,7 @@ Ext.define('com.trackplus.util.PersonPickerDialog',{
 		var displayValue=me.view.getDisplayValue.call(me.view);
 		me.win.hide();
 		me.win.destroy();
-		if(me.handler!=null){
+		if(me.handler){
 			me.handler.call(me.scope,value,displayValue);
 		}
 	}
@@ -124,7 +132,7 @@ Ext.define('com.trackplus.util.PersonPickerDialog',{
 Ext.define('com.trackplus.util.PersonPickerDialogView',{
 	extend: 'Ext.panel.Panel',
 	config:{
-		data:[],
+		options:[],
 		maxSelectionCount : null
 	},
 	layout:'border',
@@ -138,7 +146,7 @@ Ext.define('com.trackplus.util.PersonPickerDialogView',{
 	allItemSelected : false,
 	initComponent: function(){
 		var me=this;
-		if(me.selectedDatasourceType==null){
+		if(CWHF.isNull(me.selectedDatasourceType)){
 			me.selectedDatasourceType=1;
 		}
 		me.store=me.createStore();
@@ -180,32 +188,32 @@ Ext.define('com.trackplus.util.PersonPickerDialogView',{
 		items.push(me.boundList);
 		return items;
 	},
-	replaceData:function(data){
+	replaceOptions:function(options){
 		var me=this;
 		var rootNode=me.store.getRootNode();
 		rootNode.removeAll();
-		if(data!=null&&data.length>0){
-			rootNode.appendChild(data);
+		if(options&&options.length>0){
+			rootNode.appendChild(options);
 		}
 	},
 	treeCheckChange: function(node, checked, options) {
 		var me=this;
 		var records = me.boundList.getView().getChecked();
 
-		if (records == null||records.length==0) {
+		if (CWHF.isNull(records)||records.length===0) {
 			me.allItemSelected = false;
 		} else {
 			var allCount =me.getSelectableItemsCount();
-			if (allCount == records.length) {
+			if (allCount === records.length) {
 				me.allItemSelected = true;
 			} else {
 				me.allItemSelected = false;
 			}
 		}
-		if (me.linkClearSelection != null) {
+		if (me.linkClearSelection ) {
 			var oldLabel = me.linkClearSelection.getMyLabel();
-			var newLabel = me.getClearSelectionLabel();// me.allItemSelected==true?me.lblClearSelection:me.lblSelectAll;
-			if (oldLabel != newLabel) {
+			var newLabel = me.getClearSelectionLabel();// me.allItemSelected===true?me.lblClearSelection:me.lblSelectAll;
+			if (oldLabel !== newLabel) {
 				me.linkClearSelection.suspendLayout = true;
 				me.linkClearSelection.setLabel(newLabel);
 				me.linkClearSelection.suspendLayout = false;
@@ -215,9 +223,9 @@ Ext.define('com.trackplus.util.PersonPickerDialogView',{
 	getSelectableItemsCount:function(){
 		var me=this;
 		var count=0;
-		if (me.boundList!=null) {
+		if (me.boundList) {
 			this.boundList.getRootNode().cascadeBy(function(){
-				if(this.get('checked')!=undefined){
+				if(this.get('checked')!==undefined){
 					count++;
 				}
 			});
@@ -227,12 +235,12 @@ Ext.define('com.trackplus.util.PersonPickerDialogView',{
 
 	getClearSelectionLabel : function() {
 		var me = this;
-		return me.allItemSelected == true ? me.lblClearSelection : me.lblSelectAll
+		return me.allItemSelected === true ? me.lblClearSelection : me.lblSelectAll
 	},
 
 	clearOrSelectAll : function() {
 		var me = this;
-		if ((me.maxSelectionCount != null && me.maxSelectionCount > 0) || me.allItemSelected == true) {
+		if ((me.maxSelectionCount  && me.maxSelectionCount > 0) || me.allItemSelected === true) {
 			me.clearSelection();
 		} else {
 			me.selectAll();
@@ -242,7 +250,7 @@ Ext.define('com.trackplus.util.PersonPickerDialogView',{
 	clearSelection:function(){
 		var me=this;
 		this.boundList.getRootNode().cascadeBy(function(){
-			if(this.get('checked')!=undefined){
+			if(this.get('checked')!==undefined){
 				this.set( 'checked', false );
 			}
 		});
@@ -253,9 +261,9 @@ Ext.define('com.trackplus.util.PersonPickerDialogView',{
 	selectAll : function() {
 		var me=this;
 		var value=new Array();
-		if (me.boundList!=null) {
+		if (me.boundList) {
 			this.boundList.getRootNode().cascadeBy(function(){
-				if(this.get('checked')!=undefined){
+				if(this.get('checked')!==undefined){
 					this.set( 'checked', true);
 					value.push(this);
 				}
@@ -268,10 +276,10 @@ Ext.define('com.trackplus.util.PersonPickerDialogView',{
 	},
 	changeLinkClearSelection:function(){
 		var me=this;
-		if (me.linkClearSelection != null) {
+		if (me.linkClearSelection ) {
 			var oldLabel = me.linkClearSelection.getMyLabel();
-			var newLabel = me.getClearSelectionLabel();// me.allItemSelected==true?me.lblClearSelection:me.lblSelectAll;
-			if (oldLabel != newLabel) {
+			var newLabel = me.getClearSelectionLabel();// me.allItemSelected===true?me.lblClearSelection:me.lblSelectAll;
+			if (oldLabel !== newLabel) {
 				me.linkClearSelection.suspendLayout = true;
 				me.linkClearSelection.setLabel(newLabel);
 				me.linkClearSelection.suspendLayout = false;
@@ -303,9 +311,9 @@ Ext.define('com.trackplus.util.PersonPickerDialogView',{
 			autoLoad: false,
 			root: {
 				expanded: true,
-				children:(me.data==null?[]:me.data)
+				children:(CWHF.isNull(me.getOptions())?[]:me.getOptions())
 			},
-			originalData:me.data==null?[]:me.data
+			originalData:CWHF.isNull(me.getOptions())?[]:me.getOptions()
 		});
 	},
 	createBoundList:function(){
@@ -329,7 +337,7 @@ Ext.define('com.trackplus.util.PersonPickerDialogView',{
 	findRecord: function(field, value) {
 		var me=this;
 		var nodeToSelect=me.store.getNodeById(value);
-		if(nodeToSelect!=null){
+		if(nodeToSelect){
 			return nodeToSelect;
 		}else{
 			return false;
@@ -343,7 +351,7 @@ Ext.define('com.trackplus.util.PersonPickerDialogView',{
 	getDisplayValue:function(){
 		var me=this;
 		var records = me.boundList.getView().getChecked();
-		if(records==null||records.length==0){
+		if(CWHF.isNull(records)||records.length===0){
 			return null;
 		}
 		var displayData=new Array();

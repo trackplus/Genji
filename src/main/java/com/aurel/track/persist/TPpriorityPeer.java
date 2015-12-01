@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -61,12 +61,13 @@ public class TPpriorityPeer
 	 * Loads all TPpriorityBeans 
 	 * @return
 	 */
+	@Override
 	public List<TPpriorityBean> loadAll() {
 		Criteria crit = new Criteria();
 		try {
 			return convertTorqueListToBeanList(doSelect(crit));
 		} catch (TorqueException e) {
-			LOGGER.error("Loading all ppriorities failed with " + e.getMessage(), e);
+			LOGGER.error("Loading all ppriorities failed with " + e.getMessage());
 			return new LinkedList<TPpriorityBean>();
 		}
 	}
@@ -76,6 +77,7 @@ public class TPpriorityPeer
 	 * @param projectTypeID
 	 * @return
 	 */
+	@Override
 	public Map<Integer, Integer> loadNumberOfPrioritiesForIssueTypesInProjectType(Integer projectTypeID) {
 		Map<Integer, Integer> numberOfPrioritiesForIssueTypes = new HashMap<Integer, Integer>();
 		Criteria crit = new Criteria();
@@ -88,7 +90,7 @@ public class TPpriorityPeer
 		try {
 			records = doSelectVillageRecords(crit);
 		} catch(Exception e) {
-			LOGGER.error("Groupping the priorities by issueTypes in projectType " + projectTypeID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Groupping the priorities by issueTypes in projectType " + projectTypeID + " failed with " + e.getMessage());
 		}
 		try {
 			if (records!=null && !records.isEmpty()) {
@@ -99,7 +101,7 @@ public class TPpriorityPeer
 				}
 			}
 		} catch (Exception e) {
-			LOGGER.error("Getting the number of priorities by issueTypes in projectType " + projectTypeID + " failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the number of priorities by issueTypes in projectType " + projectTypeID + " failed with " + e.getMessage());
 		}
 		return numberOfPrioritiesForIssueTypes;
 	}
@@ -109,6 +111,7 @@ public class TPpriorityPeer
 	 * @param issueTypeID
 	 * @return
 	 */
+	@Override
 	public Integer loadNumberOfPrioritiesForIssueTypeInProjectType(Integer projectTypeID, Integer issueTypeID) {
 		Criteria crit = new Criteria();
 		crit.add(PROJECTTYPE, projectTypeID);
@@ -132,6 +135,7 @@ public class TPpriorityPeer
 	 * @param projectType
 	 * @return
 	 */
+	@Override
 	public List<TPpriorityBean> loadByProjectType(Integer projectType) {
 		Criteria crit = new Criteria();
 		crit.add(PROJECTTYPE, projectType, Criteria.EQUAL); 
@@ -139,7 +143,7 @@ public class TPpriorityPeer
 			return convertTorqueListToBeanList(doSelect(crit));
 		}
 		catch (Exception e) {
-			LOGGER.error("Loading by project type " +  projectType + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading by project type " +  projectType + " failed with " + e.getMessage());
 			return new ArrayList<TPpriorityBean>();
 		}
 	}
@@ -150,6 +154,7 @@ public class TPpriorityPeer
 	 * @param priorities
 	 * @return
 	 */
+	@Override
 	public List<TPpriorityBean> loadByProjectTypeAndPriorities(Integer projectType, List<Integer> priorities) {
 		if (priorities==null || priorities.isEmpty() || projectType==null) {
 			return new ArrayList<TPpriorityBean>();
@@ -161,7 +166,7 @@ public class TPpriorityPeer
 			return convertTorqueListToBeanList(doSelect(crit));
 		}
 		catch (Exception e) {
-			LOGGER.error("Loading by project type " +  projectType + " and priorities " + priorities.size() + " failed with " + e.getMessage(), e);
+			LOGGER.error("Loading by project type " +  projectType + " and priorities " + priorities.size() + " failed with " + e.getMessage());
 			return new ArrayList<TPpriorityBean>();
 		}
 	}
@@ -172,6 +177,7 @@ public class TPpriorityPeer
 	 * @param issueType
 	 * @return
 	 */
+	@Override
 	public List<TPpriorityBean> loadByProjectTypeAndIssueType(Integer projectType, Integer issueType) {		
 		Criteria crit = new Criteria();
 		crit.add(PROJECTTYPE, projectType);
@@ -192,6 +198,7 @@ public class TPpriorityPeer
 	 * @param issueTypes
 	 * @return
 	 */
+	@Override
 	public List<TPpriorityBean> loadByProjectTypeAndIssueTypes(Integer projectType, List<Integer> issueTypes) {
 		if (issueTypes==null || issueTypes.isEmpty() || projectType==null) {
 			return new LinkedList<TPpriorityBean>();
@@ -214,6 +221,7 @@ public class TPpriorityPeer
 	 * @param ppriorityBean
 	 * @return
 	 */
+	@Override
 	public Integer save(TPpriorityBean ppriorityBean) {
 		TPpriority tpPpriority;
 		try {
@@ -222,7 +230,7 @@ public class TPpriorityPeer
 			return tpPpriority.getObjectID();
 			
 		} catch (Exception e) {
-			LOGGER.error("Saving of an ppriorityBean failed with " + e.getMessage(), e);
+			LOGGER.error("Saving of an ppriorityBean failed with " + e.getMessage());
 			return null;
 		}
 	}
@@ -232,6 +240,7 @@ public class TPpriorityPeer
 	 * @param objectID
 	 * @return
 	 */
+	@Override
 	public void delete(Integer objectID) {
 		Criteria crit = new Criteria();
 		crit.add(OBJECTID, objectID);
@@ -248,6 +257,7 @@ public class TPpriorityPeer
 	 * @param itemTypeID
 	 * @param priorityID
 	 */
+	@Override
 	public void delete(Integer projectTypeID, Integer itemTypeID, List<Integer> priorityIDs) {
 		if (projectTypeID==null || itemTypeID==null || priorityIDs==null || priorityIDs.isEmpty()) {
 			return;

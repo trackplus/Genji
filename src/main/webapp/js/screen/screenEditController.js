@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -36,16 +36,17 @@ Ext.define('com.trackplus.screen.ComponentController',{
 		var config = config || {};
 		me.initialConfig = config;
 		Ext.apply(me, config);
+		//this.initConfig(config);
 	},
 	getUpdateLink:function(compID){
-		if(this.updateAction==null){
+		if(CWHF.isNull(this.updateAction)){
 			return null;
 		}
 		var screenID=this.screenEditController.screenModel.id;
 		return this.updateAction+".action?componentID="+compID+"&screenID="+screenID;
 	},
 	getPropertyLink:function(compID){
-		if(this.updateAction==null){
+		if(CWHF.isNull(this.updateAction)){
 			return null;
 		}
 		return this.action+"!properties.action?componentID="+compID;
@@ -67,12 +68,12 @@ Ext.define('com.trackplus.screen.ScreenController',{
 	extend:'com.trackplus.screen.ComponentController',
 	reload:function(screenView,actionMethod,params, idChild){
 		var me=this;
-		if(actionMethod==null){
+		if(CWHF.isNull(actionMethod)){
 			actionMethod="reload";
 		}
 		var componentID=screenView.model.getId();
 		var urlStr=me.action+"!"+actionMethod+".action?componentID="+componentID;
-		if(me.projectID!=null){
+		if(me.projectID){
 			urlStr=urlStr+"&projectID="+this.projectID+"&entityType="+this.entityType;
 		}
 		borderLayout.setLoading(true);
@@ -84,7 +85,7 @@ Ext.define('com.trackplus.screen.ScreenController',{
 				/*var jsonData=Ext.decode(resp.responseText);
 				var screenModel=com.trackplus.screen.createScreenModel(jsonData.data.screen);
 				me.screenEditController.refreshScreenModel.call(me.screenEditController,screenView,screenModel,
-					idChild!=null?idChild:jsonData.data.selectedTab);
+					idChild?idChild:jsonData.data.selectedTab);
 				screenView.setLoading(false);*/
 			},
 			failure:function(){
@@ -107,7 +108,7 @@ Ext.define('com.trackplus.screen.ScreenController',{
 			success: function(resp){
 				var jsonData=Ext.decode(resp.responseText);
 				borderLayout.setLoading(false);
-				if(succesHandler!=null){
+				if(succesHandler){
 					succesHandler.call(scope);
 				}
 			},
@@ -134,8 +135,8 @@ Ext.define('com.trackplus.screen.ScreenController',{
 			success: function(resp){
 				var jsonData=Ext.decode(resp.responseText);
 				borderLayout.setLoading(false);
-				if(successHandler!=null){
-					successHandler.call(scope==null?me:scope);
+				if(successHandler){
+					successHandler.call(CWHF.isNull(scope)?me:scope);
 				}
 			},
 			failure:function(){
@@ -155,7 +156,7 @@ Ext.define('com.trackplus.screen.TabController',{
 	},
 	reload:function(tabCmp,actionMethod,params, idChild){
 		var me=this;
-		if(me.action==null){
+		if(CWHF.isNull(me.action)){
 			me.screenEditController.reload.call(me.screenEditController);
 			return;
 		}
@@ -165,13 +166,13 @@ Ext.define('com.trackplus.screen.TabController',{
 		//unregister
 		me.unregister(tabCmp);
 
-		if(actionMethod==null){
+		if(CWHF.isNull(actionMethod)){
 			actionMethod="reload";
 		}
 		var urlStr=me.action+"!"+actionMethod+".action?componentID="+compID;
 		var screenID=me.screenEditController.screenModel.id;
 		urlStr=urlStr+"&screenID="+screenID;
-		if(me.projectID!=null){
+		if(me.projectID){
 			urlStr=urlStr+"&projectID="+this.projectID+"&entityType="+this.entityType;
 		}
 		Ext.Ajax.request({
@@ -182,7 +183,7 @@ Ext.define('com.trackplus.screen.TabController',{
 				var tabModel=com.trackplus.screen.createTabModel(jsonData.data);
 				var panelToSelect=me.screenEditController.refreshTabModel(tabCmp,tabModel,idChild);
 				tabCmp.setLoading(false);
-				if(panelToSelect!=null){
+				if(panelToSelect){
 					me.screenEditController.setSelectedComponent(panelToSelect);
 				}
 			},
@@ -206,7 +207,7 @@ Ext.define('com.trackplus.screen.PanelController',{
 		me.unregister(panel);
 		//set loading
 		panel.setLoading(getText("common.lbl.loading"));
-		if(action==null){
+		if(CWHF.isNull(action)){
 			action="reload";
 		}
 		var panelID=panel.model.getId();
@@ -214,7 +215,7 @@ Ext.define('com.trackplus.screen.PanelController',{
 		urlStr=urlStr+"?componentID="+panelID;
 		var screenID=me.screenEditController.screenModel.id;
 		urlStr=urlStr+"&screenID="+screenID;
-		if(me.projectID!=null){
+		if(me.projectID){
 			urlStr=urlStr+"&projectID="+me.projectID+"&entityType="+me.entityType;
 		}
 		Ext.Ajax.request({
@@ -223,17 +224,17 @@ Ext.define('com.trackplus.screen.PanelController',{
 			success: function(result){
 				var jsonData=Ext.decode(result.responseText);
 				var panelModel=com.trackplus.screen.createPanelModel(jsonData);
-				me.screenEditController.refreshPanelModel(panel,panelModel);
+				me.screenEditController.refreshPanelModel(panel,panelModel,true);
 				/*document.getElementById("div-p"+panelID).innerHTML=result.responseText;
 				var domToSelect=null;
-				if(idToSelect!=null){
+				if(idToSelect){
 					domToSelect=document.getElementById(idToSelect);
 				}
-				if(domToSelect!=null){
+				if(domToSelect){
 				ScreenEdit.selectedItem=null;
 					ComponentController.instance.clickHandler(domToSelect);
 			 	}*/
-				if(handler!=null){
+				if(handler){
 					handler.call();
 				}
 				panel.setLoading(false);
@@ -277,7 +278,7 @@ Ext.define('com.trackplus.screen.PanelController',{
 		var me=this;
 		var sourceID=panelSource.model.getId();
 		var targetID=panelTarget.model.getId();
-		if(sourceID==targetID){
+		if(sourceID===targetID){
 			return false;
 		}
 		var newIndex=panelTarget.myIndex;
@@ -325,7 +326,7 @@ Ext.define('com.trackplus.screen.FieldController',{
 				screenCtrl.clearDragOn();
 			},
 			notifyOver : function(dd, e, data){
-				if(me.lastDropComponent==null||me.lastDropComponent.model.getId()!=comp.id){
+				if(CWHF.isNull(me.lastDropComponent)||me.lastDropComponent.model.getId()!==comp.id){
 					screenCtrl.setDragOver(comp);
 				}
 				return this.dropAllowed;
@@ -339,7 +340,7 @@ Ext.define('com.trackplus.screen.FieldController',{
 				var fieldModel=comp.model;
 				var targetPanel=field.parentView;
 				var targetCell=fieldModel.row+";"+fieldModel.col;
-				if(data.records!=null){
+				if(data.records){
 					//drop a new field
 					fieldType=data.records[0].data.id;
 				}else{
@@ -347,7 +348,7 @@ Ext.define('com.trackplus.screen.FieldController',{
 					sourcePanel=data.panelCmp;
 					sourceCell=data.cell;
 				}
-				if(fieldID==null&&fieldType==null){
+				if(CWHF.isNull(fieldID)&&CWHF.isNull(fieldType)){
 					return false;
 				}
 				Ext.defer(me.onDropField,100,me,[fieldType,fieldID,sourcePanel,sourceCell,targetPanel,targetCell]);
@@ -359,14 +360,14 @@ Ext.define('com.trackplus.screen.FieldController',{
 	onDropField:function(fieldType,fieldID,sourcePanel,sourceCell,targetPanel,targetCell){
 		var me=this;
 		var sourcePanelID=null;
-		if(sourcePanel!=null){
+		if(sourcePanel){
 			sourcePanelID=sourcePanel.model.getId();
 		}
 		var targetPanelID=targetPanel.model.getId();
 		var screenCtrl=me.screenEditController;
 		screenCtrl.clearSelectedComponent();
 		var action;
-		if(sourceCell==null){
+		if(CWHF.isNull(sourceCell)){
 			action="addField"
 		}else{
 			action="moveField";
@@ -378,7 +379,7 @@ Ext.define('com.trackplus.screen.FieldController',{
 				"target":targetCell,
 				"targetPanelID":targetPanelID};
 		var handler=null;
-		if(sourcePanelID!=null&&sourcePanelID!=targetPanelID){
+		if(sourcePanelID&&sourcePanelID!==targetPanelID){
 			//drop in other panel
 			action="moveFieldFromOther";
 			handler=function(){
@@ -386,7 +387,7 @@ Ext.define('com.trackplus.screen.FieldController',{
 			}
 		}
 
-		if(sourcePanelID!=null&&sourcePanelID==targetPanelID&&sourceCell==targetCell){
+		if(sourcePanelID&&sourcePanelID===targetPanelID&&sourceCell===targetCell){
 			return;
 		}
 		var idToSelect=targetPanelID;
@@ -470,7 +471,7 @@ Ext.define('com.trackplus.screen.ScreenEditController',{
 			});
 			c.getEl().on('contextmenu', function(e,domEl){
 				var result=me.clickOnScreenHandler.call(me,c);
-				if(result==0){
+				if(result===0){
 					me.showPopup.call(me,e);
 				}
 			});
@@ -480,22 +481,22 @@ Ext.define('com.trackplus.screen.ScreenEditController',{
 		var me=this;
 		me.emptyFieldCmp=emptyFieldCmp;
 		var contextMenu=me.actionsController.createPopup.call(me.actionsController);
-		if(contextMenu!=null){
+		if(contextMenu){
 			contextMenu.showAt(e.getXY());
 		}
 		e.stopEvent();
 	},
 	clickOnScreenHandler:function(c){
 		var me=this;
-		if(me.clickOnField==true){
+		if(me.clickOnField===true){
 			me.clickOnField=false;
 			return 1;
 		}
-		if(me.clickOnPanel==true){
+		if(me.clickOnPanel===true){
 			me.clickOnPanel=false;
 			return 2;
 		}
-		if(me.clickOnTab==true){
+		if(me.clickOnTab===true){
 			me.clickOnTab=false;
 			return 3;
 		}
@@ -505,10 +506,10 @@ Ext.define('com.trackplus.screen.ScreenEditController',{
 	},
 	clickOnTabHandler:function(c){
 		var me=this;
-		if(me.clickOnField==true){
+		if(me.clickOnField===true){
 			return 1;
 		}
-		if(me.clickOnPanel==true){
+		if(me.clickOnPanel===true){
 			return 2;
 		}
 		me.clickOnTab=true;
@@ -545,7 +546,7 @@ Ext.define('com.trackplus.screen.ScreenEditController',{
 			});
 			c.getEl().on('contextmenu', function(e,domEl){
 				var result=me.clickOnTabHandler.call(me,c);
-				if(result==0){
+				if(result===0){
 					me.showPopup.call(me,e);
 				}
 			});
@@ -554,7 +555,7 @@ Ext.define('com.trackplus.screen.ScreenEditController',{
 	},
 	clickOnPanelHandler:function(c){
 		var me=this;
-		if(me.clickOnField==true){
+		if(me.clickOnField===true){
 			return 1;
 		}
 		me.clickOnPanel=true;
@@ -569,7 +570,7 @@ Ext.define('com.trackplus.screen.ScreenEditController',{
 			});
 			c.getEl().on('contextmenu', function(e,domEl){
 				var result=me.clickOnPanelHandler.call(me,c);
-				if(result==0){
+				if(result===0){
 					me.showPopup.call(me,e);
 				}
 			});
@@ -579,9 +580,9 @@ Ext.define('com.trackplus.screen.ScreenEditController',{
 
 	clearDragOn:function(){
 		var me=this;
-		if(me.lastDropComponent!=null){
+		if(me.lastDropComponent){
 			var clsToRemove="dragOver";
-			if(me.lastDropComponent.myComponentCls!=null){
+			if(me.lastDropComponent.myComponentCls){
 				clsToRemove=me.lastDropComponent.myComponentCls+"-dragOver";
 				me.lastDropComponent.addCls(me.lastDropComponent.myComponentCls);
 			}
@@ -591,11 +592,11 @@ Ext.define('com.trackplus.screen.ScreenEditController',{
 	},
 	setDragOver:function(comp){
 		var me=this;
-		if(me.lastDropComponent!=null){
+		if(me.lastDropComponent){
 			me.clearDragOn();
 		}
 		var clsToAdd="dragOver";
-		if(comp.myComponentCls!=null){
+		if(comp.myComponentCls){
 			clsToAdd=comp.myComponentCls+"-dragOver";
 			comp.removeCls(comp.myComponentCls);
 		}
@@ -606,10 +607,10 @@ Ext.define('com.trackplus.screen.ScreenEditController',{
 
 	clearSelectedComponent:function(){
 		var me=this;
-		if(me.selectedComponent!=null&&me.selectedComponent.getEl()!=null){
+		if(me.selectedComponent&&me.selectedComponent.getEl()){
 			//clear selecttion
 			var clsToRemove="componentSelected";
-			if(me.selectedComponent.myComponentCls!=null){
+			if(me.selectedComponent.myComponentCls){
 				clsToRemove=me.selectedComponent.myComponentCls+"-selected";
 				me.selectedComponent.addCls(me.selectedComponent.myComponentCls);
 			}
@@ -619,11 +620,11 @@ Ext.define('com.trackplus.screen.ScreenEditController',{
 	},
 	setSelectedComponent:function(comp){
 		var me=this;
-		if(me.selectedComponent!=null){
+		if(me.selectedComponent){
 			me.clearSelectedComponent();
 		}
 		var clsToAdd="componentSelected";
-		if(comp.myComponentCls!=null){
+		if(comp.myComponentCls){
 			clsToAdd=comp.myComponentCls+"-selected";
 			comp.removeCls(comp.myComponentCls);
 		}
@@ -634,22 +635,22 @@ Ext.define('com.trackplus.screen.ScreenEditController',{
 	refreshActions:function(){
 		var me=this;
 		var model=me.selectedComponent.model;
-		if(model==null){
+		if(CWHF.isNull(model)){
 			return null;
 		}
 		var type=model.type;
-		if(type=='Field'){
+		if(type==='Field'){
 			me.actionsController.setActionConfigEnabled.call(me.actionsController,true);
 		}else{
 			me.actionsController.setActionConfigEnabled.call(me.actionsController,false);
 		}
-		if(type=='Screen'){
+		if(type==='Screen'){
 			me.actionsController.setActionCopyEnabled.call(me.actionsController,false);
 			me.actionsController.setActionDeleteEnabled.call(me.actionsController,false);
 		}else{
 			var actionEnabled=true;
-			if(me.tabAction==null){
-				if(type=='Panel'||type=='Tab'){
+			if(CWHF.isNull(me.tabAction)){
+				if(type==='Panel'||type==='Tab'){
 					actionEnabled=false;
 				}
 			}
@@ -666,7 +667,7 @@ Ext.define('com.trackplus.screen.ScreenEditController',{
 		var compController=me.getComponentController(comp);
 		var componentID=comp.model.getId();
 		var urlStr=compController.getPropertyLink(componentID);
-		if(urlStr==null){
+		if(CWHF.isNull(urlStr)){
 			return true;
 		}
 		me.refreshOutline.call(me,urlStr);
@@ -680,7 +681,7 @@ Ext.define('com.trackplus.screen.ScreenEditController',{
 			success: function(result){
 				var jsonData=Ext.decode(result.responseText);
 				me.screenEditView.propertiesPanel.setSource(jsonData);
-				if(handler!=null){
+				if(handler){
 					handler.call(me);
 				}
 			},
@@ -692,20 +693,20 @@ Ext.define('com.trackplus.screen.ScreenEditController',{
 	getComponentController:function(comp){
 		var me=this;
 		var model=comp.model;
-		if(model==null){
+		if(CWHF.isNull(model)){
 			return null;
 		}
 		var type=model.type;
-		if(type=='Tab'){
+		if(type==='Tab'){
 			return me.tabController;
 		}
-		if(type=='Panel'){
+		if(type==='Panel'){
 			return me.panelController;
 		}
-		if(type=='Field'){
+		if(type==='Field'){
 			return me.fieldController;
 		}
-		if(type=='Screen'){
+		if(type==='Screen'){
 			return me.screenController;
 		}
 		return null;
@@ -713,12 +714,12 @@ Ext.define('com.trackplus.screen.ScreenEditController',{
 	changeAttribute:function(property,value,oldValue){
 		var me=this;
 		var componentID;
-		if(me.selectedComponent!=null){
+		if(me.selectedComponent){
 			var model=me.selectedComponent.model;
 			var cmpController=me.getComponentController.call(me,me.selectedComponent);
 			componentID=model.getId();
 			var urlStr=cmpController.getUpdateLink(componentID);
-			if(urlStr==null){
+			if(CWHF.isNull(urlStr)){
 				return true;
 			}
 			var params={};
@@ -728,15 +729,15 @@ Ext.define('com.trackplus.screen.ScreenEditController',{
 			}
 			var type=model.type;
 			me.refreshOutline(urlStr,params, function(){
-				if(type=='Field'){
+				if(type==='Field'){
 					var panel=me.selectedComponent.parentView;
 					me.panelController.reload(panel);
-				}else if(type=='Panel'){
+				}else if(type==='Panel'){
 					var panel=me.selectedComponent;
 					me.tabController.reload(panel.parentView,null,null,panel.model.id);
 				}else{
 					var parentView=me.selectedComponent.parentView;
-					if(parentView==null){
+					if(CWHF.isNull(parentView)){
 						parentView=me.selectedComponent;
 					}
 					me.screenController.reload(parentView,null,null,me.selectedComponent.model.id);
@@ -749,7 +750,7 @@ Ext.define('com.trackplus.screen.ScreenEditController',{
 
 	createField:function(parentView,aFieldWrapperData){
 		var me=this;
-		if(me.fieldWrapperCls==null){
+		if(CWHF.isNull(me.fieldWrapperCls)){
 			me.fieldWrapperCls='com.trackplus.screen.FieldEditWrapperView';
 		}
 		var fieldWrapperCmp=Ext.create(me.fieldWrapperCls,{
@@ -811,7 +812,7 @@ Ext.define('com.trackplus.screen.ScreenEditController',{
 	},
 	copyItem:function(succesHandler,scope){
 		var me=this;
-		if(me.selectedComponent==null){
+		if(CWHF.isNull(me.selectedComponent)){
 			return false;
 		}
 		var model=me.selectedComponent.model;
@@ -827,38 +828,38 @@ Ext.define('com.trackplus.screen.ScreenEditController',{
 	},
 	pasteItem:function(){
 		var me=this;
-		if(me.selectedComponent==null){
+		if(CWHF.isNull(me.selectedComponent)){
 			return false;
 		}
 		var model=me.selectedComponent.model;
 		var targetType=model.type;
 		var targetID=model.getId();
 		var targetInfo=null;
-		if(me.clipboard!=null){
+		if(me.clipboard){
 			if(me.allowPaste()){
 				var sourceType=me.clipboard.type;
 				var sourceID=me.clipboard.id;
-				if(me.emptyFieldCmp!=null){
+				if(me.emptyFieldCmp){
 					var fieldModel=me.emptyFieldCmp.model;
 					targetInfo=fieldModel.row+";"+fieldModel.col;
 				}
 				me.screenController.paste.call(me.screenController,me.screenModel.getId(),sourceType,sourceID,targetType,targetID,targetInfo,function(){
 					var view=me.selectedComponent;
 					var controller=null;
-					if(targetType=="Screen"){
+					if(targetType==="Screen"){
 						controller=me.screenController;
 					}
-					if(targetType=="Tab"){
+					if(targetType==="Tab"){
 						controller=me.tabController;
 					}
-					if(targetType=="Panel"){
+					if(targetType==="Panel"){
 						controller=me.panelController;
-						if(sourceType=="Panel"){
+						if(sourceType==="Panel"){
 							controller=me.tabController;
 							view=me.selectedComponent.parentView;
 						}
 					}
-					if(targetType=="Field"){
+					if(targetType==="Field"){
 						controller=me.panelController;
 						view=me.selectedComponent.parentView;
 					}
@@ -869,24 +870,24 @@ Ext.define('com.trackplus.screen.ScreenEditController',{
 	},
 	allowPaste:function(){
 		var me=this;
-		if(me.selectedComponent==null){
+		if(CWHF.isNull(me.selectedComponent)){
 			return false;
 		}
 		var compType=me.selectedComponent.model.type;
-		if(me.clipboard!=null){
+		if(me.clipboard){
 			var clipboardType=me.clipboard.type;
-			return ((compType=='Screen'&&clipboardType=='Tab')||
-				(compType=='Tab'&&clipboardType=='Tab')||
-				(compType=='Tab'&&clipboardType=='Panel')||
-				(compType=='Panel'&&clipboardType=='Panel')||
-				(compType=='Panel'&&clipboardType=='Field')||
-				(compType=='Field'&&clipboardType=='Field'));
+			return ((compType==='Screen'&&clipboardType==='Tab')||
+				(compType==='Tab'&&clipboardType==='Tab')||
+				(compType==='Tab'&&clipboardType==='Panel')||
+				(compType==='Panel'&&clipboardType==='Panel')||
+				(compType==='Panel'&&clipboardType==='Field')||
+				(compType==='Field'&&clipboardType==='Field'));
 		}
 		return false;
 	},
 	deleteItem:function(noAsk){
 		var me=this;
-		if(me.selectedComponent==null){
+		if(CWHF.isNull(me.selectedComponent)){
 			return false;
 		}
 		var model=me.selectedComponent.model;
@@ -895,43 +896,43 @@ Ext.define('com.trackplus.screen.ScreenEditController',{
 		var cname="";
 		var msg;
 		var controller;
-		if(compType=="Screen"){
+		if(compType==="Screen"){
 			alert(me.messageCantDeleteScreen);
 			return -1;
 		}
 		var params={};
 
-		if(compType=="Tab"){
-			/*if(tabsItem1.items.length==1){
+		if(compType==="Tab"){
+			/*if(tabsItem1.items.length===1){
 				alert(messageCantLastTab);
 				return 0;
 			}*/
 			cname="tab";
 			msg= me.messageDeleteTab;
 			controller=me.screenController;
-			if(me.screenActionParams!=null){
+			if(me.screenActionParams){
 				for(var x in me.screenActionParams){
 					params[x]=me.screenActionParams[x];
 				}
 			}
 		}
 
-		if(compType=="Panel"){
+		if(compType==="Panel"){
 			cname="panel";
 			msg= me.messageDeletePanel;
 			controller=me.tabController;
 			//idParent=me.selectedTab;
 		}
-		if(compType=="Field"){
+		if(compType==="Field"){
 			cname="field";
 			msg=me.messageDeleteField;
 			controller=me.panelController;
 		}
 		var theName=model.name;
 		msg=msg.replace("{0}",theName);
-		if(noAsk==null||noAsk==false){
+		if(CWHF.isNull(noAsk)||CWHF.isNull(noAsk)){
 			var r=confirm(msg);
-			if (r==false){
+			if (r===false){
 				return 0;
 			}
 		}
@@ -981,35 +982,36 @@ Ext.define('com.trackplus.screen.ScreenActionsController',{
 		var config = config || {};
 		me.initialConfig = config;
 		Ext.apply(me, config);
+		this.initConfig(config);
 	},
 	setActionConfigEnabled:function(b){
 		var me=this;
 		me.actionConfigEnabled=b;
-		if(me.actionConfig!=null){
+		if(me.actionConfig){
 			me.actionConfig.setDisabled(!b);
 		}
 	},
 	setActionDeleteEnabled:function(b){
 		var me=this;
 		me.actionDeleteEnabled=b;
-		if(me.actionDelete!=null){
+		if(me.actionDelete){
 			me.actionDelete.setDisabled(!b);
 		}
 	},
 	setActionCopyEnabled:function(b){
 		var me=this;
 		me.actionCopyEnabled=b;
-		if(me.actionCut!=null){
+		if(me.actionCut){
 			me.actionCut.setDisabled(!b);
 		}
-		if(me.actionCopy!=null){
+		if(me.actionCopy){
 			me.actionCopy.setDisabled(!b);
 		}
 	},
 	setActionPasteEnabled:function(b){
 		var me=this;
 		me.actionPasteEnabled=b;
-		if(me.actionPaste!=null){
+		if(me.actionPaste){
 			me.actionPaste.setDisabled(!b);
 		}
 	},
@@ -1115,10 +1117,10 @@ Ext.define('com.trackplus.screen.ScreenActionsController',{
 			}
 		});
 		me.actions=[];
-		if(me.screenEditController.tabAction!=null){
+		if(me.screenEditController.tabAction){
 			me.actions.push(me.actionNewTab);
 		}
-		if(me.screenEditController.tabAction!=null){
+		if(me.screenEditController.tabAction){
 			me.actions.push(me.actionNewPanel);
 		}
 		me.actions.push(me.actionCut);
@@ -1132,7 +1134,7 @@ Ext.define('com.trackplus.screen.ScreenActionsController',{
 	},
 	getToolbar:function(){
 		var me=this;
-		if(me.actions==null){
+		if(CWHF.isNull(me.actions)){
 			me.initToolbar();
 		}
 		return me.actions;
@@ -1143,28 +1145,28 @@ Ext.define('com.trackplus.screen.ScreenActionsController',{
 			items: []
 		});
 		var actions=[];
-		if(me.screenEditController.tabAction!=null){
+		if(me.screenEditController.tabAction){
 			me.actions.push(me.actionNewTab);
 		}
-		if(me.screenEditController.tabAction!=null){
+		if(me.screenEditController.tabAction){
 			me.actions.push(me.actionNewPanel);
 		}
-		if(me.actionCopyEnabled==true){
+		if(me.actionCopyEnabled===true){
 			actions.push(me.actionCut);
 		}
-		if(me.actionCopyEnabled==true){
+		if(me.actionCopyEnabled===true){
 			actions.push(me.actionCopy);
 		}
-		if(me.actionPasteEnabled==true){
+		if(me.actionPasteEnabled===true){
 			actions.push(me.actionPaste);
 		}
-		if(me.actionDeleteEnabled==true){
+		if(me.actionDeleteEnabled===true){
 			actions.push(me.actionDelete);
 		}
-		if(me.useConfig==true&&me.actionConfigEnabled==true){
+		if(me.useConfig===true&&me.actionConfigEnabled===true){
 			actions.push(me.actionConfig);
 		}
-		if(actions.length==0){
+		if(actions.length===0){
 			return null;
 		}
 		for(var i=0;i<actions.length;i++){

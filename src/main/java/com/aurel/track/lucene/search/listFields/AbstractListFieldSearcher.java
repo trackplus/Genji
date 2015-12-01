@@ -3,17 +3,17 @@
  * Copyright (C) 2015 Steinbeis GmbH & Co. KG Task Management Solutions
 
  * <a href="http://www.trackplus.com">Genji Scrum Tool</a>
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -31,6 +31,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.lucene.analysis.Analyzer;
@@ -110,6 +111,7 @@ public abstract class AbstractListFieldSearcher
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	public Query getNoExplicitFieldQuery(Analyzer analyzer, String toBeProcessedString, Locale locale) {
 		Query query = null;
 		String queryString = searchNoExplicitField(analyzer, toBeProcessedString, locale);
@@ -119,7 +121,8 @@ public abstract class AbstractListFieldSearcher
 			try {
 				query = queryParser.parse(queryString);
 			} catch (ParseException e) {
-				LOGGER.warn("Parsing without explicit field for " + queryParser + " field failed with " + e.getMessage(), e);
+				LOGGER.warn("Parsing without explicit field for " + queryParser + " field failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			}
 		}
 		return query;
@@ -134,6 +137,7 @@ public abstract class AbstractListFieldSearcher
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	protected String searchExplicitField(Analyzer analyzer, String fieldName,
 			String label, Integer fieldID, Locale locale) {
 		IndexSearcher indexSearcher = null;
@@ -153,7 +157,8 @@ public abstract class AbstractListFieldSearcher
 				scoreDocs = collector.topDocs().scoreDocs;
 			} catch (IOException e) {
 				LOGGER.warn("Searching by fieldName " + fieldName +
-						" and fieldValue " + label + " failed with " + e.getMessage(), e);
+						" and fieldValue " + label + " failed with " + e.getMessage());
+				LOGGER.debug(ExceptionUtils.getStackTrace(e));
 				return label;
 			}
 			if (scoreDocs == null || scoreDocs.length==0) {
@@ -170,7 +175,8 @@ public abstract class AbstractListFieldSearcher
 					doc = indexSearcher.doc(docID);
 				} catch (IOException e) {
 					LOGGER.error("Getting the documents from index searcher for fieldName " + fieldName +
-							" and fieldValue " + label  + "  failed with " + e.getMessage(), e);
+							" and fieldValue " + label  + "  failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 					return label;
 				}
 				String listOptionIDStr = doc.get(getValueFieldName());
@@ -185,7 +191,8 @@ public abstract class AbstractListFieldSearcher
 			}
 			return LuceneSearcher.createORDividedIDs(listOptionIDs);
 		} catch(Exception e) {
-			LOGGER.error("Getting the fieldName " + fieldName + " and fieldValue " + label + " failed with " + e.getMessage(), e);
+			LOGGER.error("Getting the fieldName " + fieldName + " and fieldValue " + label + " failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			return label;
 		} finally {
 			LuceneSearcher.closeIndexSearcherAndUnderlyingIndexReader(indexSearcher, fieldName);
@@ -199,6 +206,7 @@ public abstract class AbstractListFieldSearcher
 	 * @param locale
 	 * @return
 	 */
+	@Override
 	protected String searchNoExplicitField(Analyzer analyzer, String toBeProcessedString, Locale locale) {
 		IndexSearcher indexSearcher = null;
 		Map<Integer, Set<Integer>> result = new HashMap<Integer, Set<Integer>>();
@@ -232,7 +240,8 @@ public abstract class AbstractListFieldSearcher
 					doc = indexSearcher.doc(docID);
 				} catch (IOException e) {
 					LOGGER.error("Getting the documents from index searcher for fieldValue " +
-							toBeProcessedString + " failed with " + e.getMessage(), e);
+							toBeProcessedString + " failed with " + e.getMessage());
+					LOGGER.debug(ExceptionUtils.getStackTrace(e));
 					return "";
 				}
 				String typeStr = doc.get(getTypeFieldName());
