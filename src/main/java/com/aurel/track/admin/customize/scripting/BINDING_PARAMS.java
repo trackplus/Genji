@@ -36,24 +36,25 @@ public interface BINDING_PARAMS {
 	public static final String EMAIL_PROJECT = "project";
 	//error list loaded during executing the script
 	public static final String ERRORLIST = "errorList";
-	
+
 	public static final String EMAIL_ATTACHMENTS  = "emailAttachments";
 	public static final String EMAIL_SUBJECT = "subject";
 	public static final String EMAIL_BODY = "body";
 	public static final String EMAIL_FROM_ADDRESS = "fromAddress";
-	
+
 	//ldap bindings
 	public static final String SITEBEAN = "siteBean";
 	public static final String LDAP_FILTER = "filter";
 	public static final String LDAPMAP = "ldapmap";
-	
+
 	//whether the guard script passed
 	public static final String GUARD_PASSED = "guardPassed";
-	//analog to guard script passed but for other system releted scripts
+	//analog to guard script passed but for other system related scripts
 	public static final String CONTINUE = "cont";
-	
+
 	//the notified event
 	public static final String EVENT = "event";
-	
-	
+
+	//the request from the client
+	public static final String REQUEST = "request";
 }

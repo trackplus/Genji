@@ -28,11 +28,9 @@ Ext.define('com.trackplus.admin.user.UserRolesInProjectController',{
 		baseController: "com.trackplus.admin.GridBaseController"
 	},
 	
+	confirmDeleteEntity:false,
 	
-	baseAction: "rolesInProjects",
-	labelWidth: 100,
-	editWidth:400,
-	editHeight:175,
+	entityDialog: "com.trackplus.admin.user.UserRolesInProjectEdit",
 	
 	getEntityLabel:function(){
 		return getText("admin.user.group.lbl.roleAssignment");
@@ -45,7 +43,6 @@ Ext.define('com.trackplus.admin.user.UserRolesInProjectController',{
 	getDeleteIconCls: function() {
 		return "delete16";
 	},
-
 
 	/**
 	 * Render the inherited rows as grey
@@ -65,19 +62,6 @@ Ext.define('com.trackplus.admin.user.UserRolesInProjectController',{
 	},
 	
 	/**
-	 * Parameters for adding a new entity
-	 * Specify extra parameters if needed
-	 * (like "defaultSettings" for "my" and "default" automail settings)
-	 */
-	getAddParams: function() {
-		return {personID:this.getView().getPersonID(), add:true};
-	},
-
-	getEditParams: function(recordData) {
-		return {personID:this.getView().getPersonID(), projectID:recordData["projectID"], roleID:recordData["roleID"]};
-	},
-
-	/**
 	 * Get the ID based from the recordData
 	 *  No objectID primary key in tacl table
 	 */
@@ -88,6 +72,10 @@ Ext.define('com.trackplus.admin.user.UserRolesInProjectController',{
 		return null;
 	},
 
+	getDeleteUrl: function() {
+		return "rolesInProjects!delete.action";
+	},
+	
 	/**
 	 * Parameters for deleting entity
 	 * recordData: the selected entity data
@@ -101,9 +89,9 @@ Ext.define('com.trackplus.admin.user.UserRolesInProjectController',{
 		params["unassign"]= selectionParam;
 		params["personID"] = this.getView().getPersonID();
 		return params;
-	},
+	}
 
-	createEditForm:function(entityJS,operation){
+	/*createEditForm:function(entityJS,operation){
 		var disabled = false;
 		if (operation!=="add" && !entityJS["direct"]) {
 			disabled = true;
@@ -149,7 +137,7 @@ Ext.define('com.trackplus.admin.user.UserRolesInProjectController',{
 			roleControl.store.loadData(data["roles"]);
 		}
 		roleControl.setValue(data["roleID"]);
-	},
+	},*/
 
 	/**
 	 * Change event handler
@@ -157,7 +145,7 @@ Ext.define('com.trackplus.admin.user.UserRolesInProjectController',{
 	 * @param selectedProjects
 	 * @param options
 	 */
-	onProjectSelect: function(projectPicker, selectedProject, options) {
+	/*onProjectSelect: function(projectPicker, selectedProject, options) {
 	    var roleCombo = options["roleCombo"];
 	    Ext.Ajax.request({
 	        url: "rolesInProjects!projectChange.action",
@@ -172,5 +160,5 @@ Ext.define('com.trackplus.admin.user.UserRolesInProjectController',{
 	            com.trackplus.util.requestFailureHandler(response);
 	        }
 	    })
-	}
+	}*/
 });

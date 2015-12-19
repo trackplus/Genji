@@ -26,61 +26,46 @@
  * treeWithGrid are implemented again (alternatively multiple inheritance?)
  *
  */
-Ext.define('com.trackplus.admin.customize.treeConfig.ScreenConfig',{
-	extend:'com.trackplus.admin.customize.treeConfig.AssignmentConfig',
+Ext.define("com.trackplus.admin.customize.treeConfig.ScreenConfig", {
+	extend:"com.trackplus.admin.customize.treeConfig.AssignmentConfig",
+	xtype: "screenConfig",
+    controller: "screenConfig",
+	treeWidth: 250,
+	
 	config: {
-		rootID:'_'
+		rootID: "screen"
 	},
-	baseAction: "screenConfigItemDetail",
-	/**
-	 * The width of the screen edit window
-	 */
-	editWidth:500,
-	/**
-	 * The height of the screen edit window
-	 */
-	editHeight:350,
-	constructor: function(config) {
-		var config = config || {};
-		this.initConfig(config);
-		this.initBase();
-	},
-
-	getToolbarActions: function() {
+	
+	baseServerAction: "screenConfigItemDetail",
+	
+	initActions: function() {
+		this.callParent();
 		var sysAdmin=com.trackplus.TrackplusConfig.user.sys;
 		this.actionImport.setDisabled(!sysAdmin);
-		var actions = [this.actionApply, this.actionReset, {xtype: 'tbspacer', width: 45, disabled:true},
+		this.actions = [this.actionApply, this.actionReset, {xtype: 'tbspacer', width: 45, disabled:true},
 					this.actionEdit, this.actionDesign, this.actionImport, this.actionExport];
-		return actions;
-
 	},
 
-	enableDisableToolbarButtons: function (view, selections) {
-		var sysAdmin=com.trackplus.TrackplusConfig.user.sys;
-		if (CWHF.isNull(selections) || selections.length===0) {
-			this.actionEdit.setDisabled(true);
-			this.actionApply.setDisabled(true);
-			this.actionDesign.setDisabled(true);
-			this.actionExport.setDisabled(true);
-		} else {
-			var selectedRecord = selections[0];
-			var isLeaf = selectedRecord.data['leaf'];
-			this.actionExport.setDisabled(!sysAdmin);
-			if (selections.length===1) {
-				var selectedTreeNode = this.getSingleSelectedRecord(true);
-				if (selectedTreeNode && this.isAssignable(selectedTreeNode)/*selectedTreeNode.isLeaf()*/) {
-					this.actionApply.setDisabled(false);
-				}
-				this.actionEdit.setDisabled(!sysAdmin);
-				this.actionDesign.setDisabled(!sysAdmin);
-			} else {
-				this.actionApply.setDisabled(true);
-				this.actionEdit.setDisabled(true);
-				this.actionDesign.setDisabled(true);
+	/**
+	 * Get the actions available in context menu depending on the currently selected row
+	 */
+	getTreeContextMenuActions: function(selectedRecord, selectionIsSimple) {
+		var actions = [];
+		if (selectionIsSimple) {
+			var inheritedConfig = selectedRecord.data['inheritedConfig'];
+			var defaultConfig = selectedRecord.data['defaultConfig'];
+			var leaf = selectedRecord.isLeaf();
+			var selectedTreeNode = this.getSingleSelectedRecord(true);
+			if (!inheritedConfig && !defaultConfig&&selectedTreeNode && this.isAssignable(selectedTreeNode)) {
+				actions.push(this.actionReset);
+			}
+			if (!leaf) {
+				actions.push(this.actionReload);
 			}
 		}
+		return actions;
 	},
-
+	
 	getGridContextMenuActions: function(selectedRecord, selectionIsSimple) {
 		var sysAdmin=com.trackplus.TrackplusConfig.user.sys;
 		if (selectionIsSimple) {
@@ -150,119 +135,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.ScreenConfig',{
 		return node.isLeaf();
 	},
 
-	/**
-	 * Get the actions available in context menu depending on the currently selected row
-	 */
-	getTreeContextMenuActions: function(selectedRecord, selectionIsSimple) {
-		var actions = [];
-		if (selectionIsSimple) {
-			var inheritedConfig = selectedRecord.data['inheritedConfig'];
-			var defaultConfig = selectedRecord.data['defaultConfig'];
-			var leaf = selectedRecord.isLeaf();
-			var selectedTreeNode = this.getSingleSelectedRecord(true);
-			if (!inheritedConfig && !defaultConfig&&selectedTreeNode && this.isAssignable(selectedTreeNode)) {
-				actions.push(this.actionReset);
-			}
-			if (!leaf) {
-				actions.push(this.actionReload);
-			}
-		}
-		return actions;
-	},
-
 	getGridListURL: function() {
 		return "indexScreens.action";
-	},
-
-	getGridRowEditURL: function() {
-		return "indexScreens!edit.action";
-	},
-
-	getGridRowSaveURL: function() {
-		return "indexScreens!save.action";
-	},
-
-	getObjectIDName: function() {
-		return "screenID";
-	},
-
-	getImportURL: function() {
-		return this.getBaseAction() + "!importScreens.action";
-	},
-
-	getExportURL: function(selectedObjectIDs) {
-		return this.getBaseAction() + "!export.action?selectedObjectIDs="+selectedObjectIDs;
-	},
-
-	/**
-	 * The struts action for delete/replace
-	 */
-	/*protected*/getDeleteUrlBase: function(extraConfig) {
-		return "indexScreens";
-	},
-
-	/**
-	 * Url for deleting an entity
-	 * extraConfig: for simple grid nothing, for tree with grid {fromTree:fromTree, isLeaf:isLeaf}
-	 */
-	/*getDeleteUrl: function(extraConfig){
-		return 'indexScreens!delete.action';
-	},*/
-
-	getConfigGridRowURL: function(id) {
-		return 'screenEdit.action?componentID='+id;
-	},
-
-	/*getDeleteParams: function(selectedRecords, extraConfig) {
-		return this.getEditParams(false);
-	},*/
-
-	getDeleteParamName: function() {
-	    return "selectedScreenIDs";
-	},
-
-	getPanelItems: function() {
-		return  [CWHF.createTextField('common.lbl.name','name',
-					{anchor:'100%', allowBlank:false, labelWidth:this.labelWidth, width:this.textFieldWidth}),
-				CWHF.createTextField('common.lbl.tagLabel','tagLabel',
-					{anchor:'100%', labelWidth:this.labelWidth, width:this.textFieldWidth,itemId:'tagLabel'}),
-				CWHF.createTextAreaField('common.lbl.description','description',
-					{anchor:'100%', labelWidth:this.labelWidth, width:this.textFieldWidth})];
-	},
-
-	getUploadFileLabel: function() {
-		return "admin.customize.form.import.lbl.uploadFile";
-	},
-
-	onImport: function() {
-		var submit = [{submitUrl:this.getBaseAction() + "!importScreens.action",
-				submitButtonText:getText('common.btn.upload'),
-				validateHandler: Upload.validateUpload,
-				expectedFileType: /^.*\.(xml)$/,
-				refreshAfterSubmitHandler:this.reload}];
-		var title = getText('common.lbl.upload', this.getEntityConfigLabelPlural());
-		var windowParameters = {title:title,
-				width:550,
-				height:150,
-				submit:submit,
-				formPanel: this.getImportPanel(),
-				cancelButtonText: getText('common.btn.done')};
-		var windowConfig = Ext.create('com.trackplus.util.WindowConfig', windowParameters);
-		windowConfig.showWindowByConfig(this);
-	},
-
-	onExport: function() {
-		var attachmentURI=this.getBaseAction() + "!export.action?selectedScreenIDs="+this.getSelectedScreenIDs();
-		window.open(attachmentURI);
-	},
-
-	getSelectedScreenIDs:function(){
-		var selectedTemplateIDs = new Array();
-		var selectedRecordsArr = this.getSelection();
-		if (selectedRecordsArr) {
-			Ext.Array.forEach(selectedRecordsArr, function(record, index, allItems)
-			{selectedTemplateIDs.push(record.data['id']);}, this);
-		}
-		return selectedTemplateIDs.join(",");
 	}
 });

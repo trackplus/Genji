@@ -570,6 +570,7 @@
 		name="Genji"
 		iconCls="trackplusApp"
 		description="Trackplus"
+		target="_blank"
 		url="cockpit.action"/>
 
 	<!--  ${SERVER} will be replaced by the Track+ server base URL  -->

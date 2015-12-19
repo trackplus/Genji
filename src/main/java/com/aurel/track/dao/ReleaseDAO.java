@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.aurel.track.beans.TReleaseBean;
+import com.aurel.track.util.IntegerStringBean;
 
 /**
  * DAO for Release
@@ -322,8 +323,14 @@ public interface ReleaseDAO {
 	/**
 	 * Get the Map of releaseBeans from the history of the workItemIDs added by personID
 	 * @param workItemIDs
-	 * @param personID in null do not filter by personID
 	 * @return
 	 */
 	Map<Integer, TReleaseBean> loadHistoryReleases(int[] workItemIDs);
+
+	/**
+	 * Gets the hierarchical path from the root of the current release. (The release is included and is the last element)
+	 * @param objectID
+	 * @return
+	 */
+	List<IntegerStringBean> getPath(Integer objectID);
 }

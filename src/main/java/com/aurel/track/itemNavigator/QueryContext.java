@@ -34,6 +34,7 @@ public class QueryContext implements Serializable{
 	private Integer queryID;
 	private Integer queryType;
 	private String queryName;
+	private String iconCls;
 
 	private Map<String,String> dashboardParams;
 
@@ -91,6 +92,12 @@ public class QueryContext implements Serializable{
 	public void setFilterExpression(String filterExpression) {
 		this.filterExpression = filterExpression;
 	}
-	
-	
+
+	public String getIconCls() {
+		return iconCls;
+	}
+
+	public void setIconCls(String iconCls) {
+		this.iconCls = iconCls;
+	}
 }

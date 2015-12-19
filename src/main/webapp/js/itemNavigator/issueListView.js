@@ -746,6 +746,9 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewFacade',{
 	},
 	onStartDragItems:function(workItems,selectedFieldIDs,extraParams){
 		var me=this;
+		if(CWHF.isNull(me.itemNavigatorController.filterController)){
+			return false;
+		}
 		var urlStr="possibleFieldOptions.action";
 		if(CWHF.isNull(selectedFieldIDs)){
 			selectedFieldIDs=new Array();
@@ -780,6 +783,9 @@ Ext.define('com.trackplus.itemNavigator.IssueListViewFacade',{
 	},
 	onAfterDropItems:function(){
 		var me=this;
+		if(me.itemNavigatorController.filterController==null){
+			return false;
+		}
 		me.itemNavigatorController.filterController.onAfterDropItems();
 
 	},

@@ -504,10 +504,15 @@ public abstract class CategoryBaseFacade {
 			setLabel(labelBeanTo, label);
 			setCreatedBy(labelBeanTo, personID);
 			objectID = save(labelBeanTo);
+			additionalSaveTasks(labelBeanFrom.getObjectID(), objectID);
 		}
 		return objectID;
 	}
 
+	public void additionalSaveTasks(Integer copiedFromID, Integer copyedToID) {
+		
+	}
+	
 	/**
 	 * Copy specific data if copy (not cut)
 	 * 

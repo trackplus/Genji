@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -38,6 +39,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 
+import com.aurel.track.admin.customize.scripting.BINDING_PARAMS;
+import com.aurel.track.admin.customize.scripting.GroovyScriptExecuter;
 import com.aurel.track.admin.user.person.PersonBL;
 import com.aurel.track.beans.TMotdBean;
 import com.aurel.track.beans.TPersonBean;
@@ -48,10 +51,12 @@ import com.aurel.track.util.LabelValueBean;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.Preparable;
 
+import groovy.lang.Binding;
+
 /**
  * Implementation of <strong>Action</strong> that validates a user logon.
  * @author Joerg Friedrich <joerg.friedrich@computer.org>
- * @version $Revision: 1695 $ $Date: 2015-10-29 08:06:44 +0100 (Thu, 29 Oct 2015) $
+ * @version $Revision: 1904 $ $Date: 2015-12-19 18:39:43 +0100 (Sat, 19 Dec 2015) $
  */
 //@ParentPackage("struts-track-base")
 //	@InterceptorRef("editNoAuth")
@@ -117,24 +122,43 @@ public final class LogonAction extends ActionSupport implements Preparable/*, Se
 		errors.add(new LabelValueBean("j_username",getText("logon.err.password.mismatch")));
 		return INPUT;
 	}
-	 private String getApacheRemoteUser(HttpServletRequest request) {
-		 Enumeration headerNames = request.getHeaderNames();
-		 String userName = null;
-		 while (headerNames.hasMoreElements()) {
-			 String key = (String) headerNames.nextElement();
-			 String value = request.getHeader(key);
-			 if(key.equals("authorization")) {
-				 String decodedString = null;
-				 value = value.replaceAll("Basic ", "");
-				 decodedString = new String(Base64.decodeBase64(value), StandardCharsets.UTF_8);
+
+	private String getApacheRemoteUser(HttpServletRequest request) {
+		Enumeration<String> headerNames = request.getHeaderNames();
+		String userName = null;
+		while (headerNames.hasMoreElements()) {
+			String key = (String) headerNames.nextElement();
+			String value = request.getHeader(key);
+			LOGGER.debug(key + ": " + value);
+			if(key.equals("authorization")) {
+				String decodedString = null;
+				value = value.replaceAll("Basic ", "");
+				decodedString = new String(Base64.decodeBase64(value), StandardCharsets.UTF_8);
 				if(decodedString != null && decodedString.split(":").length > 0) {
-					 String[] userPassArr = decodedString.split(":");
-					 userName = userPassArr[0];
+					String[] userPassArr = decodedString.split(":");
+					userName = userPassArr[0];
 				}
-			 }
-		 }
-		 return userName;
-	 }
+			}
+		}
+
+		if ("".equals(userName) || userName == null) {
+			try {
+				Binding binding = new Binding();
+				binding.setProperty("request", request);
+
+				Map<String,Object> map = GroovyScriptExecuter.executeGroovyScript("UserAuthentication", binding);
+
+				if (map.get("error") !=  null) {
+					LOGGER.error((String) map.get("error"));
+				} else {
+					userName = (String) map.get(BINDING_PARAMS.USER);
+				}
+			} catch (Exception e) {
+				LOGGER.debug(e);
+			}
+		}
+		return userName;
+	}
 
 	/**
 	 * This just forwards to the login screen. If we really want to log in we

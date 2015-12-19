@@ -141,9 +141,7 @@ public class LoggingConfigAction extends ActionSupport implements Preparable, Se
 	 * Logs information from the browser to the regular logger
 	 */
 	public String logClient (){
-		LoggingConfigBL.setLevel(LOGGER,Level.ALL);
-		Date date = new Date(getTimeStampClient());
-		CLOGGER.log(LoggingConfigBL.getMappedLevel(getLevelClient()),DateTimeUtils.getInstance().formatISODateTime(date) + ": " + getMessageClient());
+		CLOGGER.log(LoggingConfigBL.getMappedLevel(getLevelClient()),getMessageClient());
 		return null;
 	}
 
@@ -155,13 +153,6 @@ public class LoggingConfigAction extends ActionSupport implements Preparable, Se
 		this.session = session;
 	}
 
-	/**
-	 * @return the application
-	 */
-
-	/**
-	 * @param application the application to set
-	 */
 
 	public String getClassName() {
 		return className;

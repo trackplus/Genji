@@ -45,10 +45,10 @@ public class ReleaseConfigBLTest {
 		assertEquals("2",ReleaseConfigBL.getProjectBranchNodeID(2));
 	}
 
-	@Test
+	/*@Test
 	public void testgetLocalizedLabels(){
 		assertNotNull(ReleaseConfigBL.getLocalizedLabels("", null));
-	}
+	}*/
 	
 	@Test
 	public void testencodeNode(){
@@ -58,7 +58,7 @@ public class ReleaseConfigBLTest {
 	
 	@Test
 	public void testdecodeNode(){
-		assertNotNull(ReleaseConfigBL.getReleaseNodes(""));
+		assertNotNull(ReleaseConfigBL.getReleaseNodes("", true));
 	}
 	
 	@Test

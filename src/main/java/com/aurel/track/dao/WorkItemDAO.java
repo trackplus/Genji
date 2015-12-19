@@ -38,6 +38,7 @@ import com.aurel.track.exchange.excel.ExcelImportNotUniqueIdentifiersException;
 import com.aurel.track.item.ItemLoaderException;
 import com.aurel.track.item.ItemPersisterException;
 import com.aurel.track.item.workflow.execute.WorkflowContext;
+import com.aurel.track.util.IntegerStringBean;
 
 
 /**
@@ -461,4 +462,11 @@ public interface WorkItemDAO {
 	 * @return
 	 */
 	List<TWorkItemBean> getInStatusUnmodifiedAfter(WorkflowContext workflowContext, Integer statusID, Date lastModified);
+
+	/**
+	 * Gets the hierarchical path from the root of the current item. (The item is included and is the last element)
+	 * @param objectID
+	 * @return
+	 */
+	List<IntegerStringBean> getPath(Integer objectID) throws ItemLoaderException;
 }

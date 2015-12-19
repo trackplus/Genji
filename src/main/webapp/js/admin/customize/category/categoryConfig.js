@@ -35,14 +35,14 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	issueFilter : false,
 	confirmDeleteEntity : true,
 	confirmDeleteNotEmpty : true,
-	folderAction : "categoryConfig",
+	folderAction: "categoryConfig",
 	entityID : 'node',
 	//category edit sizes
 	folderEditWidth : 400,
 	folderEditHeight : 115,
 	reportEditWidth : 500,
 	reportEditHeight : 150,
-	useCopyPaste : true,
+	//useCopyPaste : true,
 	dragAndDropOnTree : true,
 	labelWidth : 170,
 	/* filter specific fields */
@@ -60,8 +60,28 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	actionDownloadTreeNode : null,
 	// actionImport: null,
 	// actionExport: null,
-	btnExecute : null,
+	//btnExecute : null,
 
+	/*constructor : function(config) {
+	    var config = config || {};
+		this.initConfig(config);
+	    this.baseAction = this.initBaseAction();
+//	    if (this.isIssueFilter()) {
+//		    this.btnExecute = "common.btn.applyFilter";
+//	    } else {
+//		    if (this.isReport()) {
+//			    this.btnExecute = "common.btn.executeReport";
+//		    }
+//	    }
+	    this.initBase();
+	},*/
+	
+	initComponent : function() {
+		this.treeStoreUrl = "categoryConfig!expand.action";
+		//this.baseAction = this.initBaseAction();
+		this.callParent();
+	},
+	
 	statics : {
 	    showInstant : function(scope, loadUrl) {
 	        var title = getText("menu.findItems.instantFilter");
@@ -183,19 +203,7 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	    }
 	},
 
-	constructor : function(config) {
-	    var config = config || {};
-		this.initConfig(config);
-	    this.baseAction = this.initBaseAction();
-	    if (this.isIssueFilter()) {
-		    this.btnExecute = "common.btn.applyFilter";
-	    } else {
-		    if (this.isReport()) {
-			    this.btnExecute = "common.btn.executeReport";
-		    }
-	    }
-	    this.initBase();
-	},
+	
 
 	isIssueFilter : function() {
 	    // this.rootID cold be a project specific branch node
@@ -313,11 +321,11 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	/**
 	 * The label for the save button
 	 */
-	/* protected */getSaveLabel : function(operation) {
+	/* protected */getSubmitButtonLabel : function(operation) {
 	    if (operation === "instant") {
-		    return getText(this.btnExecute);
+		    return getText(this.getApplyFilterButtonKey());
 	    } else {
-		    return getText('common.btn.save');
+		    return getText(this.getSaveButtonKey());
 	    }
 	},
 
@@ -350,82 +358,109 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 			    }
 		    }
 	    }
-	    this.actionAddFolder = this.createLocalizedAction(this.getTitle(this.getAddTitleKey(), {
+	    
+	    var addFolderText = this.getActionTooltip(this.getAddTitleKey(), {isLeaf: false});
+	    this.actionAddFolder = CWHF.createAction(addFolderText, addFolderIconCls,
+	    		this.onAddFolder, {labelIsLocalized:true});
+        /*this.actionAddFolder = this.createLocalizedAction(this.getTitle(this.getAddTitleKey(), {
 		    isLeaf : false
 	    }), addFolderIconCls, this.onAddFolder, this.getTitle(this.getAddTitleKey(), {
 		    isLeaf : false
-	    }), true);
-	    this.actionAddLeaf = this.createLocalizedAction(this.getTitle(this.getAddTitleKey(), {
+	    }), true);*/
+	    var addLeafText = this.getActionTooltip(this.getAddTitleKey(), {isLeaf: true});
+	    this.actionAddLeaf = CWHF.createAction(addLeafText, addLeafIconCls,
+	    		this.onAddLeaf, {labelIsLocalized:true, disabled:true});
+	    /*this.actionAddLeaf = this.createLocalizedAction(this.getTitle(this.getAddTitleKey(), {
 		    isLeaf : true
 	    }), addLeafIconCls, this.onAddLeaf, this.getTitle(this.getAddTitleKey(), {
 		    isLeaf : true
-	    }), true);
-	    this.actionEditGridRow = this.createAction(this.getEditButtonKey(), editIconCls, this.onEditGridRow, true, 
-	    		this.getEditTitleKey(), "editGridRow");
-	    this.actionEditTreeNode = this.createAction(this.getEditButtonKey(), editIconCls, this.onEditTreeNode, false,
-	            this.getEditTitleKey(), "editTreeNode");
+	    }), true);*/
+	    this.actionEditGridRow = CWHF.createContextAction(this.getEditButtonKey(), editIconCls,
+	    		this.onEditGridRow, this.getEditTitleKey(), {itemId:"editGridRow", disabled:true});
+	    /*this.actionEditGridRow = this.createAction(this.getEditButtonKey(), editIconCls, this.onEditGridRow, true, 
+	    		this.getEditTitleKey(), "editGridRow");*/
+	    this.actionEditTreeNode = CWHF.createContextAction(this.getEditButtonKey(), editIconCls,
+	    		this.onEditTreeNode, this.getEditTitleKey(), {itemId:"editTreeNode"});
+	    /*this.actionEditTreeNode = this.createAction(this.getEditButtonKey(), editIconCls, this.onEditTreeNode, false,
+	            this.getEditTitleKey(), "editTreeNode");*/
 	    if (this.isIssueFilter()) {
-		    this.actionExecuteGridRow = this.createAction(this.btnExecute, 'filterExec', this.onExecuteGridRow, true,
-		            this.btnExecute);
-		    this.actionExecuteTreeNode = this.createAction(this.btnExecute, 'filterExec', this.onExecuteTreeNode, true,
-		            this.btnExecute);
-		    this.actionInstantFilter = this.createAction("menu.findItems.instantFilter", "filterInst",
-		            this.onInstantFilter, false, "menu.findItems.newInstantFilter.tt");
-		    this.actionLinkGridRow = this.createLocalizedAction(getText('common.btn.link'), 'filterLink',
-		            this.onLinkGridRow, getText("admin.customize.queryFilter.lbl.filterURL.report.encodedUrl"), true);
-		    this.actionLinkTreeNode = this.createLocalizedAction(getText('common.btn.permURL'), 'filterLink',
-		            this.onLinkTreeNode, getText("admin.customize.queryFilter.lbl.filterURL.report.encodedUrl"), true);
+	    	this.actionExecuteGridRow = CWHF.createAction(this.getApplyFilterButtonKey(), this.getApplyFilterIconCls(),
+		    		this.onExecuteGridRow, {disabled:true});
+	    	/*this.actionExecuteGridRow = this.createAction(this.btnExecute, 'filterExec', this.onExecuteGridRow, true,
+		            this.btnExecute);*/
+	    	this.actionExecuteTreeNode = CWHF.createAction(this.getApplyFilterButtonKey(), this.getApplyFilterIconCls(),
+		    		this.onExecuteTreeNode, {disabled:true});
+	    	/*this.actionExecuteTreeNode = this.createAction(this.btnExecute, 'filterExec', this.onExecuteTreeNode, true,
+		            this.btnExecute);*/
+	    	this.actionInstantFilter = CWHF.createAction("menu.findItems.instantFilter", "filterInst",
+		    		this.onInstantFilter, {tooltip:getText("menu.findItems.newInstantFilter.tt")});
+	    	/*this.actionInstantFilter = this.createAction("menu.findItems.instantFilter", "filterInst",
+		            this.onInstantFilter, false, "menu.findItems.newInstantFilter.tt");*/
+	    	this.actionLinkGridRow = CWHF.createAction("common.btn.link", "filterLink",
+		    		this.onLinkGridRow, {tooltip:getText("admin.customize.queryFilter.lbl.filterURL.report.encodedUrl"), disabled:true});
+	    	/*this.actionLinkGridRow = this.createLocalizedAction(getText('common.btn.link'), 'filterLink',
+		            this.onLinkGridRow, getText("admin.customize.queryFilter.lbl.filterURL.report.encodedUrl"), true);*/
+	    	this.actionLinkTreeNode = CWHF.createAction("common.btn.permURL", "filterLink",
+		    		this.onLinkTreeNode, {tooltip:getText("admin.customize.queryFilter.lbl.filterURL.report.encodedUrl"), disabled:true});
+	    	/*this.actionLinkTreeNode = this.createLocalizedAction(getText('common.btn.permURL'), 'filterLink',
+		            this.onLinkTreeNode, getText("admin.customize.queryFilter.lbl.filterURL.report.encodedUrl"), true);*/
 	    } else {
 		    if (this.isReport()) {
-			    this.actionExecuteGridRow = this.createAction(this.btnExecute, 'rtemplateExec', this.onExecuteGridRow,
-			            true, this.btnExecute);
-			    this.actionExecuteTreeNode = this.createAction(this.btnExecute, 'rtemplateExec',
-			            this.onExecuteTreeNode, true, this.btnExecute);
-			    this.actionDownloadGridRow = this.createAction('common.btn.download', 'download',
-			            this.onDownloadGridRow, true, "common.lbl.download", "downloadGridRow");
-			    this.actionDownloadTreeNode = this.createAction('common.btn.download', 'download',
-			            this.onDownloadTreeNode, true, "common.lbl.download", "downloadTreeNode");
-			    /*
-				 * this.actionImport =
-				 * this.createLocalizedAction(getText("common.btn.import"),
-				 * 'import', this.onImport, this.getTitle("common.lbl.import"));
-				 * this.actionExport =
-				 * this.createLocalizedAction(getText("common.btn.export"),
-				 * 'export', this.onExport, this.getTitle("common.lbl.export"),
-				 * true);
-				 */
+		    	this.actionExecuteGridRow = CWHF.createAction(this.getExecuteReportButtonKey(), this.getExecuteReportIconCls(),
+			    		this.onExecuteGridRow, {disabled:true});
+		    	/*this.actionExecuteGridRow = this.createAction(this.btnExecute, 'rtemplateExec', this.onExecuteGridRow,
+			            true, this.btnExecute);*/
+		    	this.actionExecuteTreeNode = CWHF.createAction(this.getExecuteReportButtonKey(), this.getExecuteReportIconCls(),
+			    		this.onExecuteTreeNode, {disabled:true});
+		    	/*this.actionExecuteTreeNode = this.createAction(this.btnExecute, 'rtemplateExec',
+			            this.onExecuteTreeNode, true, this.btnExecute);*/
+		    	this.actionDownloadGridRow = CWHF.createAction(this.getDownloadButtonKey(), this.getDownloadIconCls(),
+			    		this.onDownloadGridRow, {tooltip:this.getActionTooltip(this.getDownloadTitleKey(), {isLeaf:true}), disabled:true});
+		    	/*this.actionDownloadGridRow = this.createAction('common.btn.download', 'download',
+			            this.onDownloadGridRow, true, "common.lbl.download", "downloadGridRow");*/
+		    	this.actionDownloadTreeNode = CWHF.createAction(this.getDownloadButtonKey(), this.getDownloadIconCls(),
+			    		this.onDownloadTreeNode, {tooltip:this.getActionTooltip(this.getDownloadTitleKey(), {isLeaf:true}), disabled:true});
+			    /*this.actionDownloadTreeNode = this.createAction('common.btn.download', 'download',
+			            this.onDownloadTreeNode, true, "common.lbl.download", "downloadTreeNode");*/
 		    }
 	    }
-	    this.actionDeleteGridRow = this.createAction(this.getDeleteButtonKey(), this.getDeleteIconCls(),
-	            this.onDeleteFromGrid, true, this.getDeleteTitleKey(), "deleteGridRow");
-	    this.actionDeleteTreeNode = this.createAction(this.getDeleteButtonKey(), this.getDeleteIconCls(),
-	            this.onDeleteFromTree, false, this.getDeleteTitleKey(), "deleteTreeNode");
+	    this.actionDeleteGridRow = CWHF.createContextAction(this.getDeleteButtonKey(), this.getDeleteIconCls(),
+	    		this.onDeleteFromGrid, this.getDeleteTitleKey(), {itemId:"deleteGridRow", disabled:true});
+	    /*this.actionDeleteGridRow = this.createAction(this.getDeleteButtonKey(), this.getDeleteIconCls(),
+	            this.onDeleteFromGrid, true, this.getDeleteTitleKey(), "deleteGridRow");*/
+	    this.actionDeleteTreeNode = CWHF.createContextAction(this.getDeleteButtonKey(), this.getDeleteIconCls(),
+	    		this.onDeleteFromTree, this.getDeleteTitleKey(), {itemId:"deleteTreeNode"});
+	    /*this.actionDeleteTreeNode = this.createAction(this.getDeleteButtonKey(), this.getDeleteIconCls(),
+	            this.onDeleteFromTree, false, this.getDeleteTitleKey(), "deleteTreeNode");*/
 
-	    if (this.useCopyPaste) {
+	    //if (this.useCopyPaste) {
 		    // cut/copy - paste and drag and drop
-		    this.actionCutTreeNode = this.createAction(this.getCutButtonKey(), this.getCutIconCls(),
-		            this.onCutTreeNode, false, this.getCutTitleKey(), "cut");
-		    this.actionCopyTreeNode = this.createAction(this.getCopyButtonKey(), this.getCopyIconCls(),
-		            this.onCopyTreeNode, false, this.getCopyTitleKey(), "copy");
-		    this.actionPasteTreeNode = this.createAction(this.getPasteButtonKey(), this.getPasteIconCls(),
-		            this.onPasteTreeNode, false, this.getPasteButtonKey());
-	    }
+	    	this.actionCutTreeNode = CWHF.createContextAction(this.getCutButtonKey(), this.getCutIconCls(),
+		    		this.onCutTreeNode, this.getCutTitleKey(), {itemId:"cut"});
+	    	/*this.actionCutTreeNode = this.createAction(this.getCutButtonKey(), this.getCutIconCls(),
+		            this.onCutTreeNode, false, this.getCutTitleKey(), "cut");*/
+	    	this.actionCopyTreeNode = CWHF.createContextAction(this.getCopyButtonKey(), this.getCopyIconCls(),
+		    		this.onCopyTreeNode, this.getCopyTitleKey(), {itemId:"copy"});
+	    	/*this.actionCopyTreeNode = this.createAction(this.getCopyButtonKey(), this.getCopyIconCls(),
+		            this.onCopyTreeNode, false, this.getCopyTitleKey(), "copy");*/
+	    	this.actionPasteTreeNode = CWHF.createAction(this.getPasteButtonKey(), this.getPasteIconCls(),
+		    		this.onPasteTreeNode/*, this.getPasteTitleKey(), {itemId:"paste"}*/);
+		   /*this.actionPasteTreeNode = this.createAction(this.getPasteButtonKey(), this.getPasteIconCls(),
+		            this.onPasteTreeNode, false, this.getPasteButtonKey());*/
+	    //}
 	},
 
 	getActionItemIdsWithContextDependentLabel : function() {
-	    return [ "editGridRow", "editTreeNode", "deleteGridRow", "deleteTreeNode", "downloadGridRow",
-	            "downloadTreeNode", "cut", "copy" ];
+	    return [ "editGridRow", "editTreeNode", "deleteGridRow", "deleteTreeNode", /*"downloadGridRow",
+	            "downloadTreeNode",*/ "cut", "copy"/*, "paste"*/];
 	},
 
 	/**
 	 * Expanding the node
 	 */
-	getTreeExpandExtraParams : function(node) {
+	getTreeStoreExtraParams : function(node) {
 	    var extraParams = {
 		    excludePrivate : this.getExcludePrivate()
-	    /*
-		 * , fromIssueNavigator:this.fromIssueNavigator
-		 */
 	    };
 	    if (this.getProjectID()) {
 		    // in project configuration
@@ -437,7 +472,7 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	/**
 	 * Get the extra parameters for the gridStore
 	 */
-	getGridExtraParams : function(node, opts) {
+	getGridStoreExtraParams : function(node, opts) {
 	    if (CWHF.isNull(node)) {
 		    // called manually
 		    node = this.selectedNode;
@@ -857,7 +892,7 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	    }
 	},
 
-	getSelectedReportIDs : function() {
+	/*getSelectedReportIDs : function() {
 	    var selectedReportIDs = new Array();
 	    var selectedRecordsArr = this.getSelection();
 	    if (selectedRecordsArr ) {
@@ -868,7 +903,7 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 		    }, this);
 	    }
 	    return selectedReportIDs.join(",");
-	},
+	},*/
 
 	enableDisableToolbarButtons : function(view, arrSelections) {
 	    if (CWHF.isNull(arrSelections) || arrSelections.length === 0) {
@@ -1183,7 +1218,7 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 			    actions.push({
 			        submitUrl : 'savedFilterExecute!unwrappedContainsParameter.action',
 			        submitUrlParams : submitParams,
-			        submitButtonText : getText(this.btnExecute),
+			        submitButtonText : getText(this.getApplyFilterButtonKey()),
 			        refreshAfterSubmitHandler : this.executeUnwrappedFilter
 			    });
 		    }
@@ -1238,7 +1273,7 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 		    loadUrl : loadUrl
 	    }, {
 	        submitUrl : submitUrl,
-	        submitButtonText : getText(this.btnExecute),
+	        submitButtonText : getText(this.getApplyFilterButtonKey()),
 	        standardSubmit : true
 	    }, windowItems);
 	},
@@ -1340,8 +1375,7 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 
 	/**
 	 * Get the actions available in context menu depending on the currently
-	 * selected row
-	 *
+	 * selected node
 	 */
 	getTreeContextMenuActions : function(selectedRecord, selectionIsSimple) {
 	    var modifiable = selectedRecord.data['modifiable'];
@@ -1373,7 +1407,7 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 	    } else {
 		    actions = [];
 	    }
-	    if (this.useCopyPaste) {
+	    //if (this.useCopyPaste) {
 		    if (canCopy) {
 			    if (modifiable) {
 				    actions.push(this.actionCutTreeNode);
@@ -1383,7 +1417,7 @@ com.trackplus.admin.CategoryConfig = Ext.define('com.trackplus.admin.customize.c
 		    if (canAddChild && this.cutCopyNode ) {
 			    actions.push(this.actionPasteTreeNode);
 		    }
-	    }
+	    //}
 	    if (deletable) {
 		    actions.push(this.actionDeleteTreeNode);
 	    }

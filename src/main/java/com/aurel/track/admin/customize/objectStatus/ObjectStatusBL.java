@@ -494,6 +494,7 @@ public class ObjectStatusBL {
 		ObjectStatusTokens objectStatusTokens = new ObjectStatusTokens();
 		objectStatusTokens.setListID(systemStateBean.getEntityflag());
 		objectStatusTokens.setOptionID(systemStateBean.getObjectID());
+		objectStatusGridRowTO.setId(systemStateBean.getObjectID());
 		objectStatusGridRowTO.setNode(ObjectStatusBL.encodeNode(objectStatusTokens));
 		objectStatusGridRowTO.setLabel(systemStateBean.getLabel());		
 		objectStatusGridRowTO.setListForLabel(listForLabel);

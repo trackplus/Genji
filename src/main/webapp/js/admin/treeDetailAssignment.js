@@ -23,137 +23,40 @@
 /**
  * Class for role and account assignments for project
  */
-Ext.define('com.trackplus.admin.TreeDetailAssignment',{
-	extend:'com.trackplus.admin.TreeDetail',
+Ext.define("com.trackplus.admin.TreeDetailAssignment",{
+	extend:"com.trackplus.admin.TreeDetail",
+	xtype: "treeDetailAssignment",
+    controller: "treeDetailAssignment",
 	config: {
 		rootID: null,
-		rootMessage: null,
+		rootMessageKey: null,
 		dynamicIcons: false,
 		//whether to reload the grids after drag and drop:
 		//if yes the sort order is enforced but the user filters set on grid fields are not applied after refresh
 		//if no the sort order is not enforced (the item remains where it was dropped)
 		//so set to yes only if no filter is defined for grids
-		reloadGrids: false
+		reloadGrids: false,
+		baseServerAction: null
 	},
-	leafDetailByFormLoad: false,
-	gridPlugins:["gridfilters"],
+
+	getRootMessage: function() {
+		if (this.getRootMessageKey()) {
+			return getText(this.getRootMessageKey());
+		}
+		return "";
+	},
+
+	getTreeStoreUrl: function() {
+		return this.getBaseServerAction() + "!expand.action";
+	},
+
+	//dynamicIcons: false,
+	//reloadGrids: false,
+
+	//leafDetailByFormLoad: false,
+	//gridPlugins:["gridfilters"],
 	assignedGrid: null,
 	availableGrid: null,
-
-	constructor: function(config) {
-		var config = config || {};
-		this.initConfig(config);
-		this.initBase();
-	},
-
-	/**
-	 * Show the node detail based on  responseJson
-	 */
-	loadSimpleDetailPanel: function(node, add) {
-		Ext.Ajax.request({
-			url: this.getDetailUrl(node, add),
-			params: this.getDetailParams(node, add),
-			scope: this,
-			disableCaching:true,
-			success: function(response){
-				var responseJson = Ext.decode(response.responseText);
-				if (this.centerPanel) {
-					this.mainPanel.remove(this.centerPanel, true);
-				}
-				var northPanel = {
-						region:'north',
-						xtype:'component',
-						cls: 'infoBox1',
-						border:true,
-					 	html: responseJson['assignmentInfo']
-					};
-				var panelGrids = this.createAssignmentGrids(node.id, responseJson);
-				this.centerPanel = Ext.create('Ext.panel.Panel', {
-					layout: 'border',
-					region:'center',
-					cls:'gridNoBorder',
-					border: false,
-					bodyBorder:false,
-					bodyPadding:0,
-					autoScroll: false,
-					items:[northPanel, panelGrids]
-				});
-				this.mainPanel.add(this.centerPanel);
-			},
-			failure: function(result){
-				Ext.MessageBox.alert(this.failureTitle, result.responseText);
-			},
-			method:"POST"
-		});
-	},
-
-	getDetailUrl: function() {
-		return this.getBaseAction() + ".action";
-	},
-
-	reloadAssigned: function(urlStr,params) {
-		params['node'] = this.selectedNodeID;
-		Ext.Ajax.request({
-			url:urlStr,
-			params:params,
-			disableCaching:true,
-			scope: this,
-			success: function(result){
-				var jsonData=Ext.decode(result.responseText);
-				if(jsonData.success===true) {
-					var nodeIdToReload = jsonData['nodeToReload'];
-					//var nodeIdToSelect = jsonData['nodeToSelect'];
-					var treeStore = this.tree.getStore();
-					var nodeToReload=treeStore.getNodeById(nodeIdToReload);
-					var params = {node:nodeIdToReload};
-					var oldParentsToReload = jsonData["parentsToReload"];
-					if (oldParentsToReload && oldParentsToReload.length>0) {
-						//old parents for department: the persons added to the departments should be automatically removed from other departments
-						//for persons in groups or persons in roles parentsToReload will be null
-						//(should not actualize old parents because a person can me in more groups/roles at the same time)
-						params["oldParentIDs"] = oldParentsToReload.join();
-					}
-					Ext.Ajax.request({
-						url: this.getBaseAction() + "!refreshParent.action",
-						params: params,
-						scope: this,
-						disableCaching:true,
-						success: function(response){
-							var parents = Ext.decode(response.responseText);
-							if (parents && parents.length>0) {
-								Ext.Array.forEach(parents, function(parent, index, allItems) {
-									var parentNode=treeStore.getNodeById(parent["id"]);
-									if (parentNode) {
-										parentNode.set("text", parent["label"]);
-										parentNode.commit();
-										if (parentNode.isLoaded()) {
-											var options = this.getTreeExpandExtraParams(nodeToReload);
-											treeStore.proxy.extraParams = options;
-											treeStore.load({node:parentNode});
-										}
-									}
-								}, this);
-							}
-						},
-						failure: function(result){
-							Ext.MessageBox.alert(this.failureTitle, result.responseText);
-						},
-						method:"POST"
-					});
-					//the assignment node was not yet expanded: refresh only the grids, the tree remains unmodified
-					if (this.getReloadGrids()) {
-						this.assignedGrid.store.loadData(jsonData["assigned"], false);
-						this.availableGrid.store.loadData(jsonData["unassigned"], false);
-					}
-				} else {
-					com.trackplus.util.requestFailureHandler(result);
-				}
-			},
-			failure: function(result){
-				com.trackplus.util.requestFailureHandler(result);
-			}
-		});
-	},
 
 	getIconField: function() {
 		if (this.getDynamicIcons()) {
@@ -214,134 +117,86 @@ Ext.define('com.trackplus.admin.TreeDetailAssignment',{
 	getGridFeatures: function() {
 		return null;
 	},
-	
+
+	getGridPlugins: function() {
+		return ["gridfilters"];
+	},
+
 	getGroupingFeature:function(features){
 		return null;
 	},
 
 	createAssignmentGrids: function(record, response) {
 		var items = [];
-		if (response['assigned']) {
-			var assignedGridStore = Ext.create('Ext.data.Store', {
-				fields:this.getGridFields(record),
-				data: response['assigned']
-			});
-			var assignedFeatures=this.getGridFeatures();
-			this.assignedGrid =  Ext.create('Ext.grid.Panel', {
-				itemId:'assignedGrid',
-				title: getText('common.lbl.assigned'),
-				hideHeaders: this.hideGridHeaders(),
-				store: assignedGridStore,
-				plugins: this.gridPlugins,
-				columns: this.getColumnModel(),
-				stripeRows:	true,
-				multiSelect: true,
-				enableColumnHide: this.enableColumnHide(),
-				enableColumnMove: this.enableColumnMove(),
-				border:false,
-				bodyBorder:false,
-				cls:'gridNoBorder',
-				features:assignedFeatures,
-				viewConfig: {
-					plugins: {
-						ptype: 'gridviewdragdrop',
-						dragGroup: 'secondGridDDGroup',
-						dropGroup: 'firstGridDDGroup'
-					},
-					listeners: {
-						drop: {scope:this,
-							fn: function(node, data, dropRec, dropPosition) {
-								if(data && data.records && data.records.length>0){
-									var idsArray = new Array();
-									for ( var i = 0; i < data.records.length; i++) {
-										idsArray[i] = data.records[i].data.id;
-									}
-									var params=new Object();
-									params['assign']=idsArray.join();
-									this.reloadAssigned(this.getBaseAction()+"!assign.action", params);
-								}
-							}
-						}
-					}
-				}
-			});
-			var assignedGroupingFeature=this.getGroupingFeature(assignedFeatures);
-			if(assignedGroupingFeature){
-				this.assignedGrid.addListener('afterrender', function(){
-					assignedGroupingFeature.disable();
-				});
-			}
-			items.push(this.assignedGrid);
-		}
+		var gridFeatures = this.getGridFeatures();
+		this.assignedGrid = this.createGrid("common.lbl.assigned", response["assigned"], gridFeatures,  "secondGridDDGroup", "firstGridDDGroup", "dropAssign", false);
+		items.push(this.assignedGrid);
+		this.availableGrid = this.createGrid("common.lbl.unassigned", response["unassigned"], gridFeatures, "firstGridDDGroup", "secondGridDDGroup", "dropUnassign", true);
+		items.push(this.availableGrid);
 
-		if (response['unassigned']) {
-			var availableGridStore = Ext.create('Ext.data.Store', {
-				fields:this.getGridFields(record),
-				data: response['unassigned']
+		var assignedGroupingFeature=this.getGroupingFeature(gridFeatures);
+		if(assignedGroupingFeature){
+			this.assignedGrid.addListener('afterrender', function(){
+				assignedGroupingFeature.disable();
 			});
-			var availableGridFeatures=this.getGridFeatures();
-			this.availableGrid =  Ext.create('Ext.grid.Panel', {
-				itemId:'availableGrid',
-				title: getText('common.lbl.unassigned'),
-				hideHeaders:this.hideGridHeaders(),
-				store: availableGridStore,
-				plugins: this.gridPlugins,
-				columns: this.getColumnModel(),
-				stripeRows:	true,
-				multiSelect: true,
-				enableColumnHide: this.enableColumnHide(),
-				enableColumnMove: this.enableColumnMove(),
-				border:false,
-				bodyBorder:false,
-				cls:'gridNoBorder',
-				style:{
-					borderLeft:'1px solid #D0D0D0'
-				},
-				features:availableGridFeatures,
-				viewConfig: {
-					plugins: {
-						ptype: 'gridviewdragdrop',
-						dragGroup: 'firstGridDDGroup',
-						dropGroup: 'secondGridDDGroup'
-						},
-					listeners: {
-						drop: {scope:this,
-							fn: function(node, data, dropRec, dropPosition) {
-								if(data && data.records && data.records.length>0){
-									var idsArray = new Array();
-									for ( var i = 0; i < data.records.length; i++) {
-										idsArray[i] = data.records[i].data.id;
-									}
-									var params=new Object();
-									params['unassign']=idsArray.join();
-									this.reloadAssigned(this.getBaseAction()+"!unassign.action", params);
-								}
-							}
-						}
-					}
-				}
-			});
-			var availableGroupingFeature=this.getGroupingFeature(availableGridFeatures);
-			if(availableGroupingFeature){
-				this.availableGrid.addListener('afterrender', function(){
-					availableGroupingFeature.disable();
-				});
-			}
-			items.push(this.availableGrid);
 		}
-		//Simple 'border layout' panel to house both grids
-		var displayPanel = Ext.create('Ext.Panel', {
-			region: 'center',
+		var availableGroupingFeature=this.getGroupingFeature(gridFeatures);
+		if(availableGroupingFeature){
+			this.availableGrid.addListener('afterrender', function(){
+				availableGroupingFeature.disable();
+			});
+		}
+		//simple panel to house both grids
+		var displayPanel = Ext.create("Ext.panel.Panel", {
+			region: "center",
 			margin:'0 0 0 0',
 			border: false,
 			bodyBorder: false,
 			layout: {
-				type: 'hbox',
-				align: 'stretch'
+				type: "hbox",
+				align: "stretch"
 			},
-			defaults: { flex : 1 },
+			defaults: {flex: 1},
 			items: items
 		});
 		return displayPanel;
+	},
+
+	createGrid: function(titleKey, storeData, gridFeatures, dargGroup, dropGroup, dropMethodName, withBorderLeft) {
+		var gridConfig = {
+			title: getText(titleKey),
+			hideHeaders:true,
+			store: Ext.create("Ext.data.Store", {
+				fields:this.getGridFields(),
+				data: storeData
+			}),
+			hideHeaders: this.hideGridHeaders(),
+			plugins: this.getGridPlugins(),
+			features: gridFeatures,
+			columns: this.getColumnModel(),
+			stripeRows:	true,
+			multiSelect: true,
+			enableColumnHide: this.enableColumnHide(),
+			enableColumnMove: this.enableColumnMove(),
+			border:false,
+			bodyBorder:false,
+			cls:"gridNoBorder",
+			viewConfig: {
+				plugins: {
+					ptype: "gridviewdragdrop",
+					dragGroup: dargGroup,
+					dropGroup: dropGroup
+				},
+				listeners: {
+					drop: dropMethodName
+				}
+			}
+		};
+		if (withBorderLeft) {
+			gridConfig.style = {
+					borderLeft:'1px solid #D0D0D0'
+			};
+		}
+		return Ext.create("Ext.grid.Panel", gridConfig);
 	}
 });

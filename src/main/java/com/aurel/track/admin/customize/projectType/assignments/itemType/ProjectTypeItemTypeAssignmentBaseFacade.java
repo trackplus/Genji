@@ -247,7 +247,7 @@ public abstract class ProjectTypeItemTypeAssignmentBaseFacade extends ProjectTyp
 		if (projectTypeID!=null) {
 			assignedIDs = getAssignedIDsByProjectTypeIDAndItemType(projectTypeID, itemTypeID);
 		}	
-		if (assignedIDs!=null && !assignedIDs.isEmpty()) {
+		if (labelBeans!=null && assignedIDs!=null && !assignedIDs.isEmpty()) {
 			for (Iterator<ILabelBean> iterator = labelBeans.iterator(); iterator.hasNext();) {
 				ILabelBean labelBean = iterator.next();
 				Integer objectID = labelBean.getObjectID();

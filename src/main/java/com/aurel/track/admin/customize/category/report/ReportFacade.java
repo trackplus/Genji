@@ -23,12 +23,14 @@
 package com.aurel.track.admin.customize.category.report;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -138,7 +140,7 @@ public class ReportFacade extends LeafFacade {
 						((CategoryGridRowTO)categoryTO).setReportIcon(template.getAbsolutePath() + File.separator + icon);
 					}
 				}
-				categoryTO.setReportConfigNeeded(exportTemplateBean.isConfigNeeded());
+				categoryTO.setCustomFeature(exportTemplateBean.isConfigNeeded());
 				nodes.add(categoryTO);
 			}
 		}
@@ -563,6 +565,16 @@ public class ReportFacade extends LeafFacade {
 		return null;
 	}	
 		
+	public void additionalSaveTasks(Integer copiedFromID, Integer copyedToID) {
+		File sourceTemplate = ReportBL.getDirTemplate(copiedFromID);
+		File targetTemplate = ReportBL.getDirTemplate(copyedToID);
+		try {
+			FileUtils.copyDirectory(sourceTemplate, targetTemplate);
+		} catch (IOException e) {
+			LOGGER.error("Could not copy template files from " + sourceTemplate + " to " + targetTemplate);
+		}
+	}
+	
 	/**
 	 * Copy specific data if copy (not cut)
 	 * @param labelBeanFrom
@@ -607,7 +619,6 @@ public class ReportFacade extends LeafFacade {
 	 * @param projectBean
 	 */
 	private static void deleteRecursively(Integer exportTemplateID) {
-		
 		List<TExportTemplateBean> derivedReports = ReportBL.loadDerived(exportTemplateID);
 		if (derivedReports!=null) {
 			for (TExportTemplateBean exportTemplateBean : derivedReports) {
@@ -617,6 +628,12 @@ public class ReportFacade extends LeafFacade {
 			}
 		}
 		ReportBL.delete(exportTemplateID);
+		File templateDir = ReportBL.getDirTemplate(exportTemplateID);
+		try {
+			FileUtils.deleteDirectory(templateDir);
+		} catch (IOException e) {
+			LOGGER.info("Deleting the report template " + templateDir + " failed with " + e.getMessage());
+		}
 	}
 	
 	/**

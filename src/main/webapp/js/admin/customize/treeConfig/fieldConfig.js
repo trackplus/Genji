@@ -21,38 +21,35 @@
 /* $Id:$ */
 
 
-Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
-	extend:'com.trackplus.admin.customize.treeConfig.TreeConfig',
+Ext.define("com.trackplus.admin.customize.treeConfig.FieldConfig",{
+	extend:"com.trackplus.admin.customize.treeConfig.TreeConfig",
+	xtype: "fieldConfig",
+    controller: "fieldConfig",
+    treeWidth: 250,
 	config: {
-		rootID:'_'
+		rootID:"field"
 	},
-	baseAction: "fieldConfigItemDetail",
-	confirmDeleteEntity:true,
-	confirmDeleteNotEmpty: true,
-	fieldSetWidth: 500,
-	textFieldWidth: 350,
-	labelWidth: 120,
+	baseServerAction: "fieldConfigItemDetail",
+	
+		
+	//fieldSetWidth: 500,
+	//textFieldWidth: 350,
+	//labelWidth: 120,
 	//extra actions for field configuration
-
-	constructor: function(config) {
-		var config = config || {};
-		this.initConfig(config);
-		this.initBase();
-	},
 
 	/**
 	 * The message to appear first time after selecting this menu entry
 	 * Is should be shown by selecting the root but the root is typically not visible
 	 */
 	getRootMessage: function(rootID) {
-		return getText('admin.customize.field.config.lbl.description');
+		return getText("admin.customize.field.config.lbl.description");
 	},
 
 	/**
 	 * The localized leaf name
 	 */
 	getEntityLabel: function() {
-		return getText('admin.customize.field.lbl.fieldConfig');
+		return getText("admin.customize.field.lbl.fieldConfig");
 	},
 
 	/**
@@ -70,18 +67,21 @@ Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
 	},
 
 	initActions: function() {
+		this.actionSave = CWHF.createAction(this.getSaveButtonKey(), this.getSaveIconCls(),
+	    		"onSave", {tooltip:this.getActionTooltip(this.getSaveTitleKey()), disabled:true});
 		this.callParent();
-		this.actionSave = this.createLocalizedAction(getText('common.btn.save'),
-				'save', this.onSave, this.getTitle('common.lbl.save'), true);
+		this.actions = [this.actionSave, this.actionOverwrite, this.actionReset];
 	},
 
 	/**
 	 * Initialize all actions and return the toolbar actions
 	 */
-	getToolbarActions: function() {
+	/*getToolbarActions: function() {
 		var actions = [this.actionSave, this.actionOverwrite, this.actionReset];
+		
+		actions = [this.actionAddLeaf, this.actionSave, this.actionOverwrite, this.actionReset, this.actionDelete];
 		return actions;
-	},
+	},*/
 
 	/**
 	 * Which actions to enable/disable depending on tree selection
@@ -109,8 +109,8 @@ Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
 	getTreeContextMenuActions: function(selectedRecord, selectionIsSimple) {
 		var actions = [];
 		if (selectionIsSimple) {
-			var inheritedConfig = selectedRecord.data['inheritedConfig'];
-			var defaultConfig = selectedRecord.raw['defaultConfig'];
+			var inheritedConfig = selectedRecord.get("inheritedConfig");
+			var defaultConfig = selectedRecord.get("defaultConfig");
 			var isLeaf = selectedRecord.isLeaf();
 			if (inheritedConfig && !defaultConfig && isLeaf) {
 				actions.push(this.actionOverwrite);
@@ -128,14 +128,14 @@ Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
 	/**
 	 * Gets the folder details
 	 */
-	getFolderDetailItems: function(node, add, responseJson) {
+	/*getFolderDetailItems: function(node, add, responseJson) {
 		return this.getInfoBoxItems(responseJson.info);
-	},
+	},*/
 
 	/**
 	 * Gets the leaf details
 	 */
-	getLeafDetailItems: function(node, add) {
+	/*getLeafDetailItems: function(node, add) {
 		return [{
 				xtype:'hidden',
 				name: 'add',
@@ -172,12 +172,12 @@ Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
 				items: this.getFieldConfigItems()
 			}
 		];
-	},
+	},*/
 
 	/**
 	 * Get field details
 	 */
-	getFieldItems: function() {
+	/*getFieldItems: function() {
 		return [CWHF.createTextField("common.lbl.name", "name",
 					{itemId: "name", labelWidth:this.labelWidth,
 					width:this.textFieldWidth, allowBlank : false,
@@ -191,12 +191,12 @@ Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
 					{itemId: "deprecated", labelWidth:this.labelWidth, hidden: true}),
 				CWHF.createTextAreaField("common.lbl.description", "description",
 					{itemId: "description", labelWidth:this.labelWidth, width:450})];
-	},
+	},*/
 
 	/**
 	 * Get field config details
 	 */
-	getFieldConfigItems: function() {
+	/*getFieldConfigItems: function() {
 		return [CWHF.createTextField("common.lbl.label", "label",
 				{itemId: "label", labelWidth:this.labelWidth,
 					width:this.textFieldWidth, allowBlank : false}),
@@ -204,22 +204,22 @@ Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
 					{itemId: "tooltip", labelWidth:this.labelWidth,
 					width:this.textFieldWidth}),
 				CWHF.createCheckbox("admin.customize.field.config.detail.lbl.required", "required",
-					{itemId: "required", labelWidth:this.labelWidth/*, hidden: true*/}),
+					{itemId: "required", labelWidth:this.labelWidth}),
 				CWHF.createCheckbox("admin.customize.field.config.detail.lbl.history", "history",
-					{itemId: "history", labelWidth:this.labelWidth/*, hidden: true*/})];
-	},
+					{itemId: "history", labelWidth:this.labelWidth})];
+	},*/
 
 	/**
 	 * Post process for leaf load
 	 */
-	getEditLeafPostDataProcess: function(recordData, add) {
+	/*getEditLeafPostDataProcess: function(recordData, add) {
 		return this.fieldPostDataProcess;
-	},
+	},*/
 
 	/**
 	 * Post process for folder load (only for add)
 	 */
-	getEditFolderPostDataProcess: function(recordData, add) {
+	/*getEditFolderPostDataProcess: function(recordData, add) {
 		if (add) {
 			//add from a non leaf node: same as add to leaf node or add when no node is selected
 			return this.fieldPostDataProcess;
@@ -227,12 +227,12 @@ Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
 			//no post process needed for folder selections
 			return null;
 		}
-	},
+	},*/
 
 	/**
 	 * Method to process the data to be loaded arrived from the server by editing the leaf
 	 */
-	fieldPostDataProcess: function(data, panel) {
+	/*fieldPostDataProcess: function(data, panel) {
 		var fieldFieldset = panel.getComponent("fieldFieldset");
 		var fieldConfigFieldset = panel.getComponent("fieldConfigFieldset");
 		var fieldAttributesDisabled = data.fieldAttributesDisabled;
@@ -286,12 +286,15 @@ Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
 				specificItem.onDataReady(data);
 			}
 		}
-	},
+		if (customField && data['canDelete']) {
+			this.actionDelete.setDisabled(false);
+		}
+	},*/
 
 	/**
 	 * Add the field type specific configuration
 	 */
-	addSpecificConfig: function(panel, specificFieldConfigClass, width) {
+	/*addSpecificConfig: function(panel, specificFieldConfigClass, width) {
 		if (specificFieldConfigClass) {
 			var specificItem = Ext.create(specificFieldConfigClass,{
 				// margin:'0 0 0 5',
@@ -303,15 +306,16 @@ Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
 				panel.updateLayout();
 			}
 		}
-	},
+	},*/
+	
 	/**
 	 * Prepare the form for adding a new field
 	 */
-	onAddLeaf: function() {
+	/*onAddLeaf: function() {
 		var node = this.getSingleSelectedRecord(true);
 		this.loadDetailPanelWithFormLoad(node, true);
 		this.actionSave.setDisabled(false);
-	},
+	},*/
 
 	/**
 	 * Save the detail part
@@ -319,7 +323,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
 	 * Alternatively this should be included as extra parameter here if 'add' were declared
 	 * as class level variable set in onAdd action and reset on treeNode select
 	 */
-	onSave: function(extraConfig) {
+	/*onSave: function(extraConfig) {
 		this.prepareValidate(this.centerPanel, true);
 		this.centerPanel.getForm().submit({
 			url: this.getBaseAction() + '!save.action',
@@ -337,7 +341,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
 				com.trackplus.util.submitFailureHandler(form, action);
 			}
 		})
-	},
+	},*/
 
 	/**
 	* By selecting a new field type the validation should be disabled
@@ -345,18 +349,18 @@ Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
 	* (even the incomplete data should not be lost)
 	* By saving a field config the validation should be enabled
 	**/
-	prepareValidate: function(panel, validate) {
+	/*prepareValidate: function(panel, validate) {
 		var fieldFieldset = panel.getComponent("fieldFieldset");
 		fieldFieldset.getComponent('name').allowBlank = !validate;
 		var fieldConfigFieldset = panel.getComponent("fieldConfigFieldset");
 		fieldConfigFieldset.getComponent('label').allowBlank = !validate;
-	},
+	},*/
 
 	/**
 	 * By selecting another field type update the proxy urls
 	 * for the grid store and reload the data into the store
 	 */
-	selectFieldType: function(comboBox, record, index ) {
+	/*selectFieldType: function(comboBox, record, index ) {
 		var onSuccessOrFail = function(form, action) {
 			var result = action.result;
 			if (result.success) {
@@ -385,7 +389,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
 					com.trackplus.util.submitFailureHandler(form, action);
 				}
 			});
-	},
+	},*/
 
 	/**
 	 * Parameters for adding a new leaf
@@ -393,7 +397,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
 	 * (Alternatively this should be set here if 'add' is declared as class level variable,
 	 * set in onAdd action and reset on treeNode select)
 	 */
-	getNodeParam: function(extraConfig) {
+	/*getNodeParam: function(extraConfig) {
 		var saveParams = this.callParent(arguments);
 		var renameConfirmed = false;
 		if (extraConfig) {
@@ -403,26 +407,23 @@ Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
 			}
 		}
 		return saveParams;
-	},
+	},*/
 
 	/**
 	 * Rename a field
 	 */
-	renameField: function(btn) {
+	/*renameField: function(btn) {
 		if (btn === 'yes') {
 			this.onSave.call(this, {renameConfirmed:true});
 		}
-	},
+	},*/
 
 	/**
 	 * Refresh after a successful save
 	 */
-	refreshAfterSaveSuccess: function(result) {
+	/*refreshAfterSaveSuccess: function(result) {
 		errorMessage = result.errorMessage;
 		if (errorMessage) {
-			/*Ext.MessageBox.confirm(
-				getText('admin.customize.field.config.detail.lbl.rename'),
-				errorMessage, this.renameField, this)*/
 			Ext.MessageBox.show({title:getText('admin.customize.field.config.detail.lbl.rename'),
 					msg: errorMessage,
 					buttons: Ext.Msg.YESNO,
@@ -441,53 +442,48 @@ Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
 				//save an existing field configuration: no tree refresh needed
 				var nodeToReload=this.tree.getStore().getNodeById(result.node);
 				if (nodeToReload) {
-					this.treeNodeSelect(/*this.tree, [nodeToReload]*/null, nodeToReload);
+					this.onTreeNodeSelect(null, nodeToReload);
 				}
 			}
 		}
-	},
+	},*/
 
 	/**
 	 * Load and expand a path (ascendent hierarchy from ancestors to leaf) in the tree
 	 * Once the path is expanded the refreshTreeOpenBranches is called
 	 */
-	expandAscendentPath: function(pathToExpand, node, actualParent) {
+	/*expandAscendentPath: function(pathToExpand, node, actualParent) {
 		if (actualParent) {
 			actualParent.expand(false);
 		}
 		if (pathToExpand && pathToExpand.length>0) {
 			var parentNodeID = pathToExpand.shift();
 			parentNode=this.tree.getStore().getNodeById(parentNodeID);
-					/*if (CWHF.isNull(parentNode)) {
-						//when called from on project/project type configuration the field_field can't be found
-						//but still you should expand starting from the selected project/project type
-						this.expandAscendentPath(pathToExpand, node, parentNode);
-					} else {*/
 						this.tree.getStore().load({node:parentNode, callback:function() {
 								this.expandAscendentPath(pathToExpand, node, parentNode)
 							},
 							scope:this});
-					//}
+					
 		} else {
 			//refresh the entire tree
 			this.refreshTreeOpenBranches(this.tree.getRootNode(), false, false, actualParent, node);
 		}
-	},
+	},*/
 
 	/**
 	 * The localized entity name to be deleted
 	 * Should be implemented only if differs from entity name
 	 * (for example in field configuration: entity label is "field configuration" but delete label is "field")
 	 */
-	getDeleteEntityLabel:function() {
+	/*getDeleteEntityLabel:function() {
 		//because a field will be deleted, not a field config
 		return getText('admin.customize.field.lbl.field');
-	},
+	},*/
 
 	/**
 	 * Delete handler
 	 */
-	onDelete: function() {
+	/*onDelete: function() {
 		var selectedRecords = this.getSelectedRecords(true);
 		if (selectedRecords) {
 			var isLeaf = this.selectedIsLeaf(true);
@@ -496,19 +492,19 @@ Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
 				this.deleteHandler(selectedRecords, extraConfig);
 			}
 		}
-	},
+	},*/
 
 	/**
 	 * Reload after delete
 	 */
-	reload: function(refreshParamsObject) {
+	/*reload: function(refreshParamsObject) {
 		this.refreshTreeOpenBranches(refreshParamsObject.root, false, false, refreshParamsObject.parentNode, refreshParamsObject.nodeIdToSelect);
-	},
+	},*/
 
 	/**
 	 * Gets reload parameters after delete
 	 */
-	getReloadParamsAfterDelete: function(selectedRecords, extraConfig, responseJson) {
+	/*getReloadParamsAfterDelete: function(selectedRecords, extraConfig, responseJson) {
 		//select the parent node of the deleted node
 		var nodeToSelect = selectedRecords.parentNode;
 		var parentNode = null;
@@ -517,5 +513,5 @@ Ext.define('com.trackplus.admin.customize.treeConfig.FieldConfig',{
 			parentNode = nodeToSelect.parentNode;
 		}
 		return {root:this.tree.getRootNode(), parentNode:nodeToSelect, nodeIdToSelect:nodeToSelect.data['id']}
-	}
+	}*/
 });

@@ -106,7 +106,7 @@ com.trackplus.itemDetail.ItemDetailComponent.prototype.createComponent=function(
 		}
 		tabItems.push(tab);
 		tab.addListener('activate',this.activateTab,this);
-	};
+	}
 	this.tabPanel=Ext.create('Ext.tab.Panel',{
 		cls:'itemDetailTabPanel',
 		bodyCls:'itemDetailTabPanel-body',

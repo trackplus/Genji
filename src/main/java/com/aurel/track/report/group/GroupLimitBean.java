@@ -37,7 +37,7 @@ public class GroupLimitBean implements Serializable {
 	private Integer workItemID;
 	//the localized name: field label and actual value
 	private String groupLabel;
-	//the groups to be sorted at "grouping" level: either non tree fields or tree fields on first level (not in tree depth) 
+	//the groups to be sorted at "grouping" level: either non tree fields or tree fields on first level (not in tree depth)
 	private Comparable<Object> groupSortOrder;
 	//the value for the group
 	private Object groupValue;
@@ -63,15 +63,17 @@ public class GroupLimitBean implements Serializable {
 	//makes sense only if isTreeField is true. Used to sort in tree at a certain depth.
 	//It is an "artificial" integer calculated based on the relative sort order of the tree field (which originally can be also a Comparable<String>)
 	private Integer treeSortOrder = null;
-	
+	//The item simple not formatted raw value
+	private String showValue;
+
 	public static int FIRST_LEVEL_DEPTH = 0;
-	
+
 	public GroupLimitBean() {
 		super();
-	}	
+	}
 
-	public GroupLimitBean(Integer groupField, String groupLabel, Object groupValue, Comparable<Object> groupSortOrder, int groupLevel, 
-			boolean expanding, Integer workItemID, String ordinalNumberString, boolean isTreeField) {
+	public GroupLimitBean(Integer groupField, String groupLabel, Object groupValue, Comparable<Object> groupSortOrder, int groupLevel,
+			boolean expanding, Integer workItemID, String ordinalNumberString, boolean isTreeField, String showValue) {
 		super();
 		this.groupField = groupField;
 		this.groupLabel = groupLabel;
@@ -82,6 +84,7 @@ public class GroupLimitBean implements Serializable {
 		this.workItemID = workItemID;
 		this.ordinalNumberString = ordinalNumberString;
 		this.isTreeField = isTreeField;
+		this.showValue = showValue;
 		if (isTreeField) {
 			this.depthInTree = Integer.valueOf(FIRST_LEVEL_DEPTH);
 		}
@@ -90,7 +93,7 @@ public class GroupLimitBean implements Serializable {
 	public boolean isExpanding() {
 		return expanding;
 	}
-	
+
 	public void setExpanding(boolean expanding) {
 		this.expanding = expanding;
 	}
@@ -98,11 +101,11 @@ public class GroupLimitBean implements Serializable {
 	public Integer getGroupField() {
 		return groupField;
 	}
-	
+
 	public String getGroupLabel() {
 		return groupLabel;
 	}
-	
+
 	public Comparable<Object> getGroupSortOrder() {
 		return groupSortOrder;
 	}
@@ -110,7 +113,7 @@ public class GroupLimitBean implements Serializable {
 	public int getGroupLevel() {
 		return groupLevel;
 	}
-	
+
 	/**
 	 * @return the numberOfWorkItems
 	 */
@@ -122,7 +125,7 @@ public class GroupLimitBean implements Serializable {
 	 */
 	public void setNumberOfWorkItems(int numberOfWorkItems) {
 		this.numberOfWorkItems = numberOfWorkItems;
-	}	
+	}
 	/**
 	 * @return the ordinalNumberString
 	 */
@@ -166,7 +169,7 @@ public class GroupLimitBean implements Serializable {
 			treeSubgroups.add(this);
 		}
 	}
-	
+
 	public Integer getWorkItemID() {
 		return workItemID;
 	}
@@ -226,7 +229,15 @@ public class GroupLimitBean implements Serializable {
 
 	public Object getGroupValue() {
 		return groupValue;
-	}	
-	
-	
+	}
+
+	public String getShowValue() {
+		return showValue;
+	}
+
+	public void setShowValue(String showValue) {
+		this.showValue = showValue;
+	}
+
+
 }

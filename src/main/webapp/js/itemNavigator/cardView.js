@@ -458,6 +458,7 @@ Ext.define('com.trackplus.itemNavigator.CardViewPlugin',{
 				var description=data['f21'];
 				var editable=data['editable'];
 				var cardCls='cardElementBase cardElement';
+				var widthAttr="";
 				var clsIndicator='cardElementIndicator';
 				if(me.queryFieldCSS&&data['queryFieldCSS']){
 					clsIndicator+=' queryFieldCSS rowCls_'+me.queryFieldCSS+"_"+ data['queryFieldCSS'];
@@ -473,6 +474,7 @@ Ext.define('com.trackplus.itemNavigator.CardViewPlugin',{
 				for(var i=0;i<screenFields.length;i++){
 					screenFieldsHTML[i]=new Array();
 					for(var j=0;j<screenFields[i].length;j++){
+						widthAttr="";
 						screenFieldData=screenFields[i][j];
 						if(screenFieldData){
 							screenFieldsHTML[i][j]=new Object();
@@ -489,6 +491,17 @@ Ext.define('com.trackplus.itemNavigator.CardViewPlugin',{
 								case 1:{
 									//icon
 									displayValue=me.renderIconHtml(screenFieldData.fieldID,data['f-'+screenFieldData.fieldID]);
+									switch (screenFieldData.fieldID){
+										case 5://manager
+										case 6://responsible
+										case 13:{//originator
+											widthAttr='style="width:60px;"';
+											break;
+										}
+										default:{
+											widthAttr='style="width:30px;"';
+										}
+									}
 									break;
 								}
 								case 2:{
@@ -506,6 +519,7 @@ Ext.define('com.trackplus.itemNavigator.CardViewPlugin',{
 							screenFieldsHTML[i][j]['colSpan']=screenFieldData.colSpan;
 							screenFieldsHTML[i][j]['valueHAlign']=screenFieldData.valueHAlign;
 							screenFieldsHTML[i][j]['valueVAlign']=screenFieldData.valueVAlign;
+							screenFieldsHTML[i][j]['widthAttr']=widthAttr;
 						}
 					}
 				}
@@ -972,7 +986,7 @@ Ext.define('com.trackplus.itemNavigator.CardViewPlugin',{
 		var tmpl=new Array();
 		tmpl.push('<tpl for=".">');
 		tmpl.push('<div class="{cardCls}">');
-		tmpl.push('<table style="width:100%;height:100%" border="0" cellspacing="0" cellpadding="0">');
+		tmpl.push('<table style="width:100%;height:100%;" border="0" cellspacing="0" cellpadding="0">');
 
 		tmpl.push('<tr><td rowspan="{rowsNo+1}" width="7" class="{clsIndicator}">&nbsp;</td><td colspan="{colsNo}"></td></tr>');
 
@@ -983,7 +997,7 @@ Ext.define('com.trackplus.itemNavigator.CardViewPlugin',{
 		tmpl.push('<tpl if=".">');
 
 		tmpl.push('<tpl if="!empty">');
-		tmpl.push('<td class="cardField valueVerticalAlign-{valueVAlign} valueAlign-{valueHAlign}" colspan="{colSpan}" rowspan="{rowSpan}" >');
+		tmpl.push('<td {widthAttr} class="cardField valueVerticalAlign-{valueVAlign} valueAlign-{valueHAlign}" colspan="{colSpan}" rowspan="{rowSpan}" >');
 		tmpl.push('{displayValue}');
 		tmpl.push('</td>');
 		tmpl.push('</tpl>');//if field not empty

@@ -27,21 +27,27 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class LogThrottle {
-	
+
 	private static HashMap<String,Date> lastTimes = new HashMap<String,Date>();
 	private static HashMap<String,Integer> intervals = new HashMap<String,Integer>();
-	
+
+	/**
+	 * Returns true if "minutes" have elapsed since it returned "true" the last time
+	 * @param messageKey
+	 * @param minutes
+	 * @return false, if less than minutes have elapsed since it returned true
+	 */
 	public static boolean isReady(String messageKey, int minutes) {
 		Date now = new Date();
 		Date last = lastTimes.get(messageKey);
-		if (last == null) {
+		if (last == null) {   // Never called, return true
 			lastTimes.put(messageKey, now);
 			last = now;
 			intervals.put(messageKey, minutes*1000*60);
 			return true;
 		}
-		int interval = intervals.get(messageKey);
-		if (now.getTime() > last.getTime() + interval) {
+		int interval = intervals.get(messageKey);  // Have been called before
+		if (now.getTime() > last.getTime() + interval) { // interval has elapsed
 			lastTimes.put(messageKey, now);
 			intervals.put(messageKey, minutes);
 			return true;

@@ -73,6 +73,7 @@ public class MasterHomeJSON {
 		sb.append("{");
 		JSONUtility.appendStringValue(sb, "name", moduleDescriptor.getName());
 		JSONUtility.appendStringValue(sb, "iconCls", moduleDescriptor.getIconCls());
+		JSONUtility.appendStringValue(sb, "target", moduleDescriptor.getTarget());
 		JSONUtility.appendBooleanValue(sb, "useHeader", moduleDescriptor.isUseHeader());
 		JSONUtility.appendStringValue(sb, "description", moduleDescriptor.getDescription());
 		String mdurl = moduleDescriptor.getCleanedUrl();
@@ -92,8 +93,9 @@ public class MasterHomeJSON {
 	 * revision number from Version Control Activity
 	 *
 	 * @param moduleDescriptor
-	 * @param isForList
-	 * @param PERSON_BEAN
+	 * @param repName
+	 * @param revNo
+	 * @param vcPath
 	 * @return
 	 */
 	public static String encodeWebSVNModuleAfterOperation(ModuleDescriptor moduleDescriptor, String repName, String revNo, String vcPath) {

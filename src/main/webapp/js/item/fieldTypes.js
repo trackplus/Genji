@@ -81,7 +81,7 @@ Ext.define('com.aurel.trackplus.field.TypeRenderer',{
 	},
 	beforeSubmit:function(){
 	},
-	getValue:function(){
+	getNewValue:function(){
 		var me=this;
 		var value=null;
 		if(me.view){
@@ -466,7 +466,7 @@ Ext.define("com.aurel.trackplus.field.EndDateRenderer",{
 		var startDateFieldID = renderer.startDateFieldID;
 		var newEndDate = fieldValues["f"+fieldID];
 		if(!isFromGantt) {
-			modelFieldValues["f"+fieldID] = Ext.Date.format(newEndDate, com.trackplus.TrackplusConfig.DateFormat);;
+			modelFieldValues["f"+fieldID] = Ext.Date.format(newEndDate, com.trackplus.TrackplusConfig.DateFormat);
 		}
 
 		var oldEndDate = null;

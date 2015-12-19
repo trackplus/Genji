@@ -31,12 +31,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import com.aurel.track.admin.customize.objectStatus.SystemStatusBL;
-import com.aurel.track.beans.*;
-
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.aurel.track.GeneralSettings;
 import com.aurel.track.accessControl.AccessControlBL;
@@ -62,7 +59,22 @@ import com.aurel.track.admin.project.ProjectConfigBL;
 import com.aurel.track.admin.project.ProjectJSON;
 import com.aurel.track.admin.project.assignments.AccountAssignmentsBL;
 import com.aurel.track.admin.project.release.ReleaseBL;
-import com.aurel.track.admin.projectCopy.ProjectCopyAction.WP_TPL_COPY_TARGET;
+import com.aurel.track.beans.ILabelBean;
+import com.aurel.track.beans.TAccessControlListBean;
+import com.aurel.track.beans.TDashboardScreenBean;
+import com.aurel.track.beans.TFieldBean;
+import com.aurel.track.beans.TFieldConfigBean;
+import com.aurel.track.beans.TListBean;
+import com.aurel.track.beans.TNotifySettingsBean;
+import com.aurel.track.beans.TOptionSettingsBean;
+import com.aurel.track.beans.TPersonBean;
+import com.aurel.track.beans.TProjectAccountBean;
+import com.aurel.track.beans.TProjectBean;
+import com.aurel.track.beans.TReleaseBean;
+import com.aurel.track.beans.TScreenConfigBean;
+import com.aurel.track.beans.TSystemStateBean;
+import com.aurel.track.beans.TWorkItemBean;
+import com.aurel.track.beans.TWorkflowConnectBean;
 import com.aurel.track.errors.ErrorData;
 import com.aurel.track.errors.ErrorHandlerJSONAdapter;
 import com.aurel.track.fieldType.constants.BooleanFields;
@@ -107,7 +119,7 @@ public class ProjectCopyBL {
 	 * @param locale
 	 * @return
 	 */
-	static String loadCopy(Integer projectID, TPersonBean personBean, Locale locale, Integer copyActionTarget) {
+	static String loadCopy(Integer projectID, TPersonBean personBean, Locale locale, boolean localCopy, boolean isTemplate/*, Integer copyActionTarget*/) {
 		TProjectBean projectBean = ProjectBL.loadByPrimaryKey(projectID);
 		List<ProjectCopyExpression> associatedEntitiesList = new LinkedList<ProjectCopyExpression>();
 		List<ProjectCopyExpression> customListsList = null;
@@ -117,8 +129,8 @@ public class ProjectCopyBL {
 		boolean showCopyReleases = false;
 		boolean showCopyItems = false;
 		if (projectBean!=null) {
-			if(copyActionTarget.intValue() == WP_TPL_COPY_TARGET.COPY_ACTION_TPL_FROM_WP.intValue() ||
-				copyActionTarget.intValue() == WP_TPL_COPY_TARGET.COPY_ACTION_WP_FROM_TPL.intValue()) {
+			if(!localCopy/*copyActionTarget.intValue() == WP_TPL_COPY_TARGET.COPY_ACTION_TPL_FROM_WP.intValue() ||
+				copyActionTarget.intValue() == WP_TPL_COPY_TARGET.COPY_ACTION_WP_FROM_TPL.intValue()*/) {
 				projectName = "";
 			}else {
 				projectName = LocalizeUtil.getParametrizedString("common.copy", new Object[] {projectBean.getLabel()}, locale);
@@ -240,7 +252,7 @@ public class ProjectCopyBL {
 			Map<Integer, Boolean> customListsMap, String projectName,
 			TPersonBean personBean, boolean asSibling, boolean copySubprojects,
 			Integer projectParent, boolean copyOpenItems, boolean copyAttachments, boolean copyReleases, Locale locale, boolean recursiveCall, 
-			Integer copyActionTarget) {
+			/*Integer copyActionTarget*/boolean localCopy, boolean isTemplate) {
 		TProjectBean projectOriginal = ProjectBL.loadByPrimaryKey(projectID);
 		Integer personID = personBean.getObjectID();
 		Integer newProjectID = null;
@@ -260,8 +272,8 @@ public class ProjectCopyBL {
 		}
 		projectCopy.setLabel(projectName);
 		
-		if(copyActionTarget.intValue() == WP_TPL_COPY_TARGET.COPY_ACTION_COPY_TPL.intValue() ||
-				copyActionTarget.intValue() == WP_TPL_COPY_TARGET.COPY_ACTION_TPL_FROM_WP.intValue()) {
+		if ((isTemplate && localCopy) || (!isTemplate && !localCopy) /*copyActionTarget.intValue() == WP_TPL_COPY_TARGET.COPY_ACTION_COPY_TPL.intValue() ||
+				copyActionTarget.intValue() == WP_TPL_COPY_TARGET.COPY_ACTION_TPL_FROM_WP.intValue()*/) {
 			projectCopy.setIsTemplate(BooleanFields.fromBooleanToString(true));
 		}else {
 			projectCopy.setIsTemplate(BooleanFields.fromBooleanToString(false));
@@ -570,7 +582,7 @@ public class ProjectCopyBL {
 				List<TProjectBean> subprojects = ProjectBL.loadSubrojects(projectID);
 				for (TProjectBean subprojectBean : subprojects) {
 					copyProject(subprojectBean.getObjectID(), associatedEntitiesMap, customListsMap,
-							subprojectBean.getLabel(), personBean, false, copySubprojects, newProjectID, copyOpenItems, copyAttachments, copyReleases, locale, true, copyActionTarget);
+							subprojectBean.getLabel(), personBean, false, copySubprojects, newProjectID, copyOpenItems, copyAttachments, copyReleases, locale, true, localCopy, isTemplate);
 				}
 			}
 		}
@@ -740,7 +752,7 @@ public class ProjectCopyBL {
 		for (ILabelBean iLabelBean : projectCategories) {
 			try {
 				CategoryBL.copy(categoryType, CategoryBL.TYPE.CATEGORY, CategoryBL.TYPE.PROJECT,
-					projectRepository, projectRepository, iLabelBean.getObjectID(), destProjectID, personID, true, locale, oldToNewLeafIDs);
+					projectRepository, projectRepository, iLabelBean.getObjectID(), destProjectID, personID, false, true, locale, oldToNewLeafIDs);
 			} catch (CopyInDescendantException e) {
 				LOGGER.error("Copy descendant for categoty type " + categoryType + " by category copy");
 			}
@@ -750,7 +762,7 @@ public class ProjectCopyBL {
 		for (ILabelBean iLabelBean : projectFiltersWithoutCategory) {
 			try {
 				CategoryBL.copy(categoryType, CategoryBL.TYPE.LEAF, CategoryBL.TYPE.PROJECT,
-						projectRepository, projectRepository, iLabelBean.getObjectID(), destProjectID, personID, true, locale, oldToNewLeafIDs);				
+						projectRepository, projectRepository, iLabelBean.getObjectID(), destProjectID, personID, false, true, locale, oldToNewLeafIDs);				
 			} catch (CopyInDescendantException e) {
 				LOGGER.error("Copy descendant for categoty type " + categoryType + " by leaf copy");
 			}

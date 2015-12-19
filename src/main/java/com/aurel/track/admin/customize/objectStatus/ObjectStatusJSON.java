@@ -68,6 +68,7 @@ public class ObjectStatusJSON {
 		for (Iterator<ObjectStatusGridRowTO> iterator = gridRows.iterator(); iterator.hasNext();) {
 			ObjectStatusGridRowTO objectStatusGridRowTO = iterator.next();
 			sb.append("{");
+			JSONUtility.appendIntegerValue(sb, JSONUtility.JSON_FIELDS.ID, objectStatusGridRowTO.getId());
 			JSONUtility.appendStringValue(sb, JSONUtility.JSON_FIELDS.LABEL, objectStatusGridRowTO.getLabel());
 			JSONUtility.appendBooleanValue(sb, JSON_FIELDS.MODIFIABLE, objectStatusGridRowTO.isModifiable());
 			JSONUtility.appendIntegerValue(sb, JSON_FIELDS.LIST_FOR_LABEL, objectStatusGridRowTO.getListForLabel());

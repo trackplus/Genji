@@ -24,9 +24,10 @@ Ext.define('com.trackplus.admin.user.Profile',{
 	extend:'Ext.Base',
 	config: {
 		context: 1,
+		personId: null,
 		isUser: false  //this flag is set in case of adding new user from person.js. If true this is a real user otherwise this is a client user.
 	},
-	personId: null,
+	//personId: null,
 	constructor: function(config) {
 		var me = this;
 		var config = config || {};
@@ -48,7 +49,7 @@ Ext.define('com.trackplus.admin.user.Profile',{
 	textFieldWidthShort:250+70,
 	alignR:"right",
 	FieldSetWidth:250+300+150,
-	context:1, // this.CONTEXT.PROFILEEDIT,
+	//context:1, // this.CONTEXT.PROFILEEDIT,
 	//tabPanel:null,
 	reqTpl:'<span class="required">&nbsp;</span>',
 
@@ -326,7 +327,7 @@ Ext.define('com.trackplus.admin.user.Profile',{
 	        }
 	    };
 	    iconWrapperItems =  [icon,  modifyBtn];
-	    if (this.context===2) {
+	    if (this.getContext()===2) {
 	        //add user: although the icon file is saved in the db, can't be saved directly into person because it does not exist yet
 	        //after saving the person the iconKey and iconName should be set on the new personBean
 	        iconWrapperItems.push(CWHF.createHiddenField("iconKey",{itemId:"iconKey"}));
@@ -440,8 +441,8 @@ Ext.define('com.trackplus.admin.user.Profile',{
 	    var width = 550;
 	    var height = 250;
 	    var loadUrl = 'avatar.action';
-	    var loadParams = {personID:this.personId, context:this.context};
-	    if (this.context===2) {
+	    var loadParams = {personID:this.getPersonId(), context:this.getContext()};
+	    if (this.getContext()===2) {
 	        var hiddenIconKey = targetEl.ownerCt.getComponent("iconKey");
 	        if (hiddenIconKey) {
 	            loadParams["iconKey"] = hiddenIconKey.getValue();
@@ -452,7 +453,7 @@ Ext.define('com.trackplus.admin.user.Profile',{
 	        }
 	    }
 	    var load = {loadUrl:loadUrl, loadUrlParams:loadParams};
-	    var submitParams = {personID:this.personId, context:this.context};
+	    var submitParams = {personID:this.getPersonId(), context:this.getContext()};
 	    var submit = [{
 	        submitUrl:'avatar!upload.action',
 	        submitUrlParams:submitParams,
@@ -585,7 +586,7 @@ Ext.define('com.trackplus.admin.user.Profile',{
 	        var avatarIcon = extraConfig.avatarIcon;
 	        if (avatarIcon) {
 	            avatarIcon.setSrc(data.icon);
-	            if (this.context===2) {
+	            if (this.getContext()===2) {
 	                var iconKey = avatarIcon.ownerCt.getComponent("iconKey");
 	                if (iconKey) {
 	                    iconKey.setValue(data.iconKey);
@@ -640,10 +641,10 @@ Ext.define('com.trackplus.admin.user.Profile',{
 	loadProfile: function() {
 		var me=this;
 		this.createMainForm();
-		var theUrl = this.getEditUrl(this.context);
+		var theUrl = this.getEditUrl(this.getContext());
 		borderLayout.setLoading(true);
 		this.mainForm.getForm().load({url: theUrl,
-			params:{context:this.context},
+			params:{context:this.getContext(), personId:this.getPersonId(), isUser: this.getIsUser()},
 			scope: this,
 			clientValidation:false,
 			success: function(form, action) {
@@ -668,7 +669,7 @@ Ext.define('com.trackplus.admin.user.Profile',{
 	createMainForm: function(extraCfg) {
 		var tabPanel = this.createTabPanel();
 		var formCfg={
-			url:'userProfile!save.action',
+			//url:'userProfile!save.action',
 			border: false,
 			margin: '3 0 0 0',
 			baseCls:'x-plain',
@@ -707,7 +708,7 @@ Ext.define('com.trackplus.admin.user.Profile',{
 			}
 		});
 		tabPanel.add(this.createTabMain());
-		if (this.context !== this.CONTEXT.SELFREGISTRATION) {
+		if (this.getContext() !== this.CONTEXT.SELFREGISTRATION) {
 			tabPanel.add(this.createTabEmail());
 			tabPanel.add(this.createTabOther());
 			//tabPanel.add(this.createTabWatchlist());
@@ -719,8 +720,8 @@ Ext.define('com.trackplus.admin.user.Profile',{
 	 * The save function to submit the modified user profile
 	 * to the server.
 	 */
-	save:function(){
-		borderLayout.setLoading(true);
+	save:function(reload, reloadScope) {
+		//borderLayout.setLoading(true);
 		var tabBar=this.getTabPanel().getTabBar();
 		for(var i=0;i<tabBar.items.length;i++){
 			var headerCm=tabBar.getComponent(i);
@@ -744,21 +745,26 @@ Ext.define('com.trackplus.admin.user.Profile',{
 			CWHF.showMsgError(getText('admin.user.profile.err.errorSave'));
 			return false;
 		}
-		borderLayout.setLoading(true);
+		//borderLayout.setLoading(true);
 		this.mainForm.getForm().submit({
 			url:'userProfile!save.action',
-			params: {context: this.context},
+			params: {context: this.getContext(), personId:this.getPersonId(), isUser: this.getIsUser()},
 			scope: this,
+			method: "POST",
 			success: function(form, action) {
-				borderLayout.setLoading(false);
+				//borderLayout.setLoading(false);
 				CWHF.showMsgInfo(getText('admin.user.profile.lbl.successSave'));
 				var result = action.result;
 				if (result.localeChange) {
 					window.location.href = com.trackplus.TrackplusConfig.contextPath + "/admin.action";
 				}
+				if (reload) {
+					reload.call(reloadScope);
+					
+				}
 			},
 			failure: function(form, action) {
-				borderLayout.setLoading(false);
+				//borderLayout.setLoading(false);
 				if (action.failureType!=='client') {
 					this.handleErrors(action.result.errors);
 				}
@@ -787,7 +793,7 @@ Ext.define('com.trackplus.admin.user.Profile',{
 		}
 		form.getForm().submit({
 			url:urlStr ,
-			params: {context: this.context, personId:this.personId},
+			params: {context: this.getContext(), personId:this.getPersonId()},
 			clientValidation: false,
 			scope: this,
 			success: function(form, action) {

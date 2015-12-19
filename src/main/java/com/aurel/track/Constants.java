@@ -28,17 +28,11 @@ import groovy.util.GroovyScriptEngine;
 
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
-
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import com.aurel.track.beans.TPersonBean;
-import com.aurel.track.beans.TSiteBean;
 import com.aurel.track.dbase.HandleHome;
 import com.aurel.track.prop.ApplicationBean;
 
@@ -47,7 +41,7 @@ import com.aurel.track.prop.ApplicationBean;
  * Class <b>Constants</b> defines some constants being used throughout the
  * application and particularly in the JSP code.<br>
  * @author Joerg Friedrich <joerg.friedrich@computer.org>
- * @version $Revision: 1729 $ $Date: 2015-11-02 18:15:47 +0100 (Mon, 02 Nov 2015) $
+ * @version $Revision: 1903 $ $Date: 2015-12-18 17:37:00 +0100 (Fri, 18 Dec 2015) $
  */
 public final class Constants {
 	private static final Logger LOGGER = LogManager.getLogger(Constants.class);

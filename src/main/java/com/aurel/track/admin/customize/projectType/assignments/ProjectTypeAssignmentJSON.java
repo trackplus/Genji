@@ -69,7 +69,7 @@ public class ProjectTypeAssignmentJSON {
 	private static String addAssignment(String fieldName, List<ILabelBean> assigned, String iconCls) {
 		StringBuilder stringBuilder = new StringBuilder();
 		if (assigned!=null) {
-			stringBuilder.append(fieldName + ":[");
+			JSONUtility.appendFieldName(stringBuilder, fieldName).append(":[");
 			for (Iterator<ILabelBean> iterator = assigned.iterator(); iterator.hasNext();) {
 				ILabelBean labelBean = iterator.next();
 				stringBuilder.append("{");

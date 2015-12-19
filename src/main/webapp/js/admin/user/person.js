@@ -25,15 +25,16 @@ Ext.define("com.trackplus.admin.user.Person", {
 	xtype: "person",
     controller: "person",
 	config: {
-		context: null,
+		//context: null,
 		isUser: null,
 		userLevels:null,
 		featureList: null
 	},
+	storeUrl: "person.action",
 	enableColumnHide: true,
 	enableColumnMove: true,
 	allowMultipleSelections:true,
-	profile:null,
+	//profile:null,
 	actionActivate:null,
 	actionDeactivate:null,
 	actionUserLevel:null,
@@ -45,19 +46,25 @@ Ext.define("com.trackplus.admin.user.Person", {
 	initComponent : function() {
 		this.fields = this.getGridFields();
 		this.columns = this.getColumnModel();
-		var param = "?isUser=" + this.getIsUser();
-		this.storeUrl = "person.action" + param;
+		//var param = "?isUser=" + this.getIsUser();
+		//this.storeUrl = "person.action" + param;
 		this.callParent();
-		this.profile=Ext.create("com.trackplus.admin.user.Profile",{context:this.getContext(), isUser: this.getIsUser()});
+		//this.profile=Ext.create("com.trackplus.admin.user.Profile",{context:this.getContext(), isUser: this.getIsUser()});
 		this.initPerson();
+	},
+
+	/**
+	 * Get extra parameters for grid load
+	 */
+	getStoreExtraParams:function() {
+		return {isUser:this.getIsUser()};
 	},
 	
 	getEntityLabel: function() {
 		return getText("admin.user.lbl.user");
 	},
-	
+
 	initPerson:function(){
-		//this.initActions();
 		Ext.Ajax.request({
 			url: "person!getLdapIsOn.action",
 			scope: this,
@@ -143,7 +150,7 @@ Ext.define("com.trackplus.admin.user.Person", {
 		};
 	},
 
-	
+
 	/**
 	 * The iconCls for the add button, overwrites base class icon
 	 */
@@ -286,8 +293,8 @@ Ext.define("com.trackplus.admin.user.Person", {
 		        	  dataIndex: featureID,
 		        	  sortable:true,
 		        	  hidden: false,
-		        	  listeners: {"checkchange": {fn: this.onCheckChange, scope:this, feature:feature},
-		  		  				"beforecheckchange": {fn: this.onBeforeCheckChange, scope:this, feature:feature}}
+		        	  listeners: {"checkchange": {fn: "onCheckChange", feature:feature},
+		  		  				"beforecheckchange": {fn: "onBeforeCheckChange", feature:feature}}
 				});
 
 				}, this);
@@ -295,42 +302,7 @@ Ext.define("com.trackplus.admin.user.Person", {
 		return columnModel;
 	},
 
-	onCheckChange: function(checkBox, rowIndex, checked, eOpts) {
-		var record = this.grid.getStore().getAt(rowIndex);
-		var feature = eOpts.feature;
-		var featureID = feature.featureID;
-		if (record && feature) {
-			var params = {personID:record.data["id"], featureID:featureID, featureValue:checked};
-			Ext.Ajax.request({
-				url: this.getBaseAction() + "!changeFeature.action",
-				params: params,
-				scope: this,
-				success: function(response) {
-					var result = Ext.decode(response.responseText);
-					if (result.success) {
-						feature["activeWithFeature"] = result["activeWithFeature"];
-					} else {
-						com.trackplus.util.showError(result);
-					}
-				},
-				failure: function(response) {
-					Ext.MessageBox.alert(this.failureTitle, response.responseText);
-				}
-			});
-		}
-	},
-
-	onBeforeCheckChange: function(checkBox, rowIndex, checked, eOpts) {
-		var feature = eOpts.feature;
-		var record = this.grid.getStore().getAt(rowIndex);
-		var featureName = feature["featureName"];
-		var maxWithFeature = feature["maxWithFeature"];
-		var activeWithFeature = feature["activeWithFeature"];
-		if (checked===true && activeWithFeature >= maxWithFeature && record.data["active"]) {
-			Ext.MessageBox.alert(this.failureTitle, getText("admin.user.manage.err.featureExceeded", maxWithFeature, activeWithFeature, featureName));
-			return false;
-		}
-	},
+	
 
 	dateRenderer: function(value, metadata, record) {
 		if (!record.data["active"]) {

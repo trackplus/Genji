@@ -37,6 +37,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import com.aurel.track.util.IntegerStringBean;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -2249,7 +2250,34 @@ public class TWorkItemPeer extends com.aurel.track.persist.BaseTWorkItemPeer
 		return itemIDs;
 		
 	}
-	
+
+	public List<IntegerStringBean> getPath(Integer objectID) throws ItemLoaderException{
+		List<IntegerStringBean> result=new ArrayList<IntegerStringBean>();
+		Integer workItemID=objectID;
+		while(workItemID!=null){
+			TWorkItem tWorkItem = getInternalWorkItem(workItemID);
+			result.add(0,new IntegerStringBean(tWorkItem.getSynopsis(), tWorkItem.getObjectID()));
+			workItemID = tWorkItem.getSuperiorworkitem();
+		}
+		return result;
+	}
+
+	private TWorkItem getInternalWorkItem(Integer objectID) throws ItemLoaderException {
+		TWorkItem tWorkItem = null;
+		try {
+			tWorkItem = retrieveByPK(objectID);
+		} catch(Exception e) {
+			LOGGER.info("Loading the workItem by primary key " + objectID + failedWith + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
+			throw new ItemLoaderException("Loading the workItem by " + objectID + " failed", e);
+		}
+		if(tWorkItem==null){
+			throw new ItemLoaderException("No item found for workItem ID  " + objectID);
+		}
+		return tWorkItem;
+	}
+
+
 	/**
 	 * Filter the items by context
 	 * @param crit

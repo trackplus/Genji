@@ -467,7 +467,7 @@ Ext.define('com.trackplus.item.SendEmailController',{
 		var me=this;
 		if(me.view){
 			me.view.destroy();
-		};
+		}
 		me.view=me.createView(data);
 		if(me.win){
 			me.win.destroy();

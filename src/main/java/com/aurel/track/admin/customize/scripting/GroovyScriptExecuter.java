@@ -22,27 +22,29 @@
 
 package com.aurel.track.admin.customize.scripting;
 
-import groovy.lang.GroovyObject;
-
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.aurel.track.beans.TPersonBean;
+import com.aurel.track.beans.TScriptsBean;
 import com.aurel.track.beans.TSiteBean;
 import com.aurel.track.beans.TWorkItemBean;
-import com.aurel.track.dao.DAOFactory;
 import com.aurel.track.errors.ErrorData;
 import com.aurel.track.fieldType.runtime.base.WorkItemContext;
-import com.aurel.track.prop.ApplicationBean;
-import com.aurel.track.prop.SessionBean;
 import com.aurel.track.util.LdapUtil;
 import com.aurel.track.util.event.IEventSubscriber;
+
+import groovy.lang.Binding;
+import groovy.lang.GroovyObject;
+import groovy.lang.GroovyShell;
 
 public class GroovyScriptExecuter {
 	private static final Logger LOGGER = LogManager.getLogger(GroovyScriptExecuter.class);
@@ -71,6 +73,12 @@ public class GroovyScriptExecuter {
 	 * Hardcoded script name for ldap synchronize
 	 */
 	public static final String EVENT_HANDLER_LDAP_SYNCHRONIZER_CLASS = "LdapSynchronizer";
+
+	/**
+	 * Hardcoded script name for user authentication
+	 */
+	public static final String USER_AUTHENTICATION_SCRIPT = "UserAuthentication";
+
 
 	/**
 	 * Used in guards to prevent either creation of an item (for e-mail
@@ -123,7 +131,7 @@ public class GroovyScriptExecuter {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param eventNo
 	 * @param inputBinding
 	 * @return
@@ -176,7 +184,7 @@ public class GroovyScriptExecuter {
 	 * fields/methods shouldn't be accessed directly (it contains the old
 	 * version of the class from the Groovy classpath) but from the
 	 * GroovyScriptLoader cache through reflection.
-	 * 
+	 *
 	 * @param handlerClass
 	 * @param methodName
 	 * @return
@@ -233,7 +241,7 @@ public class GroovyScriptExecuter {
 
 	/**
 	 * Execute a Groovy method on a Groovy class
-	 * 
+	 *
 	 * @param handlerClass
 	 * @param methodName
 	 * @param inputBinding
@@ -259,7 +267,7 @@ public class GroovyScriptExecuter {
 	 * save 2. may return list of ErrorData in the returnBinding map containing
 	 * "errorList" as key. If the list is not empty then the issue will not be
 	 * saved but the error message will be shown as a validation error
-	 * 
+	 *
 	 * @param handlerClass
 	 * @param workItemContext
 	 * @param personBean
@@ -289,7 +297,7 @@ public class GroovyScriptExecuter {
 	 * Executes the Groovy script guard. If the guard is not satisfied then the
 	 * script should set the guardPassed boolean value to false in the return
 	 * binding
-	 * 
+	 *
 	 * @param handlerClass
 	 * @param workItemBean
 	 * @param personID
@@ -323,7 +331,7 @@ public class GroovyScriptExecuter {
 	/**
 	 * Executes the Groovy script guard. If the guard is not satisfied then the
 	 * script should set the "reject" boolean value in the return binding
-	 * 
+	 *
 	 * @param handlerClass
 	 *            the Groovy handler class
 	 * @param siteBean
@@ -347,6 +355,58 @@ public class GroovyScriptExecuter {
 			return null;
 		}
 		return returnBinding;
+	}
+
+	/**
+	 * Executes the Groovy user authentication script.
+	 *
+	 * @param request
+	 *            the HttpServlet request possibly containing authentication informations
+	 * @param siteBean
+	 *            the TSiteBean object for this Genji instance
+	 * @return a single HashMap <"map", HashMap (login name, TPersonBean)>
+	 */
+	public static Map<String, Object> executeAuthenticationScript(HttpServletRequest request,
+																  TSiteBean siteBean) {
+		Map<String, Object> inputBinding = null;
+		if (inputBinding == null) {
+			inputBinding = new HashMap<String, Object>();
+		}
+		inputBinding.put(BINDING_PARAMS.SITEBEAN, siteBean);
+		inputBinding.put(BINDING_PARAMS.REQUEST, request);
+		Map<String, Object> returnBinding = null;
+		try {
+			returnBinding = executeGroovyHandler(USER_AUTHENTICATION_SCRIPT, inputBinding);
+		} catch (Exception e) {
+			return null;
+		}
+		return returnBinding;
+	}
+
+	/**
+	 * Execute a plain Groovy shell script
+	 * @param theScript the Groovy script to be evaluated
+	 * @param inputBinding the parameters passed to the script
+	 * @return a map with key/value pairs as result
+	 */
+	public static Map<String, Object> executeGroovyScript(String theScript, Binding inputBinding) {
+
+		TScriptsBean scriptBean = ScriptAdminBL.loadByClassName(theScript);
+
+		String scriptCode = null;
+		Map<String, Object> result = new HashMap<String, Object>();
+
+		if (scriptBean != null) {
+			scriptCode = scriptBean.getSourceCode();
+
+			GroovyShell shell = new GroovyShell(inputBinding);
+
+			result.put("result", shell.evaluate(scriptCode));
+		} else {
+			result.put("error", "Can't load script "  + theScript);
+		}
+
+		return result;
 	}
 
 }

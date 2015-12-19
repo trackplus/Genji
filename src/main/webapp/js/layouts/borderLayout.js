@@ -144,14 +144,14 @@ Ext.define('com.trackplus.layout.BorderLayout', {
 		if(me.view){
 			return me.view.getEl().getWidth();
 		}
-		return Ext.getBody().getWidth();;
+		return Ext.getBody().getWidth();
 	},
 	getHeight:function(){
 		var me=this;
 		if(me.view){
 			return me.view.getEl().getHeight();
 		}
-		return Ext.getBody().getHeight();;
+		return Ext.getBody().getHeight();
 	},
 	ensureSize:function(width,height){
 		var MARGIN=10;
@@ -383,12 +383,30 @@ Ext.define('com.trackplus.layout.HeaderView',{
 		menu.push({
 			text: getText('menu.findItems.newInstantFilter'),
 			tooltip:getText('menu.findItems.newInstantFilter.tt'),
-			handler:function(){
-				var scope=Ext.create("com.trackplus.admin.customize.category.CategoryConfig",{
+			handler:function() {
+				 var windowParameters = {
+			            	callerScope:this,
+			            	windowTitle:getText("menu.findItems.instantFilter"),
+			            	loadUrlParams: {instant:true/*, add:true*/},
+			            	submitUrlParams: {instant:true/*, add:true*/, ajax: true},
+			            	entityContext: {
+			                	operation: "instant",
+			                	issueFilter: true
+			                	//the operation is add
+			                    //add: true,
+			                   // isLeaf: true,
+			            	}
+			            };
+			    		var windowConfig = Ext.create("com.trackplus.admin.customize.filter.FilterEdit", windowParameters);
+			    		windowConfig.showWindowByConfig(this);
+
+
+
+				/*var scope=Ext.create("com.trackplus.admin.customize.filter.FilterConfig",{
 						rootID:"issueFilter"
 					});
 				scope.instant = true;
-				com.trackplus.admin.CategoryConfig.showInstant(scope,'filterConfig!edit.action');
+				com.trackplus.admin.CategoryConfig.showInstant(scope,'filterConfig!edit.action');*/
 			}
 		});
 		if (com.trackplus.TrackplusConfig.user.manageFilters) {
@@ -452,7 +470,7 @@ Ext.define('com.trackplus.layout.HeaderView',{
 	executeMyMenuFilter:function(){
 		var me=this;
 		var filter=this;
-		com.trackplus.admin.Filter.executeFilter(me, filter.objectID, false);
+		com.trackplus.filter.executeFilter(me, filter.objectID, false);
 		//window.location.href="itemNavigator.action?queryType=1&queryID="+filter.objectID;
 	},
 	createLastExecutedFiltersMenu:function(){
@@ -684,7 +702,7 @@ Ext.define('com.trackplus.layout.HeaderView',{
 					iconCls:'account-ticon',
 					handler:this.adminMenuHandler
 				});
-			};
+			}
 			customizationData.push({
 				id:'menu_customizationSection_defaultAutomail',
 				text:getText('menu.admin.custom.automail'),
@@ -700,7 +718,7 @@ Ext.define('com.trackplus.layout.HeaderView',{
 					iconCls:'links-ticon',
 					handler:this.adminMenuHandler
 				});
-			};
+			}
 		}
 		if (com.trackplus.TrackplusConfig.user.sys ||
 			(com.trackplus.TrackplusConfig.user.projectAdmin  &&
@@ -745,7 +763,7 @@ Ext.define('com.trackplus.layout.HeaderView',{
 					iconCls:'objectStatus-ticon',
 					handler:this.adminMenuHandler
 				});
-			};
+			}
 			customizationData.push({
 				id:'menu_customizationSection_projectTypes',
 				text:getText('menu.admin.custom.projectType'),
@@ -783,7 +801,7 @@ Ext.define('com.trackplus.layout.HeaderView',{
 					iconCls:'localize-ticon',
 					handler:this.adminMenuHandler
 				});
-			};
+			}
 			if (com.trackplus.TrackplusConfig.appType !== APPTYPE_BUGS) {
 				customizationData.push({
 					id:'menu_customizationSection_mailTemplates',
@@ -792,7 +810,7 @@ Ext.define('com.trackplus.layout.HeaderView',{
 					iconCls:'mailTemplate-ticon',
 					handler:this.adminMenuHandler
 				});
-			};
+			}
 			customizationData.push({
 				id:'menu_customizationSection_dashboardAssign',
 				text:getText('menu.admin.users.cockpitDefault'),
@@ -1012,10 +1030,19 @@ Ext.define('com.trackplus.layout.HeaderView',{
 	},
 	openCustomApp:function(){
 		var m=this;
+		var url;
 		if(m.useHeader===true){
-			window.location.href='externalAction.action?moduleID='+ m.id;
+			url='externalAction.action?moduleID='+ m.id;
 		}else{
-			window.location.href=m.url;
+			url=m.url;
+		}
+		var target=null;
+		target= m.target;
+		if(target==null) {
+			window.location.href = url;
+		}else {
+			var win = window.open(url, target);
+			win.focus();
 		}
 	},
 	getAppPopupMenuItems:function(){

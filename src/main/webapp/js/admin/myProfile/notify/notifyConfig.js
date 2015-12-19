@@ -21,34 +21,20 @@
 /* $Id:$ */
 
 
-Ext.define('com.trackplus.admin.NotifyConfig',{
-	extend:'com.trackplus.admin.TreeBase',
+Ext.define("com.trackplus.admin.NotifyConfig", {
+	extend:"com.trackplus.admin.TreeBase",
+	xtype: "notifyConfig",
+    controller: "notifyConfig",
+    
 	config: {
 		//default project setting
 		defaultSettings: false,
 		//the exclusiveProject set only for automail in project settings
 		exclusiveProjectID: null
 	},
-	baseAction: 'notify',
-	entityID:'node',
-	//actions
-	actionSave: null,
-	actionDelete: null,
-
-	notifySettings: null,
-	notifyTriggers: null,
-	notifyFilters: null,
-
-	AUTOMAIL_ASSIGNMENT: '1',
-	AUTOMAIL_TRIGGER: '2',
-	AUTOMAIL_FILTER: '3',
-
-
-	constructor: function(config) {
-		var config = config || {};
-		this.initConfig(config);
-	},
-
+	baseServerAction: "notify",
+	treeStoreUrl: "notify!expand.action",
+	
 	/**
 	 * Gets the tree's fields: all fields for all possible types
 	 */
@@ -58,71 +44,9 @@ Ext.define('com.trackplus.admin.NotifyConfig',{
 				{ name : 'leaf', mapping : 'leaf', type: 'boolean'},
 				{ name : 'iconCls', mapping : 'iconCls', type: 'string'}];
 	},
-
+	
 	/**
-	 * Called from two places:
-	 * 1. projectConfig.js: selecting the automail node (nodeId==='10')
-	 * 2. from this class by selecting either an automail assignment/trigger/filter node
-	 */
-	loadDetailPanel: function(node, leaf, opts) {
-		var nodeId = node.data['id'];
-		if (nodeId==='10') {
-			//called from projectConfig.js: selecting the automail node (nodeId==='10')
-			return this.createCenterPanel();
-		} else {
-			switch (nodeId) {
-			case this.AUTOMAIL_ASSIGNMENT:
-				if (CWHF.isNull(this.notifySettings)) {
-					this.notifySettings = Ext.create('com.trackplus.admin.NotifySettingsList',
-						{defaultSettings: this.getDefaultSettings(), exclusiveProjectID:this.getExclusiveProjectID()});
-				}
-				this.loadGrid(this.notifySettings);
-				break;
-			case this.AUTOMAIL_TRIGGER:
-				if (CWHF.isNull(this.notifyTriggers)) {
-					this.notifyTriggers = Ext.create('com.trackplus.admin.NotifyTriggerList',
-							{defaultSettings: this.getDefaultSettings()});
-				}
-				this.loadGrid(this.notifyTriggers);
-				break;
-			case this.AUTOMAIL_FILTER:
-				if (CWHF.isNull(this.notifyFilters)) {
-					this.notifyFilters = Ext.create('com.trackplus.admin.customize.category.CategoryConfig',
-							{rootID:'notifyFilter', projectID:this.getExclusiveProjectID(), excludePrivate:this.getDefaultSettings()});
-				}
-				this.loadTreeWithGrid(this.notifyFilters);
-				break;
-			}
-		}
-	},
-
-	loadGrid: function(gridConfig) {
-		//not quite clear why this initGrid() must be called: gridConfig.getGrid() executes the initGrid() internally
-		//if grid is not null, and grid is not null after the first call but somehow the this.centerPanel.removeAll()
-		//leaves the grid in an inconsistent state that's why initGrid() should be called again although grid is not null.
-		//Otherwise the further attempts to select the grid result in empty detail section even through the grid data is received
-		/*gridConfig.initGrid();
-		var grid=gridConfig.getGrid();
-		gridConfig.reload();*/
-		if (this.centerPanel) {
-			this.mainPanel.remove(this.centerPanel, true);
-		}
-		this.centerPanel = gridConfig;
-		this.mainPanel.add(this.centerPanel);
-		//borderLayout.setActiveToolbarActionList(gridConfig.getToolbarActions());
-	},
-
-	loadTreeWithGrid: function(treeWithGridConfig) {
-		if (this.centerPanel) {
-			this.mainPanel.remove(this.centerPanel, true);
-		}
-		this.centerPanel = treeWithGridConfig.createCenterPanel();
-		this.mainPanel.add(this.centerPanel);
-		borderLayout.setActiveToolbarActionList(treeWithGridConfig.getToolbarActions());
-	},
-
-	/**
-	 * Automatically expand the private repository
+	 * Automatically select the first node
 	 */
 	onTreeNodeLoad: function(treeStore, node) {
 	    if (node.isRoot()) {
@@ -132,4 +56,5 @@ Ext.define('com.trackplus.admin.NotifyConfig',{
 	        //treeStore.load({node:node.firstChild, callback:function(){node.firstChild.select()}});
 	    }
 	}
+
 });

@@ -156,9 +156,9 @@ public abstract class IssueFilterFacade extends FilterFacade {
 					}
 				}
 				if (type!=null && TQueryRepositoryBean.QUERY_PURPOSE.TREE_FILTER==type.intValue()) {
-					categoryTO.setTreeFilter(Boolean.TRUE);
+					categoryTO.setCustomFeature(Boolean.TRUE);
 				} else {
-					categoryTO.setTreeFilter(Boolean.FALSE);
+					categoryTO.setCustomFeature(Boolean.FALSE);
 				}
 				//predefined filters should not be deleted
 				categoryTO.setDeletable(modifiable && !isPredefined);

@@ -29,40 +29,43 @@ Ext.define("com.trackplus.admin.NotifySettingsList", {
 		//the exclusiveProject set only for automail in project settings
 		exclusiveProjectID: null
 	},
+	storeUrl: "notifySettings!loadList.action",
+	
+	fields: [{name: "id",	type: "int"},
+	         {name: "project",	type: "int"},
+	         {name: "projectLabel",	type: "string"},
+	         {name: "triggerLabel",	type: "string"},
+	         {name: "filterLabel",	type: "string"},
+	         {name: "inherited",	type: "boolean"}],
 	columns: [{
-			text: getText('common.lbl.name'),
-			flex:1, dataIndex: 'projectLabel', sortable:true, renderer:"inheritedRenderer",
+			text: getText("common.lbl.name"),
+			flex:1, dataIndex: "projectLabel", sortable:true, renderer:"inheritedRenderer",
 			filter: {
 	            type: "string"
 	        }
 		}, {
-			text: getText('admin.customize.automail.trigger.lblAlone'),
-			flex:1, dataIndex: 'triggerLabel', sortable:true, renderer:"inheritedRenderer",
+			text: getText("admin.customize.automail.trigger.lblAlone"),
+			flex:1, dataIndex: "triggerLabel", sortable:true, renderer:"inheritedRenderer",
 			filter: {
 	            type: "string"
 	        }
 		}, {
-			text: getText('admin.customize.automail.filter.lblAlone'),
-			flex:1, dataIndex: 'filterLabel', sortable:true, renderer:"inheritedRenderer",
+			text: getText("admin.customize.automail.filter.lblAlone"),
+			flex:1, dataIndex: "filterLabel", sortable:true, renderer:"inheritedRenderer",
 			filter: {
 	            type: "string"
 	        }
 		}],
 		
-	initComponent : function() {
-		this.fields = [{name: 'id',	type: 'int'},
-						{name: 'project',	type: 'int'},
-						{name: 'projectLabel',	type: 'string'},
-						{name: 'triggerLabel',	type: 'string'},
-						{name: 'filterLabel',	type: 'string'},
-						{name: 'inherited',	type: 'boolean'}];
-		this.storeUrl = "notifySettings!loadList.action";
-		this.callParent();
+	/**
+	 * Get extra parameters for grid load
+	 */
+	getStoreExtraParams:function() {
+		return {defaultSettings: this.getDefaultSettings(), exclusiveProjectID:this.getExclusiveProjectID()};
 	},
 	
-	
 	getEntityLabel: function() {
-		return getText('admin.customize.automail.assignments.lbl.assignment');
+		return getText("admin.customize.automail.assignments.lbl.assignment");
 	},
 	
 	actionOverwrite:null,
@@ -71,44 +74,36 @@ Ext.define("com.trackplus.admin.NotifySettingsList", {
 	 * The iconCls for the add button, overwrites base class icon
 	 */
 	getAddIconCls: function() {
-		return 'automailAdd';
+		return "automailAdd";
 	},
 	/**
 	 * The iconCls for the edit button, overwrites base class icon
 	 */
 	getEditIconCls: function() {
-		return 'automailEdit';
+		return "automailEdit";
 	},
 	
 	/**
 	 * The iconCls for the overwrite button
 	 */
 	getOverwriteIconCls: function() {
-		return 'copy';
+		return "copy";
 	},
 
 	/**
 	 * The key for overwrite button text
 	 */
 	getOverwriteButtonKey: function() {
-		return 'common.btn.overwrite';
+		return "common.btn.overwrite";
 	},
 
 	/**
 	 * The title for "add" popup and "add" action tooltip
 	 */
 	getOverwriteTitleKey: function() {
-		return 'common.lbl.overwrite';
+		return "common.lbl.overwrite";
 	},
 
-	/**
-	 * Get extra parameters for grid load
-	 */
-	getLoadGridParams:function() {
-		return {defaultSettings: this.getDefaultSettings(), exclusiveProjectID:this.getExclusiveProjectID()};
-	},
-
-	//actions
 	initActions:function(){
 		this.actionAdd = CWHF.createAction(this.getAddButtonKey(), this.getAddIconCls(), "onAdd", {tooltip:this.getActionTooltip(this.getAddTitleKey())});
 		this.actionEdit = CWHF.createAction(this.getEditButtonKey(), this.getEditIconCls(), "onEdit", {tooltip:this.getActionTooltip(this.getEditTitleKey()), disabled:true});
@@ -119,7 +114,6 @@ Ext.define("com.trackplus.admin.NotifySettingsList", {
 		}
 		this.actionDelete = CWHF.createAction(this.getDeleteButtonKey(), this.getDeleteIconCls(), "onDelete", {tooltip:this.getActionTooltip(this.getDeleteTitleKey()), disabled:true});
 		this.actions.push(this.actionDelete);
-		
 	},
 
 	/**
@@ -128,7 +122,7 @@ Ext.define("com.trackplus.admin.NotifySettingsList", {
 	getGridContextMenuActions: function(selectedRecords, selectionIsSimple) {
 		var actions = [];
 		if (selectionIsSimple) {
-			var inherited = selectedRecords.data['inherited'];
+			var inherited = selectedRecords.data["inherited"];
 			if (inherited && this.actionOverwrite) {
 				actions.push(this.actionOverwrite);
 			} else {

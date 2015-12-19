@@ -1,22 +1,22 @@
 CKEDITOR.editorConfig = function( config )
 {
-	config.extraPlugins='issue,code,simpleuploads,image2';
+	config.extraPlugins='issue,code,simpleuploads,image2,advancedlink';
 	config.height = 130;
 	config.toolbar =
 		[
-		 ['Bold','Italic','Underline','-','TextColor','BGColor','-','JustifyLeft','JustifyCenter','JustifyRight','-','NumberedList','BulletedList','-','Link','Unlink','Format','FontSize'],
-		 ['Maximize','-','issue','task','code','Image','Table'],
+		 ['Bold','Italic','Underline','-','TextColor','BGColor','-','JustifyLeft','JustifyCenter','JustifyRight','-','NumberedList','BulletedList','-','Format','FontSize'],
+		 ['Maximize','-','Advancedlink','issue','task','code','Image','Table'],
 		 ['Source', 'Blockquote']
 	];
 
-	config.removePlugins = 'elementspath,contextmenu,liststyle,tabletools';
+	config.removePlugins = 'elementspath,contextmenu,liststyle,tabletools,link';
 	config.disableNativeSpellChecker = false;
 	config.resize_enabled = false;
 
 	config.baseFloatZIndex=90001;
 	config.shiftEnterMode = CKEDITOR.ENTER_BR;
 	config.enterMode = CKEDITOR.ENTER_P;
-	config.extraAllowedContent='a[target];div[workitemid,class,style]{*}(*);figure;figcaption;span{*}(*);ol[type]';
+	config.extraAllowedContent='a[target,type,objectid];div[workitemid,class,style]{*}(*);figure;figcaption;span{*}(*);ol[type]';
 	//config.scayt_sLang = getScaytLocale();
 	//config.scayt_autoStartup = true;
 	config.filebrowserImageBrowseUrl = 'browseFile.action?type=Images';

@@ -549,7 +549,7 @@ public class CategoryBL {
 		Integer objectIDTo = categoryTokenTo.getObjectID();
 		Integer objectID = null;
 		try {
-			objectID = copy(categoryType, typeFrom, typeTo, repositoryFrom, repositoryTo, objectIDFrom, objectIDTo, personID, isCopy, locale, new HashMap<Integer, Integer>());
+			objectID = copy(categoryType, typeFrom, typeTo, repositoryFrom, repositoryTo, objectIDFrom, objectIDTo, personID, true, isCopy, locale, new HashMap<Integer, Integer>());
 		} catch (CopyInDescendantException e) {			
 			LOGGER.debug(ExceptionUtils.getStackTrace(e));
 			return CategoryJSON.createNodeResultJSON(false, nodeFrom,
@@ -577,7 +577,7 @@ public class CategoryBL {
 	 */
 	public static Integer copy(String categoryType, Integer typeFrom, Integer typeTo,
 			Integer repositoryFrom, Integer repositoryTo, Integer objectIDFrom, Integer objectIDTo,
-			Integer personID, boolean isCopy, Locale locale, Map<Integer, Integer> oldToNewLeafIDs) throws CopyInDescendantException {
+			Integer personID, boolean mightAddCopyFlagToLabel, boolean isCopy, Locale locale, Map<Integer, Integer> oldToNewLeafIDs) throws CopyInDescendantException {
 		CategoryFacade categoryFacade = CategoryFacadeFactory.getInstance().getCategoryFacade(categoryType);
 		LeafFacade leafFacade = CategoryFacadeFactory.getInstance().getLeafFacade(categoryType);
 		ILabelBean labelBeanTo = null;
@@ -622,7 +622,7 @@ public class CategoryBL {
 					}
 				}
 				objectID = categoryFacade.copySubtree(labelBeanFrom, repositoryFrom, repositoryTo,
-						projectTo, categoryTo, personID, locale, true, isCopy, leafFacade, oldToNewLeafIDs);
+						projectTo, categoryTo, personID, locale, mightAddCopyFlagToLabel, isCopy, leafFacade, oldToNewLeafIDs);
 				break;
 			}
 		}
@@ -729,7 +729,7 @@ public class CategoryBL {
 	public static String getNextUniqueName(Integer objectID, String label, 
 			Integer repository, Integer categoryID, Integer projectID, 
 			Integer personID, Integer subtype, Locale locale, CategoryBaseFacade baseFacade) {
-		String labelToReturn = "";
+		String labelToReturn = label;
 		if (!isUniqueName(objectID, label, repository, categoryID, projectID, personID, subtype, baseFacade)) {
 			String copyName = LocalizeUtil.getParametrizedString("common.lbl.copy", new Object[] {label}, locale);
 			int i=0;

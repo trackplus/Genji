@@ -26,154 +26,45 @@ Ext.define("com.trackplus.admin.customize.role.RoleController", {
 	mixins: {
 		baseController: "com.trackplus.admin.GridBaseController"
 	},
-	baseAction:"roleView",
-	entityID:"roleID", 
-	editWidth : 520,
-	editHeight : 335,
+	//baseAction:"roleView",
+	//entityID:"roleID", 
 	
-	checkListPanel : null,
+	entityDialog: "com.trackplus.admin.customize.role.RoleEdit",
+	
+	//checkListPanel : null,
 	panelGrids : null,
 	gridNoAccessSelected : null,
 	gridAssignedSelected : null,
 	
-	createEditForm : function(entityJS, type) {
-	    this.checkListPanel = Ext.create('Ext.panel.Panel', {
-	        border : false,
-	        bodyBorder : false,
-	        autoScroll : true,
-	        style : {
-	            border : 'none',
-	            background : 'none'
-	        },
-	        layout : {
-	            type : 'table',
-	            columns : 2,
-	            tableAttrs : {
-	                style : {
-	                    width : '100%'
-	                }
-	            },
-	            tdAttrs : {
-	                width : '50%',
-	                style : {
-	                    'vertical-align' : 'top'
-	                }
-	            }
-	        },
-	        defaults : {
-	            frame : false,
-	            border : false
-	        },
-	        anchor : '100%',
-	        items : []
-	    });
-	    return new Ext.form.FormPanel({
-	        url : 'roleSave.action',
-	        labelWidth : 130,
-	        region : 'center',
-	        border : false,
-	        autoScroll : true,
-	        margin : '0 0 0 0',
-	        bodyStyle : {
-	            padding : '10px'
-	        },
-	        /*
-			 * style:{ borderBottom:'1px solid #D0D0D0' },
-			 */
-	        defaultType : 'textfield',
-	        items : [ CWHF.createTextField("admin.customize.role.lbl.role", "label", {
-	            anchor : '100%',
-	            allowBlank : false,
-	            labelWidth : 80,
-	            labelAlign : "left"
-	        }), this.checkListPanel ]
-	    });
+	getDeleteUrl: function() {
+		return "roleView!delete.action";
 	},
 	
-	afterLoadForm : function(data) {
-	    var me = this;
-	    me.checkListPanel.removeAll();
-	    me.chekList = new Array();
-	    var chekListFull = new Array();
-	    for (var i = 0; i < data.fullAccessFlags.length; i++) {
-	        var flag = data.fullAccessFlags[i];
-	        chekListFull.push(Ext.create('Ext.form.field.Checkbox', {
-	            boxLabel : flag.label,
-	            checked : flag.selected,
-	            name : 'f' + flag.id,
-	            inputValue : 'true'
-	        }));
-	    }
-	    var fieldSetFullAccess = Ext.create('Ext.form.FieldSet', {
-	        title : getText('admin.customize.role.lbl.generalAccess'),
-	        defaultType : 'checkbox', // each item will be a
-										// checkbox
-	        layout : 'anchor',
-	        items : chekListFull,
-	        margin : '5 15 5 0'
-	    });
-	    var chekListRaciRole = new Array();
-	    for (var i = 0; i < data.raciRoles.length; i++) {
-	        var flag = data.raciRoles[i];
-	        chekListRaciRole.push(Ext.create('Ext.form.field.Checkbox', {
-	            boxLabel : flag.label,
-	            checked : flag.selected,
-	            name : 'f' + flag.id,
-	            inputValue : 'true'
-	        }));
-	    }
-	    var fieldSetRaciRoles = Ext.create('Ext.form.FieldSet', {
-	        title : getText('admin.customize.role.lbl.raci'),
-	        defaultType : 'checkbox', // each item will be a
-										// checkbox
-	        layout : 'anchor',
-	        items : chekListRaciRole,
-	        margin : '5 0 5 0'
-	    });
-
-	    for (var i = 0; i < chekListFull.length; i++) {
-	        me.chekList.push(chekListFull[i]);
-	    }
-	    for (var i = 0; i < chekListRaciRole.length; i++) {
-	        me.chekList.push(chekListRaciRole[i]);
-	    }
-	    me.checkListPanel.add(fieldSetFullAccess);
-	    me.checkListPanel.add(fieldSetRaciRoles);
-	    me.checkListPanel.updateLayout();
+	getDeleteParamName: function() {
+	    return "roleID";
 	},
-
-	preSubmitProcess : function(submitUrlParams, panel) {
-	    var me = this;
-	    var NUMBER_OF_ACCESS_FLAGS = 21;
-	    var accessFlags = new Array(21);
-	    for (var i = 0; i < accessFlags.length; i++) {
-	        accessFlags[i] = 0;
-	    }
-	    if (me.chekList ) {
-
-	        for (var i = 0; i < me.chekList.length; i++) {
-	            var index = me.chekList[i].getName().substring(1);
-	            if (me.chekList[i].getRawValue() === true) {
-	                accessFlags[index] = 1;
-	                // extendedAccessKey+='1';
-	            } else {
-	                accessFlags[index] = 0;
-	                // extendedAccessKey+='0';
-	            }
-	        }
-	    }
-	    var extendedAccessKey = "";
-	    for (var i = 0; i < accessFlags.length; i++) {
-	        if (accessFlags[i] === 1) {
-	            extendedAccessKey += '1';
+	
+	
+	onSelectionChange : function(view, selections) {
+	    var sys = com.trackplus.TrackplusConfig.user.sys;
+	    if (sys) {
+	        if (CWHF.isNull(selections) || selections.length === 0) {
+	            // no selection
+	            this.getView().actionDelete.setDisabled(true);
+	            this.getView().actionEdit.setDisabled(true);
+	            this.getView().actionCopy.setDisabled(true);
+	            this.getView().actionIssueTypes.setDisabled(true);
+	            this.getView().actionFieldsRestictions.setDisabled(true);
 	        } else {
-	            extendedAccessKey += '0';
+	            this.getView().actionDelete.setDisabled(false);
+	            this.getView().actionEdit.setDisabled(false);
+	            this.getView().actionCopy.setDisabled(false);
+	            this.getView().actionIssueTypes.setDisabled(false);
+	            this.getView().actionFieldsRestictions.setDisabled(false);
 	        }
 	    }
-	    submitUrlParams['extendedAccessKey'] = extendedAccessKey;
-	    return submitUrlParams;
 	},
-
+	
 	createFieldRestrictionsForm : function(roleID) {
 	    var explanation = {
 	        region : 'north',

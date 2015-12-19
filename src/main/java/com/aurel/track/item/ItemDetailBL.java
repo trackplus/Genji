@@ -32,6 +32,10 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import com.aurel.track.beans.*;
+import com.aurel.track.fieldType.constants.ValueType;
+import com.aurel.track.fieldType.runtime.base.IFieldTypeRT;
+import com.aurel.track.fieldType.types.FieldTypeManager;
+import com.aurel.track.item.history.HistoryBean;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -147,6 +151,7 @@ public class ItemDetailBL {
 		return encodeJSON_HistoryList(list,historyFull,locale,false);
 	}
 	public static String encodeJSON_HistoryList(List<HistoryValues> list,boolean historyFull,Locale locale,boolean formatted){
+
 		StringBuilder sb=new StringBuilder();
 		sb.append("[");
 		if(list!=null){
@@ -157,12 +162,7 @@ public class ItemDetailBL {
 					sb.append(",");
 				}
 				sb.append("{");
-				
 
-				JSONUtility.appendDateTimeValue(sb,"date",history.getLastEdit());
-				JSONUtility.appendStringValue(sb, "author", history.getChangedByName());
-				JSONUtility.appendStringValue(sb, "authorID", history.getChangedByID()+"");
-				JSONUtility.appendStringValue(sb, "typeOfChange", history.getFieldName()+"");
 				
 				String newShowValueFull =history.getNewShowValue();
 				String newValueStr;
@@ -187,10 +187,7 @@ public class ItemDetailBL {
 					oldShowValueFull=formatDescription(oldShowValueFull,locale);
 					oldValueStr=formatDescription(oldValueStr,locale);
 				}
-				
-				JSONUtility.appendStringValue(sb, "oldValues", oldValueStr);
-				JSONUtility.appendStringValue(sb, "oldValuesFull", oldShowValueFull);
-				
+
 				String commentFull =history.getTransactionComment();
 				String commentStr;
 				if(historyFull){
@@ -201,31 +198,37 @@ public class ItemDetailBL {
 					commentFull=formatDescription(commentFull,locale);
 					commentStr=formatDescription(commentStr,locale);
 				}
-				
+
+				boolean isText=isTextHistory(history.getFieldID());
+				String diffFull = null;
+				if(isText){
+					diffFull=makeHtmlDif(newShowValueFull,oldShowValueFull,locale);
+				}else{
+					diffFull=makeSimpleHtmlDif(newShowValueFull,oldShowValueFull);
+				}
+				String diffStr=null;
+				//diffFull=formatDescription(diffFull,locale);
+				if(historyFull){
+					diffStr=diffFull;
+				}else{
+					if(isText) {
+						diffStr =makeHtmlDif(newValueStr,oldValueStr,locale);
+					}else{
+						diffStr =makeSimpleHtmlDif(newValueStr,oldValueStr);
+					}
+				}
+
+				JSONUtility.appendDateTimeValue(sb,"date",history.getLastEdit());
+				JSONUtility.appendStringValue(sb, "author", history.getChangedByName());
+				JSONUtility.appendStringValue(sb, "authorID", history.getChangedByID()+"");
+				JSONUtility.appendStringValue(sb, "typeOfChange", history.getFieldName()+"");
+
+				JSONUtility.appendStringValue(sb, "oldValues", oldValueStr);
+				JSONUtility.appendStringValue(sb, "oldValuesFull", oldShowValueFull);
+
 				JSONUtility.appendStringValue(sb, "comment", commentStr);
 				JSONUtility.appendStringValue(sb, "commentFull", commentFull);
 
-				String diffFull = null;
-				try{
-					diffFull=HTMLDiff.makeDiff(newShowValueFull,oldShowValueFull,locale);
-				}catch (Exception ex) {
-					LOGGER.info("Making html diff failed with " + ex.getMessage());
-					if (LOGGER.isDebugEnabled()) {
-						LOGGER.debug("Item " +  history.getWorkItemID());
-						LOGGER.debug("New value " + newShowValueFull);
-						LOGGER.debug("Old value " + oldShowValueFull);
-						LOGGER.error(ExceptionUtils.getStackTrace(ex));
-					}
-				}
-				String diffStr="diff";
-				if(historyFull){
-					diffFull=formatDescription(diffFull,locale);
-					diffStr=diffFull;
-				}else{
-					diffStr=extractShortDescription(diffFull);
-					diffFull=formatDescription(diffFull,locale);
-					diffStr=formatDescription(diffStr,locale);
-				}
 				JSONUtility.appendStringValue(sb, "diff", diffStr);
 				JSONUtility.appendStringValue(sb, "diffFull", diffFull);
 				JSONUtility.appendIntegerValue(sb, "id", i, true);
@@ -235,6 +238,48 @@ public class ItemDetailBL {
 		sb.append("]");
 		return sb.toString();
 	}
+	private static boolean isTextHistory(Integer fieldID){
+		boolean result=false;
+		if(fieldID==null){
+			return false;
+		}
+		if(fieldID.intValue()== TFieldChangeBean.COMPOUND_HISTORY_FIELD){
+			result=true;
+		}else {
+			if(fieldID>0) {
+				IFieldTypeRT fieldTypeRT = FieldTypeManager.getFieldTypeRT(fieldID);
+				if (fieldTypeRT != null && (fieldTypeRT.getValueType() == ValueType.TEXT || fieldTypeRT.getValueType() == ValueType.TEXT)) {
+					result = true;
+				}
+			}
+		}
+		return result;
+	}
+	private static String makeSimpleHtmlDif(String newValue,String oldValue){
+		StringBuilder sb=new StringBuilder();
+		if(oldValue!=null&&oldValue.length()>0){
+			sb.append("<span class=\"diff-html-removed\">").append(oldValue).append("</span>");
+		}
+		if(newValue!=null&&newValue.length()>0){
+			sb.append(" ").append("<span class=\"diff-html-added\">").append(newValue).append("</span>");
+		}
+		return sb.toString();
+	}
+	private static String makeHtmlDif(String newValue,String oldValue,Locale locale){
+		String diffStr=null;
+		try{
+			diffStr=HTMLDiff.makeDiff(newValue,oldValue,locale);
+		}catch (Exception ex) {
+			LOGGER.info("Making html diff failed with " + ex.getMessage());
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("New value " + newValue);
+				LOGGER.debug("Old value " + oldValue);
+				LOGGER.error(ExceptionUtils.getStackTrace(ex));
+			}
+		}
+		return diffStr;
+	}
+
 	public static String encodeJSON_Comments(List<HistoryValues> list, Locale locale) {
 		return encodeJSON_Comments(list,locale,null,false,false);
 	}

@@ -250,5 +250,6 @@ com.trackplus.license
 com.trackplus.model
 com.trackplus.persist
 com.trackplus.tools
+com.trackplus.track.constants
 com.trackplus.track.util.html
 filters

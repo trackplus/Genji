@@ -154,7 +154,6 @@ public class AverageTimeToCloseItem extends TimePeriodDashboardView{
         static String TIME_FORMAT_WORKING_HOURS = "averageTimeToCloseItem.tooltip.time.format.working.hours";
     }
 
-    @Override
     protected boolean isUseConfig(){
         return true;
     }
@@ -257,10 +256,12 @@ public class AverageTimeToCloseItem extends TimePeriodDashboardView{
     public String encodeJSONExtraDataConfig(Map<String,String> parameters, TPersonBean user, Integer entityId, Integer entityType){
         StringBuilder sb=new StringBuilder();
         Locale locale = user.getLocale();
+        //DateTimeUtils dateTimeUtils = DateTimeUtils.getInstance();
         DashboardDescriptor dashboardDescriptor = getDescriptor();
         String bundleName = dashboardDescriptor.getBundleName();
 
         sb.append(getDatasourceConfig(parameters, entityId, entityType, locale));
+        //DataSourceDashboardBL.appendJSONExtraDataConfig_DataSource(sb,dashboardDescriptor,parameters,user,entityId,entityType);
         sb.append(getTimePeriodConfig(parameters, locale));
 
         JSONUtility.appendILabelBeanList(sb,CONFIGURATION_PARAMETERS.STATUSES, StatusBL.loadAll(locale));
@@ -295,11 +296,22 @@ public class AverageTimeToCloseItem extends TimePeriodDashboardView{
          int datasourceType = parseInteger(configParameters, "selectedDatasourceType", 1);
          Integer projectOrReleaseID = null;
          Integer filterID = null;
-         if(datasourceType == 1) {
-             projectOrReleaseID = parseInteger(configParameters, "selectedProjectOrRelease", 1);
+         if(configParameters.get("projectID") != null || configParameters.get("releaseID") != null) {
+        	 if(configParameters.get("releaseID") != null) {
+        		 projectOrReleaseID = Integer.valueOf(configParameters.get("releaseID").toString());
+        	 }else {
+        		 projectOrReleaseID = Integer.valueOf(configParameters.get("projectID").toString());
+        		 projectOrReleaseID = projectOrReleaseID * (-1);
+        	 }
+        	 datasourceType = DATASOURCE_TYPE.PROJECT_RELEASE;
          }else {
-             filterID = parseInteger(configParameters,  "selectedQueryID", 1);
+	         if(datasourceType == 1) {
+	             projectOrReleaseID = parseInteger(configParameters, "selectedProjectOrRelease", 1);
+	         }else {
+	             filterID = parseInteger(configParameters,  "selectedQueryID", 1);
+	        }
         }
+
         Map<String, Object>contextMap = new HashMap<String, Object>();
         contextMap.put("fromIssueNavigator", false);
         contextMap.put("useProjectSpecificID", false);
@@ -650,7 +662,7 @@ public class AverageTimeToCloseItem extends TimePeriodDashboardView{
 						integerValues[i]=new Integer(strArr[i]);
 					} catch (Exception e) {
 						LOGGER.info("Converting the " + strArr[i] + " as the " + i + "th parameter to Integer failed with " + e.getMessage(), e);
-						LOGGER.error(ExceptionUtils.getStackTrace(e));
+						LOGGER.error(ExceptionUtils.getStackTrace(e),e);
 					}
 				}
 			}

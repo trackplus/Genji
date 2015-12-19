@@ -24,6 +24,13 @@ Ext.define("com.trackplus.admin.customize.role.Role", {
 	extend : "com.trackplus.admin.GridBase",
 	xtype: "role",
     controller: "role",
+    storeUrl: "roleView!loadRoles.action",
+    fields: [{name : "id", type : "int"},
+             {name : "name", type : "string"},
+             {name : "accessFlags"},
+             {name : "issueTypesAssigned"},
+             {name : "noReadFields"},
+             {name : "noEditFields"}],
 	columns : [
 	        {
 	            text : getText('admin.customize.role.lbl.role'),
@@ -34,8 +41,7 @@ Ext.define("com.trackplus.admin.customize.role.Role", {
 	            filter: {
 		            type: "string"
 		        }
-	        },
-	        {
+	        }, {
 	            xtype : 'templatecolumn',
 	            text : getText('admin.customize.role.lbl.accessFlags'),
 	            tpl : new Ext.XTemplate(
@@ -47,8 +53,7 @@ Ext.define("com.trackplus.admin.customize.role.Role", {
 	                    'value="true"/> {label}</div>', '</tpl>', '</td>', '</tr></table>'),
 	            width : 175,
 	            sortable : false
-	        },
-	        {
+	        }, {
 	            xtype : 'templatecolumn',
 	            text : getText('admin.customize.role.lbl.inSelections'),
 	            tpl : new Ext.XTemplate(
@@ -60,8 +65,7 @@ Ext.define("com.trackplus.admin.customize.role.Role", {
 	                    'value="true"/> {label}</div>', '</tpl>', '</td>', '</tr>', '</table>'),
 	            width : 175,
 	            sortable : false
-	        },
-	        {
+	        }, {
 	            xtype : 'templatecolumn',
 	            text : getText('admin.customize.role.lbl.allowedListTypes'),
 	            tpl : new Ext.XTemplate('<table>', '<tpl for="issueTypesAssigned">',
@@ -70,16 +74,14 @@ Ext.define("com.trackplus.admin.customize.role.Role", {
 	            ),
 	            width : 175,
 	            sortable : false
-	        },
-	        {
+	        }, {
 	            xtype : 'templatecolumn',
 	            text : getText('admin.customize.role.fieldsRestrictions.lbl.hiddenFields'),
 	            tpl : new Ext.XTemplate('<table>', '<tpl for="noReadFields">',
 	                    '<td style="padding:2px">{label}</td></tr>', '</tpl>', '</table>'),
 	            width : 175,
 	            sortable : false
-	        },
-	        {
+	        }, {
 	            xtype : 'templatecolumn',
 	            text : getText('admin.customize.role.fieldsRestrictions.lbl.readOnlyFields'),
 	            tpl : new Ext.XTemplate('<table>', '<tpl for="noEditFields">',
@@ -87,28 +89,7 @@ Ext.define("com.trackplus.admin.customize.role.Role", {
 	            width : 175,
 	            sortable : false
 	        }
-
 	],
-	
-	initComponent : function() {
-		this.fields = [{
-				    name : 'id',
-				    type : 'int'
-					}, {
-				    name : 'name',
-				    type : 'string'
-					}, {
-				    name : 'accessFlags'
-					}, {
-				    name : 'issueTypesAssigned'
-					}, {
-				    name : 'noReadFields'
-					}, {
-				    name : 'noEditFields'
-					}],
-		this.storeUrl = "roleView!loadRoles.action";
-		this.callParent();
-	},
 	
 	actionIssueTypes : null,
 	actionFieldsRestictions : null,
@@ -151,25 +132,7 @@ Ext.define("com.trackplus.admin.customize.role.Role", {
 	    }
 	},
 
-	onGridSelectionChange : function(view, selections) {
-	    var sys = com.trackplus.TrackplusConfig.user.sys;
-	    if (sys) {
-	        if (CWHF.isNull(selections) || selections.length === 0) {
-	            // no selection
-	            this.actionDelete.setDisabled(true);
-	            this.actionEdit.setDisabled(true);
-	            this.actionCopy.setDisabled(true);
-	            this.actionIssueTypes.setDisabled(true);
-	            this.actionFieldsRestictions.setDisabled(true);
-	        } else {
-	            this.actionDelete.setDisabled(false);
-	            this.actionEdit.setDisabled(false);
-	            this.actionCopy.setDisabled(false);
-	            this.actionIssueTypes.setDisabled(false);
-	            this.actionFieldsRestictions.setDisabled(false);
-	        }
-	    }
-	},
+	
 
 	/**
 	 * Get the actions available in context menu depending on

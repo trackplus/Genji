@@ -401,6 +401,7 @@ Ext.define('com.trackplus.itemNavigator.FlatGridViewPlugin',{
 		var me=this;
 		var sorters=null;
 		return null;
+		/* TODO
 		if(me.model.layout.sortField){
 			var sortField="f"+me.model.layout.sortField;
 			var sortDirection;
@@ -428,8 +429,8 @@ Ext.define('com.trackplus.itemNavigator.FlatGridViewPlugin',{
 				});
 			}
 
-		}
-		return sorters;
+		} */
+		// return sorters;
 	},
 	createStore:function(){
 		var me=this;

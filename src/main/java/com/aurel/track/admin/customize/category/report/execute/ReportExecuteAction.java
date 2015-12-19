@@ -74,15 +74,15 @@ public class ReportExecuteAction extends ActionSupport implements Preparable, Se
 	private TPersonBean personBean;
 	private Locale locale;
 	/**
-	 * the ID of the TExportTemplateBean set through 
-	 * request parameters or submitted hidden parameters 
+	 * the ID of the TExportTemplateBean set through
+	 * request parameters or submitted hidden parameters
 	 */
 	private Integer templateID;
 	/**
 	 * the configuration parameters map
 	 */
 	private Map<String, String[]> params;
-	
+
 	/**
 	 * when the report executing form a project/release specific dashboard:
 	 * positive for release, negative for project
@@ -92,9 +92,9 @@ public class ReportExecuteAction extends ActionSupport implements Preparable, Se
 	 * The dashboardID when executing the report from a dashboard
 	 */
 	private Integer dashboardID;
-	
+
 	private ServletContext servletContext;
-	
+
 	/**
 	 * whether we are coming from an issue navigator
 	 */
@@ -102,21 +102,21 @@ public class ReportExecuteAction extends ActionSupport implements Preparable, Se
 	/**
 	 * from issue navigator as result of a right click of a single issue from issue navigator
 	 */
-	
+
 	/**
-	 * row selections from issue navigator 
+	 * row selections from issue navigator
 	 */
 	private String workItemIDs;
 
 	//format of the direct export from the report overview: pdf/xsd/csv/xml
 	private String exportFormat;
-	
+
 	private Boolean useProjectSpecificID;
 	private Map<String, Object> descriptionMap;
 	private DatasourceDescriptor datasourceDescriptor;
 	private Map<String, Object> contextMap;
 	private IPluggableDatasource pluggableDatasouce;
-	
+
 	private boolean leaf;
 	private String iconCls;
 
@@ -130,7 +130,7 @@ public class ReportExecuteAction extends ActionSupport implements Preparable, Se
 		}
 		descriptionMap = ReportExecuteBL.getTemplateMap(templateID, exportFormat);
 		if (exportFormat!=null) {
-			//if export directly with dynamic templates from issue navigator not needed 
+			//if export directly with dynamic templates from issue navigator not needed
 			//to send fromIssueNavigator as request parameter but it will be set explicitly
 			fromIssueNavigator = true;
 			LOGGER.debug("Export format is " + exportFormat);
@@ -179,7 +179,7 @@ public class ReportExecuteAction extends ActionSupport implements Preparable, Se
 		JSONUtility.encodeJSON(servletResponse, JSONUtility.encodeJSONBoolean(hasExtraParameters));
 		return null;
 	}
-	
+
 	/**
 	 * Generates the report using an internal template (freemarker)
 	 * or an external report engine
@@ -210,7 +210,7 @@ public class ReportExecuteAction extends ActionSupport implements Preparable, Se
 
 
 	/**
-	 * Serializes the data source in the servlet response's output stream 
+	 * Serializes the data source in the servlet response's output stream
 	 * @return
 	 */
 	public String serializeDatasource() {
@@ -224,14 +224,14 @@ public class ReportExecuteAction extends ActionSupport implements Preparable, Se
 		if (datasource==null) {
 			LOGGER.error("The datasource for datasourceDescriptor " + datasourceDescriptor.toString() + " is null");
 		}
-		ReportExecuteBL.prepareDatasourceResponse(servletResponse, templateID, 
+		ReportExecuteBL.prepareDatasourceResponse(servletResponse, templateID,
 				pluggableDatasouce, descriptionMap, datasource);
 		return null;
 	}
-	
+
 	/**
 	 * Renders the jsConfigClass
-	 * Sets the configTemplate field (to dynamically set the template in struts.xml) 
+	 * Sets the configTemplate field (to dynamically set the template in struts.xml)
 	 * and prepares the parameters to be shown in the freemarker template
 	 * @return
 	 */
@@ -240,9 +240,9 @@ public class ReportExecuteAction extends ActionSupport implements Preparable, Se
 		JSONUtility.encodeJSON(servletResponse, configJson);
 		return null;
 	}
-	
+
 	/**
-	 * If refreshing of some parameters through ajax is needed 
+	 * If refreshing of some parameters through ajax is needed
 	 * @return
 	 */
 	public String refreshParameters() {
@@ -250,18 +250,16 @@ public class ReportExecuteAction extends ActionSupport implements Preparable, Se
 		JSONUtility.encodeJSON(servletResponse, configJson);
 		return null;
 	}
-	
+
 	/**
 	 * Writes the preview image into the servlet response
 	 * @return
 	 */
 	public String showPreviewImage() {
-		
-		
 		File imgFile = null;
 		if(!leaf) {
-			
-			String folderDirectory = "";			
+
+			String folderDirectory = "";
 			if("projects-ticon".equals(iconCls)) {
 				folderDirectory = ApplicationBean.getInstance().getServletContext().getRealPath("/"+Constants.DESIGN_DIRECTORY + "/" + Constants.DEFAULTDESIGNPATH + "/img/project.png");
 			}else {
@@ -299,23 +297,23 @@ public class ReportExecuteAction extends ActionSupport implements Preparable, Se
 		}
 		return null;
 	}
-	
+
 
 	@Override
 	public void setSession(Map<String, Object> session) {
 		this.session = session;
 	}
-	
+
 	@Override
 	public void setServletResponse(HttpServletResponse servletResponse) {
 		this.servletResponse = servletResponse;
 	}
-	
+
 	@Override
 	public void setServletContext(ServletContext servletContext) {
 		this.servletContext = servletContext;
 	}
-	
+
 	public Map<String, String[]> getParams() {
 		return params;
 	}
@@ -323,11 +321,11 @@ public class ReportExecuteAction extends ActionSupport implements Preparable, Se
 	public void setParams(Map<String, String[]> params) {
 		this.params = params;
 	}
-	
+
 	public void setTemplateID(Integer templateID) {
 		this.templateID = templateID;
 	}
-	
+
 	public void setFromIssueNavigator(boolean fromIssueNavigator) {
 		this.fromIssueNavigator = fromIssueNavigator;
 	}
@@ -346,7 +344,7 @@ public class ReportExecuteAction extends ActionSupport implements Preparable, Se
 	}
 
 
-	
+
 	public void setWorkItemIDs(String workItemIDs) {
 		this.workItemIDs = workItemIDs;
 	}
@@ -354,7 +352,7 @@ public class ReportExecuteAction extends ActionSupport implements Preparable, Se
 	public void setDashboardID(Integer dashboardID) {
 		this.dashboardID = dashboardID;
 	}
-	
+
 	public boolean isLeaf() {
 		return leaf;
 	}
@@ -362,7 +360,7 @@ public class ReportExecuteAction extends ActionSupport implements Preparable, Se
 	public void setLeaf(boolean leaf) {
 		this.leaf = leaf;
 	}
-	
+
 	public String getIconCls() {
 		return iconCls;
 	}
@@ -371,6 +369,6 @@ public class ReportExecuteAction extends ActionSupport implements Preparable, Se
 		this.iconCls = iconCls;
 	}
 
-	
+
 
 }

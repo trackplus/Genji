@@ -28,6 +28,8 @@ package com.aurel.track.admin.customize.objectStatus;
  *
  */
 public class ObjectStatusGridRowTO {
+	//needed for selection by ID
+	private Integer id = null;
 	private String label = null;
 	private String typeflagLabel;
 	//whether this node can be edited/deleted by the current user
@@ -37,6 +39,12 @@ public class ObjectStatusGridRowTO {
 	private String node;
 	
 				
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
 	public String getLabel() {
 		return label;
 	}

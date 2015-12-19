@@ -154,7 +154,7 @@ public class ReportBeansToLaTeXConverter implements Console {
 	/**
 	 * Generate the PDF from this Genji document via a Freemarker tagged LaTeX
 	 * template.
-	 * 
+	 *
 	 * @param items
 	 * @param withHistory
 	 * @param locale
@@ -175,6 +175,10 @@ public class ReportBeansToLaTeXConverter implements Console {
 		// Replace LaTeX escaped characters by their unescaped values
 		try {
 			List<String> lines = FileUtils.readLines(template, "UTF-8");
+			if (lines.size() < 1) {
+				debugTrace.append("The template file " + template.getName() + " has no lines or does not exist.\n");
+				debugTrace.append("Make sure you have named the master template file like the tlx package.\n");
+			}
 			for (String line : lines) {
 				// The following template snippet determines how inline items
 				// are being rendered.
@@ -212,7 +216,7 @@ public class ReportBeansToLaTeXConverter implements Console {
 		int exitValue = runPdflatex(new File(latexTmpDir), latexFile, 1);
 		exitValue = runPdflatex(new File(latexTmpDir), latexFile, 2);
 		String pdf = latexFile.getAbsolutePath().replace(".tex", ".pdf");
-		
+
 		if (exitValue == -99) {
 			File pdfFile = new File(pdf);
 			try {
@@ -222,7 +226,7 @@ public class ReportBeansToLaTeXConverter implements Console {
 			}
 			return pdfFile;
 		}
-		
+
 		File pdfFile = new File(pdf);
 		if (!pdfFile.exists() || pdfFile.length() < 10 || exitValue != 0 ) {
 			try {
@@ -240,7 +244,7 @@ public class ReportBeansToLaTeXConverter implements Console {
 	 * converted to LaTeX format. The map is being used by the Freemarker
 	 * processor to generate a complete LaTeX document, which then is processed
 	 * by the LaTeX processor.
-	 * 
+	 *
 	 * @param items
 	 * @param parser
 	 * @return
@@ -290,7 +294,7 @@ public class ReportBeansToLaTeXConverter implements Console {
 				context.put("meetingTopics", topicList);
 				context.put("topics", topicList);
 			}
-			
+
 			processAttachments(workItemBean);
 
 			String ptitle = Jsoup.parse(workItemBean.getSynopsis()).text();
@@ -308,19 +312,23 @@ public class ReportBeansToLaTeXConverter implements Console {
 			HashMap<String, Object> fieldMap = null;
 
 			if (isDocument) {
-				context.put("title", ptitle);
-				context.put("project", project.getLabel());
+				context.put("title", texify(ptitle));
+				context.put("project", texify(project.getLabel()));
 				String licenseHolder = texify(ApplicationBean.getInstance().getLicenseHolder());
 				context.put("licenseHolder", licenseHolder);
 				context.put("locale", locale.getLanguage());
-				context.put("serverurl", ApplicationBean.getInstance().getSiteBean().getServerURL()
-						+ ApplicationBean.getInstance().getServletContext().getContextPath());
+				context.put("serverurl", texify(ApplicationBean.getInstance().getSiteBean().getServerURL()
+						+ ApplicationBean.getInstance().getServletContext().getContextPath()));
 
 				// Get the field map (Freemarker context) for this document
 				fieldMap = getFieldMap(reportBean, inlineItems, fields, inlineMacroBuffer);
 
 				for (Entry<String, Object> entry : fieldMap.entrySet()) {
-					context.put(entry.getKey(), entry.getValue());
+					if (entry.getValue().getClass().equals(String.class)) {
+						context.put(entry.getKey(), texify(entry.getValue().toString()));
+					} else {
+						context.put(entry.getKey(), entry.getValue());
+					}
 				}
 			} else {
 				LOGGER.debug("Section title: " + workItemBean.getSynopsis());
@@ -334,18 +342,22 @@ public class ReportBeansToLaTeXConverter implements Console {
 						Map<String, String> itemLinkSpecificMap = ReportBeansToXML.getLinkSpecificData(reportBeanLink, linkTypeIDToLinkTypeMap, locale);
 						if (itemLinkSpecificMap!=null) {
 							for (Map.Entry<String, String> entry : itemLinkSpecificMap.entrySet()) {
-								fieldMap.put(entry.getKey(), entry.getValue());
+								if (entry.getValue().getClass().equals(String.class)) {
+									fieldMap.put(entry.getKey(), texify(entry.getValue().toString()));
+								} else {
+									fieldMap.put(entry.getKey(), entry.getValue());
+								}
 							}
 						}
 					}
 				}
-				fieldMap.put("title", ptitle);
-				
-				fieldMap.put("Title", ptitle);
-				fieldMap.put("project", project.getLabel());
-				fieldMap.put("Project", project.getLabel());
-				fieldMap.put("serverurl", ApplicationBean.getInstance().getSiteBean().getServerURL()
-						+ ApplicationBean.getInstance().getServletContext().getContextPath());
+				fieldMap.put("title", texify(ptitle));
+
+				fieldMap.put("Title", texify(ptitle));
+				fieldMap.put("project", texify(project.getLabel()));
+				fieldMap.put("Project", texify(project.getLabel()));
+				fieldMap.put("serverurl", texify(ApplicationBean.getInstance().getSiteBean().getServerURL()
+						+ ApplicationBean.getInstance().getServletContext().getContextPath()));
 				noOfFigures = noOfFigures + Integer.valueOf((String) fieldMap.get("noOfFigures"));
 				noOfTables = noOfTables + Integer.valueOf((String) fieldMap.get("noOfTables"));
 			}
@@ -353,28 +365,28 @@ public class ReportBeansToLaTeXConverter implements Console {
 			fieldMap.put("isBudgetOrPlanConflict", reportBean.isBudgetOrPlanConflict());
 			fieldMap.put("isBudgetConflict", reportBean.isBudgetConflict());
 			fieldMap.put("isPlannedValueConflict", reportBean.isPlannedValueConflict());
-			
+
 			fieldMap.put("StateFlag", reportBean.getStateFlag());
 			fieldMap.put("TopDownDateDueFlag", reportBean.getTopDownDateDueFlag());
 			fieldMap.put("DateConflict", reportBean.isDateConflict());
 			fieldMap.put("isCommittedDateConflict", reportBean.isCommittedDateConflict());
 			fieldMap.put("isSummary", reportBean.isSummary());
 			fieldMap.put("isTargetDateConflict", reportBean.isTargetDateConflict());
-			
+
 			// TODO Add actual amount of work, budget, planned value, estimated remaining values
-			
+
 			if (!isDocument) {
 				topicList.add(fieldMap);
 			}
-			
+
 		}
 		if (context.get("topics") == null) {
 			context.put("topics", topicList);
 			context.put("items", topicList);
 			context.put("licenseHolder", texify(ApplicationBean.getInstance().getLicenseHolder()));
 			context.put("locale", locale.getLanguage());
-			context.put("serverurl", ApplicationBean.getInstance().getSiteBean().getServerURL()
-					+ ApplicationBean.getInstance().getServletContext().getContextPath());
+			context.put("serverurl", texify(ApplicationBean.getInstance().getSiteBean().getServerURL()
+					+ ApplicationBean.getInstance().getServletContext().getContextPath()));
 
 		}
 		context.put("noOfFigures", noOfFigures);
@@ -419,7 +431,7 @@ public class ReportBeansToLaTeXConverter implements Console {
 					s = s.trim();
 					Matcher matcher = inlineItemNoPattern.matcher(s);
 					HashMap<Integer, String> inlines = new HashMap<Integer, String>();
-					
+
 					while (matcher.find()) {
 						LOGGER.debug("Found inline item here...");
 						inlineOid = Integer.valueOf(matcher.group(1));
@@ -475,7 +487,7 @@ public class ReportBeansToLaTeXConverter implements Console {
 
 	/**
 	 * Creates a map with all inline linked items
-	 * 
+	 *
 	 * @param items
 	 * @param user
 	 * @param locale
@@ -659,7 +671,7 @@ public class ReportBeansToLaTeXConverter implements Console {
 
 	/**
 	 * Convert the result set into an XML structure.
-	 * 
+	 *
 	 * @param items
 	 * @param withHistory
 	 * @param locale
@@ -709,7 +721,7 @@ public class ReportBeansToLaTeXConverter implements Console {
 	protected void createDebugInfoPdf(String pdf, File latexFile) {
 		Integer lineNo = 0;
 		Pattern lineNoPattern = Pattern.compile("l\\.([0-9]+)");
-		
+
 		try {
 			StringBuilder latexout = new StringBuilder();
 			File stdout = new File(latexTmpDir+File.separator+"stdout.log");
@@ -726,7 +738,7 @@ public class ReportBeansToLaTeXConverter implements Console {
 					if (line.startsWith("!")) {
 						waitForErrorLine = true;
 					}
-					
+
 					if (waitForErrorLine) {
 						Matcher m = lineNoPattern.matcher(line);
 						if (m.find()) {
@@ -744,7 +756,7 @@ public class ReportBeansToLaTeXConverter implements Console {
 				}
 				debugTrace = latexout;
 			}
-			
+
 			debugTrace.append("% ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" + CRLF);
 			debugTrace.append("There was a problem creating the PDF" + CRLF);
 			debugTrace.append("The problematic area is marked below." + CRLF + CRLF);
@@ -806,7 +818,7 @@ public class ReportBeansToLaTeXConverter implements Console {
 
 	/**
 	 * Create a temporary working directory and copy all template files there.
-	 * 
+	 *
 	 * @param templateDir
 	 *            the directory containing the original template files
 	 */
@@ -863,9 +875,16 @@ public class ReportBeansToLaTeXConverter implements Console {
 		}
 	}
 
+	/**
+	 * Escape LaTeX special characters like $, %, and &
+	 * @param text
+	 * @return the text with LaTeX special characters escaped
+	 */
+
 	protected static String texify(String text) {
 		text = text.replace("&", "\\&");
 		text = text.replace("%", "\\%");
+		text = text.replace("$", "\\$");
 		return text;
 	}
 
@@ -875,13 +894,13 @@ public class ReportBeansToLaTeXConverter implements Console {
 	 * @param latexFile
 	 */
 	protected int runPdflatex(File workDir, File latexFile, int nrOfRuns) {
-		
+
 		if (latexCmd == null) {
 			return -99;
 		}
-		
+
 		int exitValue = 0;
-		
+
 		try {
 
 			String[] cmd = new String[] { latexCmd, "--halt-on-error", "-output-directory=" + workDir, latexFile.getAbsolutePath() };
@@ -896,13 +915,13 @@ public class ReportBeansToLaTeXConverter implements Console {
 				path = texpath+":"+path;
 				env.put("PATH", path);
 			}
-			
+
 			File stdoutlog = new File(workDir+File.separator+"stdout.log");
 			latexProcessBuilder.redirectOutput(Redirect.appendTo(stdoutlog));
-			
+
 			File stderrlog = new File(workDir+File.separator+"stderr.log");
 			latexProcessBuilder.redirectError(Redirect.appendTo(stderrlog));
-			
+
 			ProcessExecutor latexProcessExecutor = new ProcessExecutor(latexProcessBuilder);
 
 			Thread executionThread = new Thread(latexProcessExecutor);
@@ -935,7 +954,7 @@ public class ReportBeansToLaTeXConverter implements Console {
 			LOGGER.debug("Run xelatex done!");
 
 			exitValue = latexProcessExecutor.getExitValue();
-			
+
 			try {
 				Thread.sleep(1000);
 			} catch (Exception ex) {
@@ -944,7 +963,7 @@ public class ReportBeansToLaTeXConverter implements Console {
 		} catch (Exception ex) {
 			LOGGER.error(ExceptionUtils.getStackTrace(ex), ex);
 		}
-		
+
 		return exitValue;
 	}
 
@@ -975,7 +994,7 @@ public class ReportBeansToLaTeXConverter implements Console {
 			} catch (Exception ex) {
 				LOGGER.info(ex.getMessage());
 				LOGGER.debug(ExceptionUtils.getStackTrace(ex), ex);
-			} 
+			}
 		}
 
 
@@ -990,7 +1009,7 @@ public class ReportBeansToLaTeXConverter implements Console {
 				LOGGER.debug(ExceptionUtils.getStackTrace(e), e);
 			}
 		}
-		
+
 		public int getExitValue() {
 			return exitValue;
 		}

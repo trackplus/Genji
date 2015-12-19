@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -150,7 +151,6 @@ public class StatusOverTimeGraph extends TimePeriodDashboardView {
 		static int ACCUMULATED_ACTIVITY = 4; //ACTUAL_ACTIVITY accumulated
 	}
 
-	@Override
 	protected boolean isUseConfig(){
 		return true;
 	}
@@ -179,8 +179,10 @@ public class StatusOverTimeGraph extends TimePeriodDashboardView {
 		//for ftl
 		String userEnteredTitle = parameters.get("title");
 		if (userEnteredTitle==null || "".equals(userEnteredTitle.trim())) {
+			//title="statusOverTime.title." + getCalculationModeSuffix(selectedCalculationMode));
 		}
 
+//		int width=BasePluginDashboardBL.parseIntegerValue(parameters, CONFIGURATION_PARAMETERS.X_AXE, DEFAULT_WIDTH);
 		int height=parseInteger(parameters, CONFIGURATION_PARAMETERS.Y_AXE, DEFAULT_HEIGHT);
 
 		Map<String,Object> configParameters=new HashMap<String, Object>();
@@ -200,6 +202,7 @@ public class StatusOverTimeGraph extends TimePeriodDashboardView {
 		//to avoid caching if IE
 		configParameters.put("actualTime", new Long(new Date().getTime()));
 
+//		configParameters.put("width",width);
 		configParameters.put("height",height);
 
 		//save the theProvider ImageProvider and the configParameters map into the session
@@ -211,6 +214,7 @@ public class StatusOverTimeGraph extends TimePeriodDashboardView {
 			"&imageProviderParams="+theParams+"&date="+actualTime;
 
 		JSONUtility.appendStringValue(sb, "url",url);
+//		JSONUtility.appendIntegerValue(sb, "width",width);
 		JSONUtility.appendIntegerValue(sb, "height",height);
         if ( (configParameters.get("dateTo") != null && configParameters.get("dateTo") != null && !configParameters.get("dateTo").equals("null") &&
         		!configParameters.get("dateFrom").equals("null")) || (configParameters.get("daysBefore") != null) ) {
@@ -301,8 +305,10 @@ public class StatusOverTimeGraph extends TimePeriodDashboardView {
 		StringBuilder sb=new StringBuilder();
 
 		Locale locale = user.getLocale();
+		//DateTimeUtils dateTimeUtils = DateTimeUtils.getInstance();
 		DashboardDescriptor dashboardDescriptor = getDescriptor();
 		sb.append(getDatasourceConfig(parameters, entityId, entityType, locale));
+		//DataSourceDashboardBL.appendJSONExtraDataConfig_DataSource(sb,dashboardDescriptor,parameters,user,entityId,entityType);
 		sb.append(getTimePeriodConfig(parameters, locale));
 
 		JSONUtility.appendILabelBeanList(sb,CONFIGURATION_PARAMETERS.STATUSES, StatusBL.loadAll(locale));
@@ -430,14 +436,12 @@ public class StatusOverTimeGraph extends TimePeriodDashboardView {
         int selectedTimeInterval = parseInteger(configParameters, CONFIGURATION_PARAMETERS.SELECTED_TIME_INTERVAL, TIME_INTERVAL.MONTH);
         int selectedCalculationMode = parseInteger(configParameters, CONFIGURATION_PARAMETERS.SELECTED_CALCULATION_MODE, CALCULATION_MODE.NEW);
 
-        Integer selectedQueryID = parseInteger(configParameters, "selectedQueryID", 0);
-        Integer selectedProjectOrRelease = parseInteger(configParameters, "selectedProjectOrRelease", 0);
 
         SortedMap<Integer, SortedMap<Integer, Map<Integer, Integer>>> yearToPeriodToEntityIDToNumbersMap =
                 new TreeMap<Integer, SortedMap<Integer, Map<Integer, Integer>>>();
         Map<Integer, TStateBean> statusMap = null;
 
-        configParameters.put(DataSourceDashboardBL.INCLUDE_CLOSED,Boolean.toString(true));
+        configParameters.put(DataSourceDashboardBL.INCLUDE_CLOSED, Boolean.toString(true));
         int issueType = parseInteger(configParameters, CONFIGURATION_PARAMETERS.ISSUE_TYPE, ISSUE_TYPE.GENERAL);
         boolean loadOnlyDocuments;
 
@@ -446,22 +450,7 @@ public class StatusOverTimeGraph extends TimePeriodDashboardView {
         }else {
         	loadOnlyDocuments = true;
         }
-        int datasourceType = BasePluginDashboardBL.parseIntegerValue(configParameters, DataSourceDashboardBL.CONFIGURATION_PARAMETERS.SELECTED_DATASOURCE_TYPE, DataSourceDashboardBL.DATASOURCE_TYPE.PROJECT_RELEASE);
-        ArrayList<Integer>projectOrReleaseIDs = new ArrayList<Integer>();
-        boolean isRelease = true;
-        boolean isQuery;
-        if (datasourceType==DATASOURCE_TYPE.PROJECT_RELEASE) {
-        	isQuery = false;
-        	if(selectedProjectOrRelease < 0) {
-        		isRelease = false;
-        		selectedProjectOrRelease = selectedProjectOrRelease * (-1);
-        	}
-        	projectOrReleaseIDs.add(selectedProjectOrRelease);
-		}else {
-			isQuery = true;
-        	projectOrReleaseIDs.add(selectedQueryID);
-		}
-        List<TWorkItemBean> workItemBeans = DataSourceDashboardBL.getGeneralOrDocumentWorkItems(projectOrReleaseIDs, datasourceType, personBean, locale, loadOnlyDocuments, isRelease, isQuery);
+        List<TWorkItemBean> workItemBeans = this.getWorkItemBeans(configParameters, personBean, locale, loadOnlyDocuments);//DataSourceDashboardBL.getGeneralOrDocumentWorkItems(projectOrReleaseIDs, datasourceType, personBean, locale, loadOnlyDocuments, isRelease, isQuery);
 		String value;
         List<TStateBean>statusList;
         Set<String>statusOrder;
@@ -499,6 +488,49 @@ public class StatusOverTimeGraph extends TimePeriodDashboardView {
         return null;
     }
 
+    private List<TWorkItemBean>getWorkItemBeans(Map configParameters, TPersonBean personBean, Locale locale, boolean loadOnlyDocuments) {
+    	boolean isRelease = true;
+        boolean isQuery;
+        int datasourceType = BasePluginDashboardBL.parseIntegerValue(configParameters, DataSourceDashboardBL.CONFIGURATION_PARAMETERS.SELECTED_DATASOURCE_TYPE, DataSourceDashboardBL.DATASOURCE_TYPE.PROJECT_RELEASE);
+        ArrayList<Integer>projectOrReleaseIDs = new ArrayList<Integer>();
+        Integer selectedProjectOrRelease = null;
+
+        if(configParameters.get("projectID") != null || configParameters.get("releaseID") != null) {
+        	isQuery = false;
+        	if(configParameters.get("releaseID") != null) {
+        		isRelease = true;
+        		selectedProjectOrRelease = Integer.valueOf(configParameters.get("releaseID").toString());
+        	}else {
+        		selectedProjectOrRelease = Integer.valueOf(configParameters.get("projectID").toString());
+        		isRelease = false;
+        	}
+        	datasourceType = DATASOURCE_TYPE.PROJECT_RELEASE;
+        	projectOrReleaseIDs.add(selectedProjectOrRelease);
+        }else {
+        	selectedProjectOrRelease = parseInteger(configParameters, "selectedProjectOrRelease", 0);
+        	if (datasourceType==DATASOURCE_TYPE.PROJECT_RELEASE) {
+        		isQuery = false;
+        		if(selectedProjectOrRelease < 0) {
+        			isRelease = false;
+        			selectedProjectOrRelease = selectedProjectOrRelease * (-1);
+        		}
+        		projectOrReleaseIDs.add(selectedProjectOrRelease);
+      		}else {
+      			Integer selectedQueryID = parseInteger(configParameters, "selectedQueryID", 0);
+      			isQuery = true;
+      			projectOrReleaseIDs.add(selectedQueryID);
+      		}
+        }
+
+        List<TWorkItemBean> workItems = new ArrayList<TWorkItemBean>();
+        try {
+        	workItems =  DataSourceDashboardBL.getGeneralOrDocumentWorkItems(projectOrReleaseIDs, datasourceType, personBean, locale, loadOnlyDocuments, isRelease, isQuery);
+        }catch(Exception ex) {
+        	LOGGER.error("Error while getting workitems: " + ExceptionUtils.getStackTrace(ex));
+        }
+        return workItems;
+    }
+
 
     private static Set<String> createStatusOrder(List<TStateBean>statList) {
     	Set<String>statusOrder = new LinkedHashSet<String>();
@@ -531,6 +563,7 @@ public class StatusOverTimeGraph extends TimePeriodDashboardView {
 		SortedMap<Integer, SortedMap<Integer, List<TWorkItemBean>>> periodNewWorkItems = getNewWorkItemsMap(workItemBeans, selectedTimeInterval, dateFrom, dateTo);
 		List entityList = new ArrayList();
 		//for new WorkItems we have a single entity (a single graphic), hardcoded with Integer(0)
+		//Integer hardCodedentityID = Integer.valueOf(0);
 		entityList.add(ENTITY_PLACEHOLDER);
 
 		Iterator<Integer> yearIterator = periodNewWorkItems.keySet().iterator();
@@ -554,6 +587,7 @@ public class StatusOverTimeGraph extends TimePeriodDashboardView {
 			}
 		}
 		addZerosForEmptyIntervals(dateFrom, dateTo, selectedTimeInterval, yearToPeriodToProjectIDToWorkItemNumbersMap, entityList);
+		//addTimeSeries(timeSeriesCollection, yearToPeriodToProjectIDToWorkItemNumbersMap, null, selectedTimeInterval, accumulated);
 		return yearToPeriodToProjectIDToWorkItemNumbersMap;
 	}
 
@@ -574,6 +608,7 @@ public class StatusOverTimeGraph extends TimePeriodDashboardView {
 		}
 		Set<Integer> statusIDsSet = GeneralUtils.createIntegerSetFromIntegerList(statusIDs);
 		if (workItemIDs == null ||workItemIDs.length==0) {
+			// LOGGER.warn("No issues satisfy the filtering condition (read right revoked, project/release deleted?)");
 			return yearToPeriodToStatusIDToStatusNumbersMap;
 		}
 
@@ -682,6 +717,7 @@ public class StatusOverTimeGraph extends TimePeriodDashboardView {
 			}
 		}
 		addZerosForEmptyIntervals(dateFrom, dateTo, selectedTimeInterval, yearToPeriodToStatusIDToStatusNumbersMap, statusIDs);
+		//addTimeSeries(timeSeriesCollection, yearToPeriodToStatusIDToStatusNumbersMap, statusMap, selectedTimeInterval, true);
 		return yearToPeriodToStatusIDToStatusNumbersMap;
 	}
 
@@ -699,6 +735,7 @@ public class StatusOverTimeGraph extends TimePeriodDashboardView {
 			return yearToPeriodToStatusIDToStatusNumbersMap;
 		}
 		if (workItemIDs == null ||workItemIDs.length==0) {
+			// LOGGER.warn("No issues satisfy the filtering condition (read right revoked, project/release deleted?)");
 			return yearToPeriodToStatusIDToStatusNumbersMap;
 		}
 		List<HistorySelectValues> historySelectValuesList = HistoryTransactionBL.getByWorkItemsFieldNewValuesDates(
@@ -724,6 +761,7 @@ public class StatusOverTimeGraph extends TimePeriodDashboardView {
 			}
 		}
 		addZerosForEmptyIntervals(dateFrom, dateTo, selectedTimeInterval, yearToPeriodToStatusIDToStatusNumbersMap, statusIDs);
+		//addTimeSeries(timeSeriesCollection, yearToPeriodToStatusIDToStatusNumbersMap, statusMap, selectedTimeInterval, accumulated);
 		return yearToPeriodToStatusIDToStatusNumbersMap;
 	}
 
@@ -859,6 +897,8 @@ public class StatusOverTimeGraph extends TimePeriodDashboardView {
                             if (status.equals("")) {
                                 status = "opened";
                             }
+//                            JSONUtility.appendStringValue(sb, status, timeSeriesValue.toString(), true);
+//                            sb.append(",");
                             valuesMap.put(status, timeSeriesValue.toString());
                             timeSeriesMap.put(entityID, sb.toString());
                         }
@@ -984,7 +1024,11 @@ public class StatusOverTimeGraph extends TimePeriodDashboardView {
 						workItemsIDsForInterval.add(workItemID);
 						//the last state change bean for the period for the workItem is
 						//a change to a status which is not selected to be shown, so simply neglect it
+						/*if (!statusIDsSet.contains(stateChangeBean.getNewValue())) {
+							continue;
+						}*/
 					}
+					//workItemIDsSet.add(workItemID);
 					SortedMap<Integer, List<HistorySelectValues>> intervalToStatusChangeBeans = yearToIntervalToStatusChangeBeans.get(new Integer(yearValue));
 					if (intervalToStatusChangeBeans==null) {
 						yearToIntervalToStatusChangeBeans.put(new Integer(yearValue), new TreeMap<Integer, List<HistorySelectValues>>());
@@ -1122,7 +1166,7 @@ public class StatusOverTimeGraph extends TimePeriodDashboardView {
 					entityIDsList.add(Integer.valueOf(entityArr[i].trim()));
 				}
 			} catch (Exception e) {
-				LOGGER.warn("The " + i + "'th component " +  entityArr[i] + " can't be converted to Integer " + e.getMessage());
+				LOGGER.warn("The " + i + "'th component " +  entityArr[i] + " can't be converted to Integer " + e.getMessage(), e);
 			}
 		}
 		return entityIDsList;

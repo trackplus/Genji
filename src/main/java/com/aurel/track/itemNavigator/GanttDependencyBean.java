@@ -30,13 +30,15 @@ public class GanttDependencyBean {
 	private Integer linkLagUnit;
 	private Integer sourceID;
 	private Integer targetID;
+	private Integer linkID;
+	private boolean isNew;
 
 	public GanttDependencyBean() {
 	}
 
 	public GanttDependencyBean(String description,
 			String linkTypeWithDirection, Integer linkType, Integer linkLag,
-			Integer linkLagUnit, Integer sourceID, Integer targetID) {
+			Integer linkLagUnit, Integer sourceID, Integer targetID, Integer linkID) {
 		super();
 		this.description = description;
 		this.linkTypeWithDirection = linkTypeWithDirection;
@@ -45,6 +47,7 @@ public class GanttDependencyBean {
 		this.linkLagUnit = linkLagUnit;
 		this.sourceID = sourceID;
 		this.targetID = targetID;
+		this.linkID = linkID;
 	}
 
 	public String getDescription() {
@@ -89,5 +92,20 @@ public class GanttDependencyBean {
 	public void setLinkLagUnit(Integer linkLagUnit) {
 		this.linkLagUnit = linkLagUnit;
 	}
+	public Integer getLinkID() {
+		return linkID;
+	}
+
+	public void setLinkID(Integer linkID) {
+		this.linkID = linkID;
+	}
+	public boolean isNew() {
+		return isNew;
+	}
+	public void setNew(boolean isNew) {
+		this.isNew = isNew;
+	}
+
+
 
 }

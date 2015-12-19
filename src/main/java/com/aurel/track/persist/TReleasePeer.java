@@ -23,12 +23,10 @@
 
 package com.aurel.track.persist;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
+import com.aurel.track.item.ItemLoaderException;
+import com.aurel.track.util.IntegerStringBean;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -1305,6 +1303,31 @@ public class TReleasePeer
 			}
 		}		
 		return GeneralUtils.createMapFromList(releaseBeanList);
+	}
+
+	public List<IntegerStringBean> getPath(Integer objectID) {
+		List<IntegerStringBean> result=new ArrayList<IntegerStringBean>();
+		Integer releaseID=objectID;
+		while(releaseID!=null){
+			TRelease release = getInternalRelease(releaseID);
+			if(release!=null){
+				result.add(0,new IntegerStringBean(release.getLabel(), release.getObjectID()));
+				releaseID = release.getParent();
+			}else{
+				return null;
+			}
+		}
+		return result;
+	}
+	private TRelease getInternalRelease(Integer objectID) {
+		TRelease tRelease = null;
+		try {
+			tRelease = retrieveByPK(objectID);
+		} catch (Exception e) {
+			LOGGER.info("Loading the release by primary key " + objectID + " failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
+		}
+		return tRelease;
 	}
 	
 	private static List<TReleaseBean> convertTorqueListToBeanList(List<TRelease> torqueList) {		

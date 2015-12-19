@@ -73,18 +73,13 @@ public class ReleaseAction extends ActionSupport implements Preparable, SessionA
 		personBean = (TPersonBean) session.get(Constants.USER_KEY);
 	}
 
-	public String localizedLabels() {
-		JSONUtility.encodeJSON(servletResponse, ReleaseConfigBL.getLocalizedLabels(node, locale));
-		return null;
-	}
-
 	/**
 	 * Expand the project specific nodes
 	 * @return
 	 */
 	public String expand() {
 		JSONUtility.encodeJSON(servletResponse,
-				ReleaseJSON.getChildrenJSON(ReleaseConfigBL.getReleaseNodes(node)));
+				ReleaseJSON.getChildrenJSON(ReleaseConfigBL.getReleaseNodes(node, showClosedReleases)));
 		return null;
 	}
 

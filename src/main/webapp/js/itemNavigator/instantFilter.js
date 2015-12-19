@@ -259,12 +259,6 @@ Ext.define("com.trackplus.itemNavigator.InstantFilter",{
 			},
 			failure: function(form, action) {
 				me.filterPanel.setLoading(false);
-				/*Ext.MessageBox.show({
-					title: this.failureTitle,
-					msg: action.response.responseText,
-					buttons: Ext.Msg.OK,
-					icon: Ext.MessageBox.ERROR
-				})*/
 			}
 		});
 

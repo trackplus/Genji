@@ -25,24 +25,18 @@ Ext.define("com.trackplus.admin.customize.script.Script",{
 	extend:"com.trackplus.admin.GridBase",
 	xtype: "script",
     controller: "script",
-	columns:[
-		{text:getText("admin.customize.script.lbl.className"),
-			width:400,dataIndex: "name", sortable:true,
-			filter: {
-	            type: "string"
-	        }},
-		{text:getText("admin.customize.script.lbl.scriptType"),
-			width:150,dataIndex: "typeLabel", sortable:true}
-	],
-	
-	initComponent : function() {
-		this.fields = [{name: 'id',type:'int'},
-		   	        {name: 'name',type:'string'},
-			        {name: 'scriptType', type: 'int'},
-			        {name: 'typeLabel', type: 'string'}];
-		this.storeUrl = "script!loadScripts.action";
-		this.callParent();
-	},
+    storeUrl: "script!loadScripts.action",
+    fields: [{name: "id",type:"int"},
+	   	        {name: "name",type:"string"},
+		        {name: "scriptType", type: "int"},
+		        {name: "typeLabel", type: "string"}],
+    columns: [{text:getText("admin.customize.script.lbl.className"),
+				width:400,dataIndex: "name", sortable:true,
+				filter: {
+		            type: "string"
+		        }},
+			{text:getText("admin.customize.script.lbl.scriptType"),
+				width:150,dataIndex: "typeLabel", sortable:true}],
 	
 	getEntityLabel:function(){
 		return getText("admin.customize.script.lbl");
@@ -52,12 +46,13 @@ Ext.define("com.trackplus.admin.customize.script.Script",{
 	 * The iconCls for the add button, overwrites base class icon
 	 */
 	getAddIconCls: function() {
-		return 'scriptAdd';
+		return "scriptAdd";
 	},
+	
 	/**
 	 * The iconCls for the edit button, overwrites base class icon
 	 */
 	getEditIconCls: function() {
-		return 'scriptEdit';
+		return "scriptEdit";
 	}	
 });

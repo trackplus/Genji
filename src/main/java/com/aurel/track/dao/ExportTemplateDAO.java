@@ -128,11 +128,19 @@ public interface ExportTemplateDAO {
 	boolean isDeletable(Integer objectID);
 
 	/**
-	 * Loads all private templates 
+	 * Loads all private report templates 
 	 * @param personID
 	 * @return
 	 */
 	List<TExportTemplateBean> loadPrivate(Integer personID);
+	
+	/**
+	 * Loads all project specific report templates 
+	 * @param projectID
+	 * @return
+	 */
+	List<TExportTemplateBean> loadProject(Integer projectID);
+
 
 
 }

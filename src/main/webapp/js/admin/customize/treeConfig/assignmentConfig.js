@@ -26,14 +26,14 @@
  * treeWithGrid are implemented again (alternatively use multiple inheritance?)
  *
  */
-Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
-	extend:'com.trackplus.admin.customize.treeConfig.TreeConfig',
-	config: {
+Ext.define("com.trackplus.admin.customize.treeConfig.AssignmentConfig",{
+	extend:"com.trackplus.admin.customize.treeConfig.TreeConfig",
+	/*config: {
 		rootID:'_'
-	},
-	allowMultipleSelections:true,//for delete
-	textFieldWidth: 350,
-	labelWidth: 120,
+	},*/
+	allowMultipleSelections:true,//for delete from grid
+	/*textFieldWidth: 350,
+	labelWidth: 120,*/
 	//actions
 	actionApply: null,
 	actionAdd: null,
@@ -43,13 +43,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 	actionDesign: null,
 	actionImport: null,
 	actionExport: null,
-
-	constructor: function(config) {
-		var config = config || {};
-		this.initConfig(config);
-		this.initBase();
-	},
-
+	baseServerAction: null,
 
 	initCenterPanel: function(centerPanel) {
 		this.initTree();
@@ -125,26 +119,37 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 	isDisabledImportAction:function(){
 		return false;
 	},
+	
 	initActions: function() {
 		this.callParent();
-		this.actionApply = this.createLocalizedAction(getText('common.btn.apply'),
-				'apply', this.onApply, this.getTitle('common.lbl.apply'), true);
-		this.actionAdd = this.createLocalizedAction(this.getAddLabel(), this.getAddIconCls(), this.onAdd, this.getAddLabel(),this.isDisabledAddAction());
-		this.actionEdit = this.createLocalizedAction(getText(this.getEditButtonKey()), this.getEditIconCls(), this.onEdit, this.getEditLabel(), true);
-		this.actionCopy = this.createLocalizedAction(getText(this.getCopyButtonKey()), this.getCopyIconCls(), this.onCopy, this.getCopyLabel(), true);
-		this.actionDelete = this.createLocalizedAction(getText(this.getDeleteButtonKey()), this.getDeleteIconCls(), this.onDelete, this.getDeleteLabel(), true);
-		this.actionDesign = this.createLocalizedAction(getText('common.btn.config'), 'btnConfig', this.onConfig, this.getDesignLabel(), true);
-		this.actionImport = this.createLocalizedAction(getText('common.btn.import'), 'import', this.onImport, this.getImportLabel(),this.isDisabledImportAction());
-		this.actionExport = this.createLocalizedAction(getText('common.btn.export'), 'export', this.onExport, this.getExportLabel(), true);
+		this.actionApply = CWHF.createAction("common.btn.apply", "apply",
+				"onApply", {tooltip:this.getActionTooltip("common.lbl.apply"), disabled:true});
+		var addlabel = this.getAddLabel();
+		this.actionAdd = CWHF.createAction(addlabel, this.getAddIconCls(),
+				"onAdd", {tooltip:addlabel, labelIsLocalized:true, disabled:this.isDisabledAddAction()});
+		this.actionEdit = CWHF.createAction(this.getEditButtonKey(), this.getEditIconCls(),
+				"onEdit", {tooltip:this.getEditLabel(), disabled:true});
+		this.actionCopy = CWHF.createAction(this.getCopyButtonKey(), this.getCopyIconCls(),
+				"onCopy", {tooltip:this.getCopyLabel(), disabled:true});
+		this.actionDelete = CWHF.createAction(this.getDeleteButtonKey(), this.getDeleteIconCls(),
+				"onDelete", {tooltip:this.getDeleteLabel(), disabled:true});
+		this.actionDesign = CWHF.createAction("common.btn.config", "btnConfig",
+				"onConfig", {tooltip:this.getDesignLabel(), disabled:true});
+		this.actionImport = CWHF.createAction(this.getImportButtonKey(), this.getImportIconCls(),
+				"onImport", {tooltip:this.getImportLabel(), disabled:this.isDisabledImportAction()});
+		this.actionExport = CWHF.createAction(this.getExportButtonKey(), this.getExportIconCls(),
+				"onExport", {tooltip:this.getExportLabel(), disabled:true});
+		this.actions = [this.actionApply, this.actionReset, {xtype: 'tbspacer', width: 45, disabled:true}, this.actionAdd,
+						this.actionEdit, this.actionCopy, this.actionDelete, this.actionDesign, this.actionImport, this.actionExport];
 	},
 
 	/**
 	 * Initialize all actions and return the toolbar actions
 	 */
-	getToolbarActions: function() {
+	/*getToolbarActions: function() {
 		return [this.actionApply, this.actionReset, {xtype: 'tbspacer', width: 45, disabled:true}, this.actionAdd,
 				this.actionEdit, this.actionCopy, this.actionDelete, this.actionDesign, this.actionImport, this.actionExport];
-	},
+	},*/
 
 	/**
 	 * Same as it treeWithGrid
@@ -176,7 +181,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 	/**
 	 * Paste a node in the tree after copy/cut
 	 */
-	saveAssignment: function(draggedObjectID, droppedNodeID) {
+	/*saveAssignment: function(draggedObjectID, droppedNodeID) {
 		Ext.Ajax.request({
 			url: this.getBaseAction() + '!save.action',
 			params: {
@@ -198,60 +203,54 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 			},
 			method:"POST"
 		});
-	},
+	},*/
 
-	treeNodeSelect: function(rowModel, node, index) {
+	/*onTreeNodeSelect: function(rowModel, node, index) {
 		var record = this.grid.getStore().getById(node.data['assignedID']);
 		if (record) {
 			this.selectGridRow(record);
 		}
 		this.getToolbarActionChangesForTreeNodeSelect(node);
-	},
+	},*/
 
-	isAssignable: function(node) {
+	/*isAssignable: function(node) {
 		return false;
-	},
+	},*/
 
 	dragAndDropOnTree:false,
+	
 	initTree:function(){
-		var me=this;
-		me.callParent(arguments);
-		me.initMyListeners();
+		this.callParent(arguments);
+		this.initMyListeners();
 	},
+	
 	initMyListeners:function(){
-		var me=this;
-		me.tree.view.addListener('afterrender',me.onTreeViewAfterRenderer,me);
-		me.tree.view.addListener('beforedrop',function(node,data, overModel, dropFunction,eOpts){
-			/*var leaf =overModel.data["leaf"];
-			if(!leaf){
-				return false;
-			}
-			return true;*/
-			return this.isAssignable(overModel);
-		}, me);
-		me.tree.getView().addListener('drop',function(node,data, overModel, dropFunction,eOpts){
-			me.onDropTreeNode.call(me,node,data, overModel,dropFunction,eOpts);
-			return true;
-		});
+		this.tree.view.addListener("afterrender", "onTreeViewAfterRenderer");
+		this.tree.view.addListener("beforedrop", "onTreeViewBeforeDrop");
+		this.tree.getView().addListener("drop", "onTreeViewDrop");
 	},
 
-
-	onTreeViewAfterRenderer:function(){
+	/*onTreeViewAfterRenderer:function(){
 		var me=this;
 		me.dropZone = Ext.create('com.trackplus.util.TreeDropZone', {
 			view: me.tree.view,
-			ddGroup: this.getBaseAction(),
-			isValidNode:function(node){
-				/*var leaf =node.data["leaf"];
-				if(!leaf){
-					return false;
-				}
-				return true;*/
+			ddGroup: this.baseServerAction,
+			isValidNode:function(node) {
 				return this.isAssignable(node);
 			},
 			isValidNodeScope: me
 		});
+	},*/
+
+	/*onTreeViewBeforeDrop: function(node,data, overModel, dropFunction,eOpts) {
+		return this.isAssignable(overModel);
 	},
+	
+	onTreeViewDrop: function(node,data, overModel, dropFunction,eOpts){
+		this.onDropTreeNode.call(this,node,data, overModel,dropFunction,eOpts);
+		return true;
+	},
+	
 	onDropTreeNode: function(node, data, overModel) {
 		var draggedNodeID=data.records[0].data['id'];
 		var droppedNodeID=overModel.data['id'];
@@ -259,7 +258,9 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 			this.saveAssignment(draggedNodeID, droppedNodeID);
 		}
 		return true;
-	},
+	},*/
+	
+	
 	getGridFields: function() {
 		return [
 				{name: 'id',type:'int'},
@@ -292,7 +293,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 	        }}]
 	},
 
-	getSelectedObjectIDs: function() {
+	/*getSelectedObjectIDs: function() {
 		var selectedObjectIDs = new Array();
 		var selectedRecordsArr = this.getSelection();
 		if (selectedRecordsArr) {
@@ -300,40 +301,13 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 					{selectedObjectIDs.push(record.data['id']);}, this);
 		}
 		return selectedObjectIDs.join(",");
-	},
+	},*/
 
 	/*protected abstract*/getGridListURL:function() {
 		return "";
 	},
 
-	/*protected abstract*/getGridRowEditURL: function() {
-		return "";
-	},
-
-	/*protected abstract*/getGridRowSaveURL: function() {
-		return "";
-	},
-
-	/*protected abstract*/getConfigGridRowURL: function() {
-		return "";
-	},
-
-	/*protected abstract*/getImportURL: function() {
-		return "";
-	},
-
-	/*protected abstract*/getExportURL: function(selectedObjectIDs) {
-		return "";
-	},
-
-	/**
-	 * Url for deleting an entity
-	 * extraConfig: for simple grid nothing, for tree with grid {fromTree:fromTree, isLeaf:isLeaf}
-	 */
-	/*protected abstract getDeleteUrl: function(extraConfig){
-		return "";
-	},*/
-
+	
 	/**
 	 * Shows the grid according to the selected node
 	 */
@@ -353,7 +327,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 		var gridConfig = {
 				xtype: 'grid',
 				store: store,
-				selModel: Ext.create('Ext.selection.CheckboxModel', {mode:"MULTI"}), //for screen export
+				selModel: Ext.create('Ext.selection.CheckboxModel', {mode:"MULTI"}), //for delete/export
 				columns: this.getGridColumns(),
 				plugins: ["gridfilters"],
 				autoWidth: true,
@@ -365,51 +339,43 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 		gridConfig.viewConfig = {
 			plugins: {
 				ptype: 'gridviewdragdrop',
-				ddGroup: this.getBaseAction(),
+				ddGroup: this.baseServerAction,
 				enableDrag: true,
 				enableDrop: false
-			}/*,
-			listeners: {
-				drop: {scope:this, fn: function(node, data, dropRec, dropPosition) {
-					this.onGridDrop(node, data, dropRec, dropPosition);
-					}
-				}
-			}*/
+			}
 		};
-		var gridListeners = {selectionchange: {fn:this.onGridSelectionChange, scope:this}};
-		gridListeners.itemcontextmenu = {fn:this.onGridRowCtxMenu, scope:this};
-		gridListeners.itemdblclick = {fn:this.onEdit, scope:this};
-
-		gridConfig.listeners = gridListeners;
+		gridConfig.listeners = {selectionchange: "onGridSelectionChange",
+								itemcontextmenu:"onGridRowCtxMenu",
+								itemdblclick:"onEdit"};
 		//create the grid
-		this.grid = Ext.create('Ext.grid.Panel', gridConfig);
+		this.grid = Ext.create("Ext.grid.Panel", gridConfig);
 		this.centerPanel.add(this.grid);
 	},
 
 	/**
 	 * Enable/disable actions based on the actual selection
 	 */
-	onGridSelectionChange: function (view, selections) {
+	/*onGridSelectionChange: function (view, selections) {
 		this.enableDisableToolbarButtons(view, selections);
 		var selectedRow = null;
 		if (selections && selections.length>0) {
 			selectedRow = selections[0];
 		}
 		this.adjustToolbarButtonsTooltip(selectedRow, false);
-	},
+	},*/
 
 	/**
 	 * Show the context menu in grid
 	 */
-	onGridRowCtxMenu: function(grid, record, item, index, evtObj) {
+	/*onGridRowCtxMenu: function(grid, record, item, index, evtObj) {
 		this.onCtxMenu(false, record, evtObj);
 		return false;
-	},
+	},*/
 
 	/**
 	 * Enable/disable actions based on the actual selection
 	 */
-	enableDisableToolbarButtons: function (view, selections) {
+	/*enableDisableToolbarButtons: function (view, selections) {
 		if (CWHF.isNull(selections) || selections.length===0) {
 			this.actionEdit.setDisabled(true);
 			this.actionApply.setDisabled(true);
@@ -424,7 +390,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 			this.actionExport.setDisabled(false);
 			if (selections.length===1) {
 				var selectedTreeNode = this.getSingleSelectedRecord(true);
-				if (selectedTreeNode && this.isAssignable(selectedTreeNode)/*selectedTreeNode.isLeaf()*/) {
+				if (selectedTreeNode && this.isAssignable(selectedTreeNode)) {
 					this.actionApply.setDisabled(false);
 				}
 				this.actionEdit.setDisabled(false);
@@ -437,16 +403,16 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 				this.actionDesign.setDisabled(true);
 			}
 		}
-	},
+	},*/
 
 
 	/**
 	 * Get the node to select after save after add operation
 	 */
-	getReloadParamsFromResult: function() {
+	/*getReloadParamsFromResult: function() {
 		return [{parameterName:'rowToSelect', fieldNameFromResult:'id'}];
 
-	},
+	},*/
 
 	/**
 	 * Save the detail part
@@ -454,58 +420,58 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 	 * Alternatively this should be included as extra parameter here if 'add' were declared
 	 * as class level variable set in onAdd action and reset on treeNode select
 	 */
-	onApply: function() {
+	/*onApply: function() {
 		var selectedTreeNode = this.getSingleSelectedRecord(true);
 		var selectedGridRow = this.getSingleSelectedRecord(false);
 		if (selectedTreeNode && selectedGridRow) {
 			this.saveAssignment(selectedGridRow.data['id'], selectedTreeNode.data['id']);
 		}
-	},
+	},*/
 
 	/**
 	 * Handler for adding a new screen
 	 */
-	onAdd: function() {
+	/*onAdd: function() {
 		var title = this.getAddLabel();
 		var reloadParamsFromResult = this.getReloadParamsFromResult();
 		return this.onAddEdit(title, true,
 				null, null, reloadParamsFromResult);
-	},
+	},*/
 
 	/**
 	 * Handler for editing a screen
 	 */
-	onEdit: function() {
+	/*onEdit: function() {
 		var title = this.getEditLabel();
 		var loadParams = this.getEditParams(false);
 		var submitParams = this.getEditParams(false);
 		var reloadParamsFromResult = this.getReloadParamsFromResult();
 		return this.onAddEdit(title, false,
 				loadParams, submitParams, reloadParamsFromResult);
-	},
+	},*/
 
 
 	/**
 	 * Handler for copying a screen
 	 */
-	onCopy: function() {
+	/*onCopy: function() {
 		var title = this.getCopyLabel();
 		var loadParams = this.getEditParams(true);
 		var submitParams = this.getEditParams(true);
 		var reloadParamsFromResult = this.getReloadParamsFromResult();
 		return this.onAddEdit(title, false,
 				loadParams, submitParams, reloadParamsFromResult);
-	},
+	},*/
 
-	getObjectIDName: function() {
+	/*getObjectIDName: function() {
 		return "objectID";
-	},
+	},*/
 
 	/**
 	 * Parameters for editing an existing entity
 	 * recordData: the selected entity data
 	 */
-	getEditParams: function(copy) {
+	/*getEditParams: function(copy) {
 		var params = {copy:copy};
 		var recordData = this.getSingleSelectedRecordData(false);
 		if (recordData) {
@@ -515,7 +481,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 			}
 		}
 		return params;
-	},
+	},*/
 
 	/**
 	 * Handler for add/edit a node/row
@@ -529,7 +495,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 	 * refreshParams
 	 * refreshParamsFromResult
 	 */
-	onAddEdit: function(title, add, loadParams, submitParams,
+	/*onAddEdit: function(title, add, loadParams, submitParams,
 			refreshParamsFromResult) {
 		var loadUrl = this.getGridRowEditURL();
 		var load = {loadUrl:loadUrl, loadUrlParams:loadParams};
@@ -548,56 +514,51 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 			items:items};
 		var windowConfig = Ext.create('com.trackplus.util.WindowConfig', windowParameters);
 		windowConfig.showWindowByConfig(this);
-	},
+	},*/
 
-	reload: com.trackplus.util.RefreshAfterSubmit.refreshGridAfterSubmit,
+	//reload: com.trackplus.util.RefreshAfterSubmit.refreshGridAfterSubmit,
 
 	/**
 	 * Helper for preparing the params
 	 * get the ID based on the record and extra config
 	 */
-	getRecordID: function(recordData, extraConfig) {
+	/*getRecordID: function(recordData, extraConfig) {
 		//id for both tree or grid/ used maily for delete
 		return recordData['id'];
-	},
+	},*/
 
-	onDelete: function() {
+	/*onDelete: function() {
 		var selectedRecords = this.getSelectedRecords(false);
 		if (selectedRecords) {
 			this.deleteHandler(selectedRecords);
 		}
-	},
-
-	/*getDeleteParams: function(selectedRecords, extraConfig) {
-		return this.getEditParams(false);
 	},*/
 
-	onConfig:function(){
+	/*onConfig:function(){
 		var me=this;
 		var recordData=me.getSingleSelectedRecordData();
 		if(CWHF.isNull(recordData)){
 			return false;
 		}
 		var id=recordData.id;
-		//window.location.href='screenEdit.action?componentID='+id+'&backAction=cockpit.action';
 		window.location.href=this.getConfigGridRowURL(id);
-	},
+	},*/
 
 
-	getPanelItems: function() {
+	/*getPanelItems: function() {
 		return [CWHF.createTextField('common.lbl.name','name', {anchor:'100%', allowBlank:false}),
 				CWHF.createTextField('common.lbl.tagLabel','tagLabel', {anchor:'100%'}),
 				CWHF.createTextAreaField('common.lbl.description','description', {anchor:'100%'})]
-	},
+	},*/
 
-	/*protected abstract*/getUploadFileLabel: function() {
+	/*protected abstract*//*getUploadFileLabel: function() {
 		return null;
-	},
+	},*/
 
 	/**
 	 * panel for importing the e-mail templates
 	 */
-	getImportPanel:function() {
+	/*getImportPanel:function() {
 		this.formPanel= new Ext.form.FormPanel({
 			region:'center',
 			border:false,
@@ -615,9 +576,9 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 					{itemId:"uploadFile", allowBlank:false, labelWidth:200})]
 		});
 		return this.formPanel;
-	},
+	},*/
 
-	onImport: function() {
+	/*onImport: function() {
 		var submit = [{submitUrl:this.getImportURL(),
 				submitButtonText:getText('common.btn.upload'),
 				validateHandler: Upload.validateUpload,
@@ -632,18 +593,18 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 				cancelButtonText: getText('common.btn.done')};
 		var windowConfig = Ext.create('com.trackplus.util.WindowConfig', windowParameters);
 		windowConfig.showWindowByConfig(this);
-	},
+	},*/
 
-	onExport: function() {
+	/*onExport: function() {
 		var selectedObjectIDs = this.getSelectedObjectIDs();
 		attachmentURI=this.getExportURL(selectedObjectIDs);
 		window.open(attachmentURI);
-	},
+	},*/
 
 	/**
 	 * Refresh after a successful save
 	 */
-	refreshAfterSaveSuccess: function(result) {
+	/*refreshAfterSaveSuccess: function(result) {
 		var refreshTree = result.refreshTree;
 		var nodeIdToSelect = result.node;
 		var node = this.tree.getStore().getNodeById(nodeIdToSelect);
@@ -654,5 +615,5 @@ Ext.define('com.trackplus.admin.customize.treeConfig.AssignmentConfig',{
 		if (refreshTree) {
 			this.refreshTreeOpenBranches(this.tree.getRootNode(), false, false, parentNode, nodeIdToSelect);
 		}
-	}
+	}*/
 });

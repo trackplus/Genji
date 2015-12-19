@@ -109,7 +109,7 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 		var viewID = me.selectedIssueViewDescriptor.id;
 		if(CWHF.isNull(this.fromSession)||this.fromSession===false){
 			if(me.useLastQuery) {
-				var instantFilter = Ext.create("com.trackplus.itemNavigator.InstantFilter",
+				var instantFilter = Ext.create("com.trackplus.itemNavigator.EmbeddedFilter",
 						{filterName: filterName,
 						filterType: filterType,
 						filterID:filterID,
@@ -117,7 +117,7 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 						viewID:viewID,
 						fromSession:this.fromSession});
 				me.filterEditPanel.removeAll(true);
-				me.filterEditPanel.add(instantFilter.createPanel());
+				me.filterEditPanel.add(instantFilter/*.createPanel()*/);
 				instantFilter.addListener("applyFilter",me.onApplyFilter,me);
 				instantFilter.addListener("clearFilter",me.onClearFilter,me);
 				instantFilter.loadFilter.call(instantFilter);
@@ -132,7 +132,7 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 				cls:'infoBox1'
 			});
 			me.issueViewPanel.add(pan);
-			me.view.updateLayout ();
+			me.view.updateLayout();
 			return true;
 		}
 
@@ -606,7 +606,18 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 				}
 				if(jsonData.data.includeParameters===true){
 					//var node=nodeType+"_"+nodeObjectID;
-					com.trackplus.admin.Filter.executeFilter(me, nodeObjectID, false);
+					//com.trackplus.admin.Filter.executeFilter(me, nodeObjectID, false);
+					var windowParameters = {
+				    	callerScope:this,
+				    	loadUrlParams: {filterID: nodeObjectID},
+				    	submitUrlParams: {filterID: nodeObjectID},
+				    	//refreshParametersBeforeSubmit: refreshParams,
+				    	//refreshParametersAfterSubmit: refreshParamsFromResult,
+				    	//refreshAfterSubmitHandler: me.refreshSuccessHandler,
+			        };
+					//TODO: by default this reloads the entire page. Instead refresh ony the item grid
+					var windowConfig = Ext.create("com.trackplus.admin.customize.filter.FilterParameter", windowParameters);
+					windowConfig.showWindowByConfig(this);
 				}else{
 					var createView=jsonData.data.layout!==null;
 					if(useFilter===true){
@@ -711,6 +722,10 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 			btnQueries.setText(me.model.queryContext.queryName);
 			btnQueries.setMenu(me.createLastQueriesMenu(me.model.lastQueries));
 			borderLayout.borderLayoutController.updateLastExecutedQueries.call(borderLayout.borderLayoutController, me.model.lastQueries);
+		}else{
+			var btnQueries = Ext.getCmp('reportQueryName');
+			btnQueries.setIconCls(me.model.queryContext.iconCls);
+			btnQueries.setText(me.model.queryContext.queryName);
 		}
 	},
 	updateTotalCount:function(){
@@ -1084,11 +1099,12 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 			iconCls: 'exportPDF',
 			disabled:false,
 			handler:function(){
-				var gantView=me.issueListFacade.getView().items.items[1];
-				var exportPlugin = null;
-				for(var aPlugin in gantView.plugins) {
-					if(gantView.plugins[aPlugin].$className === "Gnt.plugin.Export") {
-						exportPlugin = gantView.plugins[aPlugin];
+				var gantView = me.issueListFacade.getView().items.items[1];
+				console.log(gantView);
+				for(var ind in gantView.plugins) {
+					var plugin = gantView.plugins[ind];
+					if(plugin['$className'] === 'Gnt.plugin.Export') {
+						exportPlugin = plugin;
 					}
 				}
 				if(exportPlugin ) {
@@ -1102,10 +1118,10 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 					        	exportPlugin.defaultConfig.orientation = respJSON.orientation;
 					        	exportPlugin.defaultConfig.range = respJSON.range;
 					        }
-					        gantView.showExportDialog();
+					        exportPlugin.showExportDialog();
 				        },
 				        failure : function() {
-				        	gantView.showExportDialog();
+				        	exportPlugin.showExportDialog();
 				        },
 				        method : 'POST'
 				    });
@@ -1196,8 +1212,16 @@ Ext.define('com.trackplus.itemNavigator.ItemNavigatorController',{
 				id: 'reportQueryName',
 				menu: me.createLastQueriesMenu(me.model.lastQueries)
 			}));
-			toolbarItems.push(borderLayout.createItemToolbarSeparator());
+
+		}else{
+			toolbarItems.push({
+				text: me.model.queryContext.queryName,
+				iconCls:me.model.queryContext.iconCls,
+				disabled:true,
+				id: 'reportQueryName'
+			});
 		}
+		toolbarItems.push(borderLayout.createItemToolbarSeparator());
 		toolbarItems.push({
 			xtype: 'tbtext',
 			disabled:true,

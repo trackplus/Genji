@@ -79,13 +79,13 @@ Ext.define("js.ext.com.track.matcher.itemMatcher", {
         }
         var txtIssueTitle=this.getComponent("txtIssueTitle");
         if (txtIssueTitle) {
-            txtIssueTitle.setValue(item["title"])
+            txtIssueTitle.setValue(item["title"]);
         }
 	},
 
 	getStringValue: function() {
 		var issueIDField = this.getComponent(this.name);
-		return issueIDField.getValue();;
+		return issueIDField.getValue();
 	}
 
 });

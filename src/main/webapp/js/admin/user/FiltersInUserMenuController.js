@@ -27,11 +27,9 @@ Ext.define("com.trackplus.admin.user.FiltersInUserMenuController",{
 	mixins: {
 		baseController: "com.trackplus.admin.GridBaseController"
 	},
-	baseAction: "filtersInMenu",
 	
-	editWidth: 400,
-	editHeight: 125,
-	
+	confirmDeleteEntity:false,
+	entityDialog: "com.trackplus.admin.user.FiltersInUserMenuEdit",
 	/**
 	 * Render the inherited rows as grey
 	 */
@@ -40,15 +38,6 @@ Ext.define("com.trackplus.admin.user.FiltersInUserMenuController",{
 	        return "";
 	    }
 	    return value;
-	},
-
-	/**
-	 * Parameters for adding a new entity
-	 * Specify extra parameters if needed
-	 * (like "defaultSettings" for "my" and "default" automail settings)
-	 */
-	getAddParams: function() {
-		return {personIDs:this.getView().getPersonIDs()};
 	},
 
 	/**
@@ -68,6 +57,10 @@ Ext.define("com.trackplus.admin.user.FiltersInUserMenuController",{
 		return null;
 	},
 
+	getDeleteUrl: function() {
+		return "filtersInMenu!delete.action";
+	},
+	
 	/**
 	 * Parameters for deleting entity
 	 * recordData: the selected entity data
@@ -81,44 +74,6 @@ Ext.define("com.trackplus.admin.user.FiltersInUserMenuController",{
 		params["unassign"] = selectionParam;
 	    params["personIDs"] = this.getView().getPersonIDs();
 		return params;
-	},
-
-	createEditForm:function(entityJS,operation){
-		var disabled = false;
-		if (operation!=="add" && !entityJS["direct"]) {
-			disabled = true;
-		}
-		return Ext.create('Ext.form.FormPanel',{
-			url:this.getBaseAction() + '!save.action',
-			autoScroll: true,
-			border: false,
-			margin: '0 0 0 0',
-			bodyStyle:{
-				padding:'10px'
-			},
-			style:{
-				borderBottom:'1px solid #D0D0D0'
-			},
-			defaults : {
-				labelStyle:'overflow: hidden;',
-				msgTarget : 'side',
-				anchor : '100%'
-			},
-			items: [CWHF.createMultipleTreePicker(null,
-					"filterIDs", [], null,
-					{itemId:'filterIDs', allowBlank:false,
-					disabled:disabled,
-	                margin:'0 0 5 0',
-	                useRemoveBtn:false,
-						allowNull:true,
-	                useTooltip:false,
-	                fieldLabel:getText("common.lbl.filter")
-				})]
-		});
-	},
-
-	afterLoadForm:function(data, panel) {
-		var filterControl = panel.getComponent("filterIDs");
-	    filterControl.updateMyOptions(data["filterTree"]);
 	}
+
 });

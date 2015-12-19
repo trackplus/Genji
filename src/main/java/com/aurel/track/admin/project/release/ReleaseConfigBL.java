@@ -86,7 +86,7 @@ public class ReleaseConfigBL {
 		return encodeNode(new ProjectReleaseTokens(projectID));
 	}
 	
-	static String getLocalizedLabels(String node, Locale locale) {
+	/*static String getLocalizedLabels(String node, Locale locale) {
 		String localizedMain = LocalizeUtil.getLocalizedTextFromApplicationResources(RELEAESE_KEY_IN_OP, locale);
 		String localizedChild = null;
 		ProjectReleaseTokens projectReleaseTokens = decodeNode(node);
@@ -109,21 +109,10 @@ public class ReleaseConfigBL {
 		if (localizedChild==null) {
 			localizedChild = LocalizeUtil.getLocalizedTextFromApplicationResources("admin.project.release.childPhase.general", locale);
 		}
-		//TODO: if only one of releaseNoticed and releaseseScheduled is used take the localizedMain from Field config: uncomment this
-		/*TFieldConfigBean fieldConfigBean = LocalizeUtil.localizeFieldConfig(
-				FieldRuntimeBL.getValidConfig(SystemFields.INTEGER_RELEASESCHEDULED, null, projectID), locale);
-		if (fieldConfigBean!=null) {
-			localizedMain = fieldConfigBean.getLabel();
-		}*/
-		
-		/*if (localizedMain==null) {
-			localizedMain = LocalizeUtil.localizeRelease(locale);
-		}*/
-		//String localizedDateFormat = DateTimeUtils.getInstance().getExtJSDateFormat(locale);
 		return ReleaseJSON.createLocalizedLabelsJSON(localizedMain, localizedChild, showClosedReleases);
-	}
+	}*/
 	
-	private static String getLocalizedChildLabel(Integer projectTypeFlag, Locale locale) {
+	public static String getLocalizedChildLabel(Integer projectTypeFlag, Locale locale) {
 		String localizedChild = null;
 		if (projectTypeFlag!=null) {
 			switch (projectTypeFlag.intValue()) {
@@ -279,13 +268,19 @@ public class ReleaseConfigBL {
 	 * @param node
 	 * @return
 	 */
-	static List<ReleaseTreeNodeTO> getReleaseNodes(String node) {
+	static List<ReleaseTreeNodeTO> getReleaseNodes(String node, Boolean showClosedReleases) {
 		ProjectReleaseTokens projectReleaseTokens = decodeNode(node);
 		List<ReleaseTreeNodeTO> releaseNodes = new LinkedList<ReleaseTreeNodeTO>();
 		Integer projectID = projectReleaseTokens.getProjectID();
 		Integer releaseID = projectReleaseTokens.getReleaseID();
 		if (projectID!=null) {
-			boolean showClosedReleases = getShowClosedReleasesFlag(projectID);
+			//boolean showClosedReleases = getShowClosedReleasesFlag(projectID);
+			if (showClosedReleases==null) {
+				//not sent a request parameter
+				showClosedReleases = getShowClosedReleasesFlag(projectID);
+			} else {
+				setShowClosedReleasesFlag(projectID, showClosedReleases.booleanValue());
+			}
 			Map<Integer, TSystemStateBean> releaseStatusMap = GeneralUtils.createMapFromList(
 					SystemStatusBL.getSystemStatesByByEntityAndStateFlags(TSystemStateBean.ENTITYFLAGS.RELEASESTATE,
 							ReleaseBL.getStateFlags(showClosedReleases, true, true, true)));

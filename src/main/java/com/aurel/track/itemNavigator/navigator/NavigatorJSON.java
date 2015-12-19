@@ -135,6 +135,7 @@ public class NavigatorJSON {
 		JSONUtility.appendBooleanValue(sb,"verifyAllowDropAJAX",menuItem.isVerifyAllowDropAJAX());
 		JSONUtility.appendBooleanValue(sb,"useFilter",menuItem.isUseFilter());
 		if(menuItem.getChildren()!=null){
+			JSONUtility.appendBooleanValue(sb,"expanded",menuItem.isExpanded());
 			JSONUtility.appendJSONValue(sb,"children",encodeMenuList(menuItem.getChildren()));
 		}
 		JSONUtility.appendIntegerValue(sb,"projectID",menuItem.getProjectID());

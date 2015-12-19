@@ -408,6 +408,24 @@ public class TExportTemplatePeer
 			return null;
 		}
 	}
+	
+	/**
+	 * Loads all project specific report templates 
+	 * @param projectID
+	 * @return
+	 */
+	@Override
+	public List<TExportTemplateBean> loadProject(Integer projectID) {
+		Criteria crit = new Criteria();
+		crit.add(REPOSITORYTYPE,new Integer(TExportTemplateBean.REPOSITORY_TYPE.PROJECT));
+		crit.add(PROJECT, projectID);
+		try	{
+			return convertTorqueListToBeanList(doSelect(crit));
+		} catch(TorqueException e){
+			LOGGER.error("Loading private templates by person failed with " + e.getMessage());
+			return null;
+		}
+	}
 
 	private List<TExportTemplateBean> convertTorqueListToBeanList(List<TExportTemplate> torqueList) {
 		List<TExportTemplateBean> beanList = new ArrayList<TExportTemplateBean>();

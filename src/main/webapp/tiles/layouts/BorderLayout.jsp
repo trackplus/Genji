@@ -4,7 +4,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 	"http://www.w3.org/TR/html4/loose.dtd">
 
-<%-- $Id: BorderLayout.jsp 1810 2015-11-13 16:54:55Z adib $ --%>
+<%-- $Id: BorderLayout.jsp 1903 2015-12-18 16:37:00Z tamas $ --%>
 
 <s:if test="#application.APPLICATION_BEAN==null">
     <div> Try again later...</div>
@@ -171,8 +171,8 @@
 	%>
 
 	<s:if test="#session.debug!=null">
-	   <script type="text/javascript" src="<%=request.getContextPath()%>/js/ext/ext-all-debug.js?v=<s:property value='#application.TVERSION.label'/>"></script>
-	   <script type="text/javascript" src="<%=request.getContextPath()%>/js/ext/packages/charts/classic/charts-debug.js?v=<s:property value='#application.TVERSION.label'/>"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/ext/ext-all-debug.js?v=<s:property value='#application.TVERSION.label'/>"></script>
+ 	   <script type="text/javascript" src="<%=request.getContextPath()%>/js/ext/packages/charts/classic/charts-debug.js?v=<s:property value='#application.TVERSION.label'/>"></script>
 	</s:if>
 
     <s:if test="#session.debug==null">
@@ -648,8 +648,8 @@
 	httpPostLayout.setKeys("loggerClient", "timeStampClient", "levelClient", "messageClient", "exceptionClient", "urlClient");
 	ajaxAppender.setLayout(httpPostLayout);
 	ajaxAppender.setThreshold(log4javascript.Level.DEBUG);
-	log.addAppender(ajaxAppender);
-	log.debug("Debug message");
+	// log.addAppender(ajaxAppender);
+	// log.debug("Debug message");
 	// log.warn("Warning message");
 	// log.error("Error message");
 	//]]>
@@ -686,6 +686,9 @@
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/util/PersonPickerDialog.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/ext/ux/LinkColumn.js"></script>
 
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/linkPicker/LinkPicker.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/linkPicker/LinkPickerView.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/linkPicker/LinkPickerController.js"></script>
 
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/util/IssuePicker.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/util/NameAndPathPicker.js"></script>
@@ -722,9 +725,38 @@
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/ext/ux/form/MultiSelect.js"></script>
 
 
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/ActionBase.js"></script>
+
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/WindowBase.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/WindowBaseController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/FormBase.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/FormBaseController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/AdminBaseController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/DeleteWindow.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/DeleteWindowController.js"></script>
+
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/GridBase.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/GridBaseController.js"></script>
+
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/util/refreshAfterSubmit.js"></script>		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/CrudBase.js"></script>
+
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/TreeBase.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/TreeBaseController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/TreeDetail.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/TreeDetailController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/TreeWithGrid.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/TreeWithGridController.js"></script>
+
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/SimpleAssignment.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/SimpleAssignmentController.js"></script>
+
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/TreeDetailAssignment.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/TreeDetailAssignmentController.js"></script>
+
+
 		<%-- itemNavigator--%>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/ext/ux/RowExpander.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/category/filter.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/filter/filter.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/itemNavigator/issueListView.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/util/TreeDropZone.js"></script>
         <script type="text/javascript" src="<%=request.getContextPath()%>/js/itemNavigator/navigableItem.js"></script>
@@ -738,7 +770,9 @@
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/itemNavigator/cardView.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/itemNavigator/chooseColumns.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/itemNavigator/grouping.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/itemNavigator/instantFilter.js"></script>
+		<%-- <script type="text/javascript" src="<%=request.getContextPath()%>/js/itemNavigator/instantFilter.js"></script>--%>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/itemNavigator/EmbeddedFilter.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/itemNavigator/EmbeddedFilterController.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/itemNavigator/massOperation.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/itemNavigator/link.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/itemNavigator/ItemNavigatorController.js"></script>
@@ -777,15 +811,28 @@
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/browseProjects/browseProjects.js"></script>
 
 		<%--reports --%>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/util/refreshAfterSubmit.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/CrudBase.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/ActionBase.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/TreeBase.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/TreeDetail.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/TreeWithGrid.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/category/CategoryConfig.js"></script>
+
+
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/category/CategoryBase.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/category/CategoryBaseController.js"></script>
+
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/filter/filterStatics.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/filter/FilterConfig.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/filter/FilterConfigController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/filter/FilterEdit.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/filter/FilterEditController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/filter/FilterParameter.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/filter/FilterParameterController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/filter/FilterLink.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/filter/FilterLinkController.js"></script>
+
+
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/category/ReportConfig.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/category/report.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/report/ReportConfig.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/report/ReportConfigController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/report/ReportEdit.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/report/ReportEditController.js"></script>
 
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/category/reportsInit.js"></script>
 
@@ -796,28 +843,51 @@
 
 
 		<%--admin--%>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/DeleteController.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/GridBase.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/GridControllerBase.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/SimpleAssignment.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/TreeDetailAssignment.js"></script>
+
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/screenListView.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/projectType/ProjectType.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/projectType/ProjectTypeController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/projectType/ProjectTypeEdit.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/projectType/ProjectTypeEditController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/projectType/ProjectTypeImport.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/projectType/ProjectTypeImportController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/projectType/ProjectTypeExport.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/projectType/ProjectTypeExportController.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/role/Role.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/role/RoleController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/role/RoleEdit.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/role/RoleEditController.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/admin.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/profile.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/Person.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/PersonController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/PersonEdit.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/PersonEditController.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/Group.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/GroupController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/GroupEdit.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/GroupEditController.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/UserRolesInProject.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/UserRolesInProjectController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/UserRolesInProjectEdit.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/UserRolesInProjectEditController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/UserRolesInProjectWindow.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/UserRolesInProjectWindowController.js"></script>
         <script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/FiltersInUserMenu.js"></script>
         <script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/FiltersInUserMenuController.js"></script>
+        <script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/FiltersInUserMenuEdit.js"></script>
+        <script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/FiltersInUserMenuEditController.js"></script>
+        <script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/FiltersInUserMenuWindow.js"></script>
+        <script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/FiltersInUserMenuWindowController.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/Department.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/DepartmentController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/DepartmentEdit.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/DepartmentEditController.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/user/dashboardAssignment.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/scripting/Script.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/scripting/ScriptController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/scripting/ScriptEdit.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/scripting/ScriptEditController.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/server/SiteConfig.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/server/EmailOutgoing.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/server/Ldap.js"></script>
@@ -829,23 +899,57 @@
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/server/DatabaseRestore.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/myProfile/iCalendar.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/myProfile/notify/NotifyConfig.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/myProfile/notify/NotifyConfigController.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/myProfile/notify/NotifySettingsList.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/myProfile/notify/NotifySettingsListController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/myProfile/notify/NotifySettingsEdit.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/myProfile/notify/NotifySettingsEditController.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/myProfile/notify/NotifyTriggerList.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/myProfile/notify/NotifyTriggerListController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/myProfile/notify/NotifyTriggerEdit.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/myProfile/notify/NotifyTriggerEditController.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/treeConfig/TreeConfig.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/treeConfig/TreeConfigController.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/treeConfig/FieldConfig.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/treeConfig/FieldConfigController.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/treeConfig/AssignmentConfig.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/treeConfig/AssignmentConfigController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/treeConfig/AssignmentConfigEdit.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/treeConfig/AssignmentConfigEditController.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/treeConfig/ScreenConfig.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/treeConfig/ScreenConfigController.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/userLevel/UserLevel.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/userLevel/UserLevelController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/userLevel/UserLevelEdit.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/userLevel/UserLevelEditController.js"></script>
+
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/list/ListConfig.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/list/ListConfigController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/list/ListEdit.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/list/ListEditController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/list/IconUpload.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/list/IconUploadController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/list/ListImport.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/list/ListImportController.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/objectStatus/ObjectStatus.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/objectStatus/ObjectStatusController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/objectStatus/ObjectStatusEdit.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/customize/objectStatus/ObjectStatusEditController.js"></script>
+
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/project/ProjectConfig.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/project/ProjectConfigController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/project/ProjectEdit.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/project/ProjectEditController.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/project/projectCockpit.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/project/ProjectCockpitController.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/project/projectCopy.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/project/Release.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/project/ReleaseController.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/project/ReleaseEdit.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/project/ReleaseEditController.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/project/versionControl.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/project/RoleAssignment.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/project/RoleAssignmentController.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/action/importWizard.js"></script>
 		<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/action/importExcel.js"></script>
     	<script type="text/javascript" src="<%=request.getContextPath()%>/js/admin/action/importDocx.js"></script>
@@ -874,11 +978,22 @@
     <%}%>
 
 
+	<%--
+	<script type="text/javascript" src='<%=request.getContextPath()%>/wiki/js/wikiController.js'></script>
+	<script type="text/javascript" src='<%=request.getContextPath()%>/wiki/js/westPanel.js'></script>
+	<script type="text/javascript" src='<%=request.getContextPath()%>/wiki/js/baseWiki.js'></script>
+	<script type="text/javascript" src='<%=request.getContextPath()%>/wiki/js/DocumentPicker.js'></script>
+	--%>
 
 	<%-- custom modules --%>
 	<s:if test="dependentModules!=null">
 		<s:iterator value="dependentModules">
-			<script type="text/javascript" src='<%=request.getContextPath()%>/<s:property value="id"/>/js/<s:property value="id"/>.js'></script>
+			<s:if test="#session.debug!=null&&#session.debug=='true'">
+				<script type="text/javascript" src='<%=request.getContextPath()%>/<s:property value="id"/>/js/<s:property value="id"/>-debug.js'></script>
+			</s:if>
+			<s:else>
+				<script type="text/javascript" src='<%=request.getContextPath()%>/<s:property value="id"/>/js/<s:property value="id"/>.js'></script>
+			</s:else>
 			<%
 			if(isIE9){%>
 				<s:if test="haveIE9Css">

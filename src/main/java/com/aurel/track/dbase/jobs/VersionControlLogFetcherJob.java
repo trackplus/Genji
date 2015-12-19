@@ -52,6 +52,7 @@ import com.aurel.track.plugin.PluginDescriptor;
 import com.aurel.track.plugin.VersionControlDescriptor;
 import com.aurel.track.plugin.VersionControlDescriptor.BrowserDescriptor;
 import com.aurel.track.util.GeneralUtils;
+import com.aurel.track.util.LogThrottle;
 import com.aurel.track.util.PropertiesHelper;
 import com.aurel.track.vc.RepositoryFileViewer;
 import com.aurel.track.vc.Revision;
@@ -61,14 +62,14 @@ import com.aurel.track.vc.VersionControlPlugin;
 import com.aurel.track.vc.bl.VersionControlBL;
 
 public class VersionControlLogFetcherJob implements Job {
-	
+
 	private static final String DEFAULT_PREFIX="#";
-	
+
 	private static final Logger LOGGER = LogManager.getLogger(VersionControlLogFetcherJob.class);
-	
+
 	private static long LOGINTERVAL = 1000*60*60*6; // 6 hours
 	private static long attemptTimeStamp = new Date().getTime() - LOGINTERVAL;
-	
+
 
 	@Override
 	public void execute(JobExecutionContext context) {
@@ -82,7 +83,7 @@ public class VersionControlLogFetcherJob implements Job {
 			dutyCycleInt = jobDataMap.getIntegerFromString("dutyCycle");
 		}
 		catch (Exception ex) {
-		    // we don't need to do much here.	
+		    // we don't need to do much here.
 		}
 		int dutyCycle=0;
 		if(dutyCycleInt!=null&&dutyCycleInt.intValue()<100){
@@ -93,7 +94,7 @@ public class VersionControlLogFetcherJob implements Job {
 			prefixIssueNumber = jobDataMap.getString("prefixIssueNumber");
 		}
 		catch (Exception ex) {
-		    // we don't need to do much here.	
+		    // we don't need to do much here.
 		}
 		if(prefixIssueNumber==null||prefixIssueNumber.length()==0){
 			LOGGER.debug("No prefixIssueNumber found! Use default:"+DEFAULT_PREFIX);
@@ -101,7 +102,7 @@ public class VersionControlLogFetcherJob implements Job {
 		}else{
 			LOGGER.debug("Use prefixIssueNumber:\""+prefixIssueNumber+"\"");
 		}
-		
+
 		// Check if a job with the same name is currently running.
 		// If so, skip this one.
 
@@ -120,25 +121,25 @@ public class VersionControlLogFetcherJob implements Job {
 		catch (Exception e) {
 			// Scheduler exception
 		}
-		
+
 		List<TProjectBean> projects= ProjectBL.loadActiveInactiveProjectsFlat();
-		
+
         List<PluginDescriptor> vcDescriptors=VersionControlBL.getVersionControlPlugins();
         List<Map<Integer,List<Revision>>> mapLogList=new ArrayList<Map<Integer,List<Revision>>>();
         Map<String,RepositoryFileViewer> mapViewer=new HashMap<String, RepositoryFileViewer>();
-        
+
         long now = new Date().getTime();
         if ((now - attemptTimeStamp) >= LOGINTERVAL) {
         	attemptTimeStamp = now;
         }
-        
+
         for (int i = 0; i < projects.size(); i++) {
             TProjectBean prj = projects.get(i);
             boolean useVC=(PropertiesHelper.getProperty(prj.getMoreProperties(), TProjectBean.MOREPPROPS.USE_VERSION_CONTROL_PROPERTY)+"").equalsIgnoreCase("true");
             if(useVC){
                 Map<String,String> parameters= VersionControlBL.laodMapVerisonControl(prj.getObjectID());
                 String vcType=PropertiesHelper.getProperty(prj.getMoreProperties(), TProjectBean.MOREPPROPS.VERSION_CONTROL_TYPE_PROPERTY);
-                
+
                 LOGGER.debug("Version control found:"+vcType+" for project:"+prj.getLabel());
                 VersionControlDescriptor descriptor=getVersionControlDescriptor(vcType,vcDescriptors);
                 if(descriptor==null){
@@ -174,7 +175,17 @@ public class VersionControlLogFetcherJob implements Job {
                 repositoryFileViewer.setModifiedLink(PropertiesHelper.getProperty(prj.getMoreProperties(), TProjectBean.MOREPPROPS.VC_MODIFIED_LINK));
                 repositoryFileViewer.setReplacedLink(PropertiesHelper.getProperty(prj.getMoreProperties(), TProjectBean.MOREPPROPS.VC_REPLACED_LINK));
                 repositoryFileViewer.setDeletedLink(PropertiesHelper.getProperty(prj.getMoreProperties(), TProjectBean.MOREPPROPS.VC_DELETED_LINK));
-                Map<Integer,List<Revision>> logs=vcplugin.getLogs(parameters, prefixIssueNumber);
+                Map<Integer,List<Revision>> logs = null;
+                try {
+                	logs=vcplugin.getLogs(parameters, prefixIssueNumber);
+                } catch (Exception e) {
+                	LOGGER.debug(e);
+                	if (logs == null) {
+                		if (!LogThrottle.isReady("SVNPlugin"+url, 480)) {
+                			return;
+                		}
+                	}
+                }
                 if(logs!=null){
                 	Iterator<Integer> it=logs.keySet().iterator();
                 	while (it.hasNext()) {
@@ -197,7 +208,7 @@ public class VersionControlLogFetcherJob implements Job {
             VersionControlMap.clearMap();
             for (int i = 0; i < mapLogList.size(); i++) {
             	Map<Integer,List<Revision>> logs =  mapLogList.get(i);
-                VersionControlMap.mergeMap(logs);    
+                VersionControlMap.mergeMap(logs);
             }
             Map<Integer,List<Revision>> map=VersionControlMap.getMap();
             Map<Integer,ItemInfo> mapItems= prepareItemInfo(map);
@@ -255,12 +266,12 @@ public class VersionControlLogFetcherJob implements Job {
         }
         String msg = "Done executing VersionControlLogFetcherJob! Time spent: "+(timeSpent/1000)+"s. Spent percent="+spentPercent+"%";
         if (timeSpent/1000 > 100) {
-            LOGGER.info(msg);	
+            LOGGER.info(msg);
         } else {
         	LOGGER.debug(msg);
         }
     }
-	
+
     public  VersionControlDescriptor getVersionControlDescriptor(String vcDescriptorID,List descriptors){
         VersionControlDescriptor result=null;
         for (int i = 0; i < descriptors.size(); i++) {

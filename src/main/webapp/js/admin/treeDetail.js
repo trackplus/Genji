@@ -24,54 +24,11 @@
 /**
  * Base class for all "tree-detail"-based CRUD operations
  */
-Ext.define('com.trackplus.admin.TreeDetail',{
-	extend:'com.trackplus.admin.TreeBase',
-	config: {
-
-	},
-	/**
-	 * Whether selecting a folder node in the tree results in a grid in the detail part or other detail info
-	 */
-	showGridForFolder: false,
-	/**
-	 * If showGridForFolder is false, then whether the folder details are loaded manually or through a form load method
-	 */
-	folderDetailByFormLoad: false,
-	/**
-	 * Whether to show a grid with a single row instead of other detailed view of the leaf node
-	 */
-	//showGridForLeaf: false,
-	/**
-	 * whether the leaf details are loaded manually or through a form load method
-	 */
-	leafDetailByFormLoad: true,
+Ext.define("com.trackplus.admin.TreeDetail", {
+	extend:"com.trackplus.admin.TreeBase",
 	/**
 	 * Whether the tree has double click listener
 	 */
-	treeHasItemdblclick: false,
-
-	constructor: function(config) {
-		var config = config || {};
-		this.initConfig(config);
-		this.initBase();
-	},
-
-	/**
-	 * Get the detail part after selecting a tree node
-	 */
-	/*protected*/loadDetailPanel: function(node, leaf, opts) {
-		if (leaf) {
-			if (this.leafDetailByFormLoad) {
-				this.loadDetailPanelWithFormLoad(node, false);
-			} else {
-				this.loadSimpleDetailPanel(node, false);
-			}
-		} else {
-			if (this.folderDetailByFormLoad) {
-				this.loadDetailPanelWithFormLoad(node, false);
-			} else {
-				this.loadSimpleDetailPanel(node, false);
-			}
-		}
-	}
+	treeHasItemdblclick: false
+	
 });

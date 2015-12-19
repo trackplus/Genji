@@ -162,14 +162,14 @@ Ext.define('js.ext.com.track.dashboard.AverageTimeToCloseItemConfig',{
 
 	chnageTitleCompSettings: function(titleComp) {
 		var me = this;
-		if(titleComp ) {
+		if(titleComp) {
 			titleComp.anchor = null;
 			titleComp.labelWidt = me.labelWidth;
 			titleComp.labelAlign = me.labelAlign;
 			titleComp.labelStyle = me.labelStyle;
 			titleComp.labelSeparator = me.labelSeparator;
 			titleComp.width = 400;
-		};
+		}
 	},
 
 	getTimeSettingsFieldSetItems: function() {

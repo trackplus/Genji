@@ -23,14 +23,18 @@
 /**
  * Class for role and account assignments for project
  */
-Ext.define('com.trackplus.admin.user.Department',{
-	extend:'com.trackplus.admin.TreeDetailAssignment',
+Ext.define("com.trackplus.admin.user.Department",{
+	extend:"com.trackplus.admin.TreeDetailAssignment",
+	xtype: "department",
+    controller: "department",
 	config: {
 		rootID: '_'
 	},
-	baseAction:"department",
-	editWidth: 400,
-	editHeight: 150,
+	
+	getBaseServerAction: function() {
+		return "department";
+	},
+	
 	/**
 	 * Whether the tree has double click listener
 	 */
@@ -45,12 +49,6 @@ Ext.define('com.trackplus.admin.user.Department',{
 	actionDeleteDepartment: null,
 	actionDetachFromParentDepartment: null,
 	actionRemovePerson: null,
-
-	constructor: function(cfg) {
-		var config = cfg || {};
-		this.initConfig(config);
-		this.initBase();
-	},
 
 	getEntityLabel: function(extraConfig) {
 		return getText("admin.user.department.lbl.department");
@@ -74,19 +72,19 @@ Ext.define('com.trackplus.admin.user.Department',{
 	/**
 	 * Initialize all possible actions
 	 */
-	initActions: function(){
-		this.actionAddDepartment = this.createLocalizedAction(this.getTitle(this.getAddTitleKey(), {isLeaf:false}),
-				this.getAddIconCls(), this.onAddMainDepartment, this.getTitle(this.getAddTitleKey(), {isLeaf:false}));
-		this.actionAddSubdepartment = this.createLocalizedAction(this.getAddSubdepartmentLabel(),
-				this.getAddIconCls(), this.onAddSubdepartment, this.getAddSubdepartmentLabel());
-		this.actionEditDepartment = this.createLocalizedAction(this.getTitle(this.getEditTitleKey(), {isLeaf:false}),
-				this.getEditIconCls(), this.onEditDepartment, this.getTitle(this.getEditTitleKey()));
-		this.actionDeleteDepartment = this.createLocalizedAction(this.getTitle(this.getDeleteTitleKey(), {isLeaf:false}),
-				this.getDeleteIconCls(), this.onDeleteDepartment, this.getTitle(this.getDeleteTitleKey(), {isLeaf:false}));
-		this.actionDetachFromParentDepartment = this.createLocalizedAction(getText("menu.admin.users.departments.removeFromParent"),
-				"clear", this.onDetachFromParentDepartment, getText("menu.admin.users.departments.removeFromParent"));
-		this.actionRemovePerson = this.createLocalizedAction(getText("common.lbl.remove", getText("admin.user.lbl.user")),
-				this.getDeleteIconCls(), this.onRemovePerson, getText("common.lbl.remove", getText("admin.user.lbl.user")));
+	initActions: function() {
+		this.actionAddDepartment = CWHF.createAction(this.getActionTooltip(this.getAddTitleKey()), "departmentAdd",
+				"onAddMainDepartment", {labelIsLocalized:true});
+		this.actionAddSubdepartment = CWHF.createAction(this.getAddSubdepartmentLabel(), this.getAddIconCls(),
+				"onAddSubdepartment", {labelIsLocalized:true, disabled: true});
+		this.actionEditDepartment = CWHF.createAction(this.getActionTooltip(this.getEditTitleKey()), this.getEditIconCls(),
+				"onEditDepartment", {labelIsLocalized:true});
+		this.actionDeleteDepartment = CWHF.createAction(this.getActionTooltip(this.getDeleteTitleKey()), this.getDeleteIconCls(),
+				"onDeleteDepartment", {labelIsLocalized:true});
+		this.actionDetachFromParentDepartment = CWHF.createAction("common.btn.detachFromParent", "clear",
+				"onDetachFromParentDepartment");
+		this.actionRemovePerson = CWHF.createAction(getText(this.getRemoveTitleKey(), getText("admin.user.lbl.user")), this.getDeleteIconCls(),
+				"onRemovePerson", {labelIsLocalized:true});
 		this.actions=[this.actionAddDepartment, this.actionAddSubdepartment];
 	},
 
@@ -106,13 +104,10 @@ Ext.define('com.trackplus.admin.user.Department',{
 	},
 
 	/**
-	 * Create the edit
+	 * Which actions to enable/disable depending on tree selection
 	 */
-	onTreeNodeDblClick: function(view, record) {
-		var leaf = record.isLeaf();
-		if (!leaf) {
-			this.onEditDepartment();
-		}
+	getToolbarActionChangesForTreeNodeSelect: function(selectedNode) {
+		this.actionAddSubdepartment.setDisabled(false);
 	},
 
 	/**
@@ -130,208 +125,9 @@ Ext.define('com.trackplus.admin.user.Department',{
 		return getText("menu.admin.users.departments.tt");
 	},
 
-	/**
-	 * Handler for adding a new screen
-	 */
-	onAddMainDepartment: function() {
-		return this.onAddDepartment(false);
-	},
-
-	onAddSubdepartment: function() {
-		return this.onAddDepartment(true);
-	},
-
-	onAddDepartment: function(addAsSubdepartment) {
-		var title = this.getTitle(this.getAddTitleKey(), {isLeaf:false});
-		var loadParams = this.getEditParams();
-		loadParams["add"] = true;
-		var submitParams = this.getEditParams();
-		submitParams["addAsSubdepartment"] = addAsSubdepartment;
-		submitParams["add"] = true;
-		var nodeIDToReload;
-		if (addAsSubdepartment) {
-			nodeIDToReload = this.selectedNodeID;
-		} else {
-			nodeIDToReload = this.getRootID();
-		}
-		return this.onAddEdit(title, loadParams, submitParams, nodeIDToReload);
-	},
-
-	/**
-	 * Handler for editing a screen
-	 */
-	onEditDepartment: function() {
-		var title = this.getTitle(this.getEditTitleKey(), {isLeaf:false});
-		var loadParams = this.getEditParams();
-		var submitParams = this.getEditParams();
-		return this.onAddEdit(title, loadParams, submitParams, this.getParentNodeId());
-	},
-
-	/**
-	 * Parameters for editing an existing entity
-	 * recordData: the selected entity data
-	 */
-	getEditParams: function() {
-		var recordData = this.getSingleSelectedRecordData(true);
-		if (recordData) {
-			var nodeID = recordData['id'];
-			if (nodeID) {
-				return {node:nodeID};
-			}
-		}
-		return {};
-	},
-
-	getTreeExpandExtraParams: function() {
+	getTreeStoreExtraParams: function() {
 		//also include the persons in department by expanding a department node
 		return {includePersons:true};
-	},
-
-	/**
-	 * Get the node to reload after save after edit operation
-	 */
-	getParentNodeId: function() {
-		if (this.selectedNode) {
-				//edited/copied from tree
-				var parentNode = this.selectedNode.parentNode;
-				if (parentNode) {
-					//the parent of the edited node should be reloaded
-					return {nodeIDToReload: parentNode.data['id']}
-				}
-		}
-		return {nodeIDToReload: this.getRootID()};
-	},
-
-	/**
-	 * Handler for add/edit a node/row
-	 * title: 'add'/'edit'/'copy'
-	 * recordData: the selected record (tree node data or grid row data)
-	 * isLeaf: whether to add a leaf or a folder
-	 * add: whether it is add or edit
-	 * fromTree: operations started from tree or from grid
-	 * loadParams
-	 * submitParams
-	 * refreshParams
-	 * refreshParamsFromResult
-	 */
-	onAddEdit: function(title, loadParams, submitParams, nodeIDToReload) {
-		var loadUrl = this.getBaseAction() + '!edit.action';
-		var load = {loadUrl:loadUrl, loadUrlParams:loadParams};
-		var submitUrl = this.getBaseAction() + '!save.action';
-		var submit = {	submitUrl:submitUrl,
-						submitUrlParams:submitParams,
-						submitButtonText:getText('common.btn.save'),
-						refreshAfterSubmitHandler:com.trackplus.util.RefreshAfterSubmit.refreshTreeAfterSubmit,
-						refreshParametersBeforeSubmit:{nodeIDToReload: nodeIDToReload},
-						refreshParametersAfterSubmit:[{parameterName:'nodeIDToSelect', fieldNameFromResult:'node'},
-													{parameterName:'reloadTree', fieldNameFromResult:'reloadTree'}]};
-		var items = this.getPanelItems();
-		var windowParameters = {title:title,
-			width:this.editWidth,
-			height:this.editHeight,
-			load:load,
-			submit:submit,
-			items:items};
-		var windowConfig = Ext.create('com.trackplus.util.WindowConfig', windowParameters);
-		windowConfig.showWindowByConfig(this);
-	},
-
-	getPanelItems: function() {
-		return [CWHF.createTextField('common.lbl.name','name',
-				{anchor:'100%', allowBlank:false, labelWidth:80, maxLength:255, enforceMaxLength:true})]
-	},
-
-	onRemovePerson: function() {
-		this.reloadAssigned(this.getBaseAction()+"!unassign.action", {})
-	},
-
-	reload: com.trackplus.util.RefreshAfterSubmit.refreshTreeAfterSubmit,
-
-	getReloadParamsAfterDelete: function(selectedRecords, extraConfig, responseJson) {
-	    var reloadParams = {reloadTree:true};
-	    if (selectedRecords) {
-	        //we suppose that only one selection is allowed in tree
-	        var selNode = selectedRecords;
-	        if (selNode) {
-	            reloadParams["nodeIDToReload"] = selNode.parentNode.data.id;
-	            var previousSibling = selNode.previousSibling;
-	            if (previousSibling) {
-	                reloadParams["nodeIDToSelect"] = previousSibling.data.id;
-	            } else {
-	                var nextSibling = selNode.nextSibling;
-	                if (nextSibling) {
-	                    reloadParams["nodeIDToSelect"] = nextSibling.data.id;
-	                } else {
-	                    reloadParams["resetDetail"] = true;
-	                }
-	            }
-	        }
-	    }
-	    return reloadParams;
-	},
-
-	onDeleteDepartment: function() {
-		var selectedRecords = this.getSelectedRecords(true);
-		if (selectedRecords) {
-			this.deleteHandler(selectedRecords, {fromTree:true});
-		}
-	},
-
-	onDetachFromParentDepartment: function() {
-		var selectedRecord = this.getLastSelected(true);
-		if (selectedRecord) {
-			var nodeID = selectedRecord.data["id"];
-			Ext.Ajax.request({
-				url: this.getBaseAction()+"!clearParent.action",
-				params: {
-					node:nodeID
-				},
-				disableCaching:true,
-				scope:this,
-				success: function(response){
-					com.trackplus.util.RefreshAfterSubmit.refreshTreeAfterSubmit.call(this, {nodeIDToSelect:nodeID, reloadTree:true});
-				}
-			});
-		}
-	},
-
-	/**
-	 * Url for deleting an entity
-	 * extraConfig: for simple grid nothing, for tree with grid {fromTree:fromTree, isLeaf:isLeaf}
-	 */
-	getDeleteUrl: function(extraConfig){
-		return this.getBaseAction() + '!delete.action';
-	},
-
-	getDeleteParams: function(selectedRecords, extraConfig) {
-		return this.getEditParams();
-	},
-
-	/**
-	 * The replacement items for the deleted entity
-	 * (The replacement panel will be created with on this items)
-	 */
-	getReplacementItems: function(responseJson, selectedRecords, extraConfig) {
-		return [{xtype : 'label',
-				itemId: 'replacementWarning'},
-	            CWHF.createSingleTreePicker("Replacement",
-	            "replacementID", responseJson["replacementTree"], null,
-	            {itemId: "replacementID",
-	            allowBlank:false,
-	            blankText: getText('common.err.replacementRequired',
-	            this.getEntityLabel(extraConfig)),
-	            labelWidth:200,
-	            margin:'5 0 0 0'
-	            })
-			    ];
-	},
-
-	/**
-	 * Load the data source and value for the replacement options tree
-	 * Override this for different tree based pickers
-	 */
-	loadReplacementOptionData: function(replacementControl, data) {
-	    replacementControl.updateMyOptions(data["replacementTree"]);
 	},
 
 	getGridFields: function(record) {
@@ -400,17 +196,5 @@ Ext.define('com.trackplus.admin.user.Department',{
 
 	enableColumnHide: function() {
 		return true;
-	},
-
-	getDetailWidth: function() {
-		return 800;
-	},
-
-	getDetailHeight: function() {
-		return 600;
-	},
-
-	getMinWidth: function() {
-		return 425;
 	}
 });

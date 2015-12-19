@@ -93,9 +93,7 @@ public class ItemNavigatorJSON {
 		JSONUtility.appendBooleanValue(sb, "highlightCriticalPath", ApplicationBean.getInstance().getSiteBean().getHighlightCriticalPathGantt());
 		JSONUtility.appendBooleanValue(sb, "validateRelationships", ApplicationBean.getInstance().getSiteBean().getValidateRelationshipsGantt());
 		JSONUtility.appendBooleanValue(sb, "isActiveTopDownDate", ApplicationBean.getInstance().getBudgetActive());
-
 		JSONUtility.appendBooleanValue(sb, "tooManyItems", tooManyItems);
-
 		List<Integer> toolTipLocalizedFields = new ArrayList<Integer>();
 		toolTipLocalizedFields.add(SystemFields.SYNOPSIS);
 		toolTipLocalizedFields.add(SystemFields.INTEGER_ISSUENO);
@@ -173,6 +171,7 @@ public class ItemNavigatorJSON {
 		JSONUtility.appendIntegerValue(sb,"id",queryContext.getId());
 		JSONUtility.appendIntegerValue(sb,"queryType",queryContext.getQueryType());
 		JSONUtility.appendIntegerValue(sb,"queryID",queryContext.getQueryID());
+		JSONUtility.appendStringValue(sb,"iconCls",queryContext.getIconCls());
 		JSONUtility.appendStringValue(sb,"queryName",queryContext.getQueryName(),true);
 		sb.append("}");
 		return sb.toString();

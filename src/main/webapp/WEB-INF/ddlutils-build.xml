@@ -1,0 +1,66 @@
+<project default="help"
+	     name="TestDdlUtils"
+	     basedir=".">
+
+<path id="runtime-classpath">
+  <fileset dir="lib">
+    <include name="**/*.jar"/>
+    <include name="**/*.zip"/>
+
+  </fileset>
+</path>
+
+<property file="ddlutils-build.properties"/>
+<property name="schemafile" value="db-schema.xml"/>
+<property name="datafile" value="data.xml"/>
+
+<target name="db-dump" description="Dumps the database structure">
+  <taskdef name="databaseToDdl"
+           classname="org.apache.ddlutils.task.DatabaseToDdlTask">
+    <classpath refid="runtime-classpath"/>
+
+  </taskdef>
+  <databaseToDdl modelName="MyModel">
+    <database url="${dump.url}"
+              driverClassName="${dump.driverClassName}"
+              username="${dump.username}"
+              password="${dump.password}"/>
+
+    <writeSchemaToFile outputFile="${schemafile}"/>
+    <writeDataToFile outputFile="${datafile}"/>
+  </databaseToDdl>
+</target>
+
+
+<target name="db-setup"
+        description="Creates the database structure and inserts data into the database">
+  <taskdef name="ddlToDatabase"
+           classname="org.apache.ddlutils.task.DdlToDatabaseTask">
+    <classpath refid="runtime-classpath"/>
+  </taskdef>
+
+  <ddlToDatabase>
+    <database url="${setup.url}"
+              driverClassName="${setup.driverClassName}"
+              username="${setup.username}"
+              password="${setup.password}"/>
+    <fileset dir=".">
+      <include name="${schemafile}"/>
+    </fileset>
+<!--
+    <createDatabase failonerror="false"/>
+-->
+    <writeSchemaToDatabase/> 
+    <writeDataToDatabase datafile="${datafile}"/> 
+  </ddlToDatabase>
+</target>
+
+<target name="db-copy" depends="db-dump,db-setup">
+</target>
+
+<target name="help">
+	<echo message="Use 'db-dump' for dumping database to an XML file"/>
+	<echo message="Use 'db-setup' for building a database from a dumped XML file"/>
+	<echo message="Use 'db-copy' for copying an entire database to another one"/>
+</target>
+</project>

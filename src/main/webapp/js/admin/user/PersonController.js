@@ -26,10 +26,11 @@ Ext.define("com.trackplus.admin.user.PersonController", {
 	mixins: {
 		baseController: "com.trackplus.admin.GridBaseController"
 	},
-	baseAction:"person",
-	entityID:"objectID", 
-	editWidth : 780,
-	editHeight : 500,
+	//baseAction:"person",
+	//entityID:"objectID", 
+	//editWidth : 780,
+	//editHeight : 500,
+	entityDialog: "com.trackplus.admin.user.PersonEdit",
 	
 	getSelectedPersonIDs: function() {
 		var selectedRecords = this.getView().getSelectedRecords();
@@ -66,13 +67,17 @@ Ext.define("com.trackplus.admin.user.PersonController", {
 		}
 	},
 	
-	/*protected*/getDeleteParamName: function() {
+	getDeleteUrl: function() {
+		return "person!delete.action";
+	},
+	
+	getDeleteParamName: function() {
 	    return "selectedPersonIDs";
 	},
 
 	onActivate: function() {
 		Ext.Ajax.request({
-			url: this.getBaseAction() + "!activate.action",
+			url: "person!activate.action",
 			params: {selectedPersonIDs: this.getSelectedPersonIDs()},
 			scope: this,
 			success: function(response) {
@@ -91,7 +96,7 @@ Ext.define("com.trackplus.admin.user.PersonController", {
 
 	onDeactivate: function() {
 		Ext.Ajax.request({
-			url: this.getBaseAction() + "!deactivate.action",
+			url: "person!deactivate.action",
 			params: {selectedPersonIDs: this.getSelectedPersonIDs()},
 			scope: this,
 			success: function(response) {
@@ -109,7 +114,7 @@ Ext.define("com.trackplus.admin.user.PersonController", {
 	},
 
 	onUserLevel: function(userLevel) {
-		var submitUrl = this.getBaseAction() + "!userLevel.action";
+		var submitUrl = "person!userLevel.action";
 		var submitParams = {selectedPersonIDs: this.getSelectedPersonIDs()}
 		var submit = {submitUrl:submitUrl,
 					submitUrlParams:submitParams,
@@ -139,49 +144,42 @@ Ext.define("com.trackplus.admin.user.PersonController", {
 					if (userLevelID && userLevelID!==2) {
 						data.push(record);
 					}
-					},
-					this);
+				},this);
 		}
 		return [CWHF.createCombo("admin.user.manage.lbl.userLevel", "userLevel",
 				{data:data, labelWidth:100, allowBlank:false})];
 	},
 
 	onShowAssignments: function() {
-		var title = getText("admin.user.manage.lbl.roleAssignments");
-		var submitParams = this.getEditParams();
-		var load = {loadHandler: this.showAssignmentsLoadHandler};
-		var personID = null;
-		var recordData = this.getView().getSingleSelectedRecordData();
-		if (recordData) {
-			personID = recordData["id"];
-		}
-		var windowParameters = {title:title,
-			width:500,
-			height:350,
-			load:load,
-			//submit:submit, no submit
-			cancelButtonText: getText("common.btn.done"),
-			layout:"border",
-			formPanel: this.getRoleAssignmentGrid(personID)};
-		var windowConfig = Ext.create("com.trackplus.util.WindowConfig", windowParameters);
+		var windowParameters = {
+        	callerScope:this,
+        	windowTitle:getText("admin.user.group.lbl.roleAssignments"),
+        	loadHandler: function() {
+        		//empty no form load is needed, the grid initializes itself  
+        	},
+        	entityContext: {
+        		//the record data of the actually selected node/row
+        		record: this.getView().getSingleSelectedRecord(),
+        		isGroup: false
+        	}
+        };
+		var windowConfig = Ext.create("com.trackplus.admin.user.UserRolesInProjectWindow", windowParameters);
 		windowConfig.showWindowByConfig(this);
 	},
 
 	onFilterAssignments: function() {
-	    var title = getText("admin.user.manage.lbl.filterAssignments");
-	    var submitParams = this.getEditParams();
-	    var load = {loadHandler: this.showAssignmentsLoadHandler};
-	    var personIDs = this.getSelectedPersonIDs();
-	    var windowParameters = {title:title,
-	        width:500,
-	        height:350,
-	        load:load,
-	        //submit:submit, no submit
-	        cancelButtonText: getText("common.btn.done"),
-	        layout:"border",
-	        formPanel: this.getFilterAssignmentGrid(personIDs)};
-	    var windowConfig = Ext.create('com.trackplus.util.WindowConfig', windowParameters);
-	    windowConfig.showWindowByConfig(this);
+	    var windowParameters = {
+        	callerScope:this,
+        	windowTitle:getText("admin.user.manage.lbl.filterAssignments"),
+        	loadHandler: function() {
+        		//empty no form load is needed, the grid initializes itself  
+        	},
+        	entityContext: {
+        		personIDs: this.getSelectedPersonIDs()
+        	}
+        };
+		var windowConfig = Ext.create("com.trackplus.admin.user.FiltersInUserMenuWindow", windowParameters);
+		windowConfig.showWindowByConfig(this);
 	},
 
 	onCokpitAssignment: function() {
@@ -202,24 +200,9 @@ Ext.define("com.trackplus.admin.user.PersonController", {
 
 	},
 
-	getRoleAssignmentGrid: function(personID) {
-		var gridComponent = Ext.create("com.trackplus.admin.user.UserRolesInProject",
-				{personID:personID, group:false});
-		//var grid = gridComponent.getGrid();
-		//grid.store.load();
-		return [gridComponent];
-	},
-
-	getFilterAssignmentGrid: function(personIDs) {
-	    var gridComponent = Ext.create("com.trackplus.admin.user.FiltersInUserMenu",
-	        {personIDs:personIDs});
-	    //var grid = gridComponent.getGrid();
-	    return [gridComponent];
-	},
-
 	onSyncLdap: function() {
 		Ext.Ajax.request({
-			url: this.getBaseAction() + "!syncldap.action",
+			url: "person!syncldap.action",
 			scope: this,
 			success: function(response) {
 				var result = Ext.decode(response.responseText);
@@ -240,7 +223,7 @@ Ext.define("com.trackplus.admin.user.PersonController", {
 	 * recordData: the selected entity data
 	 * action: the submit action
 	 */
-	getLoadParams: function(recordData, operation) {
+	/*getLoadParams: function(recordData, operation) {
 		return {context:this.getContext(recordData, operation),
 			personId: recordData['id']};
 	},
@@ -257,7 +240,7 @@ Ext.define("com.trackplus.admin.user.PersonController", {
 		} else {
 			return this.getView().profile.CONTEXT.USERADMINEDIT
 		}
-	},
+	},*/
 
 	/**
 	 * Url for editing an entity
@@ -267,10 +250,10 @@ Ext.define("com.trackplus.admin.user.PersonController", {
 	 * edit: this.entityID && copy===false
 	 * copy: this.entityID && copy===true
 	 */
-	getEditUrl: function(recordData, operation) {
+	/*getEditUrl: function(recordData, operation) {
 		var context = this.getContext(recordData, operation);
 		return this.getView().profile.getEditUrl(context);
-	},
+	},*/
 
 	/**
 	 * Url for editing an entity
@@ -280,25 +263,62 @@ Ext.define("com.trackplus.admin.user.PersonController", {
 	 * edit: this.entityID && copy===false
 	 * copy: this.entityID && copy===true
 	 */
-	getSaveUrl: function(recordData, operation) {
+	/*getSaveUrl: function(recordData, operation) {
 		return "userProfile!save.action";
-	},
+	},*/
 
 	/**
 	 * Create the form to edit
 	 */
-	createEditForm: function(recordData, operation) {
+	/*createEditForm: function(recordData, operation) {
 		var context = this.getContext(recordData, operation);
 		this.getView().profile.context = context;
 		this.getView().profile.personId = recordData['id'];
 		return this.getView().profile.createMainForm();
-	},
+	},*/
 
 	/**
 	 * Extra processing that should be done in the edit panel after the data is loaded from the server
 	 * like load combo data, show/hide contols
 	 */
-	afterLoadForm: function(data, panel) {
+	/*afterLoadForm: function(data, panel) {
 		this.getView().profile.postDataLoadCombos(data, panel);
+	},*/
+	
+	onCheckChange: function(checkBox, rowIndex, checked, eOpts) {
+		var record = this.getView().getStore().getAt(rowIndex);
+		var feature = eOpts.feature;
+		var featureID = feature.featureID;
+		if (record && feature) {
+			var params = {personID:record.data["id"], featureID:featureID, featureValue:checked};
+			Ext.Ajax.request({
+				url: "person!changeFeature.action",
+				params: params,
+				scope: this,
+				success: function(response) {
+					var result = Ext.decode(response.responseText);
+					if (result.success) {
+						feature["activeWithFeature"] = result["activeWithFeature"];
+					} else {
+						com.trackplus.util.showError(result);
+					}
+				},
+				failure: function(response) {
+					Ext.MessageBox.alert(this.failureTitle, response.responseText);
+				}
+			});
+		}
+	},
+
+	onBeforeCheckChange: function(checkBox, rowIndex, checked, eOpts) {
+		var feature = eOpts.feature;
+		var record = this.getView().getStore().getAt(rowIndex);
+		var featureName = feature["featureName"];
+		var maxWithFeature = feature["maxWithFeature"];
+		var activeWithFeature = feature["activeWithFeature"];
+		if (checked===true && activeWithFeature >= maxWithFeature && record.data["active"]) {
+			Ext.MessageBox.alert(this.failureTitle, getText("admin.user.manage.err.featureExceeded", maxWithFeature, activeWithFeature, featureName));
+			return false;
+		}
 	}
 });

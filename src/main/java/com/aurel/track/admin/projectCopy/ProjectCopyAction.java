@@ -30,13 +30,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.interceptor.ServletResponseAware;
 import org.apache.struts2.interceptor.SessionAware;
-import org.apache.woden.wsdl20.Interface;
 
 import com.aurel.track.Constants;
 import com.aurel.track.beans.TPersonBean;
-import com.aurel.track.fieldType.constants.SystemFields;
 import com.aurel.track.fieldType.runtime.base.LookupContainer;
-import com.aurel.track.fieldType.runtime.validators.IntegerValidator;
 import com.aurel.track.json.JSONUtility;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.Preparable;
@@ -57,15 +54,17 @@ public class ProjectCopyAction extends ActionSupport implements Preparable, Sess
 	private boolean copyOpenItems;
 	private boolean copyAttachments;
 	private boolean copyReleases;
+	private boolean localCopy = true;
+	private boolean isTemplate = false;
 	
-	private Integer actionTarget;
+	//private Integer actionTarget;
 	
-	public static interface WP_TPL_COPY_TARGET{
+	/*public static interface WP_TPL_COPY_TARGET{
 		public final static Integer COPY_ACTION_WP_FROM_TPL = Integer.valueOf(0);
 		public final static Integer COPY_ACTION_TPL_FROM_WP = Integer.valueOf(1);
 		public final static Integer COPY_ACTION_COPY_TPL = Integer.valueOf(2);
 		public final static Integer COPY_ACTION_COPY_WP = Integer.valueOf(3);
-	}
+	}*/
 
 	@Override
 	public void prepare() throws Exception {
@@ -79,7 +78,7 @@ public class ProjectCopyAction extends ActionSupport implements Preparable, Sess
 	 */
 	@Override
 	public String execute() {
-		JSONUtility.encodeJSON(servletResponse, ProjectCopyBL.loadCopy(projectID, personBean, locale, actionTarget));
+		JSONUtility.encodeJSON(servletResponse, ProjectCopyBL.loadCopy(projectID, personBean, locale, localCopy, isTemplate));
 		return null;
 	}
 	
@@ -89,7 +88,7 @@ public class ProjectCopyAction extends ActionSupport implements Preparable, Sess
 	 */
 	public String copy() {
 		JSONUtility.encodeJSON(servletResponse, ProjectCopyBL.copyProject(projectID,
-				associatedEntitiyMap, customListsMap, projectName, personBean, copyAsSibling, copySubprojects, null, copyOpenItems, copyAttachments, copyReleases, locale, false, actionTarget));
+				associatedEntitiyMap, customListsMap, projectName, personBean, copyAsSibling, copySubprojects, null, copyOpenItems, copyAttachments, copyReleases, locale, false, localCopy, isTemplate));
 		//force reloading of all projects
 		LookupContainer.resetProjectMap();
 		return null;
@@ -154,13 +153,23 @@ public class ProjectCopyAction extends ActionSupport implements Preparable, Sess
 	public void setCopyReleases(boolean copyReleases) {
 		this.copyReleases = copyReleases;
 	}
+
+	public void setLocalCopy(boolean localCopy) {
+		this.localCopy = localCopy;
+	}
+
+	public void setIsTemplate(boolean isTemplate) {
+		this.isTemplate = isTemplate;
+	}
 	
-	public Integer getActionTarget() {
+	
+	
+	/*public Integer getActionTarget() {
 		return actionTarget;
 	}
 
 	public void setActionTarget(Integer actionTarget) {
 		this.actionTarget = actionTarget;
-	}
+	}*/
 	
 }

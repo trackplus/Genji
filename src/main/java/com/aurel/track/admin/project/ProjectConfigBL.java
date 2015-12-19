@@ -41,6 +41,7 @@ import org.apache.logging.log4j.LogManager;
 import com.aurel.track.accessControl.AccessBeans;
 import com.aurel.track.admin.customize.category.CategoryBL;
 import com.aurel.track.admin.customize.category.filter.tree.design.FilterUpperTO;
+import com.aurel.track.admin.customize.category.report.ReportBL;
 import com.aurel.track.admin.customize.lists.ListBL;
 import com.aurel.track.admin.customize.lists.customList.CustomListBL;
 import com.aurel.track.admin.customize.lists.systemOption.IssueTypeBL;
@@ -58,6 +59,7 @@ import com.aurel.track.admin.customize.role.RoleBL;
 import com.aurel.track.admin.customize.treeConfig.TreeConfigBL;
 import com.aurel.track.admin.customize.treeConfig.field.FieldBL;
 import com.aurel.track.admin.project.assignments.RoleAssignmentsBL;
+import com.aurel.track.admin.project.release.ProjectReleaseTokens;
 import com.aurel.track.admin.project.release.ReleaseBL;
 import com.aurel.track.admin.project.release.ReleaseConfigBL;
 import com.aurel.track.admin.project.release.ReleaseJSON;
@@ -65,6 +67,7 @@ import com.aurel.track.admin.server.siteConfig.SiteConfigBL;
 import com.aurel.track.admin.user.person.PersonBL;
 import com.aurel.track.admin.user.userLevel.UserLevelBL.USER_LEVEL_ACTION_IDS;
 import com.aurel.track.beans.ILabelBean;
+import com.aurel.track.beans.TExportTemplateBean;
 import com.aurel.track.beans.TFieldConfigBean;
 import com.aurel.track.beans.TInitStateBean;
 import com.aurel.track.beans.TListBean;
@@ -167,6 +170,57 @@ public class ProjectConfigBL {
 	private static String MS_PROJECT_CLASS = "msProject-ticon";
 	
 	
+	static String loadConfig(Integer projectID, Integer personID, Map<String, Object> session, Locale locale) {
+		boolean hasPrivateWorkspace = ProjectConfigBL.hasPrivateProject(personID);
+		boolean templateIsActive = false;
+		if (projectID!=null) {
+			Integer statusFlag = SystemStatusBL.getStatusFlag(projectID, TSystemStateBean.ENTITYFLAGS.PROJECTSTATE);
+			if(statusFlag != null) {
+				if(statusFlag.intValue() == TSystemStateBean.STATEFLAGS.ACTIVE) {
+					templateIsActive = true;
+				}
+				if(statusFlag.intValue() == TSystemStateBean.STATEFLAGS.CLOSED) {
+					templateIsActive = false;
+				}
+			}
+		}
+		String lastSelectedSection = (String)session.get(ProjectAction.PROJECT_ADMIN_LAST_SELECTED_SECTION);
+		Integer lastSelectedTab = (Integer)session.get(ProjectAction.PROJECT_ADMIN_LAST_SELECTED_TAB);
+		
+		String localizedMain = LocalizeUtil.getLocalizedTextFromApplicationResources(ReleaseConfigBL.RELEAESE_KEY_IN_OP, locale);
+		String localizedChild = null;
+		boolean showClosedReleases = true;
+		if (projectID!=null) {
+			TProjectBean projectBean = ProjectBL.loadByPrimaryKey(projectID);
+			if (projectBean!=null) {
+				showClosedReleases = PropertiesHelper.getBooleanProperty(projectBean.getMoreProps(), TProjectBean.MOREPPROPS.SHOW_ARCHIVED_RELEASE);
+				Integer projectTypeID = projectBean.getProjectType();
+				if (projectTypeID!=null) {
+					TProjectTypeBean projectTypeBean = ProjectTypesBL.loadByPrimaryKey(projectTypeID);
+					if (projectTypeBean!=null) {
+						Integer projectTypeFlag = projectTypeBean.getProjectTypeFlag();
+						localizedChild = ReleaseConfigBL.getLocalizedChildLabel(projectTypeFlag, locale);
+					}
+				}
+			}
+		}
+		if (localizedChild==null) {
+			localizedChild = LocalizeUtil.getLocalizedTextFromApplicationResources("admin.project.release.childPhase.general", locale);
+		}
+		//TODO: if only one of releaseNoticed and releaseseScheduled is used take the localizedMain from Field config: uncomment this
+				/*TFieldConfigBean fieldConfigBean = LocalizeUtil.localizeFieldConfig(
+						FieldRuntimeBL.getValidConfig(SystemFields.INTEGER_RELEASESCHEDULED, null, projectID), locale);
+				if (fieldConfigBean!=null) {
+					localizedMain = fieldConfigBean.getLabel();
+				}*/
+				
+				/*if (localizedMain==null) {
+					localizedMain = LocalizeUtil.localizeRelease(locale);
+				}*/
+				
+		return ProjectJSON.encodeProjectLastSelections(hasPrivateWorkspace, templateIsActive, lastSelectedSection, lastSelectedTab, localizedMain, localizedChild, showClosedReleases);
+		
+	}
 	
 	/**
 	 * Gets the hard coded assignment nodes for a selected project
@@ -1469,6 +1523,12 @@ public class ProjectConfigBL {
 			for (IAssociatedFieldsIndexer associatedFieldsIndexer : associatedFieldIndexers) {
 				associatedFieldsIndexer.deleteByWorkItems(workItemIDs);
 			}
+			List<TExportTemplateBean> projectReports = ReportBL.loadProject(projectID);
+			if (projectReports!=null) {
+				for (TExportTemplateBean exportTemplateBean : projectReports) {
+					ReportBL.deleteWithTemplate(exportTemplateBean.getObjectID());
+				}
+			}
 			
 			//delete all his workItems and other direct (foreign key) dependencies.
 			projectDAO.deleteDependencies(projectID);
@@ -1510,6 +1570,8 @@ public class ProjectConfigBL {
 					ListBL.save(listBean);
 				}
 			}
+			
+		
 			/**
 			 * Remove the occurrences of project in project pickers
 			 */

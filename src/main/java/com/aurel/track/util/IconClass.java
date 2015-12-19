@@ -28,9 +28,13 @@ package com.aurel.track.util;
  *
  */
 public class IconClass {
+	public static String ACCOUNT_ICON_CLASS = "account-ticon";
+	
 	public static String PROJECTTYPE_ICON_CLASS = "projecttypes-ticon";
 	public static String ROLE = "roles-ticon";
 	public static String COCKPIT_ICON_CLASS = "cockpit-ticon";
 	
 	public static String USER_LEVEL_CLASS = "personSystemAdmin";
+	
+	
 }

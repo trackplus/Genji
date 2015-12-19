@@ -27,82 +27,15 @@ Ext.define("com.trackplus.admin.customize.script.ScriptController",{
 	mixins: {
 		baseController: "com.trackplus.admin.GridBaseController"
 	},
-	baseAction:'script',
-	entityID:'scriptID', 
-	editWidth:800,
-	editHeight:600,
-	labelWidth: 120,	
-	/**
-	 * Additional execute compile method for script
-	 */
-	getAdditionalActions: function(recordData, submitParams, operation) {
-	    var disabled = false;
-	    if (recordData) {
-	        disabled = this.compileIsDisabled(recordData["scriptType"]);
-	    }
-		//only for "edit", not for "add" or "instant"
-		return [{submitUrl:this.getBaseAction() + '!compile.action',
-				submitUrlParams:submitParams,
-				submitButtonText:getText('common.btn.compile'),
-	            disabled: disabled,
-				closeAfterSubmit: false,
-				refreshAfterSubmitHandler:this.showCompileResult}];
+	
+	entityDialog: "com.trackplus.admin.customize.script.ScriptEdit",
+	
+	getDeleteUrl: function() {
+		return "script!delete.action";
 	},
 	
-	/**
-	 * Whether the filter contains parameter(s)
-	 */
-	showCompileResult: function(refreshParameters, result) {
-		Ext.MessageBox.show({
-			title: result.title,
-			msg: result.message,
-			buttons: Ext.Msg.OK,
-			icon: Ext.MessageBox.INFO
-		});
-	},
-	
-	compileIsDisabled: function(scriptType) {
-	    if (scriptType && scriptType===3) {
-	        return true;
-	    }
-	    return false;
-	},
-		
-	createEditForm:function(entityJS,type){
-		var me=this;
-		return new Ext.form.FormPanel({
-			url:'script!save.action',
-			border:false,
-			autoScroll: true,
-			margin: '0 0 0 0',
-			bodyStyle:{
-				padding:'10px'
-			},
-			items: [CWHF.createTextField("admin.customize.script.lbl.className", "clazzName",
-						{allowBlank:false, labelWidth:this.labelWidth, anchor:'100%',itemId:'clazzName'}),
-				CWHF.createCombo("admin.customize.script.lbl.scriptType", "scriptType",
-					{itemId:"scriptType", width:300, allowBlank:false, labelWidth:this.labelWidth},
-	                {select: {fn: this.scriptTypeChange, scope:this}}),
-				CWHF.createTextAreaField('admin.customize.script.lbl.sourceCode', "sourceCode",
-						{labelWidth:this.labelWidth,anchor: '100% -60'})
-			]
-		});
-	},
-		
-	/**
-	 * Handler for changing a default value
-	 */
-	scriptTypeChange: function(combo, records, options) {
-	    var scriptType = combo.getValue();
-	    var toolbars = this.win.getDockedItems('toolbar[dock="bottom"]');
-	    if (toolbars) {
-	        toolbars[0].getComponent(0).setDisabled(this.compileIsDisabled(scriptType));
-	    }
-	},
-	
-	afterLoadForm:function(data, panel) {
-		var scriptTypeCombo = panel.getComponent("scriptType");
-		scriptTypeCombo.store.loadData(data["scriptTypeList"]);
-		scriptTypeCombo.setValue(data["scriptType"]);
+	getDeleteParamName: function() {
+		return "scriptID";
 	}
+	
 });

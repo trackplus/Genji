@@ -55,7 +55,7 @@ public class UserLevelConfigBL {
 	 */
 	private static Integer getUserLevelID(String node) {
 		Integer userLevelID = null;
-		if (node!=null && !"".equals(node)) {
+		if (node!=null && !"0".equals(node)) {
 			userLevelID = Integer.valueOf(node);
 		}
 		return userLevelID;

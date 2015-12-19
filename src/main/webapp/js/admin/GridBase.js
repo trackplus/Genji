@@ -25,10 +25,8 @@ Ext.define("com.trackplus.admin.GridBase",{
 	mixins:{
 		actionsBase: "com.trackplus.admin.ActionBase"
 	},
-	//autoLoadGrid:true,
 	fields:null,
 	storeUrl: null,
-	autoLoadStore: true,
 	enableColumnHide: false,
 	enableColumnMove: false,
 	//general CRUD actions in grid
@@ -36,33 +34,33 @@ Ext.define("com.trackplus.admin.GridBase",{
 	actionEdit:null,
 	actionCopy:null,
 	actionDelete:null,
+	//all actions
 	actions:null,
 	
 	confirmDeleteEntity:true,
-	confirmDeleteNotEmpty:true,
+	//confirmDeleteNotEmpty:true,
 	//has Edit action
 	useEdit: true,
 	//has copy action
 	useCopy:true,
 	
 	initComponent : function() {
-		var me = this;
-		me.initBase();
-		this.store = Ext.create('Ext.data.Store', {
-			fields:this.fields,
+		this.initBase();
+		this.store = Ext.create("Ext.data.Store", {
+			fields:this.getFields(),
 			proxy: {
-				type: 'ajax',
+				type: "ajax",
 				url: this.storeUrl,
-				extraParams:this.getLoadGridParams(),
+				extraParams:this.getStoreExtraParams(),
 				reader: {
-					type: 'json'
+					type: "json"
 				}
 			},
 			listeners: {
-				//this event is not dispatched to viewController (store is not Ext.Component?) only in view
-				load: {fn: me.onGridStoreLoad, scope:me}
+				//this event is not dispatched to viewController (because store is not Ext.Component?) only in view
+				load: {fn: this.onGridStoreLoad, scope:this}
 			},
-			autoLoad:this.autoLoadStore
+			autoLoad: true//this.autoLoadStore
 		});
 		this.plugins = ["gridfilters"];
 		this.selModel = this.getGridSelectionModel();
@@ -72,12 +70,7 @@ Ext.define("com.trackplus.admin.GridBase",{
 		this.cls = "gridNoBorder";
 		this.columnLines = true;
 		this.viewConfig = this.getViewConfig();
-		this.dockedItems = this.getDockedItems();
-		/*this.listeners = {	
-			itemdblclick: {fn:me.onItemDblClick, scope:me},
-			itemcontextmenu: {fn:me.onGridRowCtxMenu, scope:me},
-			selectionchange: {fn:me.onGridSelectionChange, scope:me}	 
-		};*/
+		this.dockedItems = this.getToolbar();
 		this.callParent();
 	},
 
@@ -88,25 +81,29 @@ Ext.define("com.trackplus.admin.GridBase",{
 		this.initActions();
 	},
 
-	/**********************************************action/context menu related methods***********************************************/
+	getFields: function() {
+		return this.fields;
+	},
+	
+	/**
+	 * Get extra parameters for grid load
+	 * (like "defaultSettings" for "my" and "default" automail settings)
+	 */
+	/*protected*/getStoreExtraParams:function() {
+		return null;
+	},
 
 	/**
-	 * Get the title for add/edit/copy/delete window used also as tooltip for toolbar buttons
+	 * Handler to execute after loading the store
 	 */
-	/*protected*/getActionTooltip: function(tooltipKey) {
-		return getText(tooltipKey, this.getEntityLabel());
+	/*protected*/onGridStoreLoad: function(store, records) {
 	},
 	
-	/**
-	 * The localized entity name based on the localization key: should be implemented
-	 */
-	/*protected abstract*/getEntityLabel: function() {
-		return "";
-		//return getText('...');
-	},
+	/**********************************************action/context menu related methods***********************************************/
+
 	
 	/**
-	 * Initialize all possible actions
+	 * Initialize all possible actions (for toolbar or context menu)
 	 */
 	/*protected*/initActions:function() {
 		this.actionAdd = CWHF.createAction(this.getAddButtonKey(), this.getAddIconCls(), "onAdd", {tooltip:this.getActionTooltip(this.getAddTitleKey())});
@@ -143,49 +140,10 @@ Ext.define("com.trackplus.admin.GridBase",{
 	},
 
 	
-	/**
-	 * The url to load the grid this should be overridden
-	 */
-	getLoadStoreUrl:function() {
-		return this.baseAction + ".action";
-	},
-	/**
-	 * Get extra parameters for grid load
-	 * (like "defaultSettings" for "my" and "default" automail settings)
-	 */
-	/*protected*/getLoadGridParams:function() {
-		return null;
-	},
 
 	/**
-	 * Handler to execute after loading the store
+	 * The listeners are configured here becuase if configured directly on grid the the ViewController does not listen
 	 */
-	/*protected*/onGridStoreLoad: function(store, records) {
-	},
-	
-	/**
-	 * Defined typically if there is no "classic" toolbar available (like grid is in a popup)
-	 */
-	/*protected*/getDockedItems: function() {
-		return [{
-			xtype: 'toolbar',
-			dock: 'top',
-			items: this.getToolbarActionButtons(this.actions) 
-		}]
-	},
-
-	
-	getToolbarActionButtons:function(actionList){
-		var me=this;
-		var toolbarList=[];
-		if(actionList){
-			for(var i=0;i<actionList.length;i++) {
-				toolbarList.push(new Ext.button.Button(actionList[i]));
-			}
-		}
-		return toolbarList;
-	},
-	
 	/*protected*/getViewConfig: function() {
 		return {
 			forceFit: true,
@@ -199,8 +157,6 @@ Ext.define("com.trackplus.admin.GridBase",{
 				}
 		};
 	},
-
-	
 
 	/**
 	 * Get the configuration for selection model
@@ -225,7 +181,7 @@ Ext.define("com.trackplus.admin.GridBase",{
 	/**
 	 * Whether the selection is simple or multiple
 	 */
-	/*public*/selectionIsSimple: function() {
+	/*protected*/selectionIsSimple: function() {
 		if (this.allowMultipleSelections) {
 			var selectedRecords = this.getGridSelection();
 			return selectedRecords && selectedRecords.length===1;
@@ -254,11 +210,10 @@ Ext.define("com.trackplus.admin.GridBase",{
 	 * it can be simple or multiple selection
 	 */
 	/*public*/getSelectedRecords: function() {
-		var me=this;
-		if (me.allowMultipleSelections) {
-			return me.getGridSelection();
+		if (this.allowMultipleSelections) {
+			return this.getGridSelection();
 		} else {
-			return me.getLastSelectedGridRow();
+			return this.getLastSelectedGridRow();
 		}
 	},
 	

@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.aurel.track.beans.TProjectBean;
+import com.aurel.track.util.IntegerStringBean;
 
 /**
  * DAO for Project object
@@ -392,4 +393,11 @@ public interface ProjectDAO {
 	 * @return
 	 */
 	List<TProjectBean> loadHistoryProjects(int[] workItemIDs);
+
+	/**
+	 * Gets the hierarchical path from the root of the current project. (The project is included and is the last element)
+	 * @param objectID
+	 * @return
+	 */
+	List<IntegerStringBean> getPath(Integer objectID);
 }

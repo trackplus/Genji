@@ -23,23 +23,21 @@
 /**
  * Class for role and account assignments for project
  */
-Ext.define('com.trackplus.admin.project.RoleAssignment',{
-	extend:'com.trackplus.admin.TreeDetailAssignment',
+Ext.define("com.trackplus.admin.project.RoleAssignment",{
+	extend:"com.trackplus.admin.TreeDetailAssignment",
+	xtype: "roleAssignment",
+    controller: "roleAssignment",
 	config: {
-		rootID: '_'
+		//should be set to the projectID
+		rootID: null
 	},
-	baseAction:'roleAssignments',
+	baseServerAction:"roleAssignments",
 
+	treeStoreUrl: "roleAssignments!expand.action",
 	/**
 	 * actions
 	 */
 	actionRemovePerson: null,
-
-	constructor: function(config) {
-		var config = config || {};
-		this.initConfig(config);
-		this.initBase();
-	},
 
 	getEntityLabel: function(extraConfig) {
 		var isGroup = false;
@@ -57,10 +55,8 @@ Ext.define('com.trackplus.admin.project.RoleAssignment',{
 	 * Initialize all possible actions
 	 */
 	initActions: function() {
-		this.actionRemovePerson = this.createLocalizedAction(getText("common.lbl.remove", getText("admin.user.lbl.user")),
-				this.getDeleteIconCls(), this.onRemovePerson, getText("common.lbl.remove", getText("admin.user.lbl.user")));
-		this.actionRemovePerson = this.createAction("common.lbl.remove", this.getDeleteIconCls(), this.onRemovePerson, false,
-				"common.lbl.remove", "removePerson");
+		this.actionRemovePerson = CWHF.createContextAction(this.getRemoveButtonKey(), this.getDeleteIconCls(),
+				"onRemovePerson", this.getRemoveTitleKey(), {itemId: "removePerson", labelIsLocalized:true});
 	},
 
 	/**
@@ -74,9 +70,9 @@ Ext.define('com.trackplus.admin.project.RoleAssignment',{
 		}
 	},
 
-	getActionItemIdsWithContextDependentLabel: function() {
+	/*getActionItemIdsWithContextDependentLabel: function() {
 		return ["removePerson"];
-	},
+	},*/
 
 	/**
 	 * The message to appear first time after selecting this menu entry
@@ -86,57 +82,57 @@ Ext.define('com.trackplus.admin.project.RoleAssignment',{
 		return getText("admin.project.roleAssignment.lbl.infoGeneral");
 	},
 
-	onRemovePerson: function() {
+	/*onRemovePerson: function() {
 		this.reloadAssigned(this.getBaseAction()+"!unassign.action", {});
-	},
+	},*/
 
 	/**
 	 * Gets the tree's fields
 	 */
 	getTreeFields: function() {
-		return [{name : 'id', mapping : 'id', type: 'string'},
-				{ name : 'text', mapping : 'text', type: 'string'},
-				{ name : 'leaf', mapping : 'leaf', type: 'boolean'},
-				{ name : 'group', mapping : 'group', type: 'boolean'},
-				{ name : 'iconCls', mapping : 'iconCls', type: 'string'}];
+		return [{name : "id", mapping : "id", type: "string"},
+				{ name : "text", mapping : "text", type: "string"},
+				{ name : "leaf", mapping : "leaf", type: "boolean"},
+				{ name : "group", mapping : "group", type: "boolean"},
+				{ name : "iconCls", mapping : "iconCls", type: "string"}];
 	},
 
 	getGridFields: function(record) {
-		return [{name:'id', type:'int'},
-				{name:'name', type:'string'},
-				{name:'userName', type:'string'},
-				{name:'active', type:'boolean'},
-				{name:'activeLabel', type:'string'},
-				{name:'group', type:'boolean'},
-				{name:'groupLabel', type:'string'},
-				{name:'employeeId', type:'string'},
-				{name:'department', type:'string'}];
+		return [{name:"id", type:"int"},
+				{name:"name", type:"string"},
+				{name:"userName", type:"string"},
+				{name:"active", type:"boolean"},
+				{name:"activeLabel", type:"string"},
+				{name:"group", type:"boolean"},
+				{name:"groupLabel", type:"string"},
+				{name:"employeeId", type:"string"},
+				{name:"department", type:"string"}];
 	},
 
 	getColumnModel: function() {
 		return [{
-			text:getText('common.lbl.name'),
-			flex:2, dataIndex:'name', sortable:true,groupable:false,
+			text:getText("common.lbl.name"),
+			flex:2, dataIndex:"name", sortable:true,groupable:false,
 			renderer:this.renderer,
 			filter: {
 	            type: "string"
 	        }
 		}, {
-			text:getText('admin.user.profile.lbl.userName'),
+			text:getText("admin.user.profile.lbl.userName"),
 			flex:1, dataIndex:'userName', sortable:true,groupable:false,
 			renderer:this.renderer,
 			filter: {
 	            type: "string"
 	        }
 		}, {
-			text:getText('admin.user.profile.lbl.department'),
+			text:getText("admin.user.profile.lbl.department"),
 			flex:2, dataIndex:'department', sortable:true,groupable:true,
 			renderer:this.renderer,
 			filter: {
 	            type: "string"
 	        }
 		}, {
-			text:getText('admin.project.roleAssignment.lbl.group'),
+			text:getText("admin.project.roleAssignment.lbl.group"),
 			flex:1, dataIndex:'groupLabel', sortable:true, groupable:true,
 			renderer:this.renderer,
 			filter: {
@@ -145,14 +141,14 @@ Ext.define('com.trackplus.admin.project.RoleAssignment',{
 							getText("common.boolean.N")]
 			}
 		}, {
-			text:getText('admin.user.profile.lbl.employeeId'),
-			flex:1, dataIndex:'employeeId', sortable:true,groupable:false,
+			text:getText("admin.user.profile.lbl.employeeId"),
+			flex:1, dataIndex:"employeeId", sortable:true,groupable:false,
 			renderer:this.renderer, hidden:true,
 			filter: {
 	            type: "string"
 	        }
 		},{
-			text: getText('admin.user.manage.lbl.activ'),
+			text: getText("admin.user.manage.lbl.activ"),
 			flex:1, dataIndex: 'activeLabel', sortable:true,groupable:true,
 			renderer:this.renderer, hidden:true,
 			filter: {
@@ -187,11 +183,12 @@ Ext.define('com.trackplus.admin.project.RoleAssignment',{
 		});
 		return features = [groupingFeature];
 	},
+	
 	getGroupingFeature:function(features){
 	  return features[0];
-	},
+	}
 
-	getDetailWidth: function() {
+	/*getDetailWidth: function() {
 		return 600;
 	},
 
@@ -201,5 +198,5 @@ Ext.define('com.trackplus.admin.project.RoleAssignment',{
 
 	getMinWidth: function() {
 		return 425;
-	}
+	}*/
 });

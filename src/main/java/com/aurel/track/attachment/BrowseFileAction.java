@@ -65,6 +65,7 @@ public class BrowseFileAction extends ActionSupport implements Preparable, Sessi
 	private Map<String, Object> session;
 	private Integer workItemID;
 	private Integer documentID;
+	private String type;
 	private Map application;
 
 	private String CKEditor;
@@ -93,11 +94,21 @@ public class BrowseFileAction extends ActionSupport implements Preparable, Sessi
 	public String execute() {
 		attachments = new ArrayList<TAttachmentBean>();
 		if (workItemID != null) {
-			List<TAttachmentBean> itemAttachments = AttachBL.getAttachmentsImage(workItemID);
+			List<TAttachmentBean> itemAttachments;
+			if(type!=null&&(type.equalsIgnoreCase("Image")||type.equalsIgnoreCase("Images"))) {
+				itemAttachments=AttachBL.getAttachmentsImage(workItemID);
+			}else{
+				itemAttachments=AttachBL.getAttachments(workItemID);
+			}
 			attachments.addAll(itemAttachments);
 		}
 		if (documentID != null) {
-			List<TAttachmentBean> docuemntAttachments = AttachBL.getAttachmentsImage(documentID);
+			List<TAttachmentBean> docuemntAttachments;
+			if(type!=null&&(type.equalsIgnoreCase("Image")||type.equalsIgnoreCase("Images"))) {
+				docuemntAttachments = AttachBL.getAttachmentsImage(documentID);
+			}else{
+				docuemntAttachments = AttachBL.getAttachments(documentID);
+			}
 			attachments.addAll(docuemntAttachments);
 		}
 		if(workItemID==null&&documentID==null){
@@ -108,7 +119,11 @@ public class BrowseFileAction extends ActionSupport implements Preparable, Sessi
 				LOGGER.error("No context on session");
 			}else {
 				List<TAttachmentBean> allAttachments = ctx.getAttachmentsList();
-				attachments = AttachBL.gettAttachmentImages(allAttachments);
+				if(type!=null&&(type.equalsIgnoreCase("Image")||type.equalsIgnoreCase("Images"))) {
+					attachments = AttachBL.gettAttachmentImages(allAttachments);
+				}else{
+					attachments=allAttachments;
+				}
 			}
 		}
 		return SUCCESS;
@@ -284,5 +299,13 @@ public class BrowseFileAction extends ActionSupport implements Preparable, Sessi
 
 	public void setSource(String _source) {
 		source = _source;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 }

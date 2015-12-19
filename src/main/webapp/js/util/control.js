@@ -301,17 +301,13 @@ Ext.define('util.ControlWithHelpFactory',{
 
 	
 	/**
-	 * Create a new Ext.Action action with localized text and tooltip
-	 * label the localized label of the operation
-	 * iconCls the icon class for the action
-	 * handler the action handler
-	 * tooltip makes sense only for toolbar buttons (not for context menu items)
-	 * 		this is the localized tooltip not the tooltip key, because the tooltip for localized actions should not change
-	 * 		depending on the context
-	 * disabled whether by creation it should be disabled
+	 * Create a new Ext.Action action
+	 * labelKey: the key for the localized text
+	 * iconCls: the icon class for the action
+	 * handlerName: the name of the handler. Not the handler function instance because we use ViewControllers
+	 * otherSettings: could contain tooltip (already localized), disabled, labelIsLocalized etc.
 	 */
 	/*public*/createAction: function(labelKey, iconCls, handlerName, otherSettings) {
-		var me = this;
 		var label = this.getLabel(labelKey, otherSettings);
 		var actionConfig = {
 				text: label,
@@ -319,10 +315,41 @@ Ext.define('util.ControlWithHelpFactory',{
 				tooltip: label,
 				iconCls: iconCls,
 				handler: handlerName
-				//handlerScope: handlerScope
-		};
+				};
 		this.addOtherSettings(actionConfig, otherSettings, label);
 		return Ext.create("Ext.Action", actionConfig);
+	},
+	
+	/**
+	 * Create a new Ext.Action with modifiable label/tooltip depending on context
+	 * labelKey: the key for the localized text
+	 * iconCls: the icon class for the action
+	 * handlerName: the name of the handler. Not the handler function instance because we use ViewControllers
+	 * otherSettings: could contain tooltip (already localized), disabled, labelIsLocalized etc.
+	 * tooltipKey makes sense only for toolbar buttons (not for context menu items)
+	 * itemId for finding those actions which should have different labels depending on the context
+	 * important only for tree with grid actions: for example edit action should be editLeaf entity or
+	 * editFolder entity depending on the current selection
+	 */
+	/*public*/createContextAction: function(labelKey, iconCls, handlerName, tooltipKey, otherSettings) {
+		var label = this.getLabel(labelKey, otherSettings);
+		var actionConfig = {
+				text: label,
+				overflowText: label,
+				tooltip: label,
+				iconCls: iconCls,
+				handler: handlerName
+		};
+		if (tooltipKey) {
+			//tooltip is not an Ext.Action config field,
+			//but it should be available when a button/context menu is created based on action
+			//tooltip might change based on the selected entity: "edit"/"delete" "folder"/"leaf"
+			//that's why we store also the tooltipKey to be able to dynamically change the tooltips based on the current selection
+			actionConfig.tooltipKey = tooltipKey;
+			//actionConfig.tooltip = this.getTitle(tooltipKey);
+		}
+		this.addOtherSettings(actionConfig, otherSettings, label);
+		return Ext.create('Ext.Action', actionConfig);
 	},
 
 	/**
@@ -967,6 +994,7 @@ Ext.define('util.ControlWithHelpFactory',{
 			return false;
 		}
 		var filebrowserImageBrowseUrl='';
+		var filebrowserBrowseUrl='';
 		var filebrowserUploadUrl ='';// uploadUrl + '?Type=File';
 		var filebrowserImageUploadUrl ='';// uploadUrl + '?Type=Image';
 		var otherCkeditorCfg=opts.ckeditorCfg;
@@ -978,8 +1006,12 @@ Ext.define('util.ControlWithHelpFactory',{
 			if(otherCkeditorCfg.workItemID) {
 				workItemID = otherCkeditorCfg.workItemID;
 			}
+			filebrowserBrowseUrl='browseFile.action?type=File';
+			if(workItemID!=null){
+				filebrowserBrowseUrl+= '&workItemID=' + workItemID;
+			}
 			if(useBrowseImage===true){
-				filebrowserImageBrowseUrl = 'browseFile.action?type=Images';
+				filebrowserImageBrowseUrl = 'browseFile.action?type=Image';
 				filebrowserUploadUrl = 'browseFile!uploadFile.action?Type=File';
 				filebrowserImageUploadUrl = 'browseFile!uploadFile.action?Type=Image';
 				if(workItemID!=null){
@@ -994,6 +1026,7 @@ Ext.define('util.ControlWithHelpFactory',{
 			customConfig:sBasePath+'cktrackplusconfig.js',
 			contentsCss:com.trackplus.TrackplusConfig.htmlEditorCSS,
 			filebrowserUploadUrl:filebrowserUploadUrl,
+			filebrowserBrowseUrl:filebrowserBrowseUrl,
 			filebrowserImageBrowseUrl:filebrowserImageBrowseUrl,
 			filebrowserImageUploadUrl:filebrowserImageUploadUrl,
 			simpleuploads_maxFileSize:com.trackplus.TrackplusConfig.MAXFILESIZE,
@@ -1010,7 +1043,7 @@ Ext.define('util.ControlWithHelpFactory',{
 		if(workItemID&&useInlineTask){
 			var extraPlugins=ckeditorCfg['extraPlugins'];
 			if(CWHF.isNull(extraPlugins)||extraPlugins===''){
-				extraPlugins='issue,code,simpleuploads,image2,task';
+				extraPlugins='issue,code,simpleuploads,image2,task,advancedlink';
 			}else{
 				extraPlugins=extraPlugins+",task";
 			}

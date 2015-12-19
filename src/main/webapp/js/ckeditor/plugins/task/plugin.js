@@ -9,15 +9,24 @@ var taskCmd ={
 		}
 		var selectedPlainText =null;
 		var selection =editor.getSelection();
-		if(editor.getSelection().getType() == CKEDITOR.SELECTION_TEXT){
-			selectedPlainText =selection.getSelectedText();// getNative();
-		}
 		var ranges = selection.getRanges();
 		var el = new CKEDITOR.dom.element("div");
 		for (var i = 0, len = ranges.length; i < len; ++i) {
 			el.append(ranges[i].cloneContents());
 		}
 		var selectedHTML= el.getHtml();
+
+		if(Ext.isIE){
+			var selectedHTML1=selectedHTML;
+			selectedHTML1=String(selectedHTML1).replace(/<br\s*[\/]?>/gi, "\r");
+			selectedHTML1=String(selectedHTML1).replace(/<\/p>/gi, "\n");
+			selectedPlainText=String(selectedHTML1).replace(/<\/?[^>]+>/gi, "");
+		}else {
+			if (editor.getSelection().getType() == CKEDITOR.SELECTION_TEXT) {
+				selectedPlainText = selection.getSelectedText();// getNative();
+			}
+		}
+
 		if(selectedPlainText==null||selectedPlainText==''){
 			CWHF.showDialogMsgWarning(getText('menu.newItem'),getText('item.msg.emptySelectionForInlineItem'));
 			return true;

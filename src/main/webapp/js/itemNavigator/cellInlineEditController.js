@@ -33,12 +33,15 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 	    //settings) then the cells are editable inline, otherwise NO.
 		isPrintItemEditable: null
 	},
+
 	isNew: false,
 	editOrCreateInProgress: false,
 	row: null, //edited row or in case of creating new item the above row
 	actualEditedOrCreatedRow: null,
 	actualEditedOrCreatedRecord: null,
 	warningDisplayed: false,
+	timeStampWhenDataArrived: null,
+	warnedWorkItemsForParallelEditing: {},
 
 	SYSTEM_FIELDS: {
 		SYNOPSIS: 17,
@@ -66,6 +69,8 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 		var me = this;
 		var config = cfg || {};
 		me.initConfig(config);
+		me.timeStampWhenDataArrived = new Date();
+		me.warnedWorkItemsForParallelEditing = {};
 	},
 
 	initListeners: function() {
@@ -77,6 +82,7 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 			me.getGrid().addListener('validateedit', me.validateedit, me);
 		}
 	},
+
 	validateedit: function(editor, e) {
 		var me = this;
 		if(CWHF.isNull(e.value)) {
@@ -196,6 +202,7 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 	onGridSelectionChnage: function(view, selected, opts) {
 		var me = this;
 		me.prepareDataAdnSave();
+		me.warnedWorkItemsForParallelEditing = {};
 	},
 
 	saveShortcutHandler: function(keyCode, event) {
@@ -211,10 +218,11 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 			var params = new Object();
 			if(me.row  && me.isRowEditedt()) {
 				var workItemIDAbove = null;
-				if(me.isNew) {
+				if(me.isSelectedRecordNew()) {
 					workItemIDAbove = me.workItemIDAbove;
 				}
-				me.saveData(params, workItemIDAbove);
+				lastModified = Ext.util.Format.date(me.timeStampWhenDataArrived, 'Y-m-d H:i:s.m');
+				me.saveData(params, workItemIDAbove, lastModified);
 			}
 		}
 	},
@@ -236,6 +244,20 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 		return row;
 	},
 
+	isSelectedRecordNew: function() {
+		var me = this;
+		var selectedRow = me.getGridSelectedRow();
+		if(me.getGantt()) {
+			if(selectedRow.Id < 0) {
+				return true;
+			}else {
+				return false;
+			}
+		}else {
+			return me.isNew;
+		}
+	},
+
 	onGridBeforeEdit: function(editor, ctx, e) {
 		var me = this;
 		if(!me.isEditable(ctx)) {
@@ -243,12 +265,13 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 		}
 		me.actualEditedOrCreatedRecord = ctx.record;
 		me.editOrCreateInProgress = true;
-		if(!me.isNew){
+		if(!me.isSelectedRecordNew()){
 			var editableValue = ctx.record.data.editable;
 			if(!editableValue) {
 				return false;
 			}
 		}
+		me.warnIfitemLocked(ctx.record.data.workItemID);
 		var editorComponent = ctx.column.field;
 		var uniformizedFieldType = me.getUniformizedFieldType(ctx.column.extJsRendererClass);
 		switch(uniformizedFieldType) {
@@ -256,10 +279,9 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 		    	me.loadFieldValue(editorComponent, ctx.record.data.workItemID, ctx.record.data.projectID, ctx.record.data.issueTypeID, ctx.column.fieldID, me.UNIFORMIZED_FIELD_TYPES.singleSelect, 'itemNavigator!loadComboDataByFieldID.action');
 		    	break;
 		    case me.UNIFORMIZED_FIELD_TYPES.checkBox:
-//		    	me.loadFieldValue(editorComponent, ctx.record.data.workItemID, ctx.record.data.projectID, ctx.record.data.issueTypeID, ctx.column.fieldID, me.UNIFORMIZED_FIELD_TYPES.checkBox, 'itemNavigator!loadFieldValue.action');
 		    	break;
 		    case me.UNIFORMIZED_FIELD_TYPES.simpleTextField:
-		    	if(me.isNew) {
+		    	if(me.isSelectedRecordNew()) {
 		    		editorComponent.margin = '0 0 0 0';
 		    	}
 		    	break;
@@ -270,9 +292,28 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 		}
 	},
 
+	warnIfitemLocked: function(workItemID) {
+		var me = this;
+		if(!me.isSelectedRecordNew() && CWHF.isNull(me.warnedWorkItemsForParallelEditing[workItemID])) {
+			me.warnedWorkItemsForParallelEditing[workItemID] = true;
+			Ext.Ajax.request({
+				url: "itemNavigator!checkIfLockedBeforeInlineEdit.action",
+				success: function(response){
+					var responseJSON = Ext.decode(response.responseText);
+					if(responseJSON.locked) {
+						CWHF.showMsgError(responseJSON.itemLockedMessage);
+					}
+				},
+				failure: function(){
+				},
+				method:'POST',
+				params: {'workItemID': workItemID}
+			});
+		}
+	},
+
 	isEditable: function(ctx) {
 		var me = this;
-//		Ext.defer(me.doInitAfterEverythingLoadedAndRendered, 150, me);
 		if(ctx.record.data.leaf) {
 			return true;
 		}else {
@@ -294,9 +335,6 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 	setColumnEditor: function(shortField, column) {
 		var me = this;
 		if(me.getIsPrintItemEditable()) {
-//			var editor = new Object();
-//			editor.allowBlank = false;
-//			editor.selectOnFocus = true;
 			column.extJsRendererClass = shortField.extJsRendererClass;
 			me.setCellRenderer(shortField. extJsRendererClass, column, shortField);
 		}
@@ -324,7 +362,7 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 		});
 	},
 
-	saveData: function(params, workItemIDAbove) {
+	saveData: function(params, workItemIDAbove, lastModified) {
 		var me = this;
 
 		var modifiedRecords = me.getGrid().store.getModifiedRecords();
@@ -342,7 +380,7 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 			if(workItemIDAbove ) {
 				params.workItemIDAbove = workItemIDAbove;
 			}
-			if(me.isNew) {
+			if(me.isSelectedRecordNew()) {
 				params.actionID = "1";
 				actionIDValue = 1;
 				params.workItemID = "";
@@ -352,6 +390,7 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 			}
 			params.inlineEditInNavigator = true;
 			params.fromAjax	= true;
+			params.lastModified = lastModified;
 			Ext.Ajax.request({
 				url: "itemSave.action",
 				disableCaching:true,
@@ -368,12 +407,8 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 						}
 					}else {
 						var data = responseJSON.data;
-						var errors = data.errors;
-						var errorMessage = '';
-						Ext.Array.forEach(errors, function (error) {
-					    	errorMessage += error.label;
-		                }, me);
-						CWHF.showMsgError(errorMessage);
+						me.handleErrorsAfterSaveFromSimpleGrids(params, data, workItemIDAbove);
+
 					}
 				},
 				failure: function(){
@@ -385,9 +420,47 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 		}
 	},
 
+	handleErrorsAfterSaveFromSimpleGrids: function(submittedParams, responseData, workItemIDAbove) {
+		var me = this;
+		var errorCode = responseData.errorCode;
+		if(errorCode == 2) {
+			me.outOfDateHandlerForSimpleGrid(submittedParams, responseData, workItemIDAbove);
+		}else {
+			var errors = responseData.errors;
+			var errorMessage = '';
+			Ext.Array.forEach(errors, function (error) {
+		    	errorMessage += error.label;
+            }, me);
+			CWHF.showMsgError(errorMessage);
+		}
+	},
+
 	isRowEditedt: function() {
 		var me = this;
 		return me.editOrCreateInProgress;
+	},
+
+	outOfDateHandlerForSimpleGrid: function(submittedParams, responseData, workItemIDAbove) {
+		var me = this;
+		Ext.MessageBox.show({
+			title:getText('item.err.wasModified'),
+			msg: getText('item.err.modified'),
+			buttons: Ext.MessageBox.YESNO,
+			buttonText: {yes: getText('item.err.btn.ignore'), no: getText('item.err.btn.overwrite')},
+			fn: function(btn){
+				if(btn==="yes"){
+					//take mine
+					me.saveData(submittedParams, workItemIDAbove, responseData.lastModified);
+					return;
+				}
+				if(btn==="no"){
+					//take theirs
+					me.getNavigator().fireEvent.call(me.getNavigator(),'datachange');
+					return;
+				}
+			},
+			icon: Ext.MessageBox.QUESTION
+		});
 	},
 
 	dateColumnRenderer: function(value) {
@@ -591,12 +664,12 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 		var me = this;
 		var editor = Ext.create('Ext.form.field.Checkbox', {
 			boxLabel: shortField.label,
-		    listeners: {
-		    	change: function(component, newValue, oldValue, eOpts) {
-		    		if(component.column ) {
-		    		}
-		    	}
-			},
+//		    listeners: {
+//		    	change: function(component, newValue, oldValue, eOpts) {
+//		    		if(component.column ) {
+//		    		}
+//		    	}
+//			},
 			setValue: function(val) {
 				if(typeof(val) === "boolean"){
 					this.setRawValue(val);
@@ -726,6 +799,7 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 		me.isNew = false;
 		me.row = null;
 		me.editOrCreateInProgress = false;
+		me.warnedWorkItemsForParallelEditing = {};
 	},
 
 	handleCreatingNewItem: function() {
@@ -778,8 +852,6 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 		}
 	},
 
-
-
 	addNewRow: function(keyCode, event) {
 		var me = this;
 		event.stopEvent();
@@ -820,7 +892,7 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 		var me = this;
 		event.stopEvent();
 		if(CWHF.isNull(me.getGantt())) {
-			if(!me.isNew) {
+			if(!me.isSelectedRecordNew()) {
 				var selectedData = me.getGrid().getSelectionModel().getSelection();
 				if(selectedData.length > 0) {
 					var selection = selectedData[0];
@@ -832,11 +904,7 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 			var selectedData = me.getGrid().getSelectionModel().getSelection();
 			if(selectedData.length > 0) {
 				var selection = selectedData[0];
-				var isNew = false;
-				if(selection.data.Id < 0) {
-					isNew = true;
-				}
-				if(isNew) {
+				if(me.isSelectedRecordNew()) {
 					me.getGantt().getTaskStore().remove(selection);
 					me.recalculateGridItemIndex();
 				}else {
@@ -852,11 +920,7 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 		var selectedData = me.getGrid().getSelectionModel().getSelection();
 		if(selectedData.length > 0) {
 			var selection = selectedData[0];
-			var isNew = false;
-			if(selection.data.Id < 0) {
-				isNew = true;
-			}
-			if(isNew) {
+			if(me.isSelectedRecordNew()) {
 				me.getGantt().getTaskStore().remove(selection);
 				me.recalculateGridItemIndex();
 			}else {
@@ -1186,6 +1250,5 @@ Ext.define('com.trackplus.itemNavigator.CellInlineEditController',{
 		}
 		return date;
 	}
-
 	/************** ENDS OF HELPRE methods for updating dependents fields **************/
 });

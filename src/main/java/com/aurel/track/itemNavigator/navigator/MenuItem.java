@@ -45,6 +45,7 @@ public class MenuItem implements Serializable{
 	private boolean useFilter;
 	private String filterViewID;
 	private boolean lazyChildren;
+	private boolean expanded;
 
 	private String dropHandlerCls;
 
@@ -204,5 +205,13 @@ public class MenuItem implements Serializable{
 
 	public void setProjectID(Integer projectID) {
 		this.projectID = projectID;
+	}
+
+	public boolean isExpanded() {
+		return expanded;
+	}
+
+	public void setExpanded(boolean expanded) {
+		this.expanded = expanded;
 	}
 }

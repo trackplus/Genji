@@ -20,36 +20,42 @@
 
 /* $Id:$ */
 
-Ext.define('com.trackplus.admin.NotifyTriggerListController', {
+Ext.define("com.trackplus.admin.NotifyTriggerListController", {
 	extend: "Ext.app.ViewController",
 	alias: "controller.notifyTriggerList",
 	mixins: {
 		baseController: "com.trackplus.admin.GridBaseController"
 	},
-	baseAction : "notifyTrigger",
+	
+	entityDialog: "com.trackplus.admin.NotifyTriggerEdit",
+	/*baseAction : "notifyTrigger",
 	entityID : "notifyTriggerID",
 	editWidth : 1000,
 	editHeight : 600,
-	peviousSelectedRows : [],
+	peviousSelectedRows : [],*/
 	
 	/**
 	 * Parameters for adding a new entity
 	 */
-	getAddParams : function() {
+	/*getAddParams : function() {
 	    return {
 		    defaultSettings : this.defaultSettings
 	    };
-	},
+	},*/
 	/**
 	 * Parameters for editing an existing entity
 	 */
-	getEditParams : function(recordData) {
+	/*getEditParams : function(recordData) {
 	    var params = new Object();
 	    params['' + this.entityID] = recordData.id;
 	    params["defaultSettings"] = this.defaultSettings;
 	    return params;
-	},
+	},*/
 
+	getDeleteUrl: function() {
+		return "notifyTrigger!delete.action";
+	},
+	
 	/**
 	 * Parameters for deleting an existing entity
 	 */
@@ -60,7 +66,7 @@ Ext.define('com.trackplus.admin.NotifyTriggerListController', {
 	    return params;
 	},
 
-	headerChkHandler : function(event, chkBox, options) {
+	/*headerChkHandler : function(event, chkBox, options) {
 	    var checked = chkBox.checked;
 	    var numberOfRecords = this.formStore.getTotalCount();
 	    var column = options.column;
@@ -86,9 +92,9 @@ Ext.define('com.trackplus.admin.NotifyTriggerListController', {
 	    case 6:
 		    return "observer";
 	    }
-	},
+	},*/
 
-	createEditForm : function(recordData, type) {
+	/*createEditForm : function(recordData, type) {
 	    var labelTextField = CWHF.createTextField('common.lbl.name', 'label', {
 	        itemId : 'label',
 	        allowBlank : false,
@@ -324,26 +330,7 @@ Ext.define('com.trackplus.admin.NotifyTriggerListController', {
 	                },
 	                scope : this
 	            },
-	            /*
-				 * var columns = _grid.getColumnModel().config; var view =
-				 * _grid.getView(); var columnIndex = 0; Ext.each(columns,
-				 * function(column){ var headerHtml = '<div class="x-grid" +
-				 * columnIndex + '-hd-inner x-grid' + columnIndex + '-hd-' +
-				 * column.id + '" unselectable="on" style="">' + column.header; //
-				 * To show mandatory column flag headerHtml += '&nbsp;<font
-				 * color=red>*</font> //column id starting with "imageColumn"
-				 * text. You can also use column.id === "imageColumn" or your
-				 * column id if(column.id.match("^" + "imageColumn")) {
-				 * headerHtml += '&nbsp;<img src="/images/headerImage.jpg"
-				 * width=12 height=12>'; } //To add checkbox to specific column
-				 * header //else if(column.id.match("^" + "checkboxColumn")){
-				 * headerHtml += '&nbsp;<input type="checkbox"
-				 * id="'+column.header+'chk"
-				 * onclick="javascript:headerChkHandler()">'; //} headerHtml += '</div>';
-				 * //replace the view headerCell innerHTML.
-				 * view.getHeaderCell(columnIndex).innerHTML = headerHtml;
-				 * columnIndex = columnIndex + 1; });
-				 */
+	            
 	            // This method handles row selecting, deselecting
 	            selectionchange : {
 	                fn : function(model, selected, eOpts) {
@@ -369,14 +356,14 @@ Ext.define('com.trackplus.admin.NotifyTriggerListController', {
 	        },
 	        items : [ labelTextField, triggerFieldsGrid ]
 	    });
-	},
+	},*/
 
 	/**
 	 * This method set each row each checkbox checked /true or false/ In case of
 	 * setting false: if header checkbox checked then actual checkbox remains
 	 * checked otherwise bill be unchecked
 	 */
-	changeEntireRowSelection : function(rows, checked) {
+	/*changeEntireRowSelection : function(rows, checked) {
 	    for (i = 0; i < rows.length; i++) {
 		    var record = rows[i];
 		    for (var j = 1; j < 7; j++) {
@@ -392,18 +379,18 @@ Ext.define('com.trackplus.admin.NotifyTriggerListController', {
 
 		    }
 	    }
-	},
+	},*/
 
 	/**
 	 * Not a form panel load
 	 */
-	loadHandler : function() {
+	/*loadHandler : function() {
 	    this.formStore.load();
-	},
+	},*/
 	/**
 	 * Not a form panel submit
 	 */
-	submitHandler : function(window, submitUrl, submitUrlParams) {
+	/*submitHandler : function(window, submitUrl, submitUrlParams) {
 	    var labelTextField = this.formEdit.getComponent('label');
 	    if (!labelTextField.validate()) {
 		    return;
@@ -437,19 +424,19 @@ Ext.define('com.trackplus.admin.NotifyTriggerListController', {
 		    }
 	    }
 	    this.win.close();
-	},
+	},*/
 
 	/**
 	 * This method creates row selection model for grid.
 	 */
-	createSelModel : function() {
+	/*createSelModel : function() {
 	    selModel = Ext.create('com.trackplus.itemNavigator.CheckboxModel', {
 	        allowDeselect : true,
 	        checkOnly : false,
 	        mode : 'MULTI'
 	    });
 	    return selModel;
-	},
+	},*/
 
 	/**
 	 * Enable change only if own trigger

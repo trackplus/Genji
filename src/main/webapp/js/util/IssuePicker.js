@@ -60,6 +60,14 @@ Ext.define('com.trackplus.util.IssuePicker',{
 	showDialog:function(){
 		var me=this;
 		me.issuePikerController.showDialog.call(me.issuePikerController)
+	},
+	createPickerView:function(){
+		var me=this;
+		return me.issuePikerController.createPickerView();
+	},
+	search:function(){
+		var me=this;
+		return me.issuePikerController.search();
 	}
 });
 
@@ -278,6 +286,7 @@ Ext.define('com.trackplus.util.IssuePickerController',{
 	},
 	view:null,
 	win:null,
+	isShowDialog:false,
 	constructor : function(config) {
 		var me = this
 		var config = config || {};
@@ -285,7 +294,7 @@ Ext.define('com.trackplus.util.IssuePickerController',{
 		Ext.apply(me, config);
 		this.initConfig(config);
 	},
-	showDialog:function(){
+	createPickerView:function(){
 		var me=this;
 		me.issuePikerView=Ext.create('com.trackplus.util.IssuePickerView',{
 			issuePikerController:me,
@@ -295,11 +304,15 @@ Ext.define('com.trackplus.util.IssuePickerController',{
 			selectedQueryID:me.selectedQueryID,
 			selectedDatasourceType:me.selectedDatasourceType
 		});
-
+		return me.issuePikerView;
+	},
+	showDialog:function(){
+		var me=this;
+		me.isShowDialog=true;
 		if(me.win){
 			me.win.destroy();
 		}
-
+		me.createPickerView();
 		me.win = Ext.create('Ext.window.Window',{
 			layout      : 'fit',
 			//iconCls:'buttonParent',
@@ -393,6 +406,7 @@ Ext.define('com.trackplus.util.IssuePickerController',{
 				searchIssueKey:searchIssueKey
 			},
 			callback: function(records, operation, success) {
+				me.issuePikerView.updateLayout();
 			}
 		});
 	},
@@ -402,8 +416,10 @@ Ext.define('com.trackplus.util.IssuePickerController',{
 		if(me.ajaxContext){
 			me.ajaxPick(item);
 		}else{
-			me.win.close();
-			me.win.destroy();
+			if(me.isShowDialog==true){
+				me.win.close();
+				me.win.destroy();
+			}
 			if(me.handler){
 				me.handler.call(me.scope,item);
 			}

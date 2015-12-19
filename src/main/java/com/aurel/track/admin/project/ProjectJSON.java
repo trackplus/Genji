@@ -42,6 +42,15 @@ public class ProjectJSON {
 	private static final String TEMPLATE_IS_ACTIVE = "templateIsActive";
 	private static final String HAS_PRIVATE_WORKSPACE = "hasPrivateWorkspace";
 	
+	private static final String MAIN_RELEASE = "mainRelease";
+	private static final String CHILD_RELEASE = "childRelease";
+	private static final String SHOW_CLOSED_RELEASES = "showClosedReleases";
+	
+	private static final String LAST_SELECTIONS = "lastSelections";
+	private static final String LAST_SELECTED_SECTION = "lastSelectedSection";
+	private static final String LAST_SELECTED_TAB = "lastSelectedTab";
+	
+	
 	
 	static interface JSON_FIELDS {
 		//project list fields
@@ -128,11 +137,18 @@ public class ProjectJSON {
 		String PROJECT_CONFIG_TYPE_NODE_TO_SELECT = "projectConfigTypeNodeToSelect";
 	}
 	
-	public static String encodeProjectLastSelections(Map<String, Object> session){
+	public static String encodeProjectLastSelections(boolean hasPrivateWorkspace, boolean templateIsActive, String lastSelectedSection, Integer lastSelectedTab, String mainRelease, String childRelease, boolean showClosedReleases){
 		StringBuilder sb=new StringBuilder();
 		sb.append("{");
-		JSONUtility.appendStringValue(sb,"lastSelectedSection",(String)session.get(ProjectAction.PROJECT_ADMIN_LAST_SELECTED_SECTION));
-		JSONUtility.appendIntegerValue(sb,"lastSelectedTab",(Integer)session.get(ProjectAction.PROJECT_ADMIN_LAST_SELECTED_TAB),true);
+		JSONUtility.appendBooleanValue(sb, HAS_PRIVATE_WORKSPACE, hasPrivateWorkspace);
+		JSONUtility.appendBooleanValue(sb, TEMPLATE_IS_ACTIVE, templateIsActive);
+		JSONUtility.appendStringValue(sb, MAIN_RELEASE, mainRelease);
+		JSONUtility.appendStringValue(sb, CHILD_RELEASE, childRelease);
+		JSONUtility.appendBooleanValue(sb, SHOW_CLOSED_RELEASES, showClosedReleases);
+		JSONUtility.appendFieldName(sb, LAST_SELECTIONS).append(":{");
+		JSONUtility.appendStringValue(sb, LAST_SELECTED_SECTION, lastSelectedSection, lastSelectedTab==null);
+		JSONUtility.appendIntegerValue(sb, LAST_SELECTED_TAB,lastSelectedTab,true);
+		sb.append("}");
 		sb.append("}");
 		return sb.toString();
 	}
@@ -250,7 +266,7 @@ public class ProjectJSON {
 		StringBuilder stringBuilder=new StringBuilder();
 		stringBuilder.append("{");
 		JSONUtility.appendBooleanValue(stringBuilder, JSONUtility.JSON_FIELDS.SUCCESS, true);
-		stringBuilder.append(JSONUtility.JSON_FIELDS.DATA).append(":{");
+		JSONUtility.appendFieldName(stringBuilder, JSONUtility.JSON_FIELDS.DATA).append(":{");
 		JSONUtility.appendBooleanValue(stringBuilder, JSON_FIELDS.SUBPROJECT, subproject);
 		//projectBaseTO
 		JSONUtility.appendStringValue(stringBuilder, JSON_FIELDS.PROJECT_LABEL, projectBaseTO.getLabel());
@@ -276,8 +292,7 @@ public class ProjectJSON {
 		JSONUtility.appendIntegerValue(stringBuilder, JSON_FIELDS.PREFILL_BY, projectDefaultsTO.getPrefillBy());
 
 		
-		
-		stringBuilder.append(JSON_FIELDS.INIT_STATUSES).append(":[");
+		JSONUtility.appendFieldName(stringBuilder, JSON_FIELDS.INIT_STATUSES).append(":[");
 		Map<Integer, Integer> issueTypeToInitStatusMap = projectDefaultsTO.getIssueTypeToInitStatusMap();
 		Map<Integer, List<ILabelBean>> issueTypeToStatusListMap = projectDefaultsTO.getIssueTypeToStatusListMap();
 		for (Iterator<ILabelBean> iterator = projectDefaultsTO.getIssueTypeList().iterator(); iterator.hasNext();) {
@@ -409,7 +424,7 @@ public class ProjectJSON {
 		StringBuilder stringBuilder=new StringBuilder();
 		stringBuilder.append("{");
 		JSONUtility.appendBooleanValue(stringBuilder, JSONUtility.JSON_FIELDS.SUCCESS, true);
-		stringBuilder.append(JSONUtility.JSON_FIELDS.DATA).append(":{");
+		JSONUtility.appendFieldName(stringBuilder, JSONUtility.JSON_FIELDS.DATA).append(":{");
 		stringBuilder.append(getAccountingJSON(projectAccountingTO));
 		stringBuilder.append(getDefaultSystemListsJSON(projectDefaultsTO));
 		stringBuilder.append(getErrorsJSON(invalidDefaults));
@@ -485,9 +500,8 @@ public class ProjectJSON {
 		return sb.toString();
 	}
 	
-	public static String encodeToolbarItemConfig(TPersonBean personBean, Integer projectID) {
+	/*public static String encodeToolbarItemConfig(TPersonBean personBean, Integer projectID) {
 		StringBuilder sb = new StringBuilder();
-		boolean hasPrivateWorkspace = ProjectConfigBL.hasPrivateProject(personBean.getObjectID());
 		Integer statusFlag = SystemStatusBL.getStatusFlag(projectID, TSystemStateBean.ENTITYFLAGS.PROJECTSTATE);
 		boolean templateIsActive = false;
 		if(statusFlag != null) {
@@ -500,18 +514,18 @@ public class ProjectJSON {
 		}
 		sb.append("{");
 		JSONUtility.appendBooleanValue(sb, JSONUtility.JSON_FIELDS.SUCCESS, true);
-		JSONUtility.appendBooleanValue(sb, HAS_PRIVATE_WORKSPACE, hasPrivateWorkspace);
+		
 		JSONUtility.appendBooleanValue(sb, TEMPLATE_IS_ACTIVE, templateIsActive, true);
 		sb.append("}");
 		return sb.toString();
-	}
+	}*/
 	
 	public static String encodeChangeTemplateState(boolean success, boolean isActive) {
 		StringBuilder sb = new StringBuilder();
 		if(success) {
 			sb.append("{");
 			JSONUtility.appendBooleanValue(sb, JSONUtility.JSON_FIELDS.SUCCESS, true);
-			sb.append("data:{");
+			JSONUtility.appendFieldName(sb, JSONUtility.JSON_FIELDS.DATA).append(":{");
 			JSONUtility.appendBooleanValue(sb,TEMPLATE_IS_ACTIVE, isActive, true);
 			sb.append("}");
 			sb.append("}");

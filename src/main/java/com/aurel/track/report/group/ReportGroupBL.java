@@ -47,18 +47,18 @@ import com.aurel.track.util.IntegerStringBean;
 
 
 public class ReportGroupBL {
-	
+
 	private static final Logger LOGGER = LogManager.getLogger(ReportGroupBL.class);
 	private static String groupSeparatorChar = "gs";
 	private static String attributeSeparatorChar = "as";
-	
+
 	public final static int MAXIMUM_GROUPING_LEVEL = 4;
 	private final static String GROUPSEPARATOR = ": ";
 	private final static String VALUE_SEPARATOR = "__";
 	private final static String FIELD_SEPARATOR = "|";
-	
 
-	
+
+
 	/**
 	 * Populates the grouping limits map for showing the grouping on the UI
 	 * @param reportBeans
@@ -68,33 +68,33 @@ public class ReportGroupBL {
 	 * @param treeFieldsToSortOrderMap
 	 * @param groupOtherExpandCollapse
 	 * @param locale
-	 * @return map: 
+	 * @return map:
 	 * 	- key: workItemID
 	 * 	- value: list of GroupLimitBeans (a workItem can be a grouping limit for one or more groups)
 	 */
-	public static Map<Integer, List<GroupLimitBean>> populateGroupingLimits(ReportBeans reportBeans, 
+	public static Map<Integer, List<GroupLimitBean>> populateGroupingLimits(ReportBeans reportBeans,
 			List<GroupFieldTO> groupByList, Map<Integer, Map<Integer, Integer>> treeFieldsChildToParentMap,
 			Map<Integer, Map<Integer, String>> treeFieldsIDToLabelMap,
 			Map<Integer, Map<Integer, Integer>> treeFieldsToSortOrderMap,
 			Set<String> groupOtherExpandCollapse, Locale locale) {
 		Map<Integer, List<GroupLimitBean>> groupingLimitsMapForWorkItem = new HashMap<Integer, List<GroupLimitBean>>();
-		if (reportBeans==null || 
+		if (reportBeans==null ||
 				reportBeans.getReportBeansFlat()==null || reportBeans.getReportBeansFlat().isEmpty() ||
 				groupByList==null || groupByList.isEmpty()) {
 			return groupingLimitsMapForWorkItem;
-		}		
+		}
 		if (groupOtherExpandCollapse==null) {
 			groupOtherExpandCollapse = new HashSet<String>();
-		}		
+		}
 		List<Integer> groupByFieldIDs = getGroupByFieldIDs(groupByList);
 		Map<Integer, String> localizedLabels = FieldRuntimeBL.getLocalizedDefaultFieldLabels(groupByFieldIDs, locale) ;
 		Iterator<ReportBean> reportBeansIterator = reportBeans.getReportBeansFlat().iterator();
-		//get the first reportBean: this is surely the grouping limit for all grouping fields  
+		//get the first reportBean: this is surely the grouping limit for all grouping fields
 		ReportBean reportBean = reportBeansIterator.next();
 		TWorkItemBean workItemBean = reportBean.getWorkItemBean();
 		Integer workItemID = workItemBean.getObjectID();
 		List<GroupLimitBean> groupingLimitsListForWorkItem = new LinkedList<GroupLimitBean>();
-		//the first workItem is grouping limit 
+		//the first workItem is grouping limit
 		groupingLimitsMapForWorkItem.put(workItemID, groupingLimitsListForWorkItem);
 		//contains the actual groupLimitBean for each grouping level (for both flat and tree field grouping)
 		Map<Integer, GroupLimitBean> groupLimitBeansMap = new HashMap<Integer, GroupLimitBean>();
@@ -148,9 +148,9 @@ public class ReportGroupBL {
 				expanding = !expanding;
 			}
 			boolean isTreeField = fieldIsTreeMap.get(fieldID).booleanValue();
-			GroupLimitBean groupLimitBean = new GroupLimitBean(fieldID, localizedLabels.get(fieldID) + 
-					GROUPSEPARATOR + showValue, firstValue, reportBean.getSortOrder(fieldID), i, expanding, 
-					workItemID, groupID, isTreeField);
+			GroupLimitBean groupLimitBean = new GroupLimitBean(fieldID, localizedLabels.get(fieldID) +
+					GROUPSEPARATOR + showValue, firstValue, reportBean.getSortOrder(fieldID), i, expanding,
+					workItemID, groupID, isTreeField, showValue);
 			if (isTreeField) {
 				groupLimitBean.setTreeSortOrder(getTreeSortOrder(treeFieldsToSortOrderMap, fieldID, (Integer)firstValue));
 			}
@@ -172,14 +172,14 @@ public class ReportGroupBL {
 					groupLimitBean.setParent(parentGroupFieldBean);
 				}
 			}
-			groupLimitBean.setNumberOfWorkItems(1);			
+			groupLimitBean.setNumberOfWorkItems(1);
 		}
 		//the other ReportBeans
 		while (reportBeansIterator.hasNext()) {
 			reportBean = reportBeansIterator.next();
 			workItemBean = reportBean.getWorkItemBean();
 			workItemID = workItemBean.getObjectID();
-			//whether the current field or any previous field was changed 
+			//whether the current field or any previous field was changed
 			Set<Integer> changeFlags = new HashSet<Integer>();
 			for (int i = 0; i < groupByList.size(); i++) {
 				GroupFieldTO groupFieldTO = groupByList.get(i);
@@ -192,7 +192,7 @@ public class ReportGroupBL {
 				IFieldTypeRT fieldTypeRT = FieldTypeManager.getFieldTypeRT(fieldID);
 				boolean changeOnThisField = fieldTypeRT.valueModified(nextValue, previousValue);
 				boolean changeOnPreviousField = i>0 && changeFlags.contains(groupByList.get(i-1).getFieldID());
-				//the actual grouping field value modified or a previous grouping field modified: then there is a new grouping limit 
+				//the actual grouping field value modified or a previous grouping field modified: then there is a new grouping limit
 				if (changeOnThisField || changeOnPreviousField) {
 					previousValuesMap.put(fieldID, nextValue);
 					groupingLimitsListForWorkItem = groupingLimitsMapForWorkItem.get(workItemID);
@@ -220,10 +220,10 @@ public class ReportGroupBL {
 						groupIdentifierValue = new IntegerStringBean(groupValue, fieldID);
 						groupIdentifierList.add(groupIdentifierValue);
 					} else {
-						//actualized the old label to the new label, field is unchanged 
+						//actualized the old label to the new label, field is unchanged
 						groupIdentifierValue.setLabel(groupValue);
 					}
-					//reset the subgroups of this group because a new group means automatically new subgroup 
+					//reset the subgroups of this group because a new group means automatically new subgroup
 					for (int j = i+1; j<groupByList.size(); j++) {
 						if (groupIdentifierList.size()>i+1) {
 							groupIdentifierList.remove(i+1);
@@ -248,16 +248,16 @@ public class ReportGroupBL {
 							childToParentMap = treeFieldsChildToParentMap.get(fieldID);
 						}
 						Stack<Integer> treeStack = treeStacksMap.get(fieldID);
-						
+
 						if (changeOnPreviousField) {
 							//the value for the previous grouping level changed:
 							//start a new stack, the tree field value is on the highest level (no ancestor hierarchy is implied)
 							//new group is started
 							treeStack.clear();
 							treeLimitBeansMap.clear();
-							nextLevelGroupLimitBean = new GroupLimitBean(fieldID, localizedLabels.get(fieldID) + 
-									GROUPSEPARATOR + showValue, nextValue, reportBean.getSortOrder(fieldID), i, expanding, 
-									workItemID, groupID, isTreeField);
+							nextLevelGroupLimitBean = new GroupLimitBean(fieldID, localizedLabels.get(fieldID) +
+									GROUPSEPARATOR + showValue, nextValue, reportBean.getSortOrder(fieldID), i, expanding,
+									workItemID, groupID, isTreeField, showValue);
 							nextLevelGroupLimitBean.setNumberOfWorkItems(1);
 							groupingLimitsListForWorkItem.add(nextLevelGroupLimitBean);
 							//put the tree parents in stack as root of a branch
@@ -273,7 +273,7 @@ public class ReportGroupBL {
 								groupLimitBean.setNumberOfWorkItems(groupLimitBean.getNumberOfWorkItems()+1);
 							}
 							//gets the tree hierarchy between the first ancestor till the actual value including the actual value
-							//(fill the eventual holes in tree : parent - <missingChild> - existing grand child ) 
+							//(fill the eventual holes in tree : parent - <missingChild> - existing grand child )
 							List<Integer> ancestorListTopToBottom = getAncestorList(childToParentMap, ancestorValue, nextTreeValue);
 							Integer peek = null;
 							GroupLimitBean peekTreeLimitBean = null;
@@ -288,9 +288,9 @@ public class ReportGroupBL {
 								groupIdentifierValue.setLabel(groupValue);
 								groupID = encodeGroupIdentifierString(groupIdentifierList);
 								Comparable<Object> branchSortOrder = fieldTypeRT.getSortOrderValue(fieldID, null, ancestorTreeValue, workItemID, null);
-								nextLevelGroupLimitBean = new GroupLimitBean(fieldID, localizedLabels.get(fieldID) + 
-										GROUPSEPARATOR + idToLabelMap.get(ancestorTreeValue), ancestorTreeValue, branchSortOrder, i, expanding, 
-										workItemID, groupID, isTreeField);
+								nextLevelGroupLimitBean = new GroupLimitBean(fieldID, localizedLabels.get(fieldID) +
+										GROUPSEPARATOR + idToLabelMap.get(ancestorTreeValue), ancestorTreeValue, branchSortOrder, i, expanding,
+										workItemID, groupID, isTreeField, showValue);
 								nextLevelGroupLimitBean.setTreeSortOrder(getTreeSortOrder(treeFieldsToSortOrderMap, fieldID, ancestorTreeValue));
 								groupingLimitsListForWorkItem.add(nextLevelGroupLimitBean);
 								treeLimitBeansMap.put(ancestorTreeValue, nextLevelGroupLimitBean);
@@ -306,9 +306,9 @@ public class ReportGroupBL {
 						}
 					} else {
 						//non tree field changed
-						nextLevelGroupLimitBean = new GroupLimitBean(fieldID, localizedLabels.get(fieldID) + 
-								GROUPSEPARATOR + showValue, nextValue, reportBean.getSortOrder(fieldID), i, expanding, 
-								workItemID, groupID, isTreeField);
+						nextLevelGroupLimitBean = new GroupLimitBean(fieldID, localizedLabels.get(fieldID) +
+								GROUPSEPARATOR + showValue, nextValue, reportBean.getSortOrder(fieldID), i, expanding,
+								workItemID, groupID, isTreeField, showValue);
 						groupingLimitsListForWorkItem.add(nextLevelGroupLimitBean);
 						nextLevelGroupLimitBean.setNumberOfWorkItems(1);
 					}
@@ -340,7 +340,7 @@ public class ReportGroupBL {
 		}
 		return groupingLimitsMapForWorkItem;
 	}
-	
+
 	/**
 	 * Gets the "artificial" sort order for a tree field value
 	 * @param treeFieldsToSortOrderMap
@@ -357,9 +357,9 @@ public class ReportGroupBL {
 		}
 		return null;
 	}
-	
+
 	/**
-	 * Whether the field value for for a tree field is descendant of the previous items' value 
+	 * Whether the field value for for a tree field is descendant of the previous items' value
 	 * @param childToParentMap
 	 * @param previousValue
 	 * @param nextValue
@@ -376,7 +376,7 @@ public class ReportGroupBL {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Gets the ancestor field values for a tree field
 	 * @param childToParentMap
@@ -397,7 +397,7 @@ public class ReportGroupBL {
 		}
 		return ancestorList;
 	}
-	
+
 	/**
 	 * Pop the values from the stack till a direct ancestor is found on the top of the stack
 	 * @param treeStack
@@ -423,7 +423,7 @@ public class ReportGroupBL {
 		}
 		return peekValue;
 	}
-	
+
 	/**
 	 * Create a unique identifier for each group
 	 * @param groupPathList
@@ -445,7 +445,7 @@ public class ReportGroupBL {
 		}
 		return stringBuffer.toString();
 	}
-	
+
 	/**
 	 * Decode a node
 	 * @param groupID
@@ -462,7 +462,7 @@ public class ReportGroupBL {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Gets the list of fieldIDs from a list of GroupFields
 	 * @param groupByList

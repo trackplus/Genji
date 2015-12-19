@@ -30,6 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import com.aurel.track.util.IntegerStringBean;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -976,4 +977,30 @@ public class TProjectPeer
 		}
 		return projectBeanList;
 	}
+
+	public List<IntegerStringBean> getPath(Integer objectID) {
+		List<IntegerStringBean> result=new ArrayList<IntegerStringBean>();
+		Integer projectID=objectID;
+		while(projectID!=null){
+			TProject project = getInternalProject(projectID);
+			if(project!=null){
+				result.add(0,new IntegerStringBean(project.getLabel(), project.getObjectID()));
+				projectID = project.getParent();
+			}else{
+				return null;
+			}
+		}
+		return result;
+	}
+	private TProject getInternalProject(Integer objectID) {
+		TProject project = null;
+		try {
+			project = retrieveByPK(objectID);
+		} catch (Exception e) {
+			LOGGER.info("Loading the project by primary key " + objectID + " failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
+		}
+		return project;
+	}
+
 }

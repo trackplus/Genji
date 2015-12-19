@@ -71,6 +71,7 @@ import com.aurel.track.itemNavigator.QueryContext;
 import com.aurel.track.json.JSONUtility;
 import com.aurel.track.persist.ReportBeanHistoryLoader;
 import com.aurel.track.plugin.DashboardDescriptor;
+import com.aurel.track.report.dashboard.ProjectFilterDashboardView.DATASOURCE_TYPE;
 import com.aurel.track.report.datasource.IPluggableDatasource.CONTEXT_ATTRIBUTE;
 import com.aurel.track.report.datasource.earnedValue.EarnedValueBL;
 import com.aurel.track.report.datasource.earnedValue.EarnedValueDatasource;
@@ -155,7 +156,6 @@ public class BurnDownChart  extends TimePeriodDashboardView {
         static String REPORTING_INTERVAL_MONTHLY = "burnDownChart.tooltip.reportingInterval.monthly";
     }
 
-    @Override
     protected boolean isUseConfig(){
         return true;
     }
@@ -313,11 +313,22 @@ public class BurnDownChart  extends TimePeriodDashboardView {
          int datasourceType = parseInteger(configParameters, "selectedDatasourceType", 1);
          Integer projectOrReleaseID = null;
          Integer filterID = null;
-         if(datasourceType == 1) {
-             projectOrReleaseID = parseInteger(configParameters, "selectedProjectOrRelease", 1);
+         if(configParameters.get("projectID") != null || configParameters.get("releaseID") != null) {
+        	 if(configParameters.get("releaseID") != null) {
+        		 projectOrReleaseID = Integer.valueOf(configParameters.get("releaseID").toString());
+        	 }else {
+        		 projectOrReleaseID = Integer.valueOf(configParameters.get("projectID").toString());
+        		 projectOrReleaseID = projectOrReleaseID * (-1);
+        	 }
+        	 datasourceType = DATASOURCE_TYPE.PROJECT_RELEASE;
          }else {
-             filterID = parseInteger(configParameters,  "selectedQueryID", 1);
+	         if(datasourceType == 1) {
+	             projectOrReleaseID = parseInteger(configParameters, "selectedProjectOrRelease", 1);
+	         }else {
+	             filterID = parseInteger(configParameters,  "selectedQueryID", 1);
+	        }
         }
+
         boolean isTime = true;
         Map<String, Object>contextMap = new HashMap<String, Object>();
         contextMap.put("fromIssueNavigator", false);
@@ -716,7 +727,7 @@ public class BurnDownChart  extends TimePeriodDashboardView {
 						integerValues[i]=new Integer(strArr[i]);
 					} catch (Exception e) {
 						LOGGER.info("Converting the " + strArr[i] + " as the " + i + "th parameter to Integer failed with " + e.getMessage(), e);
-						LOGGER.error(ExceptionUtils.getStackTrace(e));
+						LOGGER.error(ExceptionUtils.getStackTrace(e),e);
 					}
 				}
 			}

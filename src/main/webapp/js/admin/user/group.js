@@ -23,15 +23,18 @@
 /**
  * Class for role and account assignments for project
  */
-Ext.define('com.trackplus.admin.user.Group',{
-	extend:'com.trackplus.admin.TreeDetailAssignment',
+Ext.define("com.trackplus.admin.user.Group", {
+	extend:"com.trackplus.admin.TreeDetailAssignment",
+	xtype: "group",
+    controller: "group",
 	config: {
 		rootID: '_'
 	},
-	baseAction:"group",
-	editWidth: 475,
-	editHeight: 305,
-	labelWidth:145,
+
+	getBaseServerAction: function() {
+		return "group";
+	},
+	
 	allowMultipleNodeSelections: true,
 	/**
 	 * Whether the tree has double click listener
@@ -47,12 +50,7 @@ Ext.define('com.trackplus.admin.user.Group',{
 	actionDeleteGroup: null,
 	actionRemovePerson: null,
 
-	constructor: function(config) {
-		var config = config || {};
-		this.initConfig(config);
-		this.initBase();
-	},
-
+		
 	getEntityLabel: function(extraConfig) {
 		return getText("admin.user.group.lbl.group");
 	},
@@ -72,17 +70,17 @@ Ext.define('com.trackplus.admin.user.Group',{
 	/**
 	 * Initialize all possible actions
 	 */
-	initActions: function(){
-		this.actionAddGroup = this.createLocalizedAction(this.getTitle(this.getAddTitleKey(), {isLeaf:false}),
-				this.getAddIconCls(), this.onAddGroup, this.getTitle(this.getAddTitleKey(), {isLeaf:false}));
-		this.actionEditGroup = this.createLocalizedAction(this.getTitle(this.getEditTitleKey(), {isLeaf:false}),
-				this.getEditIconCls(), this.onEditGroup, this.getTitle(this.getEditTitleKey(), {isLeaf:false}), true);
-		this.actionShowAssignments = this.createLocalizedAction(getText("admin.user.group.lbl.roleAssignments"),
-				this.getRoleAssignCls(), this.onShowAssignments, getText("admin.user.group.lbl.roleAssignments"), true);
-		this.actionDeleteGroup = this.createLocalizedAction(this.getTitle(this.getDeleteTitleKey(), {isLeaf:false}),
-				this.getDeleteIconCls(), this.onDeleteGroup, this.getTitle(this.getDeleteTitleKey(), {isLeaf:false}), true);
-		this.actionRemovePerson = this.createLocalizedAction(getText("common.lbl.remove", getText("admin.user.lbl.user")),
-				this.getDeleteIconCls(), this.onRemovePerson, getText("common.lbl.remove", getText("admin.user.lbl.user")));
+	initActions: function() {
+		this.actionAddGroup = CWHF.createAction(this.getActionTooltip(this.getAddTitleKey()), this.getAddIconCls(),
+				"onAddGroup", {labelIsLocalized:true});
+		this.actionEditGroup = CWHF.createAction(this.getActionTooltip(this.getEditTitleKey()), this.getEditIconCls(),
+				"onEditGroup", {labelIsLocalized:true, disabled:true});
+		this.actionShowAssignments = CWHF.createAction("admin.user.group.lbl.roleAssignments", this.getRoleAssignCls(),
+				"onShowAssignments", {disabled:true});
+		this.actionDeleteGroup = CWHF.createAction(this.getActionTooltip(this.getDeleteTitleKey()), this.getDeleteIconCls(),
+				"onDeleteGroup", {labelIsLocalized:true, disabled:true});
+		this.actionRemovePerson = CWHF.createAction(getText(this.getRemoveTitleKey(), getText("admin.user.lbl.user")),
+				this.getDeleteIconCls(), "onRemovePerson");
 		this.actions=[this.actionAddGroup, this.actionEditGroup, this.actionDeleteGroup, this.actionShowAssignments];
 	},
 
@@ -104,12 +102,12 @@ Ext.define('com.trackplus.admin.user.Group',{
 	/**
 	 * Create the edit
 	 */
-	onTreeNodeDblClick: function(view, record) {
+	/*onTreeNodeDblClick: function(view, record) {
 		var leaf = record.isLeaf();
 		if (!leaf) {
 			this.onEditGroup();
 		}
-	},
+	},*/
 
 	/**
 	 * Which actions to enable/disable depending on tree selection
@@ -140,22 +138,22 @@ Ext.define('com.trackplus.admin.user.Group',{
 	/**
 	 * Handler for adding a new screen
 	 */
-	onAddGroup: function() {
+	/*onAddGroup: function() {
 		var title = this.getTitle(this.getAddTitleKey(), {isLeaf:false});
 		return this.onAddEdit(title, {add:true}, {add:true});
-	},
+	},*/
 
 	/**
 	 * Handler for editing a screen
 	 */
-	onEditGroup: function() {
+	/*onEditGroup: function() {
 		var title = this.getTitle(this.getEditTitleKey(), {isLeaf:false});
 		var loadParams = this.getEditParams();
 		var submitParams = this.getEditParams();
 		return this.onAddEdit(title, loadParams, submitParams);
-	},
+	},*/
 
-	onShowAssignments: function() {
+	/*onShowAssignments: function() {
 		var title = getText("admin.user.group.lbl.roleAssignments");
 		var submitParams = this.getEditParams();
 		var load = {loadHandler: this.showAssignmentsLoadHandler};
@@ -173,29 +171,29 @@ Ext.define('com.trackplus.admin.user.Group',{
 			formPanel: this.getAssignmentGrid(personID)};
 		var windowConfig = Ext.create('com.trackplus.util.WindowConfig', windowParameters);
 		windowConfig.showWindowByConfig(this);
-	},
+	},*/
 
 	/**
 	 * Empty (but not null) function to avoid the calling of getForm().load() in windowConfig
 	 * loadUrl and loadParams is not specified because the data will be loaded through the grid's store
 	 */
-	showAssignmentsLoadHandler: function(loadUrl, loadParams) {
+	/*showAssignmentsLoadHandler: function(loadUrl, loadParams) {
 
-	},
+	},*/
 
-	getAssignmentGrid: function(personID) {
+	/*getAssignmentGrid: function(personID) {
 		var gridComponent = Ext.create("com.trackplus.admin.user.UserRolesInProject",
 				{personID:personID, group:true});
 		//var grid = gridComponent.getGrid();
 		//grid.store.load();
 		return [gridComponent];
-	},
+	},*/
 
 	/**
 	 * Parameters for editing an existing entity
 	 * recordData: the selected entity data
 	 */
-	getEditParams: function() {
+	/*getEditParams: function() {
 		var recordData = this.getSingleSelectedRecordData(true);
 		if (recordData) {
 			var nodeID = recordData['id'];
@@ -203,7 +201,7 @@ Ext.define('com.trackplus.admin.user.Group',{
 				return {node:nodeID};
 			}
 		}
-	},
+	},*/
 
 	/**
 	 * Handler for add/edit a node/row
@@ -217,7 +215,7 @@ Ext.define('com.trackplus.admin.user.Group',{
 	 * refreshParams
 	 * refreshParamsFromResult
 	 */
-	onAddEdit: function(title, loadParams, submitParams) {
+	/*onAddEdit: function(title, loadParams, submitParams) {
 		var loadUrl = this.getBaseAction() + '!edit.action';
 		var load = {loadUrl:loadUrl, loadUrlParams:loadParams};
 		var submitUrl = this.getBaseAction() + '!save.action';
@@ -237,10 +235,10 @@ Ext.define('com.trackplus.admin.user.Group',{
 			items:items};
 		var windowConfig = Ext.create('com.trackplus.util.WindowConfig', windowParameters);
 		windowConfig.showWindowByConfig(this);
-	},
+	},*/
 
 
-	getPanelItems: function() {
+	/*getPanelItems: function() {
 		return [CWHF.createTextField('common.lbl.name','name',
 				{anchor:'95%', allowBlank:false, labelWidth:this.labelWidth, maxLength:60, enforceMaxLength:true}),
 				{xtype: 'fieldset',
@@ -253,9 +251,9 @@ Ext.define('com.trackplus.admin.user.Group',{
 							CWHF.createCheckbox("admin.user.group.lbl.groupFlagManager", "manager", {labelWidth:this.labelWidth}),
 							CWHF.createCheckbox("admin.user.group.lbl.groupFlagResponsible", "responsible", {labelWidth:this.labelWidth}),
 							CWHF.createCheckbox("admin.user.group.lbl.groupFlagJoinNewUserToThisGroup", "joinNewUserToThisGroup", {labelWidth:this.labelWidth})]}];
-	},
+	},*/
 
-	onRemovePerson: function() {
+	/*onRemovePerson: function() {
 		this.reloadAssigned(this.getBaseAction()+"!unassign.action", {})
 	},
 
@@ -290,41 +288,41 @@ Ext.define('com.trackplus.admin.user.Group',{
 	    	}
 	    }
 	    return reloadParams;
-	},
+	},*/
 
 	/**
 	 * Get the detail part after selecting a tree node
 	 */
-	/*protected*/loadDetailPanel: function(node, leaf, opts) {
+	/*protected*//*loadDetailPanel: function(node, leaf, opts) {
 		if (this.selectionIsSimple(true)) {
 			this.loadSimpleDetailPanel(node, false);
 		} else {
 			this.resetDetailPanel();
 		}
-	},
+	},*/
 
-	onDeleteGroup: function() {
+	/*onDeleteGroup: function() {
 		var selectedRecords = this.getSelection(true);
 		if (selectedRecords) {
 			this.deleteHandler(selectedRecords, {fromTree:true});
 		}
-	},
+	},*/
 
 	/**
 	 * Url for deleting an entity
 	 * extraConfig: for simple grid nothing, for tree with grid {fromTree:fromTree, isLeaf:isLeaf}
 	 */
-	getDeleteUrl: function(extraConfig){
+	/*getDeleteUrl: function(extraConfig){
 		return this.getBaseAction() + '!delete.action';
-	},
+	},*/
 
 	/*getDeleteParams: function(selectedRecords, extraConfig) {
 		return this.getEditParams();
 	},*/
 
-	getDeleteParamName: function() {
+	/*getDeleteParamName: function() {
 	    return "selectedGroupIDs";
-	},
+	},*/
 
 	getGridFields: function(record) {
 		return [{name:'id', type:'int'},
@@ -392,9 +390,9 @@ Ext.define('com.trackplus.admin.user.Group',{
 
 	enableColumnHide: function() {
 		return true;
-	},
+	}
 
-	getDetailWidth: function() {
+	/*getDetailWidth: function() {
 		return 800;
 	},
 
@@ -404,5 +402,5 @@ Ext.define('com.trackplus.admin.user.Group',{
 
 	getMinWidth: function() {
 		return 425;
-	}
+	}*/
 });

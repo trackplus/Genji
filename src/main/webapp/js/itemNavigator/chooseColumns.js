@@ -91,7 +91,8 @@ Ext.define('com.trackplus.itemNavigator.ChooseColumnsController',{
 		var windowParameters = {title:getText("itemov.lbl.chooseColumns"),
 			width:width,
 			height:height,
-			load:load, submit:submit,
+			load:load,
+			submit:submit,
 			items:[],
 			postDataProcess:this.createColumnItems,
 			panelConfig:{

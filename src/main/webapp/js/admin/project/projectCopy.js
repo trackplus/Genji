@@ -23,60 +23,43 @@
 Ext.define('com.trackplus.admin.project.ProjectCopyController',{
 	extend:'Ext.Base',
 	config: {
-		dataModel: null,
-		projectConfig: null,
-		actionTarget:null
+		projectID: null,
+		isTemplate: false,
+		localCopy: true
 	},
 	view:null,
 	copy:false,
-	projectID:null,
-
-	COPY_ACTION_WP_FROM_TPL: 0,
-	COPY_ACTION_TPL_FROM_WP: 1,
-
-	COPY_ACTION_COPY_TPL: 2,
-	COPY_ACTION_COPY_WP: 3,
-
 
 	constructor : function(config) {
 		var config = config || {};
 		this.initConfig(config);
-		this.projectID=this.getDataModel().projectID;
 	},
-
+	
 	getTitle: function() {
-		switch(this.getActionTarget()) {
-		    case this.COPY_ACTION_COPY_WP:
-		    	return getText('admin.project.copy.title');
-		        break;
-		    case this.COPY_ACTION_TPL_FROM_WP:
-		        return getText('admin.project.copy.titleCreateTplFromWp');
-		        break;
-		    case this.COPY_ACTION_COPY_TPL:
-		        return getText('admin.project.copy.titleCopyTpl');
-		        break;
-		    case this.COPY_ACTION_WP_FROM_TPL:
-		    	return getText('common.btn.copyTo');
-		        break;
-		    default:
-		    	return getText('admin.project.copy.title');
-		}
+		if (this.getIsTemplate()) {
+	    	if (this.getLocalCopy()) {
+	    		 return getText("admin.project.copy.titleCopyTpl");
+	    	} else {
+	    		return getText("common.btn.copyTo");
+	    	}
+	    } else {
+	    	if (this.getLocalCopy()) {
+	    		return getText("admin.project.copy.title");
+	    	} else {
+	    		return getText("admin.project.copy.titleCreateTplFromWp");
+	    	}
+	    }
 	},
 
 	getSaveLabel: function() {
-		switch(this.getActionTarget()) {
-		    case this.COPY_ACTION_COPY_WP:
-		    case this.COPY_ACTION_COPY_TPL:
-		    	return getText('common.btn.copy');
-		        break;
-		    case this.COPY_ACTION_WP_FROM_TPL:
-				return getText('admin.project.lbl.createSpace');
-		        break;
-		    case this.COPY_ACTION_TPL_FROM_WP:
-		    	return getText('admin.project.lbl.createTemplate');
-		        break;
-		    default:
-		    	return getText('common.btn.copy');
+		if (this.getLocalCopy()) {
+			return getText("common.btn.copy");
+		} else {
+			if (this.getIsTemplate()) {
+				return getText("admin.project.lbl.createTemplate");
+			} else {
+				return getText("admin.project.lbl.createSpace");
+			}
 		}
 	},
 
@@ -94,19 +77,18 @@ Ext.define('com.trackplus.admin.project.ProjectCopyController',{
 	showDialog: function() {
 		var width = 500;
 		var height = 600;
-		var loadParams = {projectID:this.projectID, actionTarget:this.getActionTarget()};
+		var loadParams = {projectID:this.getProjectID(), isTemplate:this.getIsTemplate(), localCopy:this.getLocalCopy()};
 		var load = {loadUrl:"projectCopy.action", loadUrlParams:loadParams};
-		var submitParams = {projectID:this.projectID, actionTarget:this.getActionTarget()};
-
+		var submitParams = {projectID:this.getProjectID(), isTemplate:this.getIsTemplate(), localCopy:this.getLocalCopy()};
+		
 		var submit = {submitUrl:"projectCopy!copy.action",
 					submitUrlParams:submitParams,
 					submitButtonText:this.getSaveLabel(),
+					refreshParametersAfterSubmit: [{parameterName:"projectNodeToSelect", fieldNameFromResult:"projectNodeToSelect"}],
 					refreshAfterSubmitHandler:this.reload};
 		var postDataProcess = this.postDataProcess;
 
 		var helpText = this.getWindowTopHelpText();
-
-		//admin.project.copy.lbl.projectName
 		var windowParameters = {title:this.getTitle(),
 			width:width,
 			height:height,
@@ -132,10 +114,38 @@ Ext.define('com.trackplus.admin.project.ProjectCopyController',{
 		this.populateProjectCopyControls(this, panel, data);
 	},
 
-	reload: function(reloadParameters, result) {
-		this.getProjectConfig().reloadAfterApplyingTemplate(result, this.getActionTarget());
+	/**
+	 * This method handles reloading the proper tree item
+	 * (project or template) based on actionTarget parameter:
+	 * For ex: when creating a template from workspace: the
+	 * workspace node must collapse, the template node must
+	 * expand with selecting the newly created node.
+	 */
+	reload : function(reloadParameters) {
+	    var templateTree = Ext.getCmp("tree-projectTemplateTreePanel");
+	    var projectTree = Ext.getCmp("tree-projectTreePanel");
+	    var reloadProjectTree = false;
+	    if (this.getIsTemplate()) {
+	    	if (this.getLocalCopy()) {
+	    		reloadProjectTree = false;
+	    	} else {
+	    		projectTree.expand();
+	    		templateTree.getSelectionModel().deselectAll();
+	    		reloadProjectTree = true;
+	    	}
+	    } else {
+	    	if (this.getLocalCopy()) {
+	    		reloadProjectTree = true;
+	    	} else {
+	    		templateTree.expand();
+	    		projectTree.getSelectionModel().deselectAll();
+	    		reloadProjectTree = false;
+	    	}
+	    }
+	    reloadParameters["isTemplate"] = !reloadProjectTree;
+	    com.trackplus.admin.refrehProjectTree(reloadParameters)
 	},
-
+	
 	populateProjectCopyControls: function(scope, projectCopyMainPanel, data) {
 		var customLists = data["customLists"];
 		var projectCopyControls = [];
@@ -244,21 +254,18 @@ Ext.define('com.trackplus.admin.project.ProjectCopyController',{
 	},
 
 	getWindowTopHelpText: function() {
-		switch(this.getActionTarget()) {
-		    case this.COPY_ACTION_COPY_WP:
-		    	return getText('admin.project.copy.lbl.message');
-		        break;
-		    case this.COPY_ACTION_TPL_FROM_WP:
-		        return getText('admin.projectTemplate.copy.lbl.messageCreateTplFromWp');
-		        break;
-		    case this.COPY_ACTION_COPY_TPL:
-		        return getText('admin.projectTemplate.copy.lbl.messageCopyTemplate');
-		        break;
-		    case this.COPY_ACTION_WP_FROM_TPL:
-		    	return getText('admin.projectTemplate.copy.lbl.messageCreateWpFromTpl');
-		        break;
-		    default:
-		    	return getText('admin.project.copy.lbl.message');
-		}
+		if (this.getIsTemplate()) {
+	    	if (this.getLocalCopy()) {
+	    		return getText("admin.projectTemplate.copy.lbl.messageCopyTemplate");
+	    	} else {
+	    		return getText("admin.projectTemplate.copy.lbl.messageCreateWpFromTpl");
+	    	}
+	    } else {
+	    	if (this.getLocalCopy()) {
+	    		return getText("admin.project.copy.lbl.message");
+	    	} else {
+	    		return getText("admin.projectTemplate.copy.lbl.messageCreateTplFromWp");
+	    	}
+	    }
 	}
 });

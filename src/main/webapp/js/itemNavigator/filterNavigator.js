@@ -200,20 +200,23 @@ Ext.define('com.trackplus.itemNavigator.FilterView',{
 				var issueTypes=responseJson.data.issueTypes;
 				var projectID=responseJson.data.projectID;
 				var isProjectAdmin = responseJson.data.isProjectAdmin;
+				var mightAddSubproject = responseJson.data.mightAddSubproject;
 				var mightHaveRelease = responseJson.data.mightHaveRelease;
 				var items = [];
 				if (isProjectAdmin) {
 					if (entityID<0) {
 						//is a project
-						var addSubprojectTitle = getText("common.lbl.add",getText("admin.project.lbl.subproject"));
-						items.push({
-							text: addSubprojectTitle,
-							iconCls: "projectAdd",
-							scope: this,
-							handler: function(){
-								me.addSubproject(projectID, addSubprojectTitle);
-							}
-						});
+						if (mightAddSubproject) {
+							var addSubprojectTitle = getText("common.lbl.add",getText("admin.project.lbl.subproject"));
+							items.push({
+								text: addSubprojectTitle,
+								iconCls: "projectAdd",
+								scope: this,
+								handler: function(){
+									me.addSubproject(projectID, addSubprojectTitle);
+								}
+							});
+						}
 						var editProjectTitle = getText("common.lbl.edit",getText("admin.project.lbl.project"));
 						items.push({
 							text: editProjectTitle,
@@ -317,8 +320,30 @@ Ext.define('com.trackplus.itemNavigator.FilterView',{
 		});
 	},
 
-	addSubproject:function(projectID, title){
-		var me=this;
+	addSubproject:function(projectID, title) {
+		var projectAdd = Ext.create("com.trackplus.admin.project.ProjectEdit", 
+				{callerScope: this,
+				entityLabel: title,
+				refreshAfterSubmitHandler: this.reloadAll,
+				entityContext: {isTemplate:false, addProject:true, addAsSubproject: true, projectID: projectID, inDialog:true}});
+		var windowConfig = Ext.create("Ext.window.Window", {
+			title: title,
+			width: 800,
+			height: 650,
+			items: [projectAdd],
+			layout: 'fit',
+			plain: true,
+			modal: true,
+			cls:'windowConfig bottomButtonsDialog tpspecial',
+			bodyBorder:false,
+			margin:'0 0 0 0',
+			style:{
+				padding:' 5px 0px 0px 0px'
+			},
+			bodyPadding:'0px'
+		});
+		windowConfig.show();
+		/*var me=this;
 		var loadParams={
 			add:true,
 			addAsSubproject:true,
@@ -326,23 +351,45 @@ Ext.define('com.trackplus.itemNavigator.FilterView',{
 		};
 		var submitParams=loadParams;
 		var projectConfig=Ext.create("com.trackplus.admin.project.ProjectConfig",{});
-		projectConfig.addOrEditProject(loadParams,submitParams, title, me, me.reloadAll);
+		projectConfig.addOrEditProject(loadParams,submitParams, title, me, me.reloadAll);*/
 	},
+	
 	editProject:function(projectID, title) {
-		var me=this;
+		var projectEdit = Ext.create("com.trackplus.admin.project.ProjectEdit", 
+				{callerScope: this,
+				entityLabel: title,
+				refreshAfterSubmitHandler: this.reloadAll,
+				entityContext: {isTemplate:false, addProject:false, addAsSubproject: true, projectID: projectID, inDialog:true}});
+		var windowConfig = Ext.create("Ext.window.Window", {
+			title: title,
+			width: 800,
+			height: 650,
+			items: [projectEdit],
+			layout: 'fit',
+			plain: true,
+			modal: true,
+			cls:'windowConfig bottomButtonsDialog tpspecial',
+			bodyBorder:false,
+			margin:'0 0 0 0',
+			style:{
+				padding:' 5px 0px 0px 0px'
+			},
+			bodyPadding:'0px'
+		});
+		windowConfig.show();
+		/*var me=this;
 		var loadParams={
 			add:false,
 			projectID:projectID
 		};
 		var submitParams=loadParams;
 		var projectConfig=Ext.create("com.trackplus.admin.project.ProjectConfig",{rootID:projectID});
-		projectConfig.addOrEditProject(loadParams,submitParams, title, me, me.reloadAll);
+		projectConfig.addOrEditProject(loadParams,submitParams, title, me, me.reloadAll);*/
 	},
 
 	assignRoles:function(projectID, title) {
 		var roleAssignment = Ext.create("com.trackplus.admin.project.RoleAssignment", {
-            rootID : projectID,
-            treeWidth : 200
+            rootID : projectID
         });
 		var width = 1200;
 		var height = 800;
@@ -402,31 +449,19 @@ Ext.define('com.trackplus.itemNavigator.FilterView',{
 		var releaseLbl=getText('admin.project.release.lbl.main');
 		me.addOrEditRelease(loadParams,submitParams,getText("common.lbl.edit",releaseLbl));
 	},
-	addOrEditRelease:function(loadParams,submitParams,title){
-		var labelWidth=120;
-		var panelItems=com.trackplus.admin.project.Release.createEditPanelItems(labelWidth);
-		var width = 600;
-		var height = 400;
-		var loadUrl =  "release!edit.action";
-		var load = {loadUrl:loadUrl, loadUrlParams:loadParams};
-		var submitUrl = "release!save.action";
-		var submit = {
-			submitUrl:submitUrl,
-			submitUrlParams:submitParams,
-			submitButtonText:getText('common.btn.save'),
-			refreshAfterSubmitHandler:this.reloadAll
-		};
-		var windowParameters = {title:title,
-			width:width,
-			height:height,
-			load:load,
-			submit:submit,
-			items:panelItems,
-			postDataProcess:com.trackplus.admin.project.Release.postDataLoadCombo
-		};
-		var windowConfig = Ext.create('com.trackplus.util.WindowConfig', windowParameters);
+	addOrEditRelease:function(loadParams,submitParams,title) {
+		var windowParameters = {
+        	callerScope:this,
+        	windowTitle:title,
+        	loadUrlParams: loadParams,
+        	submitUrlParams: submitParams,
+        	refreshAfterSubmitHandler: this.reloadAll,
+ 
+        };
+		var windowConfig = Ext.create("com.trackplus.admin.project.ReleaseEdit", windowParameters);
 		windowConfig.showWindowByConfig(this);
 	},
+	
 	deleteRelease:function(projectID, releaseID){
 		var me=this;
 		var releaseLbl=getText('admin.project.release.lbl.main');
@@ -613,13 +648,42 @@ Ext.define('com.trackplus.itemNavigator.FilterView',{
 	},
 
 	addOrEditFilter:function(add, filterID, filterType, title) {
-		var scope=Ext.create("com.trackplus.admin.customize.category.CategoryConfig",{
+		/*var scope=Ext.create("com.trackplus.admin.customize.filter.FilterConfig",{
 			rootID:"issueFilter"
 		});
-		scope.indexMax = 0;
-		scope.instant = false;
+		//scope.indexMax = 0;
+		//scope.instant = false;
 		scope.renderPath = add;
-		com.trackplus.admin.CategoryConfig.showAddEditFilter(scope, this, this.reloadAll, add, filterID, filterType, title);
+		com.trackplus.admin.CategoryConfig.showAddEditFilter(scope, this, this.reloadAll, add, filterID, filterType, title);*/
+		var operation = "edit";
+		if (add) {
+			operation = "add";
+		}
+		var windowParameters = {
+            	callerScope:this,
+            	windowTitle:title,
+            	loadUrlParams: {
+    	            add: add,
+    	            filterID: filterID,
+    	            filterType: filterType,
+    	            fromNavigatorContextMenu: true
+    	        },
+            	submitUrlParams: {
+    	            add : add,
+    	            filterID : filterID,
+    	            filterType : filterType,
+    	            fromNavigatorContextMenu : true
+    	        },
+    	        //reload the navigator after save
+    	        refreshAfterSubmitHandler: this.reloadAll,
+            	entityContext: {
+                	operation: operation,
+                    add: add,
+                    renderPath: add
+            	}
+            };
+    		var windowConfig = Ext.create("com.trackplus.admin.customize.filter.FilterEdit", windowParameters);
+    		windowConfig.showWindowByConfig(this);
 	}
 });
 

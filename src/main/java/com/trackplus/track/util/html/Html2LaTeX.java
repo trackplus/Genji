@@ -53,7 +53,7 @@ public class Html2LaTeX {
 
 	/**
 	 * Get LaTeX text translated from HTML.
-	 * 
+	 *
 	 * @param bodyHtml
 	 * @return the LaTeX representation of the bodyHtml
 	 */
@@ -93,7 +93,7 @@ public class Html2LaTeX {
 
 	/**
 	 * Format an Element to LaTeX
-	 * 
+	 *
 	 * @param element
 	 *            the root element to format
 	 * @return formatted text
@@ -111,7 +111,7 @@ public class Html2LaTeX {
 	private static class FormattingVisitor implements NodeVisitor {
 		private static final int maxWidth = 80;
 		private int width = 0;
-		private StringBuilder accum = new StringBuilder(); // holds the
+		private StringBuilder sbuilder = new StringBuilder(); // holds the
 															// accumulated text
 		private boolean inCell = false;
 		private boolean inHeader = false;
@@ -127,10 +127,12 @@ public class Html2LaTeX {
 		private LaTeXTable.TableRow row = null;
 		private LaTeXTable.TableCell cell = null;
 
+		private StringBuilder cellbuilder = new StringBuilder();
 		// hit when the node is first seen
 		@Override
 		public void head(Node node, int depth) {
 			String name = node.nodeName();
+
 			String ttext = null;
 			if (node instanceof TextNode) { // TextNodes carry all user-readable
 				ttext = ((TextNode) node).text();
@@ -139,9 +141,10 @@ public class Html2LaTeX {
 				ttext = ttext.replace("%","\\%");
 				ttext = ttext.replace("#","\\#");
 				ttext = ttext.replace("&","\\&");
-				if (inCell) {
-					cell.setText(ttext);
-				} else if (inTable && inCaption) {
+//				if (inCell) {
+//					cell.setText(ttext);
+//				} else
+				if (inTable && inCaption) {
 					table.setCaption(ttext);
 				} else if (inFigure && inCaption) {
 					figure.setCaption(ttext);
@@ -202,7 +205,7 @@ public class Html2LaTeX {
 				if (node.hasAttr("src")) {
 					String imgfile = node.attr("src");
 					String figSuffix = ".png";
-				
+
 					try {
 						imgfile = imgfile.substring(imgfile.lastIndexOf("attachKey="));
 						imgfile = imgfile.replace("attachKey=", "");
@@ -216,7 +219,7 @@ public class Html2LaTeX {
 						figSuffix = FilenameUtils.getExtension(image.getFileName());
 
 						figure.setFileName("fig" + imgfile + "." + figSuffix);
-						
+
 					} catch (Exception e) {
 						LOGGER.debug("Attachment not accessible: " + e.getMessage(), e);
 						inFigure = false;
@@ -250,6 +253,7 @@ public class Html2LaTeX {
 				cell = table.getNewCell();
 			} else if (name.equals("td")) {
 				inCell = true;
+				cellbuilder = new StringBuilder();
 				cell = table.getNewCell();
 			} else if (name.equals("caption")) {
 				inCaption = true;
@@ -259,7 +263,6 @@ public class Html2LaTeX {
 				inUrl = true;
 				append(String.format("\\href{%s}{", node.absUrl("href")));
 			}
-
 			else if (StringUtil.in(name, "p", "h1", "h2", "h3", "h4", "h5", "tr"))
 				append("\n");
 		}
@@ -333,6 +336,7 @@ public class Html2LaTeX {
 				row.addCell(cell);
 			} else if (name.equals("td")) {
 				inCell = false;
+				cell.setText(cellbuilder.toString());
 				row.addCell(cell);
 			} else if (name.equals("caption")) {
 				inCaption = false;
@@ -355,7 +359,14 @@ public class Html2LaTeX {
 
 		// appends text to the string builder with a simple word wrap method
 		private void append(String text) {
+			if (!inCell) {
+				append(text, sbuilder);
+			} else {
+				append(text, cellbuilder);
+			}
+		}
 
+		private void append(String text, StringBuilder accum) {
 			if (isVerbatim || inUrl) {
 				accum.append(text);
 				return;
@@ -389,8 +400,7 @@ public class Html2LaTeX {
 					boolean last = i == words.length - 1;
 					if (!last) // insert a space if not the last word
 						word = word + " ";
-					if (word.length() + width > maxWidth) { // wrap and reset
-															// counter
+					if (word.length() + width > maxWidth) { // wrap and reset										// counter
 						accum.append("\n").append(word);
 						width = word.length();
 					} else {
@@ -406,7 +416,7 @@ public class Html2LaTeX {
 
 		@Override
 		public String toString() {
-			return accum.toString();
+			return sbuilder.toString();
 		}
 	}
 

@@ -726,6 +726,10 @@ public final class ApplicationBean implements Serializable {
 
 			if (os.indexOf("mac") >= 0) {
 				this.latexCommand = "/usr/texbin/xelatex"; // cmdPath
+
+				if (!new File(this.latexCommand).exists()) {
+					this.latexCommand = "/Library/TeX/texbin/xelatex";
+				}
 			}
 
 			if (os.indexOf("win") >= 0) {

@@ -42,6 +42,7 @@ import java.util.zip.ZipOutputStream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -111,6 +112,24 @@ public class ReportBL {
 	}
 	
 	/**
+	 * Load the private templates of a person 
+	 * @param personID
+	 * @return
+	 */
+	public static List<TExportTemplateBean> loadPrivate(Integer personID) {
+		return exportTemplateDAO.loadPrivate(personID);
+	}
+	
+	/**
+	 * Load the project specific templates of a project 
+	 * @param projectID
+	 * @return
+	 */
+	public static List<TExportTemplateBean> loadProject(Integer projectID) {
+		return exportTemplateDAO.loadProject(projectID);
+	}
+	
+	/**
 	 * Saves the filter after submit, before save
 	 * @param repository
 	 * @param objectID
@@ -129,6 +148,17 @@ public class ReportBL {
 	 */
 	public static void delete(Integer objectID) {
 		exportTemplateDAO.delete(objectID);
+	}
+	
+	public static void deleteWithTemplate(Integer objectID) {
+		delete(objectID);
+		File templatDir = getDirTemplate(objectID);
+		try {
+			FileUtils.deleteDirectory(templatDir);
+		} catch (IOException e) {
+			LOGGER.info("Deleting the template " + templatDir + " failed with " + e.getMessage());
+			LOGGER.debug(ExceptionUtils.getStackTrace(e));
+		}
 	}
 	
 	public static File getDirTemplate(Integer objectID){

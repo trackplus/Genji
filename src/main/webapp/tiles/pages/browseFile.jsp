@@ -83,7 +83,12 @@
 <div style="margin-top: 40px;">
 	<s:if test="attachments!=null && attachments.size()>0">
 		<div class="infoBox" style="margin:0px;border-width: 0 0 1px 0;">
-			<s:text name="editor.browseImage.selectImage"/>
+			<s:if test="type=='Image'">
+				<s:text name="editor.browseImage.selectImage"/>
+			</s:if>
+			<s:else>
+				Select file
+			</s:else>
 		</div>
 		<s:iterator value="attachments" status="status">
 			<div class="boxImg">

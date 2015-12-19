@@ -344,7 +344,7 @@ Ext.define('com.trackplus.util.WindowConfig',{
 					for (propertyName in me.windowConfig) {
 						windowConfig[propertyName] = me.windowConfig[propertyName];
 					}
-				};
+				}
 				windowConfig.cls='windowConfig bottomButtonsDialog tpspecial';
 				// windowConfig.border=false;
 				windowConfig.bodyBorder=false;
@@ -357,7 +357,7 @@ Ext.define('com.trackplus.util.WindowConfig',{
 				//set the win in the scope to be available in the overridden handlers (createEditForm(), submitHandler()
 				scope.win = me.win;
 				me.win.show();
-			};
+			}
 			if (me.load) {
 				var loadHandler = me.load.loadHandler;
 				if (CWHF.isNull(loadHandler)) {

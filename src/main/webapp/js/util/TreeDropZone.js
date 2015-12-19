@@ -135,7 +135,7 @@ Ext.define('com.trackplus.util.TreeDropZone',{
 		var canDrop=targetNode.data['canDrop'];
 		if(canDrop){
 			return canDrop===true;
-		};
+		}
 		return true;
 	},
 

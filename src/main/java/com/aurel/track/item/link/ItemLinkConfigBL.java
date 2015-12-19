@@ -52,9 +52,9 @@ import com.aurel.track.util.LabelValueBean;
  *
  */
 public class ItemLinkConfigBL {
-	
+
 	/**
-	 * Render the item links in link tab 
+	 * Render the item links in link tab
 	 * @param workItemID
 	 * @param workItemContext
 	 * @param personID
@@ -79,7 +79,7 @@ public class ItemLinkConfigBL {
 			try {
 				editable = AccessBeans.isAllowedToChange(ItemBL.loadWorkItem(workItemID), personID);
 			} catch(Exception e) {
-				
+
 			}
 		}
 		return ItemLinkBL.getLinks(successorsForMeAsPredecessorMap, predecessorsForMeAsSuccessorMap, editable, locale, workItemID==null);
@@ -92,7 +92,7 @@ public class ItemLinkConfigBL {
 		ItemLinkTO itemLinkTO = ItemLinkBL.getLinkData(workItemID, workItemLinkBean);
 		return itemLinkTO;
 	}
-	
+
 	/**
 	 * Render the add/edit link dialog
 	 * @param workItemID
@@ -107,7 +107,7 @@ public class ItemLinkConfigBL {
 	static String editItemLink(Integer workItemID, WorkItemContext workItemContext, Integer linkID, boolean fromGantt, boolean addMeAsLinkToNewItem, TPersonBean personBean, Locale locale) {
 		TWorkItemLinkBean workItemLinkBean = ItemLinkConfigBL.getItemLinkBean(linkID, workItemID, workItemContext);
 		ItemLinkTO itemLinkTO = ItemLinkBL.getLinkData(workItemID, workItemLinkBean);
-		List<LabelValueBean> linkTypes = LinkTypeBL.getLinkTypeNamesList(locale, fromGantt, true);	
+		List<LabelValueBean> linkTypes = LinkTypeBL.getLinkTypeNamesList(locale, fromGantt, true);
 		String linkTypePluginClass = null;
 		if (workItemLinkBean!=null && workItemLinkBean.getLinkType()!=null) {
 			//existing link
@@ -138,7 +138,7 @@ public class ItemLinkConfigBL {
 		} else {
 			linkedWorkItemObjectID = itemLinkTO.getLinkedWorkItemID();
 		}
-		TWorkItemBean linkedItemBean = null; 
+		TWorkItemBean linkedItemBean = null;
 		if (linkedWorkItemObjectID!=null) {
 			try {
 				linkedItemBean = ItemBL.loadWorkItem(linkedWorkItemObjectID);
@@ -155,7 +155,7 @@ public class ItemLinkConfigBL {
         return ItemLinkJSON.encodeLink(linkTypeWithDirection, linkTypes, linkedItemNo,
                     linkedWorkItemObjectID, linkedWorkItemTitle, itemLinkTO.getDescription(), linkTypeJSClass, specificData);
 	}
-	
+
 	/**
 	 * Encode the specific part after changing the link type
 	 * @param linkTypeWithDirection
@@ -173,7 +173,7 @@ public class ItemLinkConfigBL {
 		String specificData = null;
 		String linkTypeJSClass = null;
 		if (linkType!=null) {
-			linkTypeJSClass = linkType.getLinkTypeJSClass(); 
+			linkTypeJSClass = linkType.getLinkTypeJSClass();
 			if (linkTypeJSClass!=null) {
 				TWorkItemLinkBean workItemLinkBean = ItemLinkConfigBL.getItemLinkBean(linkID, workItemID, workItemContext);;
 				specificData = linkType.getSpecificJSON(workItemLinkBean, personBean, locale);
@@ -181,8 +181,8 @@ public class ItemLinkConfigBL {
 		}
 		return ItemLinkJSON.encodeSpecificPart(linkTypeJSClass, specificData);
 	}
-	
-	
+
+
 	/**
 	 * Saves an item link
 	 * @param workItemID
@@ -240,7 +240,7 @@ public class ItemLinkConfigBL {
 			try {
 				linkedWorkItemBean = ItemBL.loadWorkItem(linkedWorkItemID);
 			} catch (ItemLoaderException e1) {
-				
+
 			}
 			TWorkItemBean actualWorkItemBean = null;
 			SortedMap<Integer, TWorkItemLinkBean> workItemsLinksMap = null;
@@ -278,7 +278,7 @@ public class ItemLinkConfigBL {
 				errors.addAll(unwrapList);
 			}
 			List<ErrorData> validationList = linkTypePlugin.validateBeforeSave(workItemLinkBean, workItemLinkBeanOriginal, workItemsLinksMap, predecessorItem, successorItem, personBean, locale);
-			
+
 			if (validationList!=null && !validationList.isEmpty()) {
 				//link type specific validation
 				errors.addAll(validationList);
@@ -286,7 +286,7 @@ public class ItemLinkConfigBL {
 			if (!errors.isEmpty()) {
 				List<ErrorData> doubleValidationList = new LinkedList<ErrorData>();
 				for (ErrorData errorData : validationList) {
-					//the are two textfields: duplicate the error to mark both as red, but the error text is shown only once 
+					//the are two textfields: duplicate the error to mark both as red, but the error text is shown only once
 					ErrorData errorDataNumber = new ErrorData(null);
 					errorDataNumber.setFieldName("linkedNumber");
 					doubleValidationList.add(errorDataNumber);
@@ -301,7 +301,7 @@ public class ItemLinkConfigBL {
 				workItemLinkBean.setSortorder(sortOrder);
 			}
 			if (workItemID==null) {
-				//save new item's link in workItemContext 
+				//save new item's link in workItemContext
 				ItemLinkBL.saveLinkInContext(workItemContext, workItemLinkBean, linkID);
 			} else {
 				//save existing item's link in db
@@ -310,7 +310,7 @@ public class ItemLinkConfigBL {
 		}
 		return newLinkID;
 	}
-	
+
 	/**
 	 * Gets the existing (saved in DB or in session) workItemLinkBean by linkID
 	 * @param workItemID
@@ -318,7 +318,7 @@ public class ItemLinkConfigBL {
 	 * @param workItemContext
 	 * @return
 	 */
-	static TWorkItemLinkBean getItemLinkBean(Integer linkID, Integer workItemID, WorkItemContext workItemContext) {
+	public static TWorkItemLinkBean getItemLinkBean(Integer linkID, Integer workItemID, WorkItemContext workItemContext) {
 		if (linkID!=null) {
 			if (workItemID==null) {
 				if (workItemContext!=null) {
@@ -333,7 +333,7 @@ public class ItemLinkConfigBL {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Validate the entry
 	 */
@@ -355,7 +355,7 @@ public class ItemLinkConfigBL {
 		}
 		return errors;
 	}
-	
+
 	/**
 	 * Delete the selected links
 	 * @param workItemID

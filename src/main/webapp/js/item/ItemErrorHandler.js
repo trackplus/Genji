@@ -24,7 +24,7 @@
 com.trackplus.item.ItemErrorHandler={
 	handleErrors:function(itemAction,data){
 		var errorCode=data.errorCode;
-		var fieldTypeRenderersMap=itemAction.itemComponent.screenFacade.controller.fieldTypeRenderersMap;
+		var fieldTypeRenderersMap=itemAction.itemComponent.screenFacade.screenController.fieldTypeRenderersMap;
 		var synopsisTxt=itemAction.itemComponent.txtTitleHeader;
 		switch (errorCode){
 			case 0://GENERAL
@@ -88,7 +88,7 @@ com.trackplus.item.ItemErrorHandler={
 	},
 
 	outOfDateHandler_overwrite:function(itemAction,data){
-		var fieldTypeRenderersMap=itemAction.itemComponent.screenFacade.controller.fieldTypeRenderersMap;
+		var fieldTypeRenderersMap=itemAction.itemComponent.screenFacade.screenController.fieldTypeRenderersMap;
 		var workItemContext=data.workItemContext;
 		var fieldConfigs=workItemContext.fieldConfigs;
 		var fieldValues=workItemContext.fieldValues;
@@ -109,7 +109,7 @@ com.trackplus.item.ItemErrorHandler={
 	},
 
 	outOfDateHandler_merge:function(itemAction,data){
-		var fieldTypeRenderersMap=itemAction.itemComponent.screenFacade.controller.fieldTypeRenderersMap;
+		var fieldTypeRenderersMap=itemAction.itemComponent.screenFacade.screenController.fieldTypeRenderersMap;
 		var workItemContext=data.workItemContext;
 		var fieldConfigs=workItemContext.fieldConfigs;
 		var fieldValues=workItemContext.fieldValues;
@@ -120,7 +120,7 @@ com.trackplus.item.ItemErrorHandler={
 			var fieldTypeRenderer=fieldTypeRenderersMap[f];
 			if(fieldTypeRenderer){
 				var newValue=fieldValues[f];
-				var myValue=fieldTypeRenderer.getValue();
+				var myValue=fieldTypeRenderer.getNewValue();
 				var originalValue=fieldTypeRenderer.getOriginalValue();
 				if(newValue!==originalValue){
 					//somebody else modify the field value

@@ -29,6 +29,12 @@ Ext.define("com.trackplus.admin.user.FiltersInUserMenu",{
 			//person or group IDs
 			personIDs: null
 	},
+	storeUrl: "filtersInMenu.action",
+	fields: [{name: 'filterID',type:'int'},
+	   			{name: 'filterLabel',type:'string'},
+				{name: 'personID',type:'int', allowNull:true},
+				{name: 'personName', type: 'string'},
+				{name: 'first', type: 'boolean'}],
 	columns: [{text: getText('common.lbl.filter'), flex:1,
 				dataIndex: 'filterLabel', sortable:true, renderer:"filterRenderer",
 				filter: {
@@ -41,12 +47,6 @@ Ext.define("com.trackplus.admin.user.FiltersInUserMenu",{
 	useCopy:false,
 	
 	initComponent : function() {
-		this.fields = [{name: 'filterID',type:'int'},
-		   			{name: 'filterLabel',type:'string'},
-					{name: 'personID',type:'int', allowNull:true},
-					{name: 'personName', type: 'string'},
-					{name: 'first', type: 'boolean'}];
-		this.storeUrl = "filtersInMenu.action";
 		this.style = {
 				borderTop:'1px solid #D0D0D0',
 				borderBottom:'1px solid #D0D0D0'
@@ -65,7 +65,7 @@ Ext.define("com.trackplus.admin.user.FiltersInUserMenu",{
 	/**
 	 * Get extra parameters for grid load
 	 */
-	getLoadGridParams:function() {
+	getStoreExtraParams:function() {
 		return {personIDs:this.getPersonIDs()};
 	}
 	

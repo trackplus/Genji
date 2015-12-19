@@ -46,16 +46,16 @@ import com.aurel.track.item.ItemBL;
  *
  */
 public class ItemLockBL {
-	
+
 	private static WorkItemLockDAO workItemLockDAO = DAOFactory.getFactory().getWorkItemLockDAO();
-	
+
 	private static final Logger LOGGER = LogManager.getLogger(ItemLockBL.class);
 	/**
 	 * name of the session attribute under which the current locked issue is saved
 	 */
 	public static final String LOCKEDISSUE = "LOCKEDISSUE";
-	
-	
+
+
 	/**
 	 * Releases a locked issueNumber if the sessionID corresponds
 	 * @param itemID
@@ -63,39 +63,39 @@ public class ItemLockBL {
 	 */
 	public static void removeLockedIssueBySession(Integer itemID, String sessionID) {
 		LOGGER.debug("Unlocked issue " + itemID);
-		if (itemID==null || sessionID==null) {	
+		if (itemID==null || sessionID==null) {
 			return;
 		}
 		//get by workItem
 		TWorkItemLockBean workItemLockBeanByIssueNo = workItemLockDAO.loadByPrimaryKey(itemID);
 		//release only if it is from the right session
 		if (workItemLockBeanByIssueNo!=null && sessionID.equals(workItemLockBeanByIssueNo.getHttpSession())) {
-			workItemLockDAO.delete(itemID);			
+			workItemLockDAO.delete(itemID);
 		}
 	}
-	
+
 	/**
 	 * Releases all locks for a single user.
-	 * It will be called by the logging in, 
-	 * for releasing of the locks which remained blocked 
+	 * It will be called by the logging in,
+	 * for releasing of the locks which remained blocked
 	 * by closing the browser window by editItem.
 	 */
 	public static synchronized void removeLockedIssuesByUser(Integer personID) {
 		workItemLockDAO.deleteByPerson(personID);
 	}
-		
+
 
 	/**
 	 * Prepares the errorData in case of no locking possible (the issue is already locked by somebody else)
-	 * To avoid the copy-paste code of building the error messages in each edit-related action  
+	 * To avoid the copy-paste code of building the error messages in each edit-related action
 	 * @param itemID
 	 * @param httpSession
 	 * @return
 	 */
 	public static ErrorData lockItem(Integer itemID, TPersonBean personBean, String sessionID) {
-		TWorkItemLockBean workItemLockBeanByIssueNo = workItemLockDAO.loadByPrimaryKey(itemID);		
+		TWorkItemLockBean workItemLockBeanByIssueNo = workItemLockDAO.loadByPrimaryKey(itemID);
 		if (workItemLockBeanByIssueNo==null) {
-			if (itemID==null || sessionID==null || personBean==null) {	
+			if (itemID==null || sessionID==null || personBean==null) {
 				//should never happen
 				return null;
 			}
@@ -111,27 +111,44 @@ public class ItemLockBL {
 			if (sameSession) {
 				return null;
 			} else {
-				String lockedByName = null;
-				Integer lockedByPerson = workItemLockBeanByIssueNo.getPerson();
-				if (lockedByPerson!=null) {
-					TPersonBean lockedByPersonBean = LookupContainer.getPersonBean(lockedByPerson);
-					if (lockedByPersonBean!=null) {
-						lockedByName = lockedByPersonBean.getName();
-					}
-				}
-				if (lockedByName==null) {
-					lockedByName = "";
-				}
-				List<ErrorParameter> errorParameters = new LinkedList<ErrorParameter>();
-				ErrorParameter errorParameter = new ErrorParameter(lockedByName);
-				errorParameters.add(errorParameter);						
-				ErrorData errorData = new ErrorData("report.reportError.error.itemLocked", errorParameters);
-				errorData.setConfirm(true);
-				return errorData;
+				return getLockedItemErrorData(workItemLockBeanByIssueNo);
 			}
 		}
 	}
-	
+
+	public static ErrorData isItemLocked(Integer itemID,  String sessionID) {
+		TWorkItemLockBean workItemLockBeanByIssueNo = workItemLockDAO.loadByPrimaryKey(itemID);
+		if (workItemLockBeanByIssueNo==null) {
+			return null;
+		}else {
+			boolean sameSession = sessionID.equals(workItemLockBeanByIssueNo.getHttpSession());
+			if(sameSession) {
+				return null;
+			}
+		}
+		return getLockedItemErrorData(workItemLockBeanByIssueNo);
+	}
+
+	private static ErrorData getLockedItemErrorData(TWorkItemLockBean workItemLockBeanByIssueNo) {
+		String lockedByName = null;
+		Integer lockedByPerson = workItemLockBeanByIssueNo.getPerson();
+		if (lockedByPerson!=null) {
+			TPersonBean lockedByPersonBean = LookupContainer.getPersonBean(lockedByPerson);
+			if (lockedByPersonBean!=null) {
+				lockedByName = lockedByPersonBean.getName();
+			}
+		}
+		if (lockedByName==null) {
+			lockedByName = "";
+		}
+		List<ErrorParameter> errorParameters = new LinkedList<ErrorParameter>();
+		ErrorParameter errorParameter = new ErrorParameter(lockedByName);
+		errorParameters.add(errorParameter);
+		ErrorData errorData = new ErrorData("report.reportError.error.itemLocked", errorParameters);
+		errorData.setConfirm(true);
+		return errorData;
+	}
+
 	/**
 	 * Gets the locked items from workItemIDList
 	 * @param workItemIDList
@@ -148,7 +165,7 @@ public class ItemLockBL {
 		}
 		return lockedItemsMap;
 	}
-	
+
 	/**
 	 * Deletes all TWorkItemLockBeans from the database by starting the server
 	 */

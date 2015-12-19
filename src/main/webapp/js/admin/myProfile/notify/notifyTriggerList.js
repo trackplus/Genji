@@ -67,7 +67,7 @@ Ext.define("com.trackplus.admin.NotifyTriggerList", {
 	/**
 	 * Get extra parameters for grid load
 	 */
-	getLoadGridParams : function() {
+	getStoreExtraParams : function() {
 	    return {
 		    defaultSettings : this.defaultSettings
 	    };

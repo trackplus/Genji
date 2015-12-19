@@ -48,6 +48,7 @@ public class ModuleParser implements DescriptorParser {
 		descriptor.setDescription(attributes.getValue("description"));
 		descriptor.setIconCls(attributes.getValue("iconCls"));
 		descriptor.setUrl(attributes.getValue("url"));
+		descriptor.setTarget(attributes.getValue("target"));
 		return descriptor;
 	}
 	@Override

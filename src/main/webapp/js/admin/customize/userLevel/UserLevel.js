@@ -22,15 +22,19 @@
 
 Ext.define("com.trackplus.admin.customize.userLevel.UserLevel",{
 	extend:"com.trackplus.admin.TreeWithGrid",
-	config: {
-		rootID : ""
+	xtype: "userLevel",
+    controller: "userLevel",
+    config: {
+		rootID : "0"
 	},
-	confirmDeleteEntity:true,
+	
 	gridHasItemdblclick: false,
-	baseAction:"userLevel",
-	entityID:"node",
-	editWidth:400,
-	editHeight:200,
+	baseServerAction:"userLevel",
+	
+	initComponent : function() {
+		this.treeStoreUrl = "userLevel!expand.action";
+		this.callParent();
+	},
 	/**
 	 * The message to appear first time after selecting this menu entry
 	 * Is should be shown by selecting the root but the root is typically not visible
@@ -47,14 +51,13 @@ Ext.define("com.trackplus.admin.customize.userLevel.UserLevel",{
 	},
 
 	initActions: function() {
-		this.actionAdd = this.createAction(this.getAddButtonKey(),
-				this.getAddIconCls(), this.onAddLeaf, false, this.getAddTitleKey());
-		this.actionEdit = this.createAction(this.getEditButtonKey(),
-				this.getEditIconCls(), this.onEditTreeNode, true,
-		            this.getEditTitleKey());
-		this.actionDelete = this.createAction(this.getDeleteButtonKey(),
-				this.getDeleteIconCls(), this.onDeleteFromTree, true, this.getDeleteTitleKey());
-	    this.actions = [this.actionAdd, this.actionEdit, this.actionDelete];
+		this.actionAdd = CWHF.createAction(this.getAddButtonKey(), this.getAddIconCls(),
+				"onAddLeaf", {tooltip:this.getActionTooltip(this.getAddTitleKey())});
+		this.actionEdit = CWHF.createAction(this.getEditButtonKey(), this.getEditIconCls(),
+				"onEditTreeNode", {tooltip:this.getActionTooltip(this.getEditTitleKey()), disabled:true});
+		this.actionDelete = CWHF.createAction(this.getDeleteButtonKey(), this.getDeleteIconCls(), 
+				"onDeleteFromTree", {tooltip:this.getActionTooltip(this.getDeleteTitleKey()), disabled:true});
+		this.actions = [this.actionAdd, this.actionEdit, this.actionDelete];
 	},
 
 	/**
@@ -66,15 +69,6 @@ Ext.define("com.trackplus.admin.customize.userLevel.UserLevel",{
 	    	return [this.actionAdd, this.actionEdit, this.actionDelete];
 	    } else {
 	    	return [];
-	    }
-	},
-
-	onTreeNodeDblClick: function(view, record) {
-		var sys = com.trackplus.TrackplusConfig.user.sys;
-	    if (sys) {
-	        return this.callParent(arguments);
-	    } else {
-	        return [];
 	    }
 	},
 
@@ -106,40 +100,8 @@ Ext.define("com.trackplus.admin.customize.userLevel.UserLevel",{
 						flex:1, dataIndex: 'name', sortable: true},
 				{text: getText('admin.customize.userLevel.lbl.selected'),
 						flex:1, dataIndex: 'selected', sortable: true,  xtype: "checkcolumn",
-						listeners: {"checkchange": {fn: this.onCheckChange, scope:this},
-									"beforecheckchange": {fn: this.onBeforeCheckChange, scope:this}}}];
-	},
-
-	onCheckChange: function(checkBox, rowIndex, checked, eOpts) {
-		var record = this.grid.getStore().getAt(rowIndex);
-		if (record) {
-			var params = {actionID:record.data["id"], node:this.selectedNodeID, checked:checked};
-			Ext.Ajax.request({
-				url: this.getBaseAction() + "!changeAction.action",
-				params: params,
-				scope: this,
-				success: function(response) {
-					var result = Ext.decode(response.responseText);
-					if (result.success) {
-
-					} else {
-						com.trackplus.util.showError(result);
-					}
-				},
-				failure: function(response) {
-					Ext.MessageBox.alert(this.failureTitle, response.responseText);
-				}
-			});
-		}
-	},
-
-	onBeforeCheckChange: function(checkBox, rowIndex, checked, eOpts) {
-		var sys = com.trackplus.TrackplusConfig.user.sys;
-	    if (sys) {
-	    	return true;
-	    } else {
-	    	return false;
-	    }
+						listeners: {"checkchange": "onCheckChange"},
+									"beforecheckchange": "onBeforeCheckChange"}];
 	},
 
 	getGridViewConfig: function() {
@@ -150,49 +112,11 @@ Ext.define("com.trackplus.admin.customize.userLevel.UserLevel",{
 	},
 
 	/**
-	* Prepare adding/editing a report
-	*/
-	getEditLeafPanelItems: function() {
-		return [CWHF.createTextField("common.lbl.name",
-					"name", {labelWidth:100}),
-				CWHF.createTextAreaField('common.lbl.description',
-					"description", {labelWidth:100})];
-	},
-
-
-	/**
 	 * Which actions to enable/disable depending on tree selection
 	 */
 	getToolbarActionChangesForTreeNodeSelect: function(selectedNode) {
 		this.actionEdit.setDisabled(false);
 		this.actionDelete.setDisabled(false);
-	},
-
-	getAddReloadParamsAfterSave: function(addLeaf) {
-		return {nodeIDToReload: this.rootID};
-	},
-
-	reload:com.trackplus.util.RefreshAfterSubmit.refreshSimpleTree,
-
-	getReloadParamsAfterDelete: function(selectedRecords, extraConfig, responseJson) {
-		return {reloadTree:true}
-	},
-
-	/**
-	 * Get the node to select after save after add operation
-	 */
-	getAddSelectionAfterSaveFromResult: function() {
-		//do not specify rowToSelect, do not select anything in the grid after add
-		return [{parameterName:"node", fieldNameFromResult:"node"},
-		        {parameterName:"reloadTree", fieldNameFromResult:"reloadTree"}];
-	},
-
-	/**
-	 * Get the node to select after save after edit operation
-	 */
-	getEditReloadParamsAfterSaveFromResult: function(fromTree) {
-		return [{parameterName:"node", fieldNameFromResult:"node"},
-		        {parameterName:"reloadTree", fieldNameFromResult:"reloadTree"}];
 	}
 
 });

@@ -26,27 +26,18 @@
  * treeWithGrid are implemented again (alternatively multiple inheritance?)
  *
  */
-Ext.define('com.trackplus.admin.customize.treeConfig.MailTemplateConfig',{
-	extend:'com.trackplus.admin.customize.treeConfig.AssignmentConfig',
+Ext.define("com.trackplus.admin.customize.treeConfig.MailTemplateConfig",{
+	extend:"com.trackplus.admin.customize.treeConfig.AssignmentConfig",
+	xtype: "mailTemplateConfig",
+    controller: "mailTemplateConfig",
+	treeWidth: 250,
+	
 	config: {
-		rootID:'_'
+		rootID: "mailTemplate"
 	},
-	baseAction: "mailTemplateConfigItemDetail",
-	/**
-	 * The width of the screen edit window
-	 */
-	editWidth:500,
-	/**
-	 * The height of the scree edit window
-	 */
-	editHeight:350,
-
-	constructor: function(config) {
-		var config = config || {};
-		this.initConfig(config);
-		this.initBase();
-	},
-
+	
+	baseServerAction: "mailTemplateConfigItemDetail",
+	
 	getGridFields: function() {
 		return [
 			{name: 'id',type:'int'},
@@ -74,12 +65,6 @@ Ext.define('com.trackplus.admin.customize.treeConfig.MailTemplateConfig',{
 		        }}
 		];
 	},
-
-
-	/*initCenterPanel: function(centerPanel) {
-		this.initTree();
-		this.showGrid();
-	},*/
 
 	/**
 	 * The message to appear first time after selecting this menu entry
@@ -142,126 +127,5 @@ Ext.define('com.trackplus.admin.customize.treeConfig.MailTemplateConfig',{
 
 	getGridListURL: function() {
 		return "mailTemplate.action";
-	},
-
-	getGridRowEditURL: function() {
-		return "mailTemplate!edit.action";
-	},
-
-	getGridRowSaveURL: function() {
-		return "mailTemplate!save.action";
-	},
-
-	getObjectIDName: function() {
-		return "objectID";
-	},
-
-	getImportURL: function() {
-		return "mailTemplate!importTemplates.action";
-	},
-
-	getExportURL: function(selectedObjectIDs) {
-		return "mailTemplate!export.action?selectedObjectIDs="+selectedObjectIDs;
-	},
-
-	/**
-	 * Url for deleting an entity
-	 * extraConfig: for simple grid nothing, for tree with grid {fromTree:fromTree, isLeaf:isLeaf}
-	 */
-	getDeleteUrl: function(extraConfig){
-		return 'mailTemplate!delete.action';
-	},
-
-	getConfigGridRowURL: function(id) {
-		return 'mailTemplateEdit.action?templateID='+id;
-	},
-
-	/*getDeleteParams: function(selectedRecords, extraConfig) {
-		return this.getEditParams(false);
-	},*/
-
-	getDeleteParamName: function() {
-	    return "mailTemplateIDs";
-	},
-
-	getPanelItems: function() {
-		return  [CWHF.createTextField('common.lbl.name','name',
-			{anchor:'100%', allowBlank:false, labelWidth:this.labelWidth, width:this.textFieldWidth}),
-			CWHF.createTextField('common.lbl.tagLabel','tagLabel',
-				{anchor:'100%', labelWidth:this.labelWidth, width:this.textFieldWidth,itemId:'tagLabel'}),
-			CWHF.createTextAreaField('common.lbl.description','description',
-				{anchor:'100%', labelWidth:this.labelWidth, width:this.textFieldWidth})];
-	},
-
-	getUploadFileLabel: function() {
-		return "admin.customize.mailTemplate.lbl.uploadFile";
-	},
-
-
-	onImport: function() {
-		var submit = [{submitUrl:"mailTemplate!importMailTemplates.action",
-			submitButtonText:getText('common.btn.upload'),
-			validateHandler: Upload.validateUpload,
-			expectedFileType: /^.*\.(xml)$/,
-			refreshAfterSubmitHandler:this.reload}];
-		var title = getText('common.lbl.upload', getText('admin.customize.mailTemplate.lbl.uploadFile'));
-		var windowParameters = {title:title,
-			width:600,
-			height:230,
-			submit:submit,
-			formPanel: this.getImportPanel(),
-			cancelButtonText: getText('common.btn.done')};
-		var windowConfig = Ext.create('com.trackplus.util.WindowConfig', windowParameters);
-		windowConfig.showWindowByConfig(this);
-	},
-
-	onExport: function() {
-		attachmentURI = 'mailTemplate!exportMailTemplates.action?mailTemplateIDs='+this.getSelectedTemplateIDs();
-		window.open(attachmentURI);
-	},
-	getImportPanel:function() {
-		var me=this;
-		this.formPanel= new Ext.form.FormPanel({
-			region:'center',
-			border:false,
-			bodyStyle: 'padding:5px',
-	        autoScroll:true,
-			defaults: {
-				labelStyle:'overflow: hidden;',
-				margin:"5 5 0 0",
-				msgTarget:	'side',
-				anchor:	'-20'
-			},
-			method: 'POST',
-			fileUpload: true,
-			items: [
-				CWHF.createCheckboxWithHelp('admin.customize.mailTemplate.lbl.overwriteExisting', 'overwriteExisting', {itemId:'overwriteExisting', labelWidth:250,labelStyle:{overflow:'hidden'},width:300},
-					{change: {fn: this.onOverwriteExistingChange, scope:this}}),
-				CWHF.createCheckboxWithHelp('admin.customize.mailTemplate.lbl.clearTemplateDefs', 'clearChildren', {itemId:'clearChildren', labelWidth:250,labelStyle:{overflow:'hidden'},width:300,disabled:true}),
-				CWHF.createFileField(this.getUploadFileLabel(), 'uploadFile',
-					{itemId:"uploadFile",allowBlank:false, labelWidth:250})]
-		});
-		return this.formPanel;
-	},
-	onOverwriteExistingChange:function(){
-		var checkOverwriteExisting=CWHF.getControl.apply(this.formPanel,['overwriteExisting']);
-		var checkClearChildren=CWHF.getWrappedControl.apply(this.formPanel,['clearChildren']);
-		if(checkOverwriteExisting.getValue()){
-			checkClearChildren.setDisabled(false);
-		}else{
-			checkClearChildren.setDisabled(true);
-			checkClearChildren.setValue(false);
-		}
-	},
-
-
-	getSelectedTemplateIDs: function() {
-		var selectedTemplateIDs = new Array();
-		var selectedRecordsArr = this.getSelection();
-		if (selectedRecordsArr) {
-			Ext.Array.forEach(selectedRecordsArr, function(record, index, allItems)
-			{selectedTemplateIDs.push(record.data['id']);}, this);
-		}
-		return selectedTemplateIDs.join(",");
 	}
 });

@@ -52,34 +52,34 @@ public class Html2LaTeXTest {
     private static String html3 = "<p>All essential \"products\" are required, and while there is little to omit there should be no significant gain when adding \"products\" for in the table type \"software design document\". In find a \"software design document controller\", a \"software design document user interface\", etc. Some product types however just have a single instance, like this document or the project plan.</p>";
     private static String html4 = "<p>This &lt;Configuration&gt; ° ! \"dd\" §4 %def &amp; / (zu) {paran} [dd] \\hgz = ? ´hh´&nbsp; #kjkl $DEV ^zz ^ hjh</p>";
     private static String html5 = "<p>This Word dhsgggggggggggggggggggggggggggggggggg ggggggg word word2 <span style=\"color:#FF0000;\">SPANNED STUFF</span> the tail</p>";
-    private static String html6 = 
+    private static String html6 = "<p><table border=\"1\"cellpadding=\"0\" cellspacing=\"0\"> <tbody>		<tr>			<td>			<p><strong>ID</strong></p>			</td>			<td>			<p><strong>Description</strong></p>			</td>			<td>			<p><strong>Key user</strong></p>			</td>			<td>			<p><strong>Status</strong></p>			</td>		</tr>		<tr>			<td>			<p>BUC-3.1</p>			</td>			<td>			<p>Use Genji for Software Issue Tracking in TAEG</p>			</td>			<td>			<p>J. Menzel</p>			</td>			<td>			<p>In use</p>			</td>		</tr>		<tr>			<td>			<p>BUC-3.2</p>			</td>			<td>			<p>Use Genji for Hardware Issue Tracking in T</p>			</td>			<td>			<p>TBS</p>			</td>			<td>			<p>TBS</p>			</td>		</tr>		<tr>			<td>			<p>BUC-3.3</p>			</td>			<td>			<p>Use Genji for Electromechanical Issue Tracking in TAEG</p>			</td>			<td>			<p>--</p>			</td>			<td>			<p>--</p>			</td>		</tr>		<tr>			<td>			<p>BUC-3.4</p>			</td>			<td>			<p>Use Genji for Support Tracking in TAEG</p>			</td>			<td>			<p>--</p>			</td>			<td>			<p>--</p>			</td>		</tr>	</tbody></table></p>";
 //    "<p>All products — as far as practical and possible — shall be collected and maintained in product libraries. There are two libraries defined in this project:</p>\n" +
 
-    "<ol>\n" +
+//    "<ol>\n" +
  //   "	<li>System engineering documents and process related documents shall be managed using the <span style=\"color:#FF0000\"><strong>Genji project workspace Wiki</strong></span> as much as possible</li>\n"+
-    "	<li>All other documents, code, build scripts, etc. shall be maintained in the projects <span style=\"color:#FF0000\">Subversion repository</span>.</li>\n"+
-    "</ol>\n";
+//    "	<li>All other documents, code, build scripts, etc. shall be maintained in the projects <span style=\"color:#FF0000\">Subversion repository</span>.</li>\n"+
+//    "</ol>\n";
 
     /**
 	 */
 	@Test
 	public void testHtml2LaTeXTest_1()
 		throws Exception {
-		
+
 		String result = Html2LaTeX.getLaTeX(html6);
 
 		System.err.println(result);
-		
+
 		// add additional test code here
 		assertNotNull(result);
 	}
-	
+
 	//@Test
 	public void testHtml2LaTeXTest_2()
 		throws Exception {
-		
+
 		Pattern pattern = Pattern.compile(".*\\[issue ([0-9]+)/\\]");
-		
+
 		String s = html2;
 
         Matcher matcher = pattern.matcher(s);
@@ -88,11 +88,11 @@ public class Html2LaTeXTest {
         	Integer inlineOid = Integer.valueOf(matcher.group(1));
         	s = s.replaceAll("\\[issue [0-9]+\\/\\]", "XXXX "+inlineOid + " XXXX");
         };
-        
+
 		String result = Html2LaTeX.getLaTeX(s);
 
 		System.err.println(result);
-		
+
 		// add additional test code here
 		assertNotNull(result);
 	}

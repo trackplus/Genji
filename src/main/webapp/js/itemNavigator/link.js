@@ -26,16 +26,22 @@ Ext.define('com.trackplus.issue.Link',{
         itemNavigatorController: null,
 		workItemIDs: null,
 		fromGantt: false,
+		ganttAction: null,
 		ganttController: null,
-		dependencyType: null,
-		crossProject: null
+		crossProject: null,
+		linkProperties: null
 	},
+
+	GANTT_ACTION: {
+		NEW: 1,
+		EDIT: 2,
+		NEW_EDITED: 3
+	},
+
 	constructor: function(config) {
 		var me = this;
-		var config = config || {};
-		me.initialConfig = config;
-		Ext.apply(me, config);
-		me.initConfig(config);
+		var cfg = config || {};
+		me.initConfig(cfg);
 	},
 
 	/**
@@ -43,22 +49,13 @@ Ext.define('com.trackplus.issue.Link',{
 	 */
 	addLinkFromIssueNavigator:function() {
 		var me = this;
-		var load = {loadUrl:"itemLink!editItemLink.action", loadUrlParams: {fromGantt:this.fromGantt}};
-		var submitUrlParams = {workItemIDs: this.workItemIDs, fromGantt: this.fromGantt, crossProject: this.crossProject};
-		var submit = null;
-		if(me.ganttController ) {
-			submit = {submitHandler: me.ganttSpecialSubmitHandler, refreshAfterSubmitHandler: this.refreshAfterSubmitOrCancelHandler, submitButtonText:getText('common.btn.save'), submitUrlParams:submitUrlParams};
-		}else {
-			submit = {specialSubmitFailHandler:this.submitFailHandler, refreshAfterSubmitHandler:this.refresh, submitUrl:"itemLink!saveLinkFromIssueNavigator.action", submitUrlParams:submitUrlParams,
-					submitButtonText:getText('common.btn.save')};
-		}
+		var load = {loadUrl:"itemLink!editItemLink.action", loadUrlParams: me.getFormLoadParams()};
 		var windowParameters = {title:getText("itemov.link.title"),
 				width:600,
 				height:300,
 				load:load,
-				submit: submit,
+				submit: me.getFormSubmitParams(),
 				items: this.getLinkPanelItems(),
-//				isFormPanel:false,
 				refreshAfterCancel: true,
 				postDataProcess:this.postDataLoadCombos};
 		var windowConfig = Ext.create('com.trackplus.util.WindowConfig', windowParameters);
@@ -66,86 +63,108 @@ Ext.define('com.trackplus.issue.Link',{
 		windowConfig.showWindowByConfig(this);
 
 	},
+
+	getFormLoadParams: function() {
+		var me = this;
+		var loadUrlParams = {};
+		loadUrlParams.fromGantt = this.getFromGantt();
+		if(me.getFromGantt() && me.getGanttAction()) {
+			if(me.getGanttAction() === me.GANTT_ACTION.EDIT) {
+				loadUrlParams.workItemID = this.getWorkItemIDs();
+				loadUrlParams.linkID = me.getLinkProperties().Id;
+			}
+		}
+		return loadUrlParams;
+	},
+
+	getFormSubmitParams: function() {
+		var me = this;
+		var submit = null;
+		var submitUrlParams = {workItemIDs: this.getWorkItemIDs(), fromGantt: this.getFromGantt(), crossProject: this.getCrossProject()};
+		if(me.getGanttAction()) {
+			submit = {submitHandler: me.ganttSpecialSubmitHandler, refreshAfterSubmitHandler: this.refreshAfterSubmitOrCancelHandler, submitButtonText:getText('common.btn.save'), submitUrlParams:submitUrlParams};
+		}else {
+			submit = {specialSubmitFailHandler:this.submitFailHandler, refreshAfterSubmitHandler:this.refresh, submitUrl:"itemLink!saveLinkFromIssueNavigator.action", submitUrlParams:submitUrlParams,
+					submitButtonText:getText('common.btn.save')};
+		}
+		return submit;
+	},
+
 	refreshAfterSubmitOrCancelHandler:function() {
 		var me = this;
-		if(me.fromGantt === true) {
-			me.ganttController.removeLastAddedDependency();
+		if(me.getFromGantt() === true && me.getGanttAction() === me.GANTT_ACTION.NEW) {
+			me.getGanttController().removeLastAddedDependency();
 		}
 	},
 	refresh:function(scope, result, submit) {
 		var me = this;
-		if (this.itemNavigatorController) {
-			this.itemNavigatorController.refresh.call(this.itemNavigatorController);
+		if (this.getItemNavigatorController()) {
+			this.getItemNavigatorController().refresh.call(this.getItemNavigatorController());
 		}
 	},
 	loadFailHandler:function() {
 		var me = this;
-		if(me.fromGantt === true) {
-			me.ganttController.removeLastAddedDependency();
+		if(me.getFromGantt() === true && me.getGanttAction() === me.GANTT_ACTION.NEW) {
+			me.getGanttController().removeLastAddedDependency();
 		}
 	},
 
 	ganttSpecialSubmitHandler: function() {
 		var me = this;
-		var formValues = this.windowConfig.formPanel.getValues();
-		var newLinkProperties = {};
-		newLinkProperties.description = formValues.description;
-		newLinkProperties.linkTypeWithDirection = formValues.linkTypeWithDirection;
-		newLinkProperties.linkType = formValues["parametersMap['DependencyType']"];
-		newLinkProperties.lag = formValues["parametersMap['Lag']"];
-		newLinkProperties.lagUnit = formValues["parametersMap['Lagformat']"];
-		me.ganttController.adjustNewlyCreatedLink(newLinkProperties);
-		this.windowConfig.win.close();
+		if(me.getGanttAction()) {
+			var formValues = this.windowConfig.formPanel.getValues();
+			var linkProperties = {};
+			linkProperties.description = formValues.description;
+			linkProperties.linkTypeWithDirection = formValues.linkTypeWithDirection;
+			linkProperties.linkType = formValues["parametersMap['DependencyType']"];
+			var ganttSpecificLinkType = me.getGanttController().convertTrackDepTypeToBryntum(linkProperties.linkType);
+			linkProperties.lag = formValues["parametersMap['Lag']"];
+			linkProperties.lagUnit = formValues["parametersMap['Lagformat']"];
+			if(me.GANTT_ACTION.NEW === me.getGanttAction()) {
+				linkProperties.linkID = Math.floor((Math.random() * 10) + 1000) * -1;
+				me.getGanttController().adjustNewlyCreatedLink(linkProperties, ganttSpecificLinkType);
+				this.windowConfig.win.close();
+			}else {
+				linkProperties.linkID = me.getLinkProperties().Id;
+				me.getGanttController().adjustEditedLink(linkProperties, me.getLinkProperties().Id, ganttSpecificLinkType);
+				this.windowConfig.win.close();
+			}
+		}
 	},
 
 	submitFailHandler:function(result) {
 		var me = this;
-		if(me.fromGantt === true) {
-			me.ganttController.removeLastAddedDependency();
+		if(me.getFromGantt() === true && me.getGanttAction() === me.GANTT_ACTION.NEW) {
+			me.getGanttController().removeLastAddedDependency();
 		}
 	},
 
 	postDataLoadCombos: function(data, panel) {
+		var me = this;
 		var linkTypeWithDirection = panel.getComponent("linkTypeWithDirection");
-		if (linkTypeWithDirection) {
+		if (linkTypeWithDirection!=null) {
 			linkTypeWithDirection.store.loadData(data["linkTypesList"]);
 			linkTypeWithDirection.setValue(data["linkTypeWithDirection"]);
 		}
-        this.replaceSpecificPart(panel, data["linkTypeJSClass"], data["specificData"]);
-        if(this.dependencyType ) {
-        	var dependencyCombo = panel.getComponent("specificPart");
-        	dependencyCombo.items.items[0].setValue(this.getDependencyComboValueFromGanttValue(this.dependencyType));
-        	dependencyCombo.items.items[0].setReadOnly(true);
-        }
-        if(data.linkTypesList.length === 0) {
-        	this.loadFailHandler();
-        }
-	},
-
-	getDependencyComboValueFromGanttValue: function(type) {
-		switch(type) {
-			case 0:
-				return 3;
-				break;
-			case 1:
-				return 2;
-				break;
-			case 2:
-				return 1;
-				break;
-			case 3:
-				return 0;
-				break;
-			default:
-				return 0;
+		this.replaceSpecificPart(panel, data["linkTypeJSClass"], data["specificData"]);
+		var specificPart = panel.getComponent("specificPart");
+		if(me.getFromGantt()) {
+			if(me.getGanttAction() === me.GANTT_ACTION.NEW) {
+				specificPart.items.items[0].setValue(this.getGanttController().convertBryntumDepTypeToTrack(me.getLinkProperties().Type));
+			}
+			if(me.getGanttAction() === me.GANTT_ACTION.EDIT) {
+				specificPart.items.items[0].setValue(this.getGanttController().convertBryntumDepTypeToTrack(me.getLinkProperties().Type));
+				specificPart.items.items[1].setValue(me.getLinkProperties().Lag);
+				specificPart.items.items[2].setValue(me.getGanttController().convertBryntumLagUnitToTrack(me.getLinkProperties().LagUnit));
+			}
 		}
 	},
 
 	getLinkPanelItems:function(){
 		var linkTypeCombo = CWHF.createCombo("itemov.link.type", "linkTypeWithDirection",
-				{labelWidth:150, anchor:'100%', idType:"string", allowBlank:false}, {select:{fn:this.selectLinkType, scope:this}});
+				{itemId:"linkTypeWithDirection", labelWidth:150, anchor:'100%', idType:"string", allowBlank:false}, {select:{fn:this.selectLinkType, scope:this}});
 		var descriptionText = CWHF.createTextAreaField("item.tabs.itemLink.lbl.comment", "description",
-				{height:125, anchor:'100%', labelWidth:150});
+				{itemId: 'description', height:125, anchor:'100%', labelWidth:150});
 		return [linkTypeCombo, descriptionText];
 	},
 

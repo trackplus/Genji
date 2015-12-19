@@ -101,7 +101,7 @@ public class FilterJSON {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("{");
 		JSONUtility.appendBooleanValue(stringBuilder, JSONUtility.JSON_FIELDS.SUCCESS, true);
-		stringBuilder.append(JSONUtility.JSON_FIELDS.DATA).append(":{");
+		JSONUtility.appendFieldName(stringBuilder, JSONUtility.JSON_FIELDS.DATA).append(":{");
 		stringBuilder.append(getFilterHeaderJSON(label, styleField, styleFieldLabels, viewID, viewList, includeInMenu, modifiable, false));
 		JSONUtility.appendIntegerValue(stringBuilder,  TQL_JSON_FIELDS.FILTER_TYPE, filterType);
 		JSONUtility.appendIntegerStringBeanList(stringBuilder,   TQL_JSON_FIELDS.TQL_TYPES_LIST, tqlFilterTypes);
@@ -141,7 +141,7 @@ public class FilterJSON {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("{");
 		JSONUtility.appendBooleanValue(stringBuilder, JSONUtility.JSON_FIELDS.SUCCESS, true);
-		stringBuilder.append(JSONUtility.JSON_FIELDS.DATA).append(":{");
+		JSONUtility.appendFieldName(stringBuilder, JSONUtility.JSON_FIELDS.DATA).append(":{");
 		JSONUtility.appendIntegerArrayAsArray(stringBuilder, FILTER_SELECTS_JSON_FIELDS.ORIGINAL_PROJECTS, projectIDs);
 		JSONUtility.appendIntegerArrayAsArray(stringBuilder, FILTER_SELECTS_JSON_FIELDS.ORIGINAL_ITEM_TYPES, itemTypeIDs);
 		stringBuilder.append(getFilterUpperSelectsJSON(filterSelectsTO, hasViewWatcherRightInAnyProject, locale, null, false));
@@ -160,7 +160,7 @@ public class FilterJSON {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("{");
 		JSONUtility.appendBooleanValue(stringBuilder, JSONUtility.JSON_FIELDS.SUCCESS, true);
-		stringBuilder.append(JSONUtility.JSON_FIELDS.DATA).append(":{");
+		JSONUtility.appendFieldName(stringBuilder, JSONUtility.JSON_FIELDS.DATA).append(":{");
 		stringBuilder.append(getFilterHeaderJSON(label, null, null, null, null, false, modifiable, true));
 		stringBuilder.append(getFieldExpressionInTreeListJSON(fieldExpressionInTreeList, true));
 		stringBuilder.append("}");
@@ -181,12 +181,12 @@ public class FilterJSON {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("{");
 		JSONUtility.appendBooleanValue(stringBuilder, JSONUtility.JSON_FIELDS.SUCCESS, true);
-		stringBuilder.append(JSONUtility.JSON_FIELDS.DATA).append(":{");
-		JSONUtility.appendStringValue(stringBuilder, FILTER_LINK_FIELDS.FILTER_URL_ISSUE_NAVIGATOR_NO_USER, encodedFilterUrlIssueNavigatorNoUser);
+		JSONUtility.appendFieldName(stringBuilder, JSONUtility.JSON_FIELDS.DATA).append(":{");
 		JSONUtility.appendStringValue(stringBuilder, FILTER_LINK_FIELDS.FILTER_URL_ISSUE_NAVIGATOR, encodedFilterUrlIssueNavigator);
 		JSONUtility.appendStringValue(stringBuilder, FILTER_LINK_FIELDS.FILTER_URL_ISSUE_NAVIGATOR_KEEP, encodedFilterUrlIssueNavigatorKeep);
 		JSONUtility.appendStringValue(stringBuilder, FILTER_LINK_FIELDS.FILTER_URL_MAVEN_PLUGIN, encodedFilterUrlMavenPlugin);
 		JSONUtility.appendStringValue(stringBuilder, FILTER_LINK_FIELDS.FILTER_PARAMETERS, filterParams);
+		JSONUtility.appendStringValue(stringBuilder, FILTER_LINK_FIELDS.FILTER_URL_ISSUE_NAVIGATOR_NO_USER, encodedFilterUrlIssueNavigatorNoUser, true);
 		stringBuilder.append("}");
 		stringBuilder.append("}");
 		return stringBuilder.toString();

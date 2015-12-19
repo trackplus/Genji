@@ -21,7 +21,7 @@
 /* $Id:$ */
 
 
-Ext.define('com.trackplus.admin.user.UserRolesInProject',{
+Ext.define("com.trackplus.admin.user.UserRolesInProject",{
 	extend:"com.trackplus.admin.GridBase",
 	xtype: "userRolesInProject",
     controller: "userRolesInProject",
@@ -30,29 +30,29 @@ Ext.define('com.trackplus.admin.user.UserRolesInProject',{
 		personID: null,
 		//whether it is group or person
 		group: null
-		},
-	columns:[{text: getText('admin.project.lbl.project'), flex:1,
-				dataIndex: 'projectLabel', sortable:true, renderer:"projectRenderer",
+	},
+	storeUrl: "rolesInProjects.action",
+	fields: [{name:"projectID", type:"int"},
+	   			{name:"projectLabel", type:"string"},
+				{name:"roleID", type:"int"},
+				{name:"roleLabel", type: "string"},
+				{name:"direct", type: "boolean"},
+				{name:"first", type: "boolean"}],
+	columns:[{text: getText("admin.project.lbl.project"), flex:1,
+				dataIndex: "projectLabel", sortable:true, renderer:"projectRenderer",
 		        filter: {
 		            type: "string"
 		        }},
-			{text: getText('admin.customize.role.lbl.role'),
-				flex:1, dataIndex:'roleLabel', sortable:false, renderer:"roleRenderer"}],
+			{text: getText("admin.customize.role.lbl.role"),
+				flex:1, dataIndex:"roleLabel", sortable:false, renderer:"roleRenderer"}],
 	allowMultipleSelections:true,
 	useEdit:false,
 	useCopy:false,
 	
 	initComponent : function() {
-		this.fields = [{name: 'projectID',type:'int'},
-		   			{name: 'projectLabel',type:'string'},
-					{name: 'roleID',type:'int'},
-					{name: 'roleLabel', type: 'string'},
-					{name: 'direct', type: 'boolean'},
-					{name: 'first', type: 'boolean'}];
-		this.storeUrl = "rolesInProjects.action";
 		this.style = {
-				borderTop:'1px solid #D0D0D0',
-				borderBottom:'1px solid #D0D0D0'
+				borderTop:"1px solid #D0D0D0",
+				borderBottom:"1px solid #D0D0D0"
 			};
 		this.callParent();
 	},
@@ -62,13 +62,13 @@ Ext.define('com.trackplus.admin.user.UserRolesInProject',{
 	},
 
 	getGridSelectionModel: function() {
-		return Ext.create('Ext.selection.CheckboxModel', {mode:"MULTI"});
+		return Ext.create("Ext.selection.CheckboxModel", {mode:"MULTI"});
 	},
 
 	/**
 	 * Get extra parameters for grid load
 	 */
-	getLoadGridParams:function() {
+	getStoreExtraParams:function() {
 		return {personID:this.getPersonID(), group:this.getGroup()};
 	}
 

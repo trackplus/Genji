@@ -38,9 +38,17 @@ public class CategoryTO {
 	protected String nodeID;
 	protected boolean leaf;
 	//meaningful only for filter leaf nodes, null otherwise
-	protected Boolean treeFilter;
+	//protected Boolean treeFilter;
 	//meaningful only for report leaf nodes, null otherwise
-	protected Boolean reportConfigNeeded;
+	//protected Boolean reportConfigNeeded;
+	/**
+	 * meaningful for 
+	 * 1. issue filter leaf nodes (is tree filter or TQL filter) 
+	 * 2. report leaf modes (is report configuration needed)
+	 * For other leaf nodes or for folder nodes is null
+	 */
+	protected Boolean customFeature;
+	
 	protected String iconCls;
 	
 
@@ -93,25 +101,34 @@ public class CategoryTO {
 		this.leaf = leaf;
 	}
 
-	public Boolean isTreeFilter() {
+	/*public Boolean isTreeFilter() {
 		return treeFilter;
 	}
 
 	public void setTreeFilter(Boolean treeFilter) {
 		this.treeFilter = treeFilter;
-	}
+	}*/
 	
-	public Boolean getReportConfigNeeded() {
+	/*public Boolean getReportConfigNeeded() {
 		return reportConfigNeeded;
 	}
 
 	public void setReportConfigNeeded(Boolean reportConfigNeeded) {
 		this.reportConfigNeeded = reportConfigNeeded;
+	}*/
+
+	public Boolean getCustomFeature() {
+		return customFeature;
 	}
 
+	public void setCustomFeature(Boolean customFeature) {
+		this.customFeature = customFeature;
+	}
+	
 	public boolean isReadOnly() {
 		return readOnly;
 	}
+
 
 	public void setReadOnly(boolean readOnly) {
 		this.readOnly = readOnly;

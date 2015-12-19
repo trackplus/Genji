@@ -27,7 +27,7 @@ Ext.define('com.trackplus.admin.customize.ReportConfig', {
 	    	repCfgLayout: null
 	    },
 	    baseAction : "reportConfig",
-	    folderAction : "categoryConfig",
+	    folderAction: "categoryConfig",
 	    btnExecute : null,
 	    confirmDeleteEntity : true,
 	    confirmDeleteNotEmpty : true,
@@ -36,7 +36,6 @@ Ext.define('com.trackplus.admin.customize.ReportConfig', {
 	    folderEditHeight : 115,
 	    reportEditWidth : 500,
 	    reportEditHeight : 150,
-	    useCopyPaste : true,
 	    dragAndDropOnTree : true,
 	    labelWidth : 170,
 	    treeHasItemdblclick : true,
@@ -57,13 +56,18 @@ Ext.define('com.trackplus.admin.customize.ReportConfig', {
 
 	    statics : {},
 
-	    constructor : function(config) {
+	    /*constructor : function(config) {
 	        var cfg = config || {};
 			this.initConfig(cfg);
 	        this.btnExecute = "common.btn.executeReport";
 	        this.initBase();
-	    },
+	    },*/
 
+	    initComponent : function() {
+			this.treeStoreUrl = "categoryConfig!expand.action";
+			this.callParent();
+		},
+		
 	    initActions : function() {
 	        var addFolderIconCls;
 	        var addLeafIconCls;
@@ -72,47 +76,73 @@ Ext.define('com.trackplus.admin.customize.ReportConfig', {
 	        addFolderIconCls = this.getAddFolderReportIconCls();
 	        addLeafIconCls = this.getAddReportIconCls();
 	        editIconCls = this.getEditReportIconCls();
-
-	        this.actionAddFolder = this.createLocalizedAction(this.getTitle(this.getAddTitleKey(), {
+	        
+	        var addFolderText = this.getActionTooltip(this.getAddTitleKey(), {isLeaf: false});
+		    this.actionAddFolder = CWHF.createAction(addFolderText, addFolderIconCls,
+		    		this.onAddFolder, {tooltip:addFolderText, labelIsLocalized:true});
+	        /* this.actionAddFolder = this.createLocalizedAction(this.getTitle(this.getAddTitleKey(), {
 	            isLeaf : false
 	        }), addFolderIconCls, this.onAddFolder, this.getTitle(this.getAddTitleKey(), {
 	            isLeaf : false
-	        }), true);
-	        this.actionAddLeaf = this.createLocalizedAction(this.getTitle(this.getAddTitleKey(), {
+	        }), true);*/
+		    var addLeafText = this.getActionTooltip(this.getAddTitleKey(), {isLeaf: true});
+		    this.actionAddLeaf = CWHF.createAction(addLeafText, addLeafIconCls,
+		    		this.onAddLeaf, {tooltip:addLeafText, labelIsLocalized:true});
+		    /*this.actionAddLeaf = this.createLocalizedAction(this.getTitle(this.getAddTitleKey(), {
 	            isLeaf : true
 	        }), addLeafIconCls, this.onAddLeaf, this.getTitle(this.getAddTitleKey(), {
 	            isLeaf : true
-	        }), true);
-	        this.actionEditGridRow = this.createAction(this.getEditButtonKey(), editIconCls,
-	                this.onEditGridRow, true, this.getEditTitleKey(), "editGridRow");
-	        this.actionEditTreeNode = this.createAction(this.getEditButtonKey(), editIconCls,
-	                this.onEditTreeNode, false, this.getEditTitleKey(), "editTreeNode");
+	        }), true);*/
+		    this.actionEditGridRow = CWHF.createContextAction(this.getEditButtonKey(), editIconCls,
+		    		this.onEditGridRow, this.getEditTitleKey(), {itemId:"editGridRow", disabled:true});
+		    /*this.actionEditGridRow = this.createAction(this.getEditButtonKey(), editIconCls,
+	                this.onEditGridRow, true, this.getEditTitleKey(), "editGridRow");*/
+		    this.actionEditTreeNode = CWHF.createContextAction(this.getEditButtonKey(), editIconCls,
+		    		this.onEditTreeNode, this.getEditTitleKey(), {itemId:"editTreeNode", disabled:true});
+		    /*this.actionEditTreeNode = this.createAction(this.getEditButtonKey(), editIconCls,
+	                this.onEditTreeNode, false, this.getEditTitleKey(), "editTreeNode");*/
+		    this.actionExecuteGridRow = CWHF.createAction(this.getExecuteReportButtonKey(), this.getExecuteReportIconCls(),
+		    		this.onExecuteGridRow, {disabled:true});
+		    /*this.actionExecuteGridRow = this.createAction(this.btnExecute, 'rtemplateExec',
+	                this.onExecuteGridRow, true, this.btnExecute);*/
+		    this.actionExecuteTreeNode = CWHF.createAction(this.getExecuteReportButtonKey(), this.getExecuteReportIconCls(),
+		    		this.onExecuteTreeNode, {disabled:true});
+		    /*this.actionExecuteTreeNode = this.createAction(this.btnExecute, 'rtemplateExec',
+	                this.onExecuteTreeNode, true, this.btnExecute);*/
+	        this.actionDownloadGridRow = CWHF.createAction(this.getDownloadButtonKey(), this.getDownloadIconCls(),
+		    		this.onDownloadGridRow, {tooltip:this.getActionTooltip(this.getDownloadTitleKey(), {isLeaf:true}), disabled:true});
+		    /*this.actionDownloadGridRow = this.createAction('common.btn.download', 'download',
+	                this.onDownloadGridRow, true, "common.lbl.download", "downloadGridRow");*/
+	        this.actionDownloadTreeNode = CWHF.createAction(this.getDownloadButtonKey(), this.getDownloadIconCls(),
+		    		this.onDownloadTreeNode, {tooltip:this.getActionTooltip(this.getDownloadTitleKey(), {isLeaf:true}), disabled:true});
+	        /*this.actionDownloadTreeNode = this.createAction('common.btn.download', 'download',
+	                this.onDownloadTreeNode, true, "common.lbl.download", "downloadTreeNode");*/
 
-	        this.actionExecuteGridRow = this.createAction(this.btnExecute, 'rtemplateExec',
-	                this.onExecuteGridRow, true, this.btnExecute);
-	        this.actionExecuteTreeNode = this.createAction(this.btnExecute, 'rtemplateExec',
-	                this.onExecuteTreeNode, true, this.btnExecute);
-	        this.actionDownloadGridRow = this.createAction('common.btn.download', 'download',
-	                this.onDownloadGridRow, true, "common.lbl.download", "downloadGridRow");
-	        this.actionDownloadTreeNode = this.createAction('common.btn.download', 'download',
-	                this.onDownloadTreeNode, true, "common.lbl.download", "downloadTreeNode");
-
-	        this.actionDeleteGridRow = this.createAction(this.getDeleteButtonKey(),
+	        this.actionDeleteGridRow = CWHF.createContextAction(this.getDeleteButtonKey(), this.getDeleteIconCls(),
+		    		this.onDeleteFromGrid, this.getDeleteTitleKey(), {itemId:"deleteGridRow", disabled:true});
+	        /*this.actionDeleteGridRow = this.createAction(this.getDeleteButtonKey(),
 	                this.getDeleteIconCls(), this.onDeleteFromGrid, true, this.getDeleteTitleKey(),
-	                "deleteGridRow");
-	        this.actionDeleteTreeNode = this.createAction(this.getDeleteButtonKey(), this
+	                "deleteGridRow");*/
+	        this.actionDeleteTreeNode = CWHF.createContextAction(this.getDeleteButtonKey(), this.getDeleteIconCls(),
+		    		this.onDeleteFromTree, this.getDeleteTitleKey(), {itemId:"deleteTreeNode"});
+	        /*this.actionDeleteTreeNode = this.createAction(this.getDeleteButtonKey(), this
 	                .getDeleteIconCls(), this.onDeleteFromTree, false, this.getDeleteTitleKey(),
-	                "deleteTreeNode");
+	                "deleteTreeNode");*/
 
-	        if (this.useCopyPaste) {
-	            // cut/copy - paste and drag and drop
-	            this.actionCutTreeNode = this.createAction(this.getCutButtonKey(), this.getCutIconCls(),
-	                    this.onCutTreeNode, false, this.getCutTitleKey(), "cut");
-	            this.actionCopyTreeNode = this.createAction(this.getCopyButtonKey(), this.getCopyIconCls(),
-	                    this.onCopyTreeNode, false, this.getCopyTitleKey(), "copy");
-	            this.actionPasteTreeNode = this.createAction(this.getPasteButtonKey(), this
-	                    .getPasteIconCls(), this.onPasteTreeNode, false, this.getPasteButtonKey());
-	        }
+            // cut/copy - paste and drag and drop
+        	this.actionCutTreeNode = CWHF.createContextAction(this.getCutButtonKey(), this.getCutIconCls(),
+		    		this.onCutTreeNode, this.getCutTitleKey(), {itemId:"cut"});
+        	/*this.actionCutTreeNode = this.createAction(this.getCutButtonKey(), this.getCutIconCls(),
+                    this.onCutTreeNode, false, this.getCutTitleKey(), "cut");*/
+        	this.actionCopyTreeNode = CWHF.createContextAction(this.getCopyButtonKey(), this.getCopyIconCls(),
+		    		this.onCopyTreeNode, this.getCopyTitleKey(), {itemId:"copy"});
+        	/*this.actionCopyTreeNode = this.createAction(this.getCopyButtonKey(), this.getCopyIconCls(),
+                    this.onCopyTreeNode, false, this.getCopyTitleKey(), "copy");*/
+        	this.actionPasteTreeNode = CWHF.createAction(this.getPasteButtonKey(), this.getPasteIconCls(),
+		    		this.onPasteTreeNode);
+            /*this.actionPasteTreeNode = this.createAction(this.getPasteButtonKey(), this
+                    .getPasteIconCls(), this.onPasteTreeNode, false, this.getPasteButtonKey());*/
+        
 	    },
 
 	    /**
@@ -125,7 +155,7 @@ Ext.define('com.trackplus.admin.customize.ReportConfig', {
 	    getGridPanel : function(node, opts) {
 	        var me = this;
 	        this.params = {};
-	        this.params = this.getGridExtraParams(node, opts);
+	        this.params = this.getGridStoreExtraParams(node, opts);
 	        this.getDataViewPanelData();
 	    },
 
@@ -525,7 +555,7 @@ Ext.define('com.trackplus.admin.customize.ReportConfig', {
 	        var submit = {
 	            submitUrl : submitUrl,
 	            submitUrlParams : submitParams,
-	            submitButtonText : this.getSaveLabel(operation),
+	            submitButtonText : this.getSubmitButtonLabel(operation),
 	            submitHandler : this.submitHandler,
 	            submitAction : operation,
 	            refreshAfterSubmitHandler : this.reload,
@@ -535,11 +565,11 @@ Ext.define('com.trackplus.admin.customize.ReportConfig', {
 	        var postDataProcess = this.getEditPostDataProcess(record, isLeaf, add, fromTree, operation);
 	        var preSubmitProcess = this.getEditPreSubmitProcess(recordData, isLeaf, add);
 	        var items = this.getPanelItems(recordData, isLeaf, add, fromTree, operation);
-	        var additionalActions = this.getAdditionalActions(recordData, submitParams, operation, items);
+	        /*var additionalActions = this.getAdditionalActions(recordData, submitParams, operation, items);
 	        if (additionalActions ) {
 	            additionalActions.push(submit);
 	            submit = additionalActions;
-	        }
+	        }*/
 	        var windowParameters = {
 	            title : title,
 	            width : width,
@@ -813,11 +843,11 @@ Ext.define('com.trackplus.admin.customize.ReportConfig', {
 	    /**
 		 * The label for the save button
 		 */
-	    getSaveLabel : function(operation) {
+	    getSubmitButtonLabel : function(operation) {
 	        if (operation === "instant") {
-	            return getText(this.btnExecute);
+	            return getText(this.getExecuteReportButtonKey());
 	        } else {
-	            return getText('common.btn.save');
+	            return getText(this.getSaveButtonKey());
 	        }
 	    },
 
@@ -840,8 +870,8 @@ Ext.define('com.trackplus.admin.customize.ReportConfig', {
 	    },
 
 	    getActionItemIdsWithContextDependentLabel : function() {
-	        return [ "editGridRow", "editTreeNode", "deleteGridRow", "deleteTreeNode", "downloadGridRow",
-	                "downloadTreeNode", "cut", "copy" ];
+	        return [ "editGridRow", "editTreeNode", "deleteGridRow", "deleteTreeNode", /*"downloadGridRow",
+	                "downloadTreeNode",*/ "cut", "copy" ];
 	    },
 
 	    /**
@@ -902,7 +932,7 @@ Ext.define('com.trackplus.admin.customize.ReportConfig', {
 	    /**
 		 * Get the extra parameters for the gridStore
 		 */
-	    getGridExtraParams : function(node, opts) {
+	    getGridStoreExtraParams : function(node, opts) {
 	        return {
 	            node : this.selectedNodeID
 	        }
@@ -911,12 +941,9 @@ Ext.define('com.trackplus.admin.customize.ReportConfig', {
 	    /**
 		 * Expanding the node
 		 */
-	    getTreeExpandExtraParams : function(node) {
+	    getTreeStoreExtraParams : function(node) {
 	        var extraParams = {
 	            excludePrivate : this.excludePrivate
-	        /*
-			 * , fromIssueNavigator:this.fromIssueNavigator
-			 */
 	        };
 	        if (this.projectID ) {
 	            // in project configuration

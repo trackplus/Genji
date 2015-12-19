@@ -51,22 +51,25 @@ Ext.define("com.trackplus.admin.action.ExportDocx",{
 						submitUrlParams:submitParams,
 						submitButtonText:getText("common.btn.export"),
 						submitHandler:this.exportHandler
-					},
-		            {
-						submitUrl:"docxTemplate!upload.action",
-						submitButtonText:getText("common.btn.upload"),
-						submitHandler:this.uploadFileHandler
-					},
-					{
-						submitUrl:"docxTemplate!download.action",
-						submitButtonText:getText("common.btn.download"),
-						submitHandler:this.downloadFileHandler
-					},
-					{
-						submitUrl:"docxTemplate!delete.action",
-						submitButtonText:getText("common.btn.delete"),
-						submitHandler:this.deleteUploadedFileHandler
 					}];
+		var sys = com.trackplus.TrackplusConfig.user.sys;
+	    if (sys) {
+	    	submit.push({
+				submitUrl:"docxTemplate!upload.action",
+				submitButtonText:getText("common.btn.upload"),
+				submitHandler:this.uploadFileHandler
+			});
+	    	submit.push({
+				submitUrl:"docxTemplate!download.action",
+				submitButtonText:getText("common.btn.download"),
+				submitHandler:this.downloadFileHandler
+			});
+		    submit.push({
+				submitUrl:"docxTemplate!delete.action",
+				submitButtonText:getText("common.btn.delete"),
+				submitHandler:this.deleteUploadedFileHandler
+			});
+	    }
 		var postDataProcess = this.renderUploadPostDataProcess;
 		var title = getText("admin.actions.exportDocx.chooseTemplate");
 		var windowParameters = {title:title,
@@ -83,9 +86,12 @@ Ext.define("com.trackplus.admin.action.ExportDocx",{
 
 	getFormPanel: function(fromTree, selectedEntryID) {
 	  	var items = [CWHF.createCombo("admin.actions.exportDocx.templates", "docxTemplateList",
-	  					{idType:"string", labelWidth:150, blankText:getText("admin.actions.exportDocx.docxTemplateNotSelected"), itemId:"docxTemplateList"}),
-					CWHF.createFileField("admin.actions.exportDocx.newTemplate", "docxTemplate",
-						{itemId:"docxTemplate", labelWidth:150, blankText:getText("admin.actions.exportDocx.docxTemplateNotBrowsed")})];
+	  					{idType:"string", labelWidth:150, blankText:getText("admin.actions.exportDocx.docxTemplateNotSelected")})];
+	  	var sys = com.trackplus.TrackplusConfig.user.sys;
+	  	if (sys) {
+	  		items.push(CWHF.createFileField("admin.actions.exportDocx.newTemplate", "docxTemplate",
+					{labelWidth:150, blankText:getText("admin.actions.exportDocx.docxTemplateNotBrowsed")}));
+	  	}
 		return Ext.create('Ext.form.Panel', {
 			bodyStyle: 'padding:5px',
 			//url: 'listOptionIcon!upload.action',
@@ -145,13 +151,19 @@ Ext.define("com.trackplus.admin.action.ExportDocx",{
 	    //if (uploadedTemplate) {
 	    	templatesCombo.setValue(uploadedTemplate);
 	    //}
-		formPanel.getComponent("docxTemplate").setValue('');
+		 var docxTemplate = formPanel.getComponent("docxTemplate");
+	    if (docxTemplate!=null) {
+	    	docxTemplate.setValue('');
+	    }
 		var toolbars = this.win.getDockedItems('toolbar[dock="bottom"]');
-		if (toolbars) {
+		if (toolbars!=null) {
 			//disable delete button if no icon is specified
-			toolbars[0].getComponent(0).setDisabled(CWHF.isNull(uploadedTemplate));
-			toolbars[0].getComponent(2).setDisabled(CWHF.isNull(uploadedTemplate));
-			toolbars[0].getComponent(3).setDisabled(CWHF.isNull(uploadedTemplate));
+			toolbars[0].getComponent(0).setDisabled(uploadedTemplate==null);
+			var sys = com.trackplus.TrackplusConfig.user.sys;
+		    if (sys) {
+		    	toolbars[0].getComponent(2).setDisabled(uploadedTemplate==null);
+		    	toolbars[0].getComponent(3).setDisabled(uploadedTemplate==null);
+		    }
 		}
 	},
 

@@ -44,6 +44,8 @@ import java.util.TreeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.trackplus.track.constants.CriticalTimeSpent;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
@@ -97,6 +99,7 @@ import com.aurel.track.item.ItemBL;
 import com.aurel.track.item.ItemLoaderException;
 import com.aurel.track.item.ItemSaveBL;
 import com.aurel.track.item.ItemSaveJSON;
+import com.aurel.track.item.lock.ItemLockBL;
 import com.aurel.track.item.massOperation.MassOperationBL;
 import com.aurel.track.item.massOperation.MassOperationException;
 import com.aurel.track.item.operation.BasketBL;
@@ -128,6 +131,7 @@ import com.aurel.track.report.execute.ReportBeanExpandContext;
 import com.aurel.track.report.execute.ReportBeans;
 import com.aurel.track.resources.LocalizationKeyPrefixes;
 import com.aurel.track.resources.LocalizeUtil;
+import com.aurel.track.util.DateTimeUtils;
 import com.aurel.track.util.StringArrayParameterUtils;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.Preparable;
@@ -214,6 +218,8 @@ public class ItemNavigatorAction extends ActionSupport implements Preparable, Se
 	private String ganttDependenciesToRemove;
 
 	private boolean validateBeforeSave;
+	private String timeStampWhenDataArrivedForGrid;
+	private Map<String,Boolean> ganttSelectedFieldsForTimeline;
 
 	@Override
 	public void prepare() throws Exception {
@@ -1162,31 +1168,21 @@ public class ItemNavigatorAction extends ActionSupport implements Preparable, Se
 		return null;
 	}
 
-	public String saveGanttSpecificConfigs() {
-		if (ganttConfigNameToSave != null) {
-			if (ganttConfigNameToSave.equals(TSiteBean.VALIDATE_RELATIONSHIPS_GANTT)) {
-				ApplicationBean.getInstance().getSiteBean().setValidateRelationshipsGantt(ganttConfigValue);
-			}
-			if (ganttConfigNameToSave.equals(TSiteBean.SHOW_BOTH_GANTT)) {
-				ApplicationBean.getInstance().getSiteBean().setShowBothGantt(ganttConfigValue);
-			}
 
-			if (ganttConfigNameToSave.equals(TSiteBean.SHOW_BASELINE)) {
-				ApplicationBean.getInstance().getSiteBean().setShowBaseline(ganttConfigValue);
-			}
-
-			if (ganttConfigNameToSave.equals(TSiteBean.HIGHLIGHT_CRITICAL_PATH_GANTT)) {
-				ApplicationBean.getInstance().getSiteBean().setHighlightCriticalPathGantt(ganttConfigValue);
-			}
-
-			List<ControlError> tmperr = new LinkedList<ControlError>();
-			SiteConfigBL.saveTSite(ApplicationBean.getInstance().getSiteBean(), ApplicationBean.getInstance(), tmperr, application);
-			if (tmperr.isEmpty()) {
-				JSONUtility.encodeJSONSuccess(servletResponse);
-			} else {
-				JSONUtility.encodeJSONFailure(1);
-			}
+	public String checkIfLockedBeforeInlineEdit() {
+		ErrorData itemLockedError = ItemLockBL.isItemLocked(workItemID, ServletActionContext.getRequest().getSession().getId());
+		StringBuilder sb = new StringBuilder();
+		sb.append("{");
+		if(itemLockedError == null) {
+			JSONUtility.appendBooleanValue(sb, "locked", false);
+			JSONUtility.appendStringValue(sb, "itemLockedMessage", "", true);
+		}else {
+			JSONUtility.appendBooleanValue(sb, "locked", true);
+			String lockingProblem = ErrorHandlerJSONAdapter.createMessage(itemLockedError, locale);
+			JSONUtility.appendStringValue(sb, "itemLockedMessage", lockingProblem, true);
 		}
+		sb.append("}");
+		JSONUtility.encodeJSON(ServletActionContext.getResponse(), sb.toString());
 		return null;
 	}
 
@@ -1231,14 +1227,14 @@ public class ItemNavigatorAction extends ActionSupport implements Preparable, Se
 	}
 
 	private long setStartTime(String function) {
-		long tm = new Date().getTime();
+		long tm = System.currentTimeMillis();
 		LOGGER.debug("--> Begin time measurement of " + function);
 		return tm;
 	}
 
 	private void printTime(String function, long startTime) {
-		long tm = new Date().getTime();
-		if (tm - startTime > 1000) {
+		long tm = System.currentTimeMillis();
+		if (tm - startTime > CriticalTimeSpent.ITEM_NAVIGATOR_EXECUTE_QUERY) {
 			LOGGER.info("Possible system overload!");
 		}
 		LOGGER.debug("<-- End time measurement of " + function + ": " + (tm - startTime) + " ms");
@@ -1411,6 +1407,13 @@ public class ItemNavigatorAction extends ActionSupport implements Preparable, Se
 		this.endDate = endDate;
 	}
 
+	public String getGanttGranularity() {
+		return ganttGranularity;
+	}
+
+	public void setGanttGranularity(String ganttGranularity) {
+		this.ganttGranularity = ganttGranularity;
+	}
 
 	public void setFieldID(Integer fieldID) {
 		this.fieldID = fieldID;
@@ -1464,6 +1467,29 @@ public class ItemNavigatorAction extends ActionSupport implements Preparable, Se
 		return pageTitle;
 	}
 
+	public boolean isValidateRelationshipsGantt() {
+		return validateRelationshipsGantt;
+	}
+
+	public void setValidateRelationshipsGantt(boolean validateRelationshipsGantt) {
+		this.validateRelationshipsGantt = validateRelationshipsGantt;
+	}
+
+	public String getGanttConfigNameToSave() {
+		return ganttConfigNameToSave;
+	}
+
+	public void setGanttConfigNameToSave(String ganttConfigNameToSave) {
+		this.ganttConfigNameToSave = ganttConfigNameToSave;
+	}
+
+	public boolean isGanttConfigValue() {
+		return ganttConfigValue;
+	}
+
+	public void setGanttConfigValue(boolean ganttConfigValue) {
+		this.ganttConfigValue = ganttConfigValue;
+	}
 
 	public void setFromSession(boolean fromSession) {
 		this.fromSession = fromSession;
@@ -1509,6 +1535,13 @@ public class ItemNavigatorAction extends ActionSupport implements Preparable, Se
 		this.html = html;
 	}
 
+	public String getGntPDFLocation() {
+		return gntPDFLocation;
+	}
+
+	public void setGntPDFLocation(String gntPDFLocation) {
+		this.gntPDFLocation = gntPDFLocation;
+	}
 
 	public Integer getProjectID() {
 		return projectID;
@@ -1550,4 +1583,38 @@ public class ItemNavigatorAction extends ActionSupport implements Preparable, Se
 		this.validateBeforeSave = validateBeforeSave;
 	}
 
+	public String getGanttDependencyStore() {
+		return ganttDependencyStore;
+	}
+
+	public void setGanttDependencyStore(String ganttDependencyStore) {
+		this.ganttDependencyStore = ganttDependencyStore;
+	}
+
+	public String getGanttDependenciesToRemove() {
+		return ganttDependenciesToRemove;
+	}
+
+	public void setGanttDependenciesToRemove(String ganttDependenciesToRemove) {
+		this.ganttDependenciesToRemove = ganttDependenciesToRemove;
+	}
+
+	public String getTimeStampWhenDataArrivedForGrid() {
+		return timeStampWhenDataArrivedForGrid;
+	}
+
+	public void setTimeStampWhenDataArrivedForGrid(
+			String timeStampWhenDataArrivedForGrid) {
+		this.timeStampWhenDataArrivedForGrid = timeStampWhenDataArrivedForGrid;
+	}
+
+
+	public Map<String, Boolean> getGanttSelectedFieldsForTimeline() {
+		return ganttSelectedFieldsForTimeline;
+	}
+
+	public void setGanttSelectedFieldsForTimeline(
+			Map<String, Boolean> ganttSelectedFieldsForTimeline) {
+		this.ganttSelectedFieldsForTimeline = ganttSelectedFieldsForTimeline;
+	}
 }

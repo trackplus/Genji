@@ -45,8 +45,9 @@ public class CategoryJSON {
 		String DELETABLE = "deletable";
 		String CAN_ADD_CHILD = "canAddChild";
 		String CAN_COPY = "canCopy";
-		String TREE_FILTER = "treeFilter";
-		String REPORT_CONFIG_NEEDED = "reportConfigNeeded";
+		//String TREE_FILTER = "treeFilter";
+		//String REPORT_CONFIG_NEEDED = "reportConfigNeeded";
+		String CUSTOM_FEATURE = "customFeature";
 		String REPORT_ICON = "icon";
 		String TYPE_LABEL = "typeLabel";
 		String STYLE_FIELD_LABEL = "styleFieldLabel";
@@ -110,11 +111,8 @@ public class CategoryJSON {
 		JSONUtility.appendBooleanValue(sb, JSON_FIELDS.DELETABLE, categoryNodeTO.isDeletable());
 		JSONUtility.appendBooleanValue(sb, JSON_FIELDS.CAN_ADD_CHILD, categoryNodeTO.isCanAddChild());
 		JSONUtility.appendBooleanValue(sb, JSON_FIELDS.CAN_COPY, categoryNodeTO.isCanCopy());
-		if (categoryNodeTO.isTreeFilter()!=null) {
-			JSONUtility.appendBooleanValue(sb, JSON_FIELDS.TREE_FILTER, categoryNodeTO.isTreeFilter().booleanValue());
-		}
-		if (categoryNodeTO.getReportConfigNeeded()!=null) {
-			JSONUtility.appendBooleanValue(sb, JSON_FIELDS.REPORT_CONFIG_NEEDED, categoryNodeTO.getReportConfigNeeded().booleanValue());
+		if (categoryNodeTO.getCustomFeature()!=null) {
+			JSONUtility.appendBooleanValue(sb, JSON_FIELDS.CUSTOM_FEATURE, categoryNodeTO.getCustomFeature().booleanValue());
 		}
 		JSONUtility.appendBooleanValue(sb, JSONUtility.JSON_FIELDS.LEAF, categoryNodeTO.isLeaf(), true);
 		return sb.toString();
@@ -147,11 +145,8 @@ public class CategoryJSON {
 				//specific for filter
 				JSONUtility.appendBooleanValue(sb, JSON_FIELDS.INCUDE_IN_MENU, categoryGridRowTO.isIncludeInMenu());
 			}
-			if (categoryGridRowTO.isTreeFilter()!=null) {
-				JSONUtility.appendBooleanValue(sb, JSON_FIELDS.TREE_FILTER, categoryGridRowTO.isTreeFilter().booleanValue());
-			}
-			if (categoryGridRowTO.getReportConfigNeeded()!=null) {
-				JSONUtility.appendBooleanValue(sb, JSON_FIELDS.REPORT_CONFIG_NEEDED, categoryGridRowTO.getReportConfigNeeded().booleanValue());
+			if (categoryGridRowTO.getCustomFeature()!=null) {
+				JSONUtility.appendBooleanValue(sb, JSON_FIELDS.CUSTOM_FEATURE, categoryGridRowTO.getCustomFeature().booleanValue());
 			}
 			if (categoryGridRowTO.getReportIcon()!=null) {
 				JSONUtility.appendStringValue(sb, JSON_FIELDS.REPORT_ICON, categoryGridRowTO.getReportIcon());

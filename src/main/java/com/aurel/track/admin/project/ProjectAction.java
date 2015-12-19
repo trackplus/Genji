@@ -53,6 +53,7 @@ import com.aurel.track.beans.TSystemStateBean;
 import com.aurel.track.fieldType.runtime.base.LookupContainer;
 import com.aurel.track.json.ControlError;
 import com.aurel.track.json.JSONUtility;
+import com.aurel.track.prop.ApplicationBean;
 import com.aurel.track.screen.dashboard.assign.DashboardAssignBL;
 import com.aurel.track.user.ActionLogger;
 import com.opensymphony.xwork2.ActionSupport;
@@ -116,8 +117,9 @@ public class ProjectAction extends ActionSupport implements Preparable, SessionA
 			ProjectJSON.getProjectsJSON(ProjectBL.getAdminProjectNodesLazy(node, personBean, isTemplate), isTemplate));
 		return null;
 	}
-	public String loadLasSelections(){
-		JSONUtility.encodeJSON(servletResponse,ProjectJSON.encodeProjectLastSelections(session));
+	
+	public String loadConfig(){
+		JSONUtility.encodeJSON(servletResponse, ProjectConfigBL.loadConfig(projectID, personBean.getObjectID(), session, locale));
 		return null;
 	}
 	public String storeLastSelectedTab(){
@@ -138,17 +140,6 @@ public class ProjectAction extends ActionSupport implements Preparable, SessionA
 	public String expand() {
 		JSONUtility.encodeJSON(servletResponse,
 				ProjectConfigBL.getChildren(node, personBean, locale));
-		return null;
-	}
-
-	/**
-	 * This method returns the workspace/workspace templates toolbar extra config such as:
-	 * has private workspace, edit orlocked mode based on template status
-	 * @return
-	 */
-	public String getWorkspaceAndTemplateToolbarConfig() {
-		String response = ProjectJSON.encodeToolbarItemConfig(personBean, projectID);
-		JSONUtility.encodeJSON(servletResponse, response);
 		return null;
 	}
 
@@ -243,6 +234,7 @@ public class ProjectAction extends ActionSupport implements Preparable, SessionA
 		}
 		List<TListTypeBean> issueTypeList=IssueTypeBL.loadByPersonAndProjectAndCreateRight(personBean.getObjectID(), projectID, null, null, locale);
 		boolean isProjectAdmin=false;
+		boolean mightAddSubproject = false;
 		boolean mightHaveRelease = false;
 		TProjectBean projectBean = LookupContainer.getProjectBean(projectID);
 		if (personBean!=null) {
@@ -257,12 +249,15 @@ public class ProjectAction extends ActionSupport implements Preparable, SessionA
 		}else{
 			isProjectAdmin= PersonBL.isProjectAdmin(personBean.getObjectID(),projectID);
 		}
-
+		if (isProjectAdmin && !projectBean.isPrivate() && !ApplicationBean.getInstance().isGenji()) {
+			mightAddSubproject = true;
+		}
 		StringBuilder sb=new StringBuilder();
 		sb.append("{");
 		JSONUtility.appendBooleanValue(sb, JSONUtility.JSON_FIELDS.SUCCESS, true);
 		JSONUtility.appendFieldName(sb, JSONUtility.JSON_FIELDS.DATA).append(":{");
 		JSONUtility.appendBooleanValue(sb,"isProjectAdmin", isProjectAdmin);
+		JSONUtility.appendBooleanValue(sb,"mightAddSubproject", mightAddSubproject);
 		JSONUtility.appendBooleanValue(sb,"mightHaveRelease", mightHaveRelease);
 		JSONUtility.appendIntegerValue(sb,"projectID", projectID);
 		sb.append("issueTypes:");

@@ -22,7 +22,6 @@
 
 package com.aurel.track.report;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -376,13 +375,9 @@ public class ReportItemJSON {
 				"f" + firstColumn,
 				groupLimitBean.getGroupLabel() + " ("
 						+ groupLimitBean.getNumberOfWorkItems() + ")");
-		JSONUtility.appendStringValue(
-				sb,
-				"Name",
-				groupLimitBean.getGroupLabel() + " ("
-						+ groupLimitBean.getNumberOfWorkItems() + ")"); // For
-																		// Gantt
-																		// chart
+
+		JSONUtility.appendStringValue(sb, "showValue", groupLimitBean.getShowValue());
+
 		if (useProjectSpecificID) {
 			if (sortOrder == null) {
 				// first in the list
@@ -454,14 +449,6 @@ public class ReportItemJSON {
 						.getInstance().formatGUIDate(topDownEndDate, locale));
 			}
 		} else {
-			/*
-			 * SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-			 * JSONUtility.appendStringValue(sb, "StartDate",
-			 * dateFormat.format(topDownStartDate)); Date realTopDownEndDate =
-			 * addOneDay(topDownEndDate); JSONUtility.appendStringValue(sb,
-			 * "EndDate", dateFormat.format(realTopDownEndDate).toString());
-			 */
-
 			Date topDownStartDate = null;
 			if (groupValueToTopDownStartDate != null) {
 				topDownStartDate = groupValueToTopDownStartDate.get(groupValue);
@@ -585,7 +572,6 @@ public class ReportItemJSON {
 			if (!hasTopDownEndDate) {
 				appendField(reportBean, useProjectSpecificID, sb, SystemFields.INTEGER_TOP_DOWN_END_DATE);
 			}
-
 		}
 		if (includeLongFields) {
 			List<ColumnFieldTO> longFields = layoutTO.getLongFields();
@@ -735,43 +721,12 @@ public class ReportItemJSON {
 
 		Date startDate = MsProjectLinkTypeBL.getStartDate(workItemBean);
 		Date endDate = MsProjectLinkTypeBL.getEndDate(workItemBean);
-
-		if (workItemBean.isMilestone() && children == null && startDate != null) {
-			JSONUtility.appendStringValue(sb, "Duration", "0");
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-			if (startDate != null) {
-				String formattedDate = dateFormat.format(startDate);
-				JSONUtility.appendStringValue(sb, "StartDate", formattedDate);
-				JSONUtility.appendStringValue(sb, "EndDate", formattedDate);
-			}
-			if (workItemBean.getTopDownStartDate() != null) {
-				String formattedDate = dateFormat.format(workItemBean
-						.getTopDownStartDate());
-				JSONUtility.appendStringValue(sb, "BaselineStartDate",
-						formattedDate);
-				JSONUtility.appendStringValue(sb, "BaselineEndDate",
-						formattedDate);
-			}
-
-		} else if (startDate == null || endDate == null) {
+		if (startDate == null || endDate == null) {
 			JSONUtility.appendStringValue(sb, "calendarStartDateMissing",
 					"true");
-		} else {
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-			JSONUtility.appendStringValue(sb, "StartDate",
-					dateFormat.format(startDate));
-			Date realEndDate = addOneDay(endDate);
-			JSONUtility.appendStringValue(sb, "EndDate",
-					dateFormat.format(realEndDate).toString());
-			if (workItemBean.getTopDownStartDate() != null
-					&& workItemBean.getTopDownEndDate() != null) {
-				JSONUtility.appendStringValue(sb, "BaselineStartDate",
-						dateFormat.format(workItemBean.getTopDownStartDate()));
-				Date realTopDownEndDate = addOneDay(workItemBean
-						.getTopDownEndDate());
-				JSONUtility.appendStringValue(sb, "BaselineEndDate",
-						dateFormat.format(realTopDownEndDate));
-			}
+		}
+		if (workItemBean.isMilestone() && children == null && startDate != null) {
+			JSONUtility.appendStringValue(sb, "Duration", "0");
 		}
 
 		JSONUtility.appendStringValue(sb, "Name", workItemBean.getSynopsis());

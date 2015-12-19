@@ -75,6 +75,9 @@ public class TpPasswordEncoder {
 				saltPass = saltPass+salt;
 			}
 		} else {
+			if (encPassword==null) {
+				return false;
+			}
 			String tokens[] = encPassword.split(":");
 			if (tokens.length > 1) {
 				saltPass = tokens[1] + rawPass;

@@ -49,6 +49,24 @@ GRID.odd.opacity = '1';
 GRID.odd.stroke = '#eaeaea';
 GRID.odd['stroke-width'] = '1';
 
+Ext.define('Ext.chart.theme.Trackplus', {
+	extend: 'Ext.chart.theme.Base',
+    alias: 'chart.theme.Trackplus',
+    config: {
+    	axis: {
+    		defaults: {
+    			style: {strokeStyle: '#000000'}
+    	    },
+    	    left: {
+    	    	title: {fillStyle: '#000000', fontSize: '16', fontFamily: 'bold 14px Arial'}
+    	    },
+    	    bottom: {
+    	    	title: {fillStyle: '#000000', fontSize: '16', fontFamily: 'bold 14px Arial'}
+      	    }
+    	}
+    }
+});
+
 
 Ext.define('js.ext.com.track.dashboard.AverageTimeToCloseItem',{
     extend:'js.ext.com.track.dashboard.DashboardRenderer',
@@ -67,7 +85,7 @@ Ext.define('js.ext.com.track.dashboard.AverageTimeToCloseItem',{
     },
 
     createHtmlString:function(){
-    	var me=this;
+    	var me = this;
     },
 
     createChildren:function(){
@@ -92,7 +110,6 @@ Ext.define('js.ext.com.track.dashboard.AverageTimeToCloseItem',{
         var jsonArg1 = me.createYAxeCommonConfig(maxValue);
         var jsonArg2 = me.createXAxeCommonConfig();
 
-//        var fieldsForStore = JSON.parse('[{"name": "date", "type":"string"}, {"name": "avgTime", "type":"int"}, {"name": "respTimeLimitValue", "type":"int"}]');
         var fieldsForStore = [];
         fieldsForStore.push({
         	name: "date",
@@ -176,53 +193,44 @@ Ext.define('js.ext.com.track.dashboard.AverageTimeToCloseItem',{
     },
 
     getGradients: function(gradID) {
-    	var gradientsArray = [
-	         {
-	           id: gradID + '0',
-	           'angle': 0,
-	           stops: {0: {color: COLORS[0]},100: {color: COLORS2[0]}}
-	         },
-	         {
+    	var gradientsArray = [{
+	        	 id: gradID + '0',
+	        	 'angle': 0,
+	        	 stops: {0: {color: COLORS[0]},100: {color: COLORS2[0]}}
+	         },{
+
 	        	 id: gradID + '1',
-	           'angle': 0,
-	           stops: {0: {color: COLORS[1]},100: {color: COLORS2[1]}}
-	         },
-	         {
+	        	 'angle': 0,
+	        	 stops: {0: {color: COLORS[1]},100: {color: COLORS2[1]}}
+	         },{
 	        	 id: gradID + '2',
 	             'angle': 0,
 	             stops: {0: {color: COLORS[2]},100: {color: COLORS2[2]}}
-	         },
-	         {
+	         },{
 	        	 id: gradID + '3',
 	             'angle': 0,
 	             stops: {0: {color: COLORS[3]},100: {color: COLORS2[3]}}
-	         },
-	         {
+	         },{
 	        	 id: gradID + '4',
-	           'angle': 0,
-	           stops: {0: {color: COLORS[4]},100: {color: COLORS2[4]}}
-	         },
-	         {
+	        	 'angle': 0,
+	        	 stops: {0: {color: COLORS[4]},100: {color: COLORS2[4]}}
+	         },{
 	        	 id: gradID + '5',
 	             'angle': 0,
 	             stops: {0: {color: COLORS[5]},100: {color: COLORS2[5]}}
-	         },
-	         {
+	         },{
 	        	 id: gradID + '6',
-	             'angle': 0,
+	        	 'angle': 0,
 	             stops: {0: {color: COLORS[6]},100: {color: COLORS2[6]}}
-	         },
-	         {
+	         },{
 	        	 id: gradID + '7',
 	             'angle': 0,
 	             stops: {0: {color: COLORS[7]},100: {color: COLORS2[7]}}
-	         },
-	         {
+	         },{
 	        	 id: gradID + '8',
-	             'angle': 0,
+	        	 'angle': 0,
 	             stops: {0: {color: COLORS[8]},100: {color: COLORS2[8]}}
-	         }
-         ];
+	         }];
     	return gradientsArray;
     },
 

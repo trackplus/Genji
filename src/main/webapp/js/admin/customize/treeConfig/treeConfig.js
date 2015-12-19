@@ -21,56 +21,51 @@
 /* $Id:$ */
 
 
-Ext.define('com.trackplus.admin.customize.treeConfig.TreeConfig',{
+Ext.define("com.trackplus.admin.customize.treeConfig.TreeConfig", {
 	//inherits from TreeBase (neither TreeDetail nor TreeWithGrid)
 	//because it contains common functionality for
 	//fieldConfig (TreeDetail) and screenConfig (a kind if TreeWithGrid)
-	extend:'com.trackplus.admin.TreeBase',
+	extend:"com.trackplus.admin.TreeBase",
 	config: {
-		rootID:'_',
+		//rootID:'_',
 		fromProjectConfig: false,
 		projectOrProjectTypeID: null
 	},
 	folderAction: "treeConfig",
-	leafDetailByFormLoad: true,
-	entityID:'node',
+	treeStoreUrl: "treeConfig!expand.action",
+	//leafDetailByFormLoad: true,
+	//entityID:'node',
 	//common actions for fieldConfig and screenConfig
 	actionOverwrite: null,
 	actionReset: null,
 	actionReload: null,
-	constructor: function(config) {
-		var config = config || {};
-		this.initConfig(config);
-		this.initBase();
-	},
-
+	
 	/**
 	 * Get the detail part after selecting a tree node
 	 * The base class (TreeConfig) inherits from TreeBase (neither TreeDetail nor TreeWithGrid)
 	 * which means that the getDetailPanel is not implemented in base classes
 	 */
-	loadDetailPanel: function(node, leaf) {
+	/*loadDetailPanel: function(node, leaf) {
 		if (leaf) {
 			this.loadDetailPanelWithFormLoad(node, false);
 		} else {
 			this.loadSimpleDetailPanel(node, false);
 		}
-	},
+	},*/
 
 	/**
 	 * The url for getting the leaf detail: either this should be overridden or the leafDetailUrl should be specified in the config
 	 */
-	/*protected*/getLeafDetailUrl: function() {
+	/*protected*//*getLeafDetailUrl: function() {
 		return this.getBaseAction() + '!load.action';
-	},
+	},*/
 
 	initActions: function() {
-		this.actionOverwrite = this.createLocalizedAction(getText('common.btn.derive'),
-				'copy', this.onOverwrite, this.getTitle('common.lbl.derive'), true);
-		this.actionReset = this.createLocalizedAction(getText('common.btn.reset'),
-				'reset', this.onReset, this.getTitle('common.lbl.reset'), true);
-		this.actionReload = this.createLocalizedAction(getText('common.btn.reload'),
-				'reload', this.onReload);
+		this.actionOverwrite = CWHF.createAction("common.btn.derive", this.getCopyIconCls(),
+				"onOverwrite", {tooltip:this.getActionTooltip("common.lbl.derive"), disabled:true});
+		this.actionReset = CWHF.createAction("common.btn.reset", "reset",
+				"onReset", {tooltip:this.getActionTooltip("common.lbl.reset"), disabled:true});
+		this.actionReload = CWHF.createAction(this.getReloadButtonKey(), this.getReloadIconCls(), "onReload");
 	},
 
 	/**
@@ -88,16 +83,16 @@ Ext.define('com.trackplus.admin.customize.treeConfig.TreeConfig',{
 				{ name : 'assignedID', mapping : 'assignedID', type: 'int'}];
 	},
 
-	getTreeExpandExtraParams: function() {
+	getTreeStoreExtraParams: function() {
 		return {fromProjectConfig: this.getFromProjectConfig(),
 			projectOrProjectTypeID: this.getProjectOrProjectTypeID()};
-	},
+	}
 
 	/**
 	 * Refresh after a successful save
 	 */
-	/*protected abstract*/refreshAfterSaveSuccess: function(result) {
-	},
+	/*protected abstract*//*refreshAfterSaveSuccess: function(result) {
+	},*/
 
 	/**
 	 * The validate method called before submit
@@ -112,14 +107,14 @@ Ext.define('com.trackplus.admin.customize.treeConfig.TreeConfig',{
 	 * 	Because in this case the "automatic" validation should succeed in order to make the submit possible
 	 * 	we can't set validation directly on form controls, but this validate method will be called with the corresponding validateNeeded
 	 */
-	/*protected*/prepareValidate: function(panel, enableValidation) {
-	},
+	/*protected*//*prepareValidate: function(panel, enableValidation) {
+	},*/
 
 	/**
 	 * The node parameter sent to server
 	 *
 	 */
-	/*protected*/getNodeParam: function(extraConfig) {
+	/*protected*//*getNodeParam: function(extraConfig) {
 		var saveParams = new Object();
 		var recordData = this.getSingleSelectedRecordData(true);
 		if (recordData) {
@@ -129,13 +124,13 @@ Ext.define('com.trackplus.admin.customize.treeConfig.TreeConfig',{
 			}
 		}
 		return saveParams;
-	},
+	},*/
 
 
 	/**
 	 * Overwrite a leaf node
 	 */
-	onOverwrite: function() {
+	/*onOverwrite: function() {
 		Ext.Ajax.request({
 			url: this.getFolderAction() + '!overwrite.action',
 			params: this.getNodeParam(),
@@ -147,7 +142,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.TreeConfig',{
 				var nodeToReload=treeStore.getNodeById(result.node);
 				if (nodeToReload) {
 					//for actualizing toolbar buttons in
-					//treeNodeSelect according to  inheritedConfig
+					//onTreeNodeSelect according to  inheritedConfig
 					nodeToReload.data['inheritedConfig'] = result.inheritedConfig;
 					nodeToReload.set('text', result.text);
 					nodeToReload.commit();
@@ -155,19 +150,19 @@ Ext.define('com.trackplus.admin.customize.treeConfig.TreeConfig',{
 					treeView.refreshNode(index);
 					//actualize the toolbar buttons
 					//although a tree refresh is not needed
-					this.treeNodeSelect(/*this.tree, [nodeToReload]*/null, nodeToReload);
+					this.onTreeNodeSelect(null, nodeToReload);
 				}
 			},
 			failure: function(response) {
 				com.trackplus.util.requestFailureHandler(response, options);
 			}
 		});
-	},
+	},*/
 
 	/**
 	 * Reset a leaf or a branch node
 	 */
-	onReset: function() {
+	/*onReset: function() {
 		Ext.Ajax.request({
 			url: this.getFolderAction() + '!reset.action',
 			params: this.getNodeParam(),
@@ -188,11 +183,6 @@ Ext.define('com.trackplus.admin.customize.treeConfig.TreeConfig',{
 							//refresh the entire tree (screen assignment)
 							startFromNode = this.tree.getRootNode();
 						} else {
-							//refresh only a branch (field configuration)
-							/*if (nodeToReload.isLeaf()) {
-							 //refresh the leaf's parent
-							 startFromNode = nodeToReload.parentNode;
-							 } else {*/
 							//refresh the resetted branch node itself
 							startFromNode = nodeToReload;
 							refreshStartFromNode = true;
@@ -202,7 +192,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.TreeConfig',{
 						refreshStartFromNode=refreshStartFromNode||(result.node==='workflow_workflow');
 						this.refreshTreeOpenBranches(startFromNode, refreshStartFromNode, selectStartFromNode, null, result.node,
 								result.issueType, result.projectType, result.project);
-						//this.treeNodeSelect(this.tree, [startFromNode]);
+						//this.onTreeNodeSelect(this.tree, [startFromNode]);
 					} else {
 						//actualize the node directly in the tree without branch reload
 						//(by a field configuration leaf reset)
@@ -212,7 +202,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.TreeConfig',{
 						var index = treeView.indexOf(nodeToReload);
 						treeView.refreshNode(index);
 						//actualize the toolbar buttons according to  inheritedConfig
-						this.treeNodeSelect(/*this.tree, [nodeToReload]*/null, nodeToReload);
+						this.onTreeNodeSelect(null, nodeToReload);
 					}
 				}
 			},
@@ -220,21 +210,16 @@ Ext.define('com.trackplus.admin.customize.treeConfig.TreeConfig',{
 				com.trackplus.util.requestFailureHandler(response, options);
 			}
 		});
-	},
+	},*/
 
 	/**
 	 * Reload the selected branch: typically useful to refresh a branch caused by changes made by other users
 	 */
-	onReload: function() {
+	/*onReload: function() {
 		var node = this.getLastSelectedTreeNode();
 		var treeStore = this.tree.getStore();
 		treeStore.load({node:node});
-		/*var selectionModel = this.tree.getSelectionModel();
-		var selectedArr = 	selectionModel.getSelection();
-		if (selectedArr && selectedArr.length>0) {
-			treeStore.load({node:selectedArr[0]});
-		}*/
-	},
+	},*/
 
 
 	/**
@@ -248,7 +233,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.TreeConfig',{
 	 * (for reset not needed)
 	 * nodeIdToSelect: which node to select after reload
 	 */
-	refreshTreeOpenBranches: function(startFromNode, refreshStartFromNode,
+	/*refreshTreeOpenBranches: function(startFromNode, refreshStartFromNode,
 			selectStartFromNode, parentNode, nodeIdToSelect, issueType, projectType, project) {
 		var treeStore = this.tree.getStore();
 		var branchNodes;
@@ -293,12 +278,12 @@ Ext.define('com.trackplus.admin.customize.treeConfig.TreeConfig',{
 				}
 			}
 		}, this);
-	},
+	},*/
 
 	/**
 	 * Reduce the number of open branches to reload by filtering by domain parameters if they are specified
 	 */
-	branchReloadNeeded: function(branchNode, issueType, projectType, project) {
+	/*branchReloadNeeded: function(branchNode, issueType, projectType, project) {
 		var branchIssueType = branchNode.raw['issueType'];
 		var branchProjectType = branchNode.raw['projectType'];
 		var branchProject = branchNode.raw['project'];
@@ -314,20 +299,7 @@ Ext.define('com.trackplus.admin.customize.treeConfig.TreeConfig',{
 			}
 		}
 		return true;
-	}
-
-	/**
-	 * Select a node with id nodeId in tree.
-	 * Scope is contains tree and nodeId
-	 */
-	/*selectNode: function() {
-		if (this.nodeId && this.tree) {
-			var selectionModel = this.tree.getSelectionModel();
-			var nodeToSelect = this.tree.getStore().getNodeById(this.nodeId);
-			if (nodeToSelect) {
-				selectionModel.select(nodeToSelect);
-			}
-		}
 	}*/
+
 });
 

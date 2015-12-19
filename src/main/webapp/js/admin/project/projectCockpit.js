@@ -20,110 +20,46 @@
 
 /* $Id:$ */
 
-Ext.define('com.trackplus.admin.project.ProjectCockpit',{
-	extend:'Ext.Base',
+Ext.define("com.trackplus.admin.project.ProjectCockpit",{
+	extend:"Ext.panel.Panel",
+	xtype: "projectCockpit",
+    controller: "projectCockpit",
+    mixins:{
+		actionsBase: "com.trackplus.admin.ActionBase"
+	},
 	config: {
 		projectID: null
 	},
-
-	constructor : function(config) {
-		var me = this;
-		var config = config || {};
-		this.initConfig(config);
+	region: "center",
+	border: false,
+	layout:'anchor',
+	items:[Ext.create("Ext.Component",{
+			html: getText("admin.project.cockpit.help"),
+			border:true,
+			anchor:'100%',
+			minWidth:650,
+			cls:'infoBox_bottomBorder'
+		})],	
+		
+	initComponent: function() {
+		this.initActions();
+		this.dockedItems = this.getToolbar();
+		this.callParent();	
 	},
-	configButton:null,
-
+	
 	/**
 	 * Initialize all actions and return the toolbar actions
 	 */
-	getToolbarActions: function() {
-		var me=this;
-		if (CWHF.isNull(this.configButton)) {
-			this.configButton = new Ext.Button({
-				overflowText:getText('admin.project.cockpit.lbl.configProject'),
-				tooltip:getText('admin.project.cockpit.lbl.configProject'),
-				text: getText('admin.project.cockpit.lbl.configProject'),
-				iconCls: 'projectEdit',
-				disabled:false,
-				handler:function(){
-					//project
-					var urlEditScreen="dashboardEdit.action?backAction=admin.action&projectID="+me.getProjectID()+"&entityType=1";
-					window.location.href=urlEditScreen;
-				}
-			});
-			this.configReleaseButton = new Ext.Button({
-				overflowText:getText('admin.project.cockpit.lbl.configRelease'),
-				tooltip:getText('admin.project.cockpit.lbl.configRelease'),
-				text: getText('admin.project.cockpit.lbl.configRelease'),
-				iconCls: 'releaseEdit',
-				disabled:false,
-				handler:function(){
-					//release
-					var urlEditScreen="dashboardEdit.action?backAction=admin.action&projectID="+me.getProjectID()+"&entityType=9";
-					window.location.href=urlEditScreen;
-				}
-			});
-			this.actionAssignProjectCockpit =new Ext.Button({
-				overflowText:getText('admin.project.lbl.resetProjectCockpit'),
-				tooltip:getText('admin.project.lbl.resetProjectCockpit'),
-				text: getText('admin.project.lbl.resetProjectCockpit'),
-				iconCls: 'cockpitReset',
-				disabled:false,
-				handler:me.onAssignProjectCockpit,
-				scope:me
-			});
-			this.actionAssignReleaseCockpit =new Ext.Button({
-				overflowText:getText('admin.project.lbl.resetReleaseCockpit'),
-				tooltip:getText('admin.project.lbl.resetReleaseCockpit'),
-				text: getText('admin.project.lbl.resetReleaseCockpit'),
-				iconCls: 'cockpitReset',
-				disabled:false,
-				handler:me.onAssignReleaseCockpit,
-				scope:me
-			});
-		}
-		return [this.configButton,this.actionAssignProjectCockpit,this.configReleaseButton,this.actionAssignReleaseCockpit];
-	},
-	onAssignProjectCockpit:function(){
-		var me=this;
-		com.trackplus.dashboard.resetDashboard('project!cokpitAssignment.action',
-			{projectID:me.getProjectID(),entityType:1},me.projectCokpitAssignmentSuccess,me);
-	},
-	projectCokpitAssignmentSuccess: function() {
-		CWHF.showMsgInfo(getText('admin.project.msg.resetProjectCockpit'));
-	},
-	onAssignReleaseCockpit:function(){
-		var me=this;
-		com.trackplus.dashboard.resetDashboard('project!cokpitAssignment.action',
-			{projectID:me.getProjectID(),entityType:9}, me.releaseCokpitAssignmentSuccess,me);
-	},
-	releaseCokpitAssignmentSuccess: function() {
-		CWHF.showMsgInfo(getText('admin.project.msg.resetReleaseCockpit'));
-	},
-
-	getDetailPanel: function() {
-		this.panel= Ext.create('Ext.panel.Panel',{
-			region: 'center',
-			border: false,
-			autoScroll: false,
-			bodyStyle: 'padding:0px',
-			layout:'anchor',
-			items:[Ext.create('Ext.Component',{
-				html: getText('admin.project.cockpit.help'),
-				border:true,
-				anchor:'100%',
-				minWidth:650,
-				cls:'infoBox_bottomBorder'
-			})]
-		});
-		return this.panel;
-	},
-	loadDetailPanel:function(){
-	},
-	panelLoad: function(projectOrReleaseID) {
-	},
-
-	postLoadProcess: function(panel, data) {
+	initActions: function() {
+		this.actions = [];
+		this.configProject = CWHF.createAction("admin.project.cockpit.lbl.configProject", "projectEdit", "onConfigProject");
+		this.actions.push(this.configProject);
+		this.configRelease = CWHF.createAction("admin.project.cockpit.lbl.configRelease", "releaseEdit", "onConfigRelease");
+		this.actions.push(this.configRelease);
+		this.actionAssignProjectCockpit = CWHF.createAction("admin.project.lbl.resetProjectCockpit", "cockpitReset", "onAssignProjectCockpit");
+		this.actions.push(this.actionAssignProjectCockpit);
+		this.actionAssignReleaseCockpit = CWHF.createAction("admin.project.lbl.resetReleaseCockpit", "cockpitReset", "onAssignReleaseCockpit");
+		this.actions.push(this.actionAssignReleaseCockpit);	
 	}
 });
 

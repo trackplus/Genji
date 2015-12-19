@@ -27,6 +27,7 @@ import com.aurel.track.prop.ApplicationBean;
 public class ModuleDescriptor extends BasePluginDescriptor {
 	private String iconCls;
 	private String url;
+	private String target;
 	private boolean useHeader=false;
 	private boolean haveIE9Css=false;
 	public static final String WIKI_MODULE = "wiki";
@@ -76,5 +77,13 @@ public class ModuleDescriptor extends BasePluginDescriptor {
 
 	public void setHaveIE9Css(boolean haveIE9Css) {
 		this.haveIE9Css = haveIE9Css;
+	}
+
+	public String getTarget() {
+		return target;
+	}
+
+	public void setTarget(String target) {
+		this.target = target;
 	}
 }

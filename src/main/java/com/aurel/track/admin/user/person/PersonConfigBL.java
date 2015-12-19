@@ -22,7 +22,6 @@
 
 package com.aurel.track.admin.user.person;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -31,8 +30,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.aurel.track.admin.customize.category.report.ReportBL;
 import com.aurel.track.admin.customize.lists.BlobBL;
@@ -184,10 +183,10 @@ public class PersonConfigBL {
 		DAOFactory.getFactory().getNotifyTriggerDAO().deleteOwnTriggers(personID);
 		DAOFactory.getFactory().getQueryRepositoryDAO().deletePrivateTreeQueries(personID);
 		DAOFactory.getFactory().getFilterCategoryDAO().deletePrivateFilterCategories(personID);
-		List<TExportTemplateBean> templateBeans = DAOFactory.getFactory().getExportTemplateDAO().loadPrivate(personID);
+		List<TExportTemplateBean> templateBeans = ReportBL.loadPrivate(personID);
 		if (templateBeans!=null) {
 			for (TExportTemplateBean exportTemplateBean : templateBeans) {
-				deletePrivate(exportTemplateBean.getObjectID());
+				ReportBL.deleteWithTemplate(exportTemplateBean.getObjectID());
 			}
 		}
 		DAOFactory.getFactory().getReportCategoryDAO().deletePrivateReportCategories(personID);
@@ -200,25 +199,6 @@ public class PersonConfigBL {
 				ProjectConfigBL.deleteProject(projectBean.getObjectID(), true, LookupContainer.getPersonBean(loggedUser), Locale.ENGLISH);
 			}
 		}
-	}
-
-	public static boolean deletePrivate(Integer templateId){
-		ReportBL.delete(templateId);
-		return deleteDirectory(ReportBL.getDirTemplate(templateId));
-	}
-
-	private static boolean deleteDirectory(File path) {
-		if (path.exists()) {
-			File[] files = path.listFiles();
-			for (int i = 0; i < files.length; i++) {
-				if (files[i].isDirectory()) {
-					deleteDirectory(files[i]);
-				} else {
-					files[i].delete();
-				}
-			}
-		}
-		return (path.delete());
 	}
 
 	/**
