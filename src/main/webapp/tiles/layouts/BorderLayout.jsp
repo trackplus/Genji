@@ -50,7 +50,7 @@
 		}else{
 			session.setAttribute("externalCss", externalCss);
 		}
-		debug="true"; // REMOVE_ON_BUILD, don't change this line here, since the build process relies on the tag
+
 		testing="true";
 		String fmresp = "";
 	%>

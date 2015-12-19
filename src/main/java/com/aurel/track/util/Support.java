@@ -47,7 +47,7 @@ import com.aurel.track.prop.ApplicationBean;
 /**
  * This class contains various support methods.
  * @author Joerg Friedrich <joerg.friedrich@computer.org>
- * @version $Revision: 1663 $ $Date: 2015-10-26 00:49:08 +0100 (Mon, 26 Oct 2015) $
+ * @version $Revision: 1663 $ $Date: 2015-10-26 00:49:08 +0100 (Mo, 26 Okt 2015) $
  */
 public class Support {
 

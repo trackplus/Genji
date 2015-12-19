@@ -37,7 +37,7 @@ import com.aurel.track.dao.WorkflowDAO;
  * @author Sergej Redel <sergej@schoene-hochzeit.com>
  * @author Martin Bierkoch <martin.bierkoch@gmx.de>
  * @author Joerg Friedrich
- * @version $Revision: 1795 $ $Date: 2015-11-12 13:07:18 +0100 (Thu, 12 Nov 2015) $
+ * @version $Revision: 1795 $ $Date: 2015-11-12 13:07:18 +0100 (Do, 12 Nov 2015) $
  */
 
 public class TWorkFlowPeer

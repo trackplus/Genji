@@ -41,7 +41,7 @@ import com.aurel.track.prop.ApplicationBean;
  * Class <b>Constants</b> defines some constants being used throughout the
  * application and particularly in the JSP code.<br>
  * @author Joerg Friedrich <joerg.friedrich@computer.org>
- * @version $Revision: 1903 $ $Date: 2015-12-18 17:37:00 +0100 (Fri, 18 Dec 2015) $
+ * @version $Revision: 1903 $ $Date: 2015-12-18 17:37:00 +0100 (Fr, 18 Dez 2015) $
  */
 public final class Constants {
 	private static final Logger LOGGER = LogManager.getLogger(Constants.class);

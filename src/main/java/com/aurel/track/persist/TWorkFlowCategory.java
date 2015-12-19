@@ -37,7 +37,7 @@ import org.apache.torque.om.Persistent;
  * 
  * @author Sergej Redel <sergej@schoene-hochzeit.com>
  * @author Martin Bierkoch <martin.bierkoch@gmx.de>
- * @version $Revision: 1661 $ $Date: 2015-10-25 21:06:43 +0100 (Sun, 25 Oct 2015) $
+ * @version $Revision: 1661 $ $Date: 2015-10-25 21:06:43 +0100 (So, 25 Okt 2015) $
  */
 public  class TWorkFlowCategory
     extends com.aurel.track.persist.BaseTWorkFlowCategory

@@ -18,10 +18,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* $Id: build-genji.gradle 1904 2015-12-19 17:39:43Z friedric $ */
+/* $Id: build-genji.gradle 1906 2015-12-19 21:10:02Z friedric $ */
 
 
-import java.io.File;
 import java.util.Properties;
 import org.codehaus.groovy.runtime.*;
 
@@ -416,44 +415,20 @@ clean {
 	}
 }
 
-def File combineJs(Object borderLayoutJsp, Object combinedJsMax) {
-	File borderLayout = new File(borderLayoutJsp);
+def File combineJs() {
+	File borderLayout = new File(project.webAppDir.toString()+'/tiles/layouts/BorderLayout.jsp');
 	File trackplus;
 	if (!borderLayout.exists()) {
 		println "File does not exist.";
 		exit;
 	} else {
 		def nline = "";
-		trackplus = new File(combinedJsMax);
+		trackplus = new File(project.webAppDir.toString()+'/js/trackplus-max.js');
 		if (trackplus.exists()) {
 			trackplus.delete();
-		} else {
-		    File jsBase = file(trackplus.getParent())
-			if (!jsBase.exists()) {
-				mkdir (jsBase)
-			}
 		}
-		boolean skipMode = false;
 		borderLayout.eachLine { line ->
-			int cstart = line.indexOf("<%--");
-			int cstop = line.indexOf("--%>");
-			if (line.trim().startsWith("<%-- /* ## */ --%>")) {
-				nline = line.replace("<%-- /* ## */ --%>", " ");
-			} else if (!skipMode && (cstart >= 0) && (cstop < 0)) {
-				skipMode = true;
-				nline = line.substring(0,cstart);
-			} else if (skipMode && (cstart < 0) && (cstop >= 0)) {
-				skipMode = false;
-				nline = line.substring(cstop,line.length());
-			} else if (!skipMode && (cstart >= 0) && (cstop >= 0)) {
-				skipMode = false;
-				nline = line.substring(0,cstart) + line.substring(cstop,line.length());
-			} else if (skipMode) {
-				nline = " ";
-			} else {
-				nline = line;
-			}
-			nline = nline.replaceAll("^(?:(?!\\s+.script.type=.text.javascript.*src=..%=request.get).)*\$","");
+			nline = line.replaceAll("^(?:(?!\\s+.script.type=.text.javascript.*src=..%=request.get).)*\$","");
 			nline = nline.replaceAll("^\\s+.script.type=.text.javascript.\\s+src=..%=request.get.*%..","");
 			nline = nline.replaceAll(".../script>\$","");
 			//		replace="," flags="gs" byline="true"/>
@@ -479,8 +454,6 @@ def File combineJs(Object borderLayoutJsp, Object combinedJsMax) {
 				if (!jsFile.exists()) {
 					println "File " + jsFile.toString() + " not found even though it is in BorderLayout.jsp";
 				} else {
-				    // javascript.source.prod.js.files.add(jsFile);
-					// jsfilesa.add(jsFile)
 					jsFile.eachLine { jline ->
 						jline = jline.replaceAll("(\r\n|\n\r|\r|\n)", "\n");
 						if ("".equals(jline.trim())) {
@@ -490,7 +463,6 @@ def File combineJs(Object borderLayoutJsp, Object combinedJsMax) {
 						}
 					}
 					buffer.append("\n");
-					// trackplus << jsFile.text.trim().replaceAll("(\r\n|\n\r|\r|\n)", "\n");
 					trackplus << buffer;
 				}
 			}

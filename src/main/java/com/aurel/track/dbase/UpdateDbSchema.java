@@ -47,7 +47,7 @@ import com.aurel.track.prop.ApplicationBean;
 /**
  * This class upgrades the Genji database schema if necessary.
  *
- * @version $Revision: 1695 $ $Date: 2015-10-29 08:06:44 +0100 (Thu, 29 Oct 2015) $
+ * @version $Revision: 1695 $ $Date: 2015-10-29 08:06:44 +0100 (Do, 29 Okt 2015) $
  */
 public final class UpdateDbSchema {
 

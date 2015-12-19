@@ -56,7 +56,7 @@ import groovy.lang.Binding;
 /**
  * Implementation of <strong>Action</strong> that validates a user logon.
  * @author Joerg Friedrich <joerg.friedrich@computer.org>
- * @version $Revision: 1904 $ $Date: 2015-12-19 18:39:43 +0100 (Sat, 19 Dec 2015) $
+ * @version $Revision: 1904 $ $Date: 2015-12-19 18:39:43 +0100 (Sa, 19 Dez 2015) $
  */
 //@ParentPackage("struts-track-base")
 //	@InterceptorRef("editNoAuth")
